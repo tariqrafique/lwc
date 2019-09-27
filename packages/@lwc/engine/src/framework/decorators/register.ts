@@ -28,6 +28,9 @@ export interface PropsDef {
 export interface TrackDef {
     [key: string]: 1;
 }
+export interface FieldDef {
+    [key: string]: 1;
+}
 type PublicMethod = (...args: any[]) => any;
 export interface MethodDef {
     [key: string]: PublicMethod;
@@ -49,7 +52,7 @@ export interface DecoratorMeta {
     track: TrackDef;
     props: PropsDef;
     methods: MethodDef;
-    fields?: string[];
+    fields: FieldDef;
 }
 
 const signedDecoratorToMetaMap: Map<ComponentConstructor, DecoratorMeta> = new Map();
@@ -67,7 +70,7 @@ export function registerDecorators(
     const methods = getPublicMethodsHash(Ctor, meta.publicMethods);
     const wire = getWireHash(Ctor, meta.wire);
     const track = getTrackHash(Ctor, meta.track);
-    const fields = meta.fields;
+    const fields = getFieldHash(Ctor, meta.fields);
     signedDecoratorToMetaMap.set(Ctor, {
         props,
         methods,
@@ -120,6 +123,20 @@ function getWireHash(
 
     // TODO: #1302 - check that anything in `wire` is correctly defined in the prototype
     return assign(create(null), wire);
+}
+
+function getFieldHash(target: ComponentConstructor, fields: string[] | undefined): FieldDef {
+    if (isUndefined(fields)) {
+        return EmptyObject;
+    }
+
+    const fieldsHash: FieldDef = {};
+
+    for (let i = 0, len = fields.length; i < len; i++) {
+        fieldsHash[fields[i]] = 1;
+    }
+
+    return fieldsHash;
 }
 
 function getPublicPropertiesHash(

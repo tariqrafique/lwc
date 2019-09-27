@@ -4,14 +4,15 @@
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
-import { assert, ArrayReduce, isFalse } from '@lwc/shared';
+import { assert, ArrayReduce, isFalse, getOwnPropertyNames } from '@lwc/shared';
 import { ComponentInterface } from './component';
 import { getComponentVM } from './vm';
 import { valueMutated, valueObserved } from '../libs/mutation-tracker';
+import { FieldDef } from './decorators/register';
 
-export function createObservedFieldsDescriptorMap(fields: PropertyKey[]): PropertyDescriptorMap {
+export function createObservedFieldsDescriptorMap(fields: FieldDef): PropertyDescriptorMap {
     return ArrayReduce.call(
-        fields,
+        getOwnPropertyNames(fields),
         (acc: PropertyDescriptorMap, field) => {
             acc[field] = createObservedFieldPropertyDescriptor(field);
 

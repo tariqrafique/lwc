@@ -18,7 +18,6 @@ import {
     assert,
     assign,
     create,
-    defineProperties,
     fields,
     freeze,
     getOwnPropertyNames,
@@ -40,7 +39,6 @@ import {
     ComponentMeta,
     getComponentRegisteredMeta,
 } from './component';
-import { createObservedFieldsDescriptorMap } from './observed-fields';
 import { Template } from './template';
 
 export interface ComponentDef extends DecoratorMeta {
@@ -107,7 +105,7 @@ function createComponentDef(
     let methods: MethodDef = {};
     let wire: WireHash | undefined;
     let track: TrackDef = {};
-    let fields: string[] | undefined;
+    let fields: FieldDef = {};
     if (!isUndefined(decoratorsMeta)) {
         props = decoratorsMeta.props;
         methods = decoratorsMeta.methods;
@@ -140,6 +138,7 @@ function createComponentDef(
         methods = assign(create(null), superDef.methods, methods);
         wire = superDef.wire || wire ? assign(create(null), superDef.wire, wire) : undefined;
         track = assign(create(null), superDef.track, track);
+        fields = assign(create(null), superDef.fields, fields);
         connectedCallback = connectedCallback || superDef.connectedCallback;
         disconnectedCallback = disconnectedCallback || superDef.disconnectedCallback;
         renderedCallback = renderedCallback || superDef.renderedCallback;
@@ -148,10 +147,6 @@ function createComponentDef(
         template = template || superDef.template;
     }
     props = assign(create(null), HTML_PROPS, props);
-
-    if (!isUndefined(fields)) {
-        defineProperties(proto, createObservedFieldsDescriptorMap(fields));
-    }
 
     if (isUndefined(template)) {
         // default template
@@ -163,6 +158,7 @@ function createComponentDef(
         name,
         wire,
         track,
+        fields,
         props,
         methods,
         bridge,
@@ -285,6 +281,7 @@ import {
     WireHash,
     MethodDef,
     TrackDef,
+    FieldDef,
 } from './decorators/register';
 import { defaultEmptyTemplate } from './secure-template';
 
