@@ -28,3 +28,4 @@ export { default as decorate } from './decorators/decorate';
 export { buildCustomElementConstructor } from './wc';
 
 export { setFeatureFlag, setFeatureFlagForTest } from '@lwc/features';
+export { buffer, stringMap } from './profiler';

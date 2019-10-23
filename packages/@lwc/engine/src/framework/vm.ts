@@ -46,6 +46,8 @@ import {
     endGlobalMeasure,
     GlobalMeasurementPhase,
 } from './performance-timing';
+import { runtimeFlags } from '@lwc/features';
+import { logOperation, OperationId } from './profiler';
 import { updateDynamicChildren, updateStaticChildren } from '../3rdparty/snabbdom/snabbdom';
 import { hasDynamicChildren } from './hooks';
 import { ReactiveObserver } from '../libs/mutation-tracker';
@@ -310,6 +312,9 @@ function patchShadowRoot(vm: VM, newCh: VNodes) {
                     if (process.env.NODE_ENV !== 'production') {
                         startMeasure('patch', vm);
                     }
+                    if (runtimeFlags.PROFILER_ENABLED) {
+                        logOperation(OperationId.PatchStart, vm);
+                    }
                 },
                 () => {
                     // job
@@ -317,6 +322,9 @@ function patchShadowRoot(vm: VM, newCh: VNodes) {
                 },
                 () => {
                     // post
+                    if (runtimeFlags.PROFILER_ENABLED) {
+                        logOperation(OperationId.PatchStop, vm);
+                    }
                     if (process.env.NODE_ENV !== 'production') {
                         endMeasure('patch', vm);
                     }
@@ -344,6 +352,9 @@ function runRenderedCallback(vm: VM) {
 let rehydrateQueue: VM[] = [];
 
 function flushRehydrationQueue() {
+    if(runtimeFlags.PROFILER_ENABLED) {
+        logOperation(OperationId.HydrateStart, undefined);
+    }
     startGlobalMeasure(GlobalMeasurementPhase.REHYDRATE);
 
     if (process.env.NODE_ENV !== 'production') {
@@ -367,7 +378,9 @@ function flushRehydrationQueue() {
                 ArrayUnshift.apply(rehydrateQueue, ArraySlice.call(vms, i + 1));
             }
             // we need to end the measure before throwing.
-            endGlobalMeasure(GlobalMeasurementPhase.REHYDRATE);
+            if(runtimeFlags.PROFILER_ENABLED) {
+                logOperation(OperationId.HydrateStop, undefined);
+            }
 
             // re-throwing the original error will break the current tick, but since the next tick is
             // already scheduled, it should continue patching the rest.
@@ -376,7 +389,11 @@ function flushRehydrationQueue() {
     }
 
     endGlobalMeasure(GlobalMeasurementPhase.REHYDRATE);
+    if(runtimeFlags.PROFILER_ENABLED) {
+        logOperation(OperationId.HydrateStop, undefined);
+    }
 }
+
 
 export function runConnectedCallback(vm: VM) {
     const { state } = vm;
@@ -384,9 +401,14 @@ export function runConnectedCallback(vm: VM) {
         return; // nothing to do since it was already connected
     }
     vm.state = VMState.connected;
+    let trackingStarted = false;
     // reporting connection
     const { connected } = Services;
     if (connected) {
+        if (runtimeFlags.PROFILER_ENABLED) {
+            trackingStarted = true;
+            logOperation(OperationId.ConnectedCallbackStart, vm);
+        }
         invokeServiceHook(vm, connected);
     }
     const { connectedCallback } = vm.def;
@@ -394,16 +416,23 @@ export function runConnectedCallback(vm: VM) {
         if (process.env.NODE_ENV !== 'production') {
             startMeasure('connectedCallback', vm);
         }
-
+        if (!trackingStarted && runtimeFlags.PROFILER_ENABLED) {
+            trackingStarted = true;
+            logOperation(OperationId.ConnectedCallbackStart, vm);
+        }
         invokeComponentCallback(vm, connectedCallback);
 
         if (process.env.NODE_ENV !== 'production') {
             endMeasure('connectedCallback', vm);
         }
     }
+    if (trackingStarted) {
+        logOperation(OperationId.ConnectedCallbackStop, vm);
+    }
 }
 
 function runDisconnectedCallback(vm: VM) {
+    let trackingStarted = false;
     if (process.env.NODE_ENV !== 'production') {
         assert.isTrue(vm.state !== VMState.disconnected, `${vm} must be inserted.`);
     }
@@ -418,10 +447,18 @@ function runDisconnectedCallback(vm: VM) {
     // reporting disconnection
     const { disconnected } = Services;
     if (disconnected) {
+        if (runtimeFlags.PROFILER_ENABLED) {
+            logOperation(OperationId.DisconnectedCallbackStart, vm);
+            trackingStarted = true;
+        }
         invokeServiceHook(vm, disconnected);
     }
     const { disconnectedCallback } = vm.def;
     if (!isUndefined(disconnectedCallback)) {
+        if (!trackingStarted && runtimeFlags.PROFILER_ENABLED) {
+            logOperation(OperationId.DisconnectedCallbackStart, vm);
+            trackingStarted = true;
+        }
         if (process.env.NODE_ENV !== 'production') {
             startMeasure('disconnectedCallback', vm);
         }
@@ -431,6 +468,9 @@ function runDisconnectedCallback(vm: VM) {
         if (process.env.NODE_ENV !== 'production') {
             endMeasure('disconnectedCallback', vm);
         }
+    }
+    if (trackingStarted) {
+        logOperation(OperationId.DisconnectedCallbackStop, vm);
     }
 }
 

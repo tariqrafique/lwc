@@ -10,6 +10,8 @@ import { evaluateTemplate, Template, setVMBeingRendered, getVMBeingRendered } fr
 import { VM, UninitializedVM, runWithBoundaryProtection } from './vm';
 import { ComponentConstructor, ComponentInterface } from './component';
 import { VNodes } from '../3rdparty/snabbdom/types';
+import { runtimeFlags } from'@lwc/features';
+import { logOperation, OperationId } from './profiler';
 import { startMeasure, endMeasure } from './performance-timing';
 import { getErrorComponentStack } from '../shared/format';
 
@@ -49,6 +51,9 @@ export function invokeComponentConstructor(vm: UninitializedVM, Ctor: ComponentC
     if (process.env.NODE_ENV !== 'production') {
         startMeasure('constructor', vm);
     }
+    if (runtimeFlags.PROFILER_ENABLED) {
+        logOperation(OperationId.CreateStart, vm);
+    }
     vmBeingConstructed = vm;
     /**
      * Constructors don't need to be wrapped with a boundary because for root elements
@@ -73,6 +78,9 @@ export function invokeComponentConstructor(vm: UninitializedVM, Ctor: ComponentC
     } finally {
         if (process.env.NODE_ENV !== 'production') {
             endMeasure('constructor', vm);
+        }
+        if (runtimeFlags.PROFILER_ENABLED) {
+            logOperation(OperationId.CreateStop, vm);
         }
         vmBeingConstructed = vmBeingConstructedInception;
         if (!isUndefined(error)) {
