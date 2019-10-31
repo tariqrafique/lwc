@@ -4,18 +4,19 @@
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
-import { TransformOptions } from '../../options';
+import { CompilerOptions } from '../../compiler/options';
 import { transform } from '../transformer';
 
 import { pretify } from '../../__tests__/utils';
 
-const TRANSFORMATION_OPTIONS: TransformOptions = {
+const COMPILER_OPTIONS: CompilerOptions = {
     namespace: 'x',
     name: 'foo',
+    files: {},
 };
 
 it('should throw when processing an invalid CSS file', async () => {
-    await expect(transform(`<`, 'foo.css', TRANSFORMATION_OPTIONS)).rejects.toMatchObject({
+    await expect(transform(`<`, 'foo.css', COMPILER_OPTIONS)).rejects.toMatchObject({
         filename: 'foo.css',
         message: expect.stringContaining('foo.css:1:1: Unknown word'),
     });
@@ -39,7 +40,7 @@ it('should apply transformation for stylesheet file', async () => {
         export default [stylesheet];
     `;
 
-    const { code } = await transform(actual, 'foo.css', TRANSFORMATION_OPTIONS);
+    const { code } = await transform(actual, 'foo.css', COMPILER_OPTIONS);
     expect(pretify(code)).toBe(pretify(expected));
 });
 
@@ -47,7 +48,7 @@ describe('custom properties', () => {
     it('should allow custom properties if allowDefinition is true', async () => {
         await expect(
             transform(`:host { --bg-color: red; }`, 'foo.css', {
-                ...TRANSFORMATION_OPTIONS,
+                ...COMPILER_OPTIONS,
                 stylesheetConfig: {
                     customProperties: { allowDefinition: true },
                 },
@@ -60,7 +61,7 @@ describe('custom properties', () => {
     it('should throw if custom properties are defined and allowDefinition is false', async () => {
         await expect(
             transform(`:host { --bg-color: red; }`, 'foo.css', {
-                ...TRANSFORMATION_OPTIONS,
+                ...COMPILER_OPTIONS,
                 stylesheetConfig: {
                     customProperties: { allowDefinition: false },
                 },
@@ -82,7 +83,7 @@ describe('custom properties', () => {
         `;
 
         const { code } = await transform(actual, 'foo.css', {
-            ...TRANSFORMATION_OPTIONS,
+            ...COMPILER_OPTIONS,
             stylesheetConfig: {
                 customProperties: { resolution: { type: 'native' } },
             },
@@ -108,7 +109,7 @@ describe('custom properties', () => {
         `;
 
         const { code } = await transform(actual, 'foo.css', {
-            ...TRANSFORMATION_OPTIONS,
+            ...COMPILER_OPTIONS,
             stylesheetConfig: {
                 customProperties: {
                     resolution: { type: 'module', name: '@customProperties' },
@@ -136,7 +137,7 @@ describe('custom properties', () => {
         `;
 
         const { code } = await transform(actual, 'foo.css', {
-            ...TRANSFORMATION_OPTIONS,
+            ...COMPILER_OPTIONS,
             stylesheetConfig: {
                 customProperties: {
                     resolution: { type: 'module', name: '@customProperties' },
@@ -156,7 +157,7 @@ describe('regressions', () => {
         const actual = `/* Comment with grave accents \`#\` */`;
         const expected = `export default [];`;
 
-        const { code } = await transform(actual, 'foo.css', TRANSFORMATION_OPTIONS);
+        const { code } = await transform(actual, 'foo.css', COMPILER_OPTIONS);
         expect(pretify(code)).toBe(pretify(expected));
     });
 
@@ -170,7 +171,7 @@ describe('regressions', () => {
             export default [stylesheet];
         `;
 
-        const { code } = await transform(actual, 'foo.css', TRANSFORMATION_OPTIONS);
+        const { code } = await transform(actual, 'foo.css', COMPILER_OPTIONS);
         expect(pretify(code)).toBe(pretify(expected));
     });
 
@@ -178,7 +179,7 @@ describe('regressions', () => {
         const actual = 'h1 { z-index: 100; } h2 { z-index: 500; }';
 
         const { code } = await transform(actual, 'foo.css', {
-            ...TRANSFORMATION_OPTIONS,
+            ...COMPILER_OPTIONS,
             outputConfig: {
                 minify: true,
             },

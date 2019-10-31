@@ -6,13 +6,13 @@
  */
 import * as styleCompiler from '@lwc/style-compiler';
 import { normalizeToCompilerError, TransformerErrors } from '@lwc/errors';
-import { NormalizedTransformOptions } from '../options';
+import { NormalizedCompilerOptions } from '../compiler/options';
 import { FileTransformerResult } from './transformer';
 
 export default function styleTransform(
     src: string,
     filename: string,
-    config: NormalizedTransformOptions
+    config: NormalizedCompilerOptions
 ): FileTransformerResult {
     const { minify } = config.outputConfig;
     const { customProperties } = config.stylesheetConfig;

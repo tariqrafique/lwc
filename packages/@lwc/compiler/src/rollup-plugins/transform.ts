@@ -8,9 +8,9 @@ import { Plugin } from 'rollup';
 
 import { transformFile } from '../transformers/transformer';
 
-import { NormalizedCompileOptions } from '../options';
+import { NormalizedCompilerOptions } from '../compiler/options';
 
-export default function({ options }: { options: NormalizedCompileOptions }): Plugin {
+export default function({ options }: { options: NormalizedCompilerOptions }): Plugin {
     return {
         name: 'lwc-file-transform',
         transform(src: string, id: string) {

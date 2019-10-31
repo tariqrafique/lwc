@@ -112,22 +112,10 @@ console.log(version);
 Compiler can be configured to produce one bundle at a time with the following configurations:
 
 ```ts
-export interface CompileOptions {
+export interface CompilerOptions {
     name: string;
     namespace: string;
     files: BundleFiles;
-    /**
-     * An optional directory prefix that contains the specified components
-     * files. Only used when the component that is the compiler's entry point.
-     */
-    baseDir?: string;
-    stylesheetConfig?: StylesheetConfig;
-    outputConfig?: OutputConfig;
-}
-
-export interface TransformOptions {
-    name: string;
-    namespace: string;
     /**
      * An optional directory prefix that contains the specified components
      * files. Only used when the component that is the compiler's entry point.

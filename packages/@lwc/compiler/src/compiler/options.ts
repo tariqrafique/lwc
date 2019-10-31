@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
-import { isBoolean, isString, isUndefined, isObject } from './utils';
+import { isBoolean, isString, isUndefined, isObject } from '../utils';
 import { CompilerValidationErrors, invariant } from '@lwc/errors';
 
 const DEFAULT_OPTIONS = {
@@ -64,9 +64,10 @@ export interface NormalizedDynamicComponentConfig {
     strictSpecifier: boolean;
 }
 
-export interface TransformOptions {
+export interface CompilerOptions {
     name: string;
     namespace: string;
+    files: BundleFiles;
     /**
      * An optional directory prefix that contains the specified components
      * files. Only used when the component that is the compiler's entry point.
@@ -78,18 +79,7 @@ export interface TransformOptions {
     isExplicitImport?: boolean;
 }
 
-export interface CompileOptions extends TransformOptions {
-    files: BundleFiles;
-}
-
-export interface NormalizedTransformOptions extends TransformOptions {
-    outputConfig: NormalizedOutputConfig;
-    stylesheetConfig: NormalizedStylesheetConfig;
-    experimentalDynamicComponent: NormalizedDynamicComponentConfig;
-    isExplicitImport: boolean;
-}
-
-export interface NormalizedCompileOptions extends CompileOptions {
+export interface NormalizedCompilerOptions extends CompilerOptions {
     outputConfig: NormalizedOutputConfig;
     stylesheetConfig: NormalizedStylesheetConfig;
     experimentalDynamicComponent: NormalizedDynamicComponentConfig;
@@ -112,13 +102,13 @@ export interface NormalizedOutputConfig extends OutputConfig {
     };
 }
 
-export function validateNormalizedCompileOptions(options: NormalizedCompileOptions) {
+export function validateNormalizedOptions(options: NormalizedCompilerOptions) {
     validateOptions(options);
     validateOutputConfig(options.outputConfig);
     validateStylesheetConfig(options.stylesheetConfig);
 }
 
-export function validateOptions(options: TransformOptions) {
+export function validateOptions(options: CompilerOptions) {
     invariant(!isUndefined(options), CompilerValidationErrors.MISSING_OPTIONS_OBJECT, [options]);
     invariant(isString(options.name), CompilerValidationErrors.INVALID_NAME_PROPERTY, [
         options.name,
@@ -126,18 +116,6 @@ export function validateOptions(options: TransformOptions) {
     invariant(isString(options.namespace), CompilerValidationErrors.INVALID_NAMESPACE_PROPERTY, [
         options.namespace,
     ]);
-
-    if (!isUndefined(options.stylesheetConfig)) {
-        validateStylesheetConfig(options.stylesheetConfig);
-    }
-
-    if (!isUndefined(options.outputConfig)) {
-        validateOutputConfig(options.outputConfig);
-    }
-}
-
-export function validateCompileOptions(options: CompileOptions): NormalizedCompileOptions {
-    validateOptions(options);
 
     invariant(
         !isUndefined(options.files) && !!Object.keys(options.files).length,
@@ -153,12 +131,13 @@ export function validateCompileOptions(options: CompileOptions): NormalizedCompi
         );
     }
 
-    return normalizeOptions(options) as NormalizedCompileOptions;
-}
+    if (!isUndefined(options.stylesheetConfig)) {
+        validateStylesheetConfig(options.stylesheetConfig);
+    }
 
-export function validateTransformOptions(options: TransformOptions): NormalizedTransformOptions {
-    validateOptions(options);
-    return normalizeOptions(options);
+    if (!isUndefined(options.outputConfig)) {
+        validateOutputConfig(options.outputConfig);
+    }
 }
 
 function validateStylesheetConfig(config: StylesheetConfig) {
@@ -227,7 +206,7 @@ function validateOutputConfig(config: OutputConfig) {
     }
 }
 
-function normalizeOptions(options: TransformOptions): NormalizedTransformOptions {
+export function normalizeOptions(options: CompilerOptions): NormalizedCompilerOptions {
     const outputConfig: NormalizedOutputConfig = {
         ...DEFAULT_OUTPUT_CONFIG,
         ...options.outputConfig,
