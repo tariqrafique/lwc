@@ -163,13 +163,14 @@ export function allocateChildrenHook(vnode: VCustomElement) {
     const elm = vnode.elm as HTMLElement;
     const vm = getCustomElementVM(elm);
     const { children } = vnode;
-    vm.aChildren = children;
     if (isTrue(useSyntheticShadow)) {
         // slow path
         allocateInSlot(vm, children);
         // every child vnode is now allocated, and the host should receive none directly, it receives them via the shadow!
         vnode.children = EmptyArray;
     }
+    // storing the new children collection for disconnection purposes
+    vm.aChildren = children;
 }
 
 export function createViewModelHook(vnode: VCustomElement) {
