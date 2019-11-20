@@ -195,6 +195,7 @@ export interface LightningElement {
     lang: string;
     hidden: boolean;
     draggable: boolean;
+    spellcheck: boolean;
     tabIndex: number;
 
     // Aria Properties
