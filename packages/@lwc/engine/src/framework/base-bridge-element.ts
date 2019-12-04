@@ -134,10 +134,11 @@ export function HTMLBridgeElementFactory(
 }
 
 export const BaseBridgeElement = HTMLBridgeElementFactory(
-    HTMLElement,
+    // TODO: What to do with this?
+    function() {} as any, // HTMLElement,
     getOwnPropertyNames(HTMLElementOriginalDescriptors),
     []
 );
 
-freeze(BaseBridgeElement);
-seal(BaseBridgeElement.prototype);
+// freeze(BaseBridgeElement);
+// seal(BaseBridgeElement.prototype);

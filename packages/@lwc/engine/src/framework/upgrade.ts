@@ -25,7 +25,7 @@ import {
 import { getComponentDef, setElementProto } from './def';
 import { patchCustomElementWithRestrictions } from './restrictions';
 import { GlobalMeasurementPhase, startGlobalMeasure, endGlobalMeasure } from './performance-timing';
-import { appendChild, insertBefore, replaceChild, removeChild } from '../env/node';
+// import { appendChild, insertBefore, replaceChild, removeChild } from '../env/node';
 
 const { createFieldName, getHiddenField, setHiddenField } = fields;
 const ConnectingSlot = createFieldName('connecting', 'engine');
@@ -44,26 +44,28 @@ function callNodeSlot(node: Node, slot: symbol): Node {
 
 // monkey patching Node methods to be able to detect the insertions and removal of
 // root elements created via createElement.
-assign(Node.prototype, {
-    appendChild(newChild: Node): Node {
-        const appendedNode = appendChild.call(this, newChild);
-        return callNodeSlot(appendedNode, ConnectingSlot);
-    },
-    insertBefore(newChild: Node, referenceNode: Node): Node {
-        const insertedNode = insertBefore.call(this, newChild, referenceNode);
-        return callNodeSlot(insertedNode, ConnectingSlot);
-    },
-    removeChild(oldChild: Node): Node {
-        const removedNode = removeChild.call(this, oldChild);
-        return callNodeSlot(removedNode, DisconnectingSlot);
-    },
-    replaceChild(newChild: Node, oldChild: Node): Node {
-        const replacedNode = replaceChild.call(this, newChild, oldChild);
-        callNodeSlot(replacedNode, DisconnectingSlot);
-        callNodeSlot(newChild, ConnectingSlot);
-        return replacedNode;
-    },
-});
+
+// TODO: This should not be in SSR
+// assign(Node.prototype, {
+//     appendChild(newChild: Node): Node {
+//         const appendedNode = appendChild.call(this, newChild);
+//         return callNodeSlot(appendedNode, ConnectingSlot);
+//     },
+//     insertBefore(newChild: Node, referenceNode: Node): Node {
+//         const insertedNode = insertBefore.call(this, newChild, referenceNode);
+//         return callNodeSlot(insertedNode, ConnectingSlot);
+//     },
+//     removeChild(oldChild: Node): Node {
+//         const removedNode = removeChild.call(this, oldChild);
+//         return callNodeSlot(removedNode, DisconnectingSlot);
+//     },
+//     replaceChild(newChild: Node, oldChild: Node): Node {
+//         const replacedNode = replaceChild.call(this, newChild, oldChild);
+//         callNodeSlot(replacedNode, DisconnectingSlot);
+//         callNodeSlot(newChild, ConnectingSlot);
+//         return replacedNode;
+//     },
+// });
 
 type ShadowDomMode = 'open' | 'closed';
 

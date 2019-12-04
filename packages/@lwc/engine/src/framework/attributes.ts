@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
-import { ElementPrototypeAriaPropertyNames } from '../polyfills/aria-properties/main';
+// import { ElementPrototypeAriaPropertyNames } from '../polyfills/aria-properties/main';
 import {
     assign,
     create,
@@ -152,14 +152,14 @@ const AttrNameToPropNameMap: Record<string, string> = create(null);
 const PropNameToAttrNameMap: Record<string, string> = create(null);
 
 // Synthetic creation of all AOM property descriptors for Custom Elements
-forEach.call(ElementPrototypeAriaPropertyNames, (propName: string) => {
-    // Typescript is inferring the wrong function type for this particular
-    // overloaded method: https://github.com/Microsoft/TypeScript/issues/27972
-    // @ts-ignore type-mismatch
-    const attrName = StringToLowerCase.call(StringReplace.call(propName, /^aria/, 'aria-'));
-    AttrNameToPropNameMap[attrName] = propName;
-    PropNameToAttrNameMap[propName] = attrName;
-});
+// forEach.call(ElementPrototypeAriaPropertyNames, (propName: string) => {
+//     // Typescript is inferring the wrong function type for this particular
+//     // overloaded method: https://github.com/Microsoft/TypeScript/issues/27972
+//     // @ts-ignore type-mismatch
+//     const attrName = StringToLowerCase.call(StringReplace.call(propName, /^aria/, 'aria-'));
+//     AttrNameToPropNameMap[attrName] = propName;
+//     PropNameToAttrNameMap[propName] = attrName;
+// });
 
 forEach.call(defaultDefHTMLPropertyNames, propName => {
     const attrName = StringToLowerCase.call(propName);

@@ -6,8 +6,8 @@
  */
 
 // Polyfills
-import '../polyfills/proxy-concat/main';
-import '../polyfills/aria-properties/main';
+// import '../polyfills/proxy-concat/main';
+// import '../polyfills/aria-properties/main';
 
 // TODO: #1296 - Revisit these exports and figure out a better separation
 export { createElement } from './upgrade';

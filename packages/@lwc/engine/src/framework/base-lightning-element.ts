@@ -39,12 +39,12 @@ import { ViewModelReflection, EmptyObject } from './utils';
 import { vmBeingConstructed, isBeingConstructed, isInvokingRender } from './invoker';
 import { getComponentVM, VM } from './vm';
 import { valueObserved, valueMutated } from '../libs/mutation-tracker';
-import { dispatchEvent } from '../env/dom';
+// import { dispatchEvent } from '../env/dom';
 import { patchComponentWithRestrictions, patchShadowRootWithRestrictions } from './restrictions';
 import { unlockAttribute, lockAttribute } from './attributes';
 import { Template, isUpdatingTemplate, getVMBeingRendered } from './template';
 
-const GlobalEvent = Event; // caching global reference to avoid poisoning
+// const GlobalEvent = Event; // caching global reference to avoid poisoning
 
 const { setHiddenField } = fields;
 
@@ -316,7 +316,9 @@ BaseLightningElementConstructor.prototype = {
                     )}: 1 argument required, but only 0 present.`
                 );
             }
-            if (!(event instanceof GlobalEvent)) {
+
+            // TODO: We need a way to get around this
+            if (!(event instanceof Event)) {
                 throw new Error(
                     `Failed to execute 'dispatchEvent' on ${getComponentAsString(
                         this
@@ -344,6 +346,9 @@ BaseLightningElementConstructor.prototype = {
                 );
             }
         }
+
+        // TODO: What to do with this in Node? We will need to implement event dispatching mechanism for SSR as well.
+        // Event's may be dispatched in `connectedCallback` or `render` life-cycle hook
         return dispatchEvent.call(elm, event);
     },
     addEventListener(

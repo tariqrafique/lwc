@@ -72,4 +72,5 @@ export function resolveCircularModuleDependency(fn: CircularModuleDependency): a
     return fn();
 }
 
-export const useSyntheticShadow = hasOwnProperty.call(Element.prototype, '$shadowToken$');
+// TODO: Make this a feature flag.
+export const useSyntheticShadow = true; // hasOwnProperty.call(Element.prototype, '$shadowToken$');

@@ -37,7 +37,7 @@ import {
 } from './utils';
 import { invokeServiceHook, Services } from './services';
 import { invokeComponentCallback } from './invoker';
-import { ShadowRootInnerHTMLSetter, ShadowRootHostGetter } from '../env/dom';
+// import { ShadowRootInnerHTMLSetter, ShadowRootHostGetter } from '../env/dom';
 
 import { VNodeData, VNodes, VCustomElement, VNode } from '../3rdparty/snabbdom/types';
 import { Template } from './template';
@@ -51,8 +51,8 @@ import {
     endGlobalMeasure,
     GlobalMeasurementPhase,
 } from './performance-timing';
-import { tagNameGetter } from '../env/element';
-import { parentElementGetter, parentNodeGetter } from '../env/node';
+// import { tagNameGetter } from '../env/element';
+// import { parentElementGetter, parentNodeGetter } from '../env/node';
 import { updateDynamicChildren, updateStaticChildren } from '../3rdparty/snabbdom/snabbdom';
 import { hasDynamicChildren } from './hooks';
 import { ReactiveObserver } from '../libs/mutation-tracker';
@@ -501,7 +501,9 @@ export function resetShadowRoot(vm: VM) {
         assert.isTrue(vm && 'cmpRoot' in vm, `${vm} is not a vm.`);
     }
     vm.children = EmptyArray;
-    ShadowRootInnerHTMLSetter.call(vm.cmpRoot, '');
+
+    // TODO: this is probably not needed but need to create an abstraction on top of this.
+    // ShadowRootInnerHTMLSetter.call(vm.cmpRoot, '');
     // disconnecting any known custom element inside the shadow of the this vm
     runShadowChildNodesDisconnectedCallback(vm);
 }
@@ -554,12 +556,13 @@ export function getErrorComponentStack(startingElement: Element): string {
     do {
         const currentVm: VM | undefined = getHiddenField(elm, ViewModelReflection);
         if (!isUndefined(currentVm)) {
-            const tagName = tagNameGetter.call(elm);
-            const is = elm.getAttribute('is');
-            ArrayPush.call(
-                wcStack,
-                `<${StringToLowerCase.call(tagName)}${is ? ' is="${is}' : ''}>`
-            );
+            // TODO: make it work without DOM
+            // const tagName = tagNameGetter.call(elm);
+            // const is = elm.getAttribute('is');
+            // ArrayPush.call(
+            //     wcStack,
+            //     `<${StringToLowerCase.call(tagName)}${is ? ' is="${is}' : ''}>`
+            // );
         }
         elm = getParentOrHostElement(elm);
     } while (!isNull(elm));
@@ -571,25 +574,31 @@ export function getErrorComponentStack(startingElement: Element): string {
  * the host of the shadow root to escape the shadow boundary.
  */
 function getParentOrHostElement(elm: Element): Element | null {
-    const parentElement = parentElementGetter.call(elm);
-    // If parentElement is a shadow root, find the host instead
-    return isNull(parentElement) ? getHostElement(elm) : parentElement;
+    return null;
+
+    // TODO: This need to be decoupled.
+    // const parentElement = parentElementGetter.call(elm);
+    // // If parentElement is a shadow root, find the host instead
+    // return isNull(parentElement) ? getHostElement(elm) : parentElement;
 }
 
 /**
  * Finds the host element, if it exists.
  */
 function getHostElement(elm: Element): Element | null {
-    if (process.env.NODE_ENV !== 'production') {
-        assert.isTrue(
-            isNull(parentElementGetter.call(elm)),
-            `getHostElement should only be called if the parent element of ${elm} is null`
-        );
-    }
-    const parentNode = parentNodeGetter.call(elm);
-    return parentNode instanceof ShadowRoot
-        ? ShadowRootHostGetter.call(parentNode as unknown)
-        : null;
+    return null;
+
+    // TODO: This need to be decoupled.
+    // if (process.env.NODE_ENV !== 'production') {
+    //     assert.isTrue(
+    //         isNull(parentElementGetter.call(elm)),
+    //         `getHostElement should only be called if the parent element of ${elm} is null`
+    //     );
+    // }
+    // const parentNode = parentNodeGetter.call(elm);
+    // return parentNode instanceof ShadowRoot
+    //     ? ShadowRootHostGetter.call(parentNode as unknown)
+    //     : null;
 }
 
 /**

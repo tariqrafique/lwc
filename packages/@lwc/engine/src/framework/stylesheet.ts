@@ -10,7 +10,7 @@ import { VNode } from '../3rdparty/snabbdom/types';
 import * as api from './api';
 import { EmptyArray, useSyntheticShadow } from './utils';
 import { VM } from './vm';
-import { removeAttribute, setAttribute } from '../env/element';
+// import { removeAttribute, setAttribute } from '../env/element';
 /**
  * Function producing style based on a host and a shadow selector. This function is invoked by
  * the engine with different values depending on the mode that the component is running on.
@@ -43,7 +43,8 @@ function getCachedStyleElement(styleContent: string): HTMLStyleElement {
     return fragment.cloneNode(true).firstChild as HTMLStyleElement;
 }
 
-const globalStyleParent = document.head || document.body || document;
+// TODO: Decouple
+const globalStyleParent = {} as any; // document.head || document.body || document;
 const InsertedGlobalStyleContent: Record<string, true> = create(null);
 
 function insertGlobalStyle(styleContent: string) {
@@ -78,7 +79,8 @@ export function resetStyleAttributes(vm: VM): void {
     // Remove the style attribute currently applied to the host element.
     const oldHostAttribute = context.hostAttribute;
     if (!isUndefined(oldHostAttribute)) {
-        removeAttribute.call(elm, oldHostAttribute);
+        // TODO: Use injected renderer
+        // removeAttribute.call(elm, oldHostAttribute);
     }
 
     // Reset the scoping attributes associated to the context.
@@ -90,8 +92,9 @@ export function resetStyleAttributes(vm: VM): void {
  */
 export function applyStyleAttributes(vm: VM, hostAttribute: string, shadowAttribute: string): void {
     const { context, elm } = vm;
+    // TODO: Use injected renderer
     // Remove the style attribute currently applied to the host element.
-    setAttribute.call(elm, hostAttribute, '');
+    // setAttribute.call(elm, hostAttribute, '');
 
     context.hostAttribute = hostAttribute;
     context.shadowAttribute = shadowAttribute;

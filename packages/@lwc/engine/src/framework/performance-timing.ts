@@ -6,7 +6,7 @@
  */
 import { isUndefined, StringToLowerCase } from '@lwc/shared';
 import { UninitializedVM } from './vm';
-import { tagNameGetter } from '../env/element';
+// import { tagNameGetter } from '../env/element';
 
 type MeasurementPhase =
     | 'constructor'
@@ -32,7 +32,9 @@ const isUserTimingSupported: boolean =
     typeof performance.clearMeasures === 'function';
 
 function getMarkName(phase: string, vm: UninitializedVM): string {
-    return `<${StringToLowerCase.call(tagNameGetter.call(vm.elm))} (${vm.idx})> - ${phase}`;
+    return '';
+    // TODO: Decouple
+    // return `<${StringToLowerCase.call(tagNameGetter.call(vm.elm))} (${vm.idx})> - ${phase}`;
 }
 
 function start(markName: string) {
