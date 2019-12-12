@@ -43,8 +43,6 @@ import { patchComponentWithRestrictions, patchShadowRootWithRestrictions } from 
 import { unlockAttribute, lockAttribute } from './attributes';
 import { Template, isUpdatingTemplate, getVMBeingRendered } from './template';
 
-const GlobalEvent = Event; // caching global reference to avoid poisoning
-
 /**
  * This operation is called with a descriptor of an standard html property
  * that a Custom Element can support (including AOM properties), which
@@ -306,13 +304,6 @@ BaseLightningElementConstructor.prototype = {
                     `Failed to execute 'dispatchEvent' on ${getComponentAsString(
                         this
                     )}: 1 argument required, but only 0 present.`
-                );
-            }
-            if (!(event instanceof GlobalEvent)) {
-                throw new Error(
-                    `Failed to execute 'dispatchEvent' on ${getComponentAsString(
-                        this
-                    )}: parameter 1 is not of type 'Event'.`
                 );
             }
 
