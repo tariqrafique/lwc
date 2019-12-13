@@ -27,6 +27,8 @@ import { patchCustomElementWithRestrictions } from './restrictions';
 import { GlobalMeasurementPhase, startGlobalMeasure, endGlobalMeasure } from './performance-timing';
 // import { appendChild, insertBefore, replaceChild, removeChild } from '../env/node';
 
+import renderer from '../renderer/main';
+
 const { createFieldName, getHiddenField, setHiddenField } = fields;
 const ConnectingSlot = createFieldName('connecting', 'engine');
 const DisconnectingSlot = createFieldName('disconnecting', 'engine');
@@ -106,7 +108,7 @@ export function createElement(sel: string, options: CreateElementOptions): HTMLE
     const mode = options.mode !== 'closed' ? 'open' : 'closed';
 
     // Create element with correct tagName
-    const element = document.createElement(sel);
+    const element = renderer.createElement(sel);
     if (!isUndefined(getHiddenField(element, ViewModelReflection))) {
         // There is a possibility that a custom element is registered under tagName,
         // in which case, the initialization is already carry on, and there is nothing else

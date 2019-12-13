@@ -1,5 +1,10 @@
-const { LightningElement } = require('./dist/engine.cjs');
+const { LightningElement, createElement } = require('./dist/engine.cjs');
 
-class Test extends LightningElement {}
+class Test extends LightningElement {
+    constructor() {
+        super();
+        console.log(this.getAttribute('foo'));
+    }
+}
 
-new Test();
+const elm = createElement('x-test', { is: Test });

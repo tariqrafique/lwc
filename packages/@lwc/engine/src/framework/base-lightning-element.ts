@@ -44,6 +44,8 @@ import { patchComponentWithRestrictions, patchShadowRootWithRestrictions } from 
 import { unlockAttribute, lockAttribute } from './attributes';
 import { Template, isUpdatingTemplate, getVMBeingRendered } from './template';
 
+import renderer from '../renderer/main';
+
 // const GlobalEvent = Event; // caching global reference to avoid poisoning
 
 const { setHiddenField } = fields;
@@ -256,13 +258,13 @@ function BaseLightningElementConstructor(this: LightningElement) {
     if (isNull(vmBeingConstructed)) {
         throw new ReferenceError();
     }
-    if (process.env.NODE_ENV !== 'production') {
-        assert.isTrue('cmpProps' in vmBeingConstructed, `${vmBeingConstructed} is not a vm.`);
-        assert.invariant(
-            vmBeingConstructed.elm instanceof HTMLElement,
-            `Component creation requires a DOM element to be associated to ${vmBeingConstructed}.`
-        );
-    }
+    // if (process.env.NODE_ENV !== 'production') {
+    //     assert.isTrue('cmpProps' in vmBeingConstructed, `${vmBeingConstructed} is not a vm.`);
+    //     assert.invariant(
+    //         vmBeingConstructed.elm instanceof HTMLElement,
+    //         `Component creation requires a DOM element to be associated to ${vmBeingConstructed}.`
+    //     );
+    // }
     const vm = vmBeingConstructed;
     const {
         elm,
@@ -287,7 +289,7 @@ function BaseLightningElementConstructor(this: LightningElement) {
         mode,
         delegatesFocus: !!ctor.delegatesFocus,
     };
-    const cmpRoot = elm.attachShadow(shadowRootOptions);
+    const cmpRoot = renderer.attachShadow(elm);
     // linking elm, shadow root and component with the VM
     setHiddenField(component, ViewModelReflection, vm);
     setHiddenField(cmpRoot, ViewModelReflection, vm);

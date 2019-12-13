@@ -68,6 +68,8 @@ import { Services, invokeServiceHook } from './services';
 import { markNodeFromVNode } from './restrictions';
 import { isComponentConstructor } from './def';
 
+import renderer from '../renderer/main';
+
 export interface ElementCompilerData extends VNodeData {
     key: Key;
 }
@@ -104,7 +106,7 @@ const SymbolIterator = Symbol.iterator;
 
 const TextHook: Hooks = {
     create: (vnode: VNode) => {
-        vnode.elm = document.createTextNode(vnode.text as string);
+        vnode.elm = renderer.createTextNode(vnode.text as string);
         linkNodeToShadow(vnode);
         if (process.env.NODE_ENV !== 'production') {
             markNodeFromVNode(vnode.elm as Node);
@@ -143,8 +145,8 @@ const ElementHook: Hooks = {
         // via a vnode this is used for style tags for native shadow
         if (isUndefined(clonedElement)) {
             vnode.elm = isUndefined(ns)
-                ? document.createElement(sel)
-                : document.createElementNS(ns, sel);
+                ? renderer.createElement(sel)
+                : renderer.createElementNS(ns, sel);
         } else {
             vnode.elm = clonedElement;
         }
@@ -175,7 +177,7 @@ const ElementHook: Hooks = {
 const CustomElementHook: Hooks = {
     create: (vnode: VCustomElement) => {
         const { sel } = vnode;
-        vnode.elm = document.createElement(sel);
+        vnode.elm = renderer.createElement(sel);
         linkNodeToShadow(vnode);
         if (process.env.NODE_ENV !== 'production') {
             markNodeFromVNode(vnode.elm as Element);

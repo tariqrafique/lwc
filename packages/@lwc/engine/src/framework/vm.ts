@@ -211,12 +211,12 @@ export interface CreateVMInit {
 }
 
 export function createVM(elm: HTMLElement, Ctor: ComponentConstructor, options: CreateVMInit) {
-    if (process.env.NODE_ENV !== 'production') {
-        assert.invariant(
-            elm instanceof HTMLElement,
-            `VM creation requires a DOM element instead of ${elm}.`
-        );
-    }
+    // if (process.env.NODE_ENV !== 'production') {
+    //     assert.invariant(
+    //         elm instanceof HTMLElement,
+    //         `VM creation requires a DOM element instead of ${elm}.`
+    //     );
+    // }
     const def = getComponentDef(Ctor);
     const { isRoot, mode, owner } = options;
     idx += 1;
