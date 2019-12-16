@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
-import { defineProperties } from '@lwc/shared';
+import { defineProperties, isFunction, isNull, isObject } from '@lwc/shared';
 import {
     windowRemoveEventListener as nativeWindowRemoveEventListener,
     windowAddEventListener as nativeWindowAddEventListener,
@@ -17,46 +17,45 @@ import { eventTargetGetter } from '../../env/dom';
 import { patchEvent } from '../../faux-shadow/events';
 import { isNodeDeepShadowed } from '../../faux-shadow/node';
 
+type EventListenerWrapper = EventListener & {
+    $$lwcEventWrapper$$: EventListener;
+};
+
 function doesEventNeedsPatch(e: Event): boolean {
     const originalTarget = eventTargetGetter.call(e);
     return originalTarget instanceof Node && isNodeDeepShadowed(originalTarget);
 }
 
 function isValidEventListener(listener: EventListenerOrEventListenerObject): boolean {
-    if (handlerType !== 'function' && handlerType !== 'object') {
-        return false;
-    }
-
-    if (
-        handlerType === 'object' &&
-        (!listener.handleEvent || typeof listener.handleEvent !== 'function')
-    ) {
-        return false;
-    }
-
-    return true;
+    return (
+        isFunction(listener) ||
+        (!isNull(listener) && isObject(listener) && isFunction(listener.handleEvent))
+    );
 }
 
-function getEventListenerWrapper(fnOrObj: EventListenerOrEventListenerObject): EventListener {
-    let wrapperFn: EventListener | null = null;
-    try {
-        wrapperFn = fnOrObj.$$lwcEventWrapper$$;
-        if (!wrapperFn) {
-            const isHandlerFunction = typeof fnOrObj === 'function';
-            wrapperFn = fnOrObj.$$lwcEventWrapper$$ = function(this: EventTarget, e: Event) {
-                // we don't want to patch every event, only when the original target is coming
-                // from inside a synthetic shadow
-                if (doesEventNeedsPatch(e)) {
-                    patchEvent(e);
-                }
-                return isHandlerFunction
-                    ? fnOrObj.call(this, e)
-                    : fnOrObj.handleEvent && fnOrObj.handleEvent(e);
-            };
-        }
-    } catch (e) {
-        /** ignore */
+function getEventListenerWrapper(
+    listener: EventListenerOrEventListenerObject | EventListenerWrapper
+): EventListener {
+    if ('$$lwcEventWrapper$$' in listener) {
+        return listener.$$lwcEventWrapper$$;
     }
+
+    const isHandlerFunction = isFunction(listener);
+    const wrapperFn = ((listener as EventListenerWrapper).$$lwcEventWrapper$$ = function(
+        this: EventTarget,
+        e: Event
+    ) {
+        // we don't want to patch every event, only when the original target is coming
+        // from inside a synthetic shadow
+        if (doesEventNeedsPatch(e)) {
+            patchEvent(e);
+        }
+        return isHandlerFunction
+            ? (listener as EventListener).call(this, e)
+            : (listener as EventListenerObject).handleEvent &&
+                  (listener as EventListenerObject).handleEvent(e);
+    });
+
     return wrapperFn;
 }
 
@@ -80,6 +79,10 @@ function windowRemoveEventListener(
     listener: EventListenerOrEventListenerObject,
     optionsOrCapture?: boolean | EventListenerOptions
 ) {
+    if (!isValidEventListener(listener)) {
+        return;
+    }
+
     const wrapperFn = getEventListenerWrapper(listener);
     nativeWindowRemoveEventListener.call(this, type, wrapperFn || listener, optionsOrCapture);
 }
@@ -104,6 +107,10 @@ function removeEventListener(
     listener: EventListenerOrEventListenerObject,
     optionsOrCapture?: boolean | EventListenerOptions
 ) {
+    if (!isValidEventListener(listener)) {
+        return;
+    }
+
     const wrapperFn = getEventListenerWrapper(listener);
     nativeRemoveEventListener.call(this, type, wrapperFn || listener, optionsOrCapture);
 }

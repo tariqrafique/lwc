@@ -36,7 +36,7 @@ import { arrayFromCollection } from '../shared/utils';
 // "Registered observers in a node’s registered observer list have a weak
 // reference to the node."
 // https://dom.spec.whatwg.org/#garbage-collection
-let observer;
+let observer: MutationObserver | undefined;
 
 const { createFieldName, getHiddenField, setHiddenField } = fields;
 const observerConfig: MutationObserverInit = { childList: true };

@@ -41,7 +41,7 @@ StaticNodeList.prototype = create(NodeList.prototype, {
         writable: true,
         enumerable: true,
         configurable: true,
-        value(cb, thisArg) {
+        value(cb: (value: Node, key: number, parent: Node[]) => void, thisArg?: any) {
             forEach.call(getHiddenField(this, Items), cb, thisArg);
         },
     },
@@ -50,7 +50,7 @@ StaticNodeList.prototype = create(NodeList.prototype, {
         enumerable: true,
         configurable: true,
         value() {
-            return ArrayMap.call(getHiddenField(this, Items), (v: any, i: number) => [i, v]);
+            return ArrayMap.call(getHiddenField(this, Items), (v, i) => [i, v]);
         },
     },
     keys: {
@@ -58,7 +58,7 @@ StaticNodeList.prototype = create(NodeList.prototype, {
         enumerable: true,
         configurable: true,
         value() {
-            return ArrayMap.call(getHiddenField(this, Items), (v: any, i: number) => i);
+            return ArrayMap.call(getHiddenField(this, Items), (_v, i) => i);
         },
     },
     values: {

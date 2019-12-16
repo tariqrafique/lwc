@@ -48,7 +48,6 @@ import { innerHTMLSetter } from '../env/element';
 import { getOwnerDocument } from '../shared/utils';
 
 const { getHiddenField, setHiddenField, createFieldName } = fields;
-const ShadowRootResolverKey = '$shadowResolver$';
 const InternalSlot = createFieldName('shadowRecord', 'synthetic-shadow');
 const { createDocumentFragment } = document;
 
@@ -66,16 +65,18 @@ function getInternalSlot(root: SyntheticShadowRootInterface | Element): ShadowRo
     }
     return record;
 }
+
+const ShadowRootResolverKey = '$shadowResolver$';
 const ShadowResolverPrivateKey = '$$ShadowResolverKey$$';
 
 defineProperty(Node.prototype, ShadowRootResolverKey, {
     set(this: Node, fn: ShadowRootResolver) {
-        this[ShadowResolverPrivateKey] = fn;
+        (this as any)[ShadowResolverPrivateKey] = fn;
         // TODO [#1164]: temporary propagation of the key
         setNodeOwnerKey(this, (fn as any).nodeKey);
     },
     get(this: Node): string | undefined {
-        return this[ShadowResolverPrivateKey];
+        return (this as any)[ShadowResolverPrivateKey];
     },
     configurable: true,
     enumerable: true,
@@ -87,11 +88,11 @@ defineProperty(Node.prototype, ShadowRootResolverKey, {
 export type ShadowRootResolver = () => ShadowRoot;
 
 export function getShadowRootResolver(node: Node): undefined | ShadowRootResolver {
-    return node[ShadowRootResolverKey];
+    return (node as any)[ShadowRootResolverKey];
 }
 
 export function setShadowRootResolver(node: Node, fn: ShadowRootResolver) {
-    node[ShadowRootResolverKey] = fn;
+    (node as any)[ShadowRootResolverKey] = fn;
 }
 
 export function isDelegatingFocus(host: HTMLElement): boolean {
