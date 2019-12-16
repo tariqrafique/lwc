@@ -22,7 +22,22 @@ function doesEventNeedsPatch(e: Event): boolean {
     return originalTarget instanceof Node && isNodeDeepShadowed(originalTarget);
 }
 
-function getEventListenerWrapper(fnOrObj): EventListener | null {
+function isValidEventListener(listener: EventListenerOrEventListenerObject): boolean {
+    if (handlerType !== 'function' && handlerType !== 'object') {
+        return false;
+    }
+
+    if (
+        handlerType === 'object' &&
+        (!listener.handleEvent || typeof listener.handleEvent !== 'function')
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+function getEventListenerWrapper(fnOrObj: EventListenerOrEventListenerObject): EventListener {
     let wrapperFn: EventListener | null = null;
     try {
         wrapperFn = fnOrObj.$$lwcEventWrapper$$;
@@ -45,48 +60,52 @@ function getEventListenerWrapper(fnOrObj): EventListener | null {
     return wrapperFn;
 }
 
-function windowAddEventListener(this: EventTarget, type, fnOrObj, optionsOrCapture) {
-    const handlerType = typeof fnOrObj;
-    // bail if `fnOrObj` is not a function, not an object
-    if (handlerType !== 'function' && handlerType !== 'object') {
+function windowAddEventListener(
+    this: EventTarget,
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    optionsOrCapture?: boolean | EventListenerOptions
+) {
+    if (!isValidEventListener(listener)) {
         return;
     }
-    // bail if `fnOrObj` is an object without a `handleEvent` method
-    if (
-        handlerType === 'object' &&
-        (!fnOrObj.handleEvent || typeof fnOrObj.handleEvent !== 'function')
-    ) {
-        return;
-    }
-    const wrapperFn = getEventListenerWrapper(fnOrObj);
-    nativeWindowAddEventListener.call(this, type, wrapperFn as EventListener, optionsOrCapture);
+
+    const wrapperFn = getEventListenerWrapper(listener);
+    nativeWindowAddEventListener.call(this, type, wrapperFn, optionsOrCapture);
 }
 
-function windowRemoveEventListener(this: EventTarget, type, fnOrObj, optionsOrCapture) {
-    const wrapperFn = getEventListenerWrapper(fnOrObj);
-    nativeWindowRemoveEventListener.call(this, type, wrapperFn || fnOrObj, optionsOrCapture);
+function windowRemoveEventListener(
+    this: EventTarget,
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    optionsOrCapture?: boolean | EventListenerOptions
+) {
+    const wrapperFn = getEventListenerWrapper(listener);
+    nativeWindowRemoveEventListener.call(this, type, wrapperFn || listener, optionsOrCapture);
 }
 
-function addEventListener(this: EventTarget, type, fnOrObj, optionsOrCapture) {
-    const handlerType = typeof fnOrObj;
-    // bail if `fnOrObj` is not a function, not an object
-    if (handlerType !== 'function' && handlerType !== 'object') {
+function addEventListener(
+    this: EventTarget,
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    optionsOrCapture?: boolean | EventListenerOptions
+) {
+    if (!isValidEventListener(listener)) {
         return;
     }
-    // bail if `fnOrObj` is an object without a `handleEvent` method
-    if (
-        handlerType === 'object' &&
-        (!fnOrObj.handleEvent || typeof fnOrObj.handleEvent !== 'function')
-    ) {
-        return;
-    }
-    const wrapperFn = getEventListenerWrapper(fnOrObj);
-    nativeAddEventListener.call(this, type, wrapperFn as EventListener, optionsOrCapture);
+
+    const wrapperFn = getEventListenerWrapper(listener);
+    nativeAddEventListener.call(this, type, wrapperFn, optionsOrCapture);
 }
 
-function removeEventListener(this: EventTarget, type, fnOrObj, optionsOrCapture) {
-    const wrapperFn = getEventListenerWrapper(fnOrObj);
-    nativeRemoveEventListener.call(this, type, wrapperFn || fnOrObj, optionsOrCapture);
+function removeEventListener(
+    this: EventTarget,
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    optionsOrCapture?: boolean | EventListenerOptions
+) {
+    const wrapperFn = getEventListenerWrapper(listener);
+    nativeRemoveEventListener.call(this, type, wrapperFn || listener, optionsOrCapture);
 }
 
 // TODO [#1305]: these patches should be on EventTarget.prototype instead of win and node prototypes
@@ -95,7 +114,6 @@ window.addEventListener = windowAddEventListener;
 window.removeEventListener = windowRemoveEventListener;
 
 // IE11 doesn't have EventTarget, so we have to patch it conditionally:
-
 const protoToBePatched =
     typeof EventTarget !== 'undefined' ? EventTarget.prototype : Node.prototype;
 

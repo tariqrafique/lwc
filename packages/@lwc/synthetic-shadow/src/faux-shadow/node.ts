@@ -44,10 +44,15 @@ import { getShadowRoot, isHostElement, getIE11FakeShadowRootPlaceholder } from '
 import { createStaticNodeList } from '../shared/static-node-list';
 import { isGlobalPatchingSkipped } from '../shared/utils';
 
-// DO NOT CHANGE this:
-// these two values need to be in sync with engine
-const OwnerKey = '$$OwnerKey$$';
 const OwnKey = '$$OwnKey$$';
+const OwnerKey = '$$OwnerKey$$';
+
+declare global {
+    interface Node {
+        $$OwnKey$$?: number;
+        $$OwnerKey$$?: number;
+    }
+}
 
 export const hasNativeSymbolsSupport = Symbol('x').toString() === 'Symbol(x)';
 
@@ -485,10 +490,9 @@ export const getInternalChildNodes =
     process.env.NODE_ENV !== 'production' && isFalse(hasNativeSymbolsSupport)
         ? function(node: Node): NodeListOf<ChildNode> {
               internalChildNodeAccessorFlag = true;
-              let childNodes;
               let error = null;
               try {
-                  childNodes = node.childNodes;
+                  return node.childNodes;
               } catch (e) {
                   // childNodes accessor should never throw, but just in case!
                   error = e;
@@ -499,7 +503,6 @@ export const getInternalChildNodes =
                       throw error; // eslint-disable-line no-unsafe-finally
                   }
               }
-              return childNodes;
           }
         : function(node: Node): NodeListOf<ChildNode> {
               return node.childNodes;
