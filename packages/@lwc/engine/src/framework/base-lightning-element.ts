@@ -294,7 +294,7 @@ function BaseLightningElementConstructor(this: LightningElement) {
 // HTML Element - The Good Parts
 BaseLightningElementConstructor.prototype = {
     constructor: BaseLightningElementConstructor,
-    dispatchEvent(): boolean {
+    dispatchEvent(_event: Event): boolean {
         const elm = getLinkedElement(this);
         // Typescript does not like it when you treat the `arguments` object as an array
         // @ts-ignore type-mismatch;

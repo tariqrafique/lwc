@@ -21,6 +21,7 @@ import {
     toString,
     isString,
     isObject,
+    isNull,
 } from '@lwc/shared';
 import { logError } from '../shared/assert';
 import { LightningElement } from './base-lightning-element';
@@ -409,7 +410,7 @@ function getLightningElementPrototypeRestrictionsDescriptors(
                     )} because no one is listening just yet.`
                 );
 
-                if (isObject(event)) {
+                if (!isNull(event) && isObject(event)) {
                     const { type } = event;
 
                     if (isString(type) && !/^[a-z][a-z0-9_]*$/.test(type)) {
