@@ -389,7 +389,7 @@ function getComponentRestrictionsDescriptors(): PropertyDescriptorMap {
 }
 
 function getLightningElementPrototypeRestrictionsDescriptors(
-    proto: LightningElement
+    proto: typeof LightningElement.prototype
 ): PropertyDescriptorMap {
     if (process.env.NODE_ENV === 'production') {
         // this method should never leak to prod
@@ -491,6 +491,8 @@ export function patchComponentWithRestrictions(cmp: ComponentInterface) {
     defineProperties(cmp, getComponentRestrictionsDescriptors());
 }
 
-export function patchLightningElementPrototypeWithRestrictions(proto: LightningElement) {
+export function patchLightningElementPrototypeWithRestrictions(
+    proto: typeof LightningElement.prototype
+) {
     defineProperties(proto, getLightningElementPrototypeRestrictionsDescriptors(proto));
 }
