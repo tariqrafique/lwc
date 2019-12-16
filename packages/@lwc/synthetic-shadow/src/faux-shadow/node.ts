@@ -210,7 +210,7 @@ function containsPatched(this: Node, otherNode: Node) {
     return (compareDocumentPosition.call(this, otherNode) & DOCUMENT_POSITION_CONTAINED_BY) !== 0;
 }
 
-function cloneNodePatched(this: Node, deep: boolean): Node {
+function cloneNodePatched(this: Node, deep?: boolean): Node {
     const clone = nativeCloneNode.call(this, false);
 
     // Per spec, browsers only care about truthy values
@@ -230,7 +230,7 @@ function cloneNodePatched(this: Node, deep: boolean): Node {
 /**
  * This method only applies to elements with a shadow or slots
  */
-function childNodesGetterPatched(this: Node): NodeListOf<Node & Element> {
+function childNodesGetterPatched(this: Node): NodeListOf<Node> {
     if (this instanceof Element && isHostElement(this)) {
         const owner = getNodeOwner(this);
         const childNodes = isNull(owner) ? [] : getAllMatches(owner, getFilteredChildNodes(this));
@@ -380,7 +380,7 @@ defineProperties(Node.prototype, {
         configurable: true,
     },
     childNodes: {
-        get(this: Node): NodeListOf<Node & Element> {
+        get(this: Node): NodeListOf<Node> {
             if (hasMountedChildren(this)) {
                 return childNodesGetterPatched.call(this);
             }

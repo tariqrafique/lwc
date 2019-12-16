@@ -7,7 +7,7 @@
 import { ArrayMap, create, defineProperty, fields, forEach, setPrototypeOf } from '@lwc/shared';
 const { createFieldName, getHiddenField, setHiddenField } = fields;
 
-const Items = createFieldName('items');
+const Items = createFieldName('StaticHTMLCollection', 'items');
 
 function isValidHTMLCollectionName(name) {
     return name !== 'length' && isNaN(name);

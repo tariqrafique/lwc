@@ -3,9 +3,7 @@
 
     "compilerOptions": {
         "noImplicitAny": false,
-        "outDir": "types",
-        "allowJs": true,
-        "declaration": false
+        "outDir": "types"
     },
 
     "include": ["src/"]

@@ -153,7 +153,7 @@ defineProperties(HTMLSlotElement.prototype, {
         configurable: true,
     },
     childNodes: {
-        get(this: HTMLSlotElement): NodeListOf<Node & Element> {
+        get(this: HTMLSlotElement): NodeListOf<Node> {
             if (isNodeShadowed(this)) {
                 const owner = getNodeOwner(this);
                 const childNodes = isNull(owner)
