@@ -401,7 +401,7 @@ function getLightningElementPrototypeRestrictionsDescriptors(
     const descriptors = {
         dispatchEvent: generateDataDescriptor({
             value(this: LightningElement, event: Event): boolean {
-                const vm = getComponentVM(this);
+                const vm = getAssociatedVM(this);
 
                 assert.isFalse(
                     isBeingConstructed(vm),
