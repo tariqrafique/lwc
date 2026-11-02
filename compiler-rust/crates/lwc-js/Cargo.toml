@@ -1,0 +1,9 @@
+[package]
+name = "lwc-js"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lwc-shared = { path = "../lwc-shared" }
+oxc = { version = "0.156", features = ["ast_visit", "codegen", "transformer", "semantic"] }
+oxc_sourcemap = "9.0.0"

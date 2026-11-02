@@ -1,0 +1,102 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/dynamic/dynamic.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dynamic.css",
+        "./dynamic.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-32cmakp1ss8",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/dynamic/dynamic.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dynamic.html",
+        "x/static"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-dynamic",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/static/static.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./static.css",
+        "./static.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-548g1ondp5s",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/static/static.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./static.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-static",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

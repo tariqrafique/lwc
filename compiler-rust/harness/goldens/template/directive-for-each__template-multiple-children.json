@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./template-multiple-children.css",
+    "./template-multiple-children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4phdsojc879",
+    "lwc-4phdsojc879-host",
+    "x-template-multiple-children_template-multiple-children",
+    "x-template-multiple-children_template-multiple-children-host"
+  ]
+}

@@ -1,0 +1,372 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-sibling-static.css",
+   "./inline-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1mpsc4up5i6",
+   "lwc-1mpsc4up5i6-host",
+   "x-inline-sibling-static_inline-sibling-static",
+   "x-inline-sibling-static_inline-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1mpsc4up5i6"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-sibling-static.css",
+   "./inline-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1mpsc4up5i6",
+   "lwc-1mpsc4up5i6-host",
+   "x-inline-sibling-static_inline-sibling-static",
+   "x-inline-sibling-static_inline-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-inline-sibling-static_inline-sibling-static"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-sibling-static.css",
+   "./inline-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1mpsc4up5i6",
+   "lwc-1mpsc4up5i6-host",
+   "x-inline-sibling-static_inline-sibling-static",
+   "x-inline-sibling-static_inline-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-inline-sibling-static_inline-sibling-static"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-sibling-static.css",
+   "./inline-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1mpsc4up5i6",
+   "lwc-1mpsc4up5i6-host",
+   "x-inline-sibling-static_inline-sibling-static",
+   "x-inline-sibling-static_inline-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1mpsc4up5i6"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-sibling-static.css",
+   "./inline-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1mpsc4up5i6",
+   "lwc-1mpsc4up5i6-host",
+   "x-inline-sibling-static_inline-sibling-static",
+   "x-inline-sibling-static_inline-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1mpsc4up5i6"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-sibling-static.css",
+   "./inline-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1mpsc4up5i6",
+   "lwc-1mpsc4up5i6-host",
+   "x-inline-sibling-static_inline-sibling-static",
+   "x-inline-sibling-static_inline-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1mpsc4up5i6"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-sibling-static.css",
+   "./inline-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1mpsc4up5i6",
+   "lwc-1mpsc4up5i6-host",
+   "x-inline-sibling-static_inline-sibling-static",
+   "x-inline-sibling-static_inline-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1mpsc4up5i6"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-sibling-static.css",
+   "./inline-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1mpsc4up5i6",
+   "lwc-1mpsc4up5i6-host",
+   "x-inline-sibling-static_inline-sibling-static",
+   "x-inline-sibling-static_inline-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1mpsc4up5i6"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-sibling-static.css",
+   "./inline-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1mpsc4up5i6",
+   "lwc-1mpsc4up5i6-host",
+   "x-inline-sibling-static_inline-sibling-static",
+   "x-inline-sibling-static_inline-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1mpsc4up5i6"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-sibling-static.css",
+   "./inline-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1mpsc4up5i6",
+   "lwc-1mpsc4up5i6-host",
+   "x-inline-sibling-static_inline-sibling-static",
+   "x-inline-sibling-static_inline-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1mpsc4up5i6"
+  }
+ }
+}

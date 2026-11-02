@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./menuitem.css",
+   "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-c8rrcpliua",
+   "lwc-c8rrcpliua-host",
+   "x-menuitem_menuitem",
+   "x-menuitem_menuitem-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<menu${3}><menuitem label=\"my-menuitem\"${3}></menu>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c8rrcpliua"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./menuitem.css",
+   "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-c8rrcpliua",
+   "lwc-c8rrcpliua-host",
+   "x-menuitem_menuitem",
+   "x-menuitem_menuitem-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<menu${3}><menuitem label=\"my-menuitem\"${3}></menu>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-menuitem_menuitem"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./menuitem.css",
+   "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-c8rrcpliua",
+   "lwc-c8rrcpliua-host",
+   "x-menuitem_menuitem",
+   "x-menuitem_menuitem-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<menu${3}><menuitem label=\"my-menuitem\"${3}></menu>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-menuitem_menuitem"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./menuitem.css",
+   "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-c8rrcpliua",
+   "lwc-c8rrcpliua-host",
+   "x-menuitem_menuitem",
+   "x-menuitem_menuitem-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<menu${3}><menuitem label=\"my-menuitem\"${3}></menu>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c8rrcpliua"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./menuitem.css",
+   "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-c8rrcpliua",
+   "lwc-c8rrcpliua-host",
+   "x-menuitem_menuitem",
+   "x-menuitem_menuitem-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<menu${3}><menuitem label=\"my-menuitem\"${3}></menu>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c8rrcpliua"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./menuitem.css",
+   "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-c8rrcpliua",
+   "lwc-c8rrcpliua-host",
+   "x-menuitem_menuitem",
+   "x-menuitem_menuitem-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<menu${3}><menuitem label=\"my-menuitem\"${3}></menu>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c8rrcpliua"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./menuitem.css",
+   "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-c8rrcpliua",
+   "lwc-c8rrcpliua-host",
+   "x-menuitem_menuitem",
+   "x-menuitem_menuitem-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<menu${3}><menuitem label=\"my-menuitem\"${3}></menu>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c8rrcpliua"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./menuitem.css",
+   "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-c8rrcpliua",
+   "lwc-c8rrcpliua-host",
+   "x-menuitem_menuitem",
+   "x-menuitem_menuitem-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<menu${3}><menuitem label=\"my-menuitem\"${3}></menu>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c8rrcpliua"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./menuitem.css",
+   "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-c8rrcpliua",
+   "lwc-c8rrcpliua-host",
+   "x-menuitem_menuitem",
+   "x-menuitem_menuitem-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<menu${3}><menuitem label=\"my-menuitem\"${3}></menu>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c8rrcpliua"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./menuitem.css",
+   "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-c8rrcpliua",
+   "lwc-c8rrcpliua-host",
+   "x-menuitem_menuitem",
+   "x-menuitem_menuitem-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<menu${3}><menuitem label=\"my-menuitem\"${3}></menu>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c8rrcpliua"
+  }
+ }
+}

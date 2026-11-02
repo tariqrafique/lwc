@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./identifier.css",
+    "./identifier.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3fopfkgu5fe",
+    "lwc-3fopfkgu5fe-host",
+    "x-identifier_identifier",
+    "x-identifier_identifier-host"
+  ]
+}

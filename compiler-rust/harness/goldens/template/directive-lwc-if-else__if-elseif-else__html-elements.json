@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./html-elements.css",
+    "./html-elements.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5n98hcrisnv",
+    "lwc-5n98hcrisnv-host",
+    "x-html-elements_html-elements",
+    "x-html-elements_html-elements-host"
+  ]
+}

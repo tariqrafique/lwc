@@ -1,0 +1,352 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./directive-if.css",
+   "./directive-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6a2nu6tldoq",
+   "lwc-6a2nu6tldoq-host",
+   "x-directive-if_directive-if",
+   "x-directive-if_directive-if-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>true branch</p>",
+   "parseFragment:<p${3}>false branch</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6a2nu6tldoq"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./directive-if.css",
+   "./directive-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6a2nu6tldoq",
+   "lwc-6a2nu6tldoq-host",
+   "x-directive-if_directive-if",
+   "x-directive-if_directive-if-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>true branch</p>",
+   "parseFragment:<p${3}>false branch</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-directive-if_directive-if"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./directive-if.css",
+   "./directive-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6a2nu6tldoq",
+   "lwc-6a2nu6tldoq-host",
+   "x-directive-if_directive-if",
+   "x-directive-if_directive-if-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>true branch</p>",
+   "parseFragment:<p${3}>false branch</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-directive-if_directive-if"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./directive-if.css",
+   "./directive-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6a2nu6tldoq",
+   "lwc-6a2nu6tldoq-host",
+   "x-directive-if_directive-if",
+   "x-directive-if_directive-if-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>true branch</p>",
+   "parseFragment:<p${3}>false branch</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6a2nu6tldoq"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./directive-if.css",
+   "./directive-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6a2nu6tldoq",
+   "lwc-6a2nu6tldoq-host",
+   "x-directive-if_directive-if",
+   "x-directive-if_directive-if-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>true branch</p>",
+   "parseFragment:<p${3}>false branch</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6a2nu6tldoq"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./directive-if.css",
+   "./directive-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6a2nu6tldoq",
+   "lwc-6a2nu6tldoq-host",
+   "x-directive-if_directive-if",
+   "x-directive-if_directive-if-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>true branch</p>",
+   "parseFragment:<p${3}>false branch</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6a2nu6tldoq"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./directive-if.css",
+   "./directive-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6a2nu6tldoq",
+   "lwc-6a2nu6tldoq-host",
+   "x-directive-if_directive-if",
+   "x-directive-if_directive-if-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>true branch</p>",
+   "parseFragment:<p${3}>false branch</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6a2nu6tldoq"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./directive-if.css",
+   "./directive-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6a2nu6tldoq",
+   "lwc-6a2nu6tldoq-host",
+   "x-directive-if_directive-if",
+   "x-directive-if_directive-if-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>true branch</p>",
+   "parseFragment:<p${3}>false branch</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6a2nu6tldoq"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./directive-if.css",
+   "./directive-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6a2nu6tldoq",
+   "lwc-6a2nu6tldoq-host",
+   "x-directive-if_directive-if",
+   "x-directive-if_directive-if-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>true branch</p>",
+   "parseFragment:<p${3}>false branch</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6a2nu6tldoq"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./directive-if.css",
+   "./directive-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6a2nu6tldoq",
+   "lwc-6a2nu6tldoq-host",
+   "x-directive-if_directive-if",
+   "x-directive-if_directive-if-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>true branch</p>",
+   "parseFragment:<p${3}>false branch</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6a2nu6tldoq"
+  }
+ }
+}

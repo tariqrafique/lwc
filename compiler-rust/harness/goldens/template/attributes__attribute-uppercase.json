@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-uppercase.css",
+    "./attribute-uppercase.scoped.css?scoped=true",
+    "x/button"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-uguh0pjd13",
+    "lwc-uguh0pjd13-host",
+    "x-attribute-uppercase_attribute-uppercase",
+    "x-attribute-uppercase_attribute-uppercase-host"
+  ]
+}

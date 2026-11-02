@@ -1,0 +1,582 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-id-in-iteration.css",
+   "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-41g515g6rr7",
+   "lwc-41g515g6rr7-host",
+   "x-static-id-in-iteration_static-id-in-iteration",
+   "x-static-id-in-iteration_static-id-in-iteration-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>",
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-41g515g6rr7"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-id-in-iteration.css",
+   "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-41g515g6rr7",
+   "lwc-41g515g6rr7-host",
+   "x-static-id-in-iteration_static-id-in-iteration",
+   "x-static-id-in-iteration_static-id-in-iteration-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>",
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-static-id-in-iteration_static-id-in-iteration"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-id-in-iteration.css",
+   "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-41g515g6rr7",
+   "lwc-41g515g6rr7-host",
+   "x-static-id-in-iteration_static-id-in-iteration",
+   "x-static-id-in-iteration_static-id-in-iteration-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>",
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-static-id-in-iteration_static-id-in-iteration"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-id-in-iteration.css",
+   "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-41g515g6rr7",
+   "lwc-41g515g6rr7-host",
+   "x-static-id-in-iteration_static-id-in-iteration",
+   "x-static-id-in-iteration_static-id-in-iteration-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>",
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-41g515g6rr7"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-id-in-iteration.css",
+   "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-41g515g6rr7",
+   "lwc-41g515g6rr7-host",
+   "x-static-id-in-iteration_static-id-in-iteration",
+   "x-static-id-in-iteration_static-id-in-iteration-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>",
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-41g515g6rr7"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-id-in-iteration.css",
+   "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-41g515g6rr7",
+   "lwc-41g515g6rr7-host",
+   "x-static-id-in-iteration_static-id-in-iteration",
+   "x-static-id-in-iteration_static-id-in-iteration-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>",
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-41g515g6rr7"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-id-in-iteration.css",
+   "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-41g515g6rr7",
+   "lwc-41g515g6rr7-host",
+   "x-static-id-in-iteration_static-id-in-iteration",
+   "x-static-id-in-iteration_static-id-in-iteration-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>",
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-41g515g6rr7"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-id-in-iteration.css",
+   "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-41g515g6rr7",
+   "lwc-41g515g6rr7-host",
+   "x-static-id-in-iteration_static-id-in-iteration",
+   "x-static-id-in-iteration_static-id-in-iteration-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>",
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-41g515g6rr7"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-id-in-iteration.css",
+   "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-41g515g6rr7",
+   "lwc-41g515g6rr7-host",
+   "x-static-id-in-iteration_static-id-in-iteration",
+   "x-static-id-in-iteration_static-id-in-iteration-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>",
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-41g515g6rr7"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-id-in-iteration.css",
+   "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   },
+   {
+    "code": 1041,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-41g515g6rr7",
+   "lwc-41g515g6rr7-host",
+   "x-static-id-in-iteration_static-id-in-iteration",
+   "x-static-id-in-iteration_static-id-in-iteration-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>",
+   "parseFragment:<div${3}><span${\"a1:id\"}${3}></span></div>",
+   "parseFragment:<span${\"a0:id\"}${3}></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-41g515g6rr7"
+  }
+ }
+}

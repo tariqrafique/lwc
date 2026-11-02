@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./deep-data.css",
+    "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-38lifoo63d4",
+    "lwc-38lifoo63d4-host",
+    "x-deep-data_deep-data",
+    "x-deep-data_deep-data-host"
+  ]
+}

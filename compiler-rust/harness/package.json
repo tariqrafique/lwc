@@ -1,0 +1,13 @@
+{
+  "name": "lwc-compiler-rust-harness",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "link:lwc": "mkdir -p node_modules/@lwc && ln -sfn /workspace/lwc/packages/@lwc/compiler node_modules/@lwc/compiler && ln -sfn /workspace/lwc/node_modules/vitest node_modules/vitest",
+    "test": "vitest run",
+    "test:style": "vitest run test/style.behavior.test.ts",
+    "golden:update": "UPDATE_GOLDENS=1 vitest run"
+  },
+  "dependencies": { "@lwc/compiler": "file:../../lwc/packages/@lwc/compiler" },
+  "devDependencies": { "vitest": "*" }
+}

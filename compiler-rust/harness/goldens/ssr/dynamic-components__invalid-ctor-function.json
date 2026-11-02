@@ -1,0 +1,54 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": true,
+  "modules": {
+    "x/dynamic-invalid-ctor/dynamic-invalid-ctor.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dynamic-invalid-ctor.css",
+        "./dynamic-invalid-ctor.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-1snev6cqmb8",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/dynamic-invalid-ctor/dynamic-invalid-ctor.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dynamic-invalid-ctor.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-dynamic-invalid-ctor",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

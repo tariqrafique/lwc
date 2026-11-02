@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./comment.css",
+    "./comment.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-23hkc2o3p7d",
+    "lwc-23hkc2o3p7d-host",
+    "x-comment_comment",
+    "x-comment_comment-host"
+  ]
+}

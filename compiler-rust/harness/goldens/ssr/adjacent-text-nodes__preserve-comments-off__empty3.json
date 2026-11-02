@@ -1,0 +1,54 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/comments-text/comments-text.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./comments-text.css",
+        "./comments-text.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-7dm6mi27sln",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/comments-text/comments-text.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./comments-text.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-comments-text",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

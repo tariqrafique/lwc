@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./not-in-same-condition-tree.css",
+    "./not-in-same-condition-tree.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1137,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-5hdhvq4c67h",
+    "lwc-5hdhvq4c67h-host",
+    "x-not-in-same-condition-tree_not-in-same-condition-tree",
+    "x-not-in-same-condition-tree_not-in-same-condition-tree-host"
+  ]
+}

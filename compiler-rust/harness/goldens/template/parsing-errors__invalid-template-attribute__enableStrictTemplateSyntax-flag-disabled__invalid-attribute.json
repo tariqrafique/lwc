@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./invalid-attribute.css",
+    "./invalid-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1145,
+      "level": 2
+    },
+    {
+      "code": 1153,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-1n02ki6f1ee",
+    "lwc-1n02ki6f1ee-host",
+    "x-invalid-attribute_invalid-attribute",
+    "x-invalid-attribute_invalid-attribute-host"
+  ]
+}

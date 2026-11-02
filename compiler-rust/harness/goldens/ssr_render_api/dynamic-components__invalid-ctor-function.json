@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "render",
+  "error": "Invalid constructor: \"function fake() {}\" is not a LightningElement constructor.",
+  "html": ""
+ },
+ "v57": {
+  "stage": "render",
+  "error": "Invalid constructor: \"function fake() {}\" is not a LightningElement constructor.",
+  "html": ""
+ },
+ "v58": {
+  "stage": "render",
+  "error": "Invalid constructor: \"function fake() {}\" is not a LightningElement constructor.",
+  "html": ""
+ },
+ "v59": {
+  "stage": "render",
+  "error": "Invalid constructor: \"function fake() {}\" is not a LightningElement constructor.",
+  "html": ""
+ },
+ "v65": {
+  "stage": "render",
+  "error": "Invalid constructor: \"function fake() {}\" is not a LightningElement constructor.",
+  "html": ""
+ },
+ "v66": {
+  "stage": "render",
+  "error": "Invalid constructor: \"function fake() {}\" is not a LightningElement constructor.",
+  "html": ""
+ },
+ "v67": {
+  "stage": "render",
+  "error": "Invalid constructor: \"function fake() {}\" is not a LightningElement constructor.",
+  "html": ""
+ }
+}

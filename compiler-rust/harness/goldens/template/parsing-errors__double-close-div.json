@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./double-close-div.css",
+    "./double-close-div.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-321vvvs7jgq",
+    "lwc-321vvvs7jgq-host",
+    "x-double-close-div_double-close-div",
+    "x-double-close-div_double-close-div-host"
+  ]
+}

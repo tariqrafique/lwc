@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./usage-if.css",
+    "./usage-if.scoped.css?scoped=true",
+    "ns/cmp"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6dcki86fmnh",
+    "lwc-6dcki86fmnh-host",
+    "x-usage-if_usage-if",
+    "x-usage-if_usage-if-host"
+  ]
+}

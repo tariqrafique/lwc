@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./dynamic-component.css",
+    "./dynamic-component.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2aur4v16kjs",
+    "lwc-2aur4v16kjs-host",
+    "x-dynamic-component_dynamic-component",
+    "x-dynamic-component_dynamic-component-host"
+  ]
+}

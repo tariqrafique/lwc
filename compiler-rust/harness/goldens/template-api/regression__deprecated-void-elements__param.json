@@ -1,0 +1,332 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./param.css",
+   "./param.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7j75v510urq",
+   "lwc-7j75v510urq-host",
+   "x-param_param",
+   "x-param_param-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<param name=\"hello\" value=\"world\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7j75v510urq"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./param.css",
+   "./param.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7j75v510urq",
+   "lwc-7j75v510urq-host",
+   "x-param_param",
+   "x-param_param-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<param name=\"hello\" value=\"world\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-param_param"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./param.css",
+   "./param.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7j75v510urq",
+   "lwc-7j75v510urq-host",
+   "x-param_param",
+   "x-param_param-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<param name=\"hello\" value=\"world\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-param_param"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./param.css",
+   "./param.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7j75v510urq",
+   "lwc-7j75v510urq-host",
+   "x-param_param",
+   "x-param_param-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<param name=\"hello\" value=\"world\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7j75v510urq"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./param.css",
+   "./param.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7j75v510urq",
+   "lwc-7j75v510urq-host",
+   "x-param_param",
+   "x-param_param-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<param name=\"hello\" value=\"world\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7j75v510urq"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./param.css",
+   "./param.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7j75v510urq",
+   "lwc-7j75v510urq-host",
+   "x-param_param",
+   "x-param_param-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<param name=\"hello\" value=\"world\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7j75v510urq"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./param.css",
+   "./param.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7j75v510urq",
+   "lwc-7j75v510urq-host",
+   "x-param_param",
+   "x-param_param-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<param name=\"hello\" value=\"world\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7j75v510urq"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./param.css",
+   "./param.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7j75v510urq",
+   "lwc-7j75v510urq-host",
+   "x-param_param",
+   "x-param_param-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<param name=\"hello\" value=\"world\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7j75v510urq"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./param.css",
+   "./param.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7j75v510urq",
+   "lwc-7j75v510urq-host",
+   "x-param_param",
+   "x-param_param-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<param name=\"hello\" value=\"world\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7j75v510urq"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./param.css",
+   "./param.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7j75v510urq",
+   "lwc-7j75v510urq-host",
+   "x-param_param",
+   "x-param_param-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<param name=\"hello\" value=\"world\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7j75v510urq"
+  }
+ }
+}

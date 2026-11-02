@@ -1,0 +1,342 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./experimental-complex-expressions-true.css",
+   "./experimental-complex-expressions-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5t3hn3vkg17",
+   "lwc-5t3hn3vkg17-host",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5t3hn3vkg17"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./experimental-complex-expressions-true.css",
+   "./experimental-complex-expressions-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5t3hn3vkg17",
+   "lwc-5t3hn3vkg17-host",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-experimental-complex-expressions-true_experimental-complex-expressions-true"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./experimental-complex-expressions-true.css",
+   "./experimental-complex-expressions-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5t3hn3vkg17",
+   "lwc-5t3hn3vkg17-host",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-experimental-complex-expressions-true_experimental-complex-expressions-true"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./experimental-complex-expressions-true.css",
+   "./experimental-complex-expressions-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5t3hn3vkg17",
+   "lwc-5t3hn3vkg17-host",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5t3hn3vkg17"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./experimental-complex-expressions-true.css",
+   "./experimental-complex-expressions-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5t3hn3vkg17",
+   "lwc-5t3hn3vkg17-host",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5t3hn3vkg17"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./experimental-complex-expressions-true.css",
+   "./experimental-complex-expressions-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5t3hn3vkg17",
+   "lwc-5t3hn3vkg17-host",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5t3hn3vkg17"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./experimental-complex-expressions-true.css",
+   "./experimental-complex-expressions-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5t3hn3vkg17",
+   "lwc-5t3hn3vkg17-host",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5t3hn3vkg17"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./experimental-complex-expressions-true.css",
+   "./experimental-complex-expressions-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5t3hn3vkg17",
+   "lwc-5t3hn3vkg17-host",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5t3hn3vkg17"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./experimental-complex-expressions-true.css",
+   "./experimental-complex-expressions-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5t3hn3vkg17",
+   "lwc-5t3hn3vkg17-host",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5t3hn3vkg17"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./experimental-complex-expressions-true.css",
+   "./experimental-complex-expressions-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5t3hn3vkg17",
+   "lwc-5t3hn3vkg17-host",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true",
+   "x-experimental-complex-expressions-true_experimental-complex-expressions-true-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5t3hn3vkg17"
+  }
+ }
+}

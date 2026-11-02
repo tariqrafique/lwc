@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./components.css",
+    "./components.scoped.css?scoped=true",
+    "c/custom"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-1j5adk6vpb3",
+    "lwc-1j5adk6vpb3-host",
+    "x-components_components",
+    "x-components_components-host"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": true,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/outer/outer.html": {
+      "ok": false,
+      "code": null
+    },
+    "x/outer/outer.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./outer.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-outer",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

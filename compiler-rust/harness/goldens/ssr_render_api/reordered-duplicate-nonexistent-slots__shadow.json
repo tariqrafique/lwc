@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        a\n        <slot name=\"x\">\n        </slot>\n        b\n        <slot name=\"y\">\n        </slot>\n        c\n        <slot>\n        </slot>\n        d\n      </template>\n      default1\n      <div slot=\"y\">\n        y\n      </div>\n      default2\n      <div slot=\"x\">\n        x\n      </div>\n      default3\n      <div slot=\"y\">\n        y2\n      </div>\n      default4\n      <div slot=\"y\">\n        y3\n      </div>\n      default5\n      <div slot=\"does-not-exist\">\n        does-not-exist\n      </div>\n      default6\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        a\n        <slot name=\"x\">\n        </slot>\n        b\n        <slot name=\"y\">\n        </slot>\n        c\n        <slot>\n        </slot>\n        d\n      </template>\n      default1\n      <div slot=\"y\">\n        y\n      </div>\n      default2\n      <div slot=\"x\">\n        x\n      </div>\n      default3\n      <div slot=\"y\">\n        y2\n      </div>\n      default4\n      <div slot=\"y\">\n        y3\n      </div>\n      default5\n      <div slot=\"does-not-exist\">\n        does-not-exist\n      </div>\n      default6\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        a\n        <slot name=\"x\">\n        </slot>\n        b\n        <slot name=\"y\">\n        </slot>\n        c\n        <slot>\n        </slot>\n        d\n      </template>\n      default1\n      <div slot=\"y\">\n        y\n      </div>\n      default2\n      <div slot=\"x\">\n        x\n      </div>\n      default3\n      <div slot=\"y\">\n        y2\n      </div>\n      default4\n      <div slot=\"y\">\n        y3\n      </div>\n      default5\n      <div slot=\"does-not-exist\">\n        does-not-exist\n      </div>\n      default6\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        a\n        <slot name=\"x\">\n        </slot>\n        b\n        <slot name=\"y\">\n        </slot>\n        c\n        <slot>\n        </slot>\n        d\n      </template>\n      default1\n      <div slot=\"y\">\n        y\n      </div>\n      default2\n      <div slot=\"x\">\n        x\n      </div>\n      default3\n      <div slot=\"y\">\n        y2\n      </div>\n      default4\n      <div slot=\"y\">\n        y3\n      </div>\n      default5\n      <div slot=\"does-not-exist\">\n        does-not-exist\n      </div>\n      default6\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        a\n        <slot name=\"x\">\n        </slot>\n        b\n        <slot name=\"y\">\n        </slot>\n        c\n        <slot>\n        </slot>\n        d\n      </template>\n      default1\n      <div slot=\"y\">\n        y\n      </div>\n      default2\n      <div slot=\"x\">\n        x\n      </div>\n      default3\n      <div slot=\"y\">\n        y2\n      </div>\n      default4\n      <div slot=\"y\">\n        y3\n      </div>\n      default5\n      <div slot=\"does-not-exist\">\n        does-not-exist\n      </div>\n      default6\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        a\n        <slot name=\"x\">\n        </slot>\n        b\n        <slot name=\"y\">\n        </slot>\n        c\n        <slot>\n        </slot>\n        d\n      </template>\n      default1\n      <div slot=\"y\">\n        y\n      </div>\n      default2\n      <div slot=\"x\">\n        x\n      </div>\n      default3\n      <div slot=\"y\">\n        y2\n      </div>\n      default4\n      <div slot=\"y\">\n        y3\n      </div>\n      default5\n      <div slot=\"does-not-exist\">\n        does-not-exist\n      </div>\n      default6\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        a\n        <slot name=\"x\">\n        </slot>\n        b\n        <slot name=\"y\">\n        </slot>\n        c\n        <slot>\n        </slot>\n        d\n      </template>\n      default1\n      <div slot=\"y\">\n        y\n      </div>\n      default2\n      <div slot=\"x\">\n        x\n      </div>\n      default3\n      <div slot=\"y\">\n        y2\n      </div>\n      default4\n      <div slot=\"y\">\n        y3\n      </div>\n      default5\n      <div slot=\"does-not-exist\">\n        does-not-exist\n      </div>\n      default6\n    </x-inner>\n  </template>\n</fixture-test>"
+ }
+}

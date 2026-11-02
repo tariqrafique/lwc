@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./class-dynamic-without-object-binding.css",
+    "./class-dynamic-without-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5euj2le4176",
+    "lwc-5euj2le4176-host",
+    "x-class-dynamic-without-object-binding_class-dynamic-without-object-binding",
+    "x-class-dynamic-without-object-binding_class-dynamic-without-object-binding-host"
+  ]
+}

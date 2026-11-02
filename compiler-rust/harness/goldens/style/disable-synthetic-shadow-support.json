@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": true,
+      "css": {
+        "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+        "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+        "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+        "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+        "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+      }
+    }
+  ]
+}

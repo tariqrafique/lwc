@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./key-non-top-level.css",
+    "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1149,
+      "level": 2
+    },
+    {
+      "code": 1149,
+      "level": 2
+    },
+    {
+      "code": 1149,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-7qgdv2kbdr9",
+    "lwc-7qgdv2kbdr9-host",
+    "x-key-non-top-level_key-non-top-level",
+    "x-key-non-top-level_key-non-top-level-host"
+  ]
+}

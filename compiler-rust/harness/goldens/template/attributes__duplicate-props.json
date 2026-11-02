@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./duplicate-props.css",
+    "./duplicate-props.scoped.css?scoped=true",
+    "ns/baz1",
+    "ns/baz2"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1147,
+      "level": 2
+    },
+    {
+      "code": 1147,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-2tn6o48t2v1",
+    "lwc-2tn6o48t2v1-host",
+    "x-duplicate-props_duplicate-props",
+    "x-duplicate-props_duplicate-props-host"
+  ]
+}

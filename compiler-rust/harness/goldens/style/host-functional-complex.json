@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": ":host(.foo, .bar) .baz[x] .quux[x] {color: black;}",
+        "x|host=false|dir=true": "[x-host].foo .baz[x] .quux[x],[x-host].bar .baz[x] .quux[x] {color: black;}",
+        "x|host=false|dir=false": "[x-host].foo .baz[x] .quux[x],[x-host].bar .baz[x] .quux[x] {color: black;}",
+        "x|host=true|dir=true": ":host(.foo, .bar) .baz[x] .quux[x] {color: black;}",
+        "-|host=true|dir=false": ":host(.foo, .bar) .baz .quux {color: black;}"
+      }
+    }
+  ]
+}

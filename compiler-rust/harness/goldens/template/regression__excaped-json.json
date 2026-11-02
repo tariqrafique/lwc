@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./excaped-json.css",
+    "./excaped-json.scoped.css?scoped=true",
+    "x/test"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2mip20h8vh2",
+    "lwc-2mip20h8vh2-host",
+    "x-excaped-json_excaped-json",
+    "x-excaped-json_excaped-json-host"
+  ]
+}

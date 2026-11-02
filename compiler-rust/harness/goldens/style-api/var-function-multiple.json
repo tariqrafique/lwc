@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=false|dir=false": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "x|host=true|dir=true": "div[x] {color: var(--lwc-color), var(--lwc-other);}div[x] {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div[x] {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}",
+     "-|host=true|dir=false": "div {color: var(--lwc-color), var(--lwc-other);}div {border: var(--border, 1px solid rgba(0, 0, 0, 0.1));}div {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}"
+    }
+   }
+  ]
+ }
+}

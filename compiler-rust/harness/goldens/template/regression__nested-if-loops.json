@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./nested-if-loops.css",
+    "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6ugg4ao851r",
+    "lwc-6ugg4ao851r-host",
+    "x-nested-if-loops_nested-if-loops",
+    "x-nested-if-loops_nested-if-loops-host"
+  ]
+}

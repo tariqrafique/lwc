@@ -1,0 +1,68 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/dynamic/dynamic.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dynamic.css",
+        "./dynamic.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-32cmakp1ss8",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/dynamic/dynamic.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dynamic.html",
+        "/virtual/custom-loader.js"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-dynamic",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/fake/fake.js": {
+      "ok": true,
+      "imports": [],
+      "runtimeImports": [],
+      "exports": {
+        "default": "string"
+      },
+      "defaultExport": {
+        "kind": "string",
+        "extendsLightningElement": false
+      },
+      "warnings": []
+    }
+  }
+}

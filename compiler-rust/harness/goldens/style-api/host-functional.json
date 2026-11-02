@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+     "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+     "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+    }
+   }
+  ]
+ }
+}

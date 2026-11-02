@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "staticImports": [
+    "./component.html",
+    "@lwc/ssr-runtime"
+  ],
+  "dynamicImports": [
+    "x/foo"
+  ],
+  "loaderImports": 0,
+  "mentions": [
+    "x/foo"
+  ]
+}

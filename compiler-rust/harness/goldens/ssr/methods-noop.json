@@ -1,0 +1,33 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/methods-noop/methods-noop.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./methods-noop.html",
+        "vitest"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-methods-noop",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

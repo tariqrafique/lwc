@@ -1,0 +1,54 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/lifecycle-hooks/lifecycle-hooks.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./lifecycle-hooks.css",
+        "./lifecycle-hooks.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-18knqdmvncr",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/lifecycle-hooks/lifecycle-hooks.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./lifecycle-hooks.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-lifecycle-hooks",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

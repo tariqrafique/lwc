@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./key-invalid-in-slot.css",
+    "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1149,
+      "level": 2
+    },
+    {
+      "code": 1149,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-1ajl4r27aqe",
+    "lwc-1ajl4r27aqe-host",
+    "x-key-invalid-in-slot_key-invalid-in-slot",
+    "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ]
+}

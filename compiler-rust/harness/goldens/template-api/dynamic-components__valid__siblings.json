@@ -1,0 +1,352 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./siblings.css",
+   "./siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1f6gdeblibr",
+   "lwc-1f6gdeblibr-host",
+   "x-siblings_siblings",
+   "x-siblings_siblings-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1f6gdeblibr"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./siblings.css",
+   "./siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1f6gdeblibr",
+   "lwc-1f6gdeblibr-host",
+   "x-siblings_siblings",
+   "x-siblings_siblings-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-siblings_siblings"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./siblings.css",
+   "./siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1f6gdeblibr",
+   "lwc-1f6gdeblibr-host",
+   "x-siblings_siblings",
+   "x-siblings_siblings-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-siblings_siblings"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./siblings.css",
+   "./siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1f6gdeblibr",
+   "lwc-1f6gdeblibr-host",
+   "x-siblings_siblings",
+   "x-siblings_siblings-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1f6gdeblibr"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./siblings.css",
+   "./siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1f6gdeblibr",
+   "lwc-1f6gdeblibr-host",
+   "x-siblings_siblings",
+   "x-siblings_siblings-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1f6gdeblibr"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./siblings.css",
+   "./siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1f6gdeblibr",
+   "lwc-1f6gdeblibr-host",
+   "x-siblings_siblings",
+   "x-siblings_siblings-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1f6gdeblibr"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./siblings.css",
+   "./siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1f6gdeblibr",
+   "lwc-1f6gdeblibr-host",
+   "x-siblings_siblings",
+   "x-siblings_siblings-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1f6gdeblibr"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./siblings.css",
+   "./siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1f6gdeblibr",
+   "lwc-1f6gdeblibr-host",
+   "x-siblings_siblings",
+   "x-siblings_siblings-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1f6gdeblibr"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./siblings.css",
+   "./siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1f6gdeblibr",
+   "lwc-1f6gdeblibr-host",
+   "x-siblings_siblings",
+   "x-siblings_siblings-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1f6gdeblibr"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./siblings.css",
+   "./siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1f6gdeblibr",
+   "lwc-1f6gdeblibr-host",
+   "x-siblings_siblings",
+   "x-siblings_siblings-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1f6gdeblibr"
+  }
+ }
+}

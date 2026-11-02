@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-light-parent>\n      <x-shadow-leaf>\n        <template shadowrootmode=\"open\">\n          <slot name=\"top\">\n          </slot>\n          <slot name=\"bottom\">\n          </slot>\n        </template>\n        <div slot=\"bottom\">\n          top of light parent\n        </div>\n        <div slot=\"top\">\n          bottom of light parent\n        </div>\n      </x-shadow-leaf>\n    </x-light-parent>\n    <x-shadow-parent>\n      <template shadowrootmode=\"open\">\n        <x-light-leaf>\n          <!---->\n          <slot name=\"bottom\">\n          </slot>\n          <!---->\n          <!---->\n          <slot name=\"top\">\n          </slot>\n          <!---->\n        </x-light-leaf>\n      </template>\n      <div slot=\"top\">\n        top of shadow parent\n      </div>\n      <div slot=\"bottom\">\n        bottom of shadow parent\n      </div>\n    </x-shadow-parent>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-light-parent>\n      <x-shadow-leaf>\n        <template shadowrootmode=\"open\">\n          <slot name=\"top\">\n          </slot>\n          <slot name=\"bottom\">\n          </slot>\n        </template>\n        <div slot=\"bottom\">\n          top of light parent\n        </div>\n        <div slot=\"top\">\n          bottom of light parent\n        </div>\n      </x-shadow-leaf>\n    </x-light-parent>\n    <x-shadow-parent>\n      <template shadowrootmode=\"open\">\n        <x-light-leaf>\n          <!---->\n          <slot name=\"bottom\">\n          </slot>\n          <!---->\n          <!---->\n          <slot name=\"top\">\n          </slot>\n          <!---->\n        </x-light-leaf>\n      </template>\n      <div slot=\"top\">\n        top of shadow parent\n      </div>\n      <div slot=\"bottom\">\n        bottom of shadow parent\n      </div>\n    </x-shadow-parent>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-light-parent>\n      <x-shadow-leaf>\n        <template shadowrootmode=\"open\">\n          <slot name=\"top\">\n          </slot>\n          <slot name=\"bottom\">\n          </slot>\n        </template>\n        <div slot=\"bottom\">\n          top of light parent\n        </div>\n        <div slot=\"top\">\n          bottom of light parent\n        </div>\n      </x-shadow-leaf>\n    </x-light-parent>\n    <x-shadow-parent>\n      <template shadowrootmode=\"open\">\n        <x-light-leaf>\n          <!---->\n          <slot name=\"bottom\">\n          </slot>\n          <!---->\n          <!---->\n          <slot name=\"top\">\n          </slot>\n          <!---->\n        </x-light-leaf>\n      </template>\n      <div slot=\"top\">\n        top of shadow parent\n      </div>\n      <div slot=\"bottom\">\n        bottom of shadow parent\n      </div>\n    </x-shadow-parent>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-light-parent>\n      <x-shadow-leaf>\n        <template shadowrootmode=\"open\">\n          <slot name=\"top\">\n          </slot>\n          <slot name=\"bottom\">\n          </slot>\n        </template>\n        <div slot=\"bottom\">\n          top of light parent\n        </div>\n        <div slot=\"top\">\n          bottom of light parent\n        </div>\n      </x-shadow-leaf>\n    </x-light-parent>\n    <x-shadow-parent>\n      <template shadowrootmode=\"open\">\n        <x-light-leaf>\n          <!---->\n          <slot name=\"bottom\">\n          </slot>\n          <!---->\n          <!---->\n          <slot name=\"top\">\n          </slot>\n          <!---->\n        </x-light-leaf>\n      </template>\n      <div slot=\"top\">\n        top of shadow parent\n      </div>\n      <div slot=\"bottom\">\n        bottom of shadow parent\n      </div>\n    </x-shadow-parent>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-light-parent>\n      <x-shadow-leaf>\n        <template shadowrootmode=\"open\">\n          <slot name=\"top\">\n          </slot>\n          <slot name=\"bottom\">\n          </slot>\n        </template>\n        <div slot=\"bottom\">\n          top of light parent\n        </div>\n        <div slot=\"top\">\n          bottom of light parent\n        </div>\n      </x-shadow-leaf>\n    </x-light-parent>\n    <x-shadow-parent>\n      <template shadowrootmode=\"open\">\n        <x-light-leaf>\n          <!---->\n          <slot name=\"bottom\">\n          </slot>\n          <!---->\n          <!---->\n          <slot name=\"top\">\n          </slot>\n          <!---->\n        </x-light-leaf>\n      </template>\n      <div slot=\"top\">\n        top of shadow parent\n      </div>\n      <div slot=\"bottom\">\n        bottom of shadow parent\n      </div>\n    </x-shadow-parent>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-light-parent>\n      <x-shadow-leaf>\n        <template shadowrootmode=\"open\">\n          <slot name=\"top\">\n          </slot>\n          <slot name=\"bottom\">\n          </slot>\n        </template>\n        <div slot=\"bottom\">\n          top of light parent\n        </div>\n        <div slot=\"top\">\n          bottom of light parent\n        </div>\n      </x-shadow-leaf>\n    </x-light-parent>\n    <x-shadow-parent>\n      <template shadowrootmode=\"open\">\n        <x-light-leaf>\n          <!---->\n          <slot name=\"bottom\">\n          </slot>\n          <!---->\n          <!---->\n          <slot name=\"top\">\n          </slot>\n          <!---->\n        </x-light-leaf>\n      </template>\n      <div slot=\"top\">\n        top of shadow parent\n      </div>\n      <div slot=\"bottom\">\n        bottom of shadow parent\n      </div>\n    </x-shadow-parent>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-light-parent>\n      <x-shadow-leaf>\n        <template shadowrootmode=\"open\">\n          <slot name=\"top\">\n          </slot>\n          <slot name=\"bottom\">\n          </slot>\n        </template>\n        <div slot=\"bottom\">\n          top of light parent\n        </div>\n        <div slot=\"top\">\n          bottom of light parent\n        </div>\n      </x-shadow-leaf>\n    </x-light-parent>\n    <x-shadow-parent>\n      <template shadowrootmode=\"open\">\n        <x-light-leaf>\n          <!---->\n          <slot name=\"bottom\">\n          </slot>\n          <!---->\n          <!---->\n          <slot name=\"top\">\n          </slot>\n          <!---->\n        </x-light-leaf>\n      </template>\n      <div slot=\"top\">\n        top of shadow parent\n      </div>\n      <div slot=\"bottom\">\n        bottom of shadow parent\n      </div>\n    </x-shadow-parent>\n  </template>\n</fixture-test>"
+ }
+}

@@ -1,0 +1,552 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./not-scoped.css",
+   "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-68v9rhsbkkg",
+   "lwc-68v9rhsbkkg-host",
+   "x-not-scoped_not-scoped",
+   "x-not-scoped_not-scoped-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-described-by\"}${\"a0:aria-active-descendant\"}${\"a0:aria-error-message\"}${\"a0:aria-flow-to\"}${\"a0:aria-labelled-by\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-68v9rhsbkkg"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./not-scoped.css",
+   "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-68v9rhsbkkg",
+   "lwc-68v9rhsbkkg-host",
+   "x-not-scoped_not-scoped",
+   "x-not-scoped_not-scoped-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-described-by\"}${\"a0:aria-active-descendant\"}${\"a0:aria-error-message\"}${\"a0:aria-flow-to\"}${\"a0:aria-labelled-by\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-not-scoped_not-scoped"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./not-scoped.css",
+   "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-68v9rhsbkkg",
+   "lwc-68v9rhsbkkg-host",
+   "x-not-scoped_not-scoped",
+   "x-not-scoped_not-scoped-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-described-by\"}${\"a0:aria-active-descendant\"}${\"a0:aria-error-message\"}${\"a0:aria-flow-to\"}${\"a0:aria-labelled-by\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-not-scoped_not-scoped"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./not-scoped.css",
+   "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-68v9rhsbkkg",
+   "lwc-68v9rhsbkkg-host",
+   "x-not-scoped_not-scoped",
+   "x-not-scoped_not-scoped-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-described-by\"}${\"a0:aria-active-descendant\"}${\"a0:aria-error-message\"}${\"a0:aria-flow-to\"}${\"a0:aria-labelled-by\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-68v9rhsbkkg"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./not-scoped.css",
+   "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-68v9rhsbkkg",
+   "lwc-68v9rhsbkkg-host",
+   "x-not-scoped_not-scoped",
+   "x-not-scoped_not-scoped-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-described-by\"}${\"a0:aria-active-descendant\"}${\"a0:aria-error-message\"}${\"a0:aria-flow-to\"}${\"a0:aria-labelled-by\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-68v9rhsbkkg"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./not-scoped.css",
+   "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-68v9rhsbkkg",
+   "lwc-68v9rhsbkkg-host",
+   "x-not-scoped_not-scoped",
+   "x-not-scoped_not-scoped-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-described-by\"}${\"a0:aria-active-descendant\"}${\"a0:aria-error-message\"}${\"a0:aria-flow-to\"}${\"a0:aria-labelled-by\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-68v9rhsbkkg"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./not-scoped.css",
+   "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-68v9rhsbkkg",
+   "lwc-68v9rhsbkkg-host",
+   "x-not-scoped_not-scoped",
+   "x-not-scoped_not-scoped-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-described-by\"}${\"a0:aria-active-descendant\"}${\"a0:aria-error-message\"}${\"a0:aria-flow-to\"}${\"a0:aria-labelled-by\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-68v9rhsbkkg"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./not-scoped.css",
+   "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-68v9rhsbkkg",
+   "lwc-68v9rhsbkkg-host",
+   "x-not-scoped_not-scoped",
+   "x-not-scoped_not-scoped-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-described-by\"}${\"a0:aria-active-descendant\"}${\"a0:aria-error-message\"}${\"a0:aria-flow-to\"}${\"a0:aria-labelled-by\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-68v9rhsbkkg"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./not-scoped.css",
+   "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-68v9rhsbkkg",
+   "lwc-68v9rhsbkkg-host",
+   "x-not-scoped_not-scoped",
+   "x-not-scoped_not-scoped-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-described-by\"}${\"a0:aria-active-descendant\"}${\"a0:aria-error-message\"}${\"a0:aria-flow-to\"}${\"a0:aria-labelled-by\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-68v9rhsbkkg"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./not-scoped.css",
+   "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-68v9rhsbkkg",
+   "lwc-68v9rhsbkkg-host",
+   "x-not-scoped_not-scoped",
+   "x-not-scoped_not-scoped-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-described-by\"}${\"a0:aria-active-descendant\"}${\"a0:aria-error-message\"}${\"a0:aria-flow-to\"}${\"a0:aria-labelled-by\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-68v9rhsbkkg"
+  }
+ }
+}

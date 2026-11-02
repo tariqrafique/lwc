@@ -1,0 +1,392 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./multiple-tagname.css",
+   "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4hgahqkce",
+   "lwc-4hgahqkce-host",
+   "x-multiple-tagname_multiple-tagname",
+   "x-multiple-tagname_multiple-tagname-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h2${3}>London</h2>",
+   "parseFragment:<h2${3}>Paris</h2>",
+   "parseFragment:<p${3}>Paris is the capital of <span class=\"bold${0}\"${2}>France.</span></p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4hgahqkce"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./multiple-tagname.css",
+   "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4hgahqkce",
+   "lwc-4hgahqkce-host",
+   "x-multiple-tagname_multiple-tagname",
+   "x-multiple-tagname_multiple-tagname-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h2${3}>London</h2>",
+   "parseFragment:<h2${3}>Paris</h2>",
+   "parseFragment:<p${3}>Paris is the capital of <span class=\"bold${0}\"${2}>France.</span></p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-multiple-tagname_multiple-tagname"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./multiple-tagname.css",
+   "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4hgahqkce",
+   "lwc-4hgahqkce-host",
+   "x-multiple-tagname_multiple-tagname",
+   "x-multiple-tagname_multiple-tagname-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h2${3}>London</h2>",
+   "parseFragment:<h2${3}>Paris</h2>",
+   "parseFragment:<p${3}>Paris is the capital of <span class=\"bold${0}\"${2}>France.</span></p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-multiple-tagname_multiple-tagname"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./multiple-tagname.css",
+   "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4hgahqkce",
+   "lwc-4hgahqkce-host",
+   "x-multiple-tagname_multiple-tagname",
+   "x-multiple-tagname_multiple-tagname-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h2${3}>London</h2>",
+   "parseFragment:<h2${3}>Paris</h2>",
+   "parseFragment:<p${3}>Paris is the capital of <span class=\"bold${0}\"${2}>France.</span></p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4hgahqkce"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./multiple-tagname.css",
+   "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4hgahqkce",
+   "lwc-4hgahqkce-host",
+   "x-multiple-tagname_multiple-tagname",
+   "x-multiple-tagname_multiple-tagname-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h2${3}>London</h2>",
+   "parseFragment:<h2${3}>Paris</h2>",
+   "parseFragment:<p${3}>Paris is the capital of <span class=\"bold${0}\"${2}>France.</span></p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4hgahqkce"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./multiple-tagname.css",
+   "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4hgahqkce",
+   "lwc-4hgahqkce-host",
+   "x-multiple-tagname_multiple-tagname",
+   "x-multiple-tagname_multiple-tagname-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h2${3}>London</h2>",
+   "parseFragment:<h2${3}>Paris</h2>",
+   "parseFragment:<p${3}>Paris is the capital of <span class=\"bold${0}\"${2}>France.</span></p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4hgahqkce"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./multiple-tagname.css",
+   "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4hgahqkce",
+   "lwc-4hgahqkce-host",
+   "x-multiple-tagname_multiple-tagname",
+   "x-multiple-tagname_multiple-tagname-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h2${3}>London</h2>",
+   "parseFragment:<h2${3}>Paris</h2>",
+   "parseFragment:<p${3}>Paris is the capital of <span class=\"bold${0}\"${2}>France.</span></p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4hgahqkce"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./multiple-tagname.css",
+   "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4hgahqkce",
+   "lwc-4hgahqkce-host",
+   "x-multiple-tagname_multiple-tagname",
+   "x-multiple-tagname_multiple-tagname-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h2${3}>London</h2>",
+   "parseFragment:<h2${3}>Paris</h2>",
+   "parseFragment:<p${3}>Paris is the capital of <span class=\"bold${0}\"${2}>France.</span></p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4hgahqkce"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./multiple-tagname.css",
+   "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4hgahqkce",
+   "lwc-4hgahqkce-host",
+   "x-multiple-tagname_multiple-tagname",
+   "x-multiple-tagname_multiple-tagname-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h2${3}>London</h2>",
+   "parseFragment:<h2${3}>Paris</h2>",
+   "parseFragment:<p${3}>Paris is the capital of <span class=\"bold${0}\"${2}>France.</span></p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4hgahqkce"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./multiple-tagname.css",
+   "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4hgahqkce",
+   "lwc-4hgahqkce-host",
+   "x-multiple-tagname_multiple-tagname",
+   "x-multiple-tagname_multiple-tagname-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h2${3}>London</h2>",
+   "parseFragment:<h2${3}>Paris</h2>",
+   "parseFragment:<p${3}>Paris is the capital of <span class=\"bold${0}\"${2}>France.</span></p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4hgahqkce"
+  }
+ }
+}

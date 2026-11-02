@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "imports": [
+    "@salesforce/featureFlag/TEST_FLAG",
+    "./test.html",
+    "lwc"
+  ],
+  "lwcImports": [
+    "LightningElement",
+    "registerComponent"
+  ],
+  "exports": {
+    "default": "class"
+  },
+  "defaultExport": {
+    "kind": "class",
+    "extendsLightningElement": true,
+    "registered": true,
+    "registerOptions": {
+      "sel": "x-test",
+      "apiVersion": "number",
+      "hasTmpl": true,
+      "hasFeatureFlag": true
+    }
+  },
+  "decorators": [],
+  "warnings": []
+}

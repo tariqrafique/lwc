@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-hello>\n      <template shadowrootmode=\"open\">\n        <p>\n          Hello World\n        </p>\n        <p>\n          foo: configured foo\n        </p>\n        <p>\n          bar: configured bar\n        </p>\n      </template>\n    </x-hello>\n    <x-hello bar=\"configured bar\" foo=\"configured foo\">\n    </x-hello>\n    <foo-bar bar=\"configured bar\" foo=\"configured foo\">\n    </foo-bar>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-hello>\n      <template shadowrootmode=\"open\">\n        <p>\n          Hello World\n        </p>\n        <p>\n          foo: configured foo\n        </p>\n        <p>\n          bar: configured bar\n        </p>\n      </template>\n    </x-hello>\n    <x-hello bar=\"configured bar\" foo=\"configured foo\">\n    </x-hello>\n    <foo-bar bar=\"configured bar\" foo=\"configured foo\">\n    </foo-bar>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-hello>\n      <template shadowrootmode=\"open\">\n        <p>\n          Hello World\n        </p>\n        <p>\n          foo: configured foo\n        </p>\n        <p>\n          bar: configured bar\n        </p>\n      </template>\n    </x-hello>\n    <x-hello bar=\"configured bar\" foo=\"configured foo\">\n    </x-hello>\n    <foo-bar bar=\"configured bar\" foo=\"configured foo\">\n    </foo-bar>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-hello>\n      <template shadowrootmode=\"open\">\n        <p>\n          Hello World\n        </p>\n        <p>\n          foo: configured foo\n        </p>\n        <p>\n          bar: configured bar\n        </p>\n      </template>\n    </x-hello>\n    <x-hello bar=\"configured bar\" foo=\"configured foo\">\n    </x-hello>\n    <foo-bar bar=\"configured bar\" foo=\"configured foo\">\n    </foo-bar>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-hello>\n      <template shadowrootmode=\"open\">\n        <p>\n          Hello World\n        </p>\n        <p>\n          foo: configured foo\n        </p>\n        <p>\n          bar: configured bar\n        </p>\n      </template>\n    </x-hello>\n    <x-hello bar=\"configured bar\" foo=\"configured foo\">\n    </x-hello>\n    <foo-bar bar=\"configured bar\" foo=\"configured foo\">\n    </foo-bar>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-hello>\n      <template shadowrootmode=\"open\">\n        <p>\n          Hello World\n        </p>\n        <p>\n          foo: configured foo\n        </p>\n        <p>\n          bar: configured bar\n        </p>\n      </template>\n    </x-hello>\n    <x-hello bar=\"configured bar\" foo=\"configured foo\">\n    </x-hello>\n    <foo-bar bar=\"configured bar\" foo=\"configured foo\">\n    </foo-bar>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-hello>\n      <template shadowrootmode=\"open\">\n        <p>\n          Hello World\n        </p>\n        <p>\n          foo: configured foo\n        </p>\n        <p>\n          bar: configured bar\n        </p>\n      </template>\n    </x-hello>\n    <x-hello bar=\"configured bar\" foo=\"configured foo\">\n    </x-hello>\n    <foo-bar bar=\"configured bar\" foo=\"configured foo\">\n    </foo-bar>\n  </template>\n</fixture-test>"
+ }
+}

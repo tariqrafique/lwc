@@ -1,0 +1,104 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/child/child.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./child.css",
+        "./child.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-5h3d35cke7v",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/child/child.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./child.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-child",
+          "publicProps": [
+            "dynamic"
+          ],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/component/component.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/child",
+        "./component.css",
+        "./component.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-6a8uqob2ku4",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/component/component.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./component.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-component",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

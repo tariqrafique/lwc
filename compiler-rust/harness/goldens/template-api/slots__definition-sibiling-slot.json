@@ -1,0 +1,362 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibiling-slot.css",
+   "./definition-sibiling-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1o8q2pov2a0",
+   "lwc-1o8q2pov2a0-host",
+   "x-definition-sibiling-slot_definition-sibiling-slot",
+   "x-definition-sibiling-slot_definition-sibiling-slot-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot other content</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1o8q2pov2a0"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibiling-slot.css",
+   "./definition-sibiling-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1o8q2pov2a0",
+   "lwc-1o8q2pov2a0-host",
+   "x-definition-sibiling-slot_definition-sibiling-slot",
+   "x-definition-sibiling-slot_definition-sibiling-slot-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot other content</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-definition-sibiling-slot_definition-sibiling-slot"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibiling-slot.css",
+   "./definition-sibiling-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1o8q2pov2a0",
+   "lwc-1o8q2pov2a0-host",
+   "x-definition-sibiling-slot_definition-sibiling-slot",
+   "x-definition-sibiling-slot_definition-sibiling-slot-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot other content</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-definition-sibiling-slot_definition-sibiling-slot"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibiling-slot.css",
+   "./definition-sibiling-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1o8q2pov2a0",
+   "lwc-1o8q2pov2a0-host",
+   "x-definition-sibiling-slot_definition-sibiling-slot",
+   "x-definition-sibiling-slot_definition-sibiling-slot-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot other content</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1o8q2pov2a0"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibiling-slot.css",
+   "./definition-sibiling-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1o8q2pov2a0",
+   "lwc-1o8q2pov2a0-host",
+   "x-definition-sibiling-slot_definition-sibiling-slot",
+   "x-definition-sibiling-slot_definition-sibiling-slot-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot other content</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1o8q2pov2a0"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibiling-slot.css",
+   "./definition-sibiling-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1o8q2pov2a0",
+   "lwc-1o8q2pov2a0-host",
+   "x-definition-sibiling-slot_definition-sibiling-slot",
+   "x-definition-sibiling-slot_definition-sibiling-slot-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot other content</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1o8q2pov2a0"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibiling-slot.css",
+   "./definition-sibiling-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1o8q2pov2a0",
+   "lwc-1o8q2pov2a0-host",
+   "x-definition-sibiling-slot_definition-sibiling-slot",
+   "x-definition-sibiling-slot_definition-sibiling-slot-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot other content</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1o8q2pov2a0"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibiling-slot.css",
+   "./definition-sibiling-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1o8q2pov2a0",
+   "lwc-1o8q2pov2a0-host",
+   "x-definition-sibiling-slot_definition-sibiling-slot",
+   "x-definition-sibiling-slot_definition-sibiling-slot-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot other content</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1o8q2pov2a0"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibiling-slot.css",
+   "./definition-sibiling-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1o8q2pov2a0",
+   "lwc-1o8q2pov2a0-host",
+   "x-definition-sibiling-slot_definition-sibiling-slot",
+   "x-definition-sibiling-slot_definition-sibiling-slot-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot other content</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1o8q2pov2a0"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibiling-slot.css",
+   "./definition-sibiling-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1o8q2pov2a0",
+   "lwc-1o8q2pov2a0-host",
+   "x-definition-sibiling-slot_definition-sibiling-slot",
+   "x-definition-sibiling-slot_definition-sibiling-slot-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot other content</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1o8q2pov2a0"
+  }
+ }
+}

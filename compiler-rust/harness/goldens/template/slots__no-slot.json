@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./no-slot.css",
+    "./no-slot.scoped.css?scoped=true",
+    "x/cmp"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-272hucfvl0u",
+    "lwc-272hucfvl0u-host",
+    "x-no-slot_no-slot",
+    "x-no-slot_no-slot-host"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/for-each-nested/for-each-nested.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./for-each-nested.css",
+        "./for-each-nested.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-429691ij06",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/for-each-nested/for-each-nested.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./for-each-nested.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-for-each-nested",
+          "publicProps": [
+            "list"
+          ],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

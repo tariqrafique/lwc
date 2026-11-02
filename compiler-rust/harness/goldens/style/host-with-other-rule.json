@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": ".red[x] {color: red;}:host {margin-left: 5px;}",
+        "x|host=false|dir=true": ".red[x] {color: red;}[x-host] {margin-left: 5px;}",
+        "x|host=false|dir=false": ".red[x] {color: red;}[x-host] {margin-left: 5px;}",
+        "x|host=true|dir=true": ".red[x] {color: red;}:host {margin-left: 5px;}",
+        "-|host=true|dir=false": ".red {color: red;}:host {margin-left: 5px;}"
+      }
+    }
+  ]
+}

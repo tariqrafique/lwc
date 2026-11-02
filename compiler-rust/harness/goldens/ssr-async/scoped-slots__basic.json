@@ -1,0 +1,102 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/basicChild/basicChild.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./basicChild.css",
+        "./basicChild.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-341fv3kd1v3",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/basicChild/basicChild.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./basicChild.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-basic-child",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/basicParent/basicParent.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/basicChild",
+        "./basicParent.css",
+        "./basicParent.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-6kdicqaicnq",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/basicParent/basicParent.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./basicParent.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-basic-parent",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

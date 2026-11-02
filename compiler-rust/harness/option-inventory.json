@@ -1,0 +1,246 @@
+{
+ "_doc": "Every JS option field (scripts/option-fields.mjs) must map to: {row:<board row>, via} | {unit:<rust test fn>, crate} | {na:true} (needs decisions.tsv row containing 'optinv:<field>') | {pending:<why>} (gate FAILS). Stale keys also fail.",
+ "compiler.apiVersion": {
+  "row": "js-api",
+  "via": "js-api row: babel-plugin-component DISABLE_OBJECT_REST_SPREAD_TRANSFORMATION@60 + SKIP_UNNECESSARY_REGISTER_DECORATORS@60 + registerComponent apiVersion; versions 57,58,59,60,66,67,omitted (overrides fixture-pinned); also template-api/style-api/ssr_render_api",
+  "also": "template-api (template features), style-api (clamp/invariance), ssr_render_api (SSR parse/codegen features)"
+ },
+ "compiler.componentFeatureFlagModulePath": {
+  "row": "js",
+  "via": "fixture cfg"
+ },
+ "compiler.customRendererConfig": {
+  "row": "template-renderer",
+  "via": "renderer-hooks/** + directive-spread/no-renderer-hook fixture cfg; TemplateEval.rendererHooks signal (14 goldens)"
+ },
+ "compiler.customRendererConfig.directives": {
+  "row": "template-renderer",
+  "via": "renderer-hooks/directive-inner-html/* fixture cfg; rendererHooks signal"
+ },
+ "compiler.customRendererConfig.elements": {
+  "row": "template-renderer",
+  "via": "renderer-hooks/{config,svg}/* fixture cfg (tagName/namespace/attributes); rendererHooks signal"
+ },
+ "compiler.disableSyntheticShadowSupport": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (also style) (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "compiler.dynamicImports": {
+  "row": "js",
+  "via": "fixture cfg"
+ },
+ "compiler.dynamicImports.loader": {
+  "row": "js",
+  "via": "fixture cfg"
+ },
+ "compiler.dynamicImports.strictSpecifier": {
+  "row": "js-options",
+  "via": "dyn/{dynamicImports-omitted,strict-omitted,strict-false} x 5 dynamic-imports fixtures",
+  "also": "ssr_dynamic_imports (SSR path)"
+ },
+ "compiler.enableDynamicComponents": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "compiler.enableLightningWebSecurityTransforms": {
+  "row": "js-options",
+  "via": "lws/{true,false} x spec LWS snippet + async fixtures"
+ },
+ "compiler.enableLwcOn": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "compiler.enablePrivateMethods": {
+  "row": "js-options",
+  "via": "epm/{omitted,false,true} x 23 #method fixtures + spec snippet; registerComponent enablePrivateMethods recorded"
+ },
+ "compiler.enableStaticContentOptimization": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "compiler.enableSyntheticElementInternals": {
+  "row": "js",
+  "via": "fixture cfg"
+ },
+ "compiler.experimentalComplexExpressions": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "compiler.experimentalDynamicDirective": {
+  "row": "template-options",
+  "via": "edd/{omitted,false,true} x 17 lwc:dynamic fixtures + spec snippet"
+ },
+ "compiler.experimentalErrorRecoveryMode": {
+  "row": "template-options",
+  "via": "erm/{true,false,omitted} x transform-html.spec erm cases + transform-css.spec '<'",
+  "also": "js/style rows via fixture cfg"
+ },
+ "compiler.instrumentation": {
+  "unit": "instrumentation_counters_reach_template_and_js",
+  "crate": "lwc-compiler",
+  "also": "JS callback can't cross napi: backend.ts throws if set (fail closed)"
+ },
+ "compiler.isExplicitImport": {
+  "row": "js-options",
+  "via": "explicit x full js corpus + spec decorators snippet"
+ },
+ "compiler.name": {
+  "row": "js",
+  "via": "every suite"
+ },
+ "compiler.namespace": {
+  "row": "js",
+  "via": "every suite"
+ },
+ "compiler.outputConfig": {
+  "row": "js-options",
+  "via": "sourcemap/* (outputConfig present/absent)"
+ },
+ "compiler.outputConfig.minify": {
+  "na": true
+ },
+ "compiler.outputConfig.sourcemap": {
+  "row": "js-options",
+  "via": "sourcemap/{omitted,false,true,inline,invalid,object,number} x spec snippet + 2 fixtures"
+ },
+ "compiler.preserveHtmlComments": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "compiler.scopedStyles": {
+  "row": "style",
+  "via": "fixture cfg"
+ },
+ "compiler.ssrMode": {
+  "row": "ssr-render-asyncYield",
+  "via": "matrix: ssr{,-render}{,-async,-asyncYield}"
+ },
+ "compiler.stylesheetConfig": {
+  "na": true
+ },
+ "compiler.stylesheetConfig.customProperties": {
+  "na": true
+ },
+ "compiler.stylesheetConfig.customProperties.resolution": {
+  "na": true
+ },
+ "compiler.stylesheetConfig.customProperties.resolution.type": {
+  "na": true
+ },
+ "compiler.targetSSR": {
+  "row": "ssr-render",
+  "via": "ssr suites (rendered via ssr-render; ssr compile-obs row is diagnostic)"
+ },
+ "ssr.component.dynamicImports": {
+  "row": "ssr_dynamic_imports",
+  "via": "ssr-compiler dynamic-imports.spec port incl. dynamicImports omitted"
+ },
+ "ssr.component.dynamicImports.loader": {
+  "row": "ssr_dynamic_imports",
+  "via": "loader {unset,'myLoader'} x strict x specifier + hoisted-once"
+ },
+ "ssr.component.dynamicImports.strictSpecifier": {
+  "row": "ssr_dynamic_imports",
+  "via": "strictSpecifier {false,true,omitted} x loader x specifier + numeric literal"
+ },
+ "ssr.component.name": {
+  "row": "ssr-render",
+  "via": "fixture path (rendered via ssr-render; ssr compile-obs row is diagnostic)"
+ },
+ "ssr.component.namespace": {
+  "row": "ssr-render",
+  "via": "fixture path (rendered via ssr-render; ssr compile-obs row is diagnostic)"
+ },
+ "ssr.template.name": {
+  "row": "ssr-render",
+  "via": "fixture path (rendered via ssr-render; ssr compile-obs row is diagnostic)"
+ },
+ "ssr.template.namespace": {
+  "row": "ssr-render",
+  "via": "fixture path (rendered via ssr-render; ssr compile-obs row is diagnostic)"
+ },
+ "style.apiVersion": {
+  "row": "style-api",
+  "via": "v57..v67 + omitted x full style corpus (style-compiler reads no APIFeature: clamp edges + invariance)"
+ },
+ "style.customProperties": {
+  "na": true
+ },
+ "style.customProperties.resolverModule": {
+  "na": true
+ },
+ "style.disableSyntheticShadowSupport": {
+  "row": "style",
+  "via": "fixture cfg"
+ },
+ "style.experimentalErrorRecoveryMode": {
+  "row": "style",
+  "via": "fixture cfg"
+ },
+ "style.scoped": {
+  "row": "style",
+  "via": "fixture cfg"
+ },
+ "template.apiVersion": {
+  "row": "template-api",
+  "via": "v57,58,59,60,61,62,65,66,67,omitted x full template corpus (fixture-pinned apiVersion overridden)",
+  "also": "ssr_render_api (template parse features on the SSR path)"
+ },
+ "template.customRendererConfig": {
+  "row": "template-renderer",
+  "via": "renderer-hooks/** fixture cfg; rendererHooks signal"
+ },
+ "template.customRendererConfig.directives": {
+  "row": "template-renderer",
+  "via": "renderer-hooks/directive-inner-html/* fixture cfg"
+ },
+ "template.customRendererConfig.elements": {
+  "row": "template-renderer",
+  "via": "renderer-hooks/{config,svg}/* fixture cfg"
+ },
+ "template.disableSyntheticShadowSupport": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "template.enableDynamicComponents": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "template.enableLwcOn": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "template.enableStaticContentOptimization": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "template.experimentalComplexExpressions": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "template.experimentalComputedMemberExpression": {
+  "unit": "computed_member_expression_flag",
+  "crate": "lwc-template",
+  "also": "facade_does_not_forward_computed_member_expression (lwc-compiler); template row golden expression/computed = LWC1038"
+ },
+ "template.experimentalDynamicDirective": {
+  "row": "template-options",
+  "via": "edd/{omitted,false,true} x 17 lwc:dynamic fixtures"
+ },
+ "template.instrumentation": {
+  "unit": "instrumentation_counts_directives",
+  "crate": "lwc-template"
+ },
+ "template.name": {
+  "row": "csr-render-template",
+  "via": "every fixture (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "template.namespace": {
+  "row": "csr-render-template",
+  "via": "every fixture (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ },
+ "template.preserveHtmlComments": {
+  "row": "csr-render-template",
+  "via": "fixture cfg (template-compiler fixture cfg through engine-dom render parity; was diagnostic row template)"
+ }
+}

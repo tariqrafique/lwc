@@ -1,0 +1,357 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-off-with-parts.css",
+   "./preserve-comments-off-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-vgq39e7dj1",
+   "lwc-vgq39e7dj1-host",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><button data-id=\"foo\"${\"a1:data-dynamic\"}${\"s1\"}${\"c1\"}${2}>foo</button><button data-id=\"bar\"${\"a3:data-dynamic\"}${\"s3\"}${\"c3\"}${2}>bar</button></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-vgq39e7dj1"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-off-with-parts.css",
+   "./preserve-comments-off-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-vgq39e7dj1",
+   "lwc-vgq39e7dj1-host",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><button data-id=\"foo\"${\"a1:data-dynamic\"}${\"s1\"}${\"c1\"}${2}>foo</button><button data-id=\"bar\"${\"a3:data-dynamic\"}${\"s3\"}${\"c3\"}${2}>bar</button></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-off-with-parts.css",
+   "./preserve-comments-off-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-vgq39e7dj1",
+   "lwc-vgq39e7dj1-host",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><button data-id=\"foo\"${\"a1:data-dynamic\"}${\"s1\"}${\"c1\"}${2}>foo</button><button data-id=\"bar\"${\"a3:data-dynamic\"}${\"s3\"}${\"c3\"}${2}>bar</button></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-off-with-parts.css",
+   "./preserve-comments-off-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-vgq39e7dj1",
+   "lwc-vgq39e7dj1-host",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><button data-id=\"foo\"${\"a1:data-dynamic\"}${\"s1\"}${\"c1\"}${2}>foo</button><button data-id=\"bar\"${\"a3:data-dynamic\"}${\"s3\"}${\"c3\"}${2}>bar</button></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-vgq39e7dj1"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-off-with-parts.css",
+   "./preserve-comments-off-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-vgq39e7dj1",
+   "lwc-vgq39e7dj1-host",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><button data-id=\"foo\"${\"a1:data-dynamic\"}${\"s1\"}${\"c1\"}${2}>foo</button><button data-id=\"bar\"${\"a3:data-dynamic\"}${\"s3\"}${\"c3\"}${2}>bar</button></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-vgq39e7dj1"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-off-with-parts.css",
+   "./preserve-comments-off-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-vgq39e7dj1",
+   "lwc-vgq39e7dj1-host",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><button data-id=\"foo\"${\"a1:data-dynamic\"}${\"s1\"}${\"c1\"}${2}>foo</button><button data-id=\"bar\"${\"a3:data-dynamic\"}${\"s3\"}${\"c3\"}${2}>bar</button></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-vgq39e7dj1"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-off-with-parts.css",
+   "./preserve-comments-off-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-vgq39e7dj1",
+   "lwc-vgq39e7dj1-host",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><button data-id=\"foo\"${\"a1:data-dynamic\"}${\"s1\"}${\"c1\"}${2}>foo</button><button data-id=\"bar\"${\"a3:data-dynamic\"}${\"s3\"}${\"c3\"}${2}>bar</button></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-vgq39e7dj1"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-off-with-parts.css",
+   "./preserve-comments-off-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-vgq39e7dj1",
+   "lwc-vgq39e7dj1-host",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><button data-id=\"foo\"${\"a1:data-dynamic\"}${\"s1\"}${\"c1\"}${2}>foo</button><button data-id=\"bar\"${\"a3:data-dynamic\"}${\"s3\"}${\"c3\"}${2}>bar</button></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-vgq39e7dj1"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-off-with-parts.css",
+   "./preserve-comments-off-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-vgq39e7dj1",
+   "lwc-vgq39e7dj1-host",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><button data-id=\"foo\"${\"a1:data-dynamic\"}${\"s1\"}${\"c1\"}${2}>foo</button><button data-id=\"bar\"${\"a3:data-dynamic\"}${\"s3\"}${\"c3\"}${2}>bar</button></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-vgq39e7dj1"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-off-with-parts.css",
+   "./preserve-comments-off-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-vgq39e7dj1",
+   "lwc-vgq39e7dj1-host",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts",
+   "x-preserve-comments-off-with-parts_preserve-comments-off-with-parts-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><button data-id=\"foo\"${\"a1:data-dynamic\"}${\"s1\"}${\"c1\"}${2}>foo</button><button data-id=\"bar\"${\"a3:data-dynamic\"}${\"s3\"}${\"c3\"}${2}>bar</button></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-vgq39e7dj1"
+  }
+ }
+}

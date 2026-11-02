@@ -1,0 +1,462 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unkown-element.css",
+   "./unkown-element.scoped.css?scoped=true",
+   "x/customComponent"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-616604d1ker",
+   "lwc-616604d1ker-host",
+   "x-unkown-element_unkown-element",
+   "x-unkown-element_unkown-element-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<unknonwtag${3}></unknonwtag>",
+   "parseFragment:<span${3}>valid tags should not warn</span>",
+   "parseFragment:<spam${3}>this tag has a typo</spam>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-616604d1ker"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unkown-element.css",
+   "./unkown-element.scoped.css?scoped=true",
+   "x/customComponent"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-616604d1ker",
+   "lwc-616604d1ker-host",
+   "x-unkown-element_unkown-element",
+   "x-unkown-element_unkown-element-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<unknonwtag${3}></unknonwtag>",
+   "parseFragment:<span${3}>valid tags should not warn</span>",
+   "parseFragment:<spam${3}>this tag has a typo</spam>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-unkown-element_unkown-element"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unkown-element.css",
+   "./unkown-element.scoped.css?scoped=true",
+   "x/customComponent"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-616604d1ker",
+   "lwc-616604d1ker-host",
+   "x-unkown-element_unkown-element",
+   "x-unkown-element_unkown-element-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<unknonwtag${3}></unknonwtag>",
+   "parseFragment:<span${3}>valid tags should not warn</span>",
+   "parseFragment:<spam${3}>this tag has a typo</spam>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-unkown-element_unkown-element"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unkown-element.css",
+   "./unkown-element.scoped.css?scoped=true",
+   "x/customComponent"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-616604d1ker",
+   "lwc-616604d1ker-host",
+   "x-unkown-element_unkown-element",
+   "x-unkown-element_unkown-element-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<unknonwtag${3}></unknonwtag>",
+   "parseFragment:<span${3}>valid tags should not warn</span>",
+   "parseFragment:<spam${3}>this tag has a typo</spam>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-616604d1ker"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unkown-element.css",
+   "./unkown-element.scoped.css?scoped=true",
+   "x/customComponent"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-616604d1ker",
+   "lwc-616604d1ker-host",
+   "x-unkown-element_unkown-element",
+   "x-unkown-element_unkown-element-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<unknonwtag${3}></unknonwtag>",
+   "parseFragment:<span${3}>valid tags should not warn</span>",
+   "parseFragment:<spam${3}>this tag has a typo</spam>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-616604d1ker"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unkown-element.css",
+   "./unkown-element.scoped.css?scoped=true",
+   "x/customComponent"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-616604d1ker",
+   "lwc-616604d1ker-host",
+   "x-unkown-element_unkown-element",
+   "x-unkown-element_unkown-element-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<unknonwtag${3}></unknonwtag>",
+   "parseFragment:<span${3}>valid tags should not warn</span>",
+   "parseFragment:<spam${3}>this tag has a typo</spam>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-616604d1ker"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unkown-element.css",
+   "./unkown-element.scoped.css?scoped=true",
+   "x/customComponent"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-616604d1ker",
+   "lwc-616604d1ker-host",
+   "x-unkown-element_unkown-element",
+   "x-unkown-element_unkown-element-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<unknonwtag${3}></unknonwtag>",
+   "parseFragment:<span${3}>valid tags should not warn</span>",
+   "parseFragment:<spam${3}>this tag has a typo</spam>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-616604d1ker"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unkown-element.css",
+   "./unkown-element.scoped.css?scoped=true",
+   "x/customComponent"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-616604d1ker",
+   "lwc-616604d1ker-host",
+   "x-unkown-element_unkown-element",
+   "x-unkown-element_unkown-element-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<unknonwtag${3}></unknonwtag>",
+   "parseFragment:<span${3}>valid tags should not warn</span>",
+   "parseFragment:<spam${3}>this tag has a typo</spam>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-616604d1ker"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unkown-element.css",
+   "./unkown-element.scoped.css?scoped=true",
+   "x/customComponent"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-616604d1ker",
+   "lwc-616604d1ker-host",
+   "x-unkown-element_unkown-element",
+   "x-unkown-element_unkown-element-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<unknonwtag${3}></unknonwtag>",
+   "parseFragment:<span${3}>valid tags should not warn</span>",
+   "parseFragment:<spam${3}>this tag has a typo</spam>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-616604d1ker"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unkown-element.css",
+   "./unkown-element.scoped.css?scoped=true",
+   "x/customComponent"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-616604d1ker",
+   "lwc-616604d1ker-host",
+   "x-unkown-element_unkown-element",
+   "x-unkown-element_unkown-element-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<unknonwtag${3}></unknonwtag>",
+   "parseFragment:<span${3}>valid tags should not warn</span>",
+   "parseFragment:<spam${3}>this tag has a typo</spam>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-616604d1ker"
+  }
+ }
+}

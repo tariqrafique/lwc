@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-component data-id=\"cmp-outer-static\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-computed\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-spread\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-component data-id=\"cmp-outer-static\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-computed\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-spread\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-component data-id=\"cmp-outer-static\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-computed\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-spread\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-component data-id=\"cmp-outer-static\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-computed\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-spread\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-component data-id=\"cmp-outer-static\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-computed\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-spread\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-component data-id=\"cmp-outer-static\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-computed\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-spread\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-component data-id=\"cmp-outer-static\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-computed\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n    <x-component data-id=\"cmp-outer-spread\">\n      <template shadowrootmode=\"open\">\n        <slot>\n        </slot>\n      </template>\n      original\n    </x-component>\n  </template>\n</fixture-test>"
+ }
+}

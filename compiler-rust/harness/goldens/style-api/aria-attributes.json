@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+    }
+   }
+  ]
+ }
+}

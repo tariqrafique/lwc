@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./inline-sibling.css",
+    "./inline-sibling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-48n2bhseivd",
+    "lwc-48n2bhseivd-host",
+    "x-inline-sibling_inline-sibling",
+    "x-inline-sibling_inline-sibling-host"
+  ]
+}

@@ -1,0 +1,8 @@
+phase	decision	why
+4	class-properties lowered by focused span-edit pass (transforms/class_properties.rs), not oxc_transformer	oxc transformer would re-print/re-scope the whole program and its loose-mode class-properties assumptions do not map 1:1 to Babel loose; span pass matches Babel loose for public instance fields (this.x = v / void 0, after top-level super(), synthesized constructor(...args){super(...args)})
+4	static, #private and accessor fields left unlowered	out of scope; oxc prints them natively (Babel loose would use Class.x= / _classPrivateFieldLooseKey)
+4	private-method sandwich implemented as real text renames around lowering (forward on source, reverse after fixpoint lower), gated on enable_private_methods	parity with JS plugin order locked by Migrate even though span lowering never touches #m
+4	reserved-prefix collision checked in forward (and again in reverse) when flag on	same error text as DecoratorErrors.PRIVATE_METHOD_NAME_COLLISION
+5	wire validate: 1119/1131/1132/1199/1200 name-based (imported set, src_declares, top-level const bindings incl. destructuring); bigint computed wire key -> stringified digits	no scope analysis in span pass; matches fixtures
+5	napi+harness forward enableSyntheticElementInternals/componentFeatureFlagModulePath; feature-flag import emitted first	Babel unshifts flag import before tmpl
+6	template text: split cleaned text into literal/{expr} segments (brace-balanced, unclosed { stays literal); one Text per segment; check_expr per expr segment only	fixes {foo}yolo{bar} being one bad expr -> 1083; upstream LWC merges these into one concatenated api_text, codegen not matched yet

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./valid-image.css",
+    "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3jdtng6574g",
+    "lwc-3jdtng6574g-host",
+    "x-valid-image_valid-image",
+    "x-valid-image_valid-image-host"
+  ]
+}

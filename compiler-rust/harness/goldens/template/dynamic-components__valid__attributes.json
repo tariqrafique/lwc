@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attributes.css",
+    "./attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-33v8klcvlb2",
+    "lwc-33v8klcvlb2-host",
+    "x-attributes_attributes",
+    "x-attributes_attributes-host"
+  ]
+}

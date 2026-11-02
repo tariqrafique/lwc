@@ -1,0 +1,372 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a href=\"https://example.com/kansai-airport\"${3}>KIX</a>",
+   "parseFragment:<map${3}><area href=\"https://example.com/eneos-gas\"${3}><area href=\"https://example.com/kawaramachi\"${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a href=\"https://example.com/kansai-airport\"${3}>KIX</a>",
+   "parseFragment:<map${3}><area href=\"https://example.com/eneos-gas\"${3}><area href=\"https://example.com/kawaramachi\"${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a href=\"https://example.com/kansai-airport\"${3}>KIX</a>",
+   "parseFragment:<map${3}><area href=\"https://example.com/eneos-gas\"${3}><area href=\"https://example.com/kawaramachi\"${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a href=\"https://example.com/kansai-airport\"${3}>KIX</a>",
+   "parseFragment:<map${3}><area href=\"https://example.com/eneos-gas\"${3}><area href=\"https://example.com/kawaramachi\"${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a href=\"https://example.com/kansai-airport\"${3}>KIX</a>",
+   "parseFragment:<map${3}><area href=\"https://example.com/eneos-gas\"${3}><area href=\"https://example.com/kawaramachi\"${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a href=\"https://example.com/kansai-airport\"${3}>KIX</a>",
+   "parseFragment:<map${3}><area href=\"https://example.com/eneos-gas\"${3}><area href=\"https://example.com/kawaramachi\"${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a href=\"https://example.com/kansai-airport\"${3}>KIX</a>",
+   "parseFragment:<map${3}><area href=\"https://example.com/eneos-gas\"${3}><area href=\"https://example.com/kawaramachi\"${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a href=\"https://example.com/kansai-airport\"${3}>KIX</a>",
+   "parseFragment:<map${3}><area href=\"https://example.com/eneos-gas\"${3}><area href=\"https://example.com/kawaramachi\"${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a href=\"https://example.com/kansai-airport\"${3}>KIX</a>",
+   "parseFragment:<map${3}><area href=\"https://example.com/eneos-gas\"${3}><area href=\"https://example.com/kawaramachi\"${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a href=\"https://example.com/kansai-airport\"${3}>KIX</a>",
+   "parseFragment:<map${3}><area href=\"https://example.com/eneos-gas\"${3}><area href=\"https://example.com/kawaramachi\"${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ }
+}

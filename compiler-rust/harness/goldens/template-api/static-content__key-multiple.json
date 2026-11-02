@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-multiple.css",
+   "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8k5meuf7hp",
+   "lwc-8k5meuf7hp-host",
+   "x-key-multiple_key-multiple",
+   "x-key-multiple_key-multiple-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${3}>repeated item #1</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #2</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #3</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8k5meuf7hp"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-multiple.css",
+   "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8k5meuf7hp",
+   "lwc-8k5meuf7hp-host",
+   "x-key-multiple_key-multiple",
+   "x-key-multiple_key-multiple-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${3}>repeated item #1</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #2</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #3</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-key-multiple_key-multiple"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-multiple.css",
+   "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8k5meuf7hp",
+   "lwc-8k5meuf7hp-host",
+   "x-key-multiple_key-multiple",
+   "x-key-multiple_key-multiple-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${3}>repeated item #1</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #2</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #3</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-key-multiple_key-multiple"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-multiple.css",
+   "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8k5meuf7hp",
+   "lwc-8k5meuf7hp-host",
+   "x-key-multiple_key-multiple",
+   "x-key-multiple_key-multiple-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${3}>repeated item #1</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #2</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #3</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8k5meuf7hp"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-multiple.css",
+   "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8k5meuf7hp",
+   "lwc-8k5meuf7hp-host",
+   "x-key-multiple_key-multiple",
+   "x-key-multiple_key-multiple-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${3}>repeated item #1</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #2</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #3</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8k5meuf7hp"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-multiple.css",
+   "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8k5meuf7hp",
+   "lwc-8k5meuf7hp-host",
+   "x-key-multiple_key-multiple",
+   "x-key-multiple_key-multiple-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${3}>repeated item #1</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #2</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #3</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8k5meuf7hp"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-multiple.css",
+   "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8k5meuf7hp",
+   "lwc-8k5meuf7hp-host",
+   "x-key-multiple_key-multiple",
+   "x-key-multiple_key-multiple-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${3}>repeated item #1</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #2</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #3</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8k5meuf7hp"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-multiple.css",
+   "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8k5meuf7hp",
+   "lwc-8k5meuf7hp-host",
+   "x-key-multiple_key-multiple",
+   "x-key-multiple_key-multiple-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${3}>repeated item #1</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #2</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #3</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8k5meuf7hp"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-multiple.css",
+   "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8k5meuf7hp",
+   "lwc-8k5meuf7hp-host",
+   "x-key-multiple_key-multiple",
+   "x-key-multiple_key-multiple-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${3}>repeated item #1</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #2</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #3</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8k5meuf7hp"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-multiple.css",
+   "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8k5meuf7hp",
+   "lwc-8k5meuf7hp-host",
+   "x-key-multiple_key-multiple",
+   "x-key-multiple_key-multiple-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${3}>repeated item #1</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #2</span></div>",
+   "parseFragment:<div${3}><span${3}>repeated item #3</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8k5meuf7hp"
+  }
+ }
+}

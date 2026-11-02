@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1105
+  ],
+  "line": null,
+  "expectedCodes": [
+    1105,
+    1105
+  ]
+}

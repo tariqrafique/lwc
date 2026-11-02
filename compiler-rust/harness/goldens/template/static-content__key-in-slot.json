@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./key-in-slot.css",
+    "./key-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2b5l14n492j",
+    "lwc-2b5l14n492j-host",
+    "x-key-in-slot_key-in-slot",
+    "x-key-in-slot_key-in-slot-host"
+  ]
+}

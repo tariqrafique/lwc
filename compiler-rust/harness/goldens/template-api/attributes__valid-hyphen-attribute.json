@@ -1,0 +1,312 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-attribute.css",
+   "./valid-hyphen-attribute.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4rpc6om82jo",
+   "lwc-4rpc6om82jo-host",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4rpc6om82jo"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-attribute.css",
+   "./valid-hyphen-attribute.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4rpc6om82jo",
+   "lwc-4rpc6om82jo-host",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-valid-hyphen-attribute_valid-hyphen-attribute"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-attribute.css",
+   "./valid-hyphen-attribute.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4rpc6om82jo",
+   "lwc-4rpc6om82jo-host",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-valid-hyphen-attribute_valid-hyphen-attribute"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-attribute.css",
+   "./valid-hyphen-attribute.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4rpc6om82jo",
+   "lwc-4rpc6om82jo-host",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4rpc6om82jo"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-attribute.css",
+   "./valid-hyphen-attribute.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4rpc6om82jo",
+   "lwc-4rpc6om82jo-host",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4rpc6om82jo"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-attribute.css",
+   "./valid-hyphen-attribute.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4rpc6om82jo",
+   "lwc-4rpc6om82jo-host",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4rpc6om82jo"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-attribute.css",
+   "./valid-hyphen-attribute.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4rpc6om82jo",
+   "lwc-4rpc6om82jo-host",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4rpc6om82jo"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-attribute.css",
+   "./valid-hyphen-attribute.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4rpc6om82jo",
+   "lwc-4rpc6om82jo-host",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4rpc6om82jo"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-attribute.css",
+   "./valid-hyphen-attribute.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4rpc6om82jo",
+   "lwc-4rpc6om82jo-host",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4rpc6om82jo"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-attribute.css",
+   "./valid-hyphen-attribute.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4rpc6om82jo",
+   "lwc-4rpc6om82jo-host",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute",
+   "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4rpc6om82jo"
+  }
+ }
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./parenthesis.css",
+    "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6uuifvb6qqe",
+    "lwc-6uuifvb6qqe-host",
+    "x-parenthesis_parenthesis",
+    "x-parenthesis_parenthesis-host"
+  ]
+}

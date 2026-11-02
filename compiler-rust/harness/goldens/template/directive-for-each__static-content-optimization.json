@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./static-content-optimization.css",
+    "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-40fo8n330sd",
+    "lwc-40fo8n330sd-host",
+    "x-static-content-optimization_static-content-optimization",
+    "x-static-content-optimization_static-content-optimization-host"
+  ]
+}

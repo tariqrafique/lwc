@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-href.css",
+    "./attribute-href.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5jt7h1qitjc",
+    "lwc-5jt7h1qitjc-host",
+    "x-attribute-href_attribute-href",
+    "x-attribute-href_attribute-href-host"
+  ]
+}

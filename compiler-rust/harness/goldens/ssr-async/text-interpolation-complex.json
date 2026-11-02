@@ -1,0 +1,54 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/text-interpolation/text-interpolation.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./text-interpolation.css",
+        "./text-interpolation.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-1ua14l8jqot",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/text-interpolation/text-interpolation.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./text-interpolation.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-text-interpolation",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

@@ -1,0 +1,302 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./built-in-element.css",
+   "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uv881g6g8o",
+   "lwc-1uv881g6g8o-host",
+   "x-built-in-element_built-in-element",
+   "x-built-in-element_built-in-element-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1uv881g6g8o"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./built-in-element.css",
+   "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uv881g6g8o",
+   "lwc-1uv881g6g8o-host",
+   "x-built-in-element_built-in-element",
+   "x-built-in-element_built-in-element-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-built-in-element_built-in-element"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./built-in-element.css",
+   "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uv881g6g8o",
+   "lwc-1uv881g6g8o-host",
+   "x-built-in-element_built-in-element",
+   "x-built-in-element_built-in-element-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-built-in-element_built-in-element"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./built-in-element.css",
+   "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uv881g6g8o",
+   "lwc-1uv881g6g8o-host",
+   "x-built-in-element_built-in-element",
+   "x-built-in-element_built-in-element-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1uv881g6g8o"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./built-in-element.css",
+   "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uv881g6g8o",
+   "lwc-1uv881g6g8o-host",
+   "x-built-in-element_built-in-element",
+   "x-built-in-element_built-in-element-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1uv881g6g8o"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./built-in-element.css",
+   "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uv881g6g8o",
+   "lwc-1uv881g6g8o-host",
+   "x-built-in-element_built-in-element",
+   "x-built-in-element_built-in-element-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1uv881g6g8o"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./built-in-element.css",
+   "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uv881g6g8o",
+   "lwc-1uv881g6g8o-host",
+   "x-built-in-element_built-in-element",
+   "x-built-in-element_built-in-element-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1uv881g6g8o"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./built-in-element.css",
+   "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uv881g6g8o",
+   "lwc-1uv881g6g8o-host",
+   "x-built-in-element_built-in-element",
+   "x-built-in-element_built-in-element-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1uv881g6g8o"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./built-in-element.css",
+   "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uv881g6g8o",
+   "lwc-1uv881g6g8o-host",
+   "x-built-in-element_built-in-element",
+   "x-built-in-element_built-in-element-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1uv881g6g8o"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./built-in-element.css",
+   "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uv881g6g8o",
+   "lwc-1uv881g6g8o-host",
+   "x-built-in-element_built-in-element",
+   "x-built-in-element_built-in-element-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1uv881g6g8o"
+  }
+ }
+}

@@ -1,0 +1,152 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/consumer/consumer.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./consumer.css",
+        "./consumer.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-5n0lbpjgrgn",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/consumer/consumer.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./consumer.html",
+        "../../../wire-adapter"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-consumer",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/provider/provider.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./provider.css",
+        "./provider.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-3g0lsgsh6t5",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/provider/provider.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./provider.html",
+        "../../../wire-adapter"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-provider",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/root/root.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/provider",
+        "x/consumer",
+        "./root.css",
+        "./root.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-1q6ga5gimtp",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/root/root.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./root.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-root",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

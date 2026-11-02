@@ -1,0 +1,2 @@
+# path(rel to crates/)	word(lowercase match)	reason (required)
+lwc-template/src/parser/tables.rs	mask	SVG <mask> element name in SUPPORTED_SVG_TAGS (upstream @lwc/template-compiler parser/constants.ts)

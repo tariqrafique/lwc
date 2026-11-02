@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": true,
+      "css": {
+        "x|host=true|dir=false": ":host-context(.foo) {}",
+        "x|host=false|dir=true": ":host-context(.foo) {}",
+        "x|host=false|dir=false": ":host-context(.foo) {}",
+        "x|host=true|dir=true": ":host-context(.foo) {}",
+        "-|host=true|dir=false": ":host-context(.foo) {}"
+      }
+    }
+  ]
+}

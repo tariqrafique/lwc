@@ -1,0 +1,312 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-uppercase.css",
+   "./attribute-uppercase.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-uguh0pjd13",
+   "lwc-uguh0pjd13-host",
+   "x-attribute-uppercase_attribute-uppercase",
+   "x-attribute-uppercase_attribute-uppercase-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-uguh0pjd13"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-uppercase.css",
+   "./attribute-uppercase.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-uguh0pjd13",
+   "lwc-uguh0pjd13-host",
+   "x-attribute-uppercase_attribute-uppercase",
+   "x-attribute-uppercase_attribute-uppercase-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-attribute-uppercase_attribute-uppercase"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-uppercase.css",
+   "./attribute-uppercase.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-uguh0pjd13",
+   "lwc-uguh0pjd13-host",
+   "x-attribute-uppercase_attribute-uppercase",
+   "x-attribute-uppercase_attribute-uppercase-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-attribute-uppercase_attribute-uppercase"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-uppercase.css",
+   "./attribute-uppercase.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-uguh0pjd13",
+   "lwc-uguh0pjd13-host",
+   "x-attribute-uppercase_attribute-uppercase",
+   "x-attribute-uppercase_attribute-uppercase-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-uguh0pjd13"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-uppercase.css",
+   "./attribute-uppercase.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-uguh0pjd13",
+   "lwc-uguh0pjd13-host",
+   "x-attribute-uppercase_attribute-uppercase",
+   "x-attribute-uppercase_attribute-uppercase-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-uguh0pjd13"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-uppercase.css",
+   "./attribute-uppercase.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-uguh0pjd13",
+   "lwc-uguh0pjd13-host",
+   "x-attribute-uppercase_attribute-uppercase",
+   "x-attribute-uppercase_attribute-uppercase-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-uguh0pjd13"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-uppercase.css",
+   "./attribute-uppercase.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-uguh0pjd13",
+   "lwc-uguh0pjd13-host",
+   "x-attribute-uppercase_attribute-uppercase",
+   "x-attribute-uppercase_attribute-uppercase-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-uguh0pjd13"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-uppercase.css",
+   "./attribute-uppercase.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-uguh0pjd13",
+   "lwc-uguh0pjd13-host",
+   "x-attribute-uppercase_attribute-uppercase",
+   "x-attribute-uppercase_attribute-uppercase-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-uguh0pjd13"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-uppercase.css",
+   "./attribute-uppercase.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-uguh0pjd13",
+   "lwc-uguh0pjd13-host",
+   "x-attribute-uppercase_attribute-uppercase",
+   "x-attribute-uppercase_attribute-uppercase-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-uguh0pjd13"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-uppercase.css",
+   "./attribute-uppercase.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-uguh0pjd13",
+   "lwc-uguh0pjd13-host",
+   "x-attribute-uppercase_attribute-uppercase",
+   "x-attribute-uppercase_attribute-uppercase-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-uguh0pjd13"
+  }
+ }
+}

@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "eval": {
+    "imports": [],
+    "lwcImports": [],
+    "exports": {
+      "default": "object"
+    },
+    "defaultExport": {
+      "kind": "object",
+      "extendsLightningElement": false,
+      "registered": false
+    },
+    "decorators": []
+  },
+  "warnings": [],
+  "signals": {
+    "objectSpreadPreserved": false,
+    "asyncToGenerator": false,
+    "wrapAsyncGenerator": false,
+    "asyncIterator": false,
+    "locationRewrite": false,
+    "nativeAsync": false,
+    "registerDecoratorsCalls": 0,
+    "registerComponentCalls": 0
+  }
+}

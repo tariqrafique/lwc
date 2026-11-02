@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./mixed-props-attrs.css",
+    "./mixed-props-attrs.scoped.css?scoped=true",
+    "ns/foo",
+    "ns/bar"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate",
+    "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-cfdictrqeg",
+    "lwc-cfdictrqeg-host",
+    "x-mixed-props-attrs_mixed-props-attrs",
+    "x-mixed-props-attrs_mixed-props-attrs-host"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./literal-value-starting-with-hash.css",
+    "./literal-value-starting-with-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate",
+    "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-p1v8cfa11m",
+    "lwc-p1v8cfa11m-host",
+    "x-literal-value-starting-with-hash_literal-value-starting-with-hash",
+    "x-literal-value-starting-with-hash_literal-value-starting-with-hash-host"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./hidden-global-attr.css",
+    "./hidden-global-attr.scoped.css?scoped=true",
+    "x/foo"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5hma34rpdl8",
+    "lwc-5hma34rpdl8-host",
+    "x-hidden-global-attr_hidden-global-attr",
+    "x-hidden-global-attr_hidden-global-attr-host"
+  ]
+}
