@@ -11,10 +11,23 @@
 // - LWC-coded errors Babel wrapped via buildCodeFrameError (`SyntaxError: <file>: LWCnnnn: ...\n<code frame>`):
 //   the FIRST LINE (name + filename + LWC text + any `(L:C)`) compares exactly; only the trailing code frame
 //   (Babel artifact) is dropped. Harness decision 2026-11-01 under the same babel-frame SEAM_GAP.
+// - Recovery-mode AGGREGATE (golden has `aggregate`): top-level message + code exact, then errors[] in order with
+//   each member's code, message and location {line, column, start, length} exact. A missing errors[] fails.
 // - No false pass: if the golden is an error, the actual must be an error too (`actual == null` → fail), and a
 //   parser golden only matches an actual that is itself an uncoded SyntaxError.
 
+/** One member of a recovery-mode CompilerAggregateError (`errors[]`): @lwc/errors CompilerError fields. */
+export interface SubDiagnostic {
+    code: number | null;
+    message: string;
+    location: { line: number | null; column: number | null; start: number | null; length: number | null } | null;
+}
+
+/** Recovery-mode aggregate: top-level message/code plus ordered members. Absent unless the thrown value has `errors[]`. */
+export interface AggregateObservation { message: string; code: number | string | null; errors: SubDiagnostic[] }
+
 export interface ErrorObservation {
+    aggregate?: AggregateObservation;
     name?: string | null;
     message?: string | null;
     /** LWC diagnostic code (number) or a string code such as `BABEL_PARSER_SYNTAX_ERROR`. */
@@ -29,7 +42,7 @@ export type ErrorLike = ErrorObservation | string;
 
 export interface ParserFrame { name: string; filename: string | null; line: number | null; column: number | null }
 
-export interface CompareResult { pass: boolean; mode: 'parser' | 'exact' | 'lwc-framed'; reason?: string }
+export interface CompareResult { pass: boolean; mode: 'parser' | 'exact' | 'lwc-framed' | 'aggregate'; reason?: string }
 
 const LWC_CODE_RE = /\bLWC\d+\b/;
 // First message line: optional rollup `[plugin name] ` prefix, `SyntaxError: <filename>: <text>`, optional Babel
@@ -39,6 +52,45 @@ const LOC_TRAILER_RE = /\((\d+):(\d+)\)\s*$/;
 
 const toObs = (e: ErrorLike): ErrorObservation => (typeof e === 'string' ? { message: e } : e);
 const num = (v: unknown): number | null => (typeof v === 'number' && Number.isFinite(v) ? v : null);
+
+const subObs = (x: any): SubDiagnostic => {
+    const l = x?.location;
+    return {
+        code: num(x?.code),
+        // postcss puts the absolute input path in the text; goldens must not depend on the recording dir
+        message: String(x?.message ?? x).split(process.cwd() + '/').join('<cwd>/'),
+        location: l && typeof l === 'object'
+            ? { line: num(l.line), column: num(l.column), start: num(l.start), length: num(l.length) }
+            : null,
+    };
+};
+
+/** Aggregate observation (recovery mode), or undefined when the thrown value carries no `errors[]`. */
+export function observeAggregate(e: any): AggregateObservation | undefined {
+    if (e == null || typeof e !== 'object' || !Array.isArray(e.errors)) return undefined;
+    const rawCode = e.code === 'PLUGIN_ERROR' ? e.pluginCode : e.code;
+    return {
+        message: String(e.message ?? ''),
+        code: typeof rawCode === 'number' || typeof rawCode === 'string' ? rawCode : null,
+        errors: e.errors.map(subObs),
+    };
+}
+
+/** In-order compare of aggregate members: count, then each member's code, message and location (all four fields). */
+export function compareAggregate(golden: AggregateObservation, actual: AggregateObservation | undefined): CompareResult {
+    const fail = (reason: string): CompareResult => ({ pass: false, mode: 'aggregate', reason });
+    if (!actual) return fail('golden is an aggregate (errors[]), actual has no errors[]');
+    if (actual.message !== golden.message) return fail(`aggregate message: want ${JSON.stringify(golden.message)}, got ${JSON.stringify(actual.message)}`);
+    if (actual.code !== golden.code) return fail(`aggregate code: want ${golden.code}, got ${actual.code}`);
+    if (actual.errors.length !== golden.errors.length) return fail(`errors[] length: want ${golden.errors.length}, got ${actual.errors.length}`);
+    for (let i = 0; i < golden.errors.length; i++) {
+        const g = golden.errors[i], a = actual.errors[i];
+        if (a.code !== g.code) return fail(`errors[${i}].code: want ${g.code}, got ${a.code}`);
+        if (a.message !== g.message) return fail(`errors[${i}].message differs`);
+        if (JSON.stringify(a.location) !== JSON.stringify(g.location)) return fail(`errors[${i}].location: want ${JSON.stringify(g.location)}, got ${JSON.stringify(a.location)}`);
+    }
+    return { pass: true, mode: 'aggregate' };
+}
 
 /** Structured observation of a thrown value (JS @lwc/compiler, Babel, rollup-wrapped, or RustCompilerBackend error). */
 export function observeError(e: any): ErrorObservation {
@@ -52,6 +104,7 @@ export function observeError(e: any): ErrorObservation {
         filename: e.filename ?? e.loc?.file ?? e.id ?? null,
         line: num(e.loc?.line) ?? num(e.location?.line) ?? num(e.line),
         column: num(e.loc?.column) ?? num(e.location?.column) ?? num(e.column),
+        ...(Array.isArray(e.errors) ? { aggregate: observeAggregate(e) } : {}),
     };
 }
 
@@ -84,6 +137,10 @@ export function compareError(
     actual: ErrorLike | null | undefined,
     { exact = 'equal' }: { exact?: 'equal' | 'includes' } = {},
 ): CompareResult {
+    // Recovery-mode aggregate (Migrate 2026-11-01): members compared in order on code, message, location.
+    const ga = golden != null && typeof golden === 'object' ? golden.aggregate : undefined;
+    if (ga) return actual == null ? { pass: false, mode: 'aggregate', reason: 'golden is an error, actual did not throw' }
+        : compareAggregate(ga, typeof actual === 'object' ? actual.aggregate : undefined);
     const frame = classifyParserError(golden);
     if (golden == null) return actual == null ? { pass: true, mode: 'exact' } : { pass: false, mode: 'exact', reason: 'golden has no error, actual threw' };
     if (actual == null) return { pass: false, mode: frame ? 'parser' : 'exact', reason: 'golden is an error, actual did not throw' };

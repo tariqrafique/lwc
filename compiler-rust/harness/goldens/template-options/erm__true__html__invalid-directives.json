@@ -5,6 +5,42 @@
     1127
   ],
   "line": null,
+  "aggregate": {
+    "message": "",
+    "code": null,
+    "errors": [
+      {
+        "code": 1127,
+        "message": "LWC1127: Invalid directive \"lwc:invalid-directive\" on element <div>.",
+        "location": {
+          "line": 3,
+          "column": 21,
+          "start": 48,
+          "length": 40
+        }
+      },
+      {
+        "code": 1127,
+        "message": "LWC1127: Invalid directive \"lwc:another-invalid\" on element <span>.",
+        "location": {
+          "line": 4,
+          "column": 21,
+          "start": 109,
+          "length": 40
+        }
+      },
+      {
+        "code": 1127,
+        "message": "LWC1127: Invalid directive \"lwc:yet-another-invalid\" on element <p>.",
+        "location": {
+          "line": 5,
+          "column": 21,
+          "start": 170,
+          "length": 38
+        }
+      }
+    ]
+  },
   "errors": [
     1127,
     1127,

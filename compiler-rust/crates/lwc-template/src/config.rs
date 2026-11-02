@@ -50,8 +50,8 @@ pub struct ConfigError {
     pub message: String,
 }
 
-/// Placeholder until `lwc-shared` ports `@lwc/shared` API version table.
-pub const DEFAULT_API_VERSION: u32 = 66;
+/// Version used when `api_version` is omitted (`getAPIVersionFromNumber(undefined)` = HIGHEST_API_VERSION).
+pub const DEFAULT_API_VERSION: u32 = lwc_shared::api_version::HIGHEST_API_VERSION;
 
 impl Config {
     pub fn normalize(self) -> Result<NormalizedConfig, ConfigError> {
@@ -77,7 +77,9 @@ impl Config {
                 .enable_static_content_optimization
                 .unwrap_or(true),
             enable_lwc_on: self.enable_lwc_on.unwrap_or(false),
-            api_version: self.api_version.unwrap_or(DEFAULT_API_VERSION),
+            // TS normalizeConfig: `getAPIVersionFromNumber(config.apiVersion)` (default + clamp), the one
+            // resolved version every parser/codegen gate reads.
+            api_version: lwc_shared::api_version::get_api_version_from_number(self.api_version),
             disable_synthetic_shadow_support: self
                 .disable_synthetic_shadow_support
                 .unwrap_or(false),
@@ -144,5 +146,18 @@ mod tests {
         assert!(n.enable_static_content_optimization);
         assert!(!n.preserve_html_comments);
         assert_eq!(n.api_version, DEFAULT_API_VERSION);
+    }
+
+    #[test]
+    fn normalize_api_version_like_get_api_version_from_number() {
+        let v = |x: Option<u32>| Config { api_version: x, ..Config::default() }.normalize().unwrap().api_version;
+        assert_eq!(v(None), 66);
+        assert_eq!(v(Some(57)), 58);
+        assert_eq!(v(Some(0)), 58);
+        assert_eq!(v(Some(58)), 58);
+        assert_eq!(v(Some(63)), 63);
+        assert_eq!(v(Some(66)), 66);
+        assert_eq!(v(Some(67)), 66);
+        assert_eq!(v(Some(1000)), 66);
     }
 }

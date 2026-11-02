@@ -54,7 +54,7 @@ pub fn compile(
 
     let (code, root) = if !has_error {
         if let Some(ref root) = parsing.root {
-            (codegen::generate(root, &options, filename, &tokens.scope_token), parsing.root)
+            (codegen::generate(root, &options, filename, &tokens), parsing.root)
         } else {
             (String::new(), None)
         }
@@ -348,7 +348,9 @@ mod tests {
         assert!(h.attributes.is_empty(), "{:?}", h.attributes);
         assert!(matches!(b.else_.as_deref(), Some(ElseBranch::Else(e)) if matches!(&e.children[..], [ChildNode::Element(h)] if h.attributes.is_empty())));
         let code = cn(LWC_IF_ELSE);
-        for n in ["$cmp.visible ?", " : api_element", "api_text(\"Visible Header\")", "api_text(\"Alternative Header\")", "key: 0", "key: 1"] {
+        // TS transformConditionalParentBlock: every branch is `api_fragment(ifBlockKey, children, 0)`, the
+        // if-block key allocated before its children's keys.
+        for n in ["$cmp.visible ? api_fragment(0, [api_element", " : api_fragment(0, [api_element", "api_text(\"Visible Header\")", "api_text(\"Alternative Header\")", "key: 1", "key: 2"] {
             assert!(code.contains(n), "{n}\n{code}");
         }
         assert!(!code.contains("lwc:"), "{code}");
@@ -767,8 +769,104 @@ mod tests {
     fn fixture(rel: &str) -> String {
         std::fs::read_to_string(format!("/workspace/lwc/packages/@lwc/{rel}")).unwrap_or_else(|e| panic!("{rel}: {e}"))
     }
+    fn cv(src: &str, api: u32, sco: bool, complex: bool) -> String {
+        compile(src, "x.html", Config {
+            api_version: Some(api), namespace: Some("ns".into()), name: Some("x".into()),
+            enable_static_content_optimization: Some(sco), experimental_complex_expressions: Some(complex), ..Default::default()
+        }).unwrap().code
+    }
+
+    /// TS transformChildren/shouldFlatten: an iterator among siblings is flattened, a lone one is returned as is.
+    #[test]
+    fn for_each_children_are_flattened() {
+        let code = cn("<template><section>text<template for:each={items} for:item=\"i\"><p key={i.id}>x</p></template></section></template>");
+        assert!(code.contains("api_flatten([api_text(\"text\"), api_iterator($cmp.items") && code.contains("f: api_flatten"), "{code}");
+        let code = cn("<template><template for:each={items} for:item=\"i\"><p key={i.id}>x</p></template></template>");
+        assert!(code.contains("return api_iterator($cmp.items") && !code.contains("api_flatten"), "{code}");
+    }
+
+    /// TS transformIf: array children get one ternary each; a flattened body becomes `test ? expr : []`.
+    #[test]
+    fn if_children_spread_or_flatten() {
+        let code = cn("<template><div><template if:true={a}><p>1</p><p>2</p></template></div></template>");
+        assert_eq!(code.matches("$cmp.a ? api_element(\"p\"").count(), 2, "{code}");
+        assert!(!code.contains("[api_element(\"p\""), "{code}");
+        let code = cn("<template><div><template if:false={a}><template for:each={items} for:item=\"i\"><p key={i.id}>x</p></template></template></div></template>");
+        assert!(code.contains("!$cmp.a ? api_iterator($cmp.items") && code.contains(" : []"), "{code}");
+    }
+
+    /// USE_FRAGMENTS_FOR_LIGHT_DOM_SLOTS @60: below it a light-DOM `<slot>` child forces flattening.
+    #[test]
+    fn light_slot_flatten_gate_59_60() {
+        let src = "<template lwc:render-mode=\"light\"><div><slot></slot><p>x</p></div></template>";
+        assert!(cv(src, 59, false, false).contains("api_flatten(["), "{}", cv(src, 59, false, false));
+        assert!(!cv(src, 60, false, false).contains("api_flatten"), "{}", cv(src, 60, false, false));
+    }
+
+    /// LOWERCASE_SCOPE_TOKENS @59: legacy `{ns}-{name}_{stem}` token below, lowercase token at/above.
+    #[test]
+    fn stylesheet_token_gate_58_59() {
+        let t58 = cv("<template><p></p></template>", 58, true, false);
+        let t59 = cv("<template><p></p></template>", 59, true, false);
+        assert!(t58.contains("tmpl.stylesheetToken = \"ns-x_x\";"), "{t58}");
+        assert!(t59.contains("tmpl.stylesheetToken = \"lwc-") && !t59.contains("ns-x_x"), "{t59}");
+        assert_eq!(t58.matches("stylesheetToken =").count(), 1);
+        // Clamp: 57 behaves like 58, 1000 like 66.
+        assert_eq!(cv("<template><p></p></template>", 57, true, false), t58);
+        assert_eq!(cv("<template><p></p></template>", 1000, true, false), cv("<template><p></p></template>", 66, true, false));
+    }
+
+    /// LOWERCASE_SCOPE_TOKENS also gates static foreign-namespace (SVG) content.
+    #[test]
+    fn static_svg_gate_58_59() {
+        let src = "<template><div><svg><path></path></svg></div></template>";
+        assert!(!cv(src, 58, true, false).contains("api_static_fragment"), "{}", cv(src, 58, true, false));
+        assert!(cv(src, 59, true, false).contains("api_static_fragment"), "{}", cv(src, 59, true, false));
+    }
+
+    /// TEMPLATE_CLASS_NAME_OBJECT_BINDING @62.
+    #[test]
+    fn class_object_binding_gate_61_62() {
+        let src = "<template><div class={c}></div></template>";
+        assert!(!cv(src, 61, false, false).contains("api_normalize_class_name"));
+        assert!(cv(src, 62, false, false).contains("api_normalize_class_name($cmp.c)"), "{}", cv(src, 62, false, false));
+    }
+
+    /// ENABLE_COMPLEX_TEMPLATE_EXPRESSIONS @66: complex sources are bound only at/above it; plain member access
+    /// (computed included) so access on `undefined` throws at render like JS.
+    #[test]
+    fn complex_expression_gate_65_66() {
+        let src = "<template><p>{a + b.c[d]}</p></template>";
+        assert!(cv(src, 66, false, true).contains("api_dynamic_text($cmp.a + $cmp.b.c[$cmp.d])"), "{}", cv(src, 66, false, true));
+        assert!(!cv(src, 65, false, true).contains("$cmp.a + "));
+    }
+
+    /// expression/parenthesis: parentheses are transparent (ESTree), so `((foo).bar)` is `$cmp.foo.bar`.
+    #[test]
+    fn parenthesized_member_is_plain_member() {
+        let code = cn("<template><p>{ ((foo).bar) }</p><p>{ (foo) }</p></template>");
+        assert!(code.contains("api_dynamic_text($cmp.foo.bar)") && code.contains("api_dynamic_text($cmp.foo)") && !code.contains("undefined"), "{code}");
+    }
+
+    /// TS generateTemplateMetadata: `tmpl.renderMode = "light"` after slots, before hasRefs; nothing for shadow.
+    #[test]
+    fn render_mode_light_metadata() {
+        let code = c("<template lwc:render-mode=\"light\"><slot></slot><p lwc:ref=\"p\"></p></template>");
+        let (s, m, r) = (code.find("tmpl.slots =").unwrap(), code.find("tmpl.renderMode = \"light\";").expect(&code), code.find("tmpl.hasRefs").unwrap());
+        assert!(s < m && m < r, "{code}");
+        assert!(!c("<template lwc:render-mode=\"shadow\"><p></p></template>").contains("renderMode"));
+    }
+
     fn codes(src: &str, cfg: Config) -> Vec<u32> {
         parse(src, cfg).unwrap().warnings.iter().map(|w| w.code.expect("coded diagnostic")).collect()
+    }
+
+    /// directive-lwc-if-else/error-multiple-directives/if-else: `lwc:else lwc:if` throws 1162 after TS has
+    /// pushed the lwc:if block, so there is no orphaned lwc:else (no extra 1165).
+    #[test]
+    fn else_plus_if_is_1162_only() {
+        let src = "<template>\n    <template lwc:else lwc:if={visible}>Conditional Text</template>\n</template>";
+        assert_eq!(codes(src, Config::default()), vec![1162]);
     }
 
     /// ssr-compiler fixture lwc-if-else-complex: complex `lwc:if` conditions (CTE) keep their
@@ -918,5 +1016,65 @@ mod tests {
             assert_eq!(e.code, None, "{e:?}");
             assert!(e.message.contains(attr), "{}", e.message);
         }
+    }
+
+    // Wave 2 slice 1: lowering/diagnostic parity fixes (template-compiler fixtures named per test).
+
+    /// parsing-errors/empty-template: blank source → 1072 at line 0 / column 0 (TS normalizeLocation(undefined)).
+    #[test]
+    fn missing_root_1072_at_0_0() {
+        for src in ["", "  \n "] {
+            let r = parse(src, Config::default()).unwrap();
+            assert!(r.root.is_none());
+            let [w] = &r.warnings[..] else { panic!("{:?}", r.warnings) };
+            assert_eq!((w.code, w.level), (Some(1072), DiagnosticLevel::Error));
+            let l = w.location.clone().expect("1072 carries a location");
+            assert_eq!((l.start_line, l.start_column, l.start, l.end), (0, 0, 0, 0));
+        }
+    }
+
+    /// directive-lwc-if-else/interop/mixed-if-true-else(-elseif): if:* with lwc:else / lwc:elseif → 1166.
+    #[test]
+    fn mixed_if_true_with_lwc_else_1166() {
+        assert_eq!(codes("<template><template lwc:if={a}>A</template><template if:true={a} lwc:else>B</template></template>", Config::default()), vec![1166]);
+        assert_eq!(codes("<template><template lwc:if={a}>A</template><template if:true={a} lwc:elseif={b}>B</template></template>", Config::default()), vec![1166]);
+    }
+
+    /// no-directives-in-slots: the first slot throws 1082 after its lwc:if block began the chain, so the
+    /// sibling lwc:else still has a chain (1082 again, not 1165).
+    #[test]
+    fn dropped_if_slot_keeps_chain_1082() {
+        let src = "<template><slot lwc:if={c} name=\"x\"></slot><slot lwc:else name=\"x\"></slot></template>";
+        assert_eq!(codes(src, Config::default()), vec![1082, 1082]);
+        // A valid lwc:else after a dropped lwc:if element attaches to the (empty) if block: no 1165.
+        let src = "<template><slot lwc:if={c}></slot><template lwc:else><p></p></template></template>";
+        assert_eq!(codes(src, Config::default()), vec![1082]);
+    }
+
+    /// TS parseElementLocation: the parse5-implied `<tbody>` takes the `<table>` location (end tag included), so
+    /// no 1078; 1144 is warned for the recovery.
+    #[test]
+    fn implied_tbody_uses_parent_location() {
+        let c = codes("<template><table><tr><td>x</td></tr></table></template>", Config::default());
+        assert!(!c.contains(&1078), "{c:?}");
+        assert!(c.contains(&1144), "{c:?}");
+    }
+
+    /// slots/dynamic-components/usage: `<lwc:component>` is transparent for the slot-ancestor check.
+    #[test]
+    fn lwc_component_transparent_for_slot_ancestor() {
+        let cfg = Config { enable_dynamic_components: Some(true), ..Config::default() };
+        let src = "<template><lwc:component lwc:is={ctor}><p slot=\"header\">H</p><p slot>D</p></lwc:component></template>";
+        let r = compile(src, "x.html", cfg).unwrap();
+        assert!(r.warnings.is_empty(), "{:?}", r.warnings);
+    }
+
+    /// blacklisted-svg shape: 1057 (applyAttributes) is warned before the 1049 throw of the same element.
+    #[test]
+    fn attr_warning_before_later_throw() {
+        let c = codes("<template><svg><filter id=\"f\" primitiveUnits=\"objectBoundingBox\"><feImage xlink:href=\"s.png\" preserveAspectRatio=\"none\"/></filter></svg></template>", Config::default());
+        let i57 = c.iter().position(|x| *x == 1057);
+        let i49 = c.iter().position(|x| *x == 1049);
+        assert!(i57.is_some() && i49.is_some() && i57 < i49, "{c:?}");
     }
 }

@@ -8,13 +8,16 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 cd "$here"  # suites resolve fixture/virtual paths relative to harness/
 ORACLE=/workspace/lwc ORACLE_SHA=b9e8007
-ROWS=(style js template ssr ssr-async ssr-asyncYield ssr-render ssr-render-async ssr-render-asyncYield csr-render csr-render-template template-renderer js-options js-api template-options ssr_dynamic_imports style-api template-api ssr_render_api)
+ROWS=(style js js-eval template ssr ssr-async ssr-asyncYield ssr-render ssr-render-async ssr-render-asyncYield csr-render csr-render-template template-renderer js-options js-api template-options ssr_dynamic_imports style-api template-api ssr_render_api)
 # Diagnostic-only rows (Migrate 2026-11-01): never gate. SSR gates on ssr-render* only.
 DIAG=" ssr ssr-async ssr-asyncYield template "  # template = compile-observation; gates via csr-render-template
 head_sha="$(git -C "$ORACLE" rev-parse HEAD)"
 [[ "$head_sha" == "$ORACLE_SHA"* ]] || { echo "!! ORACLE NOT PINNED: $ORACLE HEAD=$head_sha, want $ORACLE_SHA" >&2; exit 2; }
 dirty="$(git -C "$ORACLE" status --porcelain --untracked-files=all)"
 [ -z "$dirty" ] || { echo "!! ORACLE DIRTY ($ORACLE @ $ORACLE_SHA):" >&2; echo "$dirty" | head -20 >&2; exit 2; }
+"$here/scripts/ensure-deps.sh" || exit 2
+VITEST="$ORACLE/node_modules/.bin/vitest"   # never npx: it silently fetches an unrelated vitest when links are missing
+norun=()
 src="$here/lwc-compiler-napi.node"
 pins="$here/.pins"; mkdir -p "$pins"
 hash="$(sha256sum "$src" | cut -c1-12)"
@@ -39,14 +42,16 @@ for s in "${suites[@]}"; do
     ssr-render-*) test=test/ssr.render.test.ts; mode="${s#ssr-render-}";;
     ssr-*) test=test/ssr.behavior.test.ts; mode="${s#ssr-}";;
   esac
-  SSR_MODE="$mode" npx vitest run "$test" "${extra[@]}" --pool=threads --testTimeout=5000 --reporter=dot >"$out" 2>&1 || true
+  SSR_MODE="$mode" "$VITEST" run "$test" "${extra[@]}" --pool=threads --testTimeout=5000 --reporter=dot >"$out" 2>&1 || true
   line="$(grep -E '^\s+Tests ' "$out" | tail -1 | sed 's/^ *//')"
   err="$(grep -cE 'SIGBUS|SIGSEGV|Worker exited unexpectedly' "$out" || true)"
   tag=""; [[ "$DIAG" == *" $s "* ]] && tag="  (diagnostic, non-gating)"
   printf '%-22s %s%s%s\n' "$s" "$line" "$tag" "$([ "$err" != 0 ] && echo '  !! WORKER CRASH')"
+  [ -n "$line" ] || norun+=("$s")
 done
 shimgate=0; node "$here/scripts/shim-gate.mjs" || shimgate=1
 gate=0; OPTGATE_DIAG="$DIAG" node "$here/scripts/option-gate.mjs" "${ROWS[*]}" || gate=1
 if [ $shimgate -ne 0 ]; then echo "!! BOARD FAILED: untagged shim-ish line(s) in crates/ — tag as SHIM(<kind>: ...), remove, or allowlist with reason"; fi
 if [ $gate -ne 0 ]; then echo "!! BOARD FAILED: option-inventory gate"; fi
-[ $gate -eq 0 ] && [ $shimgate -eq 0 ] || exit 1
+if [ ${#norun[@]} -ne 0 ]; then echo "!! BOARD FAILED: row(s) produced no test summary: ${norun[*]} (see /tmp/board-<row>-$hash.out)"; fi
+[ $gate -eq 0 ] && [ $shimgate -eq 0 ] && [ ${#norun[@]} -eq 0 ] || exit 1

@@ -134,10 +134,20 @@ export class RustCompilerBackend implements CompilerBackend {
         for (const k of Object.keys(raw)) if (raw[k] == null) delete raw[k];
         const r = this.native.transform(src, filename, raw);
         if (r.error) {
-            const err: any = new Error(r.error.message ?? 'rust compile failed');
-            err.name = r.error.name ?? 'Error';
+            // Recovery mode: napi `errors[]` (JsAggregateEntry) -> AggregateError members shaped like @lwc/errors
+            // CompilerError (code, filename, location {line,column,start,length}, level, url). Never dropped.
+            const subs = Array.isArray(r.error.errors)
+                ? r.error.errors.map((x: any) => Object.assign(new Error(x.message), {
+                    code: x.code ?? undefined, filename: x.filename ?? undefined, location: x.location ?? undefined, level: x.level, url: x.url,
+                }))
+                : null;
+            const err: any = subs ? new AggregateError(subs, r.error.message ?? '') : new Error(r.error.message ?? 'rust compile failed');
+            if (subs) err.errors = subs;
+            err.name = r.error.name ?? (subs ? 'AggregateError' : 'Error');
             if (r.error.code != null) err.code = r.error.code;
-            if (r.error.line != null) err.location = { line: r.error.line, column: r.error.column ?? null };
+            if (r.error.location != null) err.location = r.error.location;
+            else if (r.error.line != null) err.location = { line: r.error.line, column: r.error.column ?? null };
+            if (r.error.filename != null) err.filename = r.error.filename;
             err.line = r.error.line ?? null;
             err.column = r.error.column ?? null;
             throw err;

@@ -3,7 +3,6 @@ pub mod slot;
 pub mod component;
 mod bind_expr;
 pub(crate) mod element;
-pub(crate) mod ir_compat; // SHIM(template-gap:ir-compat-walk): module retires when every template-gap id is fixed in lwc-template
 use element::ElView;
 use lwc_shared::template_ir::{ChildNode, ElementDirective, ElseBranch, Expression, LiteralValue, Root, RootDirective, TextValue};
 use lwc_shared::SsrMode;
@@ -68,8 +67,6 @@ pub struct Cx {
 
 pub fn compile_cx(root: &Root, mut opts: TemplateOptions) -> Cx {
     for d in &root.directives { if let RootDirective::PreserveComments(b) = d { opts.preserve_comments = *b; } }
-    // SHIM(template-gap:ir-compat-walk): normalize_root entry; retires with lwc-directive-attrs, lwc-component-node, component-prop-split, clean-text-node, empty-ns-prefix
-    let root = ir_compat::normalize_root(root); // SHIM(template-gap:ir-compat-walk)
     let mut cx = Cx::default();
     let mut out = Vec::new();
     emit_children(&root.children, opts, &mut out, &mut cx, &mut Vec::new());

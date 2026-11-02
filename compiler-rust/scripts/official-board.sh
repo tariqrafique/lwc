@@ -8,6 +8,7 @@
 #   3. napi built from the snapshot; installed into the SNAPSHOT harness (and atomically into the live harness for others)
 #   4. board.sh runs from the snapshot harness (tests+goldens frozen too); shim-gate + option-gate read snapshot crates (CRATES_ROOT)
 #   5. re-hash; mutation => INVALID (exit 4)
+#   7. VALID run also published to the official store (scripts/publish-official.sh)
 #   6. VALID run (snapshot unchanged, board rc 0) => /workspace/push/official-<srcsha>.tgz + official-<srcsha>.board.txt
 # Harness snapshot sits at depth 3 (/tmp/<dir>/harness) like the live one: rollup warning paths (../../../virtual-csr) are cwd-relative.
 set -euo pipefail
@@ -59,13 +60,24 @@ if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
   mkdir -p "$push"
   base="$push/official-$h0"
   { echo "official board  src=$h0  napi=$napi  parse5-rust=$p5 (build dep, NOT in tgz)  $(date -Iseconds)"
-    sed -n '/^napi sha256:/,$p' "$snap/board.log"; } > "$base.board.txt.tmp"
+    sed -n '/^napi sha256:/,$p' "$snap/board.log"
+    # CSR failure clusters (Migrate 2026-11-01): counts per cluster for each corpus
+    for c in ssr template; do rep="$hsnap/harness/.csr-render-out/rust-$c/report-$c.json"
+      [ -f "$rep" ] || { echo "!! csr clusters: missing $rep"; continue; }
+      echo "csr-clusters[$c]: $(node "$hsnap/harness/scripts/csr-render-clusters.mjs" "$rep" | grep -E '^(pass |\[)' | sed -E 's/^\[([0-9]+)\] ([a-z-]+):.*/\2=\1/' | paste -sd' ')"
+    done; } > "$base.board.txt.tmp"
+  # per-fixture pass/fail (fixture<TAB>pass<TAB>status<TAB>goldenStatus) so any two official runs can be diffed
+  for c in ssr template; do rep="$hsnap/harness/.csr-render-out/rust-$c/report-$c.json"; [ -f "$rep" ] || continue
+    node -e 'const r=require(process.argv[1]);for(const x of r.rows)console.log([x.fixture,x.pass,x.status,x.goldenStatus].join("\t"))' "$rep" > "$base.csr-$c.tsv"; done
   # tgz layout = repo root (harness under harness/) + notes/ (CUTOVER, DIAG_HELPER, decisions as of run start)
   cp -a "$hsnap/harness" "$ws/harness"; rm -f "$ws/harness/node_modules" "$ws/harness/lwc-compiler-napi.node"
   rm -rf "$ws/harness/.pins" "$ws/harness/.vitest" "$ws/harness/.csr-render-out" "$ws/harness/.ssr-render-out"
   tar -C "$snap" --exclude=./repo/target -czf "$base.tgz.tmp" --transform 's#^repo/##;s#^repo$#.#' repo notes
   mv -f "$base.tgz.tmp" "$base.tgz"; mv -f "$base.board.txt.tmp" "$base.board.txt"
   echo "push artifacts: $base.tgz  $base.board.txt"
+  # Durable publish (Migrate standing rule): survives box restores; Migrate pushes ONLY from here.
+  store="${OFFICIAL_STORE:-/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official}"
+  "$root/scripts/publish-official.sh" "$h0" "$napi" "$p5" "$store"
 else
   echo "no push artifacts (rc=$rc${1:+, partial row set})"
 fi

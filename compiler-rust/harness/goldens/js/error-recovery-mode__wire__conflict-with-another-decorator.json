@@ -7,5 +7,21 @@
   "line": null,
   "expectedCodes": [
     1095
-  ]
+  ],
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1095,
+        "message": "LWC1095: @wire method or property cannot be used with @api",
+        "location": {
+          "line": 5,
+          "column": 2,
+          "start": 158,
+          "length": 43
+        }
+      }
+    ]
+  }
 }

@@ -4,5 +4,21 @@
   "codes": [
     1113
   ],
-  "line": null
+  "line": null,
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1113,
+        "message": "LWC1113: @track decorator can only be applied to class properties.",
+        "location": {
+          "line": 4,
+          "column": 2,
+          "start": 103,
+          "length": 6
+        }
+      }
+    ]
+  }
 }

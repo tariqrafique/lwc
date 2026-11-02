@@ -5,5 +5,31 @@
     1094,
     1097
   ],
-  "line": null
+  "line": null,
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1097,
+        "message": "LWC1097: @wire expects a function identifier as first parameter.",
+        "location": {
+          "line": 5,
+          "column": 8,
+          "start": 159,
+          "length": 25
+        }
+      },
+      {
+        "code": 1094,
+        "message": "LWC1094: @wire expects a configuration object expression as second parameter.",
+        "location": {
+          "line": 5,
+          "column": 35,
+          "start": 186,
+          "length": 9
+        }
+      }
+    ]
+  }
 }

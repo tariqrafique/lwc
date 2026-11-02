@@ -456,11 +456,22 @@ pub struct LwcErrorInfo {
     /// Message template with `{0}`, `{1}`... placeholders.
     pub message: &'static str,
     pub level: DiagnosticLevel,
-    /// JS `url` (every current entry is `''`). Not carried on `CompilerDiagnostic`.
+    /// JS `url` (`''` for most entries; e.g. 1009 has one). Not carried on `CompilerDiagnostic`.
     pub url: Option<&'static str>,
     /// JS `strictLevel`, used when `use_strict_error_override` is set.
     pub strict_level: Option<DiagnosticLevel>,
 }
+
+/// `@lwc/errors` `TransformerErrors.CSS_TRANSFORMER_ERROR` (`compiler/error-info/compiler.ts`, @b9e8007):
+/// `{ code: 1009, message: '{0}', level: Error, strictLevel: Fatal, url: 'https://lwc.dev/guide/error_codes#lwc1009' }`.
+/// `@lwc/compiler` `transformers/style.ts` normalizes every style-compiler throw against it.
+pub const CSS_TRANSFORMER_ERROR: LwcErrorInfo = LwcErrorInfo {
+    code: 1009,
+    message: "{0}",
+    level: DiagnosticLevel::Error,
+    url: Some("https://lwc.dev/guide/error_codes#lwc1009"),
+    strict_level: Some(DiagnosticLevel::Fatal),
+};
 
 /// `@lwc/errors` `Location` shape: `{ line, column, start?, length? }`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

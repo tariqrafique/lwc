@@ -5,6 +5,22 @@
     1127
   ],
   "line": null,
+  "aggregate": {
+    "message": "",
+    "code": null,
+    "errors": [
+      {
+        "code": 1127,
+        "message": "LWC1127: Invalid directive \"lwc:invalid\" on element <custom-element>.",
+        "location": {
+          "line": 3,
+          "column": 21,
+          "start": 48,
+          "length": 52
+        }
+      }
+    ]
+  },
   "errors": [
     1127
   ]

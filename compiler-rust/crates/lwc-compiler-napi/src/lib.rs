@@ -5,6 +5,10 @@ use napi::bindgen_prelude::*;
 use napi_derive::napi;
 use serde::Deserialize;
 
+mod aggregate;
+mod error_urls;
+mod single_error;
+
 /// Options accepted over the seam. Taken as JSON (not a `#[napi(object)]`, which silently ignores extra
 /// keys) and deserialized with `deny_unknown_fields`, so any unknown key, top-level or nested, is an
 /// error naming the key. Keep in sync with `RUST_OPTION_KEYS` in harness/src/backend.ts.
@@ -153,6 +157,53 @@ pub struct JsCompileError {
     pub line: Option<u32>,
     pub column: Option<u32>,
     pub filename: Option<String>,
+    /// `{ line, column, start, length }` of the (first) diagnostic. Absent on an aggregate (shipped);
+    /// on a single error shipped always has the own key, `undefined` when there is no location (`Either::B`).
+    pub location: Option<Either<JsDiagnosticLocation, Undefined>>,
+    /// Recovery-mode `CompilerAggregateError.errors`: one entry per sub-error, in shipped order.
+    pub errors: Option<Vec<JsAggregateEntry>>,
+    /// Single errors only (shipped `CompilerError.level`); absent on an aggregate. See `single_error.rs`.
+    pub level: Option<u32>,
+    /// Single errors only (shipped `CompilerError.url`); absent on an aggregate. See `single_error.rs`.
+    pub url: Option<String>,
+}
+
+impl JsCompileError {
+    /// The JS object's own keys, in order: napi `#[napi(object)]` sets every `Some` field and omits every
+    /// `None` field (`Object.keys` / `hasOwnProperty` semantics). Keep in field order with the struct.
+    #[cfg(test)]
+    pub(crate) fn own_keys(&self) -> Vec<&'static str> {
+        let mut k = vec!["message"];
+        for (key, set) in [
+            ("name", self.name.is_some()),
+            ("code", self.code.is_some()),
+            ("line", self.line.is_some()),
+            ("column", self.column.is_some()),
+            ("filename", self.filename.is_some()),
+            ("location", self.location.is_some()),
+            ("errors", self.errors.is_some()),
+            ("level", self.level.is_some()),
+            ("url", self.url.is_some()),
+        ] {
+            if set {
+                k.push(key);
+            }
+        }
+        k
+    }
+}
+
+/// One `CompilerAggregateError.errors[]` entry (shipped `CompilerError.from(diagnostic)`); see `aggregate.rs`.
+#[napi(object)]
+pub struct JsAggregateEntry {
+    /// Always "Error" (shipped: inherited from `Error.prototype`, not an own property).
+    pub name: String,
+    pub message: String,
+    pub code: Option<u32>,
+    pub filename: Option<String>,
+    pub location: Option<JsDiagnosticLocation>,
+    pub level: u32,
+    pub url: String,
 }
 
 #[napi(object)]
@@ -173,22 +224,58 @@ fn map_value(map: Option<&str>) -> serde_json::Value {
     map.and_then(|m| serde_json::from_str(m).ok()).unwrap_or(serde_json::Value::Null)
 }
 
-fn error_result(e: lwc_shared::CompileError) -> JsCompileResult {
-    JsCompileResult {
-        code: String::new(),
-        map: serde_json::Value::Null,
-        css_scope_tokens: None,
-        warnings: None,
-        error: Some(JsCompileError {
-            code: e.diagnostics.first().and_then(|d| d.code),
+/// `origin`: which shipped path produced the error (sets `level`/`url`, and for `Js` the cwd-resolved
+/// `errors[].filename`).
+/// CssSyntaxError location via `getLocationFromObject`: `{line, column}` only (start/length `undefined`).
+fn css_location(l: JsDiagnosticLocation) -> JsDiagnosticLocation {
+    JsDiagnosticLocation { start: None, length: None, ..l }
+}
+
+fn error_result(e: lwc_shared::CompileError, origin: single_error::Origin) -> JsCompileResult {
+    let babel_paths = origin == single_error::Origin::Js;
+    let error = if aggregate::is_compiler_aggregate(&e) {
+        let cwd = std::env::current_dir().unwrap_or_default();
+        let mut errors = aggregate::entries(&e, babel_paths, &cwd);
+        let (mut message, code, filename) = aggregate::surface(&e, aggregate::AGGREGATE_EXACT_SHAPE);
+        if origin == single_error::Origin::Style {
+            // `transformers/style.ts` throws its own `CompilerAggregateError` message
+            // ("Multiple CSS errors occurred during compilation."); lwc-style puts it on `e.message`.
+            message = e.message.clone();
+            for x in &mut errors { x.location = x.location.take().map(css_location); }
+        }
+        JsCompileError {
+            message, name: e.name, code, line: None, column: None, filename, location: None, errors: Some(errors),
+            level: None, url: None,
+        }
+    } else {
+        let first = e.diagnostics.first();
+        let code = first.and_then(|d| d.code);
+        let mut loc: Option<JsDiagnosticLocation> = first.and_then(|d| d.js_location()).map(Into::into);
+        if origin == single_error::Origin::Style { loc = loc.map(css_location); }
+        let level_url = single_error::level_url(origin, code, first.map(|d| d.level.js_value()));
+        let location = match (loc, level_url.is_some()) {
+            (Some(l), _) => Some(Either::A(l)),
+            // Shipped CompilerError always owns `location`, `undefined` when unknown.
+            (None, true) => Some(Either::B(())),
+            (None, false) => None,
+        };
+        let (level, url) = level_url.map_or((None, None), |(l, u)| (Some(l), Some(u)));
+        JsCompileError {
+            code,
+            location,
             message: e.message,
             name: e.name,
             line: e.line,
             column: e.column,
             filename: e.filename,
-        }),
-    }
+            errors: None,
+            level,
+            url,
+        }
+    };
+    JsCompileResult { code: String::new(), map: serde_json::Value::Null, css_scope_tokens: None, warnings: None, error: Some(error) }
 }
+
 
 /// Parse + validate the JSON options into `lwc_shared::CompileOptions`.
 /// `Err(napi)` = malformed/unknown key (thrown); `Ok(Err(compile))` = LWC validation error (returned).
@@ -352,7 +439,7 @@ mod tests {
 pub fn transform(src: String, filename: String, options: serde_json::Value) -> Result<JsCompileResult> {
     let o = match to_compile_options(options, &filename)? {
         Ok(o) => o,
-        Err(e) => return Ok(error_result(e)),
+        Err(e) => return Ok(error_result(e, single_error::Origin::Options)),
     };
     Ok(match lwc_compiler::dispatch(&src, &filename, &o) {
         Ok(r) => {
@@ -374,6 +461,6 @@ pub fn transform(src: String, filename: String, options: serde_json::Value) -> R
                 error: None,
             }
         }
-        Err(e) => error_result(e),
+        Err(e) => error_result(e, single_error::Origin::of(&filename, &o)),
     })
 }

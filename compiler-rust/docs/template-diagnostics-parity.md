@@ -175,3 +175,24 @@ Board, official runs via `harness/board.sh`, test counts:
 | 1209 | COMPUTED_PROPERTY_ACCESS_NOT_ALLOWED_CTE_API_VERSION | Error | y | n | matched | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 0 |  |
 | 1210 | INVALID_NODE_CTE_API_VERSION | Error | y | n | matched | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 0 |  |
 | 1211 | RESERVED_KEYWORD_AS_IDENTIFIER | Error | y | n | missing | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | expression/reverved-keyword: missing |
+
+## Status 2026-11-01 20:51 PST (post-reboot reconciliation)
+
+The table above is the earlier generated snapshot; per-code rows are stale.
+Live probe (code, message, level, line:col exact per fixture): 560/567 (verified-5e72713 tree: 547; pre-restore live: 542).
+Board at napi ed21d7eba9e4: csr-render-template 406/570, csr-render 243/390 (tree also carries Template Rust in-flight work).
+
+Remaining non-exact fixtures:
+- mixed-if-true-else: missing 1166 (element_check).
+- no-directives-in-slots: 1165 instead of 1082 (element_check order).
+- blacklisted-svg: 1057 warnings truncated by the childless rollback before element_check's 1049.
+- empty-template: missing 1072 (mod.rs).
+- invalid-html-recovery, table-with-tr: 1144 needs the `validate::html_recovery(n, d)` call in mod.rs; table-with-tr also has an extra 1078 for the implied tbody (element_check should validate the fallback parent location).
+- slots/dynamic-components/usage: extra 1201; mod.rs slot_ancestor must treat `<lwc:component>` as transparent.
+
+## Status 2026-11-01 20:59 PST
+- Probe 566/567 exact. Remaining miss: directive-lwc-if-else/error-multiple-directives/if-else (extra 1165 from mod.rs orphan_else post-pass after element_check's 1162 throw; Template Rust).
+- 1043/1142/1180/1036/1037/1055/1124/1125/1049/1050/1054/1071/1149: all fixtures exact (element_check / mod.rs / validate::key_in_iteration). No port needed in validate.rs.
+- 1190 unreachable (parent arrow/class/function node throws 1193/1196 first); 1189 is codegen; 1052 is the index.ts catch-all.
+- 1057/1184 now emitted only by element_check via validate::{attr_name_warnings, unknown_lwc_tag}; validate::element no longer calls them.
+- csr-render-template 449/570 @ napi f456a3353b1f (20:57:56 PST): no diagnostic mismatches among failures; 39 status mismatches are codegen (iteration over undefined -> "is not a vnode"; member access on undefined not throwing).

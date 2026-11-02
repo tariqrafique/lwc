@@ -89,26 +89,8 @@ fn transform_html(
         ..lwc_template::Config::default()
     };
 
-    // Template handoff (a): the Rust parser emits no RootDirective::PreserveComments for
-    // `<template lwc:preserve-comments>` and drops comments unless the config flag is set. JS's
-    // ssr-compiler reads preserveComments only from that root directive, so detect it here and
-    // reparse with comments kept.
-    // SHIM(template-gap:preserve-comments-directive): comments-*, adjacent-text-nodes: no RootDirective::PreserveComments from the parser
-    let root_preserves = root_has_preserve_comments(src);
-    // ssr-compiler expression.ts expressionIrToEs: complex binding only when
-    // `experimentalComplexExpressions && isAPIFeatureEnabled(ENABLE_COMPLEX_TEMPLATE_EXPRESSIONS, apiVersion)`.
-    let api_version = lwc_shared::api_version::get_api_version_from_number(options.api_version);
-    let complex_enabled = options.experimental_complex_expressions == Some(true)
-        && lwc_shared::api_version::is_api_feature_enabled(lwc_shared::api_version::ApiFeature::EnableComplexTemplateExpressions, api_version);
-    // SHIM(template-gap:complex-for-each): for-each-block/complex: mask complex for:each values before parse
-    let (masked, for_each_pairs) = if complex_enabled { // SHIM(template-gap:complex-for-each)
-        compile_template::ir_compat::mask_complex_for_each(src) // SHIM(template-gap:complex-for-each)
-    } else {
-        (src.to_string(), Vec::new())
-    };
-    let src = masked.as_str(); // SHIM(template-gap:complex-for-each)
-    // SHIM(template-gap:preserve-comments-directive): reparse with comments kept: parser drops comments unless the config flag is set
-    let config = if root_preserves { lwc_template::Config { preserve_html_comments: Some(true), ..config } } else { config };
+    // Complex-expression gating (experimentalComplexExpressions + apiVersion ENABLE_COMPLEX_TEMPLATE_EXPRESSIONS)
+    // and lwc:preserve-comments both come from lwc-template via `config` / Root.directives.
     let parsing = lwc_template::parse(src, config).map_err(|e| CompileError {
         message: e.message,
         filename: Some(filename.into()),
@@ -145,9 +127,7 @@ fn transform_html(
     // template-compiler parser/index.ts parse(): any Error-level diagnostic from parseHTML (parse5 errors →
     // INVALID_HTML_SYNTAX; TREAT_ALL_PARSE5_ERRORS_AS_ERRORS widens the set from API 59) returns no root, and
     // ssr-compiler compile-template/index.ts then throws on `!root`.
-    // SHIM(template-gap:parse5-error-root): parse5/unclosed-div: parser returns a root despite parse5 errors
-    let parse5_failed = parsing.warnings.iter().any(|w| w.code == Some(1058) && matches!(w.level, DiagnosticLevel::Error | DiagnosticLevel::Fatal)); // SHIM(template-gap:parse5-error-root)
-    let Some(root) = parsing.root.as_ref().filter(|_| !parse5_failed) else { // SHIM(template-gap:parse5-error-root)
+    let Some(root) = parsing.root.as_ref() else {
         return Err(CompileError {
             message: "Template compilation failure; see warnings in the console.".into(),
             filename: Some(filename.into()),
@@ -159,20 +139,9 @@ fn transform_html(
     };
 
     // index.ts: `preserveComments: !!root.directives.find(PreserveComments)?.value` (not the option).
-    // SHIM(template-gap:preserve-comments-directive): source-detected directive stands in for root.directives PreserveComments
-    let preserve_comments = root_preserves;
-    // SHIM(template-gap:ir-compat-walk): mutable IR copy for the post-parse shims below
-    let mut root = root.clone();
-    // SHIM(template-gap:valueless-attr-bool): global-html-attributes, known-boolean-attributes: valueless attrs -> Bool(true)
-    compile_template::ir_compat::mark_valueless_attrs(&mut root, src); // SHIM(template-gap:valueless-attr-bool)
-    // SHIM(template-gap:complex-expr-literal): attribute-dynamic-complex, text-interpolation-complex, scoped-slots/complex
-    if complex_enabled { compile_template::ir_compat::lift_quoted_complex(&mut root); } // SHIM(template-gap:complex-expr-literal)
-    // SHIM(template-gap:expr-error-recovery): *-complex fixtures below API 66: drop nodes whose expression errored (JS withErrorRecovery)
-    if !complex_enabled { compile_template::ir_compat::drop_errored_expr_nodes(&mut root); } // SHIM(template-gap:expr-error-recovery)
-    // SHIM(template-gap:complex-for-each): for-each-block/complex: restore masked for:each expression
-    compile_template::ir_compat::unmask_complex_for_each(&mut root, &for_each_pairs); // SHIM(template-gap:complex-for-each)
+    let preserve_comments = root.directives.iter().any(|d| matches!(d, lwc_template::RootDirective::PreserveComments(true)));
     let mut result = compile_template_for_ssr(
-        &root,
+        root,
         &TemplateTransformOptions {
             name: options.name.clone(),
             namespace: options.namespace.clone(),
@@ -192,21 +161,6 @@ fn transform_html(
     result.warnings = vec![];
     result.css_scope_tokens = Some(tokens.css_scope_tokens);
     Ok(result)
-}
-
-/// Does the root `<template ...>` start tag carry `lwc:preserve-comments`?
-// SHIM(template-gap:preserve-comments-directive): source scan for <template lwc:preserve-comments>
-fn root_has_preserve_comments(src: &str) -> bool {
-    let mut rest = src;
-    loop {
-        let t = rest.trim_start();
-        if let Some(after) = t.strip_prefix("<!--") {
-            match after.find("-->") { Some(e) => { rest = &after[e + 3..]; continue; } None => return false }
-        }
-        if !t.starts_with("<template") { return false; }
-        let end = t.find('>').unwrap_or(t.len());
-        return t[..end].split(|c: char| c.is_whitespace() || c == '/').any(|a| a == "lwc:preserve-comments" || a.starts_with("lwc:preserve-comments="));
-    }
 }
 
 #[cfg(test)]

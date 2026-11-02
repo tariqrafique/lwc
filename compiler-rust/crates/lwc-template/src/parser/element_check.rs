@@ -124,6 +124,12 @@ pub(super) struct ElementCheck {
     /// A valid `lwc:dynamic` was applied (TS warns 1187 there). On success `validate::element` reports it;
     /// when a later check throws, the warning is emitted here, ahead of the error.
     dynamic_ok: bool,
+    /// An lwc:if / lwc:elseif / lwc:else block was parsed (and the sibling if-chain updated) before any throw.
+    pub lwc_parsed: bool,
+    /// Warnings TS emits before a later throw: 1184 at creation, 1057 per attribute in applyAttributes.
+    /// Pushed by `element_errors` (before any throw's error), so lowering's childless truncate keeps them.
+    created_warn: Option<CompilerDiagnostic>,
+    attr_warns: Vec<CompilerDiagnostic>,
 }
 
 /// Runs the JS-ordered element checks. Pushes at most one error. `template` elements get
@@ -132,15 +138,19 @@ pub(super) struct ElementCheck {
 enum Stage { NotCreated, Created, Applied }
 
 pub(super) fn element_errors(tag: &str, ns: &str, attrs: &[parse5::Attribute], n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx) -> ElementCheck {
-    let mut out = ElementCheck { dropped: false, childless: false, bare: false, stage: Stage::NotCreated, for_of: None, for_each: None, dynamic_ok: false };
+    let mut out = ElementCheck { dropped: false, childless: false, bare: false, stage: Stage::NotCreated, for_of: None, for_each: None, dynamic_ok: false,
+        lwc_parsed: false, created_warn: None, attr_warns: Vec::new() };
     let before = d.diags.len();
     let r = check(tag, ns, attrs, n, cfg, d, &mut out);
+    // 1184 / 1057 are pushed here, ahead of the lowering mark, so a childless truncate keeps them.
+    if let Some(w) = out.created_warn.take() { d.push(w); }
     match r {
         Err(Some(e)) => {
             if out.dynamic_ok {
                 d.push(lwc(1187, &[], elem_loc(n).location));
                 d.count(lwc_shared::CompilerMetric::LwcDynamicDirective);
             }
+            for w in std::mem::take(&mut out.attr_warns) { d.push(w); }
             d.push(e);
             match out.stage {
                 Stage::NotCreated => out.dropped = true,
@@ -149,6 +159,10 @@ pub(super) fn element_errors(tag: &str, ns: &str, attrs: &[parse5::Attribute], n
             }
         }
         Err(None) => out.dropped = true,
+        Ok(()) if tag != "template" => {
+            for w in std::mem::take(&mut out.attr_warns) { d.push(w); }
+            out.dropped = d.diags[before..].iter().any(|x| x.level == DiagnosticLevel::Error);
+        }
         Ok(()) => out.dropped = d.diags[before..].iter().any(|x| x.level == DiagnosticLevel::Error),
     }
     out
@@ -172,20 +186,23 @@ fn check(tag: &str, ns: &str, attrs: &[parse5::Attribute], n: &NodeRef, cfg: &No
     // parseElementDirectives.
     let has = |pas: &Vec<Pa>, name: &str| pas.iter().any(|p| p.name == name);
     let lwc_if = pick(&mut pas, |x| x == "lwc:if");
-    if let Some(p) = &lwc_if { if !p.expr() { return e(1159, &[], &p.loc); } }
+    if let Some(p) = &lwc_if { if !p.expr() { return e(1159, &[], &p.loc); } out.lwc_parsed = true; }
     let elseif = pick(&mut pas, |x| x == "lwc:elseif");
     if let Some(p) = &elseif {
         if lwc_if.is_some() { return e(1162, &["lwc:elseif"], &l); }
         if !p.expr() { return e(1160, &[], &p.loc); }
         if !d.chain_open { return e(1165, &["lwc:elseif"], &l); }
+        out.lwc_parsed = true;
     }
-    if let Some(p) = pick(&mut pas, |x| x == "lwc:else") {
+    let else_ = pick(&mut pas, |x| x == "lwc:else");
+    if let Some(p) = &else_ {
         if lwc_if.is_some() { return e(1162, &["lwc:else"], &l); }
         if elseif.is_some() { return e(1163, &["lwc:else"], &l); }
         if !d.chain_open { return e(1165, &["lwc:else"], &l); }
         if p.v != Av::Bool { return e(1161, &[], &l); }
+        out.lwc_parsed = true;
     }
-    let lwc_cond = lwc_if.is_some() || elseif.is_some() || has(&pas, "lwc:else");
+    let lwc_cond = lwc_if.is_some() || elseif.is_some() || else_.is_some();
     let (fe, fi, fx) = (pick(&mut pas, |x| x == "for:each"), pick(&mut pas, |x| x == "for:item"), pick(&mut pas, |x| x == "for:index"));
     match (&fe, &fi) {
         (Some(fe), Some(fi)) => {
@@ -257,6 +274,7 @@ fn check(tag: &str, ns: &str, attrs: &[parse5::Attribute], n: &NodeRef, cfg: &No
 
     // parseBaseElement: the element now exists in its parent.
     out.stage = Stage::Created;
+    out.created_warn = validate::unknown_lwc_tag(tag, &l, d);
     // applyHandlers.
     let mut handlers = 0;
     while let Some(h) = pick(&mut pas, |x| x.starts_with("on")) {
@@ -335,6 +353,7 @@ fn check(tag: &str, ns: &str, attrs: &[parse5::Attribute], n: &NodeRef, cfg: &No
 
     // applyAttributes.
     for p in &pas {
+        if let Some(w) = validate::attr_name_warnings(tag, &p.name, &p.loc, d) { out.attr_warns.push(w); }
         let last = p.name.chars().last().unwrap_or(' ');
         if !(last.is_ascii_lowercase() || last.is_ascii_digit()) { return e(1125, &[&p.name, tag], &p.loc); }
         // `/^-*[a-z]|^[_$]/`

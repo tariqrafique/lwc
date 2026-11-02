@@ -5,6 +5,22 @@
     1009
   ],
   "line": null,
+  "aggregate": {
+    "message": "Multiple CSS errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1009,
+        "message": "CssSyntaxError: LWC1009: <cwd>/foo.css:1:1: Unknown word <",
+        "location": {
+          "line": 1,
+          "column": 1,
+          "start": null,
+          "length": null
+        }
+      }
+    ]
+  },
   "errors": [
     1009
   ],

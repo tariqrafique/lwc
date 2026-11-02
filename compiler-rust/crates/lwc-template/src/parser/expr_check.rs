@@ -7,9 +7,7 @@
 //! - `invariant` CompilerError → `Invalid expression {src} - LWC<code>: <msg>`, code kept.
 
 use super::messages::message;
-
-/// First API version with complex template expressions (TS `minApiVersion(ENABLE_COMPLEX_TEMPLATE_EXPRESSIONS)`).
-pub(crate) const MIN_CTE_API_VERSION: u32 = 66;
+use lwc_shared::api_version::{is_api_feature_enabled, min_api_version, ApiFeature};
 
 /// TS `isExpression`: `{...}` with length > 2.
 pub(crate) fn is_expression(s: &str) -> bool { s.len() > 2 && s.starts_with('{') && s.ends_with('}') }
@@ -52,16 +50,16 @@ pub(crate) struct Opts {
 
 impl Opts {
     /// TS `isComplexTemplateExpressionEnabled`.
-    fn cte(&self) -> bool { self.complex && self.api_version >= MIN_CTE_API_VERSION }
+    fn cte(&self) -> bool { self.complex && is_api_feature_enabled(ApiFeature::EnableComplexTemplateExpressions, self.api_version) }
 }
 
 #[cfg(test)]
 pub(crate) fn check(src: &str, complex: bool) -> Option<ExprError> { check_with(src, complex, false) }
 
-/// Text-node semantics at the default API version (tests).
+/// Text-node semantics at the resolved default API version (`getAPIVersionFromNumber(undefined)`; tests).
 #[cfg(test)]
 pub(crate) fn check_with(src: &str, complex: bool, computed_ok: bool) -> Option<ExprError> {
-    check_opts(src, &Opts { complex, computed_ok, api_version: crate::config::DEFAULT_API_VERSION, unquoted: false })
+    check_opts(src, &Opts { complex, computed_ok, api_version: crate::config::Config::default().normalize().expect("default config").api_version, unquoted: false })
 }
 
 /// `src` is one `{…}` expression. CTE (quoted / text) goes through the complex validator, everything
@@ -115,7 +113,7 @@ fn check_legacy(src: &str, o: &Opts) -> Option<ExprError> {
     }
     // validateExpression
     let api = o.api_version.to_string();
-    let min = MIN_CTE_API_VERSION.to_string();
+    let min = min_api_version(ApiFeature::EnableComplexTemplateExpressions).to_string();
     match p.validate_legacy(a, b) {
         None => None,
         Some(Legacy::Node(ty)) => {

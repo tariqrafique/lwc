@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { expect } from 'vitest';
+import { observeAggregate, type AggregateObservation } from './compareError';
 
 export const UPDATE = !!process.env.UPDATE_GOLDENS;
 export const BACKEND_ID = process.env.LWC_COMPILER_BACKEND ?? 'js';
@@ -11,14 +12,15 @@ if (UPDATE && BACKEND_ID !== 'js') throw new Error('Refusing UPDATE_GOLDENS on a
 export const lwcCodes = (s: string) => [...s.matchAll(/LWC(\d{4})/g)].map((m) => Number(m[1]));
 
 /** Error observation: name, sorted unique LWC codes (top-level code, aggregate members, codes in messages), line. */
-export function errorObservation(e: any): { ok: false; name: string; codes: number[]; line: number | null } {
+export function errorObservation(e: any): { ok: false; name: string; codes: number[]; line: number | null; aggregate?: AggregateObservation } {
     const msgs = [e?.message ?? '', ...(e?.errors ?? []).map((x: any) => x?.message ?? '')].join('\n');
     const codes = [...new Set<number>([
         ...(e?.code != null ? [Number(e.code)] : []),
         ...(e?.errors ?? []).map((x: any) => x?.code).filter((c: any) => c != null).map(Number),
         ...lwcCodes(msgs),
     ])].sort((a, b) => a - b);
-    return { ok: false, name: e?.name ?? typeof e, codes, line: e?.location?.line ?? null };
+    const aggregate = observeAggregate(e);  // recovery mode: ordered members with code/message/location, compared exactly
+    return { ok: false, name: e?.name ?? typeof e, codes, line: e?.location?.line ?? null, ...(aggregate ? { aggregate } : {}) };
 }
 
 /** Error multiset (one entry per aggregate member) for error-recovery cases. */

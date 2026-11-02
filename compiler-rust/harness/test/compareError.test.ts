@@ -62,3 +62,27 @@ describe('compareError', () => {
         expect(compareError(g, null).pass).toBe(false);
     });
 });
+
+describe('recovery-mode aggregate (errors[])', () => {
+    const sub = (code: number, message: string, line: number, column: number, start: number, length: number) =>
+        Object.assign(new Error(message), { code, location: { line, column, start, length } });
+    const mk = (subs: any[]) => Object.assign(new AggregateError(subs, 'Multiple errors occurred during compilation.'), { errors: subs });
+    const golden = observeError(mk([sub(1100, 'LWC1100: a', 1, 2, 3, 4), sub(1101, 'LWC1101: b', 5, 6, 7, 8)]));
+    it('passes only on identical ordered members', () => {
+        expect(compareError(golden, observeError(mk([sub(1100, 'LWC1100: a', 1, 2, 3, 4), sub(1101, 'LWC1101: b', 5, 6, 7, 8)])))).toEqual({ pass: true, mode: 'aggregate' });
+    });
+    it('fails on order, count, code, message, location, missing errors[], top-level message/code, no throw', () => {
+        const bad = [
+            mk([sub(1101, 'LWC1101: b', 5, 6, 7, 8), sub(1100, 'LWC1100: a', 1, 2, 3, 4)]),
+            mk([sub(1100, 'LWC1100: a', 1, 2, 3, 4)]),
+            mk([sub(1100, 'LWC1100: a', 1, 2, 3, 4), sub(1102, 'LWC1101: b', 5, 6, 7, 8)]),
+            mk([sub(1100, 'LWC1100: a', 1, 2, 3, 4), sub(1101, 'LWC1101: c', 5, 6, 7, 8)]),
+            mk([sub(1100, 'LWC1100: a', 1, 2, 3, 4), sub(1101, 'LWC1101: b', 5, 6, 7, 9)]),
+            Object.assign(new Error('Multiple errors occurred during compilation.'), {}),
+            Object.assign(mk([sub(1100, 'LWC1100: a', 1, 2, 3, 4), sub(1101, 'LWC1101: b', 5, 6, 7, 8)]), { message: 'x' }),
+            Object.assign(mk([sub(1100, 'LWC1100: a', 1, 2, 3, 4), sub(1101, 'LWC1101: b', 5, 6, 7, 8)]), { code: 1100 }),
+        ];
+        for (const b of bad) expect(compareError(golden, observeError(b)).pass).toBe(false);
+        expect(compareError(golden, null).pass).toBe(false);
+    });
+});

@@ -137,19 +137,37 @@ fn is_ident(s: &str) -> bool {
 /// `{a}` / `{a.b.c}` → Identifier / nested MemberExpression. No brackets/calls yet.
 pub(crate) fn parse_binding(v: &str) -> Option<Expression> {
     let inner = v.strip_prefix('{')?.strip_suffix('}')?.trim();
-    let mut parts = inner.split('.');
-    let first = parts.next()?;
-    if !is_ident(first) || expr_check::is_reserved(first) { return None; }
-    let mut e = Expression::Identifier(Identifier { name: first.to_string() });
-    for p in parts {
+    let (e, rest) = member_chain(inner)?;
+    rest.trim().is_empty().then_some(e)
+}
+
+/// `primary ('.' ident)*` with `primary := ident | '(' member_chain ')'`. Parentheses are transparent, as in
+/// the TS (acorn/ESTree) AST: `((foo).bar)` is the member expression `foo.bar`.
+fn member_chain(s: &str) -> Option<(Expression, &str)> {
+    let s = s.trim_start();
+    let (mut e, mut rest) = if let Some(r) = s.strip_prefix('(') {
+        let (e, r) = member_chain(r)?;
+        (e, r.trim_start().strip_prefix(')')?)
+    } else {
+        let end = s.find(|c: char| !(c.is_alphanumeric() || c == '_' || c == '$')).unwrap_or(s.len());
+        let first = &s[..end];
+        if !is_ident(first) || expr_check::is_reserved(first) { return None; }
+        (Expression::Identifier(Identifier { name: first.to_string() }), &s[end..])
+    };
+    loop {
+        let t = rest.trim_start();
+        let Some(r) = t.strip_prefix('.') else { return Some((e, rest)) };
+        let r = r.trim_start();
+        let end = r.find(|c: char| !(c.is_alphanumeric() || c == '_' || c == '$')).unwrap_or(r.len());
+        let p = &r[..end];
         if !is_ident(p) { return None; }
         e = Expression::Member(MemberExpression {
             object: Box::new(e),
             property: Box::new(Expression::Identifier(Identifier { name: p.to_string() })),
             computed: false,
         });
+        rest = &r[end..];
     }
-    Some(e)
 }
 
 fn attr_loc(n: &NodeRef, name: &str) -> SourceLocation {
@@ -308,8 +326,15 @@ fn lifted_directives(attrs: &[parse5::Attribute]) -> Vec<ElementDirective> {
     out
 }
 
+/// TS parseElementLocation: an element parse5 inserted while recovering (e.g. an implied `<tbody>`) has no
+/// location; it takes the nearest element ancestor's (start/end tags included).
 fn elem_loc(n: &NodeRef) -> ElementSourceLocation {
-    n.borrow().source_code_location().map(|l| ElementSourceLocation {
+    let mut cur = n.clone();
+    loop {
+        let parent = { let b = cur.borrow(); if b.source_code_location_ref().is_some() { break; } b.parent() };
+        match parent { Some(p) if matches!(p.borrow().data, NodeData::Element { .. }) => cur = p, _ => break }
+    }
+    cur.borrow().source_code_location().map(|l| ElementSourceLocation {
         location: loc(&l.location),
         start_tag: l.start_tag.as_ref().map(loc).unwrap_or_default(),
         end_tag: l.end_tag.as_ref().map(loc),
@@ -318,7 +343,7 @@ fn elem_loc(n: &NodeRef) -> ElementSourceLocation {
 
 /// TS `isComplexTemplateExpressionEnabled`: the flag and API version ≥ 66.
 fn complex_enabled(cfg: &NormalizedConfig) -> bool {
-    cfg.experimental_complex_expressions && cfg.api_version >= expr_check::MIN_CTE_API_VERSION
+    cfg.experimental_complex_expressions && lwc_shared::api_version::is_api_feature_enabled(lwc_shared::api_version::ApiFeature::EnableComplexTemplateExpressions, cfg.api_version)
 }
 
 /// `{ src }` → `Expression::Complex("src")` (opaque JS source, braces stripped).
@@ -397,7 +422,9 @@ enum Lwc { If(Expression, SourceLocation), Elseif(Expression, SourceLocation), E
 /// Non-binding conditions become `Expression::Complex(<inner source>)`; invalid ones were already
 /// reported by `check_expr`.
 fn lwc_directive(attrs: &[parse5::Attribute], n: &NodeRef) -> Option<Lwc> {
-    let a = attrs.iter().find(|a| matches!(a.name.as_str(), "lwc:if" | "lwc:elseif" | "lwc:else"))?;
+    // TS DIRECTIVE_PARSERS order (IfBlock, ElseifBlock, ElseBlock), not attribute order: on a dropped
+    // `<template lwc:else lwc:if>` (1162) the node TS already pushed is the lwc:if block.
+    let a = ["lwc:if", "lwc:elseif", "lwc:else"].iter().find_map(|k| attrs.iter().find(|a| a.name == *k))?;
     let l = attr_loc(n, &a.name);
     Some(match a.name.as_str() {
         "lwc:if" => Lwc::If(condition_expr(&a.value), l),
@@ -471,8 +498,13 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             }).collect();
             let attrs = &qualified;
             // TS parseElement throws (withErrorRecovery): the element and its subtree are dropped.
+            validate::html_recovery(n, d);
             let chk = element_check::element_errors(tag_name, namespace_uri, attrs, n, cfg, d);
-            if chk.dropped { return None; }
+            // TS parseIfBlock/parseElseifBlock/parseElseBlock push the (empty) block into the parent and
+            // update the sibling if-chain before a later throw drops the element.
+            if chk.dropped {
+                return chk.lwc_parsed.then(|| Lowered { content: Vec::new(), lwc: lwc_directive(attrs, n), location: elem_loc(n).location });
+            }
             // A childless (post-creation throw) element got exactly one error; TS runs no further checks on it.
             let mark = d.diags.len();
             let no_attrs: Vec<parse5::Attribute> = Vec::new();
@@ -534,7 +566,9 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             let directives: Vec<ElementDirective> = key.into_iter().map(ElementDirective::Key).chain(lwc_ref.map(ElementDirective::Ref)).chain(lifted).collect();
             let depth = d.iter_depth; if lp.is_some() { d.iter_depth += 1; }
             let is_comp = is_custom_element_tag(tag_name);
-            let prev_anc = std::mem::replace(&mut d.slot_ancestor, if is_comp { None } else { Some(tag_name.clone()) });
+            // `<lwc:component>` is transparent for the slot-ancestor lookup (its children are slotted into the dynamic component).
+            let anc = if tag_name == "lwc:component" { d.slot_ancestor.clone() } else if is_comp { None } else { Some(tag_name.clone()) };
+            let prev_anc = std::mem::replace(&mut d.slot_ancestor, anc);
             let is_cmp_parent = tag_name == "lwc:component" || (is_comp && tag_name != "slot" && !attrs.iter().any(|a| a.name == "lwc:external"));
             let prev_sd = std::mem::replace(&mut d.slot_data_parent_ok, is_cmp_parent && dir.is_none() && lp.is_none());
             // A base element ends the iteration scope for its children (TS getForOfParent/getForEachParent).
@@ -687,9 +721,6 @@ fn lower_children(nodes: &[NodeRef], cfg: &NormalizedConfig, d: &mut Ctx) -> Vec
 
 pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseResult {
     let mut warnings = Vec::new();
-    if source.trim().is_empty() {
-        return TemplateParseResult { root: None, warnings };
-    }
     let out = parse5::parse_fragment_with_errors(source, ParserOptions { source_code_location_info: true, ..Default::default() });
     validate::parse5_errors(&out.errors, config, &mut warnings);
     // TS parse(): any error-level parse5 diagnostic → no root.
@@ -709,9 +740,9 @@ pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseR
         return TemplateParseResult { root: None, warnings };
     }
     let Some(tmpl) = roots.first().filter(|n| matches!(n.borrow().data, NodeData::Element { .. })).cloned() else {
-        let mut e = messages::lwc(1072, &[], SourceLocation::default());
-        e.location = None;
-        warnings.push(e);
+        // TS ctx.throw without a location: normalizeLocation(undefined) = line 0, column 0.
+        let zero = SourceLocation { start_line: 0, start_column: 0, end_line: 0, end_column: 0, start: 0, end: 0 };
+        warnings.push(messages::lwc(1072, &[], zero));
         return TemplateParseResult { root: None, warnings };
     };
     if let Some(t) = tmpl.borrow().tag_name().filter(|t| *t != "template") {
@@ -787,11 +818,6 @@ fn diag_opt(code: Option<u32>, message: String, l: SourceLocation) -> CompilerDi
 }
 
 const ROOT_DIRECTIVES: &[&str] = &["lwc:render-mode", "lwc:preserve-comments"];
-/// `ElementDirectiveName` + lwc:if/elseif/else (parsed before applyLwcDirectives in TS).
-const LWC_ELEMENT_DIRECTIVES: &[&str] = &[
-    "lwc:dom", "lwc:dynamic", "lwc:is", "lwc:external", "lwc:inner-html", "lwc:ref", "lwc:slot-bind",
-    "lwc:slot-data", "lwc:spread", "lwc:on", "lwc:if", "lwc:elseif", "lwc:else",
-];
 const DISALLOWED_HTML_TAGS: &[&str] = &["base", "link", "meta", "script", "title"];
 
 const PARSE5_ERROR_ON: &[&str] = &[

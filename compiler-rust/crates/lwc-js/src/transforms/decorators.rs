@@ -125,8 +125,11 @@ enum Kind { Property, Getter, Setter, Method, /** getDecoratedNodeType -> undefi
 struct Meta<'s, 'a> { name: &'s str, prop: String, kind: Kind, dec: &'s Decorator<'a>, el: usize, el_span: Span, computed: bool, bool_true: bool }
 
 struct Classes<'s, 'o> {
-    src: &'s str, imports: &'o HashMap<String, String>, skip_no_super: bool, reg_ids: Vec<String>,
-    edits: Vec<Edit>, used: bool, first_expr: Option<bool>, errs: Vec<(u32, DErr)>, recover: bool, imported: &'o HashSet<String>, consts: &'o HashSet<String>,
+    src: &'s str, filename: &'s str, imports: &'o HashMap<String, String>, skip_no_super: bool, reg_ids: Vec<String>,
+    edits: Vec<Edit>, used: bool, first_expr: Option<bool>, errs: Vec<(u32, DErr)>, recover: bool,
+    /// Babel class-features throw (`Decorators are not enabled.`) at the first class that still has decorators
+    /// after the LWC visitor ran; a real throw, so it ends traversal even in recovery mode.
+    fatal: Option<(u32, CompileError)>, imported: &'o HashSet<String>, consts: &'o HashSet<String>,
 }
 
 fn sname(k: &PropertyKey<'_>) -> Option<String> { k.static_name().and_then(|n| n.as_str().map(String::from)) }
@@ -212,9 +215,21 @@ impl<'s> Classes<'s, '_> {
         format!("{}: {{ {} }}", m.prop, parts.join(", "))
     }
 
-    fn process(&mut self, class: &Class<'_>) -> Result<(), Vec<DErr>> {
+    /// Port of the shipped `Class` visitor. Returns the LWC errors plus whether the member decorators were
+    /// removed (shipped removes them only when the meta property list is non-empty; otherwise they stay and
+    /// Babel's class-features plugin throws). A class without a superclass is skipped before any validation
+    /// when SKIP_UNNECESSARY_REGISTER_DECORATORS is on.
+    fn process(&mut self, class: &Class<'_>) -> (Vec<DErr>, bool) {
+        match self.process_inner(class) {
+            Ok(removed) => (Vec::new(), removed),
+            Err((errs, removed)) => (errs, removed),
+        }
+    }
+
+    fn process_inner(&mut self, class: &Class<'_>) -> Result<bool, (Vec<DErr>, bool)> {
         let body = &class.body.body;
-        if body.is_empty() { return Ok(()); }
+        if body.is_empty() { return Ok(false); }
+        if class.heritage.is_none() && self.skip_no_super { return Ok(false); }
         let src = self.src;
         let mut metas: Vec<Meta> = Vec::new();
         let mut pre_errs: Vec<DErr> = Vec::new();
@@ -229,7 +244,7 @@ impl<'s> Classes<'s, '_> {
                 }),
                 ClassElement::PropertyDefinition(p) => (&p.decorators, &p.key, Kind::Property),
                 ClassElement::AccessorProperty(p) if !p.decorators.is_empty() =>
-                    return Err(vec![derr(1101, "Invalid property of field type", &[], p.span)]),
+                    return Err((vec![derr(1101, "Invalid property of field type", &[], p.span)], true)),
                 _ => continue,
             };
             for d in decs {
@@ -242,10 +257,15 @@ impl<'s> Classes<'s, '_> {
                     pre_errs.push(derr(1102, "Invalid '{0}' decorator usage. Supported decorators ({1}) should be imported from \"{2}\"", &[n, AVAILABLE, LWC_PACKAGE_ALIAS], el.span()));
                 }
                 let Some(name) = decorator_name(d).filter(|n| self.imports.contains_key(*n) || unimported_known.is_some()) else {
-                    return Err(vec![match decorator_name(d) {
+                    let e = match decorator_name(d) {
                         Some(n) => derr(1102, "Invalid '{0}' decorator usage. Supported decorators ({1}) should be imported from \"{2}\"", &[n, AVAILABLE, LWC_PACKAGE_ALIAS], el.span()),
                         None => derr(1100, "Invalid decorator usage. Supported decorators ({0}) should be imported from \"{1}\"", &[AVAILABLE, LWC_PACKAGE_ALIAS], el.span()),
-                    }]);
+                    };
+                    // recovery: handleError collects and the visitor goes on; an unknown name (`@foo`) still
+                    // yields a meta that no decorator transform picks up, a non-identifier (LWC1100) yields none.
+                    if !self.recover { return Err((vec![e], true)); }
+                    if e.0 == 1100 { type_errs.push(e) } else { pre_errs.push(e) }
+                    continue;
                 };
                 // A private field is a Babel ClassPrivateProperty: getDecoratedNodeType reports LWC1101 and the
                 // decorator is validated with no node type (only reachable in recovery; LWC1103 is thrown first).
@@ -270,8 +290,7 @@ impl<'s> Classes<'s, '_> {
         for m in metas.iter().filter(|m| m.name == "track" && m.kind != Kind::Property) {
             errs.push(derr(1113, "@track decorator can only be applied to class properties.", &[], m.dec.span));
         }
-        if !errs.is_empty() { return Err(errs); }
-        if class.heritage.is_none() && self.skip_no_super { return Ok(()); }
+        if !errs.is_empty() && !self.recover { return Err((errs, true)); }
         let mut list = Vec::new();
         // api
         let mut public_props: Vec<(String, u32)> = Vec::new();
@@ -308,7 +327,8 @@ impl<'s> Classes<'s, '_> {
             _ => None,
         }).collect();
         if !fields.is_empty() { list.push(format!("fields: [{}]", fields.join(", "))); }
-        if list.is_empty() { return Ok(()); }
+        if !errs.is_empty() { return Err((errs, !list.is_empty())); }
+        if list.is_empty() { return Ok(false); }
 
         for m in &metas { self.edits.push(Edit::replace(m.dec.span.start, m.dec.span.end, "")); }
         let meta = format!("{{ {} }}", list.join(", "));
@@ -326,17 +346,72 @@ impl<'s> Classes<'s, '_> {
                 self.edits.push(Edit::insert(class.span.end, format!(", {meta})")));
             }
         }
-        Ok(())
+        Ok(true)
     }
 }
 
 impl<'a> Visit<'a> for Classes<'_, '_> {
     fn visit_class(&mut self, it: &Class<'a>) {
-        if self.recover || self.errs.is_empty() {
-            if let Err(e) = self.process(it) { self.errs.extend(e.into_iter().map(|d| (it.span.start, d))); }
+        if self.fatal.is_some() || !(self.recover || self.errs.is_empty()) { return; }
+        let (errs, removed) = self.process(it);
+        let thrown = !self.recover && !errs.is_empty();
+        self.errs.extend(errs.into_iter().map(|d| (it.span.start, d)));
+        if !thrown {
+            let member_decorated = it.body.body.iter().any(|el| match el {
+                ClassElement::MethodDefinition(m) => !m.decorators.is_empty(),
+                ClassElement::PropertyDefinition(p) => !p.decorators.is_empty(),
+                ClassElement::AccessorProperty(p) => !p.decorators.is_empty(),
+                _ => false,
+            });
+            if !it.decorators.is_empty() || (member_decorated && !removed) {
+                let start = it.decorators.iter().map(|d| d.span.start).fold(it.span.start, u32::min);
+                self.fatal = Some((start, class_features_error(it, self.src, self.filename, start)));
+                return;
+            }
         }
         walk::walk_class(self, it);
     }
+}
+
+const DECORATORS_NOT_ENABLED: &str = "Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]";
+
+/// @babel/helper-create-class-features-plugin `shouldTransform` on a class that still carries decorators
+/// (no decorators plugin in @lwc/compiler's Babel config): a private field / private method in it throws
+/// first at that member, else `Decorators are not enabled.` at the class (start includes class decorators).
+/// @lwc/compiler then wraps it: LWC1198 when the Babel message (incl. its filename and code frame) mentions
+/// `track`/`api`/`wire` as a word, else LWC1007 (normalizeToCompilerError; no location, Babel set none).
+fn class_features_error(class: &Class<'_>, src: &str, filename: &str, class_start: u32) -> CompileError {
+    // shipped checks a private field before a private method, each at the first such member
+    let find = |field: bool| class.body.body.iter().find_map(|el| match el {
+        ClassElement::PropertyDefinition(p) if field && matches!(p.key, PropertyKey::PrivateIdentifier(_)) => Some(("Private fields in decorated classes are not supported yet.", p.span)),
+        ClassElement::MethodDefinition(m) if !field && matches!(m.key, PropertyKey::PrivateIdentifier(_)) => Some(("Private methods in decorated classes are not supported yet.", m.span)),
+        _ => None,
+    });
+    let private = find(true).or_else(|| find(false));
+    let (text, start, end) = match private {
+        Some((t, sp)) => (t, sp.start, sp.end),
+        None => (DECORATORS_NOT_ENABLED, class_start, class.span.end),
+    };
+    let s = lwc_shared::babel_line_col(src, start);
+    let e = lwc_shared::babel_line_col(src, end);
+    let frame = lwc_shared::code_frame(src, s, (s.0 == e.0).then_some(e));
+    let babel_message = format!("{filename}: {text}\n{frame}");
+    let mut err = CompileError::babel("SyntaxError", format!("{text}\n{frame}"), filename, None, None);
+    if babel_message.contains("Decorators are not enabled.") && mentions_lwc_decorator(&babel_message) {
+        err.message = format!("SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. {babel_message}");
+        err.diagnostics[0].code = Some(1198);
+        err.diagnostics[0].message = err.message.clone();
+    }
+    err
+}
+
+/// `/\b(track|api|wire)\b/` (ASCII word boundaries, as in JS).
+fn mentions_lwc_decorator(s: &str) -> bool {
+    let b = s.as_bytes();
+    let word = |c: u8| c.is_ascii_alphanumeric() || c == b'_';
+    DECORATOR_NAMES.iter().any(|w| s.match_indices(w).any(|(i, _)| {
+        (i == 0 || !word(b[i - 1])) && b.get(i + w.len()).is_none_or(|c| !word(*c))
+    }))
 }
 
 /// Port of decorators/api/validate.ts.
@@ -473,13 +548,17 @@ pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions,
         Statement::VariableDeclaration(d) if d.kind == VariableDeclarationKind::Const => Some(d),
         _ => None,
     }).flat_map(|d| d.declarations.iter()).flat_map(|v| v.id.get_binding_identifiers()).map(|b| b.name.to_string()).collect();
-    let mut c = Classes { consts: &consts, imported: &imported, src, imports: &imports, skip_no_super: skip, reg_ids: Vec::new(), edits: Vec::new(), used: false, first_expr: None, errs: Vec::new(), recover: o.experimental_error_recovery_mode };
+    let mut c = Classes { consts: &consts, imported: &imported, src, filename, fatal: None, imports: &imports, skip_no_super: skip, reg_ids: Vec::new(), edits: Vec::new(), used: false, first_expr: None, errs: Vec::new(), recover: o.experimental_error_recovery_mode };
     c.visit_program(program);
     let mut all: Vec<(u32, DErr)> = usage.into_iter().map(|d| (0, d)).collect();
     all.extend(c.errs);
-    if !all.is_empty() {
+    if !all.is_empty() || c.fatal.is_some() {
         if !recover { all.truncate(1); }
-        return Err(all.into_iter().map(|(k, d)| (k, err(d))).collect());
+        let mut out: Vec<(u32, CompileError)> = all.into_iter().map(|(k, d)| (k, err(d))).collect();
+        // A class-features throw: recovery drops the collected errors (caller keeps only the throw); normal
+        // mode reaches it only when no LWC error was thrown earlier in traversal.
+        if let Some(f) = c.fatal { if recover || out.is_empty() { out.push(f); } }
+        return Err(out);
     }
     // Babel quirk: when the first registered class is a class expression, the registerDecorators
     // import lands after the template import (component.ts); for declarations it lands first.

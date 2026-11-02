@@ -36,6 +36,9 @@ pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions)
         all.sort_by_key(|(k, _)| *k);
         let mut errs: Vec<CompileError> = all.into_iter().map(|(_, e)| e).collect();
         if !o.experimental_error_recovery_mode { return Err(errs.swap_remove(0)); }
+        // A Babel-internal throw (class-features `Decorators are not enabled.`) aborts the traversal: shipped
+        // surfaces it alone, never inside the recovery aggregate.
+        if let Some(i) = errs.iter().position(|e| !e.is_unframed_lwc()) { return Err(errs.swap_remove(i)); }
         return Err(CompileError::aggregate(errs, filename));
     }
     let late_import = dec.unwrap_or_default();

@@ -6,6 +6,7 @@
 use super::*;
 
 use super::messages::lwc;
+use lwc_shared::api_version::{is_api_feature_enabled, ApiFeature};
 
 /// Text node: 1083/1196/1060/1074 for `{...}` segments that are not simple bindings.
 /// Returns `true` when the text node must be dropped (TS `withErrorRecovery` around
@@ -17,20 +18,20 @@ pub(super) fn text_expressions(segments: &[(String, bool)], l: &SourceLocation, 
     let raw = raw_source(l, d);
     let raw_segments = clean_text(&raw, &raw).map(|r| split_mustache(&r));
     let segments = match &raw_segments { Some(r) if r.iter().any(|(_, e)| *e) => r.as_slice(), _ => segments };
-    if o.complex && cfg.api_version >= expr_check::MIN_CTE_API_VERSION {
+    if o.complex && is_api_feature_enabled(ApiFeature::EnableComplexTemplateExpressions, cfg.api_version) {
         // TS parseTextComplex: the acorn source (and the message's `{source}`) is the whole cleaned text.
         let full: String = segments.iter().map(|(s, _)| s.as_str()).collect();
         let mut at = 0;
         for (seg, is_expr) in segments {
             let n = seg.chars().count();
-            if *is_expr && parse_binding(seg).is_none() {
+            if *is_expr && !is_binding(seg) {
                 if let Some(e) = expr_check::check_complex(&full, at, at + n, &o) { d.push(e.into_diagnostic(l.clone())); }
             }
             at += n;
         }
     } else {
         for (seg, is_expr) in segments {
-            if *is_expr && parse_binding(seg).is_none() && expr_check::is_expression(seg) {
+            if *is_expr && !is_binding(seg) && expr_check::is_expression(seg) {
                 if let Some(e) = expr_check::check_opts(seg, &o) { d.push(e.into_diagnostic(l.clone())); }
             }
         }
@@ -58,9 +59,9 @@ pub(super) fn attribute_expressions(attrs: &[parse5::Attribute], n: &NodeRef, cf
         let v = if sliced { &v[..v.len() - 1] } else { v.as_str() };
         let escaped_expr = potential && v.starts_with("\\{");
         let is_expr = is_expr || (sliced && expr_check::is_expression(v));
-        if escaped_expr || (is_expr && parse_binding(v).is_some()) { continue; }
+        if escaped_expr || (is_expr && is_binding(v)) { continue; }
         let o = expr_opts(cfg, !ra.quoted);
-        if ra.quoted && o.complex && cfg.api_version >= expr_check::MIN_CTE_API_VERSION && v.starts_with('{') {
+        if ra.quoted && o.complex && is_api_feature_enabled(ApiFeature::EnableComplexTemplateExpressions, cfg.api_version) && v.starts_with('{') {
             let err = expr_check::check_complex(v, 0, v.chars().count(), &o).or_else(|| {
                 // TS validateComplexExpression's second acorn pass over the raw template source.
                 let rv = ra.raw_value.as_deref().unwrap_or_default();
@@ -72,6 +73,14 @@ pub(super) fn attribute_expressions(attrs: &[parse5::Attribute], n: &NodeRef, cf
             if let Some(e) = expr_check::check_opts(v, &o) { d.push(e.into_diagnostic(l)); }
         }
     }
+}
+
+/// A simple Identifier / non-computed MemberExpression binding (TS validateExpression accepts these at
+/// any API version). `true` / `false` / `null` parse as acorn `Literal`s, not identifiers, so they go
+/// through validateExpression (1060 / 1210 / 1208).
+fn is_binding(v: &str) -> bool {
+    let head = v.strip_prefix('{').map(|s| s.trim_start().split(|c: char| c == '.' || c == '}' || c.is_whitespace()).next().unwrap_or(""));
+    parse_binding(v).is_some() && !matches!(head, Some("true" | "false" | "null"))
 }
 
 /// TS `isPotentialExpression`: `/^.?{.+}.*$/` (`.` excludes line terminators).
@@ -218,7 +227,7 @@ pub(super) fn parse5_errors(errors: &[parse5::ParserError], cfg: &NormalizedConf
         let code = e.code.as_str();
         // TS getLwcErrorFromParse5Error: ErrorOn → 1058; the older-API set → 1058 from API 59
         // (TREAT_ALL_PARSE5_ERRORS_AS_ERRORS), else the 1148 warning; unknown codes → 1148.
-        let error = PARSE5_ERROR_ON.contains(&code) || (PARSE5_WARN_OLDER.contains(&code) && cfg.api_version >= 59);
+        let error = PARSE5_ERROR_ON.contains(&code) || (PARSE5_WARN_OLDER.contains(&code) && is_api_feature_enabled(ApiFeature::TreatAllParse5ErrorsAsErrors, cfg.api_version));
         out.push(lwc(if error { 1058 } else { 1148 }, &[code], loc(&e.location)));
     }
 }
@@ -241,14 +250,11 @@ pub(super) fn ssr_inner_outer_html(attrs: &[Attribute], tag: &str, cfg: &Normali
     }
 }
 
-/// Element-level validation: unsupported lwc:* tag (1184), UNKNOWN_HTML_TAG (1123), lwc:dynamic
-/// deprecation (1187), INVALID_HTML_ATTRIBUTE (1057). Location = element location, like TS `throwOnNode(…, element)`.
+/// Element-level validation: UNKNOWN_HTML_TAG (1123), lwc:dynamic deprecation (1187). Location = element
+/// location, like TS `throwOnNode(…, element)`. 1184 / 1057 are emitted by element_check via
+/// `unknown_lwc_tag` / `attr_name_warnings` (creation stage / applyAttributes order).
 fn element(tag: &str, attrs: &[parse5::Attribute], n: &NodeRef, d: &mut Ctx, dynamic_ok: bool) {
     let l = elem_loc(n).location;
-    // TS parseLwcElementAsBuiltIn: unrecognized `lwc:*` tags warn at creation, then lower as plain elements.
-    if tag.starts_with("lwc:") && tag != "lwc:component" {
-        d.push(lwc(1184, &[tag], l.clone()));
-    }
     // 1127 / 1051 are thrown by element_check (applyLwcDirectives / validateElement).
     use tables::*;
     let known = tag.contains('-') || tag == "lwc:component" || KNOWN_HTML_AND_SVG_ELEMENTS.contains(&tag)
@@ -263,13 +269,6 @@ fn element(tag: &str, attrs: &[parse5::Attribute], n: &NodeRef, d: &mut Ctx, dyn
             d.count(lwc_shared::CompilerMetric::LwcDynamicDirective);
         }
     }
-    // TS applyHandlers / directive parsers consume these names before applyAttributes (1057).
-    for a in attrs {
-        let directive = a.name == "key" || ["lwc", "if", "for", "iterator"].iter().any(|p| a.name.starts_with(p));
-        if !directive && !is_event_handler_name(&a.name) && !is_valid_html_attribute(tag, &a.name) {
-            d.push(lwc(1057, &[&a.name, tag], attr_loc(n, &a.name)));
-        }
-    }
 }
 
 /// TS `EVENT_HANDLER_NAME_RE`: `/^on[a-z][a-z0-9_]*$/` (applyHandlers takes these before applyAttributes).
@@ -282,13 +281,30 @@ fn is_event_handler_name(name: &str) -> bool {
 const NO_LOCATION: SourceLocation = SourceLocation { start_line: 0, start_column: 0, end_line: 0, end_column: 0, start: 0, end: 0 };
 
 /// TS parseElementLocation: 1144 (location-less warning) for an element parse5 inserted while recovering.
-/// The parent is the immediate AST parent when it is a base element, else `template`.
-/// Not wired yet: needs a `validate::html_recovery(n, d);` call before `element_check::element_errors` in mod.rs.
-#[allow(dead_code)]
+/// TS names `ctx.findAncestor(isBaseElement, () => false)?.name ?? 'template'`: only the last node of the enclosing
+/// element scope is tested, i.e. the parent's `element ?? directive`. That is a base element exactly when the parse5
+/// parent is a non-`<template>` element (its own For/If directives sit *above* it); a `<template>` parent yields a
+/// Root / If / For / scoped-slot node, and children of `<template>` content have the content fragment as parse5
+/// parent. A parent whose parseElement threw never parses children, so it never reaches here.
 pub(super) fn html_recovery(n: &NodeRef, d: &mut Ctx) {
     let b = n.borrow();
     if b.source_code_location_ref().is_some() { return; }
     let Some(tag) = b.tag_name() else { return };
     let parent = b.parent().and_then(|p| p.borrow().tag_name().filter(|t| *t != "template").map(str::to_string));
     d.push(lwc(1144, &[tag, parent.as_deref().unwrap_or("template")], NO_LOCATION));
+}
+
+/// TS applyAttributes 1057 (INVALID_HTML_ATTRIBUTE) for one attribute name. Names that TS applyHandlers /
+/// directive parsers consume first (event handlers, `key`, lwc/if/for/iterator prefixes) never warn.
+/// Returns the warning; the caller pushes it (callable with a shared `Ctx` borrow, as in element_check).
+pub(super) fn attr_name_warnings(tag: &str, attr_name: &str, loc: &SourceLocation, _d: &Ctx) -> Option<CompilerDiagnostic> {
+    let directive = attr_name == "key" || ["lwc", "if", "for", "iterator"].iter().any(|p| attr_name.starts_with(p));
+    (!directive && !is_event_handler_name(attr_name) && !is_valid_html_attribute(tag, attr_name))
+        .then(|| lwc(1057, &[attr_name, tag], loc.clone()))
+}
+
+/// TS parseLwcElementAsBuiltIn: 1184 (UNSUPPORTED_LWC_TAG_NAME) for an unrecognized `lwc:*` tag, at creation.
+/// Returns the warning; the caller pushes it.
+pub(super) fn unknown_lwc_tag(tag: &str, loc: &SourceLocation, _d: &Ctx) -> Option<CompilerDiagnostic> {
+    (tag.starts_with("lwc:") && tag != "lwc:component").then(|| lwc(1184, &[tag], loc.clone()))
 }

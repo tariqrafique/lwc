@@ -10,6 +10,7 @@ pub mod parser;
 pub mod scoping;
 pub mod selector;
 pub mod serialize;
+pub mod syntax_check;
 
 pub use error::StyleError;
 pub use lwc_shared::{CompileError, CompileOptions, CompileResult};
@@ -34,33 +35,74 @@ impl From<&CompileOptions> for Config {
     }
 }
 
+/// `@lwc/compiler` `transformers/style.ts` + `@lwc/errors` `normalizeToCompilerError`, as shipped 9.5.3 throws:
+/// - single: `CompilerError` named `Error`, code 1009, message `{e.name}: LWC1009: {postcss message}`, `location`
+///   = the CssSyntaxError's `{line, column}` (no start/length), `filename` = the filename passed in.
+/// - recovery (`AggregateError`): `CompilerAggregateError('Multiple CSS errors occurred during compilation.')`
+///   whose `errors[]` are the single shape above, one per CssSyntaxError.
 fn style_err_to_compile(err: StyleError, filename: &str) -> CompileError {
     match err {
-        StyleError::Syntax { name: _, reason, line, column } => CompileError {
-            message: format!("lwc-style: {reason}"),
-            filename: Some(filename.into()),
-            diagnostics: vec![],
-            // JS @lwc/compiler wraps CssSyntaxError as Error; keep expectedName via reason only.
-            name: Some("Error".into()),
-            line: Some(line),
-            column: Some(column),
-        },
         StyleError::Aggregate(errs) => {
-            let reason = match errs.first() {
-                Some(StyleError::Syntax { reason, .. }) => reason.clone(),
-                _ => String::new(),
-            };
+            let diagnostics = errs.iter().map(|e| style_diagnostic(e, filename)).collect();
             CompileError {
-                message: format!("lwc-style: {reason}"),
+                message: CSS_AGGREGATE_MESSAGE.into(),
                 filename: Some(filename.into()),
-                diagnostics: vec![],
+                diagnostics,
                 name: Some("AggregateError".into()),
-                // JS AggregateError from compiler has no location on the outer error.
+                // JS CompilerAggregateError has no location on the outer error.
                 line: None,
                 column: None,
             }
         }
+        e @ StyleError::Syntax { .. } => {
+            let d = style_diagnostic(&e, filename);
+            let (line, column) = match e { StyleError::Syntax { line, column, .. } => (line, column), _ => (None, None) };
+            CompileError { message: d.message.clone(), filename: Some(filename.into()), diagnostics: vec![d], name: Some("Error".into()), line, column }
+        }
     }
+}
+
+/// `CompilerAggregateError` message thrown by `@lwc/compiler` `transformers/style.ts` in recovery mode.
+pub const CSS_AGGREGATE_MESSAGE: &str = "Multiple CSS errors occurred during compilation.";
+
+/// One CssSyntaxError as `normalizeToCompilerError(CSS_TRANSFORMER_ERROR, e, { filename })` builds it.
+fn style_diagnostic(e: &StyleError, filename: &str) -> lwc_shared::CompilerDiagnostic {
+    let (name, line, column) = match e {
+        StyleError::Syntax { name, line, column, .. } => (name.as_str(), *line, *column),
+        StyleError::Aggregate(_) => ("AggregateError", None, None),
+    };
+    let css_message = e.postcss_message(&postcss_file(filename));
+    // getLocationFromObject: `{line, column}` only when both are integers. CSS errors carry no offsets;
+    // the napi seam emits this location without start/length for style, as shipped.
+    let location = match (line, column) {
+        (Some(l), Some(c)) => Some(lwc_shared::SourceLocation { start_line: l, start_column: c, end_line: l, end_column: c, start: 0, end: 0 }),
+        _ => None,
+    };
+    let origin = lwc_shared::DiagnosticOrigin { filename: Some(filename.into()), location };
+    let mut d = lwc_shared::CompilerDiagnostic::generate(&lwc_shared::CSS_TRANSFORMER_ERROR, Some(&[css_message.as_str()]), Some(origin), false);
+    // normalizeToCompilerError: `${error.name}: ${message}`.
+    d.message = format!("{name}: {}", d.message);
+    d
+}
+
+/// PostCSS `Input#file` for `from: filename`: kept as-is when absolute or URL-like (`/^\w+:\/\//`),
+/// else Node `path.resolve(filename)` against the process cwd.
+fn postcss_file(filename: &str) -> String {
+    let url_like = filename.find("://").is_some_and(|i| i > 0 && filename[..i].chars().all(|c| c.is_ascii_alphanumeric() || c == '_'));
+    if url_like || filename.starts_with('/') {
+        return filename.to_string();
+    }
+    let cwd = std::env::current_dir().unwrap_or_default();
+    let joined = format!("{}/{filename}", cwd.to_string_lossy());
+    let mut parts: Vec<&str> = Vec::new();
+    for seg in joined.split('/') {
+        match seg {
+            "" | "." => {}
+            ".." => { parts.pop(); }
+            s => parts.push(s),
+        }
+    }
+    format!("/{}", parts.join("/"))
 }
 
 /// Fixture / internal entry (StyleError). Prefer [`transform`] from the facade.
@@ -72,7 +114,8 @@ pub fn transform_with_config(
     if src.is_empty() {
         return Ok("export default undefined".into());
     }
-    let mut root = match parser::parse(src) {
+    // PostCSS throws on input cssparser would auto-close (unclosed block/string/comment/bracket, ...).
+    let mut root = match syntax_check::check(src).and_then(|()| parser::parse(src)) {
         Ok(r) => r,
         Err(e) if config.experimental_error_recovery_mode => return Err(StyleError::Aggregate(vec![e])),
         Err(e) => return Err(e),

@@ -4,5 +4,21 @@
   "codes": [
     1099
   ],
-  "line": null
+  "line": null,
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1099,
+        "message": "LWC1099: Boolean public property must default to false.",
+        "location": {
+          "line": 4,
+          "column": 2,
+          "start": 101,
+          "length": 24
+        }
+      }
+    ]
+  }
 }

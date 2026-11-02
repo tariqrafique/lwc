@@ -1,9 +1,9 @@
 OFFICIAL BOARD (VALID): produced only by scripts/official-board.sh after every gate passed
-src_snapshot_sha256_12=d366b22bed97
-napi_sha256_12=5f56821d9f7e
-parse5_rust_sha256_12=2ff244545879   (build dep; not in tgz)
+src_snapshot_sha256_12=4aa80d2cad56
+napi_sha256_12=956fb2c40c77
+parse5_rust_sha256_12=f574a86cf183   (build dep; not in tgz)
 oracle=/workspace/lwc @ b9e8007 (clean)
 gates=golden-gate(goldens == fresh JS-oracle recording) shim-gate(untagged=0) option-gate(all mapped) snapshot-unchanged board-rc=0
-tgz_sha256=72b2dc22595aad7837285f7817202d94f7c5880cdde9024e93761634bbbe5a01
-board_txt_sha256=55473af6fe68fe133b2299cd3737d55d5bb3e3c2a178c278ac9bbf5f175f6eaf
-published=2026-11-01T20:56:06-08:00
+tgz_sha256=c8adfc506333fd90c8503df90d70900cea27c241f0b0e49a8e8cb00f4441a150
+board_txt_sha256=33d14c6328c966cdcea825a14636ca731f3ecaa28c04981cb0e26ed3fe362a89
+published=2026-11-01T21:17:24-08:00

@@ -144,9 +144,23 @@ mod tests {
     #[test]
     fn routes_html_csr_to_template_not_ssr() {
         let o = CompileOptions::default();
-        // empty html CSR: template stub returns Ok (empty code) — must NOT be lwc-ssr Err
-        let r = dispatch("", "a.html", &o).expect("html CSR should reach template");
-        assert_eq!(r.code, "");
+        let r = dispatch("<template></template>", "a.html", &o).expect("html CSR should reach template");
+        assert!(r.code.contains("registerTemplate"), "{}", r.code);
+    }
+
+    /// JS transformSync('', 'a.html'): LWC1072 "Missing root template tag" at line 0, column 0
+    /// (fixture parsing-errors/empty-template; location {line:0,column:0,start:0,length:0}).
+    #[test]
+    fn empty_html_is_1072_at_0_0() {
+        for src in ["", " \n "] {
+            let e = dispatch(src, "a.html", &CompileOptions::default()).expect_err("1072");
+            assert_eq!((e.line, e.column), (Some(0), Some(0)), "{e:?}");
+            assert!(e.message.starts_with("LWC1072: Missing root template tag"), "{}", e.message);
+            let [d] = &e.diagnostics[..] else { panic!("{:?}", e.diagnostics) };
+            assert_eq!(d.code, Some(1072));
+            let l = d.location.clone().expect("location");
+            assert_eq!((l.start_line, l.start_column, l.start, l.end), (0, 0, 0, 0));
+        }
     }
 
     #[test]

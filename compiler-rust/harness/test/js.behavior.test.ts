@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, it, expect, beforeAll } from 'vitest';
-import { compareError } from '../src/compareError';
+import { compareError, compareAggregate, observeAggregate } from '../src/compareError';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalJsModule } from '../src/evalJs';
 
@@ -65,7 +65,8 @@ describe('js behavioral', () => {
                 const codes = [...new Set([...(e.code != null ? [e.code] : []), ...(e.errors ?? []).map((x: any) => x.code).filter((c: any) => c != null), ...lwcCodes(msgs)])].sort();
                 // every fixture-expected LWC code must be surfaced by the seam error
                 for (const c of expectedCodes) expect(codes).toContain(c);
-                observed = { ok: false, name: e.name, codes, line: e.location?.line ?? null, expectedCodes, ...(gap ? { seamGap: gap } : {}) };
+                const aggregate = observeAggregate(e);
+                observed = { ok: false, name: e.name, codes, line: e.location?.line ?? null, expectedCodes, ...(aggregate ? { aggregate } : {}), ...(gap ? { seamGap: gap } : {}) };
             }
             expect(observed.ok).toBe(!expectError);
             const g = path.join(GOLDEN_DIR, rel.replace(/[\\/]/g, '__') + '.json');
@@ -79,6 +80,7 @@ describe('js behavioral', () => {
                 if (golden.ok === false) {
                     const err = (o: any) => ({ name: o.name, code: o.codes?.[0] ?? null, message: '', line: o.line });
                     expect(compareError(err(golden), observed.ok ? null : err(observed))).toMatchObject({ pass: true });
+                    if (golden.aggregate) expect(compareAggregate(golden.aggregate, observed.aggregate)).toEqual({ pass: true, mode: 'aggregate' });
                 }
                 expect(observed).toEqual(golden);
             }

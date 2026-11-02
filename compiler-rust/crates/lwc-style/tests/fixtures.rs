@@ -21,7 +21,13 @@ fn normalize_version(s: &str) -> String {
 
 fn err_json(e: &StyleError) -> Value {
     match e {
-        StyleError::Syntax { name, reason, line, column } => json!({"name": name, "reason": reason, "column": column, "line": line}),
+        StyleError::Syntax { name, reason, line, column } => {
+            // JSON.stringify drops `undefined` line/column (position-less PostCSS errors).
+            let mut o = json!({"name": name, "reason": reason});
+            if let Some(c) = column { o["column"] = json!(c); }
+            if let Some(l) = line { o["line"] = json!(l); }
+            o
+        }
         StyleError::Aggregate(v) => Value::Array(v.iter().map(err_json).collect()),
     }
 }
