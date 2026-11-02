@@ -18,6 +18,7 @@ dirty="$(git -C "$ORACLE" status --porcelain --untracked-files=all)"
 "$here/scripts/ensure-deps.sh" || exit 2
 VITEST="$ORACLE/node_modules/.bin/vitest"   # never npx: it silently fetches an unrelated vitest when links are missing
 norun=()
+logdir="${BOARD_LOG_DIR:-$(mktemp -d /tmp/board-run.$(date +%Y%m%dT%H%M%S).$$.XXXX)}"; mkdir -p "$logdir"; echo "row logs: $logdir"
 src="$here/lwc-compiler-napi.node"
 pins="$here/.pins"; mkdir -p "$pins"
 hash="$(sha256sum "$src" | cut -c1-12)"
@@ -30,7 +31,7 @@ export PATH="/workspace/lwc/node_modules/.bin:$PATH"
 suites=("$@"); [ $# -eq 0 ] && suites=("${ROWS[@]}")
 echo "napi sha256:$hash  pinned=$pinned  oracle=$head_sha(clean)  $(date -Iseconds)"
 for s in "${suites[@]}"; do
-  out="/tmp/board-$s-$hash.out"
+  out="$logdir/board-$s-$hash.out"
   test="test/$s.behavior.test.ts"; mode=sync; extra=()
   case "$s" in
     js-api) test=test/js-options.behavior.test.ts; extra=(-t '^js-options: api ');;
@@ -53,5 +54,5 @@ shimgate=0; node "$here/scripts/shim-gate.mjs" || shimgate=1
 gate=0; OPTGATE_DIAG="$DIAG" node "$here/scripts/option-gate.mjs" "${ROWS[*]}" || gate=1
 if [ $shimgate -ne 0 ]; then echo "!! BOARD FAILED: untagged shim-ish line(s) in crates/ — tag as SHIM(<kind>: ...), remove, or allowlist with reason"; fi
 if [ $gate -ne 0 ]; then echo "!! BOARD FAILED: option-inventory gate"; fi
-if [ ${#norun[@]} -ne 0 ]; then echo "!! BOARD FAILED: row(s) produced no test summary: ${norun[*]} (see /tmp/board-<row>-$hash.out)"; fi
+if [ ${#norun[@]} -ne 0 ]; then echo "!! BOARD FAILED: row(s) produced no test summary: ${norun[*]} (see $logdir/board-<row>-$hash.out)"; fi
 [ $gate -eq 0 ] && [ $shimgate -eq 0 ] && [ ${#norun[@]} -eq 0 ] || exit 1

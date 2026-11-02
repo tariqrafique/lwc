@@ -1,43 +1,48 @@
 #!/usr/bin/env bash
-# OFFICIAL board from a FROZEN source snapshot (the only official path; Migrate 2026-11-01).
-# Other agents edit the tree concurrently; live-tree runs mixed edits into the binary mid-run (20:16, 20:18).
-#   1. snapshot: Rust tree {Cargo.*, crates, scripts, tools, docs, README.md, decisions.tsv} + ../parse5-rust (build dep)
-#      + harness source/goldens (no node_modules/.pins/render-out/.vitest/*.node) + ../notes/lwc-rust-migrate; hash it (src sha)
+# OFFICIAL board, built ONLY from a named commit on main (git, Migrate 2026-11-01). The only official path.
+#   0. source = `git archive <commit>` of /workspace/lwc-compiler-rust (default ref: main; must be on main's history),
+#      parse5-rust = `git archive HEAD` (refused if its tree is dirty), notes = a commit of the /workspace/notes repo.
+#      Nothing is read from any working tree, so concurrent edits cannot leak in.
+#   1. layout: $snap/{repo,parse5-rust,notes} (../../../parse5-rust resolves) + harness at $hsnap/harness (depth 3); src sha over all
 #   1b. golden-gate: snapshot goldens must equal a fresh JS-backend recording (oracle b9e8007) -> abort otherwise
 #   2. fresh target dir (== cargo clean): cargo check --workspace --all-targets + seam crate tests -> abort on failure
-#   3. napi built from the snapshot; installed into the SNAPSHOT harness (and atomically into the live harness for others)
+#   3. napi built from the snapshot; installed ONLY into the SNAPSHOT harness (never the live one; no writes outside the snapshot except /workspace/push + store publish)
 #   4. board.sh runs from the snapshot harness (tests+goldens frozen too); shim-gate + option-gate read snapshot crates (CRATES_ROOT)
 #   5. re-hash; mutation => INVALID (exit 4)
-#   7. VALID run also published to the official store (scripts/publish-official.sh)
 #   6. VALID run (snapshot unchanged, board rc 0) => /workspace/push/official-<srcsha>.tgz + official-<srcsha>.board.txt
-# Harness snapshot sits at depth 3 (/tmp/<dir>/harness) like the live one: rollup warning paths (../../../virtual-csr) are cwd-relative.
+#   7. VALID run also published to the official store (scripts/publish-official.sh), recording the commit SHAs
+# Usage: BOARD_COMMIT=<ref on main> scripts/official-board.sh [rows...]
 set -euo pipefail
-root="$(cd "$(dirname "$0")/.." && pwd)"
-notes="$root/../notes/lwc-rust-migrate"
+MAIN=/workspace/lwc-compiler-rust; P5=/workspace/parse5-rust; NOTES=/workspace/notes
+root="$MAIN"
 push=/workspace/push
 source "$HOME/.cargo/env" 2>/dev/null || true
+die3() { echo "!! BOARD ABORTED: $*" >&2; exit 3; }
+ref="${BOARD_COMMIT:-main}"
+commit="$(git -C "$MAIN" rev-parse --verify -q "$ref^{commit}")" || die3 "unknown ref '$ref'"
+git -C "$MAIN" merge-base --is-ancestor "$commit" main || die3 "$ref ($commit) is not on main (official boards build only from main)"
+[ -z "$(git -C "$P5" status --porcelain)" ] || die3 "parse5-rust working tree is dirty; commit it first"
+p5commit="$(git -C "$P5" rev-parse HEAD)"
+# notes are edited in place (not landed): snapshot them as a commit so the board names exactly what it used
+git -C "$NOTES" add -A && { git -C "$NOTES" diff --cached --quiet || git -C "$NOTES" commit -qm "notes snapshot for official board @ ${commit:0:12}"; }
+notescommit="$(git -C "$NOTES" rev-parse HEAD)"
 snap="$(mktemp -d /tmp/lwc-board-snap.XXXXXX)"   # Rust build: $snap/repo + $snap/parse5-rust (../../../parse5-rust resolves)
 hsnap="$(mktemp -d /tmp/lwc-board-h.XXXXXX)"     # harness: $hsnap/harness (depth 3)
 trap 'rm -rf "$snap" "$hsnap"' EXIT
-# copy <src-dir> <dst-dir>: regular files minus generated/heavy paths
-copy() { mkdir -p "$2"; (cd "$1" && find . -type f \
-  ! -path './target/*' ! -path '*/node_modules/*' ! -path './.git/*' ! -path './.pins/*' ! -path './.vitest/*' \
-  ! -path './.csr-render-out/*' ! -path './.ssr-render-out/*' ! -name '*.node' ! -name '.lwc-compiler-napi.*' -print0 \
-  | tar --null -T - -cf -) | tar -xf - -C "$2"; }
-mkdir -p "$snap/repo"
-cp -a "$root/Cargo.toml" "$root/Cargo.lock" "$root/README.md" "$root/decisions.tsv" "$snap/repo/"
-for d in crates scripts tools docs; do copy "$root/$d" "$snap/repo/$d"; done
-copy "$root/../parse5-rust" "$snap/parse5-rust"
-copy "$root/harness" "$hsnap/harness"
-copy "$notes" "$snap/notes"
-ln -s "$root/harness/node_modules" "$hsnap/harness/node_modules"
+mkdir -p "$snap/repo" "$snap/parse5-rust" "$snap/notes" "$hsnap"
+git -C "$MAIN" archive "$commit" | tar -x -C "$snap/repo"
+git -C "$P5" archive "$p5commit" | tar -x -C "$snap/parse5-rust"
+git -C "$NOTES" archive "$notescommit" lwc-rust-migrate | tar -x -C "$snap/notes" --strip-components=1
+mv "$snap/repo/harness" "$hsnap/harness"
+"$MAIN/harness/scripts/ensure-deps.sh"
+ln -s "$MAIN/harness/node_modules" "$hsnap/harness/node_modules"
 srchash() { (find "$snap/repo" "$snap/parse5-rust" "$snap/notes" "$hsnap/harness" -type f ! -path "$snap/target/*" \
   ! -path "$hsnap/harness/.pins/*" ! -path "$hsnap/harness/.vitest/*" ! -path "$hsnap/harness/.csr-render-out/*" \
   ! -path "$hsnap/harness/.ssr-render-out/*" ! -name '*.node' -print0 | sort -z | xargs -0 sha256sum \
   | sed -e "s#$snap/##" -e "s#$hsnap/##" | sha256sum | cut -c1-12); }
 h0="$(srchash)"
 p5="$(cd "$snap/parse5-rust" && find . -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | cut -c1-12)"
-echo "src snapshot sha256:$h0  parse5-rust sha256:$p5  ($snap, $hsnap)"
+echo "commit $commit  src snapshot sha256:$h0  parse5-rust ${p5commit:0:12} sha256:$p5  notes ${notescommit:0:12}  ($snap, $hsnap)"
 export CARGO_TARGET_DIR="$snap/target"
 ws="$snap/repo"
 GOLDEN_GATE_PROGRESS="$snap/golden.progress" "$hsnap/harness/scripts/golden-gate.sh" "$hsnap/harness" \
@@ -47,8 +52,6 @@ GOLDEN_GATE_PROGRESS="$snap/golden.progress" "$hsnap/harness/scripts/golden-gate
 (cd "$ws" && cargo build -p lwc-compiler-napi --release)
 so="$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so"
 cp "$so" "$hsnap/harness/lwc-compiler-napi.node"
-dst="$root/harness/lwc-compiler-napi.node"; tmp="$(mktemp "$root/harness/.lwc-compiler-napi.XXXXXX")"
-cp "$so" "$tmp"; mv -f "$tmp" "$dst"
 napi="$(sha256sum "$so" | cut -c1-12)"
 echo "built napi $napi from src $h0"
 set +e; CRATES_ROOT="$ws/crates" "$hsnap/harness/board.sh" "$@" 2>&1 | tee "$snap/board.log"; rc=${PIPESTATUS[0]}; set -e
@@ -59,7 +62,7 @@ echo "official: src=$h0 napi=$napi rc=$rc"
 if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
   mkdir -p "$push"
   base="$push/official-$h0"
-  { echo "official board  src=$h0  napi=$napi  parse5-rust=$p5 (build dep, NOT in tgz)  $(date -Iseconds)"
+  { echo "official board  commit=${commit:0:12}  src=$h0  napi=$napi  parse5-rust=$p5 (build dep, NOT in tgz)  $(date -Iseconds)"
     sed -n '/^napi sha256:/,$p' "$snap/board.log"
     # CSR failure clusters (Migrate 2026-11-01): counts per cluster for each corpus
     for c in ssr template; do rep="$hsnap/harness/.csr-render-out/rust-$c/report-$c.json"
@@ -77,7 +80,8 @@ if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
   echo "push artifacts: $base.tgz  $base.board.txt"
   # Durable publish (Migrate standing rule): survives box restores; Migrate pushes ONLY from here.
   store="${OFFICIAL_STORE:-/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official}"
-  "$root/scripts/publish-official.sh" "$h0" "$napi" "$p5" "$store"
+  OFFICIAL_COMMIT="$commit" OFFICIAL_PARSE5_COMMIT="$p5commit" OFFICIAL_NOTES_COMMIT="$notescommit" \
+    "$snap/repo/scripts/publish-official.sh" "$h0" "$napi" "$p5" "$store"
 else
   echo "no push artifacts (rc=$rc${1:+, partial row set})"
 fi

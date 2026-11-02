@@ -131,6 +131,8 @@ pub struct JsDiagnosticLocation {
     pub column: u32,
     pub start: Option<u32>,
     pub length: Option<u32>,
+    /// Babel parser `Position.index` (UTF-16 offset): set only on a Babel-parse LWC1007 (see `babel_position`).
+    pub index: Option<u32>,
 }
 
 fn to_js_diagnostic(d: lwc_shared::CompilerDiagnostic) -> JsDiagnostic {
@@ -145,7 +147,7 @@ fn to_js_diagnostic(d: lwc_shared::CompilerDiagnostic) -> JsDiagnostic {
 
 impl From<lwc_shared::DiagnosticLocation> for JsDiagnosticLocation {
     fn from(l: lwc_shared::DiagnosticLocation) -> Self {
-        Self { line: l.line, column: l.column, start: l.start, length: l.length }
+        Self { line: l.line, column: l.column, start: l.start, length: l.length, index: None }
     }
 }
 
@@ -231,6 +233,12 @@ fn css_location(l: JsDiagnosticLocation) -> JsDiagnosticLocation {
     JsDiagnosticLocation { start: None, length: None, ..l }
 }
 
+/// A Babel parser error (`SyntaxError` normalized to LWC1007) carries Babel's `err.loc`, a `Position`
+/// `{ line, column, index }` (no start/length). lwc-js stores it zero-width with `start = index`.
+fn babel_position(l: JsDiagnosticLocation) -> JsDiagnosticLocation {
+    JsDiagnosticLocation { index: l.start, start: None, length: None, ..l }
+}
+
 fn error_result(e: lwc_shared::CompileError, origin: single_error::Origin) -> JsCompileResult {
     let babel_paths = origin == single_error::Origin::Js;
     let error = if aggregate::is_compiler_aggregate(&e) {
@@ -243,6 +251,10 @@ fn error_result(e: lwc_shared::CompileError, origin: single_error::Origin) -> Js
             message = e.message.clone();
             for x in &mut errors { x.location = x.location.take().map(css_location); }
         }
+        if origin == single_error::Origin::Template {
+            // `templateTransform` passes no message: `new CompilerAggregateError(errors)` -> message "".
+            message = e.message.clone();
+        }
         JsCompileError {
             message, name: e.name, code, line: None, column: None, filename, location: None, errors: Some(errors),
             level: None, url: None,
@@ -252,6 +264,7 @@ fn error_result(e: lwc_shared::CompileError, origin: single_error::Origin) -> Js
         let code = first.and_then(|d| d.code);
         let mut loc: Option<JsDiagnosticLocation> = first.and_then(|d| d.js_location()).map(Into::into);
         if origin == single_error::Origin::Style { loc = loc.map(css_location); }
+        if origin == single_error::Origin::Js && code == Some(1007) { loc = loc.map(babel_position); }
         let level_url = single_error::level_url(origin, code, first.map(|d| d.level.js_value()));
         let location = match (loc, level_url.is_some()) {
             (Some(l), _) => Some(Either::A(l)),

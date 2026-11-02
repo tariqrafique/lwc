@@ -94,30 +94,26 @@ fn expr_opts(cfg: &NormalizedConfig, unquoted: bool) -> expr_check::Opts {
     expr_check::Opts { complex: cfg.experimental_complex_expressions, computed_ok: cfg.experimental_computed_member_expression, api_version: cfg.api_version, unquoted }
 }
 
-/// Non-template element checks, in TS order: 1176 (lwc:slot-data off <template>),
-/// element validation (1127/1051/1123/1187/1057), then 1171 (lwc:slot-bind off <slot>).
+/// Warnings on a created (non-template) element, in TS parseElement order: parseIf 1182, applyKey 1149,
+/// applyLwcDirectives 1187 / 1171, applyAttributes 1041, validateSlotAttribute 1201, validateElement 1123.
+/// (1176 is thrown by element_check before creation; kept for the unchecked path.)
 pub(super) fn non_template_element(tag: &str, _ns: &str, attrs: &[parse5::Attribute], n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx) {
     if let Some(sd) = attrs.iter().find(|a| a.name == "lwc:slot-data") {
         d.push(lwc(1176, &[], attr_loc(n, &sd.name)));
     }
-    element(tag, attrs, n, d, cfg.experimental_dynamic_directive);
+    if_warnings(tag, attrs, n, d);
+    let own_loop = attrs.iter().any(|a| a.name == "for:each" || a.name.starts_with("iterator:"));
+    // TS applyKey: any expression key (simple or not) without a for:each / for:of parent warns.
+    if attrs.iter().any(|a| a.name == "key" && expr_check::is_expression(&a.value)) && !own_loop && d.for_of.is_none() && d.for_each.is_none() {
+        d.push(lwc(1149, &[tag], attr_loc(n, "key")));
+    }
+    dynamic_directive(tag, attrs, n, d, cfg.experimental_dynamic_directive);
     // TS applyLwcSlotBindDirective runs after the lwc:dynamic/lwc:is directives.
     if tag != "slot" && attrs.iter().any(|a| a.name == "lwc:slot-bind") {
         d.push(lwc(1171, &[&format!("<{tag}>")], elem_loc(n).location));
     }
-}
-
-/// 1182: TS `parseIf` keeps the first if:* attribute and warns once per extra one.
-pub(super) fn multiple_if(tag: &str, attrs: &[parse5::Attribute], n: &NodeRef, d: &mut Ctx) {
-    for _ in attrs.iter().filter(|a| a.name.starts_with("if:")).skip(1) {
-        d.push(lwc(1182, &[tag], elem_loc(n).location));
-    }
-}
-
-/// 1041 static id inside an iteration, then 1201 slot attribute under a non-component ancestor.
-pub(super) fn element_attributes(tag: &str, attrs: &[parse5::Attribute], has_loop: bool, n: &NodeRef, d: &mut Ctx) {
-    if tag == "template" { return; }
-    if d.iter_depth > 0 || has_loop {
+    // TS isInIteration: any For ancestor, including the element's own for:each / iterator.
+    if d.iter_depth > 0 || own_loop {
         if let Some(a) = attrs.iter().find(|a| a.name == "id" && !(a.value.starts_with('{') && a.value.ends_with('}'))) {
             d.push(lwc(1041, &[], attr_loc(n, &a.name)));
         }
@@ -127,22 +123,38 @@ pub(super) fn element_attributes(tag: &str, attrs: &[parse5::Attribute], has_loo
             d.push(lwc(1201, &[&format!("<{tag}>"), &format!("<{anc}>")], attr_loc(n, "slot")));
         }
     }
+    if let Some(w) = unknown_html_tag(tag, &elem_loc(n).location) { d.push(w); }
 }
 
-/// 1149: `key` outside an iteration. Returns `true` when the key is kept (lowering drops it otherwise).
-/// TS applyKey: kept iff a for:each / for:of parent exists (through templates, up to the nearest element).
-pub(super) fn key_in_iteration(tag: &str, has_key: bool, has_loop: bool, _in_loop: bool, n: &NodeRef, d: &mut Ctx) -> bool {
-    if tag != "template" && has_key && !has_loop && d.for_of.is_none() && d.for_each.is_none() {
-        d.push(lwc(1149, &[tag], attr_loc(n, "key")));
-        return false;
+/// 1182 on `<template>` (non-template elements get it from `non_template_element`, in TS order).
+pub(super) fn multiple_if(tag: &str, attrs: &[parse5::Attribute], n: &NodeRef, d: &mut Ctx) {
+    if tag == "template" { if_warnings(tag, attrs, n, d); }
+}
+
+/// 1182: TS `parseIf` keeps the first if:* attribute and warns once per extra one.
+fn if_warnings(tag: &str, attrs: &[parse5::Attribute], n: &NodeRef, d: &mut Ctx) {
+    for _ in attrs.iter().filter(|a| a.name.starts_with("if:")).skip(1) {
+        d.push(lwc(1182, &[tag], elem_loc(n).location));
     }
-    has_key
+}
+
+/// No-op: 1041 / 1201 are reported by `non_template_element` in TS order (the call can be removed).
+pub(super) fn element_attributes(_tag: &str, _attrs: &[parse5::Attribute], _has_loop: bool, _n: &NodeRef, _d: &mut Ctx) {}
+
+/// TS applyKey: `true` when the key is kept (lowering drops it otherwise): kept iff a for:each / for:of
+/// parent exists (through templates, up to the nearest element). The 1149 warning for a dropped key is
+/// reported by `non_template_element`.
+pub(super) fn key_in_iteration(tag: &str, has_key: bool, has_loop: bool, _in_loop: bool, _n: &NodeRef, d: &mut Ctx) -> bool {
+    has_key && (tag == "template" || has_loop || d.for_of.is_some() || d.for_each.is_some())
 }
 
 /// Nested `<template>`: 1145 (unsupported attributes) before 1153 (no directive), as in TS
 /// validateTemplate. Returns `true` when the template must be dropped (1153).
 pub(super) fn template(attrs: &[&parse5::Attribute], has_directive: bool, l: &SourceLocation, d: &mut Ctx) -> bool {
-    let bad: Vec<&str> = attrs.iter().map(|a| a.name.as_str()).filter(|n| !is_template_directive_attr(n)).collect();
+    // Whatever parseElementDirectives did not pick (`ParsedAttribute.getAttributes()`).
+    let consumed = |n: &str| matches!(n, "lwc:if" | "lwc:elseif" | "lwc:else" | "for:each" | "for:item" | "for:index" | "lwc:slot-data")
+        || n.starts_with("if:") || n.starts_with("iterator:");
+    let bad: Vec<&str> = attrs.iter().map(|a| a.name.as_str()).filter(|n| !consumed(n)).collect();
     if !bad.is_empty() {
         d.push(lwc(1145, &[&bad.join(", ")], l.clone()));
     }
@@ -191,7 +203,9 @@ pub(super) fn scoped_slot_data(sd: &parse5::Attribute, other_directive: bool, l:
         d.push(lwc(1178, &[], l.clone()));
         return None;
     }
-    if sd.value.starts_with('{') && sd.value.ends_with('}') {
+    // TS: a boolean `lwc:slot-data` (no `=`; its source span is just the name) is the literal `true`.
+    let boolean_form = sd.value.is_empty() && { let (s, e) = sd_loc.span(); e.saturating_sub(s) as usize } == sd.name.len();
+    if boolean_form || (sd.value.starts_with('{') && sd.value.ends_with('}')) {
         d.push(lwc(1174, &[], sd_loc.clone()));
         return None;
     }
@@ -250,19 +264,19 @@ pub(super) fn ssr_inner_outer_html(attrs: &[Attribute], tag: &str, cfg: &Normali
     }
 }
 
-/// Element-level validation: UNKNOWN_HTML_TAG (1123), lwc:dynamic deprecation (1187). Location = element
-/// location, like TS `throwOnNode(…, element)`. 1184 / 1057 are emitted by element_check via
-/// `unknown_lwc_tag` / `attr_name_warnings` (creation stage / applyAttributes order).
-fn element(tag: &str, attrs: &[parse5::Attribute], n: &NodeRef, d: &mut Ctx, dynamic_ok: bool) {
-    let l = elem_loc(n).location;
-    // 1127 / 1051 are thrown by element_check (applyLwcDirectives / validateElement).
+/// TS validateElement 1123 (UNKNOWN_HTML_TAG_IN_TEMPLATE) at the element location. Returns the warning;
+/// the caller pushes it (element_check can push it ahead of a validateAttributes throw).
+/// 1184 / 1057 come from `unknown_lwc_tag` / `attr_name_warnings`.
+pub(super) fn unknown_html_tag(tag: &str, l: &SourceLocation) -> Option<CompilerDiagnostic> {
     use tables::*;
     let known = tag.contains('-') || tag == "lwc:component" || KNOWN_HTML_AND_SVG_ELEMENTS.contains(&tag)
         || SUPPORTED_SVG_TAGS.contains(&tag) || DASHED_TAGNAME_ELEMENT_SET.contains(&tag);
-    if !known {
-        d.push(lwc(1123, &[tag], l.clone()));
-    }
-    // lwc:dynamic (only the valid shape warns; error shapes are not modeled yet).
+    (!known).then(|| lwc(1123, &[tag], l.clone()))
+}
+
+/// lwc:dynamic deprecation 1187 (only the valid shape warns; error shapes are element_check throws).
+fn dynamic_directive(tag: &str, attrs: &[parse5::Attribute], n: &NodeRef, d: &mut Ctx, dynamic_ok: bool) {
+    let l = elem_loc(n).location;
     if let Some(a) = attrs.iter().find(|a| a.name == "lwc:dynamic") {
         if dynamic_ok && tag.contains('-') && parse_binding(&a.value).is_some() {
             d.push(lwc(1187, &[], l.clone()));
@@ -278,7 +292,7 @@ fn is_event_handler_name(name: &str) -> bool {
 }
 
 /// TS normalizeLocation(undefined): `{ line: 0, column: 0, start: 0, length: 0 }`.
-const NO_LOCATION: SourceLocation = SourceLocation { start_line: 0, start_column: 0, end_line: 0, end_column: 0, start: 0, end: 0 };
+const NO_LOCATION: SourceLocation = SourceLocation { start_line: 0, start_column: 0, end_line: 0, end_column: 0, start: Some(0), end: Some(0) };
 
 /// TS parseElementLocation: 1144 (location-less warning) for an element parse5 inserted while recovering.
 /// TS names `ctx.findAncestor(isBaseElement, () => false)?.name ?? 'template'`: only the last node of the enclosing

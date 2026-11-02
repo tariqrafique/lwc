@@ -30,7 +30,7 @@ pub(crate) fn camel_name(rest: &str) -> String {
 }
 
 #[derive(Default)]
-struct Gen { key: u32, text: bool, dyn_text: bool, element: bool, api_key: bool, iterator: bool, locals: Vec<String>, slot: bool, bind: bool, custom: bool, slots: Vec<String>, imports: Vec<(String, String)>, has_refs: bool, static_opt: bool, comments: bool, frags: Vec<(String, bool)>, st: bool, sp: bool, fragment: bool, ssf: bool, sanitize: bool, cr: Option<lwc_shared::CustomRendererConfig>, cur_cr: bool, renderer: bool, cur_ns: String, api_version: u32, light: bool, flatten: bool, ncls: bool, inner_html: u32, shc: bool, dc: bool, ddc: bool }
+struct Gen { key: u32, text: bool, dyn_text: bool, element: bool, api_key: bool, iterator: bool, locals: Vec<String>, slot: bool, bind: bool, custom: bool, slots: Vec<String>, imports: Vec<(String, String)>, has_refs: bool, static_opt: bool, comments: bool, frags: Vec<(String, bool)>, st: bool, sp: bool, fragment: bool, ssf: bool, sanitize: bool, cr: Option<lwc_shared::CustomRendererConfig>, cur_cr: bool, renderer: bool, cur_ns: String, api_version: u32, light: bool, flatten: bool, ncls: bool, inner_html: u32, shc: bool, dc: bool, ddc: bool, synthetic: bool, scope_frag: bool, gid: bool, fid: bool, ti: bool, co: bool }
 
 impl Gen {
     fn attr_value(&self, v: &AttributeValue) -> String {
@@ -58,15 +58,19 @@ impl Gen {
 
     /// TS bindComplexExpression for the subset of complex-expression syntax with no new scopes or
     /// object-literal keys: every free identifier not in an iteration scope becomes `$cmp.<name>`, and
-    /// member access stays plain (so access on `undefined` throws at render time like JS). Arrow functions,
-    /// object literals and template literals are not handled yet (`None` → the old `undefined` stub).
+    /// member access stays plain (so access on `undefined` throws at render time like JS). Arrow functions
+    /// with plain identifier params bind those params as locals within the arrow's own params and body.
+    /// Object and template literals are not
+    /// handled yet (`None` → the `undefined` stub).
     fn bind_complex(&self, src: &str) -> Option<String> {
         const UNBOUND: &[&str] = &["true", "false", "null", "this", "typeof", "void", "new", "in", "instanceof", "delete"];
+        let scopes = arrow_scopes(src)?;
         let b = src.as_bytes();
         let (mut i, mut out, mut after_dot) = (0, String::new(), false);
         while i < b.len() {
             let c = b[i] as char;
-            if c == '{' || c == '`' || src[i..].starts_with("=>") { return None; }
+            if c == '{' || c == '`' { return None; }
+            if src[i..].starts_with("=>") { out.push_str("=>"); i += 2; after_dot = false; continue; }
             if c == '\'' || c == '"' {
                 let mut j = i + 1;
                 while j < b.len() && b[j] as char != c { if b[j] == b'\\' { j += 1; } j += 1; }
@@ -79,7 +83,7 @@ impl Gen {
                 while j < b.len() && ((b[j] as char).is_ascii_alphanumeric() || b[j] == b'_' || b[j] == b'$') { j += 1; }
                 let id = &src[i..j];
                 if id == "function" { return None; }
-                if after_dot || UNBOUND.contains(&id) || self.locals.iter().any(|l| l == id) { out.push_str(id); } else { out.push_str("$cmp."); out.push_str(id); }
+                if after_dot || UNBOUND.contains(&id) || self.locals.iter().any(|l| l == id) || scopes.iter().any(|(s, e, ps)| (*s..*e).contains(&i) && ps.contains(&id)) { out.push_str(id); } else { out.push_str("$cmp."); out.push_str(id); }
                 i = j;
                 after_dot = false;
             } else if c.is_ascii_digit() || (c == '.' && b.get(i + 1).is_some_and(u8::is_ascii_digit)) {
@@ -104,6 +108,45 @@ impl Gen {
     }
 }
 
+/// Every arrow in `src` (`x => …`, `(a, b) => …`) as (start, end, params): the byte range from its
+/// parameter list through the end of its expression body (an unmatched closer or a depth-0 `,`/`;`).
+/// None when a parameter list is not plain identifiers (destructuring/defaults), which bind_complex
+/// does not model.
+fn arrow_scopes(src: &str) -> Option<Vec<(usize, usize, Vec<&str>)>> {
+    let is_id = |c: char| c.is_ascii_alphanumeric() || c == '_' || c == '$';
+    let b = src.as_bytes();
+    let mut out = Vec::new();
+    let mut from = 0;
+    while let Some(k) = src[from..].find("=>") {
+        let at = from + k;
+        let head = src[..at].trim_end();
+        let (start, params) = if let Some(h) = head.strip_suffix(')') {
+            let open = h.rfind('(')?;
+            let ps: Vec<&str> = h[open + 1..].split(',').map(str::trim).filter(|p| !p.is_empty()).collect();
+            if ps.iter().any(|p| !p.chars().all(is_id)) { return None; }
+            (open, ps)
+        } else {
+            let start = head.rfind(|c: char| !is_id(c)).map_or(0, |j| j + 1);
+            if start == head.len() { return None; }
+            (start, vec![&head[start..]])
+        };
+        let (mut j, mut depth) = (at + 2, 0i32);
+        while j < b.len() {
+            match b[j] {
+                q @ (b'\'' | b'"') => { j += 1; while j < b.len() && b[j] != q { if b[j] == b'\\' { j += 1; } j += 1; } }
+                b'(' | b'[' | b'{' => depth += 1,
+                b')' | b']' | b'}' => { depth -= 1; if depth < 0 { break; } }
+                b',' | b';' if depth == 0 => break,
+                _ => {}
+            }
+            j += 1;
+        }
+        out.push((start, j.min(b.len()), params));
+        from = at + 2;
+    }
+    Some(out)
+}
+
 fn prop_key(name: &str) -> String {
     let ident = name.chars().next().is_some_and(|c| c.is_ascii_alphabetic() || c == '_' || c == '$')
         && name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '$');
@@ -114,13 +157,22 @@ impl Gen {
     /// TS transformChildren's per-child expressions (before the flatten decision). An `if:*` child
     /// splices its children in, each wrapped in its own ternary (TS transformIf).
     fn children(&mut self, cs: &[ChildNode], ind: usize) -> Vec<String> {
+        // TS transformChildren: contiguous text nodes (skipping non-preserved comments) become one api_text.
         let mut res = Vec::new();
+        let mut run: Vec<&Text> = Vec::new();
         for c in cs {
+            match c {
+                ChildNode::Text(t) => { run.push(t); continue; }
+                ChildNode::Comment(_) if !self.comments => continue,
+                _ => {}
+            }
+            if !run.is_empty() { res.push(self.text_node(&std::mem::take(&mut run))); }
             match c {
                 ChildNode::If(f) => res.extend(self.inline_if(f, ind)),
                 _ => res.extend(self.node(c, ind)),
             }
         }
+        if !run.is_empty() { res.push(self.text_node(&run)); }
         res
     }
 
@@ -220,7 +272,8 @@ impl Gen {
         if !attrs.is_empty() {
             data.push_str(&format!("{pad}  attrs: {{\n"));
             for a in attrs {
-                let v = self.bound_attr(name, &self.cur_ns.clone(), a);
+                let used = attr_used_as_attribute(name, kind, &a.name);
+                let v = self.compute_attr(name, &self.cur_ns.clone(), &a.name, &a.value, used, !self.cur_cr);
                 data.push_str(&format!("{pad}    {}: {v},\n", prop_key(&a.name)));
             }
             data.push_str(&format!("{pad}  }},\n"));
@@ -232,7 +285,13 @@ impl Gen {
         }
         let inner = directives.iter().find_map(|d| match d { ElementDirective::InnerHtml(v) => Some(v), _ => None });
         let spread = directives.iter().find_map(|d| match d { ElementDirective::Spread(e) => Some(e), _ => None });
-        let mut entries: Vec<String> = props.iter().map(|p| format!("{}: {}", prop_key(&p.name), self.attr_value(&p.value))).collect();
+        let ns = self.cur_ns.clone();
+        let mut entries: Vec<String> = Vec::new();
+        for p in props {
+            // TS computeAttrValue on a property: keyed by the attribute name.
+            let v = self.compute_attr(name, &ns, &p.attribute_name, &p.value, attr_used_as_attribute(name, kind, &p.attribute_name), !self.cur_cr);
+            entries.push(format!("{}: {v}", prop_key(&p.name)));
+        }
         if let Some(v) = inner {
             // A custom-renderer element gets the raw value (the renderer sanitizes).
             let x = if needs_renderer { self.attr_value(v) } else { self.sanitized_html(v) };
@@ -317,14 +376,14 @@ impl Gen {
 
     fn node(&mut self, c: &ChildNode, ind: usize) -> Option<String> {
         Some(match c {
-            ChildNode::Text(Text { value: TextValue::Literal(s), .. }) => { self.text = true; format!("api_text({})", js_string(s)) }
-            ChildNode::Text(Text { value: TextValue::Expression(e), .. }) => {
-                self.text = true; self.dyn_text = true;
-                format!("api_text(api_dynamic_text({}))", self.expr(e))
-            }
+            ChildNode::Text(t) => self.text_node(&[t]),
+            // TS transformComment → api_comment (only reached when comments are preserved).
+            ChildNode::Comment(cm) if self.comments => { self.co = true; format!("api_comment({})", js_string(&cm.value)) }
             ChildNode::Element(_) if self.static_opt && self.is_static(c) => {
-                let key = self.key;
-                self.key += 1;
+                // TS transformElement calls elementDataBag (genKeyExpression) before genStaticElement, so a
+                // static element burns one key before taking its own.
+                let key = self.key + 1;
+                self.key += 2;
                 self.static_fragment(c, key.to_string())
             }
             ChildNode::Element(e) => { self.cur_ns = e.namespace.clone(); self.element(e, ind) }
@@ -421,7 +480,7 @@ impl Gen {
 /// TS transformChildren result: a children array, or a single (possibly flattened) expression.
 enum Kids { Arr(Vec<String>), Expr(String) }
 
-const VOID: &[&str] = &["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"];
+const VOID: &[&str] = &["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr", "keygen", "menuitem"]; // + DEPRECATED_VOID_ELEMENTS
 
 const SVG_NS: &str = "http://www.w3.org/2000/svg";
 
@@ -430,11 +489,60 @@ fn is_svg_use_href(tag: &str, attr: &str, ns: &str) -> bool {
     (attr == "href" || attr == "xlink:href") && tag == "use" && ns == SVG_NS
 }
 
+/// @lwc/shared `ID_REFERENCING_ATTRIBUTES_SET`.
+fn is_id_referencing(attr: &str) -> bool {
+    matches!(attr, "aria-activedescendant" | "aria-controls" | "aria-describedby" | "aria-details" | "aria-errormessage"
+        | "aria-flowto" | "aria-labelledby" | "aria-owns" | "for" | "popovertarget")
+}
+
+/// TS `isAllowedFragOnlyUrlsXHTML`.
+fn is_frag_only_xhtml(tag: &str, attr: &str, ns: &str) -> bool { attr == "href" && (tag == "a" || tag == "area") && ns == HTML_NS }
+
+/// TS `isAttribute(element, attrName)` for the codegen element kinds.
+fn attr_used_as_attribute(tag: &str, kind: CrKind, attr: &str) -> bool {
+    match kind {
+        CrKind::External => true,
+        _ if kind == CrKind::Component || tag == "lwc:component" =>
+            matches!(attr, "style" | "class" | "key" | "slot" | "exportparts") || attr.starts_with("data-"),
+        _ => !(tag == "input" && (attr == "value" || attr == "checked")),
+    }
+}
+
+/// TS `hasIdAttribute`: any element (attribute or property) named `id`, descending through `children`.
+fn has_id_attribute(cs: &[ChildNode]) -> bool {
+    cs.iter().any(|c| {
+        let (attrs, props, kids): (&[Attribute], &[Property], &[ChildNode]) = match c {
+            ChildNode::Element(e) => (&e.attributes, &e.properties, &e.children),
+            ChildNode::Component(e) => (&e.attributes, &e.properties, &e.children),
+            ChildNode::ExternalComponent(e) => (&e.attributes, &e.properties, &e.children),
+            ChildNode::LwcComponent(e) => (&e.attributes, &e.properties, &e.children),
+            ChildNode::Slot(e) => (&e.attributes, &e.properties, &e.children),
+            ChildNode::If(f) => (&[], &[], &f.children),
+            ChildNode::IfBlock(f) => (&[], &[], &f.children),
+            ChildNode::ElseifBlock(f) => (&[], &[], &f.children),
+            ChildNode::ElseBlock(f) => (&[], &[], &f.children),
+            ChildNode::ForEach(f) => (&[], &[], &f.children),
+            ChildNode::ForOf(f) => (&[], &[], &f.children),
+            ChildNode::ScopedSlotFragment(f) => (&[], &[], &f.children),
+            ChildNode::Text(_) | ChildNode::Comment(_) => (&[], &[], &[]),
+        };
+        attrs.iter().any(|a| a.name == "id") || props.iter().any(|p| p.name == "id") || has_id_attribute(kids)
+    })
+}
+
 const HTML_NS: &str = "http://www.w3.org/1999/xhtml";
 /// TS `rawContentElements` (static-element-serializer.ts).
 const RAW_CONTENT: &[&str] = &["STYLE", "SCRIPT", "XMP", "IFRAME", "NOEMBED", "NOFRAMES", "PLAINTEXT"];
 
-fn is_text_expr(c: &ChildNode) -> bool { matches!(c, ChildNode::Text(Text { value: TextValue::Expression(_) | TextValue::Complex(_), .. })) }
+fn is_text_expr(c: &ChildNode) -> bool { matches!(c, ChildNode::Text(t) if text_literal(t).is_none()) }
+
+/// TS `isStringLiteral(text.value)`: a literal text, or a `{'str'}` expression, is static text.
+fn text_literal(t: &Text) -> Option<&str> {
+    match &t.value {
+        TextValue::Literal(s) | TextValue::Expression(Expression::Literal(Literal { value: LiteralValue::String(s) })) => Some(s),
+        _ => None,
+    }
+}
 fn is_void(name: &str, ns: &str) -> bool { ns == HTML_NS && VOID.contains(&name.to_ascii_lowercase().as_str()) }
 
 /// TS `transformStaticChildren` output item: a run of contiguous text nodes, or any other node.
@@ -536,8 +644,15 @@ impl Gen {
     }
 
     /// TS `genConcatenatedText`.
+    /// TS genText: `api_text("lit" + api_dynamic_text(x) + ...)`.
+    fn text_node(&mut self, ts: &[&Text]) -> String {
+        self.text = true;
+        format!("api_text({})", self.concat_text(ts))
+    }
+
     fn concat_text(&mut self, ts: &[&Text]) -> String {
         ts.iter().map(|t| match &t.value {
+            _ if text_literal(t).is_some() => js_string(text_literal(t).unwrap()),
             TextValue::Literal(s) => js_string(s),
             TextValue::Expression(e) => { self.dyn_text = true; format!("api_dynamic_text({})", self.expr(e)) }
             TextValue::Complex(c) => { self.dyn_text = true; format!("api_dynamic_text({})", self.expr(&Expression::Complex(c.clone()))) }
@@ -550,6 +665,7 @@ impl Gen {
                 let v = if RAW_CONTENT.contains(&parent.to_ascii_uppercase().as_str()) { t.raw.clone() } else { html_escape(s, false) };
                 tpl_escape(&v)
             }
+            TextValue::Expression(Expression::Literal(Literal { value: LiteralValue::String(s) })) => tpl_escape(&html_escape(s, false)),
             TextValue::Expression(_) | TextValue::Complex(_) => unreachable!("dynamic text outside a grouped run"),
         }
     }
@@ -560,7 +676,7 @@ impl Gen {
         match c {
             SChild::Texts(ts) => {
                 ser.part += 1;
-                if ts.iter().any(|t| !matches!(t.value, TextValue::Literal(_))) {
+                if ts.iter().any(|t| text_literal(t).is_none()) {
                     let id = ser.part;
                     let text = self.concat_text(ts);
                     ser.parts.push((id, Vec::new(), Some(text)));
@@ -595,8 +711,12 @@ impl Gen {
                     let is_bool = matches!(a.value, AttributeValue::Literal(Literal { value: LiteralValue::Bool(_) }));
                     if (a.name == "class" || a.name == "style") && is_bool { continue; }
                     let is_expr = matches!(a.value, AttributeValue::Expression(_));
-                    // TODO: synthetic-shadow id/idref + `#frag` href scoping parts (no api_scoped_id in Rust codegen yet).
-                    let placeholder = is_expr || (is_svg_use_href(&e.name, &a.name, &e.namespace) && !is_bool);
+                    // TS genStaticParts: ids/idrefs and `<a|area href="#frag">` are parts under synthetic shadow.
+                    let is_id = (a.name == "id" || is_id_referencing(&a.name)) && !is_bool;
+                    let is_frag = self.scope_frag && is_frag_only_xhtml(&e.name, &a.name, &e.namespace)
+                        && matches!(&a.value, AttributeValue::Literal(Literal { value: LiteralValue::String(v) }) if v.starts_with('#'));
+                    let needs_scoping = self.synthetic && (is_id || is_frag);
+                    let placeholder = is_expr || (is_svg_use_href(&e.name, &a.name, &e.namespace) && !is_bool) || needs_scoping;
                     if placeholder {
                         let token = match a.name.as_str() {
                             "style" => { databag.push(format!("style: {}", self.attr_value(&a.value))); format!("s{id}") }
@@ -607,7 +727,12 @@ impl Gen {
                                 databag.push(format!("className: {v}"));
                                 format!("c{id}")
                             }
-                            _ => { attrs.push(format!("{}: {}", js_string(&a.name), self.bound_attr(&e.name, &e.namespace, a))); format!("a{id}:{}", a.name) }
+                            _ => {
+                                // TS bindAttributeExpression (literals too: bindExpression keeps them as-is).
+                                let v = self.bind_attr_expr(&e.name, &e.namespace, &a.name, &a.value, true, true);
+                                attrs.push(format!("{}: {v}", js_string(&a.name)));
+                                format!("a{id}:{}", a.name)
+                            }
                         };
                         h.push_str(&format!("${{{}}}", js_string(&token)));
                         continue;
@@ -674,16 +799,51 @@ impl Gen {
         format!("api_static_fragment($fragment{}, {key}, [{}])", self.frags.len(), parts.join(", "))
     }
 
-    /// Attribute value incl. TS `sanitizeAttribute` wrap for svg `<use href>`.
-    fn bound_attr(&mut self, tag: &str, ns: &str, a: &Attribute) -> String {
-        // TS computeAttrValue: a boolean used as an attribute is always `''`.
-        if matches!(a.value, AttributeValue::Literal(Literal { value: LiteralValue::Bool(_) })) { return "\"\"".into(); }
-        let v = self.attr_value(&a.value);
-        if is_svg_use_href(tag, &a.name, ns) && !self.cur_cr {
-            self.sanitize = true;
-            return format!("sanitizeAttribute({}, {}, {}, {v})", js_string(tag), js_string(ns), js_string(&a.name));
+    fn scoped_id(&mut self, v: String) -> String { if self.synthetic { self.gid = true; format!("api_scoped_id({v})") } else { v } }
+    fn scoped_frag_id(&mut self, v: String) -> String { if self.synthetic { self.fid = true; format!("api_scoped_frag_id({v})") } else { v } }
+    fn sanitize_wrap(&mut self, tag: &str, ns: &str, attr: &str, v: String, hook: bool) -> String {
+        if !hook { return v; }
+        self.sanitize = true;
+        format!("sanitizeAttribute({}, {}, {}, {v})", js_string(tag), js_string(ns), js_string(attr))
+    }
+
+    /// TS `computeAttrValue`: literal ids/idrefs/`#frag` hrefs are scoped, svg `<use href>` sanitized
+    /// (`hook` = TS addLegacySanitizationHook), booleans used as attributes become `''`.
+    fn compute_attr(&mut self, tag: &str, ns: &str, attr: &str, value: &AttributeValue, used: bool, hook: bool) -> String {
+        match value {
+            AttributeValue::Expression(_) => self.bind_attr_expr(tag, ns, attr, value, used, hook),
+            AttributeValue::Literal(Literal { value: LiteralValue::String(s) }) => {
+                let lit = js_string(s);
+                if attr == "id" { return self.scoped_id(lit); }
+                if attr == "spellcheck" { return (s.to_lowercase() != "false").to_string(); }
+                if !used && crate::parser::element_check::is_boolean_attribute(attr, tag) { return "true".into(); }
+                if is_id_referencing(attr) { return self.scoped_id(lit); }
+                if self.scope_frag && is_frag_only_xhtml(tag, attr, ns) && s.starts_with('#') { return self.scoped_frag_id(lit); }
+                if is_svg_use_href(tag, attr, ns) {
+                    let v = if s.starts_with('#') { self.scoped_frag_id(lit) } else { lit };
+                    return self.sanitize_wrap(tag, ns, attr, v, hook);
+                }
+                lit
+            }
+            AttributeValue::Literal(Literal { value: LiteralValue::Bool(b) }) => if used { "\"\"".into() } else { b.to_string() },
         }
-        v
+    }
+
+    /// TS `bindAttributeExpression`.
+    fn bind_attr_expr(&mut self, tag: &str, ns: &str, attr: &str, value: &AttributeValue, used: bool, hook: bool) -> String {
+        let x = self.attr_value(value);
+        if used && crate::parser::element_check::is_boolean_attribute(attr, tag) { return format!("{x} ? \"\" : null"); }
+        if attr == "tabindex" { self.ti = true; return format!("api_tab_index({x})"); }
+        if attr == "id" || is_id_referencing(attr) { return self.scoped_id(x); }
+        if self.scope_frag && is_frag_only_xhtml(tag, attr, ns) { return self.scoped_frag_id(x); }
+        if is_svg_use_href(tag, attr, ns) {
+            let v = match value {
+                AttributeValue::Literal(Literal { value: LiteralValue::String(s) }) if !s.starts_with('#') => x,
+                _ => self.scoped_frag_id(x),
+            };
+            return self.sanitize_wrap(tag, ns, attr, v, hook);
+        }
+        x
     }
 
     /// TS `isCustomRendererHookRequired` / `shouldAddCustomRenderer`.
@@ -721,14 +881,18 @@ fn directive_name(d: &ElementDirective) -> &'static str {
 }
 
 pub fn generate(root: &Root, config: &NormalizedConfig, filename: &str, tokens: &crate::scope_tokens::ScopeTokens) -> String {
-    let mut g = Gen { static_opt: config.enable_static_content_optimization, comments: config.preserve_html_comments, cr: config.custom_renderer_config.clone(), api_version: config.api_version,
-        light: root.directives.iter().any(|d| matches!(d, RootDirective::RenderMode(RenderMode::Light))), ..Default::default() };
+    let mut g = Gen { static_opt: config.enable_static_content_optimization, comments: config.preserve_html_comments || root.directives.iter().any(|d| matches!(d, RootDirective::PreserveComments(true))), cr: config.custom_renderer_config.clone(), api_version: config.api_version,
+        light: root.directives.iter().any(|d| matches!(d, RootDirective::RenderMode(RenderMode::Light))), scope_frag: has_id_attribute(&root.children), ..Default::default() };
+    // TS CodeGen.isSyntheticShadow.
+    g.synthetic = !g.light && !config.disable_synthetic_shadow_support;
     let use_static = config.enable_static_content_optimization && !root.children.is_empty()
         && root.children.iter().all(|c| matches!(c, ChildNode::Element(_)) && g.is_static(c));
     let mut root_expr: Option<String> = None;
     let items = if use_static {
-        root.children.iter().enumerate().map(|(i, c)| {
-            g.static_fragment(c, (i + 1).to_string())
+        root.children.iter().map(|c| {
+            let key = g.key + 1;
+            g.key += 2;
+            g.static_fragment(c, key.to_string())
         }).collect()
     } else {
         match g.kids(&root.children, 2) { Kids::Arr(v) => v, Kids::Expr(e) => { root_expr = Some(e); Vec::new() } }
@@ -757,6 +921,10 @@ pub fn generate(root: &Root, config: &NormalizedConfig, filename: &str, tokens: 
     if g.api_key { helpers.push("k: api_key"); }
     if g.iterator { helpers.push("i: api_iterator"); }
     if g.flatten { helpers.push("f: api_flatten"); }
+    if g.gid { helpers.push("gid: api_scoped_id"); }
+    if g.fid { helpers.push("fid: api_scoped_frag_id"); }
+    if g.ti { helpers.push("ti: api_tab_index"); }
+    if g.co { helpers.push("co: api_comment"); }
     if g.slot { helpers.push("s: api_slot"); }
     if g.bind { helpers.push("b: api_bind"); }
     if g.fragment { helpers.push("fr: api_fragment"); }

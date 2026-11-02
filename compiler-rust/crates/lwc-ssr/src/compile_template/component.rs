@@ -90,7 +90,8 @@ fn slotted_content(name: &str, loc: &SourceLocation, children_all: &[ChildNode],
     cx.slotted = prev;
     let has_shadow = !shadow_body.is_empty();
     if has_shadow || !light.is_empty() || !scoped.is_empty() { add(&mut cx.imports, ADD_SLOTTED_CONTENT); }
-    let uid = format!("{name}:{}:{}", loc.start, loc.end);
+    let (start, end) = loc.span();
+    let uid = format!("{name}:{start}:{end}");
     let mut locals: Vec<String> = Vec::new();
     for v in sc.iter() { if !locals.contains(v) { locals.push(v.clone()); } }
     let params = locals.join(", ");

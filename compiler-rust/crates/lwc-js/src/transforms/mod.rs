@@ -32,7 +32,7 @@ pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions)
         // Shipped visit order: Program enter (decorator import usage), then pre-order `Class` / `Import` nodes,
         // so errors interleave by source position; non-recovery throws the first one.
         let mut all = dec.err().unwrap_or_default();
-        all.extend(dyn_errs.into_iter().map(|e| (e.diagnostics.first().and_then(|d| d.location).map_or(0, |l| l.start), e)));
+        all.extend(dyn_errs.into_iter().map(|e| (e.diagnostics.first().and_then(|d| d.location).map_or(0, |l| l.span().0), e)));
         all.sort_by_key(|(k, _)| *k);
         let mut errs: Vec<CompileError> = all.into_iter().map(|(_, e)| e).collect();
         if !o.experimental_error_recovery_mode { return Err(errs.swap_remove(0)); }

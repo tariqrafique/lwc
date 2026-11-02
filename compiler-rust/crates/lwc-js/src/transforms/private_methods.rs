@@ -4,7 +4,7 @@
 //! never sees it; reverse restores `#m` and checks every forward rename was reversed.
 use crate::constants::PRIVATE_METHOD_PREFIX as P;
 use lwc_shared::{CompileError, CompileOptions};
-use oxc::ast::ast::{Class, Expression, StaticBlock, 
+use oxc::ast::ast::{Class, ClassElement, Expression, StaticBlock, 
     MemberExpression, MethodDefinition, MethodDefinitionKind, PrivateFieldExpression, Program, PropertyKey,
 };
 use oxc::ast_visit::{walk, Visit};
@@ -18,11 +18,14 @@ fn err(filename: &str, m: impl Into<String>) -> CompileError { CompileError::bab
 
 #[derive(Default)]
 /// `decorated`: (first decorator's name, member span start, end); oxc member spans start at the decorator, like Babel's.
-struct Collect { methods: Vec<(String, Option<(String, u32, u32)>, MethodDefinitionKind)>, prefixed: Option<String>, static_block: Option<u32>, class_start: Vec<u32> }
+/// `in_decorated`: per method, whether its class carries any decorator (own or member).
+struct Collect { methods: Vec<(String, Option<(String, u32, u32)>, MethodDefinitionKind)>, in_decorated: Vec<bool>, prefixed: Option<String>, static_block: Option<u32>, class_start: Vec<u32>, decorated: Vec<bool> }
 impl<'a> Visit<'a> for Collect {
     fn visit_class(&mut self, it: &Class<'a>) {
         self.class_start.push(it.span.start);
+        self.decorated.push(has_decorators(it));
         walk::walk_class(self, it);
+        self.decorated.pop();
         self.class_start.pop();
     }
     fn visit_static_block(&mut self, it: &StaticBlock<'a>) {
@@ -37,7 +40,8 @@ impl<'a> Visit<'a> for Collect {
                     let name = match callee { Expression::Identifier(i) => i.name.to_string(), _ => String::new() };
                     (name, it.span.start, it.span.end)
                 });
-                self.methods.push((id.name.to_string(), decorated, it.kind))
+                self.methods.push((id.name.to_string(), decorated, it.kind));
+                self.in_decorated.push(self.decorated.last().copied().unwrap_or(false));
             }
             PropertyKey::StaticIdentifier(id) if it.kind == MethodDefinitionKind::Method && id.name.starts_with(P) => {
                 self.prefixed.get_or_insert_with(|| id.name.to_string());
@@ -46,6 +50,31 @@ impl<'a> Visit<'a> for Collect {
         }
         walk::walk_method_definition(self, it);
     }
+}
+
+fn has_decorators(c: &Class<'_>) -> bool {
+    !c.decorators.is_empty()
+        || c.body.body.iter().any(|e| match e {
+            ClassElement::MethodDefinition(m) => !m.decorators.is_empty(),
+            ClassElement::PropertyDefinition(p) => !p.decorators.is_empty(),
+            ClassElement::AccessorProperty(a) => !a.decorators.is_empty(),
+            _ => false,
+        })
+}
+
+const NOT_ENABLED: &str = "Class private methods are not enabled. Please add `@babel/plugin-transform-private-methods` to your configuration.";
+
+/// `Forward::Deferred` (flag off): the first private method sits in a decorated class. Shipped runs the
+/// LWC decorator visitor first: either the decorators stay (class-features then throws its decorated-class
+/// error, decorators.rs `fatal`) or they are removed and class-features rejects the method afterwards;
+/// so the "not enabled" check runs on the step-2 output (`not_enabled`).
+pub enum Forward { Done(Vec<Edit>, BTreeSet<String>), Deferred }
+
+/// Post-step-2 half of the flag-off check (see `Forward::Deferred`).
+pub fn not_enabled(program: &Program<'_>, filename: &str) -> Result<(), CompileError> {
+    let mut c = Collect::default();
+    c.visit_program(program);
+    if c.methods.is_empty() { Ok(()) } else { Err(err(filename, NOT_ENABLED)) }
 }
 
 struct Rename<'s> { names: &'s BTreeSet<String>, edits: Vec<Edit> }
@@ -65,7 +94,7 @@ impl<'a> Visit<'a> for Rename<'_> {
 }
 
 /// Validates and (flag on) returns rename edits plus the set of prefixed names produced.
-pub fn forward(program: &Program<'_>, filename: &str, o: &CompileOptions) -> Result<(Vec<Edit>, BTreeSet<String>), CompileError> {
+pub fn forward(program: &Program<'_>, filename: &str, o: &CompileOptions) -> Result<Forward, CompileError> {
     let mut c = Collect::default();
     c.visit_program(program);
     if let Some(at) = c.static_block {
@@ -81,10 +110,11 @@ pub fn forward(program: &Program<'_>, filename: &str, o: &CompileOptions) -> Res
             return Err(CompileError::lwc_at(1103, format!("\"@{d}\" can only be applied on class properties"), filename, program.source_text, *s, *e));
         }
         if !c.methods.is_empty() {
+            if c.in_decorated[0] { return Ok(Forward::Deferred); }
             // Shipped 9.5.3: class-properties (loose) rejects any private method/accessor when the private-methods plugin is absent.
-            return Err(err(filename, "Class private methods are not enabled. Please add `@babel/plugin-transform-private-methods` to your configuration."));
+            return Err(err(filename, NOT_ENABLED));
         }
-        return Ok((Vec::new(), BTreeSet::new()));
+        return Ok(Forward::Done(Vec::new(), BTreeSet::new()));
     }
     if let Some(n) = c.prefixed {
         return Err(err(filename, format!("Method '{n}' cannot start with reserved prefix `__lwc_`.")));
@@ -93,7 +123,7 @@ pub fn forward(program: &Program<'_>, filename: &str, o: &CompileOptions) -> Res
     for (name, decorated, kind) in &c.methods {
         match kind {
             MethodDefinitionKind::Get | MethodDefinitionKind::Set => {
-                return Err(err(filename, "Class private methods are not enabled. Please add `@babel/plugin-transform-private-methods` to your configuration."));
+                return Err(err(filename, NOT_ENABLED));
             }
             _ if decorated.is_some() => {
                 let (_, s, e) = decorated.as_ref().unwrap();
@@ -104,7 +134,7 @@ pub fn forward(program: &Program<'_>, filename: &str, o: &CompileOptions) -> Res
     }
     let mut r = Rename { names: &names, edits: Vec::new() };
     r.visit_program(program);
-    Ok((r.edits, names.into_iter().map(|n| format!("{P}{n}")).collect()))
+    Ok(Forward::Done(r.edits, names.into_iter().map(|n| format!("{P}{n}")).collect()))
 }
 
 struct Restore<'s> { fwd: &'s BTreeSet<String>, done: BTreeSet<String>, edits: Vec<Edit>, collision: Option<String> }

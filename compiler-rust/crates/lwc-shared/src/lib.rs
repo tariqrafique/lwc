@@ -47,14 +47,28 @@ impl CompilerDiagnostic {
 }
 
 /// 1-based line/column plus absolute offsets (parse5 / LWC convention).
+/// `start`/`end` are `None` when the producer has no honest offset into the compiled input: a CSS error
+/// remapped through an inline source map points into the original source, which may not be available.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct SourceLocation {
     pub start_line: u32,
     pub start_column: u32,
     pub end_line: u32,
     pub end_column: u32,
-    pub start: u32,
-    pub end: u32,
+    pub start: Option<u32>,
+    pub end: Option<u32>,
+}
+
+impl SourceLocation {
+    /// `(start, end)` offsets of a location whose producer always records them (template parse5 spans,
+    /// Babel/oxc spans). Only CSS errors remapped through a source map lack offsets, and those never reach
+    /// offset-based consumers.
+    pub fn span(&self) -> (u32, u32) {
+        match (self.start, self.end) {
+            (Some(s), Some(e)) => (s, e),
+            _ => panic!("SourceLocation without offsets passed to an offset consumer: {self:?}"),
+        }
+    }
 }
 
 /// Minimal compile options needed to dispatch (mirrors `@lwc/compiler` TransformOptions subset).
@@ -361,7 +375,7 @@ impl CompileError {
         let (line, column) = babel_line_col(src, start);
         let (end_line, end_column) = babel_line_col(src, end);
         let mut e = Self::lwc(code, message, filename, Some(line), Some(column));
-        e.diagnostics[0].location = Some(SourceLocation { start_line: line, start_column: column, end_line, end_column, start, end });
+        e.diagnostics[0].location = Some(SourceLocation { start_line: line, start_column: column, end_line, end_column, start: Some(start), end: Some(end) });
         e
     }
 
@@ -486,7 +500,7 @@ impl From<SourceLocation> for DiagnosticLocation {
     /// `@lwc/template-compiler` `normalizeLocation`: line/column = start line/column,
     /// start = start offset, length = end - start.
     fn from(l: SourceLocation) -> Self {
-        Self { line: l.start_line, column: l.start_column, start: Some(l.start), length: Some(l.end.saturating_sub(l.start)) }
+        Self { line: l.start_line, column: l.start_column, start: l.start, length: l.start.zip(l.end).map(|(s, e)| e.saturating_sub(s)) }
     }
 }
 
@@ -628,7 +642,7 @@ mod diagnostic_code_tests {
     #[test]
     fn generate_1165_error_with_location() {
         // `<template><div lwc:else></div></template>`; JS @b9e8007 location {line:1,column:11,start:10,length:20}.
-        let loc = SourceLocation { start_line: 1, start_column: 11, end_line: 1, end_column: 31, start: 10, end: 30 };
+        let loc = SourceLocation { start_line: 1, start_column: 11, end_line: 1, end_column: 31, start: Some(10), end: Some(30) };
         let d = CompilerDiagnostic::generate(&LWC_IF_SCOPE_NOT_FOUND, Some(&["lwc:else"]), Some(DiagnosticOrigin { filename: None, location: Some(loc) }), false);
         assert_eq!(d.message, "LWC1165: 'lwc:else' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.");
         assert_eq!(d.code, Some(1165));
@@ -640,7 +654,7 @@ mod diagnostic_code_tests {
     #[test]
     fn generate_1182_warning_with_filename() {
         // `<template><div if:true={a} if:false={b}></div></template>`; JS location {line:1,column:11,start:10,length:36}.
-        let loc = SourceLocation { start_line: 1, start_column: 11, end_line: 1, end_column: 47, start: 10, end: 46 };
+        let loc = SourceLocation { start_line: 1, start_column: 11, end_line: 1, end_column: 47, start: Some(10), end: Some(46) };
         let origin = DiagnosticOrigin { filename: Some("x.html".into()), location: Some(loc) };
         let d = CompilerDiagnostic::generate(&SINGLE_IF_DIRECTIVE_ALLOWED, Some(&["div"]), Some(origin), false);
         assert_eq!(d.message, "LWC1182: Multiple if: directives found on 'div'. Only one if: directive is allowed; the rest are ignored.");

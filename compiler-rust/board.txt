@@ -1,5 +1,5 @@
-official board  src=4aa80d2cad56  napi=956fb2c40c77  parse5-rust=f574a86cf183 (build dep, NOT in tgz)  2026-11-01T21:17:23-08:00
-napi sha256:956fb2c40c77  pinned=/tmp/lwc-board-h.JOrQ2Q/harness/.pins/lwc-compiler-napi.956fb2c40c77.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  2026-11-01T21:16:23-08:00
+official board  commit=e51153793d93  src=ae6f360e4294  napi=37baef983799  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-01T21:33:46-08:00
+napi sha256:37baef983799  pinned=/tmp/lwc-board-h.b3TNMr/harness/.pins/lwc-compiler-napi.37baef983799.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  2026-11-01T21:32:46-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -10,17 +10,17 @@ ssr-asyncYield         Tests  388 passed (388)  (diagnostic, non-gating)
 ssr-render             Tests  384 passed | 5 skipped (389)
 ssr-render-async       Tests  384 passed | 5 skipped (389)
 ssr-render-asyncYield  Tests  384 passed | 5 skipped (389)
-csr-render             Tests  56 failed | 334 passed (390)
-csr-render-template    Tests  50 failed | 520 passed (570)
+csr-render             Tests  35 failed | 355 passed (390)
+csr-render-template    Tests  25 failed | 545 passed (570)
 template-renderer      Tests  14 passed | 554 skipped (568)
 js-options             Tests  302 passed | 1239 skipped (1541)
 js-api                 Tests  1239 passed | 302 skipped (1541)
-template-options       Tests  2 failed | 65 passed (67)
+template-options       Tests  67 passed (67)
 ssr_dynamic_imports    Tests  16 passed (16)
 style-api              Tests  829 passed (829)
-template-api           Tests  502 failed | 5169 passed (5671)
+template-api           Tests  5671 passed (5671)
 ssr_render_api         Tests  2710 passed | 14 skipped (2724)
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid
-csr-clusters[ssr]: pass 331 fail 56 other=16 slot-name=16 comments=13 attr-values=7 attr-order=4
-csr-clusters[template]: pass 517 fail 50 comments=13 slot-name=11 other=10 attr-order=10 attr-values=6
+csr-clusters[ssr]: pass 352 fail 35 slot-name=16 other=14 attr-values=4 attr-order=1
+csr-clusters[template]: pass 542 fail 25 slot-name=11 attr-order=7 attr-values=4 other=3

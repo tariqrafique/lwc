@@ -88,6 +88,18 @@ fn transform_template(
                     .into_iter()
                     .filter(|w| matches!(w.level, DiagnosticLevel::Error | DiagnosticLevel::Fatal))
                     .collect();
+                if options.experimental_error_recovery_mode {
+                    // Shipped `templateTransform`: `new CompilerAggregateError(errors.map(CompilerError.from))`,
+                    // no message argument, so the aggregate's message is "" and it owns no code/filename/location.
+                    return Err(CompileError {
+                        message: String::new(),
+                        filename: None,
+                        diagnostics: errors,
+                        name: Some("AggregateError".into()),
+                        line: None,
+                        column: None,
+                    });
+                }
                 // errors[0] first so napi `code` = diagnostics[0].code.
                 Err(CompileError {
                     message: d.message.clone(),
@@ -106,20 +118,59 @@ fn transform_template(
                 })
             }
         }
-        Err(e) => Err(CompileError {
-            message: format!("lwc-template: {}", e.message),
-            filename: Some(filename.into()),
-            diagnostics: vec![],
-            name: None,
-            line: None,
-            column: None,
-        }),
+        // Shipped: `normalizeToCompilerError(HTML_TRANSFORMER_ERROR, e, { filename })` for a non-CompilerError
+        // throw: code 1008, message `${e.name}: LWC1008: ${e.message}`, level Error, url '', no location.
+        // (Recovery mode does not apply: the throw happens before the aggregate.)
+        Err(e) => Err(template_transformer_error(&e.message, filename)),
+    }
+}
+
+/// `TransformerErrors.HTML_TRANSFORMER_ERROR` (LWC1008) wrapping of a thrown non-`CompilerError` `Error`.
+fn template_transformer_error(message: &str, filename: &str) -> CompileError {
+    let message = format!("Error: LWC1008: {message}");
+    CompileError {
+        diagnostics: vec![lwc_shared::CompilerDiagnostic::new(
+            Some(1008),
+            message.clone(),
+            lwc_shared::DiagnosticLevel::Error,
+            Some(filename.into()),
+            None,
+        )],
+        message,
+        filename: Some(filename.into()),
+        name: None,
+        line: None,
+        column: None,
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Shipped 9.5.3 `templateTransform`: recovery mode -> `CompilerAggregateError` with message "" and one
+    /// member per Error diagnostic; normal mode -> the first diagnostic alone.
+    #[test]
+    fn template_recovery_mode_aggregates_like_shipped() {
+        let src = "<template><div lwc:a=\"1\" lwc:b=\"2\"></div><template></template></template>";
+        let o = CompileOptions { name: "foo".into(), namespace: "x".into(), experimental_error_recovery_mode: true, ..Default::default() };
+        let e = dispatch(src, "foo.html", &o).unwrap_err();
+        assert_eq!(e.name.as_deref(), Some("AggregateError"));
+        assert_eq!(e.message, "");
+        assert_eq!(e.diagnostics.iter().map(|d| d.code).collect::<Vec<_>>(), vec![Some(1127), Some(1077)]);
+        let o = CompileOptions { experimental_error_recovery_mode: false, ..o };
+        let e = dispatch(src, "foo.html", &o).unwrap_err();
+        assert_eq!(e.name, None);
+        assert_eq!(e.message, "LWC1127: Invalid directive \"lwc:a\" on element <div>.");
+    }
+
+    #[test]
+    fn thrown_template_failure_is_lwc1008() {
+        let e = template_transformer_error("boom", "foo.html");
+        assert_eq!(e.message, "Error: LWC1008: boom");
+        assert_eq!(e.diagnostics[0].code, Some(1008));
+        assert!(e.diagnostics[0].location.is_none());
+    }
 
     #[test]
     fn routes_css_and_js_csr() {
@@ -159,7 +210,7 @@ mod tests {
             let [d] = &e.diagnostics[..] else { panic!("{:?}", e.diagnostics) };
             assert_eq!(d.code, Some(1072));
             let l = d.location.clone().expect("location");
-            assert_eq!((l.start_line, l.start_column, l.start, l.end), (0, 0, 0, 0));
+            assert_eq!((l.start_line, l.start_column, l.start, l.end), (0, 0, Some(0), Some(0)));
         }
     }
 

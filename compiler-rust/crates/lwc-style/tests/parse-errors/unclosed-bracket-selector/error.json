@@ -1,0 +1,6 @@
+{
+    "name": "CssSyntaxError",
+    "reason": "Unclosed bracket",
+    "column": 2,
+    "line": 1
+}

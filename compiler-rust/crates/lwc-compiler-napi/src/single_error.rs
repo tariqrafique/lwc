@@ -66,14 +66,10 @@ mod tests {
 
     /// Cases where the Rust error itself (not napi) differs from shipped, so level/url can't be pinned
     /// end-to-end yet. Each needs a change outside lwc-compiler-napi.
-    const UPSTREAM_GAPS: &[(&str, &str)] = &[
-        ("js-1198-decorator-sniff", "lwc-js emits LWC1102, shipped LWC1198 (url '')"),
-    ];
+    const UPSTREAM_GAPS: &[(&str, &str)] = &[];
 
     /// Rust's code differs from shipped (upstream), but level/url/own keys still match and are checked.
-    const CODE_GAPS: &[(&str, &str)] = &[
-        ("js-1007-decorators-not-enabled", "lwc-js emits LWC1102, shipped LWC1007 'Decorators are not enabled'"),
-    ];
+    const CODE_GAPS: &[(&str, &str)] = &[];
 
     fn rust_error(c: &Value) -> (lwc_shared::CompileError, Origin) {
         let filename = c["filename"].as_str().unwrap();
@@ -117,6 +113,19 @@ mod tests {
                 let loc = match &j.location { Some(napi::Either::A(l)) => json!({"line": l.line, "column": l.column, "start": l.start, "length": l.length}), _ => Value::Null };
                 let mut want_loc = want["location"].clone();
                 for k in ["start", "length"] { if want_loc.get(k).is_none() { want_loc[k] = Value::Null; } }
+                assert_eq!(loc, want_loc, "{id} location");
+            }
+            if origin == Origin::Js && matches!(want["code"].as_u64(), Some(1007 | 1198)) {
+                // Babel-internal errors: message (Rust keeps the filename as given; shipped resolves it
+                // against cwd) and location (parse: Babel `Position {line, column, index}`; class-features
+                // throw: `undefined`) are pinned too.
+                assert_eq!(j.message, want["message"].as_str().unwrap().replacen("<cwd>/", "", 1), "{id} message");
+                let loc = match &j.location {
+                    Some(napi::Either::A(l)) => json!({"line": l.line, "column": l.column, "start": l.start, "length": l.length, "index": l.index}),
+                    _ => Value::Null,
+                };
+                let mut want_loc = want["location"].clone();
+                if want_loc.is_object() { for k in ["start", "length", "index"] { if want_loc.get(k).is_none() { want_loc[k] = Value::Null; } } }
                 assert_eq!(loc, want_loc, "{id} location");
             }
             if !CODE_GAPS.iter().any(|(g, _)| *g == id) {

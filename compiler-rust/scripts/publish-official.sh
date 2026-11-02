@@ -5,6 +5,8 @@
 # Usage: publish-official.sh <srcsha> <napisha> <parse5sha> <store-official-dir>
 set -euo pipefail
 src="$1" napi="$2" p5="$3" store="$4"
+# Provenance (git, 2026-11-01): every official board names the main commit it was built from.
+[ -n "${OFFICIAL_COMMIT:-}" ] || { echo "!! PUBLISH REFUSED: no OFFICIAL_COMMIT (unnamed source)" >&2; exit 5; }
 base="/workspace/push/official-$src"
 [ -f "$base.tgz" ] && [ -f "$base.board.txt" ] || { echo "!! PUBLISH FAILED: missing $base.{tgz,board.txt}" >&2; exit 5; }
 grep -q '^!! ' "$base.board.txt" && { echo "!! PUBLISH REFUSED: board.txt contains a failure line" >&2; exit 5; }
@@ -15,6 +17,9 @@ for f in "$base".csr-*.tsv; do [ -f "$f" ] && cp "$f" "$stage/${f##*/official-$s
 cat > "$stage/OFFICIAL_BOARD.txt" << META
 OFFICIAL BOARD (VALID): produced only by scripts/official-board.sh after every gate passed
 src_snapshot_sha256_12=$src
+commit=$OFFICIAL_COMMIT   (lwc-compiler-rust main)
+parse5_rust_commit=${OFFICIAL_PARSE5_COMMIT:-?}
+notes_commit=${OFFICIAL_NOTES_COMMIT:-?}
 napi_sha256_12=$napi
 parse5_rust_sha256_12=$p5   (build dep; not in tgz)
 oracle=/workspace/lwc @ b9e8007 (clean)

@@ -76,11 +76,12 @@ fn recovery_mode_aggregates_lwc_errors_unframed() {
 
 #[test]
 fn parse_error_babel_shape_and_location() {
-    // Shipped: "SyntaxError: LWC1007: /abs/dir/foo.js: Unexpected token (2:6)", location {line 2, column 6}.
+    // Shipped: message = Babel parser message + `\n\n` + start-only code frame; location = Babel
+    // Position {line: 2, column: 6, index: 33} (stored zero-width: start 33, length 0).
     let e = err("export default class Foo {\n  x = ;\n}\n", |_| {});
-    assert!(e.message.starts_with(&format!("SyntaxError: LWC1007: {F}: ")), "{}", e.message);
-    assert!(e.message.ends_with(" (2:6)"), "{}", e.message);
+    assert_eq!(e.message, format!("SyntaxError: LWC1007: {F}: Unexpected token (2:6)\n\n  1 | export default class Foo {{\n> 2 |   x = ;\n    |       ^\n  3 | }}\n  4 |"));
     assert_eq!((code(&e), e.line, e.column), (Some(1007), Some(2), Some(6)));
+    assert_eq!(start_len(&e), Some((Some(33), Some(0))));
 }
 
 #[test]

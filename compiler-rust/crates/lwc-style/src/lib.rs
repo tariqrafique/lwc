@@ -72,10 +72,10 @@ fn style_diagnostic(e: &StyleError, filename: &str) -> lwc_shared::CompilerDiagn
         StyleError::Aggregate(_) => ("AggregateError", None, None),
     };
     let css_message = e.postcss_message(&postcss_file(filename));
-    // getLocationFromObject: `{line, column}` only when both are integers. CSS errors carry no offsets;
-    // the napi seam emits this location without start/length for style, as shipped.
+    // getLocationFromObject: `{line, column}` only when both are integers. JS CSS errors carry no
+    // offsets, so start/end stay absent rather than faked; the napi seam emits line/column only.
     let location = match (line, column) {
-        (Some(l), Some(c)) => Some(lwc_shared::SourceLocation { start_line: l, start_column: c, end_line: l, end_column: c, start: 0, end: 0 }),
+        (Some(l), Some(c)) => Some(lwc_shared::SourceLocation { start_line: l, start_column: c, end_line: l, end_column: c, start: None, end: None }),
         _ => None,
     };
     let origin = lwc_shared::DiagnosticOrigin { filename: Some(filename.into()), location };

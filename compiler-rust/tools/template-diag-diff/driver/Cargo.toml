@@ -1,0 +1,18 @@
+[package]
+name = "template-diag-driver"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+# Standalone (not a member of the main workspace): built on demand by
+# harness/scripts/template-diag-diff.mjs into its own target dir.
+[workspace]
+
+[dependencies]
+lwc-template = { path = "../../../crates/lwc-template" }
+lwc-shared = { path = "../../../crates/lwc-shared" }
+serde_json = "1"
+
+[profile.release]
+debug = false
+panic = "unwind"

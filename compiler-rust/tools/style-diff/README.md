@@ -17,6 +17,10 @@ node tools/style-diff/run.mjs      # from /workspace/lwc-compiler-rust; builds t
 - Exit 1 on any failure. Optional `allowlist.json` (`[{file, config?, why}]`) — currently none.
 - Env: `LWC_ROOT`, `STYLE_DIFF_CAP`, `STYLE_DIFF_OUT` (default `target/style-diff`), `STYLE_DIFF_NO_FIXTURES`, `STYLE_DIFF_NO_BUILD`.
 - Full report: `target/style-diff/report.json`.
+- Parse-error inputs (kind `parse-error`, every corpus mode; skip with `STYLE_DIFF_NO_PARSE_ERRORS=1`):
+  `crates/lwc-style/tests/parse-errors/*/actual.css`, generated from the JS oracle by
+  `node tools/style-diff/gen-parse-errors.mjs` (cases listed there). See
+  `/workspace/notes/postcss-rust/07-error-parity.md`.
 - Corpus mode `STYLE_DIFF_CORPUS=all|integration|slds` (default `all`). `slds` = SLDS + lightning-base-components CSS under
   `STYLE_CORPUS_ROOT` (default `/workspace/style-corpus`), cap `STYLE_DIFF_SLDS_CAP` (300), prioritizing @supports/@media/var(.
   See `/workspace/notes/postcss-rust/06-slds-differential-corpus.md`.

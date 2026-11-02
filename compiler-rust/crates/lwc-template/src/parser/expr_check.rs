@@ -22,12 +22,16 @@ impl ExprError {
     }
 }
 
+/// TS `REVERSED_KEYWORDS` (parser/utils/javascript.ts): reserved words plus the strict-mode-only ones.
 const RESERVED: &[&str] = &[
-    "break", "case", "catch", "class", "const", "continue", "debugger", "default", "delete", "do", "else", "export",
-    "extends", "finally", "for", "function", "if", "import", "in", "instanceof", "new", "return", "super", "switch",
-    "this", "throw", "try", "typeof", "var", "void", "while", "with", "yield", "await", "let", "enum",
+    "await", "break", "case", "catch", "class", "const", "continue", "debugger", "default", "delete",
+    "do", "else", "enum", "export", "extends", "false", "finally", "for", "function", "if", "import",
+    "in", "instanceof", "new", "null", "return", "super", "switch", "this", "throw", "true", "try",
+    "typeof", "var", "void", "while", "with", "yield",
+    "let", "static", "implements", "interface", "package", "private", "protected", "public",
 ];
 
+/// TS `isReservedES6Keyword` (parseIdentifier → 1211).
 pub(crate) fn is_reserved(w: &str) -> bool { RESERVED.contains(&w) }
 
 /// Keywords acorn rejects in expression position ("Unexpected token").

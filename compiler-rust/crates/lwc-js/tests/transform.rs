@@ -96,9 +96,10 @@ fn skip_register_decorators_without_superclass_by_api_version() {
     let src = "import { api } from 'lwc';\nexport class Plain { @api foo; }\n";
     let v59 = lwc_js::transform(src, "t.js", &CompileOptions { api_version: Some(59), ..opts() }).unwrap().code;
     assert!(v59.contains("_registerDecorators(Plain, { publicProps: { foo: { config: 0 } } })"), "{v59}");
-    let v66 = t(src, &opts());
-    assert!(!v66.contains("registerDecorators"), "{v66}");
-    assert!(!v66.contains("from \"lwc\""), "empty lwc import should be dropped: {v66}");
+    // Default apiVersion: the class is skipped, so its `@api` stays and Babel class-features throws
+    // "Decorators are not enabled." -> @lwc/compiler's LWC1198 sniff (shipped 9.5.3).
+    let e = lwc_js::transform(src, "test.js", &opts()).unwrap_err();
+    assert_eq!(e.diagnostics[0].code, Some(1198), "{}", e.message);
 }
 
 #[test]

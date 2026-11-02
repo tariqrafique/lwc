@@ -32,18 +32,27 @@ fn transform_inner(src: &str, filename: &str, options: &CompileOptions) -> Resul
     // outputConfig.sourcemap: every text stage below records its offset map in `chain` (no-op when off).
     let mut chain = srcmap::Chain::new(options.sourcemap.is_enabled());
     // 1. private-method forward rename (validate-only when the flag is off)
-    let (src1, renamed, rename_pieces) = {
+    let (src1, renamed, rename_pieces, deferred_pm_check) = {
         let alloc = oxc::allocator::Allocator::default();
-        let program = parse::parse(&alloc, src, filename)?;
-        let (edits, names) = transforms::private_methods::forward(&program, filename, options)?;
+        let program = parse::parse_source(&alloc, src, filename, options.experimental_error_recovery_mode)?;
+        let (edits, names, deferred) = match transforms::private_methods::forward(&program, filename, options)? {
+            transforms::private_methods::Forward::Done(e, n) => (e, n, false),
+            transforms::private_methods::Forward::Deferred => (Vec::new(), Default::default(), true),
+        };
         let (out, pieces) = edits::apply_mapped(src, edits);
         chain.push_edit(pieces.clone());
-        (out, names, pieces)
+        (out, names, pieces, deferred)
     };
     // 2. LWC class transform. Its error spans are offsets into the renamed `src1`; shipped Babel reports the
     // original `#m` source positions, so map them back through the rename edits before framing.
     let mut edited = pass(&src1, filename, &mut chain, |p, s| transforms::run(p, s, filename, options))
         .map_err(|e| unrename_locations(e, src, &rename_pieces))?;
+    if deferred_pm_check {
+        let alloc = oxc::allocator::Allocator::default();
+        let program = parse::parse(&alloc, &edited, filename)
+            .map_err(|e| CompileError::new(format!("internal: intermediate output failed to re-parse: {}", e.message), filename))?;
+        transforms::private_methods::not_enabled(&program, filename)?;
+    }
     // 3a. loose private fields (always on in shipped): `#x` -> classPrivateFieldLoose{Key,Base} + markers
     edited = pass(&edited, filename, &mut chain, |p, s| Ok(transforms::private_fields::run(p, s)))?;
     // 3. class-properties (loose), to a fixpoint so nested classes in moved initializers are lowered
@@ -149,9 +158,10 @@ fn unrename_locations(mut e: CompileError, src: &str, pieces: &[edits::Piece]) -
     if pieces.iter().all(|p| p.kept) { return e; }
     for (i, d) in e.diagnostics.iter_mut().enumerate() {
         let Some(l) = d.location.as_mut() else { continue };
-        let (start, end) = (unrename_offset(pieces, l.start, false), unrename_offset(pieces, l.end, true));
+        let (s0, e0) = l.span();
+        let (start, end) = (unrename_offset(pieces, s0, false), unrename_offset(pieces, e0, true));
         let ((sl, sc), (el, ec)) = (lwc_shared::babel_line_col(src, start), lwc_shared::babel_line_col(src, end));
-        *l = lwc_shared::SourceLocation { start_line: sl, start_column: sc, end_line: el, end_column: ec, start, end };
+        *l = lwc_shared::SourceLocation { start_line: sl, start_column: sc, end_line: el, end_column: ec, start: Some(start), end: Some(end) };
         if i == 0 && e.line.is_some() { e.line = Some(sl); e.column = Some(sc); }
     }
     e

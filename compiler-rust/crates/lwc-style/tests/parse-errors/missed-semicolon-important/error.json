@@ -1,0 +1,6 @@
+{
+    "name": "CssSyntaxError",
+    "reason": "Missed semicolon",
+    "column": 16,
+    "line": 1
+}

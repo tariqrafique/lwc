@@ -447,6 +447,7 @@ dependencies = [
  "lwc-shared",
  "oxc",
  "oxc_sourcemap",
+ "serde_json",
 ]
 
 [[package]]

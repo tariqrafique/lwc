@@ -323,7 +323,7 @@ mod tests {
     fn compile_for_index() {
         let code = c("<template>\n  <div for:each={items} for:item=\"item\" for:index=\"i\" key={item.id}>\n    <span>{item}{i}</span>\n  </div>\n</template>\n");
         // `key={i}` (the for:index) is LWC1065 upstream (KEY_SHOULD_NOT_USE_INDEX).
-        assert!(code.contains("function (item, i)") && code.contains("api_key(0, item.id)"), "{code}");
+        assert!(code.contains("function (item, i)") && code.contains("api_key(1, item.id)"), "{code}");
     }
 
     #[test]
@@ -334,7 +334,7 @@ mod tests {
         let ChildNode::ForOf(o) = &root.children[1] else { panic!("{:?}", root.children) };
         assert_eq!(o.iterator.name, "it");
         let code = c("<template><template iterator:it={xs}><p key={it.value.id}>{it.index}</p></template></template>");
-        assert!(code.contains("function (itValue, itIndex, itFirst, itLast)") && code.contains("api_key(0, it.value.id)") && code.contains("api_dynamic_text(it.index)") && !code.contains("$cmp.it"), "{code}");
+        assert!(code.contains("function (itValue, itIndex, itFirst, itLast)") && code.contains("api_key(1, it.value.id)") && code.contains("api_dynamic_text(it.index)") && !code.contains("$cmp.it"), "{code}");
     }
 
     const LWC_IF_ELSE: &str = "<template>\n    <h1 lwc:if={visible}>Visible Header</h1>\n    <h1 lwc:else>Alternative Header</h1>\n</template>\n";
@@ -692,7 +692,7 @@ mod tests {
     #[test]
     fn svg_use_href_sanitized_dynamic() {
         let code = cn("<template><svg><use href={h}></use></svg></template>");
-        assert!(code.contains("sanitizeAttribute") && code.contains("href: sanitizeAttribute(\"use\", \"http://www.w3.org/2000/svg\", \"href\", $cmp.h)"), "{code}");
+        assert!(code.contains("sanitizeAttribute") && code.contains("href: sanitizeAttribute(\"use\", \"http://www.w3.org/2000/svg\", \"href\", api_scoped_frag_id($cmp.h))"), "{code}");
     }
 
     #[test]
@@ -855,6 +855,88 @@ mod tests {
         let (s, m, r) = (code.find("tmpl.slots =").unwrap(), code.find("tmpl.renderMode = \"light\";").expect(&code), code.find("tmpl.hasRefs").unwrap());
         assert!(s < m && m < r, "{code}");
         assert!(!c("<template lwc:render-mode=\"shadow\"><p></p></template>").contains("renderMode"));
+    }
+
+    /// TS genStaticParts/computeAttrValue: under synthetic shadow, static ids/idrefs and `<a href="#x">`
+    /// (when the template has an id) are parts through gid/fid; light DOM serializes them inline.
+    #[test]
+    fn static_ids_are_scoped_parts() {
+        let code = c("<template><div><label for=\"i\">l</label><input id=\"i\"><a href=\"#i\">x</a></div></template>");
+        assert!(code.contains("<label${\"a1:for\"}${3}>") && code.contains("<input${\"a3:id\"}${3}>") && code.contains("<a${\"a4:href\"}${3}>"), "{code}");
+        assert!(code.contains("api_static_part(1, { attrs: { \"for\": api_scoped_id(\"i\") } }, null)"), "{code}");
+        assert!(code.contains("api_static_part(4, { attrs: { \"href\": api_scoped_frag_id(\"#i\") } }, null)"), "{code}");
+        assert!(code.contains("gid: api_scoped_id") && code.contains("fid: api_scoped_frag_id"), "{code}");
+        // No id anywhere: `#frag` hrefs stay static.
+        assert!(c("<template><div><a href=\"#i\">x</a></div></template>").contains("<a href=\"#i\""));
+        // Light DOM is not synthetic shadow: inline, no parts.
+        let light = c("<template lwc:render-mode=\"light\"><div><input id=\"i\"></div></template>");
+        assert!(light.contains("<input id=\"i\"${3}>") && !light.contains("api_scoped_id"), "{light}");
+        // Dynamic path: literal id and computed tabindex.
+        let dynamic = cn("<template><div id=\"x\" tabindex={t}></div></template>");
+        assert!(dynamic.contains("id: api_scoped_id(\"x\")") && dynamic.contains("tabindex: api_tab_index($cmp.t)") && dynamic.contains("ti: api_tab_index"), "{dynamic}");
+    }
+
+    /// TS isAttribute: on a custom element, `class`/`data-*` are attributes, so a valueless one is `''`.
+    #[test]
+    fn component_boolean_attribute_is_empty_string() {
+        let code = cn("<template><x-child data-attr class></x-child></template>");
+        assert!(code.contains("\"data-attr\": \"\"") && !code.contains(": true"), "{code}");
+    }
+
+    /// Slice b: root `lwc:preserve-comments` keeps comments in static fragments and emits `api_comment` outside.
+    #[test]
+    fn preserve_comments_root_directive() {
+        let st = c("<template lwc:preserve-comments><span><!-- yolo -->{foo}<!-- yolo --></span></template>");
+        assert!(st.contains("<span${3}><!-- yolo -->${\"t2\"}<!-- yolo --></span>"), "{st}");
+        assert!(st.contains("api_static_part(2, null, api_dynamic_text($cmp.foo))"), "{st}");
+        let dy = cn("<template lwc:preserve-comments><div><!-- a -->x {foo} y<x-c></x-c></div></template>");
+        assert!(dy.contains("api_comment(\" a \")") && dy.contains("co: api_comment"), "{dy}");
+        assert!(dy.contains("api_text(\"x \" + api_dynamic_text($cmp.foo) + \" y\")"), "{dy}");
+        // Not preserved: the comment is skipped and the text run continues across it.
+        let off = cn("<template><div>{foo}<!-- a -->{bar}<x-c></x-c></div></template>");
+        assert!(off.contains("api_text(api_dynamic_text($cmp.foo) + api_dynamic_text($cmp.bar))") && !off.contains("api_comment"), "{off}");
+    }
+
+    /// Slice d: `{'str'}` is a string literal, so it is static text with no `d`/`sp`.
+    #[test]
+    fn string_literal_text_is_static() {
+        let code = c("<template><p>{'a&b'}</p></template>");
+        assert!(!code.contains("api_dynamic_text") && !code.contains("api_static_part"), "{code}");
+    }
+
+    /// TS transformElement runs elementDataBag (a key) before genStaticElement (another key).
+    #[test]
+    fn static_fragments_burn_a_key() {
+        let code = c("<template><p>a</p><p>b</p></template>");
+        assert!(code.contains("api_static_fragment($fragment1, 1)") && code.contains("api_static_fragment($fragment2, 3)"), "{code}");
+        let code = c("<template><section><p if:strict-true={x}>1</p></section></template>");
+        assert!(code.contains("$cmp.x === true ? api_static_fragment($fragment1, 2) : null") && !code.contains("api_static_part"), "{code}");
+    }
+
+    /// TS parseText splits the undecoded source: `&#123; foo &#125;` is literal text; comments are decoded.
+    #[test]
+    fn entity_braces_are_literal_text() {
+        let code = c("<template><p>const &#123; foo &#125; = bar;</p></template>");
+        assert!(code.contains("<p${3}>const { foo } = bar;</p>") && !code.contains("api_dynamic_text"), "{code}");
+        let code = c("<template lwc:preserve-comments><h1><!-- a&lt;b --></h1></template>");
+        assert!(code.contains("<!-- a&lt;b -->"), "{code}");
+    }
+
+    /// Deprecated void elements serialize without a closing tag; the dropped `</input>` stays as text.
+    #[test]
+    fn deprecated_void_elements() {
+        let code = c("<template>\n    <input type=\"text\">\n        <keygen name=\"n\">\n    </input>\n</template>");
+        assert!(code.contains("<keygen name=\"n\"${3}>`") && code.contains("api_text(\"</input>\")"), "{code}");
+    }
+
+    /// Slice c: under complex expressions an on* attribute with any expression is a listener, and arrow
+    /// params stay local.
+    #[test]
+    fn complex_on_handlers_are_listeners() {
+        let code = cv("<template><section><button onclick=\"{() => myField = 'foo'}\"></button><a onclick=\"{(e) => go(e, x)}\"></a></section></template>", 66, true, true);
+        let scoped = cv("<template><x-p foo=\"{[foo, (foo) => foo, [(foo) => [foo, (foo) => foo, foo], foo]]}\"></x-p></template>", 66, true, true);
+        assert!(scoped.contains("[$cmp.foo, (foo) => foo, [(foo) => [foo, (foo) => foo, foo], $cmp.foo]]"), "{scoped}");
+        assert!(code.contains("api_bind(() => $cmp.myField = 'foo')") && code.contains("api_bind((e) => $cmp.go(e, $cmp.x))") && !code.contains("attrs"), "{code}");
     }
 
     fn codes(src: &str, cfg: Config) -> Vec<u32> {
@@ -1029,7 +1111,7 @@ mod tests {
             let [w] = &r.warnings[..] else { panic!("{:?}", r.warnings) };
             assert_eq!((w.code, w.level), (Some(1072), DiagnosticLevel::Error));
             let l = w.location.clone().expect("1072 carries a location");
-            assert_eq!((l.start_line, l.start_column, l.start, l.end), (0, 0, 0, 0));
+            assert_eq!((l.start_line, l.start_column, l.start, l.end), (0, 0, Some(0), Some(0)));
         }
     }
 

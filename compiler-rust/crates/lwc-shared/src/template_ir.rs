@@ -12,7 +12,7 @@ pub struct ElementSourceLocation {
 
 impl Default for SourceLocation {
     fn default() -> Self {
-        Self { start_line: 1, start_column: 1, end_line: 1, end_column: 1, start: 0, end: 0 }
+        Self { start_line: 1, start_column: 1, end_line: 1, end_column: 1, start: Some(0), end: Some(0) }
     }
 }
 

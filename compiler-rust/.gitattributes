@@ -1,0 +1,2 @@
+# append-only logs: concurrent appends from different bots merge as a union (both rows kept)
+decisions.tsv merge=union

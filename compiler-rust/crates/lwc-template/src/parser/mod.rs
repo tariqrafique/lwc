@@ -9,7 +9,7 @@ use std::collections::HashSet;
 mod tables;
 mod expr_check;
 mod validate;
-mod element_check;
+pub(crate) mod element_check;
 /// Diagnostic table. validate.rs still carries its own `#[path]` copy until its owner switches to
 /// `super::messages`; this copy is unused until then.
 #[allow(dead_code)]
@@ -65,7 +65,7 @@ fn loc(l: &Location) -> SourceLocation {
     SourceLocation {
         start_line: l.start_line as u32, start_column: l.start_col as u32,
         end_line: l.end_line as u32, end_column: l.end_col as u32,
-        start: l.start_offset as u32, end: l.end_offset as u32,
+        start: Some(l.start_offset as u32), end: Some(l.end_offset as u32),
     }
 }
 
@@ -197,8 +197,21 @@ pub(crate) fn raw_attr(n: &NodeRef, a: &parse5::Attribute, d: &Ctx) -> RawAttr {
 }
 
 /// Source text at `l` (UTF-16 offsets), e.g. a text node's undecoded raw text. Empty when out of range.
+/// TS `decodeTextContent` (he.decode): decode character references the way the HTML tokenizer does in
+/// RCDATA, by parsing the text inside a `<title>`.
+fn decode_text_content(s: &str) -> String {
+    if !s.contains('&') { return s.to_string(); }
+    let out = parse5::parse_fragment_with_errors(&format!("<title>{}</title>", s.replace('<', "&lt;")), ParserOptions::default());
+    let doc = out.document.borrow();
+    let Some(title) = doc.child_nodes().and_then(|c| c.first().cloned()) else { return s.to_string() };
+    let t = title.borrow();
+    let kids = t.child_nodes().cloned().unwrap_or_default();
+    kids.iter().map(|k| match &k.borrow().data { NodeData::Text { value } => value.clone(), _ => String::new() }).collect()
+}
+
 pub(crate) fn raw_source(l: &SourceLocation, d: &Ctx) -> String {
-    let (s, e) = (l.start as usize, l.end as usize);
+    let (s, e) = l.span();
+    let (s, e) = (s as usize, e as usize);
     if s <= e && e <= d.src16.len() { String::from_utf16_lossy(&d.src16[s..e]) } else { String::new() }
 }
 
@@ -238,7 +251,7 @@ fn wrap_loop(l: Loop, children: Vec<ChildNode>, location: SourceLocation) -> Chi
 }
 
 fn is_directive_attr(name: &str) -> bool {
-    matches!(name, "lwc:if" | "lwc:elseif" | "lwc:else" | "if:true" | "if:false" | "for:each" | "for:item" | "for:index" | "key" | "lwc:ref" | "lwc:dom" | "lwc:inner-html" | "lwc:spread" | "lwc:dynamic" | "lwc:is" | "lwc:on" | "lwc:slot-bind") || name.starts_with("iterator:")
+    matches!(name, "lwc:if" | "lwc:elseif" | "lwc:else" | "if:true" | "if:false" | "if:strict-true" | "for:each" | "for:item" | "for:index" | "key" | "lwc:ref" | "lwc:dom" | "lwc:inner-html" | "lwc:spread" | "lwc:dynamic" | "lwc:is" | "lwc:on" | "lwc:slot-bind") || name.starts_with("iterator:")
 }
 
 /// TS `isAttribute` for Component / LwcComponent: style, class, key, slot, exportparts and `data-*`
@@ -455,7 +468,15 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             let l = node_loc(n);
             let src = raw_source(&l, d);
             let v = clean_text(value, &src)?;
-            let segments = split_mustache(&v);
+            let mut segments = split_mustache(&v);
+            // TS parseText splits the *undecoded* source, so `&#123; x &#125;` stays literal text. Use the raw
+            // split (literals decoded); parse5 can also merge text around a dropped end tag (`</input>`), which
+            // TS keeps as literal source text.
+            if !src.is_empty() {
+                let raw_split: Vec<(String, bool)> = split_mustache(&clean_text_node(&src)).into_iter()
+                    .map(|(t, e)| if e { (t, e) } else { (decode_text_content(&t), e) }).collect();
+                segments = raw_split;
+            }
             // TS `withErrorRecovery` around parseTextNode: a text node whose expression fails to parse
             // is dropped entirely (the error is still reported).
             if validate::text_expressions(&segments, &l, cfg, d) { return None; }
@@ -487,7 +508,8 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             Some(Lowered { content, lwc: None, location: SourceLocation::default() })
         }
         NodeData::Comment { data } if cfg.preserve_html_comments => {
-            one(ChildNode::Comment(Comment { value: data.clone(), raw: format!("<!--{data}-->"), location: node_loc(n) }))
+            // TS parseComment: value = decodeTextContent(data).
+            one(ChildNode::Comment(Comment { value: decode_text_content(data), raw: format!("<!--{data}-->"), location: node_loc(n) }))
         }
         NodeData::Element { tag_name, attrs, namespace_uri, child_nodes, template_content, .. } => {
             // Foreign attrs (`xlink:href`) carry a prefix; LWC uses the qualified name.
@@ -557,7 +579,10 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             let mut listeners = Vec::new();
             let attrs: Vec<_> = attrs.into_iter().filter(|a| {
                 let is_on = a.name.len() > 2 && a.name.starts_with("on") && a.name.as_bytes()[2].is_ascii_alphabetic();
-                match (is_on, parse_binding(&a.value)) {
+                // TS applyHandlers: any expression value is a listener; under complex expressions that includes
+                // non-member sources (arrows, calls, computed members).
+                let handler = parse_binding(&a.value).or_else(|| (complex_enabled(cfg) && a.value.starts_with('{') && a.value.ends_with('}')).then(|| complex_source(&a.value)));
+                match (is_on, handler) {
                     (true, Some(handler)) => { listeners.push(EventListener { name: a.name[2..].to_string(), handler, location: attr_loc(n, &a.name) }); false }
                     _ => true,
                 }
@@ -741,7 +766,7 @@ pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseR
     }
     let Some(tmpl) = roots.first().filter(|n| matches!(n.borrow().data, NodeData::Element { .. })).cloned() else {
         // TS ctx.throw without a location: normalizeLocation(undefined) = line 0, column 0.
-        let zero = SourceLocation { start_line: 0, start_column: 0, end_line: 0, end_column: 0, start: 0, end: 0 };
+        let zero = SourceLocation { start_line: 0, start_column: 0, end_line: 0, end_column: 0, start: Some(0), end: Some(0) };
         warnings.push(messages::lwc(1072, &[], zero));
         return TemplateParseResult { root: None, warnings };
     };
@@ -797,7 +822,7 @@ pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseR
 
 /// Directives consumed from a nested `<template>` (anything else → INVALID_TEMPLATE_ATTRIBUTE).
 fn is_template_directive_attr(n: &str) -> bool {
-    matches!(n, "if:true" | "if:false" | "for:each" | "for:item" | "for:index" | "lwc:if" | "lwc:elseif" | "lwc:else" | "lwc:slot-data" | "lwc:preserve-comments" | "lwc:render-mode")
+    matches!(n, "if:true" | "if:false" | "if:strict-true" | "for:each" | "for:item" | "for:index" | "lwc:if" | "lwc:elseif" | "lwc:else" | "lwc:slot-data" | "lwc:preserve-comments" | "lwc:render-mode")
         || n.starts_with("iterator:")
 }
 

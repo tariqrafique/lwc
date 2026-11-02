@@ -55,19 +55,15 @@ fn parse_block<'i, 't>(p: &mut Parser<'i, 't>) -> PResult<'i, Block> {
         let mut brace_pos = None;
         let end = loop {
             let pos = p.position();
-            let tok_loc = loc(p);
             match p.next_including_whitespace_and_comments() {
                 Ok(Token::Semicolon) => break End::Semicolon,
                 Ok(Token::CurlyBracketBlock) => { brace_pos = Some(pos); break End::Block }
                 Ok(Token::WhiteSpace(_)) | Ok(Token::Comment(_)) => {}
                 Ok(Token::Function(_)) | Ok(Token::ParenthesisBlock) | Ok(Token::SquareBracketBlock) => {
-                    let open_text = p.slice_from(pos.clone()).to_string();
-                    let close = if open_text.ends_with('[') { ']' } else { ')' };
-                    let mut open_loc = tok_loc;
-                    open_loc.column += open_text.len() as u32 - 1;
+                    // An unclosed `(`/`[` runs to EOF here. PostCSS rejects that in rules and declarations
+                    // (`Unclosed bracket`, raised by `syntax_check` before this parse) but keeps it as
+                    // at-rule params (`@media (x {}` compiles to itself), which this reproduces.
                     p.parse_nested_block(|np| { while np.next_including_whitespace_and_comments().is_ok() {} Ok::<(), ParseError<'i, StyleError>>(()) })?;
-                    // cssparser lets an unclosed `(`/`[` block run to EOF (swallowing `}`); PostCSS throws.
-                    if !p.slice_from(pos).ends_with(close) { return err("Unclosed bracket".to_string(), open_loc); }
                     last_end = p.position();
                 }
                 Ok(_) => last_end = p.position(),

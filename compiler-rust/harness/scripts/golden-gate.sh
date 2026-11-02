@@ -7,7 +7,7 @@ set -euo pipefail
 "$(dirname "$0")/ensure-deps.sh"
 h="$(cd "${1:-$(dirname "$0")/..}" && pwd)"
 tmp="$(mktemp -d /tmp/lwc-golden-gate.XXXXXX)"; trap 'rm -rf "$tmp"' EXIT
-prog="${GOLDEN_GATE_PROGRESS:-/tmp/golden-gate.progress}"
+prog="${GOLDEN_GATE_PROGRESS:-$tmp/progress}"
 mkdir -p "$tmp/harness"
 (cd "$h" && find . -type f ! -path '*/node_modules/*' ! -path './.pins/*' ! -path './.vitest/*' \
   ! -path './.csr-render-out/*' ! -path './.ssr-render-out/*' ! -name '*.node' -print0 | tar --null -T - -cf -) | tar -xf - -C "$tmp/harness"
@@ -23,11 +23,15 @@ for m in sync async asyncYield; do run "$m" test/ssr.behavior.test.ts; run "$m" 
 CORPUS=ssr run sync test/csr.render.test.ts
 CORPUS=template run sync test/csr.render.test.ts
 [ -n "${GOLDEN_GATE_KEEP:-}" ] && { rm -rf "$GOLDEN_GATE_KEEP"; cp -r "$tmp/harness/goldens" "$GOLDEN_GATE_KEEP"; }  # fresh JS recording, for reviewed re-records
+# Path-leak class (Migrate 2026-11-01): a golden must never embed a recording/snapshot location. The oracle
+# (/workspace/lwc/) is a fixed path and allowed; any temp dir, snapshot dir or the rust repo path is a leak.
+leaks="$(grep -rlE '/tmp/|lwc-board-(snap|h)\.|lwc-golden-gate\.|/workspace/lwc-compiler-rust|/workspace/notes' "$h/goldens" "$tmp/harness/goldens" 2>/dev/null || true)"
+if [ -n "$leaks" ]; then echo "!! GOLDEN GATE FAILED: goldens embed a temp/snapshot/repo path (not cwd-independent):"; echo "$leaks" | head -20; exit 1; fi
 echo "== $(date +%T) diff" >> "$prog"
 if diff -rq "$h/goldens" "$tmp/harness/goldens" > "$tmp/diff.txt"; then
   echo "golden-gate: $(find "$h/goldens" -type f | wc -l) goldens == fresh JS-oracle recording"
 else
-  cp "$tmp/diff.txt" /tmp/golden-gate.last-diff.txt; cp "$tmp/rec.log" /tmp/golden-gate.last-rec.log
-  echo "!! GOLDEN GATE FAILED: $(wc -l < "$tmp/diff.txt") goldens differ from a fresh JS-oracle recording (/tmp/golden-gate.last-diff.txt)"
+  keep="$(mktemp -d /tmp/golden-gate-fail.XXXXXX)"; cp "$tmp/diff.txt" "$tmp/rec.log" "$keep/"
+  echo "!! GOLDEN GATE FAILED: $(wc -l < "$tmp/diff.txt") goldens differ from a fresh JS-oracle recording ($keep/diff.txt)"
   head -20 "$tmp/diff.txt"; exit 1
 fi

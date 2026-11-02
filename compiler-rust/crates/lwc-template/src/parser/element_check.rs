@@ -29,7 +29,7 @@ const DISALLOWED_MATHML_TAGS: &[&str] = &["script", "link", "base", "object"];
 const VALID_IF_MODIFIERS: &[&str] = &["true", "false", "strict-true"];
 
 /// TS `isBooleanAttribute(name, tag)` (@lwc/shared).
-fn is_boolean_attribute(attr: &str, tag: &str) -> bool {
+pub(crate) fn is_boolean_attribute(attr: &str, tag: &str) -> bool {
     let tags: &[&str] = match attr {
         "autofocus" => &["button", "input", "keygen", "select", "textarea"],
         "autoplay" => &["audio", "video"],
