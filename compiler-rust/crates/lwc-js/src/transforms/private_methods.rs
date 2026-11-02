@@ -4,7 +4,7 @@
 //! never sees it; reverse restores `#m` and checks every forward rename was reversed.
 use crate::constants::PRIVATE_METHOD_PREFIX as P;
 use lwc_shared::{CompileError, CompileOptions};
-use oxc::ast::ast::{Class, StaticBlock, 
+use oxc::ast::ast::{Class, Expression, StaticBlock, 
     MemberExpression, MethodDefinition, MethodDefinitionKind, PrivateFieldExpression, Program, PropertyKey,
 };
 use oxc::ast_visit::{walk, Visit};
@@ -17,7 +17,8 @@ use crate::edits::Edit;
 fn err(filename: &str, m: impl Into<String>) -> CompileError { CompileError::babel("SyntaxError", m, filename, None, None) }
 
 #[derive(Default)]
-struct Collect { methods: Vec<(String, Option<u32>, MethodDefinitionKind)>, prefixed: Option<String>, static_block: Option<u32>, class_start: Vec<u32> }
+/// `decorated`: (first decorator's name, member span start, end); oxc member spans start at the decorator, like Babel's.
+struct Collect { methods: Vec<(String, Option<(String, u32, u32)>, MethodDefinitionKind)>, prefixed: Option<String>, static_block: Option<u32>, class_start: Vec<u32> }
 impl<'a> Visit<'a> for Collect {
     fn visit_class(&mut self, it: &Class<'a>) {
         self.class_start.push(it.span.start);
@@ -30,7 +31,14 @@ impl<'a> Visit<'a> for Collect {
     }
     fn visit_method_definition(&mut self, it: &MethodDefinition<'a>) {
         match &it.key {
-            PropertyKey::PrivateIdentifier(id) => self.methods.push((id.name.to_string(), it.decorators.first().map(|d| d.span.start), it.kind)),
+            PropertyKey::PrivateIdentifier(id) => {
+                let decorated = it.decorators.first().map(|d| {
+                    let callee = match &d.expression { Expression::CallExpression(c) => &c.callee, e => e };
+                    let name = match callee { Expression::Identifier(i) => i.name.to_string(), _ => String::new() };
+                    (name, it.span.start, it.span.end)
+                });
+                self.methods.push((id.name.to_string(), decorated, it.kind))
+            }
             PropertyKey::StaticIdentifier(id) if it.kind == MethodDefinitionKind::Method && id.name.starts_with(P) => {
                 self.prefixed.get_or_insert_with(|| id.name.to_string());
             }
@@ -67,6 +75,11 @@ pub fn forward(program: &Program<'_>, filename: &str, o: &CompileOptions) -> Res
         return Err(err(filename, "Static class blocks are not enabled. Please add `@babel/plugin-transform-class-static-block` to your configuration."));
     }
     if !o.enable_private_methods {
+        // Shipped: the LWC decorator visitor runs first and rejects `@api/@track/@wire #m()` as a non-property
+        // (LWC1103 IS_NOT_CLASS_PROPERTY_OR_CLASS_METHOD at the member) before class-features sees the method.
+        if let Some((d, s, e)) = c.methods.iter().find_map(|(_, d, _)| d.as_ref().filter(|d| matches!(d.0.as_str(), "api" | "track" | "wire"))) {
+            return Err(CompileError::lwc_at(1103, format!("\"@{d}\" can only be applied on class properties"), filename, program.source_text, *s, *e));
+        }
         if !c.methods.is_empty() {
             // Shipped 9.5.3: class-properties (loose) rejects any private method/accessor when the private-methods plugin is absent.
             return Err(err(filename, "Class private methods are not enabled. Please add `@babel/plugin-transform-private-methods` to your configuration."));
@@ -83,10 +96,8 @@ pub fn forward(program: &Program<'_>, filename: &str, o: &CompileOptions) -> Res
                 return Err(err(filename, "Class private methods are not enabled. Please add `@babel/plugin-transform-private-methods` to your configuration."));
             }
             _ if decorated.is_some() => {
-                let before = &program.source_text[..decorated.unwrap() as usize];
-                let line = before.matches('\n').count() as u32 + 1;
-                let col = before.rsplit('\n').next().map(|l| l.chars().count()).unwrap_or(0) as u32;
-                return Err(CompileError::lwc(1212, "Decorators cannot be applied to private methods. Private methods are not part of the component API.", filename, Some(line), Some(col)));
+                let (_, s, e) = decorated.as_ref().unwrap();
+                return Err(CompileError::lwc_at(1212, "Decorators cannot be applied to private methods. Private methods are not part of the component API.", filename, program.source_text, *s, *e));
             }
             _ => { names.insert(name.clone()); }
         }

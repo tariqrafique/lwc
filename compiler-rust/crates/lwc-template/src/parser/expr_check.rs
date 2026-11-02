@@ -86,6 +86,14 @@ pub(crate) fn check_complex(source: &str, start: usize, end: usize, _o: &Opts) -
     }
 }
 
+/// TS validateComplexExpression's second acorn pass: `raw` is the entity-undecoded template source of
+/// the expression `source` (which parsed cleanly). Any difference is an error; messages name `source`.
+pub(crate) fn check_raw_source(source: &str, raw: &str) -> Option<ExprError> {
+    let cs: Vec<char> = raw.chars().collect();
+    let p = Parsed::new(&cs, 0, cs.len(), true);
+    p.syntax_error(source).or_else(|| Some(ExprError { code: 1083, message: format!("Invalid expression {source} - {}", message(1083, &["expression incorrectly formed"])) }))
+}
+
 /// TS `parseExpression`: acorn, `validateSourceIsParsedExpression`, `validateExpression`.
 fn check_legacy(src: &str, o: &Opts) -> Option<ExprError> {
     let cs: Vec<char> = src.chars().collect();

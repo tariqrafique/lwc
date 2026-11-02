@@ -29,7 +29,7 @@ pub(crate) fn camel_name(rest: &str) -> String {
 }
 
 #[derive(Default)]
-struct Gen { key: u32, text: bool, dyn_text: bool, element: bool, api_key: bool, iterator: bool, locals: Vec<String>, slot: bool, bind: bool, custom: bool, slots: Vec<String>, imports: Vec<(String, String)>, has_refs: bool, static_opt: bool, comments: bool, frags: Vec<(String, bool)>, st: bool, sp: bool, fragment: bool, ssf: bool, sanitize: bool, cr: Option<lwc_shared::CustomRendererConfig>, cur_cr: bool, renderer: bool, cur_ns: String, api_version: u32, ncls: bool }
+struct Gen { key: u32, text: bool, dyn_text: bool, element: bool, api_key: bool, iterator: bool, locals: Vec<String>, slot: bool, bind: bool, custom: bool, slots: Vec<String>, imports: Vec<(String, String)>, has_refs: bool, static_opt: bool, comments: bool, frags: Vec<(String, bool)>, st: bool, sp: bool, fragment: bool, ssf: bool, sanitize: bool, cr: Option<lwc_shared::CustomRendererConfig>, cur_cr: bool, renderer: bool, cur_ns: String, api_version: u32, ncls: bool, inner_html: u32, shc: bool, dc: bool, ddc: bool }
 
 impl Gen {
     fn attr_value(&self, v: &AttributeValue) -> String {
@@ -68,10 +68,39 @@ impl Gen {
         cs.iter().filter_map(|c| self.node(c, ind)).collect()
     }
 
-    fn element(&mut self, name: &str, attrs: &[Attribute], directives: &[ElementDirective], listeners: &[EventListener], children: &[ChildNode], ind: usize) -> String {
-        let (head, data, kids) = self.parts(name, attrs, &[], directives, listeners, children, ind, CrKind::Element);
+    fn element(&mut self, e: &Element, ind: usize) -> String {
+        let (head, data, kids) = self.parts(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, ind, CrKind::Element);
+        if let Some(r) = self.dynamic_ctor(&e.name, &e.directives, &data, &kids) { return r; }
         self.element = true;
         format!("api_element({head}, {data}, {kids})")
+    }
+
+    /// TS transformElement: `lwc:dynamic` → genDeprecatedDynamicElement, `lwc:is` → genDynamicElement
+    /// (neither registers a component import; children only when non-empty).
+    fn dynamic_ctor(&mut self, name: &str, directives: &[ElementDirective], data: &str, kids: &str) -> Option<String> {
+        let tail = if kids == "[]" { String::new() } else { format!(", {kids}") };
+        for d in directives {
+            if let ElementDirective::Dynamic(e) = d {
+                self.ddc = true;
+                return Some(format!("api_deprecated_dynamic_component({}, {}, {data}{tail})", js_string(name), self.expr(e)));
+            }
+        }
+        directives.iter().find_map(|d| match d { ElementDirective::Is(e) => Some(e), _ => None }).map(|e| {
+            self.dc = true;
+            format!("api_dynamic_component({}, {data}{tail})", self.expr(e))
+        })
+    }
+
+    /// TS genSanitizedHtmlExpr (`$ctx._sanitizedHtml$N` / `$ctx._rawHtml$N` memo).
+    fn sanitized_html(&mut self, v: &AttributeValue) -> String {
+        let i = self.inner_html;
+        self.inner_html += 1;
+        self.shc = true;
+        let x = self.attr_value(v);
+        match v {
+            AttributeValue::Literal(_) => format!("$ctx._sanitizedHtml${i} || ($ctx._sanitizedHtml${i} = api_sanitize_html_content({x}))"),
+            AttributeValue::Expression(_) => format!("$ctx._rawHtml${i} !== ($ctx._rawHtml${i} = {x}) ? ($ctx._sanitizedHtml${i} = api_sanitize_html_content({x})) : $ctx._sanitizedHtml${i}"),
+        }
     }
 
     /// `x-foo-bar` → (`_xFooBar`, `x/fooBar`) (TS kebabcaseToCamelcase on the name after the namespace).
@@ -100,16 +129,27 @@ impl Gen {
             }
             data.push_str(&format!("{pad}  }},\n"));
         }
-        if !props.is_empty() {
-            data.push_str(&format!("{pad}  props: {{\n"));
-            for p in props {
-                data.push_str(&format!("{pad}    {}: {},\n", prop_key(&p.name), self.attr_value(&p.value)));
-            }
-            data.push_str(&format!("{pad}  }},\n"));
-        }
+        // TS elementDataBag order: attrs, ref, props (properties, innerHTML, spread last), context, key, on.
         if let Some(r) = directives.iter().find_map(|d| match d { ElementDirective::Ref(r) => Some(r), _ => None }) {
             self.has_refs = true;
             data.push_str(&format!("{pad}  ref: {},\n", js_string(r)));
+        }
+        let inner = directives.iter().find_map(|d| match d { ElementDirective::InnerHtml(v) => Some(v), _ => None });
+        let spread = directives.iter().find_map(|d| match d { ElementDirective::Spread(e) => Some(e), _ => None });
+        let mut entries: Vec<String> = props.iter().map(|p| format!("{}: {}", prop_key(&p.name), self.attr_value(&p.value))).collect();
+        if let Some(v) = inner {
+            // A custom-renderer element gets the raw value (the renderer sanitizes).
+            let x = if needs_renderer { self.attr_value(v) } else { self.sanitized_html(v) };
+            entries.push(format!("innerHTML: {x}"));
+        }
+        if let Some(e) = spread { entries.push(format!("...{}", self.expr(e))); }
+        if !entries.is_empty() {
+            data.push_str(&format!("{pad}  props: {{\n"));
+            for en in entries { data.push_str(&format!("{pad}    {en},\n")); }
+            data.push_str(&format!("{pad}  }},\n"));
+        }
+        if inner.is_some() || directives.iter().any(|d| matches!(d, ElementDirective::Dom(_))) {
+            data.push_str(&format!("{pad}  context: {{\n{pad}    lwc: {{\n{pad}      dom: \"manual\",\n{pad}    }},\n{pad}  }},\n"));
         }
         let key_dir = directives.iter().find_map(|d| match d { ElementDirective::Key(e) => Some(e), _ => None });
         let key = match key_dir {
@@ -178,10 +218,11 @@ impl Gen {
                 self.key += 1;
                 self.static_fragment(c, key.to_string())
             }
-            ChildNode::Element(e) => { self.cur_ns = e.namespace.clone(); self.element(&e.name, &e.attributes, &e.directives, &e.listeners, &e.children, ind) }
+            ChildNode::Element(e) => { self.cur_ns = e.namespace.clone(); self.element(e, ind) }
             ChildNode::Component(e) => {
                 // TS genCustomElement registers the import after transforming children (post-order).
                 let (head, data, kids) = self.parts(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, ind, CrKind::Component);
+                if let Some(r) = self.dynamic_ctor(&e.name, &e.directives, &data, &kids) { return Some(r); }
                 let b = self.component_binding(&e.name);
                 self.custom = true;
                 format!("api_custom_element({head}, {b}, {data}, {kids})")
@@ -598,6 +639,9 @@ pub fn generate(root: &Root, config: &NormalizedConfig, filename: &str, scope_to
     if g.fragment { helpers.push("fr: api_fragment"); }
     if g.ssf { helpers.push("ssf: api_scoped_slot_factory"); }
     if g.custom { helpers.push("c: api_custom_element"); }
+    if g.ddc { helpers.push("ddc: api_deprecated_dynamic_component"); }
+    if g.dc { helpers.push("dc: api_dynamic_component"); }
+    if g.shc { helpers.push("shc: api_sanitize_html_content"); }
     if g.ncls { helpers.push("ncls: api_normalize_class_name"); }
     if !helpers.is_empty() { out.push_str(&format!("  const {{ {} }} = $api;\n", helpers.join(", "))); }
     if items.is_empty() {

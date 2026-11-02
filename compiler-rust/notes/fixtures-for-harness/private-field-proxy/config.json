@@ -1,0 +1,8 @@
+{
+  "compile": [
+    { "name": "foo", "namespace": "x" },
+    { "name": "foo", "namespace": "x", "enablePrivateMethods": true }
+  ],
+  "filename": "foo.js",
+  "run": "driver.mjs"
+}

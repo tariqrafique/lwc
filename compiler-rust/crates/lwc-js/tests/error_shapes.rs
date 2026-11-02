@@ -82,3 +82,14 @@ fn parse_error_babel_shape_and_location() {
     assert!(e.message.ends_with(" (2:6)"), "{}", e.message);
     assert_eq!((code(&e), e.line, e.column), (Some(1007), Some(2), Some(6)));
 }
+
+#[test]
+fn decorated_private_method_without_epm_is_lwc1103() {
+    // Shipped (enablePrivateMethods omitted/false): LWC1103 at the member, before class-features' LWC1007.
+    let src = "import { LightningElement, api } from 'lwc';\nexport default class Test extends LightningElement {\n    @api #decorated() {\n        return 1;\n    }\n}\n";
+    let e = err(src, |_| {});
+    assert_eq!(e.message, format!("SyntaxError: {F}: LWC1103: \"@api\" can only be applied on class properties\n  1 | import {{ LightningElement, api }} from 'lwc';\n  2 | export default class Test extends LightningElement {{\n> 3 |     @api #decorated() {{\n    |     ^\n  4 |         return 1;\n  5 |     }}\n  6 | }}"));
+    assert_eq!((code(&e), e.line, e.column, start_len(&e)), (Some(1103), Some(3), Some(4), Some((Some(102), Some(43)))));
+    let e = err(src, |o| o.enable_private_methods = true);
+    assert_eq!((code(&e), start_len(&e)), (Some(1212), Some((Some(102), Some(43)))));
+}

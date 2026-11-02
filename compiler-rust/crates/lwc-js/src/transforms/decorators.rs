@@ -5,7 +5,7 @@
 use lwc_shared::api_version::{self, ApiFeature};
 use crate::constants::*;
 use crate::edits::Edit;
-use crate::transforms::{component::unique, scoped_css::serde_quote};
+use crate::transforms::scoped_css::serde_quote;
 use lwc_shared::{CompileError, CompileOptions};
 use oxc::ast::ast::*;
 use oxc::ast_visit::{walk, Visit};
@@ -81,7 +81,7 @@ enum Kind { Property, Getter, Setter, Method }
 struct Meta<'s, 'a> { name: &'s str, prop: String, kind: Kind, dec: &'s Decorator<'a>, el: usize, el_span: Span, computed: bool, bool_true: bool }
 
 struct Classes<'s, 'o> {
-    src: &'s str, imports: &'o HashMap<String, String>, skip_no_super: bool, reg_id: &'o str,
+    src: &'s str, imports: &'o HashMap<String, String>, skip_no_super: bool, reg_ids: Vec<String>,
     edits: Vec<Edit>, used: bool, first_expr: Option<bool>, errs: Vec<DErr>, recover: bool, imported: &'o HashSet<String>, consts: &'o HashSet<String>,
 }
 
@@ -264,7 +264,11 @@ impl<'s> Classes<'s, '_> {
         let meta = format!("{{ {} }}", list.join(", "));
         self.used = true;
         if self.first_expr.is_none() { self.first_expr = Some(class.r#type != ClassType::ClassDeclaration); }
-        let reg = self.reg_id;
+        // Babel: each class's `addNamed('registerDecorators')` mints its own uid (`_registerDecorators`,
+        // `_registerDecorators2`, ...) in visit (pre-)order, skipping names already in the program.
+        let reg = (1..).map(|i| if i == 1 { format!("_{REGISTER_DECORATORS_ID}") } else { format!("_{REGISTER_DECORATORS_ID}{i}") })
+            .find(|c| !self.reg_ids.contains(c) && !self.src.contains(c.as_str())).unwrap();
+        self.reg_ids.push(reg.clone());
         match (&class.id, class.r#type) {
             (Some(id), ClassType::ClassDeclaration) => self.edits.push(Edit::insert(class.span.end, format!("\n{reg}({}, {meta});", id.name))),
             _ => {
@@ -387,7 +391,7 @@ impl Classes<'_, '_> {
             }
             if let Some(cfg) = args.and_then(|a| a.get(1)) {
                 if !matches!(cfg.as_expression(), Some(Expression::ObjectExpression(_))) {
-                    { errs.push(derr(1094, "@wire expects a configuration object expression as second parameter.", &[], w.dec.span)); continue 'w; }
+                    { errs.push(derr(1094, "@wire expects a configuration object expression as second parameter.", &[], cfg.span())); continue 'w; } // shipped: handleError(config)
                 }
             }
         }
@@ -412,7 +416,6 @@ pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions,
     let recover = o.experimental_error_recovery_mode;
     if !recover { if let Some(m) = uc.err.take() { return Err(err(m)); } }
 
-    let reg_id = unique(src, REGISTER_DECORATORS_ID);
     let skip = api_version::is_api_feature_enabled(ApiFeature::SkipUnnecessaryRegisterDecorators, api_version::get_api_version_from_number(o.api_version));
     let imported: HashSet<String> = program.body.iter().filter_map(|s| match s { Statement::ImportDeclaration(d) => d.specifiers.as_ref(), _ => None })
         .flatten().map(|s| s.local().name.to_string()).collect();
@@ -420,7 +423,7 @@ pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions,
         Statement::VariableDeclaration(d) if d.kind == VariableDeclarationKind::Const => Some(d),
         _ => None,
     }).flat_map(|d| d.declarations.iter()).flat_map(|v| v.id.get_binding_identifiers()).map(|b| b.name.to_string()).collect();
-    let mut c = Classes { consts: &consts, imported: &imported, src, imports: &imports, skip_no_super: skip, reg_id: &reg_id, edits: Vec::new(), used: false, first_expr: None, errs: Vec::new(), recover: o.experimental_error_recovery_mode };
+    let mut c = Classes { consts: &consts, imported: &imported, src, imports: &imports, skip_no_super: skip, reg_ids: Vec::new(), edits: Vec::new(), used: false, first_expr: None, errs: Vec::new(), recover: o.experimental_error_recovery_mode };
     c.visit_program(program);
     let mut all: Vec<DErr> = uc.err.into_iter().collect();
     all.extend(c.errs);
@@ -432,7 +435,8 @@ pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions,
     // import lands after the template import (component.ts); for declarations it lands first.
     let mut late = None;
     if c.used {
-        let imp = format!("import {{ {REGISTER_DECORATORS_ID} as {reg_id} }} from \"{LWC_PACKAGE_ALIAS}\";\n");
+        let specs: Vec<String> = c.reg_ids.iter().map(|r| format!("{REGISTER_DECORATORS_ID} as {r}")).collect();
+        let imp = format!("import {{ {} }} from \"{LWC_PACKAGE_ALIAS}\";\n", specs.join(", "));
         if c.first_expr == Some(true) { late = Some(imp); } else { edits.push(Edit::insert(0, imp)); }
     }
     edits.append(&mut c.edits);

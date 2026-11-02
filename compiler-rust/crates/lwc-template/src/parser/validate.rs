@@ -16,6 +16,9 @@ use messages::lwc;
 pub(super) fn text_expressions(segments: &[(String, bool)], l: &SourceLocation, cfg: &NormalizedConfig, d: &mut Ctx) -> bool {
     let before = d.diags.len();
     let o = expr_opts(cfg, false);
+    // TS parseTextNode parses the raw (entity-undecoded) source text, not parse5's decoded value.
+    let raw_segments = clean_text(&raw_source(l, d)).map(|r| split_mustache(&r));
+    let segments = match &raw_segments { Some(r) if r.iter().any(|(_, e)| *e) => r.as_slice(), _ => segments };
     if o.complex && cfg.api_version >= expr_check::MIN_CTE_API_VERSION {
         // TS parseTextComplex: the acorn source (and the message's `{source}`) is the whole cleaned text.
         let full: String = segments.iter().map(|(s, _)| s.as_str()).collect();
@@ -39,36 +42,45 @@ pub(super) fn text_expressions(segments: &[(String, bool)], l: &SourceLocation, 
 
 /// Every attribute value that is not a simple binding goes through the expression checker.
 pub(super) fn attribute_expressions(attrs: &[parse5::Attribute], n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx) {
-    // parse5-rust stretches the source-last attribute's end over trailing whitespace and `/` before `>`
-    // (its emit_current_tag_token re-runs leave_attr_value; JS parse5 does not), so that attribute's
-    // length cannot tell `a="{x}">` from `a={x} />`.
-    let last_start = n.borrow().source_code_location().and_then(|l| l.attrs.values().map(|a| a.start_offset).max());
     for a in attrs {
-        let l = attr_loc(n, &a.name);
+        let ra = raw_attr(n, a, d);
+        let l = ra.location.clone();
         let v = &a.value;
-        // TS normalizeAttributeValue: only `"`-quoted values count as quoted. The raw attribute text is not
-        // available here, so quotedness comes from the source length (entity-free, double-quoted values):
-        // `name="v"` is n+v+3, `name=v` is n+v+1. Ambiguous lengths (source-last attribute, entities) are
-        // read as quoted only under CTE (where quoting is required) and never raise 1034.
-        let raw_len = (l.end as usize).saturating_sub(l.start as usize);
-        let exact = a.name.chars().count() + v.chars().count() + 3;
-        let is_last = last_start.is_some_and(|s| s as u32 == l.start as u32);
-        let surely_quoted = !is_last && raw_len == exact;
-        let quoted = surely_quoted || (raw_len >= exact && cfg.experimental_complex_expressions);
-        if surely_quoted && !cfg.experimental_complex_expressions && expr_check::is_expression(v) {
-            let raw = format!("{}=\"{v}\"", a.name);
-            let (unquoted, escaped) = (raw.replace('"', ""), raw.replacen("\"{", "\"\\{", 1));
-            d.push(lwc(1034, &[&raw, &unquoted, &escaped], l));
+        // TS normalizeAttributeValue: `isEscapedAttribute(rawAttrVal)` / `isQuotedAttribute(rawAttrVal)`.
+        let raw_escaped = ra.raw_value.as_deref().is_none_or(|r| !(r.contains('{') && r.contains('}')));
+        let is_expr = !raw_escaped && expr_check::is_expression(v);
+        if is_expr && ra.quoted && !cfg.experimental_complex_expressions {
+            let raw = &ra.raw;
+            d.push(lwc(1034, &[raw, &raw.replace('"', ""), &raw.replacen("\"{", "\"\\{", 1)], l));
             continue;
         }
-        if parse_binding(v).is_some() { continue; }
-        let o = expr_opts(cfg, !quoted);
-        if quoted && o.complex && cfg.api_version >= expr_check::MIN_CTE_API_VERSION && v.starts_with('{') {
-            if let Some(e) = expr_check::check_complex(v, 0, v.chars().count(), &o) { d.push(e.into_diagnostic(l)); }
-        } else if expr_check::is_expression(v) {
+        let potential = !raw_escaped && !is_expr && is_potential_expression(v);
+        // `<input value={x}/>`: parse5 keeps the `/` in the unquoted value; TS strips it.
+        let sliced = potential && !ra.quoted && v.starts_with('{') && v.ends_with("}/");
+        let v = if sliced { &v[..v.len() - 1] } else { v.as_str() };
+        let escaped_expr = potential && v.starts_with("\\{");
+        let is_expr = is_expr || (sliced && expr_check::is_expression(v));
+        if escaped_expr || (is_expr && parse_binding(v).is_some()) { continue; }
+        let o = expr_opts(cfg, !ra.quoted);
+        if ra.quoted && o.complex && cfg.api_version >= expr_check::MIN_CTE_API_VERSION && v.starts_with('{') {
+            let err = expr_check::check_complex(v, 0, v.chars().count(), &o).or_else(|| {
+                // TS validateComplexExpression's second acorn pass over the raw template source.
+                let rv = ra.raw_value.as_deref().unwrap_or_default();
+                let rv = &rv[1..rv.len() - 1];
+                (rv != v).then(|| expr_check::check_raw_source(v, rv)).flatten()
+            });
+            if let Some(e) = err { d.push(e.into_diagnostic(l)); }
+        } else if is_expr {
             if let Some(e) = expr_check::check_opts(v, &o) { d.push(e.into_diagnostic(l)); }
         }
     }
+}
+
+/// TS `isPotentialExpression`: `/^.?{.+}.*$/` (`.` excludes line terminators).
+fn is_potential_expression(v: &str) -> bool {
+    let cs: Vec<char> = v.chars().collect();
+    !cs.iter().any(|c| matches!(c, '\n' | '\r' | '\u{2028}' | '\u{2029}'))
+        && (0..2).any(|k| cs.get(k) == Some(&'{') && cs.get(k + 2..).is_some_and(|r| r.contains(&'}')))
 }
 
 fn expr_opts(cfg: &NormalizedConfig, unquoted: bool) -> expr_check::Opts {

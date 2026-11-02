@@ -232,6 +232,27 @@ mod transform_tests {
         assert!(r.css_scope_tokens.is_some());
     }
 
+    // Regression: attribute-global-html/tabindex. Invalid static tabindex values ("true", "false",
+    // "truthy") make lwc-template report LWC1061 as an Error, but JS still renders those <x-child>
+    // nodes (tabIndex prop normalized to -1), so SSR must keep all 13 children.
+    #[test]
+    fn transform_html_tabindex_invalid_static_values_kept() {
+        let opts = CompileOptions { name: "component".into(), namespace: "x".into(), target_ssr: true, ..Default::default() };
+        let mut src = String::from("<template>\n");
+        for v in ["{undefined}", "{aNull}", "{string}", "{number}", "{zero}", "{minusOne}", "{truthy}", "{falsy}"] {
+            src.push_str(&format!("    <x-child tabindex={v}></x-child>\n"));
+        }
+        for v in ["true", "false", "truthy", "0", "-1"] {
+            src.push_str(&format!("    <x-child tabindex=\"{v}\"></x-child>\n"));
+        }
+        src.push_str("</template>\n");
+        let r = transform(&src, "x/component/component.html", &opts).expect("transform");
+        assert_eq!(r.code.matches("'tabIndex'").count(), 13, "{}", r.code);
+        for v in ["'true'", "'false'", "'truthy'"] {
+            assert!(r.code.contains(v), "missing {v}: {}", r.code);
+        }
+    }
+
     #[test]
     fn transform_js_text_static() {
         let opts = CompileOptions {

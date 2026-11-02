@@ -189,31 +189,90 @@ fn wrap_loop(l: Loop, children: Vec<ChildNode>, location: SourceLocation) -> Chi
 }
 
 fn is_directive_attr(name: &str) -> bool {
-    matches!(name, "lwc:if" | "lwc:elseif" | "lwc:else" | "if:true" | "if:false" | "for:each" | "for:item" | "for:index" | "key" | "lwc:ref") || name.starts_with("iterator:")
+    matches!(name, "lwc:if" | "lwc:elseif" | "lwc:else" | "if:true" | "if:false" | "for:each" | "for:item" | "for:index" | "key" | "lwc:ref" | "lwc:dom" | "lwc:inner-html" | "lwc:spread" | "lwc:dynamic" | "lwc:is") || name.starts_with("iterator:")
 }
 
-/// Component attrs that stay attributes; everything else becomes a camelCased Property.
-fn keeps_as_attr(name: &str) -> bool {
-    matches!(name, "role" | "style" | "class" | "id" | "slot" | "key") || name.starts_with("aria-") || name.starts_with("data-")
+/// TS `isAttribute` for Component / LwcComponent: style, class, key, slot, exportparts and `data-*`
+/// stay attributes; everything else becomes a Property.
+fn component_keeps_attr(name: &str) -> bool {
+    matches!(name, "style" | "class" | "key" | "slot" | "exportparts") || name.starts_with("data-")
 }
 
-fn kebab_to_camel(s: &str) -> String {
+/// `@lwc/shared` AriaPropertyNames (attr = lowercased `aria-…`; `role` maps to itself).
+const ARIA_PROPS: &[&str] = &[
+    "ariaActiveDescendant", "ariaAtomic", "ariaAutoComplete", "ariaBusy", "ariaChecked", "ariaColCount", "ariaColIndex",
+    "ariaColIndexText", "ariaColSpan", "ariaControls", "ariaCurrent", "ariaDescribedBy", "ariaDescription", "ariaDetails",
+    "ariaDisabled", "ariaErrorMessage", "ariaExpanded", "ariaFlowTo", "ariaHasPopup", "ariaHidden", "ariaInvalid",
+    "ariaKeyShortcuts", "ariaLabel", "ariaLabelledBy", "ariaLevel", "ariaLive", "ariaModal", "ariaMultiLine",
+    "ariaMultiSelectable", "ariaOrientation", "ariaOwns", "ariaPlaceholder", "ariaPosInSet", "ariaPressed", "ariaReadOnly",
+    "ariaRelevant", "ariaRequired", "ariaRoleDescription", "ariaRowCount", "ariaRowIndex", "ariaRowIndexText", "ariaRowSpan",
+    "ariaSelected", "ariaSetSize", "ariaSort", "ariaValueMax", "ariaValueMin", "ariaValueNow", "ariaValueText",
+    "ariaBrailleLabel", "ariaBrailleRoleDescription", "role",
+];
+
+/// `@lwc/shared` SPECIAL_PROPERTY_ATTRIBUTE_MAPPING as (attr, prop).
+const SPECIAL_ATTR_PROPS: &[(&str, &str)] = &[
+    ("accesskey", "accessKey"), ("readonly", "readOnly"), ("tabindex", "tabIndex"), ("bgcolor", "bgColor"),
+    ("colspan", "colSpan"), ("rowspan", "rowSpan"), ("contenteditable", "contentEditable"), ("crossorigin", "crossOrigin"),
+    ("datetime", "dateTime"), ("formaction", "formAction"), ("ismap", "isMap"), ("maxlength", "maxLength"),
+    ("minlength", "minLength"), ("novalidate", "noValidate"), ("usemap", "useMap"), ("for", "htmlFor"),
+];
+
+/// TS `attributeToPropertyName`: ATTRS_PROPS_TRANFORMS (special IDL names + ARIA) else `toPropertyName`.
+fn attr_to_prop(name: &str) -> String {
+    if let Some((_, p)) = SPECIAL_ATTR_PROPS.iter().find(|(a, _)| *a == name) { return p.to_string(); }
+    if let Some(p) = ARIA_PROPS.iter().find(|p| p.strip_prefix("aria").map_or(**p == name, |r| name.strip_prefix("aria-").is_some_and(|n| n == r.to_ascii_lowercase()))) {
+        return p.to_string();
+    }
     let mut o = String::new();
     let mut up = false;
-    for c in s.chars() {
-        if c == '-' { up = true; } else if up { o.push(c.to_ascii_uppercase()); up = false; } else { o.push(c); }
+    for c in name.chars() {
+        if c == '-' { up = true; } else if up { o.extend(c.to_uppercase()); up = false; } else { o.push(c); }
     }
     o
 }
 
-fn split_props(attrs: Vec<Attribute>) -> (Vec<Attribute>, Vec<Property>) {
-    let mut props = Vec::new();
+/// TS applyAttributes attr/prop split. `keep(name)` is TS `isAttribute`. Properties are keyed by
+/// prop name (a later duplicate replaces the value in place and warns 1147).
+fn split_props(attrs: Vec<Attribute>, keep: impl Fn(&str) -> bool, d: &mut Ctx) -> (Vec<Attribute>, Vec<Property>) {
+    let mut props: Vec<Property> = Vec::new();
     let attrs = attrs.into_iter().filter_map(|a| {
-        if keeps_as_attr(&a.name) || a.name.contains(':') { return Some(a); }
-        props.push(Property { name: kebab_to_camel(&a.name), attribute_name: a.name, value: a.value, location: a.location });
+        // Remaining `lwc:*` (lwc:on, lwc:slot-data, …) are directives TS strips before isAttribute;
+        // codegen still reads them from attributes, so they never become props.
+        if keep(&a.name) || a.name.starts_with("lwc:") { return Some(a); }
+        let name = attr_to_prop(&a.name);
+        let p = Property { name: name.clone(), attribute_name: a.name, value: a.value, location: a.location };
+        match props.iter_mut().find(|x| x.name == name) {
+            Some(x) => {
+                d.push(messages::lwc(1147, &[&x.attribute_name, &p.attribute_name, &name], p.location.clone()));
+                *x = p;
+            }
+            None => props.push(p),
+        }
         None
     }).collect();
     (attrs, props)
+}
+
+/// lwc:dom / lwc:inner-html / lwc:spread / lwc:dynamic / lwc:is → ElementDirective (TS applyLwcDirectives;
+/// values were validated by the element pre-pass).
+fn lifted_directives(attrs: &[parse5::Attribute]) -> Vec<ElementDirective> {
+    let mut out = Vec::new();
+    for a in attrs {
+        let dir = match a.name.as_str() {
+            "lwc:dynamic" => parse_binding(&a.value).map(ElementDirective::Dynamic),
+            "lwc:is" => parse_binding(&a.value).map(ElementDirective::Is),
+            "lwc:spread" => parse_binding(&a.value).map(ElementDirective::Spread),
+            "lwc:dom" => Some(ElementDirective::Dom(LiteralValue::String(a.value.clone()))),
+            "lwc:inner-html" => Some(ElementDirective::InnerHtml(match parse_binding(&a.value) {
+                Some(e) => AttributeValue::Expression(e),
+                None => AttributeValue::Literal(Literal { value: LiteralValue::String(a.value.clone()) }),
+            })),
+            _ => None,
+        };
+        out.extend(dir);
+    }
+    out
 }
 
 fn elem_loc(n: &NodeRef) -> ElementSourceLocation {
@@ -325,6 +384,7 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             if chk.childless { d.diags.truncate(mark); }
             // `lwc:ref="foo"`: string literal only. TODO: diagnostics for boolean/empty/expression values (skipped for now).
             let lwc_ref = attrs.iter().find(|a| a.name == "lwc:ref").map(|a| a.value.clone()).filter(|v| !v.is_empty() && parse_binding(v).is_none() && !(v.starts_with('{') && v.ends_with('}')));
+            let lifted = lifted_directives(attrs);
             let attrs: Vec<_> = attrs.iter().filter(|a| !is_directive_attr(&a.name)).collect();
             let location = elem_loc(n);
             if tag_name == "template" {
@@ -363,7 +423,7 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
                 }
             }).collect();
             let attributes = attrs.iter().map(|a| lower_attr(a, n)).collect();
-            let directives: Vec<ElementDirective> = key.into_iter().map(ElementDirective::Key).chain(lwc_ref.map(ElementDirective::Ref)).collect();
+            let directives: Vec<ElementDirective> = key.into_iter().map(ElementDirective::Key).chain(lwc_ref.map(ElementDirective::Ref)).chain(lifted).collect();
             let depth = d.iter_depth; if lp.is_some() { d.iter_depth += 1; }
             let is_comp = is_custom_element_tag(tag_name);
             let prev_anc = std::mem::replace(&mut d.slot_ancestor, if is_comp { None } else { Some(tag_name.clone()) });
@@ -378,8 +438,8 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             // when preserved, which `children` already reflects). Thrown after the children were parsed,
             // so the element stays in the tree.
             if !children.is_empty() {
-                if attrs.iter().any(|a| a.name == "lwc:dom") { d.push(messages::lwc(1086, &[], location.location.clone())); }
-                else if attrs.iter().any(|a| a.name == "lwc:inner-html") { d.push(messages::lwc(1142, &[&format!("<{tag_name}>")], location.location.clone())); }
+                if directives.iter().any(|x| matches!(x, ElementDirective::Dom(_))) { d.push(messages::lwc(1086, &[], location.location.clone())); }
+                else if directives.iter().any(|x| matches!(x, ElementDirective::InnerHtml(_))) { d.push(messages::lwc(1142, &[&format!("<{tag_name}>")], location.location.clone())); }
             }
             let node = if tag_name == "slot" {
                 // `name` stays in attributes too; slot_name is the TS `slotName`.
@@ -395,10 +455,14 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
                 validate::ssr_inner_outer_html(&attributes, tag_name, cfg, d);
                 ChildNode::ExternalComponent(ExternalComponent { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() })
             } else if is_custom_element_tag(tag_name) {
-                { let (attributes, properties) = split_props(attributes); ChildNode::Component(Component { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() }) }
+                { let (attributes, properties) = split_props(attributes, component_keeps_attr, d); ChildNode::Component(Component { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() }) }
             } else {
                 validate::ssr_inner_outer_html(&attributes, tag_name, cfg, d);
-                ChildNode::Element(Element { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() })
+                // TS isAttribute: lwc:component uses the component table; `<input value|checked>` are props.
+                let (attributes, properties) = if tag_name == "lwc:component" { split_props(attributes, component_keeps_attr, d) }
+                    else if tag_name == "input" { split_props(attributes, |a| a != "value" && a != "checked", d) }
+                    else { (attributes, Vec::new()) };
+                ChildNode::Element(Element { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() })
             };
             // Loop wraps outside; if:* is applied per iteration inside.
             let node = match dir {
@@ -564,6 +628,13 @@ pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseR
     if matches!(&tb.data, NodeData::Element { attrs, .. } if attrs.iter().any(|a| a.name == "lwc:render-mode" && (a.value == "light" || a.value == "shadow"))) {
         cx.count(lwc_shared::CompilerMetric::LwcRenderModeDirective);
     }
+    // TS ParserCtx: `preserveComments = root lwc:preserve-comments directive ?? config.preserveHtmlComments`
+    // (root_errors already rejected a non-boolean value, so presence means true).
+    let preserved;
+    let config = if matches!(&tb.data, NodeData::Element { attrs, .. } if attrs.iter().any(|a| a.name == "lwc:preserve-comments")) {
+        preserved = NormalizedConfig { preserve_html_comments: true, ..config.clone() };
+        &preserved
+    } else { config };
     let children = lower_children(&kids, config, &mut cx);
     TemplateParseResult { root: Some(Root { location, directives: vec![], children }), warnings: cx.diags }
 }

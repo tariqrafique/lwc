@@ -1,0 +1,23 @@
+official board  src=3533f348431d  napi=6d178564617b  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-01T20:31:41-08:00
+napi sha256:6d178564617b  pinned=/tmp/lwc-board-h.4QUoV0/harness/.pins/lwc-compiler-napi.6d178564617b.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  2026-11-01T20:30:18-08:00
+style                  Tests  70 passed (70)
+js                     Tests  174 passed (174)
+template               Tests  20 failed | 548 passed (568)  (diagnostic, non-gating)
+ssr                    Tests  388 passed (388)  (diagnostic, non-gating)
+ssr-async              Tests  388 passed (388)  (diagnostic, non-gating)
+ssr-asyncYield         Tests  388 passed (388)  (diagnostic, non-gating)
+ssr-render             Tests  384 passed | 5 skipped (389)
+ssr-render-async       Tests  384 passed | 5 skipped (389)
+ssr-render-asyncYield  Tests  384 passed | 5 skipped (389)
+csr-render             Tests  157 failed | 233 passed (390)
+csr-render-template    Tests  151 failed | 419 passed (570)
+template-renderer      Tests  14 passed | 554 skipped (568)
+js-options             Tests  302 passed | 1239 skipped (1541)
+js-api                 Tests  1239 passed | 302 skipped (1541)
+template-options       Tests  5 failed | 62 passed (67)
+ssr_dynamic_imports    Tests  16 passed (16)
+style-api              Tests  829 passed (829)
+template-api           Tests  1789 failed | 3882 passed (5671)
+ssr_render_api         Tests  2710 passed | 14 skipped (2724)
+shim-check: SHIM(template-gap:=58  SHIM(|TODO(parity=58  (cutover blockers until 0)  untagged=0 (GATING)
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid

@@ -5,7 +5,7 @@
 // Words: shim, compat, workaround, hack, mask*, rescan/re-scan.
 import fs from 'node:fs'; import path from 'node:path';
 const here = path.dirname(new URL(import.meta.url).pathname);
-const root = process.env.SHIM_ROOT ? path.resolve(process.env.SHIM_ROOT) : path.resolve(here, '../../crates');
+const root = process.env.CRATES_ROOT ? path.resolve(process.env.CRATES_ROOT) : path.resolve(here, '../../crates');
 const WORD = /\b(shims?|compat|workarounds?|hacks?|hacky|re-?scan\w*|mask\w*)\b|\w*_compat\b|\bcompat_\w*/gi;
 const allow = [];
 const allowFile = path.resolve(here, '../shim-allowlist.tsv');

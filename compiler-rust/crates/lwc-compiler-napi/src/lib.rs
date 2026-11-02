@@ -73,6 +73,19 @@ pub struct JsOutputConfig {
     pub minify: Option<serde_json::Value>,
 }
 
+/// JS `String(value)` for a JSON value: objects `[object Object]`, arrays `join(",")` (null items empty).
+fn js_string(v: &serde_json::Value) -> String {
+    use serde_json::Value as V;
+    match v {
+        V::Null => "null".into(),
+        V::Bool(b) => b.to_string(),
+        V::Number(n) => n.to_string(),
+        V::String(s) => s.clone(),
+        V::Array(a) => a.iter().map(|x| if x.is_null() { String::new() } else { js_string(x) }).collect::<Vec<_>>().join(","),
+        V::Object(_) => "[object Object]".into(),
+    }
+}
+
 /// Any JSON value: validated into `lwc_shared::Sourcemap` (non-bool, non-'inline' → LWC1021 like JS).
 #[derive(Debug, Deserialize)]
 #[serde(untagged)]
@@ -220,7 +233,7 @@ fn to_compile_options(
                 Err(e) => return Ok(Err(e)),
             },
             // JS templateString renders the value with String(); `null` is treated as unset by serde.
-            JsSourcemap::Other(v) => return Ok(Err(lwc_shared::Sourcemap::from_js_str(&v.to_string(), filename).unwrap_err())),
+            JsSourcemap::Other(v) => return Ok(Err(lwc_shared::Sourcemap::from_js_str(&js_string(&v), filename).unwrap_err())),
         };
     }
     o.custom_renderer_config = options.custom_renderer_config.map(|c| lwc_shared::CustomRendererConfig {
@@ -316,6 +329,13 @@ mod tests {
         assert_eq!(o.stylesheet_config.custom_properties_resolution, lwc_shared::CustomPropertiesResolution::Module { name: "@x/r".into() });
         let o = to_compile_options(json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": true}}), "a.js").unwrap().unwrap();
         assert_eq!(o.sourcemap, lwc_shared::Sourcemap::On);
+    }
+
+    #[test]
+    fn js_string_matches_js() {
+        assert_eq!(js_string(&serde_json::json!({})), "[object Object]");
+        assert_eq!(js_string(&serde_json::json!([1, null, "a"])), "1,,a");
+        assert_eq!(js_string(&serde_json::json!(42)), "42");
     }
 
     #[test]

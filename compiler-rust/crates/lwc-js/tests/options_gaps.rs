@@ -288,3 +288,16 @@ fn sourcemap_identifiers_resolve_to_same_name_and_line() {
         assert!(n > 3, "too few identifier mappings ({n}) for:\n{}", r.code);
     }
 }
+
+// ---------- registerDecorators uids (api-decorator/transform-nested-classes) ----------
+#[test]
+fn register_decorators_uid_per_class_like_babel() {
+    // Shipped: every class mints its own `addNamed` uid in pre-order; user bindings are skipped.
+    let nested = "import { api, LightningElement } from 'lwc';\nexport default class Outer extends LightningElement {\n  @api outer;\n  a = class extends LightningElement {\n    @api innerA;\n  };\n}\n";
+    let c = t(nested, &opts());
+    assert!(c.contains("this.a = _registerDecorators2(class extends LightningElement"), "{c}");
+    assert!(c.contains("_registerDecorators(Outer, {"), "{c}");
+    let taken = "import { api, LightningElement } from 'lwc';\nconst _registerDecorators = 1;\nclass A extends LightningElement { @api a; }\nexport default class C extends LightningElement { @api c; }\n";
+    let c = t(taken, &opts());
+    assert!(c.contains("_registerDecorators2(A, {") && c.contains("_registerDecorators3(C, {"), "{c}");
+}

@@ -9,7 +9,7 @@ const rows = new Set((process.argv[2] ?? '').split(/\s+/).filter(Boolean));
 // A field mapped only to a diagnostic (non-gating) row is not covered: no false-pass path.
 const diag = new Set((process.env.OPTGATE_DIAG ?? '').split(/\s+/).filter(Boolean));
 const decisions = fs.readFileSync('/workspace/notes/lwc-rust-migrate/decisions.tsv', 'utf8');
-const crates = `${here}../crates`;
+const crates = process.env.CRATES_ROOT ?? `${here}../crates`;  // official-board.sh points this at the frozen snapshot
 const bad = [], pending = [];
 for (const f of fields) {
     const m = inv[f];
