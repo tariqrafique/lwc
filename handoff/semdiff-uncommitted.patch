@@ -1,0 +1,473 @@
+diff --git a/tools/semdiff/src/exec.rs b/tools/semdiff/src/exec.rs
+index 3802240..e3308af 100644
+--- a/tools/semdiff/src/exec.rs
++++ b/tools/semdiff/src/exec.rs
+@@ -12,6 +12,9 @@
+ //!   3. DIFFERENT exec-throw-one-side: a throw/error event exists on exactly one side.
+ //!   4. DIFFERENT exec-differs: the first divergent step.
+ //!   5. DIFFERENT exec-static-comments-differ: traces equal, comment texts differ (D-0196 observes comments).
++//!      Then DIFFERENT exec-static-spelling-differs: traces equal, numeric or paren spelling differs (D-0196 observes
++//!      it; the trace cannot): the rewrite leg found only spelling (token-spelling-differs / printer-equal-ast-differs),
++//!      or `spelling::divergence` found it next to a real code difference. Over-budget alignment: not proven (item 6).
+ //!   6. UNCLASSIFIED exec-uncovered: traces equal but coverage incomplete (AB-D0003 (iii)).
+ //!   7. EQUIVALENT-BY-EXECUTION exec-equal, detail `{"branch_coverage": "not-proven"}` (F2).
+ //!
+@@ -566,6 +569,22 @@ pub struct InputSet {
+     pub slots: BTreeSet<String>,
+     pub events: BTreeSet<String>,
+     pub gaps: BTreeSet<String>,
++    /// D-0196 static spelling observation (numbers, parens); see `crate::spelling` and `observe_rewrite`.
++    pub spelling: crate::spelling::Spelling,
++}
++
++impl InputSet {
++    /// A rewrite verdict of token-spelling-differs / printer-equal-ast-differs means the pair is printer-equal and
++    /// differs only in spelling the printer drops; D-0196 observes all of that except whitespace and quotes (which
++    /// the rewrite leg already ignores), so it is a static difference whatever the aligner found.
++    pub fn observe_rewrite(&mut self, reason: crate::Reason, first_diff: &Value) {
++        use crate::Reason;
++        if matches!(reason, Reason::TokensDiffer | Reason::AstDiffers) && !matches!(self.spelling, crate::spelling::Spelling::Differs(_)) {
++            self.spelling = crate::spelling::Spelling::Differs(
++                json!({"coords": "static-spelling", "what": reason.as_str(), "rewrite_first_diff": first_diff}),
++            );
++        }
++    }
+ }
+ 
+ pub fn generate(seed: u64, case_key: &str, oracle: &str, rust: &str) -> InputSet {
+@@ -634,7 +653,7 @@ pub fn generate(seed: u64, case_key: &str, oracle: &str, rust: &str) -> InputSet
+         "gaps": g.gaps,
+         "steps": steps,
+     });
+-    InputSet { json, slots, events, gaps: g.gaps, o, r }
++    InputSet { json, slots, events, gaps: g.gaps, o, r, spelling: crate::spelling::divergence(oracle, rust) }
+ }
+ 
+ fn has_kind(n: &Node, k: u8) -> bool {
+@@ -1059,12 +1078,23 @@ fn comment_divergence(o: &[String], r: &[String]) -> Option<Value> {
+ /// step; else a statically observed comment difference → DIFFERENT; else a coverage gap → UNCLASSIFIED; else equal.
+ /// DIFFERENT does not depend on coverage (a seen difference is a difference); EQUIVALENT does.
+ pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
++    use crate::spelling::Spelling;
+     use crate::{Class, Reason};
+     let d = |class, reason, detail: Value| ExecDecision { class, reason, first_diff: Value::Null, trace_sha256: None, detail };
+-    let static_diff = comment_divergence(&input.o.comments, &input.r.comments);
+-    let static_different = |fd: Value, trace_sha256, detail| ExecDecision {
++    // Statically observed differences (D-0196), comments first: the trace cannot see either.
++    let static_diff = comment_divergence(&input.o.comments, &input.r.comments).map(|fd| (fd, Reason::ExecStaticCommentsDiffer)).or(
++        match &input.spelling {
++            Spelling::Differs(fd) => Some((fd.clone(), Reason::ExecStaticSpellingDiffers)),
++            _ => None,
++        },
++    );
++    let not_proven: Vec<String> = match &input.spelling {
++        Spelling::NotProven(m) => vec![m.clone()],
++        _ => vec![],
++    };
++    let static_different = |(fd, reason): (Value, Reason), trace_sha256, detail| ExecDecision {
+         class: Class::Different,
+-        reason: Reason::ExecStaticCommentsDiffer,
++        reason,
+         first_diff: fd,
+         trace_sha256,
+         detail,
+@@ -1072,10 +1102,16 @@ pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
+     match out {
+         Outcome::HarnessFailure(m) => d(Class::Crash, Reason::ExecHarnessFailure, json!(m)),
+         Outcome::Nondeterministic(side) => d(Class::Crash, Reason::ExecNondeterministic, json!(format!("{side} runs differ"))),
+-        Outcome::Gap(g) => match static_diff {
+-            Some(fd) => static_different(fd, None, json!([format!("gap:{g}")])),
+-            None => d(Class::Unclassified, Reason::ExecUncovered, json!([format!("gap:{g}")])),
+-        },
++        Outcome::Gap(g) => {
++            let mut miss = vec![format!("gap:{g}")];
++            match static_diff {
++                Some(sd) => static_different(sd, None, json!(miss)),
++                None => {
++                    miss.extend(not_proven);
++                    d(Class::Unclassified, Reason::ExecUncovered, json!(miss))
++                }
++            }
++        }
+         Outcome::Traces { o, r } => {
+             let sha = |t: &Trace| sha256_hex(serde_json::to_string(t).expect("json").as_bytes());
+             if let Some(fd) = first_divergence(&o, &r) {
+@@ -1088,11 +1124,12 @@ pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
+                     detail: json!({"oracle_trace_sha256": sha(&o), "rust_trace_sha256": sha(&r)}),
+                 };
+             }
+-            let miss = coverage_missing(input, &o, &r);
++            let mut miss = coverage_missing(input, &o, &r);
+             let trace_sha256 = Some(sha(&o));
+-            if let Some(fd) = static_diff {
+-                return static_different(fd, trace_sha256, json!(miss));
++            if let Some(sd) = static_diff {
++                return static_different(sd, trace_sha256, json!(miss));
+             }
++            miss.extend(not_proven);
+             if miss.is_empty() {
+                 // F2 (AB-L0051): helper/slot/event coverage is proven above; branch coverage is not (no instrument yet).
+                 let detail = json!({"branch_coverage": "not-proven"});
+diff --git a/tools/semdiff/src/lib.rs b/tools/semdiff/src/lib.rs
+index 15cfebc..7720881 100644
+--- a/tools/semdiff/src/lib.rs
++++ b/tools/semdiff/src/lib.rs
+@@ -19,6 +19,7 @@
+ 
+ pub mod decisions;
+ pub mod exec;
++pub mod spelling;
+ pub mod ratchet;
+ mod sha256;
+ 
+@@ -98,6 +99,7 @@ pub enum Reason {
+     ExecHarnessFailure,
+     ExecNondeterministic,
+     ExecStaticCommentsDiffer,
++    ExecStaticSpellingDiffers,
+ }
+ 
+ impl Reason {
+@@ -118,6 +120,7 @@ impl Reason {
+             Reason::ExecHarnessFailure => "exec-harness-failure",
+             Reason::ExecNondeterministic => "exec-nondeterministic",
+             Reason::ExecStaticCommentsDiffer => "exec-static-comments-differ",
++            Reason::ExecStaticSpellingDiffers => "exec-static-spelling-differs",
+         }
+     }
+ }
+@@ -405,7 +408,8 @@ fn classify_all(m: &Manifest, exec: Option<&exec::ExecCfg>) -> (Vec<Verdict>, Va
+     let todo: Vec<usize> = (0..verdicts.len()).filter(|i| exec_eligible(&verdicts[*i])).collect();
+     let results = exec::par_map(&todo, cfg.jobs, |_, &i| {
+         let c = &m.cases[i];
+-        let input = exec::generate(cfg.seed, &c.id, &c.oracle, &c.rust);
++        let mut input = exec::generate(cfg.seed, &c.id, &c.oracle, &c.rust);
++        input.observe_rewrite(verdicts[i].reason, &verdicts[i].json["first_diff"]);
+         let out = exec::run_case(&exec::case_dir(&cfg.work, i), &input.json, &c.oracle, &c.rust);
+         let d = exec::decide(&input, out);
+         (input, d)
+diff --git a/tools/semdiff/tests/exec.rs b/tools/semdiff/tests/exec.rs
+index 81f39ce..dd7a4d2 100644
+--- a/tools/semdiff/tests/exec.rs
++++ b/tools/semdiff/tests/exec.rs
+@@ -396,3 +396,69 @@ fn oracle_dir_is_the_harness_lwc_root() {
+     let head = Command::new("git").args(["-C", exec::ORACLE_DIR, "rev-parse", "HEAD"]).output().unwrap();
+     assert_eq!(String::from_utf8_lossy(&head.stdout).trim(), exec::ORACLE_COMMIT);
+ }
++
++// ---------------------------------------------------------------------------------------------------------------------
++// D-0196: inside tmpl only whitespace and quote/escape spelling are unobservable; numeric spelling and parens are
++// observed (Function#toString; "anything not listed is observed"). The rewrite leg leaves such pairs UNCLASSIFIED
++// (token-spelling-differs / printer-equal-ast-differs); execution cannot see spelling, so equal traces must never
++// upgrade them to EQUIVALENT-BY-EXECUTION.
++
++fn cli_exec(name: &str, cases: Value) -> Value {
++    let dir = scratch(name);
++    let m = json!({"schema": "semdiff-manifest/v0", "corpus": "test", "cases": cases});
++    let mp = dir.join("manifest.json");
++    fs::write(&mp, serde_json::to_string(&m).unwrap()).unwrap();
++    let reg = dir.join("decisions.tsv");
++    fs::write(&reg, "id\tts\tphase\tdecision\twhy\tevidence\tresult\nD-0196\tt\tp\td\tw\te\tlocked\n").unwrap();
++    let o = Command::new(env!("CARGO_BIN_EXE_semdiff"))
++        .args(["run", "--exec", "--exec-jobs", "2", "--gate", "none", "--manifest"])
++        .arg(&mp)
++        .arg("--out")
++        .arg(dir.join("s.json"))
++        .arg("--registry")
++        .arg(&reg)
++        .output()
++        .unwrap();
++    assert!(o.status.success(), "{}", String::from_utf8_lossy(&o.stderr));
++    let s: Value = serde_json::from_slice(&fs::read(dir.join("s.json")).unwrap()).unwrap();
++    let _ = fs::remove_dir_all(&dir);
++    s
++}
++
++/// (name, oracle, rust, expected rewrite reason, expected (class, reason) after exec).
++type SpellingCase = (&'static str, String, String, &'static str, (&'static str, &'static str));
++
++fn spelling_cases() -> Vec<SpellingCase> {
++    let arrow = |s: String| s.replacen("function (item) {\n    return", "item => {\n    return", 1);
++    let diff = ("DIFFERENT", "exec-static-spelling-differs");
++    vec![
++        // (a) printer-equal pairs: only spelling differs (token-spelling-differs; a grouping paren is an AST node, so
++        // printer-equal-ast-differs).
++        ("num", rust(), rust_with("key: 1,", "key: 0b1,"), "token-spelling-differs", diff),
++        ("paren-arrow", arrow(rust()), arrow(rust()).replacen("item => {", "(item) => {", 1), "token-spelling-differs", diff),
++        ("paren-expr", rust(), rust_with("$cmp.flag ? api_text", "($cmp.flag) ? api_text"), "printer-equal-ast-differs", diff),
++        // (b) the same spellings next to a real code difference (stc0 hoisted vs inlined): printed-differs hides them.
++        ("masked-num", oracle(), rust_with("key: 1,", "key: 0b1,"), "printed-differs", diff),
++        ("masked-paren", arrow(oracle()), arrow(rust()).replacen("item => {", "(item) => {", 1), "printed-differs", diff),
++        // Controls: hoisting alone is still EQUIVALENT-BY-EXECUTION; quote spelling alone never reaches exec.
++        ("hoist-only", oracle(), rust(), "printed-differs", ("EQUIVALENT-BY-EXECUTION", "exec-equal")),
++        ("quotes-only", rust(), rust_with(r#""lang": "en""#, r#"'lang': 'en'"#), "printer-equal", ("EQUIVALENT-BY-REWRITE", "printer-equal")),
++    ]
++}
++
++#[test]
++fn observed_token_spelling_is_never_equivalent_by_execution() {
++    let cases = spelling_cases();
++    let manifest: Vec<Value> = cases.iter().map(|(n, o, r, ..)| json!({"id": key(n), "oracle_code": o, "rust_code": r})).collect();
++    let s = cli_exec("spelling", json!(manifest));
++    for (c, (n, _, _, rewrite, (class, reason))) in s["cases"].as_array().unwrap().iter().zip(&cases) {
++        let v = &c["verdict"];
++        let rw = if v["exec"].is_null() { &v["reason"] } else { &v["rewrite"]["reason"] };
++        assert_eq!(rw, rewrite, "{n}: fixture must hit rewrite reason {rewrite}: {v}");
++        assert_eq!((v["class"].as_str().unwrap(), v["reason"].as_str().unwrap()), (*class, *reason), "{n}: {v}");
++        if *reason == "exec-static-spelling-differs" {
++            assert_eq!(v["first_diff"]["coords"], "static-spelling", "{n}: {v}");
++            assert!(v["trace_sha256"].is_string(), "{n}: traces ran and agreed, so only the static check can tell");
++        }
++    }
++}
+diff --git a/tools/semdiff/src/spelling.rs b/tools/semdiff/src/spelling.rs
+new file mode 100644
+index 0000000..7d9c85e
+--- /dev/null
++++ b/tools/semdiff/src/spelling.rs
+@@ -0,0 +1,245 @@
++//! D-0196 static spelling observation for the execution leg (SD-2a §10).
++//!
++//! Inside emitted code only whitespace and quote/escape spelling are unobservable; numeric-literal spelling and
++//! parentheses are visible through `Function#toString` and so observed ("anything not listed is observed"). The trace
++//! cannot see them (same values, same calls), so equal traces are not evidence they agree. Two shapes:
++//!   - the whole pair is printer-equal and only spelling differs (rewrite `token-spelling-differs` /
++//!     `printer-equal-ast-differs`); the caller handles those from the rewrite reason;
++//!   - a spelling difference sits next to a real code difference (rewrite `printed-differs`), which hides it from the
++//!     rewrite leg. `divergence` finds these: align the two token streams with spelling normalised away (numbers by
++//!     value, strings by decoded value), then report a matched number whose raw spelling differs, or an unmatched
++//!     run made only of `(`/`)` tokens. Fail closed: an alignment over the budget is reported as not proven.
++use oxc::allocator::Allocator;
++use oxc::parser::config::TokensParserConfig;
++use oxc::parser::{Kind, Parser};
++use oxc::span::SourceType;
++use serde_json::{json, Value};
++use std::collections::HashMap;
++
++/// Edit-distance budget for the alignment (Myers D). Past it the pair is "static-spelling-not-proven".
++pub const MAX_EDITS: usize = 4000;
++
++pub enum Spelling {
++    Same,
++    /// A spelling difference D-0196 observes; `first_diff` JSON with `coords: "static-spelling"`.
++    Differs(Value),
++    /// The alignment was over budget; equality cannot be claimed.
++    NotProven(String),
++}
++
++struct Tok {
++    kind: Kind,
++    text: String,
++    key: Vec<u8>,
++}
++
++fn lex(src: &str) -> Option<Vec<Tok>> {
++    let alloc = Allocator::default();
++    let ret = Parser::new(&alloc, src, SourceType::mjs()).with_config(TokensParserConfig).parse();
++    if ret.diagnostics.errors().count() > 0 {
++        return None;
++    }
++    let mut strs: HashMap<(u32, u32), Vec<u8>> = HashMap::new();
++    {
++        use oxc::ast::ast::StringLiteral;
++        use oxc::ast_visit::Visit;
++        struct V<'m>(&'m mut HashMap<(u32, u32), Vec<u8>>);
++        impl<'a> Visit<'a> for V<'_> {
++            fn visit_string_literal(&mut self, it: &StringLiteral<'a>) {
++                self.0.insert((it.span.start, it.span.end), it.value.as_bytes().to_vec());
++            }
++        }
++        V(&mut strs).visit_program(&ret.program);
++    }
++    Some(
++        ret.tokens
++            .iter()
++            .filter(|t| t.kind() != Kind::Eof)
++            .map(|t| {
++                let kind = t.kind();
++                let text = t.span().source_text(src).to_string();
++                let tagged = |tag: &str, body: &[u8]| [tag.as_bytes(), b"\0", body].concat();
++                let key = match (kind, strs.get(&(t.start(), t.end()))) {
++                    (Kind::Str, Some(v)) => tagged("s", v),
++                    _ if kind.is_number() => match number_key(&text) {
++                        Some(k) => tagged("n", k.as_bytes()),
++                        None => tagged(&format!("{kind:?}"), text.as_bytes()),
++                    },
++                    _ => tagged(&format!("{kind:?}"), text.as_bytes()),
++                };
++                Tok { kind, text, key }
++            })
++            .collect(),
++    )
++}
++
++/// The value a numeric literal denotes, as a canonical key (`None`: unparsed; the raw spelling is then the key, so
++/// the pair falls to the trace like any other code difference).
++pub fn number_key(raw: &str) -> Option<String> {
++    let s: String = raw.chars().filter(|c| *c != '_').collect::<String>().to_ascii_lowercase();
++    let (big, s) = match s.strip_suffix('n') {
++        Some(b) => (true, b.to_string()),
++        None => (false, s),
++    };
++    let int = if let Some(p) = s.strip_prefix("0x") {
++        u128::from_str_radix(p, 16).ok()
++    } else if let Some(p) = s.strip_prefix("0o") {
++        u128::from_str_radix(p, 8).ok()
++    } else if let Some(p) = s.strip_prefix("0b") {
++        u128::from_str_radix(p, 2).ok()
++    } else if s.len() > 1 && s.starts_with('0') && s.bytes().all(|b| b.is_ascii_digit()) {
++        // Legacy octal (017) unless a digit 8/9 makes it decimal (019).
++        u128::from_str_radix(&s, if s.bytes().all(|b| b < b'8') { 8 } else { 10 }).ok()
++    } else if big {
++        s.parse::<u128>().ok()
++    } else {
++        None
++    };
++    if big {
++        return int.map(|v| format!("big:{v}"));
++    }
++    let f = match int {
++        Some(v) => v as f64,
++        None => s.parse::<f64>().ok()?,
++    };
++    Some(format!("f:{:016x}", f.to_bits()))
++}
++
++/// Myers alignment of `a` and `b`: the matched (i, j) pairs in order, or `None` past `max_d` edits.
++fn align(a: &[u32], b: &[u32], max_d: usize) -> Option<Vec<(usize, usize)>> {
++    let (n, m) = (a.len() as i64, b.len() as i64);
++    let off = max_d as i64 + 1;
++    let mut v = vec![0i64; 2 * max_d + 3];
++    let mut trace: Vec<Vec<i64>> = Vec::new();
++    let mut found = None;
++    'outer: for d in 0..=max_d as i64 {
++        for k in (-d..=d).step_by(2) {
++            let mut x = if k == -d || (k != d && v[(off + k - 1) as usize] < v[(off + k + 1) as usize]) {
++                v[(off + k + 1) as usize]
++            } else {
++                v[(off + k - 1) as usize] + 1
++            };
++            let mut y = x - k;
++            while x < n && y < m && a[x as usize] == b[y as usize] {
++                x += 1;
++                y += 1;
++            }
++            v[(off + k) as usize] = x;
++            if x >= n && y >= m {
++                found = Some(d);
++                break 'outer;
++            }
++        }
++        trace.push(v[(off - d) as usize..=(off + d) as usize].to_vec());
++    }
++    let dmax = found?;
++    let (mut x, mut y) = (n, m);
++    let mut pairs = Vec::new();
++    for d in (1..=dmax).rev() {
++        let prev = &trace[(d - 1) as usize];
++        let get = |kk: i64| prev[(kk + d - 1) as usize];
++        let k = x - y;
++        let pk = if k == -d || (k != d && get(k - 1) < get(k + 1)) { k + 1 } else { k - 1 };
++        let px = get(pk);
++        let py = px - pk;
++        while x > px && y > py {
++            x -= 1;
++            y -= 1;
++            pairs.push((x as usize, y as usize));
++        }
++        x = px;
++        y = py;
++    }
++    while x > 0 && y > 0 {
++        x -= 1;
++        y -= 1;
++        pairs.push((x as usize, y as usize));
++    }
++    pairs.reverse();
++    Some(pairs)
++}
++
++fn clip(s: &str) -> String {
++    s.chars().take(200).collect()
++}
++
++/// First D-0196-observed spelling difference between two parse-clean modules (see module doc).
++pub fn divergence(oracle: &str, rust: &str) -> Spelling {
++    let (Some(o), Some(r)) = (lex(oracle), lex(rust)) else { return Spelling::Same }; // parse errors never reach exec
++    let mut ids: HashMap<&[u8], u32> = HashMap::new();
++    let mut a = Vec::with_capacity(o.len());
++    for t in &o {
++        let n = ids.len() as u32;
++        a.push(*ids.entry(t.key.as_slice()).or_insert(n));
++    }
++    let mut b = Vec::with_capacity(r.len());
++    for t in &r {
++        let n = ids.len() as u32;
++        b.push(*ids.entry(t.key.as_slice()).or_insert(n));
++    }
++    // Common prefix/suffix need no search; Myers runs on the middle only.
++    let pre = a.iter().zip(&b).take_while(|(x, y)| x == y).count();
++    let suf = a[pre..].iter().rev().zip(b[pre..].iter().rev()).take_while(|(x, y)| x == y).count();
++    let Some(mid) = align(&a[pre..a.len() - suf], &b[pre..b.len() - suf], MAX_EDITS) else {
++        return Spelling::NotProven(format!("static-spelling-not-proven:alignment-over-{MAX_EDITS}-edits"));
++    };
++    let mut pairs: Vec<(usize, usize)> = (0..pre).map(|i| (i, i)).collect();
++    pairs.extend(mid.iter().map(|(i, j)| (i + pre, j + pre)));
++    pairs.extend((0..suf).map(|s| (a.len() - suf + s, b.len() - suf + s)));
++    let at = |what: &str, i: usize, j: usize, ot: String, rt: String| {
++        Spelling::Differs(json!({"coords": "static-spelling", "what": what, "oracle_token": i, "rust_token": j, "oracle": clip(&ot), "rust": clip(&rt)}))
++    };
++    let paren = |t: &Tok| matches!(t.kind, Kind::LParen | Kind::RParen);
++    let (mut pi, mut pj) = (0usize, 0usize);
++    for &(i, j) in pairs.iter().chain(std::iter::once(&(o.len(), r.len()))) {
++        // Unmatched run o[pi..i] / r[pj..j]: observed when it is parens only (an inserted/removed grouping or
++        // arrow-parameter paren pair, `new X` vs `new X()`).
++        if (pi < i || pj < j) && o[pi..i].iter().all(paren) && r[pj..j].iter().all(paren) {
++            let txt = |s: &[Tok]| s.iter().map(|t| t.text.as_str()).collect::<String>();
++            return at("parens", pi, pj, txt(&o[pi..i]), txt(&r[pj..j]));
++        }
++        if i < o.len() && o[i].kind.is_number() && o[i].text != r[j].text {
++            return at("numeric", i, j, o[i].text.clone(), r[j].text.clone());
++        }
++        (pi, pj) = (i + 1, j + 1);
++    }
++    Spelling::Same
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn d(o: &str, r: &str) -> Option<String> {
++        match divergence(o, r) {
++            Spelling::Same => None,
++            Spelling::Differs(v) => Some(format!("{}:{}|{}", v["what"].as_str().unwrap(), v["oracle"].as_str().unwrap(), v["rust"].as_str().unwrap())),
++            Spelling::NotProven(m) => Some(m),
++        }
++    }
++
++    #[test]
++    fn number_keys_are_values() {
++        for (a, b) in [("75", "0b1001011"), ("75", "0x4B"), ("75", "0o113"), ("75", "7_5"), ("1", "1.0"), ("100", "1e2"), ("15", "017"), ("10n", "0xan")] {
++            assert_eq!(number_key(a), number_key(b), "{a} vs {b}");
++        }
++        assert_ne!(number_key("1"), number_key("2"));
++        assert_ne!(number_key("1n"), number_key("1"));
++        assert_eq!(number_key("019"), number_key("19"));
++    }
++
++    #[test]
++    fn spelling_is_found_next_to_a_real_difference() {
++        assert_eq!(d("f(a, 1); g();", "f(a, 0b1); h();").as_deref(), Some("numeric:1|0b1"));
++        assert_eq!(d("x.map((y) => y); g();", "x.map(y => y); h();").as_deref(), Some("parens:(|"));
++        assert_eq!(d("const a = (b) ? 1 : 2; g();", "const a = b ? 1 : 2; h();").as_deref(), Some("parens:(|"));
++    }
++
++    #[test]
++    fn unobservable_or_semantic_only_differences_are_same() {
++        assert_eq!(d(r#"f("a",  1);"#, "f('a', 1);\n"), None, "quotes and whitespace are unobservable");
++        assert_eq!(d("f(a, 1);", "f(a, 2);"), None, "a value change is the trace's job");
++        assert_eq!(d("const s = {a: 1}; f(s);", "f({a: 1});"), None, "hoisting is the trace's job");
++        assert_eq!(d("f(1);", "g(1, 2);"), None);
++    }
++}
