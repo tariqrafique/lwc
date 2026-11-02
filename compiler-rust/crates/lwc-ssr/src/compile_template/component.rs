@@ -1,6 +1,6 @@
 //! Port of transformers/component (all modes; sync/async are the transmogrified `__lwcYield +=` shapes).
 //! Slotted content follows slotted-content.ts getSlottedContent: shadow fn (hoisted), light map, scoped map.
-use super::{add, element, emit_children, expr, is_concat, js_str, Cx, TemplateOptions};
+use super::{add, element, emit_children, expr, is_concat, js_str, Cx, Emit, TemplateOptions};
 use crate::runtime_abi::{ADD_SLOTTED_CONTENT, LIGHTNING_ELEMENT, NORMALIZE_CLASS, NORMALIZE_TAB_INDEX, SYMBOL__GENERATE_MARKUP};
 use lwc_shared::template_ir::{Attribute, AttributeValue, ChildNode, Component, ElementDirective, Expression, ScopedSlotFragment, LiteralValue, LwcComponent, Property, SourceLocation};
 
@@ -77,16 +77,16 @@ fn kebab_case_to_camel_case(s: &str) -> String {
 
 /// slotted-content.ts getSlottedContent: shadow fn (hoisted + curried over local vars, deduped by node id),
 /// light map, scoped map. Returns the statements inserted into the component block.
-fn slotted_content(name: &str, loc: &SourceLocation, children_all: &[ChildNode], o: TemplateOptions, cx: &mut Cx, sc: &mut Vec<String>) -> Vec<String> {
+fn slotted_content(name: &str, loc: &SourceLocation, children_all: &[ChildNode], o: TemplateOptions, cx: &mut Cx, sc: &mut Vec<String>) -> Result<Vec<String>, lwc_shared::CompileError> {
     let prev = cx.slotted;
     cx.slotted = true;
     let slottable: Vec<ChildNode> = children_all.iter().filter(|c| !matches!(c, ChildNode::ScopedSlotFragment(_))).cloned().collect();
     let mut shadow_body = Vec::new();
     cx.reset_top = true;
-    emit_children(&slottable, o, &mut shadow_body, cx, sc);
+    emit_children(&slottable, o, &mut shadow_body, cx, sc)?;
     cx.reset_top = false;
-    let light = light_slotted_content(&slottable, o, cx, sc);
-    let scoped = scoped_slotted_content(&original_children_scoped(children_all), o, cx, sc);
+    let light = light_slotted_content(&slottable, o, cx, sc)?;
+    let scoped = scoped_slotted_content(&original_children_scoped(children_all), o, cx, sc)?;
     cx.slotted = prev;
     let has_shadow = !shadow_body.is_empty();
     if has_shadow || !light.is_empty() || !scoped.is_empty() { add(&mut cx.imports, ADD_SLOTTED_CONTENT); }
@@ -118,7 +118,7 @@ fn slotted_content(name: &str, loc: &SourceLocation, children_all: &[ChildNode],
     res.push(format!("const scopedSlottedContentMap = {};", if scoped.is_empty() { "null" } else { "Object.create(null)" }));
     res.extend(light);
     res.extend(scoped);
-    res
+    Ok(res)
 }
 
 fn original_children_scoped(all: &[ChildNode]) -> Vec<&ScopedSlotFragment> {
@@ -144,14 +144,14 @@ fn kids(n: &mut ChildNode) -> Option<&mut Vec<ChildNode>> {
 
 /// getLightSlottedContent: one addSlottedContent per slottable leaf, wrapped in a clone of its If/IfBlock
 /// ancestor chain with siblings pruned. Ancestor `else_` branches are kept as-is (JS only prunes `children`).
-fn light_slotted_content(roots: &[ChildNode], o: TemplateOptions, cx: &mut Cx, sc: &mut Vec<String>) -> Vec<String> {
+fn light_slotted_content(roots: &[ChildNode], o: TemplateOptions, cx: &mut Cx, sc: &mut Vec<String>) -> Result<Vec<String>, lwc_shared::CompileError> {
     let mut res = Vec::new();
-    fn walk(nodes: &[ChildNode], path: &mut Vec<usize>, roots: &[ChildNode], o: TemplateOptions, cx: &mut Cx, sc: &mut Vec<String>, res: &mut Vec<String>) {
+    fn walk(nodes: &[ChildNode], path: &mut Vec<usize>, roots: &[ChildNode], o: TemplateOptions, cx: &mut Cx, sc: &mut Vec<String>, res: &mut Vec<String>) -> Emit {
         for (i, n) in nodes.iter().enumerate() {
             match n {
                 ChildNode::If(_) | ChildNode::IfBlock(_) | ChildNode::ElseifBlock(_) | ChildNode::ElseBlock(_) => {
                     let mut c = n.clone(); path.push(i);
-                    walk(kids(&mut c).unwrap(), path, roots, o, cx, sc, res); path.pop();
+                    walk(kids(&mut c).unwrap(), path, roots, o, cx, sc, res)?; path.pop();
                 }
                 ChildNode::Slot(_) | ChildNode::Element(_) | ChildNode::Text(_) | ChildNode::Component(_) | ChildNode::ExternalComponent(_) => {
                     // Concatenated text: only the last node renders, carrying its preceding concat run.
@@ -186,16 +186,17 @@ fn light_slotted_content(roots: &[ChildNode], o: TemplateOptions, cx: &mut Cx, s
                     let prev = cx.slotted;
                     cx.slotted = !path.is_empty() || matches!(n, ChildNode::Slot(_));
                     let mut body = Vec::new();
-                    emit_children(&tree, o, &mut body, cx, sc);
+                    emit_children(&tree, o, &mut body, cx, sc)?;
                     cx.slotted = prev;
                     res.push(add_slotted(o, &slot_name, None, body, "lightSlottedContentMap"));
                 }
                 _ => {}
             }
         }
+        Ok(())
     }
-    walk(roots, &mut Vec::new(), roots, o, cx, sc, &mut res);
-    res
+    walk(roots, &mut Vec::new(), roots, o, cx, sc, &mut res)?;
+    Ok(res)
 }
 
 fn kids_ref(n: &ChildNode) -> &[ChildNode] {
@@ -203,7 +204,7 @@ fn kids_ref(n: &ChildNode) -> &[ChildNode] {
 }
 
 /// Scoped slots: `<template lwc:slot-data="d">` -> addSlottedContent(name, fn(contextfulParent, d, slotAttributeValue), scopedSlottedContentMap).
-fn scoped_slotted_content(frags: &[&ScopedSlotFragment], o: TemplateOptions, cx: &mut Cx, sc: &mut Vec<String>) -> Vec<String> {
+fn scoped_slotted_content(frags: &[&ScopedSlotFragment], o: TemplateOptions, cx: &mut Cx, sc: &mut Vec<String>) -> Result<Vec<String>, lwc_shared::CompileError> {
     frags.iter().map(|f| {
         let var = match &f.slot_data { Expression::Identifier(i) => i.name.clone(), e => expr(e, &[]) };
         sc.push(var.clone());
@@ -213,20 +214,20 @@ fn scoped_slotted_content(frags: &[&ScopedSlotFragment], o: TemplateOptions, cx:
         };
         let prev = cx.slotted; cx.slotted = true;
         let mut body = Vec::new();
-        emit_children(&f.children, o, &mut body, cx, sc);
+        emit_children(&f.children, o, &mut body, cx, sc)?;
         cx.slotted = prev; sc.pop();
-        add_slotted(o, &name, Some(&var), body, "scopedSlottedContentMap")
+        Ok(add_slotted(o, &name, Some(&var), body, "scopedSlottedContentMap"))
     }).collect()
 }
 
-pub(crate) fn emit_component(c: &Component, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) {
+pub(crate) fn emit_component(c: &Component, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
     let local = format!("ChildComponentCtor_{}", to_property_name(&c.name));
     if !cx.modules.iter().any(|(l, _)| *l == local) { cx.modules.push((local.clone(), kebabcase_to_camelcase_path(&c.name))); }
     add(&mut cx.imports, SYMBOL__GENERATE_MARKUP);
     add(&mut cx.imports, o.fallback_tmpl());
     out.push("{".into());
     child_attrs_lines(&c.attributes, &c.properties, out, cx, sc);
-    let slotted = slotted_content(&c.name, &c.location.location, &c.children, o, cx, sc);
+    let slotted = slotted_content(&c.name, &c.location.location, &c.children, o, cx, sc)?;
     out.extend(slotted);
     out.push("const scopeToken = hasScopedStylesheets ? stylesheetScopeToken : undefined;".into());
     out.push(format!("const generateMarkup = {local}[SYMBOL__GENERATE_MARKUP];"));
@@ -239,22 +240,24 @@ pub(crate) fn emit_component(c: &Component, o: TemplateOptions, out: &mut Vec<St
     out.push(o.y("`</${tagName}>`"));
     out.push("}".into());
     out.push("}".into());
+    Ok(())
 }
 
 /// lwc-component.ts: only `lwc:is` renders (no wrapping block, as in JS); without it, nothing.
-pub(crate) fn emit_lwc_component(c: &LwcComponent, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) {
-    let Some(is) = c.directives.iter().find_map(|d| if let ElementDirective::Is(e) = d { Some(expr(e, sc)) } else { None }) else { return };
+pub(crate) fn emit_lwc_component(c: &LwcComponent, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
+    let Some(is) = c.directives.iter().find_map(|d| if let ElementDirective::Is(e) = d { Some(expr(e, sc)) } else { None }) else { return Ok(()) };
     add(&mut cx.imports, LIGHTNING_ELEMENT);
     add(&mut cx.imports, SYMBOL__GENERATE_MARKUP);
     out.push(format!("const Ctor = {is};"));
     out.push("if (Ctor) {".into());
     out.push("if (typeof Ctor !== 'function' || !(Ctor.prototype instanceof LightningElement)) { throw new Error(`Invalid constructor: \"${String(Ctor)}\" is not a LightningElement constructor.`); }".into());
     child_attrs_lines(&c.attributes, &c.properties, out, cx, sc);
-    let slotted = slotted_content(&c.name, &c.location.location, &c.children, o, cx, sc);
+    let slotted = slotted_content(&c.name, &c.location.location, &c.children, o, cx, sc)?;
     out.extend(slotted);
     out.push("const scopeToken = hasScopedStylesheets ? stylesheetScopeToken : undefined;".into());
     out.push(o.yd("Ctor[SYMBOL__GENERATE_MARKUP](null, childProps, childAttrs, scopeToken, contextfulParent, renderContext, shadowSlottedContent, lightSlottedContentMap, scopedSlottedContentMap)"));
     out.push("}".into());
+    Ok(())
 }
 
 #[cfg(test)]
@@ -277,7 +280,7 @@ mod tests {
             ..Default::default()
         };
         let root = Root { children: vec![ChildNode::Component(c)], ..Default::default() };
-        let code = super::super::compile_module(&root, TemplateOptions::default(), &super::super::ModuleMeta::default());
+        let code = super::super::compile_module(&root, TemplateOptions::default(), &super::super::ModuleMeta::default()).unwrap();
         for n in ["ChildComponentCtor_xFoo", "from 'x/foo'", "childProps", "myProp", "class", "SYMBOL__GENERATE_MARKUP", "generateMarkup", "__lwcGenerateShadowSlottedContent_xFoo_0", "fallbackTmplNoYield"] {
             assert!(code.contains(n), "missing {n}: {code}");
         }
@@ -288,7 +291,7 @@ mod tests {
     fn txt(s: &str) -> ChildNode { ChildNode::Text(Text { value: TextValue::Literal(s.into()), raw: String::new(), location: SourceLocation::default() }) }
     fn cmp(children: Vec<ChildNode>) -> String {
         let c = Component { name: "x-foo".into(), children, ..Default::default() };
-        super::super::compile_module(&Root { children: vec![ChildNode::Component(c)], ..Default::default() }, TemplateOptions::default(), &super::super::ModuleMeta::default())
+        super::super::compile_module(&Root { children: vec![ChildNode::Component(c)], ..Default::default() }, TemplateOptions::default(), &super::super::ModuleMeta::default()).unwrap()
     }
     #[test]
     fn light_map_named_slot() {

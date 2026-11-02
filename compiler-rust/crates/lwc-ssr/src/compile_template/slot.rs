@@ -1,5 +1,5 @@
 //! Port of transformers/slot.ts (all modes; sync/async match transmogrified `compileTemplateForSSR(..., mode)`).
-use super::{element::{self, ElView}, emit_children, expr, js_str, Cx, TemplateOptions};
+use super::{element::{self, ElView}, emit_children, expr, js_str, Cx, Emit, TemplateOptions};
 use lwc_shared::template_ir::{Attribute, AttributeValue, ElementDirective, Expression, LiteralValue, Slot};
 
 /// shared.ts bAttributeValue: absent -> `null`, literal string -> string, bool literal -> `''`,
@@ -24,7 +24,11 @@ fn raw_expr(e: &Expression) -> Option<String> {
     }
 }
 
-pub(crate) fn emit_slot(s: &Slot, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) {
+pub(crate) fn emit_slot(s: &Slot, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
+    // slot.ts:90-91 runs `Element(node)` (whose attribute loop throws at element.ts:234) before
+    // `irChildrenToEs(node.children)`; this emitter renders the light-DOM children first, so the
+    // `<slot>`'s own attributes are checked up front to keep the same first throw.
+    for a in &s.attributes { element::reject_inner_outer_html(&s.name, &a.name)?; }
     let bound = s.directives.iter().find_map(|d| if let ElementDirective::SlotBind(e) = d { Some(expr(e, sc)) } else { None });
     let scoped = bound.is_some();
     out.push("if (isLightDom) {".into());
@@ -47,12 +51,13 @@ pub(crate) fn emit_slot(s: &Slot, o: TemplateOptions, out: &mut Vec<String>, cx:
     out.push(format!("if (isScopedSlot && i < generators.length - 1) {{ {m} {m} }}"));
     out.push("}".into());
     out.push("} else if (!mismatchedSlots) {".into());
-    emit_children(&s.children, o, out, cx, sc);
+    emit_children(&s.children, o, out, cx, sc)?;
     out.push("}".into());
     out.push(bk);
     out.push("} else {".into());
     element::emit_element(&ElView { name: &s.name, namespace: &s.namespace, attributes: &s.attributes, properties: &s.properties,
-        directives: &s.directives, children: &s.children, is_element: false }, o, out, cx, sc);
+        directives: &s.directives, children: &s.children, is_element: false }, o, out, cx, sc)?;
     out.push("}".into());
+    Ok(())
 }
 

@@ -5,6 +5,7 @@
 //
 //   node harness/scripts/template-diag-diff.mjs                         # full corpus, engine=crate
 //   TDD_ENGINE=napi node harness/scripts/template-diag-diff.mjs         # same corpus through the transformSync seam
+//   node harness/scripts/template-diag-diff.mjs --engine=both           # crate + napi; report-both.json + BOARD line
 //   TDD_SOURCES=fixtures,mutations node harness/scripts/template-diag-diff.mjs
 //
 // Engines:
@@ -15,11 +16,18 @@
 //     (errors[] of the aggregate when it throws, else warnings[]). Catches seam issues (option decoding,
 //     aggregate shape) on top of the template compiler.
 //
-// Env: TDD_ENGINE (crate|napi), TDD_NAPI (napi engine; default harness/lwc-compiler-napi.node),
-//      TDD_OUT (default harness/.template-diag-diff/report-<engine>.json), TDD_JOBS (default nproc-1),
+// Env: --engine= / TDD_ENGINE (crate|napi|both), TDD_NAPI (napi engine; default harness/lwc-compiler-napi.node),
+//      TDD_OUT (default harness/.template-diag-diff/report-<engine>.json; a directory for both), TDD_JOBS (default nproc-1),
 //      TDD_SOURCES (comma list: fixtures, real, mutations or a source key; default all),
 //      TDD_CAP (mutations per fixture per family, default 40), TDD_HANG_MS (per-case watchdog, default 20000),
 //      TDD_DRIVER (prebuilt driver binary), TDD_DRIVER_TARGET (driver cargo target dir).
+//      Self-test hooks: TDD_ORACLE_DIST (oracle module path: template-compiler dist for crate, @lwc/compiler for napi),
+//      TDD_ORACLE_INJECT=throw (oracle call throws a TypeError). `--self-test` runs both on both engines
+//      (TDD_SOURCES default fixtures) and asserts every case lands in oracle-error.
+//
+// Bucket oracle-error (AB-X0001): the JS side failed, not Rust. Kinds: load (oracle dist did not load), js-crash
+// (oracle worker aborted/hung on the case), js-missing (no oracle record), non-compiler-error (the oracle threw
+// something without the @lwc/errors CompilerError shape). It is the case's only bucket and skips the Rust compare.
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -221,6 +229,7 @@ function observeJsCompile(compile, c) {
         const diags = r.warnings.map(diagOf);
         return { ok: !diags.some((d) => d.level === ERROR), diags, codeHash: fnv1a(r.code), codeLen: Buffer.byteLength(r.code) };
     } catch (e) {
+        if (!isCompilerError(e)) return oracleError('non-compiler-error', e);
         return { ok: false, threw: String(e?.message ?? e), diags: [] };
     }
 }
@@ -230,10 +239,15 @@ function observeJsTransform(lwc, c, opts) {
         const r = lwc.transformSync(c.src, `${nameOf(c.file)}.html`, opts);
         return { ok: true, diags: (r.warnings ?? []).map(diagOf), codeHash: fnv1a(r.code) };
     } catch (e) {
-        if (Array.isArray(e?.errors)) return { ok: false, diags: e.errors.map(diagOf) };
+        if (Array.isArray(e?.errors) && e.errors.every(isCompilerError)) return { ok: false, diags: e.errors.map(diagOf) };
+        if (!isCompilerError(e)) return oracleError('non-compiler-error', e);
         return { ok: false, threw: String(e?.message ?? e), diags: [diagOf(e)] };
     }
 }
+// @lwc/errors CompilerError shape (errors/src/compiler/utils.ts): an Error with numeric code and level. Anything
+// else thrown by the oracle is an oracle failure, not an expected diagnostic.
+function isCompilerError(e) { return e instanceof Error && Number.isInteger(e.code) && Number.isInteger(e.level); }
+function oracleError(kind, e) { return { ok: false, oracle: { kind, msg: String(e?.stack?.split('\n')[0] ?? e?.message ?? e) }, diags: [] }; }
 function observeNapi(native, c, opts) {
     let r;
     try { r = native.transform(c.src, `${nameOf(c.file)}.html`, JSON.parse(JSON.stringify(opts))); } catch (e) {
@@ -248,6 +262,10 @@ function observeNapi(native, c, opts) {
 
 const PANIC_RE = /panick|panic|RuntimeError|unreachable/i;
 function compare(js, rs) {
+    if (js.oracle || js.crash) {
+        const { kind, msg } = js.oracle ?? { kind: js.crash === 'js-missing' ? 'js-missing' : 'js-crash', msg: js.crash };
+        return { buckets: ['oracle-error'], keys: [`oracle-error:${kind}:${String(msg).slice(0, 140)}`] };
+    }
     if (rs.crash) return { buckets: ['crash'], keys: [`crash:${rs.crash}`] };
     if (rs.panic != null) return { buckets: ['crash'], keys: [`crash:panic:${rs.panic.slice(0, 140)}`] };
     if (rs.seam != null) {
@@ -304,18 +322,25 @@ async function worker(side, casesFile, from, to, outFile, napiPath) {
     const req = createRequire(`${HARNESS}/package.json`);
     const fd = fs.openSync(outFile, 'a');
     const lines = fs.readFileSync(casesFile, 'utf8').split('\n');
-    const compile = side === 'js' ? req(`${LWC}/packages/@lwc/template-compiler/dist/index.cjs`).compile : null;
-    const lwc = side === 'napi' ? req('@lwc/compiler') : null;
+    // The oracle module: a load failure is recorded per case as oracle-error:load (not a worker abort).
+    let oracle = null, loadErr = null;
+    try { oracle = req(process.env.TDD_ORACLE_DIST ?? (side === 'js' ? `${LWC}/packages/@lwc/template-compiler/dist/index.cjs` : '@lwc/compiler')); }
+    catch (e) { loadErr = e; }
+    const inject = process.env.TDD_ORACLE_INJECT === 'throw'
+        ? () => { throw new TypeError('TDD_ORACLE_INJECT: injected non-CompilerError'); } : null;
+    const compile = side === 'js' && oracle ? (inject ?? oracle.compile) : null;
+    const lwc = side === 'napi' && oracle ? (inject ? { transformSync: inject } : oracle) : null;
     const native = side === 'napi' ? req(napiPath) : null;
     for (let i = from; i < to; i++) {
         const c = JSON.parse(lines[i]);
         fs.writeSync(fd, JSON.stringify({ start: c.id }) + '\n');
         let rec;
-        if (side === 'js') rec = { id: c.id, ...observeJsCompile(compile, c) };
+        if (loadErr && side === 'js') rec = { id: c.id, ...oracleError('load', loadErr) };
+        else if (side === 'js') rec = { id: c.id, ...observeJsCompile(compile, c) };
         else {
             const { experimentalComputedMemberExpression: _cme, ...o } = c.opts; void _cme; // not a TransformOptions key
             const opts = { namespace: 'x', name: nameOf(c.file), experimentalErrorRecoveryMode: true, ...o };
-            rec = { id: c.id, js: observeJsTransform(lwc, c, opts), rust: observeNapi(native, c, opts) };
+            rec = { id: c.id, js: loadErr ? oracleError('load', loadErr) : observeJsTransform(lwc, c, opts), rust: observeNapi(native, c, opts) };
         }
         fs.writeSync(fd, JSON.stringify(rec) + '\n');
     }
@@ -333,10 +358,26 @@ function buildDriver() {
 }
 
 async function main() {
-    const engine = process.env.TDD_ENGINE ?? 'crate';
-    if (!['crate', 'napi'].includes(engine)) throw new Error(`TDD_ENGINE must be crate|napi, got ${engine}`);
+    const arg = process.argv.slice(2).find((a) => a.startsWith('--engine='));
+    const engine = arg ? arg.slice('--engine='.length) : (process.env.TDD_ENGINE ?? 'crate');
+    if (!['crate', 'napi', 'both'].includes(engine)) throw new Error(`--engine / TDD_ENGINE must be crate|napi|both, got ${engine}`);
+    if (engine !== 'both') return void (await runEngine(engine, process.env.TDD_OUT));
+    // both: one report per engine (TDD_OUT is a directory here) plus report-both.json with the board row.
+    const dir = path.resolve(process.env.TDD_OUT ?? `${HARNESS}/.template-diag-diff`);
+    const row = {};
+    for (const e of ['crate', 'napi']) {
+        const r = await runEngine(e, path.join(dir, `report-${e}.json`));
+        row[e] = { totals: r.totals, buckets: r.buckets, rust: r.meta.rust };
+    }
+    const both = { schema: 'template-diag-diff-both/v1', generated: new Date().toISOString(), ...row };
+    fs.writeFileSync(path.join(dir, 'report-both.json'), JSON.stringify(both, null, 1));
+    const cell = (e) => `${e} ${row[e].totals.diagPass}/${row[e].totals.cases} (crash ${row[e].buckets.crash})`;
+    console.log(`BOARD template-diag-diff  ${cell('crate')}  ${cell('napi')}  napi ${row.napi.rust.sha256}`);
+}
+
+async function runEngine(engine, out) {
     const napiPath = path.resolve(process.env.TDD_NAPI ?? `${HARNESS}/lwc-compiler-napi.node`);
-    const outPath = path.resolve(process.env.TDD_OUT ?? `${HARNESS}/.template-diag-diff/report-${engine}.json`);
+    const outPath = path.resolve(out ?? `${HARNESS}/.template-diag-diff/report-${engine}.json`);
     const jobs = Number(process.env.TDD_JOBS ?? Math.max(1, os.cpus().length - 1));
     const cap = Number(process.env.TDD_CAP ?? 40);
     const hangMs = Number(process.env.TDD_HANG_MS ?? 20000);
@@ -414,7 +455,7 @@ async function main() {
 
     // ------------------------------------------------------------ aggregate
     const slim = (o) => { const { id: _i, codeHash: _h, codeLen: _l, ...rest } = o ?? {}; void _i; void _h; void _l; return rest; };
-    const BUCKETS = ['crash', 'seam-reject', 'missing-diag', 'extra-diag', 'code', 'level', 'message', 'location', 'order', 'codegen-only'];
+    const BUCKETS = ['oracle-error', 'crash', 'seam-reject', 'missing-diag', 'extra-diag', 'code', 'level', 'message', 'location', 'order', 'codegen-only'];
     const buckets = Object.fromEntries(BUCKETS.map((b) => [b, 0]));
     const primary = Object.fromEntries(BUCKETS.map((b) => [b, 0]));
     const clusters = new Map();
@@ -448,11 +489,11 @@ async function main() {
         meta: {
             generated: new Date().toISOString(), elapsedMs: Date.now() - t0,
             engine,
-            rust: engine === 'crate' ? { driver: DRIVER_DIR, lwcTemplate: 'lwc_template::compile' } : { napi: napiPath, sha256: sha(fs.readFileSync(napiPath)).slice(0, 12) },
+            rust: engine === 'crate' ? { driver: path.resolve(driver), driverSource: process.env.TDD_DRIVER ? 'TDD_DRIVER' : 'built', sha256: sha(fs.readFileSync(driver)).slice(0, 12), lwcTemplate: 'lwc_template::compile' } : { napi: napiPath, sha256: sha(fs.readFileSync(napiPath)).slice(0, 12) },
             oracle: { repo: LWC, entry: engine === 'crate' ? '@lwc/template-compiler compile()' : '@lwc/compiler transformSync (experimentalErrorRecoveryMode)' },
             options: { namespace: 'x', cap, sources: want ?? 'all' },
         },
-        totals: { cases: cases.length, pass, diagPass, diagMismatch: cases.length - diagPass, codegenOnly: buckets['codegen-only'] },
+        totals: { cases: cases.length, pass, diagPass, diagMismatch: cases.length - diagPass, codegenOnly: buckets['codegen-only'], oracleError: buckets['oracle-error'] },
         sources, families, perSource, buckets, primary,
         clusters: [...clusters.values()].sort((a, b) => b.count - a.count),
         mismatches,
@@ -462,7 +503,7 @@ async function main() {
     // ------------------------------------------------------------ summary
     const L = [];
     L.push(`template-diag-diff  engine ${engine}${engine === 'napi' ? ' ' + report.meta.rust.sha256 : ''}  ${cases.length} cases  ${(report.meta.elapsedMs / 1000).toFixed(1)}s`);
-    L.push(`diag-exact ${diagPass}/${cases.length}  (fully identical ${pass}, codegen-only ${buckets['codegen-only']})`);
+    L.push(`diag-exact ${diagPass}/${cases.length}  (fully identical ${pass}, codegen-only ${buckets['codegen-only']})  crash ${buckets.crash}  oracle-error ${buckets['oracle-error']}`);
     L.push('sources: ' + Object.entries(sources).map(([k, v]) => `${k} ${v.unique}/${v.templates}/${v.files}`).join(', ') + '  (unique/templates/files)');
     L.push('mutation families: ' + Object.entries(families).map(([k, v]) => `${k} ${v}`).join(', '));
     L.push('buckets (cases touching): ' + BUCKETS.map((b) => `${b} ${buckets[b]}`).join(', '));
@@ -472,11 +513,36 @@ async function main() {
     for (const c of report.clusters.slice(0, 30)) L.push(`  ${String(c.count).padStart(6)}  ${c.key}  e.g. ${c.examples[0].file} [${c.examples[0].label}]`);
     L.push(`report: ${outPath}`);
     console.log(L.join('\n'));
+    return report;
 }
 
 if (process.argv[2] === '--worker') {
     const [, , , side, casesFile, from, to, outFile, napiPath] = process.argv;
     await worker(side, casesFile, Number(from), Number(to), outFile, napiPath);
+} else if (process.argv[2] === '--self-test') {
+    await selfTest();
 } else {
     await main();
+}
+
+// AB-X0001 self-test: a broken oracle (bogus dist, injected non-CompilerError throw) must land every case in
+// oracle-error, never in missing-diag, on both engines.
+async function selfTest() {
+    process.env.TDD_SOURCES ??= 'fixtures';
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'tdd-selftest-'));
+    const hooks = [['load', { TDD_ORACLE_DIST: path.join(tmp, 'no-such-dist.cjs') }], ['non-compiler-error', { TDD_ORACLE_INJECT: 'throw' }]];
+    let failed = 0;
+    for (const engine of ['crate', 'napi']) {
+        for (const [kind, env] of hooks) {
+            Object.assign(process.env, env);
+            const r = await runEngine(engine, path.join(tmp, `${engine}-${kind}.json`));
+            for (const k of Object.keys(env)) delete process.env[k];
+            const keysOk = r.clusters.every((c) => c.key.startsWith(`oracle-error:${kind}:`));
+            const ok = r.totals.cases > 0 && r.totals.oracleError === r.totals.cases && r.buckets['missing-diag'] === 0 && r.totals.diagPass === 0 && keysOk;
+            if (!ok) failed++;
+            console.log(`SELFTEST ${ok ? 'ok  ' : 'FAIL'} ${engine} ${kind}: oracleError ${r.totals.oracleError}/${r.totals.cases}, missing-diag ${r.buckets['missing-diag']}, clusters ${r.clusters.map((c) => c.key.slice(0, 60)).join(' | ')}`);
+        }
+    }
+    fs.rmSync(tmp, { recursive: true, force: true });
+    if (failed) { console.error(`SELFTEST ${failed} failed`); process.exit(1); }
 }

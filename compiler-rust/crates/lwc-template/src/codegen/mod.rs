@@ -29,8 +29,41 @@ pub(crate) fn camel_name(rest: &str) -> String {
     out
 }
 
+/// TS RENDER_APIS (codegen.ts): the `$api` helpers a template can destructure.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum ApiHelper { StaticPart, StaticFragment, Text, DynamicText, Element, Key, Iterator, Flatten, ScopedId, ScopedFragId, TabIndex, Comment, Slot, Bind, Fragment, ScopedSlotFactory, CustomElement, DeprecatedDynamicComponent, DynamicComponent, SanitizeHtmlContent, NormalizeClassName }
+
+impl ApiHelper {
+    /// (local alias, `$api` name), as in TS RENDER_APIS `{ name, alias }`.
+    const fn names(self) -> (&'static str, &'static str) {
+        match self {
+            ApiHelper::StaticPart => ("sp", "api_static_part"),
+            ApiHelper::StaticFragment => ("st", "api_static_fragment"),
+            ApiHelper::Text => ("t", "api_text"),
+            ApiHelper::DynamicText => ("d", "api_dynamic_text"),
+            ApiHelper::Element => ("h", "api_element"),
+            ApiHelper::Key => ("k", "api_key"),
+            ApiHelper::Iterator => ("i", "api_iterator"),
+            ApiHelper::Flatten => ("f", "api_flatten"),
+            ApiHelper::ScopedId => ("gid", "api_scoped_id"),
+            ApiHelper::ScopedFragId => ("fid", "api_scoped_frag_id"),
+            ApiHelper::TabIndex => ("ti", "api_tab_index"),
+            ApiHelper::Comment => ("co", "api_comment"),
+            ApiHelper::Slot => ("s", "api_slot"),
+            ApiHelper::Bind => ("b", "api_bind"),
+            ApiHelper::Fragment => ("fr", "api_fragment"),
+            ApiHelper::ScopedSlotFactory => ("ssf", "api_scoped_slot_factory"),
+            ApiHelper::CustomElement => ("c", "api_custom_element"),
+            ApiHelper::DeprecatedDynamicComponent => ("ddc", "api_deprecated_dynamic_component"),
+            ApiHelper::DynamicComponent => ("dc", "api_dynamic_component"),
+            ApiHelper::SanitizeHtmlContent => ("shc", "api_sanitize_html_content"),
+            ApiHelper::NormalizeClassName => ("ncls", "api_normalize_class_name"),
+        }
+    }
+}
+
 #[derive(Default)]
-struct Gen { key: u32, text: bool, dyn_text: bool, element: bool, api_key: bool, iterator: bool, locals: Vec<String>, slot: bool, bind: bool, custom: bool, slots: Vec<String>, imports: Vec<(String, String)>, has_refs: bool, static_opt: bool, comments: bool, frags: Vec<(String, bool)>, st: bool, sp: bool, fragment: bool, ssf: bool, sanitize: bool, cr: Option<lwc_shared::CustomRendererConfig>, cur_cr: bool, renderer: bool, cur_ns: String, api_version: u32, light: bool, flatten: bool, ncls: bool, inner_html: u32, shc: bool, dc: bool, ddc: bool, synthetic: bool, scope_frag: bool, gid: bool, fid: bool, ti: bool, co: bool }
+struct Gen { key: u32, locals: Vec<String>, slots: Vec<String>, imports: Vec<(String, String)>, has_refs: bool, static_opt: bool, comments: bool, frags: Vec<(String, bool)>, sanitize: bool, cr: Option<lwc_shared::CustomRendererConfig>, cur_cr: bool, renderer: bool, cur_ns: String, api_version: u32, light: bool, inner_html: u32, synthetic: bool, scope_frag: bool, apis: Vec<ApiHelper>}
 
 impl Gen {
     fn attr_value(&self, v: &AttributeValue) -> String {
@@ -187,13 +220,16 @@ impl Gen {
         })
     }
 
+    /// TS CodeGen._renderApiCall: record a `$api` helper the first time it is used.
+    fn api(&mut self, h: ApiHelper) { if !self.apis.contains(&h) { self.apis.push(h); } }
+
     /// TS transformChildren: an array of child vnodes, or (when shouldFlatten) the single child expression
     /// / `api_flatten([...])`, so an iterator's array never lands as a nested non-vnode child.
     fn kids(&mut self, cs: &[ChildNode], ind: usize) -> Kids {
         let res = self.children(cs, ind);
         if !self.should_flatten(cs) { return Kids::Arr(res); }
         if cs.len() == 1 { return Kids::Expr(res.into_iter().next().unwrap_or_else(|| "[]".into())); }
-        self.flatten = true;
+        self.api(ApiHelper::Flatten);
         Kids::Expr(format!("api_flatten([{}])", res.join(", ")))
     }
 
@@ -208,25 +244,18 @@ impl Gen {
         }
     }
 
-    fn element(&mut self, e: &Element, ind: usize) -> String {
-        let (head, data, kids) = self.parts(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, ind, CrKind::Element);
-        if let Some(r) = self.dynamic_ctor(&e.name, &e.directives, &data, &kids) { return r; }
-        self.element = true;
-        format!("api_element({head}, {data}, {kids})")
-    }
-
     /// TS transformElement: `lwc:dynamic` → genDeprecatedDynamicElement, `lwc:is` → genDynamicElement
     /// (neither registers a component import; children only when non-empty).
     fn dynamic_ctor(&mut self, name: &str, directives: &[ElementDirective], data: &str, kids: &str) -> Option<String> {
         let tail = if kids == "[]" { String::new() } else { format!(", {kids}") };
         for d in directives {
             if let ElementDirective::Dynamic(e) = d {
-                self.ddc = true;
+                self.api(ApiHelper::DeprecatedDynamicComponent);
                 return Some(format!("api_deprecated_dynamic_component({}, {}, {data}{tail})", js_string(name), self.expr(e)));
             }
         }
         directives.iter().find_map(|d| match d { ElementDirective::Is(e) => Some(e), _ => None }).map(|e| {
-            self.dc = true;
+            self.api(ApiHelper::DynamicComponent);
             format!("api_dynamic_component({}, {data}{tail})", self.expr(e))
         })
     }
@@ -235,7 +264,7 @@ impl Gen {
     fn sanitized_html(&mut self, v: &AttributeValue) -> String {
         let i = self.inner_html;
         self.inner_html += 1;
-        self.shc = true;
+        self.api(ApiHelper::SanitizeHtmlContent);
         let x = self.attr_value(v);
         match v {
             AttributeValue::Literal(_) => format!("$ctx._sanitizedHtml${i} || ($ctx._sanitizedHtml${i} = api_sanitize_html_content({x}))"),
@@ -254,7 +283,11 @@ impl Gen {
         b
     }
 
-    fn parts(&mut self, name: &str, attrs: &[Attribute], props: &[Property], directives: &[ElementDirective], listeners: &[EventListener], children: &[ChildNode], ind: usize, kind: CrKind) -> (String, String, String) {
+    /// TS elementDataBag: the element's data object. The single place databag `$api` helpers
+    /// (ncls, gid/fid/ti, shc, k, b) are registered; `transform_element` calls it for every element,
+    /// static ones included.
+    fn element_data_bag(&mut self, el: &ElementView, ind: usize) -> String {
+        let ElementView { name, attrs, props, directives, listeners, kind, .. } = *el;
         let key = self.key;
         self.key += 1;
         let pad = "  ".repeat(ind);
@@ -263,19 +296,24 @@ impl Gen {
         let mut data = String::from("{\n");
         // TS elementDataBag: an expression `class` becomes `className` (genClassExpression: normalized
         // with TEMPLATE_CLASS_NAME_OBJECT_BINDING), not an attribute.
-        let (class_expr, attrs): (Vec<&Attribute>, Vec<&Attribute>) = attrs.iter().partition(|a| a.name == "class" && matches!(a.value, AttributeValue::Expression(_)));
-        if let Some(a) = class_expr.first() {
-            let mut v = self.attr_value(&a.value);
-            if is_api_feature_enabled(ApiFeature::TemplateClassNameObjectBinding, self.api_version) { self.ncls = true; v = format!("api_normalize_class_name({v})"); }
-            data.push_str(&format!("{pad}  className: {v},\n"));
-        }
-        if !attrs.is_empty() {
-            data.push_str(&format!("{pad}  attrs: {{\n"));
-            for a in attrs {
-                let used = attr_used_as_attribute(name, kind, &a.name);
-                let v = self.compute_attr(name, &self.cur_ns.clone(), &a.name, &a.value, used, !self.cur_cr);
-                data.push_str(&format!("{pad}    {}: {v},\n", prop_key(&a.name)));
+        // Values are computed in attribute order (TS walks `attributes` once), so `$api` helpers register
+        // in the same order.
+        let mut class_v: Option<String> = None;
+        let mut attr_vs: Vec<(String, String)> = Vec::new();
+        for a in attrs {
+            if a.name == "class" && matches!(a.value, AttributeValue::Expression(_)) {
+                if class_v.is_some() { continue; }
+                class_v = Some(self.gen_class_expression(&a.value));
+                continue;
             }
+            let used = attr_used_as_attribute(name, kind, &a.name);
+            let v = self.compute_attr(name, &self.cur_ns.clone(), &a.name, &a.value, used, !self.cur_cr);
+            attr_vs.push((prop_key(&a.name), v));
+        }
+        if let Some(v) = class_v { data.push_str(&format!("{pad}  className: {v},\n")); }
+        if !attr_vs.is_empty() {
+            data.push_str(&format!("{pad}  attrs: {{\n"));
+            for (k, v) in attr_vs { data.push_str(&format!("{pad}    {k}: {v},\n")); }
             data.push_str(&format!("{pad}  }},\n"));
         }
         // TS elementDataBag order: attrs, ref, props (properties, innerHTML, spread last), context, key, on.
@@ -308,16 +346,16 @@ impl Gen {
         }
         let key_dir = directives.iter().find_map(|d| match d { ElementDirective::Key(e) => Some(e), _ => None });
         let key = match key_dir {
-            Some(e) => { self.api_key = true; format!("api_key({key}, {})", self.expr(e)) }
+            Some(e) => { self.api(ApiHelper::Key); format!("api_key({key}, {})", self.expr(e)) }
             None => key.to_string(),
         };
         data.push_str(&format!("{pad}  key: {key},\n"));
         if !listeners.is_empty() {
             // TODO: memoize handlers on $ctx (_m0) like LWC; inline api_bind for now.
-            self.bind = true;
             data.push_str(&format!("{pad}  on: {{\n"));
             for l in listeners {
-                data.push_str(&format!("{pad}    {}: api_bind({}),\n", prop_key(&l.name), self.expr(&l.handler)));
+                let b = self.gen_bind(&l.handler);
+                data.push_str(&format!("{pad}    {}: {b},\n", prop_key(&l.name)));
             }
             data.push_str(&format!("{pad}  }},\n"));
         }
@@ -337,18 +375,93 @@ impl Gen {
         }
         self.cur_cr = outer_cr;
         data.push_str(&format!("{pad}}}"));
-        let kids = match self.kids(children, ind + 1) {
+        data
+    }
+
+    /// TS genClassExpression: normalized with TEMPLATE_CLASS_NAME_OBJECT_BINDING.
+    fn gen_class_expression(&mut self, v: &AttributeValue) -> String {
+        let x = self.attr_value(v);
+        if !is_api_feature_enabled(ApiFeature::TemplateClassNameObjectBinding, self.api_version) { return x; }
+        self.api(ApiHelper::NormalizeClassName);
+        format!("api_normalize_class_name({x})")
+    }
+
+    /// TS genBind. TODO: memoize handlers on $ctx (_m0) like LWC; inline api_bind for now.
+    fn gen_bind(&mut self, handler: &Expression) -> String {
+        let x = self.expr(handler);
+        self.api(ApiHelper::Bind);
+        format!("api_bind({x})")
+    }
+
+    /// TS transformChildren for an element's children argument.
+    fn child_list(&mut self, children: &[ChildNode], ind: usize) -> String {
+        let pad = "  ".repeat(ind);
+        match self.kids(children, ind + 1) {
             Kids::Expr(e) => e,
             Kids::Arr(kids) if kids.is_empty() => "[]".to_string(),
             Kids::Arr(kids) => format!("[\n{}\n{pad}]", kids.iter().map(|k| format!("{pad}  {k}")).collect::<Vec<_>>().join(",\n")),
+        }
+    }
+
+    /// TS transformElement. `None` for node kinds that are not elements.
+    fn transform_element(&mut self, c: &ChildNode, ind: usize) -> Option<String> {
+        let slot_attrs: Vec<Attribute>;
+        let el = match c {
+            ChildNode::Element(e) => { self.cur_ns = e.namespace.clone(); ElementView::new(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Element) }
+            ChildNode::LwcComponent(e) => { self.cur_ns = e.namespace.clone(); ElementView::new(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Element) }
+            ChildNode::Component(e) => ElementView::new(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Component),
+            ChildNode::ExternalComponent(e) => { self.cur_ns = e.namespace.clone(); ElementView::new(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::External) }
+            ChildNode::Slot(e) => {
+                if !self.slots.contains(&e.slot_name) { self.slots.push(e.slot_name.clone()); }
+                // `name` is carried by slot_name; don't repeat it as an attr.
+                slot_attrs = e.attributes.iter().filter(|a| a.name != "name").cloned().collect();
+                ElementView::new(&e.name, &slot_attrs, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Element)
+            }
+            _ => return None,
         };
-        (js_string(name), data, kids)
+        // TODO [#4077] (lwc): TS gathers the databag before the static-element check and discards it on the
+        // static path; its `$api` registrations and key are still observable, so do the same.
+        let data = self.element_data_bag(&el, ind);
+        if matches!(c, ChildNode::Element(_)) && self.static_opt && self.is_static(c) {
+            return Some(self.static_fragment(c));
+        }
+        let kids = self.child_list(el.children, ind);
+        let head = js_string(el.name);
+        Some(match c {
+            ChildNode::Element(e) => match self.dynamic_ctor(&e.name, &e.directives, &data, &kids) {
+                Some(r) => r,
+                None => { self.api(ApiHelper::Element); format!("api_element({head}, {data}, {kids})") }
+            },
+            // TS genLwcComponent → api_dynamic_component(ctor, data, children).
+            ChildNode::LwcComponent(e) => match self.dynamic_ctor(&e.name, &e.directives, &data, &kids) {
+                Some(r) => r,
+                None => { self.api(ApiHelper::Element); format!("api_element({head}, {data}, {kids})") }
+            },
+            // TS genCustomElement registers the import after transforming children (post-order).
+            ChildNode::Component(e) => match self.dynamic_ctor(&e.name, &e.directives, &data, &kids) {
+                Some(r) => r,
+                None => {
+                    let b = self.component_binding(&e.name);
+                    self.api(ApiHelper::CustomElement);
+                    format!("api_custom_element({head}, {b}, {data}, {kids})")
+                }
+            },
+            // TS CSR: plain api_element + `external: true`; no custom-element import.
+            ChildNode::ExternalComponent(_) => {
+                let pad = "  ".repeat(ind);
+                let data = format!("{}{pad}  external: true,\n{pad}}}", &data[..data.len() - pad.len() - 1]);
+                self.api(ApiHelper::Element);
+                format!("api_element({head}, {data}, {kids})")
+            }
+            ChildNode::Slot(e) => { self.api(ApiHelper::Slot); format!("api_slot({}, {data}, {kids}, $slotset)", js_string(&e.slot_name)) }
+            _ => unreachable!(),
+        })
     }
 
     /// TS transformConditionalParentBlock: each branch is `api_fragment(ifBlockKey, children, 0)`.
     fn branch(&mut self, cs: &[ChildNode], key: u32, ind: usize) -> String {
-        self.fragment = true;
         let kids = match self.kids(cs, ind) { Kids::Expr(e) => e, Kids::Arr(v) => format!("[{}]", v.join(", ")) };
+        self.api(ApiHelper::Fragment);
         format!("api_fragment({key}, {kids}, 0)")
     }
 
@@ -378,48 +491,8 @@ impl Gen {
         Some(match c {
             ChildNode::Text(t) => self.text_node(&[t]),
             // TS transformComment → api_comment (only reached when comments are preserved).
-            ChildNode::Comment(cm) if self.comments => { self.co = true; format!("api_comment({})", js_string(&cm.value)) }
-            ChildNode::Element(_) if self.static_opt && self.is_static(c) => {
-                // TS transformElement calls elementDataBag (genKeyExpression) before genStaticElement, so a
-                // static element burns one key before taking its own.
-                let key = self.key + 1;
-                self.key += 2;
-                self.static_fragment(c, key.to_string())
-            }
-            ChildNode::Element(e) => { self.cur_ns = e.namespace.clone(); self.element(e, ind) }
-            ChildNode::LwcComponent(e) => {
-                // TS genLwcComponent → api_dynamic_component(ctor, data, children).
-                self.cur_ns = e.namespace.clone();
-                let (head, data, kids) = self.parts(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, ind, CrKind::Element);
-                if let Some(r) = self.dynamic_ctor(&e.name, &e.directives, &data, &kids) { return Some(r); }
-                self.element = true;
-                format!("api_element({head}, {data}, {kids})")
-            }
-            ChildNode::Component(e) => {
-                // TS genCustomElement registers the import after transforming children (post-order).
-                let (head, data, kids) = self.parts(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, ind, CrKind::Component);
-                if let Some(r) = self.dynamic_ctor(&e.name, &e.directives, &data, &kids) { return Some(r); }
-                let b = self.component_binding(&e.name);
-                self.custom = true;
-                format!("api_custom_element({head}, {b}, {data}, {kids})")
-            }
-            ChildNode::ExternalComponent(e) => {
-                // TS CSR: plain api_element + `external: true`; no custom-element import.
-                self.cur_ns = e.namespace.clone();
-                let (head, data, kids) = self.parts(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, ind, CrKind::External);
-                let pad = "  ".repeat(ind);
-                let data = format!("{}{pad}  external: true,\n{pad}}}", &data[..data.len() - pad.len() - 1]);
-                self.element = true;
-                format!("api_element({head}, {data}, {kids})")
-            }
-            ChildNode::Slot(e) => {
-                if !self.slots.contains(&e.slot_name) { self.slots.push(e.slot_name.clone()); }
-                // `name` is carried by slot_name; don't repeat it as an attr.
-                let attrs: Vec<_> = e.attributes.iter().filter(|a| a.name != "name").cloned().collect();
-                let (_, data, kids) = self.parts(&e.name, &attrs, &e.properties, &e.directives, &e.listeners, &e.children, ind, CrKind::Element);
-                self.slot = true;
-                format!("api_slot({}, {data}, {kids}, $slotset)", js_string(&e.slot_name))
-            }
+            ChildNode::Comment(cm) if self.comments => { self.api(ApiHelper::Comment); format!("api_comment({})", js_string(&cm.value)) }
+            ChildNode::Element(_) | ChildNode::LwcComponent(_) | ChildNode::Component(_) | ChildNode::ExternalComponent(_) | ChildNode::Slot(_) => return self.transform_element(c, ind),
             // `if:*` children are spliced by `children` (TS transformIf); one alone in a slot is unreachable here.
             ChildNode::If(f) => { let v = self.inline_if(f, ind); return (!v.is_empty()).then(|| v.join(", ")); }
             ChildNode::IfBlock(b) => {
@@ -437,7 +510,7 @@ impl Gen {
                 self.locals.extend(params.iter().cloned());
                 let body = self.loop_body(&f.children, ind);
                 self.locals.truncate(n);
-                self.iterator = true;
+                self.api(ApiHelper::Iterator);
                 format!("api_iterator({list}, function ({}) {{\n{body}}})", params.join(", "))
             }
             ChildNode::ForOf(f) => {
@@ -448,7 +521,7 @@ impl Gen {
                 self.locals.push(it.clone());
                 let body = self.loop_body(&f.children, ind);
                 self.locals.truncate(n);
-                self.iterator = true;
+                self.api(ApiHelper::Iterator);
                 let pad = "  ".repeat(ind + 1);
                 format!("api_iterator({list}, function ({it}Value, {it}Index, {it}First, {it}Last) {{\n{pad}const {it} = {{\n{pad}  value: {it}Value,\n{pad}  index: {it}Index,\n{pad}  first: {it}First,\n{pad}  last: {it}Last,\n{pad}}};\n{body}}})")
             }
@@ -468,7 +541,7 @@ impl Gen {
                     Kids::Arr(kids) if kids.is_empty() => "[]".to_string(),
                     Kids::Arr(kids) => format!("[\n{}\n{pad}    ]", kids.iter().map(|k| format!("{pad}      {k}")).collect::<Vec<_>>().join(",\n")),
                 };
-                self.fragment = true; self.ssf = true;
+                self.api(ApiHelper::Fragment); self.api(ApiHelper::ScopedSlotFactory);
                 format!("api_scoped_slot_factory({name}, function ({data}, key) {{\n{pad}  return api_fragment(\n{pad}    key,\n{pad}    {kids},\n{pad}    0\n{pad}  );\n{pad}}})")
             }
             // Other node kinds: future codegen cut.
@@ -646,16 +719,17 @@ impl Gen {
     /// TS `genConcatenatedText`.
     /// TS genText: `api_text("lit" + api_dynamic_text(x) + ...)`.
     fn text_node(&mut self, ts: &[&Text]) -> String {
-        self.text = true;
-        format!("api_text({})", self.concat_text(ts))
+        let x = self.concat_text(ts);
+        self.api(ApiHelper::Text);
+        format!("api_text({x})")
     }
 
     fn concat_text(&mut self, ts: &[&Text]) -> String {
         ts.iter().map(|t| match &t.value {
             _ if text_literal(t).is_some() => js_string(text_literal(t).unwrap()),
             TextValue::Literal(s) => js_string(s),
-            TextValue::Expression(e) => { self.dyn_text = true; format!("api_dynamic_text({})", self.expr(e)) }
-            TextValue::Complex(c) => { self.dyn_text = true; format!("api_dynamic_text({})", self.expr(&Expression::Complex(c.clone()))) }
+            TextValue::Expression(e) => { self.api(ApiHelper::DynamicText); format!("api_dynamic_text({})", self.expr(e)) }
+            TextValue::Complex(c) => { self.api(ApiHelper::DynamicText); format!("api_dynamic_text({})", self.expr(&Expression::Complex(c.clone()))) }
         }).collect::<Vec<_>>().join(" + ")
     }
 
@@ -696,9 +770,7 @@ impl Gen {
                 let id = ser.part;
                 let mut databag: Vec<String> = Vec::new();
                 if !e.listeners.is_empty() {
-                    // TODO: memoize handlers on $ctx (_m0) like LWC; inline api_bind (same as dynamic path).
-                    self.bind = true;
-                    let on = e.listeners.iter().map(|l| format!("{}: api_bind({})", js_string(&l.name), self.expr(&l.handler))).collect::<Vec<_>>().join(", ");
+                    let on = e.listeners.iter().map(|l| format!("{}: {}", js_string(&l.name), self.gen_bind(&l.handler))).collect::<Vec<_>>().join(", ");
                     databag.push(format!("on: {{ {on} }}"));
                 }
                 for d in &e.directives {
@@ -722,8 +794,7 @@ impl Gen {
                             "style" => { databag.push(format!("style: {}", self.attr_value(&a.value))); format!("s{id}") }
                             "class" => {
                                 has_class = true;
-                                let mut v = self.attr_value(&a.value);
-                                if is_api_feature_enabled(ApiFeature::TemplateClassNameObjectBinding, self.api_version) { self.ncls = true; v = format!("api_normalize_class_name({v})"); }
+                                let v = self.gen_class_expression(&a.value);
                                 databag.push(format!("className: {v}"));
                                 format!("c{id}")
                             }
@@ -777,21 +848,25 @@ impl Gen {
     }
 
     /// TS `genStaticElement`: hoist the serialized fragment; returns the `api_static_fragment(...)` call.
-    fn static_fragment(&mut self, c: &ChildNode, key: String) -> String {
+    fn static_fragment(&mut self, c: &ChildNode) -> String {
+        // TS genKeyExpression, after elementDataBag took the previous key.
+        let key = self.key.to_string();
+        self.key += 1;
         let mut ser = Ser { comments: self.comments, part: -1, parts: Vec::new() };
         let html = self.serialize(&SChild::Node(c), "", &mut ser);
         let svg = matches!(c, ChildNode::Element(e) if e.name != "svg" && e.namespace == SVG_NS);
         self.frags.push((html, svg));
-        self.st = true;
+        // TS genStaticElement: genStaticParts (sp) runs before genKeyExpression (k) and api_static_fragment (st).
+        if !ser.parts.is_empty() { self.api(ApiHelper::StaticPart); }
         let key = match c {
             ChildNode::Element(e) => match e.directives.iter().find_map(|d| match d { ElementDirective::Key(k) => Some(k), _ => None }) {
-                Some(k) => { self.api_key = true; format!("api_key({key}, {})", self.expr(k)) }
+                Some(k) => { self.api(ApiHelper::Key); format!("api_key({key}, {})", self.expr(k)) }
                 None => key,
             },
             _ => key,
         };
+        self.api(ApiHelper::StaticFragment);
         if ser.parts.is_empty() { return format!("api_static_fragment($fragment{}, {key})", self.frags.len()); }
-        self.sp = true;
         let parts: Vec<String> = ser.parts.iter().map(|(id, bag, text)| {
             let bag = if bag.is_empty() { "null".to_string() } else { format!("{{ {} }}", bag.join(", ")) };
             format!("api_static_part({id}, {bag}, {})", text.as_deref().unwrap_or("null"))
@@ -799,8 +874,8 @@ impl Gen {
         format!("api_static_fragment($fragment{}, {key}, [{}])", self.frags.len(), parts.join(", "))
     }
 
-    fn scoped_id(&mut self, v: String) -> String { if self.synthetic { self.gid = true; format!("api_scoped_id({v})") } else { v } }
-    fn scoped_frag_id(&mut self, v: String) -> String { if self.synthetic { self.fid = true; format!("api_scoped_frag_id({v})") } else { v } }
+    fn scoped_id(&mut self, v: String) -> String { if self.synthetic { self.api(ApiHelper::ScopedId); format!("api_scoped_id({v})") } else { v } }
+    fn scoped_frag_id(&mut self, v: String) -> String { if self.synthetic { self.api(ApiHelper::ScopedFragId); format!("api_scoped_frag_id({v})") } else { v } }
     fn sanitize_wrap(&mut self, tag: &str, ns: &str, attr: &str, v: String, hook: bool) -> String {
         if !hook { return v; }
         self.sanitize = true;
@@ -833,7 +908,7 @@ impl Gen {
     fn bind_attr_expr(&mut self, tag: &str, ns: &str, attr: &str, value: &AttributeValue, used: bool, hook: bool) -> String {
         let x = self.attr_value(value);
         if used && crate::parser::element_check::is_boolean_attribute(attr, tag) { return format!("{x} ? \"\" : null"); }
-        if attr == "tabindex" { self.ti = true; return format!("api_tab_index({x})"); }
+        if attr == "tabindex" { self.api(ApiHelper::TabIndex); return format!("api_tab_index({x})"); }
         if attr == "id" || is_id_referencing(attr) { return self.scoped_id(x); }
         if self.scope_frag && is_frag_only_xhtml(tag, attr, ns) { return self.scoped_frag_id(x); }
         if is_svg_use_href(tag, attr, ns) {
@@ -863,6 +938,19 @@ impl Gen {
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum CrKind { Element, External, Component }
 
+/// TS BaseElement fields shared by Element, Component, ExternalComponent, LwcComponent and Slot.
+#[derive(Clone, Copy)]
+struct ElementView<'a> {
+    name: &'a str, attrs: &'a [Attribute], props: &'a [Property], directives: &'a [ElementDirective],
+    listeners: &'a [EventListener], children: &'a [ChildNode], kind: CrKind,
+}
+
+impl<'a> ElementView<'a> {
+    fn new(name: &'a str, attrs: &'a [Attribute], props: &'a [Property], directives: &'a [ElementDirective], listeners: &'a [EventListener], children: &'a [ChildNode], kind: CrKind) -> Self {
+        ElementView { name, attrs, props, directives, listeners, children, kind }
+    }
+}
+
 /// TS `ElementDirectiveName`.
 fn directive_name(d: &ElementDirective) -> &'static str {
     match d {
@@ -889,11 +977,7 @@ pub fn generate(root: &Root, config: &NormalizedConfig, filename: &str, tokens: 
         && root.children.iter().all(|c| matches!(c, ChildNode::Element(_)) && g.is_static(c));
     let mut root_expr: Option<String> = None;
     let items = if use_static {
-        root.children.iter().map(|c| {
-            let key = g.key + 1;
-            g.key += 2;
-            g.static_fragment(c, key.to_string())
-        }).collect()
+        root.children.iter().filter_map(|c| g.transform_element(c, 2)).collect()
     } else {
         match g.kids(&root.children, 2) { Kids::Arr(v) => v, Kids::Expr(e) => { root_expr = Some(e); Vec::new() } }
     };
@@ -912,28 +996,8 @@ pub fn generate(root: &Root, config: &NormalizedConfig, filename: &str, tokens: 
         out.push_str(&format!("const $fragment{} = {}`{f}`;\n", i + 1, if *svg { "parseSVGFragment" } else { "parseFragment" }));
     }
     out.push_str("function tmpl($api, $cmp, $slotset, $ctx) {\n");
-    let mut helpers = Vec::new();
-    if g.sp { helpers.push("sp: api_static_part"); }
-    if use_static || g.st { helpers.push("st: api_static_fragment"); }
-    if g.text { helpers.push("t: api_text"); }
-    if g.dyn_text { helpers.push("d: api_dynamic_text"); }
-    if g.element { helpers.push("h: api_element"); }
-    if g.api_key { helpers.push("k: api_key"); }
-    if g.iterator { helpers.push("i: api_iterator"); }
-    if g.flatten { helpers.push("f: api_flatten"); }
-    if g.gid { helpers.push("gid: api_scoped_id"); }
-    if g.fid { helpers.push("fid: api_scoped_frag_id"); }
-    if g.ti { helpers.push("ti: api_tab_index"); }
-    if g.co { helpers.push("co: api_comment"); }
-    if g.slot { helpers.push("s: api_slot"); }
-    if g.bind { helpers.push("b: api_bind"); }
-    if g.fragment { helpers.push("fr: api_fragment"); }
-    if g.ssf { helpers.push("ssf: api_scoped_slot_factory"); }
-    if g.custom { helpers.push("c: api_custom_element"); }
-    if g.ddc { helpers.push("ddc: api_deprecated_dynamic_component"); }
-    if g.dc { helpers.push("dc: api_dynamic_component"); }
-    if g.shc { helpers.push("shc: api_sanitize_html_content"); }
-    if g.ncls { helpers.push("ncls: api_normalize_class_name"); }
+    // TS CodeGen.usedApis: `$api` helpers in first-use order of the codegen traversal.
+    let helpers: Vec<String> = g.apis.iter().map(|h| { let (a, n) = h.names(); format!("{a}: {n}") }).collect();
     if !helpers.is_empty() { out.push_str(&format!("  const {{ {} }} = $api;\n", helpers.join(", "))); }
     if let Some(e) = &root_expr {
         out.push_str(&format!("  return {e};\n}}\n"));

@@ -727,23 +727,15 @@ mod tests {
         assert!(out.code.contains("from \"x/foo\""), "{}", out.code);
     }
 
+    /// The SSR-only inner/outer-h-t-m-l reject lives in lwc-ssr (ssr-compiler element.ts:234);
+    /// the template compiler never errors on them (TS template-compiler parity).
     #[test]
-    fn ssr_inner_h_t_m_l_attribute_errors() {
-        let ssr = || Config { ssr: Some(true), ..Default::default() };
-        let src = "<template><div inner-h-t-m-l=\"x\">o</div></template>";
-        let out = compile(src, "foo.html", ssr()).unwrap();
-        let e = out.warnings.iter().find(|w| w.code.is_none()).expect("diag");
-        assert!(matches!(e.level, DiagnosticLevel::Error));
-        assert_eq!(e.message, "Cannot set attribute \"inner-h-t-m-l\" on <div>.");
-        assert!(out.code.is_empty());
-        let ext = compile("<template><omg-whatever lwc:external outer-h-t-m-l={x}></omg-whatever></template>", "foo.html", ssr()).unwrap();
-        assert!(ext.warnings.iter().any(|w| w.message == "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>."));
-        // Components: becomes innerHTML prop, no error (TS inner-lwc fixture).
-        let cmp = compile("<template><x-c inner-h-t-m-l=\"x\"></x-c></template>", "foo.html", ssr()).unwrap();
-        assert!(!cmp.code.is_empty());
-        // CSR: TS template-compiler does not error.
-        let csr = compile(src, "foo.html", Config::default()).unwrap();
-        assert!(!csr.code.is_empty());
+    fn inner_outer_html_attributes_compile() {
+        for src in ["<template><div inner-h-t-m-l=\"x\">o</div></template>", "<template><omg-whatever lwc:external outer-h-t-m-l={x}></omg-whatever></template>"] {
+            let out = compile(src, "foo.html", Config::default()).unwrap();
+            assert!(!out.code.is_empty(), "{src}");
+            assert!(out.warnings.iter().all(|w| !w.message.contains("Cannot set attribute")), "{src}: {:?}", out.warnings);
+        }
     }
 
     #[test]
@@ -939,6 +931,14 @@ mod tests {
         assert!(code.contains("api_bind(() => $cmp.myField = 'foo')") && code.contains("api_bind((e) => $cmp.go(e, $cmp.x))") && !code.contains("attrs"), "{code}");
     }
 
+    /// TS CodeGen.usedApis: the `$api` destructure lists helpers in first-use order (elementDataBag
+    /// before static parts, `sp` before `k`/`st`, children before their parent's helper).
+    #[test]
+    fn api_helpers_in_first_use_order() {
+        let code = cv("<template><template for:each={l} for:item=\"i\"><p key={i} class={i.c} tabindex={i.t}>{i}</p></template><div><span id=\"a\" class={c}>hi</span></div></template>", 66, true, true);
+        assert!(code.contains("const { ncls: api_normalize_class_name, ti: api_tab_index, k: api_key, d: api_dynamic_text, sp: api_static_part, st: api_static_fragment, i: api_iterator, gid: api_scoped_id, f: api_flatten } = $api;"), "{code}");
+    }
+
     fn codes(src: &str, cfg: Config) -> Vec<u32> {
         parse(src, cfg).unwrap().warnings.iter().map(|w| w.code.expect("coded diagnostic")).collect()
     }
@@ -1085,18 +1085,6 @@ mod tests {
             assert_eq!(w, vec![(Some(1083), DiagnosticLevel::Error)], "{f}");
             assert!(r.warnings[0].message.contains("Unexpected end of expression"), "{}", r.warnings[0].message);
             assert!(r.root.unwrap().children.is_empty(), "{f}");
-        }
-    }
-
-    /// TS throws a plain uncoded `Error` for SSR inner/outer-h-t-m-l attributes → `code: None`
-    /// (napi `code: null`), never a sentinel 0.
-    #[test]
-    fn ssr_inner_outer_html_is_uncoded() {
-        for attr in ["inner-h-t-m-l", "outer-h-t-m-l"] {
-            let r = parse(&format!("<template><div {attr}=\"x\"></div></template>"), Config { ssr: Some(true), ..Config::default() }).unwrap();
-            let e = r.warnings.iter().find(|w| w.level == DiagnosticLevel::Error).expect("error");
-            assert_eq!(e.code, None, "{e:?}");
-            assert!(e.message.contains(attr), "{}", e.message);
         }
     }
 

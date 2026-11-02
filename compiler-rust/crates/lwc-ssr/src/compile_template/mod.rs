@@ -5,7 +5,11 @@ mod bind_expr;
 pub(crate) mod element;
 use element::ElView;
 use lwc_shared::template_ir::{ChildNode, ElementDirective, ElseBranch, Expression, LiteralValue, Root, RootDirective, TextValue};
-use lwc_shared::SsrMode;
+use lwc_shared::{CompileError, SsrMode};
+
+/// Emit outcome. `Err` is a compile-time throw from a transformer (ssr-compiler throws a plain `Error`,
+/// which `compileTemplateForSSR` does not catch), e.g. element.ts:234-235.
+pub(crate) type Emit = Result<(), CompileError>;
 
 #[derive(Debug, Default, Clone, Copy)]
 pub struct TemplateOptions { pub preserve_comments: bool, pub mode: SsrMode }
@@ -43,10 +47,10 @@ pub struct ModuleMeta {
 }
 
 /// Returns the sync (`__lwcYield +=`) body statements and needed runtime imports.
-pub fn compile_body(root: &Root, opts: TemplateOptions) -> (Vec<String>, Vec<&'static str>) {
-    let cx = compile_cx(root, opts);
+pub fn compile_body(root: &Root, opts: TemplateOptions) -> Result<(Vec<String>, Vec<&'static str>), CompileError> {
+    let cx = compile_cx(root, opts)?;
     let mut body = cx.hoisted.clone(); body.extend(cx.body);
-    (body, cx.imports)
+    Ok((body, cx.imports))
 }
 
 /// Mutable transform context (TransformerContext subset): runtime imports, child-component module imports,
@@ -65,19 +69,19 @@ pub struct Cx {
     pub(crate) fn_id: usize,
 }
 
-pub fn compile_cx(root: &Root, mut opts: TemplateOptions) -> Cx {
+pub fn compile_cx(root: &Root, mut opts: TemplateOptions) -> Result<Cx, CompileError> {
     for d in &root.directives { if let RootDirective::PreserveComments(b) = d { opts.preserve_comments = *b; } }
     let mut cx = Cx::default();
     let mut out = Vec::new();
-    emit_children(&root.children, opts, &mut out, &mut cx, &mut Vec::new());
-    cx.body = out; cx
+    emit_children(&root.children, opts, &mut out, &mut cx, &mut Vec::new())?;
+    cx.body = out; Ok(cx)
 }
 
 /// Full sync ESM module for a template.
-pub fn compile_module(root: &Root, opts: TemplateOptions, meta: &ModuleMeta) -> String {
-    let cx = compile_cx(root, opts);
+pub fn compile_module(root: &Root, opts: TemplateOptions, meta: &ModuleMeta) -> Result<String, CompileError> {
+    let cx = compile_cx(root, opts)?;
     let mut body = cx.hoisted.clone(); body.extend(cx.body.iter().cloned());
-    wrap_module_with(&body, &cx.imports, &cx.modules, meta, opts)
+    Ok(wrap_module_with(&body, &cx.imports, &cx.modules, meta, opts))
 }
 
 pub(crate) fn is_concat(n: &ChildNode, o: TemplateOptions) -> bool {
@@ -111,17 +115,18 @@ fn text_value(v: &TextValue, sc: &[String]) -> String {
     match v { TextValue::Literal(s) => js_str(s), TextValue::Expression(e) => expr(e, sc), TextValue::Complex(s) => bind_expr::bind(s, sc) }
 }
 
-pub(crate) fn emit_children(sib: &[ChildNode], o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) {
+pub(crate) fn emit_children(sib: &[ChildNode], o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
     let reset_top = std::mem::take(&mut cx.reset_top);
     for (i, n) in sib.iter().enumerate() {
         let saved = cx.slotted;
         if reset_top && matches!(n, ChildNode::Element(_) | ChildNode::ExternalComponent(_)) { cx.slotted = false; }
-        emit_child(sib, i, n, o, out, cx, sc);
+        emit_child(sib, i, n, o, out, cx, sc)?;
         cx.slotted = saved;
     }
+    Ok(())
 }
 
-fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) {
+fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
     {
         // ir-to-es irToEs: any node carrying a Dynamic directive throws at render time.
         let dirs: &[ElementDirective] = match n {
@@ -130,7 +135,7 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
         };
         if dirs.iter().any(|d| matches!(d, ElementDirective::Dynamic(_))) {
             out.push("throw new Error('The lwc:dynamic directive is not supported for SSR. Use <lwc:component> instead.');".into());
-            return;
+            return Ok(());
         }
         // text.ts / comment.ts (non-preserving): the last node of a concatenated run renders the run's text.
         if is_concat(n, o) && !sib.get(i + 1).is_some_and(|s| is_concat(s, o)) {
@@ -146,28 +151,28 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
         }
         match n {
             ChildNode::Element(e) => element::emit_element(&ElView { name: &e.name, namespace: &e.namespace, attributes: &e.attributes, properties: &e.properties,
-                directives: &e.directives, children: &e.children, is_element: true }, o, out, cx, sc),
+                directives: &e.directives, children: &e.children, is_element: true }, o, out, cx, sc)?,
             ChildNode::ExternalComponent(e) => element::emit_element(&ElView { name: &e.name, namespace: &e.namespace, attributes: &e.attributes, properties: &e.properties,
-                directives: &e.directives, children: &e.children, is_element: false }, o, out, cx, sc),
+                directives: &e.directives, children: &e.children, is_element: false }, o, out, cx, sc)?,
             // comment.ts: literal `<!--${value}-->`, only JS-string escaping.
             ChildNode::Comment(c) if o.preserve_comments => out.push(o.y(&js_str(&format!("<!--{}-->", c.value)))),
             // legacyIf.ts
             ChildNode::If(f) => {
                 let c = expr(&f.condition, sc);
                 out.push(if f.modifier == "true" { format!("if ({c}) {{") } else { format!("if (!{c}) {{") });
-                emit_children(&f.children, o, out, cx, sc);
+                emit_children(&f.children, o, out, cx, sc)?;
                 out.push("}".into());
             }
             // lwcIf.ts (bookends suppressed when cx.slotted)
-            ChildNode::IfBlock(b) => emit_if_chain(&b.condition, &b.children, b.else_.as_deref(), o, out, cx, sc),
-            ChildNode::ElseifBlock(b) => emit_if_chain(&b.condition, &b.children, b.else_.as_deref(), o, out, cx, sc),
+            ChildNode::IfBlock(b) => emit_if_chain(&b.condition, &b.children, b.else_.as_deref(), o, out, cx, sc)?,
+            ChildNode::ElseifBlock(b) => emit_if_chain(&b.condition, &b.children, b.else_.as_deref(), o, out, cx, sc)?,
             // for-each.ts: `for (let [index, item] of Object.entries(expr ?? {}))`; index defaults to `__unused__`.
             ChildNode::ForEach(f) => {
                 let it = expr(&f.expression, sc);
                 let idx = f.index.as_ref().map_or("__unused__".to_string(), |i| i.name.clone());
                 out.push(format!("for (let [{idx}, {}] of Object.entries({it} ?? {{}})) {{", f.item.name));
                 let n = sc.len(); sc.push(f.item.name.clone()); sc.push(idx);
-                emit_children(&f.children, o, out, cx, sc);
+                emit_children(&f.children, o, out, cx, sc)?;
                 sc.truncate(n);
                 out.push("}".into());
             }
@@ -178,39 +183,42 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
                 let it = match &f.expression { Expression::Identifier(i) => format!("instance.{}", i.name), e => expr(e, sc) };
                 out.push(format!("for (let {} of toIteratorDirective({it} ?? [])) {{", f.iterator.name));
                 sc.push(f.iterator.name.clone());
-                emit_children(&f.children, o, out, cx, sc);
+                emit_children(&f.children, o, out, cx, sc)?;
                 sc.pop();
                 out.push("}".into());
             }
-            ChildNode::Slot(s) => crate::compile_template::slot::emit_slot(s, o, out, cx, sc),
-            ChildNode::Component(c) => crate::compile_template::component::emit_component(c, o, out, cx, sc),
-            ChildNode::LwcComponent(c) => crate::compile_template::component::emit_lwc_component(c, o, out, cx, sc),
+            ChildNode::Slot(s) => crate::compile_template::slot::emit_slot(s, o, out, cx, sc)?,
+            ChildNode::Component(c) => crate::compile_template::component::emit_component(c, o, out, cx, sc)?,
+            ChildNode::LwcComponent(c) => crate::compile_template::component::emit_lwc_component(c, o, out, cx, sc)?,
             // ScopedSlotFragment is only meaningful as a direct Component child (handled in slotted content).
             _ => {}
         }
     }
+    Ok(())
 }
 
-fn emit_bookended(children: &[ChildNode], o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) {
+fn emit_bookended(children: &[ChildNode], o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
     // lwcIf.ts: top-level slotted content drops bookends.
-    if cx.slotted { emit_children(children, o, out, cx, sc); return; }
+    if cx.slotted { return emit_children(children, o, out, cx, sc); }
     out.push(o.y("'<!---->'"));
-    emit_children(children, o, out, cx, sc);
+    emit_children(children, o, out, cx, sc)?;
     out.push(o.y("'<!---->'"));
+    Ok(())
 }
 
-fn emit_if_chain(cond: &Expression, children: &[ChildNode], else_: Option<&ElseBranch>, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) {
+fn emit_if_chain(cond: &Expression, children: &[ChildNode], else_: Option<&ElseBranch>, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
     out.push(format!("if ({}) {{", expr(cond, sc)));
-    emit_bookended(children, o, out, cx, sc);
+    emit_bookended(children, o, out, cx, sc)?;
     match else_ {
         None => out.push("}".into()),
-        Some(ElseBranch::Else(e)) => { out.push("} else {".into()); emit_bookended(&e.children, o, out, cx, sc); out.push("}".into()); }
+        Some(ElseBranch::Else(e)) => { out.push("} else {".into()); emit_bookended(&e.children, o, out, cx, sc)?; out.push("}".into()); }
         Some(ElseBranch::Elseif(e)) => {
             let start = out.len();
-            emit_if_chain(&e.condition, &e.children, e.else_.as_deref(), o, out, cx, sc);
+            emit_if_chain(&e.condition, &e.children, e.else_.as_deref(), o, out, cx, sc)?;
             out[start] = format!("}} else {}", out[start]);
         }
     }
+    Ok(())
 }
 
 pub(crate) fn add(imports: &mut Vec<&'static str>, im: &'static str) { if !imports.contains(&im) { imports.push(im); } }
@@ -294,7 +302,7 @@ mod tests {
     #[test]
     fn text_static() {
         let root = Root { children: vec![text(TextValue::Literal("\n    Static text\n".into()))], ..Default::default() };
-        let (body, imports) = compile_body(&root, TemplateOptions::default());
+        let (body, imports) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body, vec!["__lwcYield += renderTextContent(normalizeTextContent('\\n    Static text\\n'));"]);
         assert_eq!(imports, vec!["normalizeTextContent", "renderTextContent"]);
         let code = crate::compile_template_for_ssr(&root, &crate::TemplateTransformOptions::default()).unwrap().code;
@@ -307,7 +315,7 @@ mod tests {
     fn adjacent_text_concat_skips_comment() {
         let t = |s: &str| text(TextValue::Expression(Expression::Identifier(Identifier { name: s.into() })));
         let root = Root { children: vec![t("a"), ChildNode::Comment(lwc_shared::template_ir::Comment { value: "c".into(), raw: String::new(), location: SourceLocation::default() }), t("b")], ..Default::default() };
-        let (body, _) = compile_body(&root, TemplateOptions::default());
+        let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body, vec!["__lwcYield += renderTextContent(normalizeTextContent(instance.a) + normalizeTextContent(instance.b));"]);
     }
     fn el(name: &str, attrs: Vec<(&str, AttributeValue)>, children: Vec<ChildNode>) -> ChildNode {
@@ -318,7 +326,7 @@ mod tests {
     #[test]
     fn static_element() {
         let root = Root { children: vec![el("div", vec![("class", lit("x"))], vec![text(TextValue::Literal("hi".into()))])], ..Default::default() };
-        let (body, _) = compile_body(&root, TemplateOptions::default());
+        let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body[0], "__lwcYield += '<div';");
         assert!(body[2].contains("__lwcYield += '=\"' + 'x' + suffix + '\"';"), "{body:?}");
         assert_eq!(&body[3..], &["__lwcYield += '>';", "__lwcYield += renderTextContent(normalizeTextContent('hi'));", "__lwcYield += '</div>';"]);
@@ -327,7 +335,7 @@ mod tests {
     fn dynamic_attr() {
         let e = AttributeValue::Expression(Expression::Identifier(Identifier { name: "foo".into() }));
         let root = Root { children: vec![el("p", vec![("title", e.clone()), ("class", e)], vec![])], ..Default::default() };
-        let (body, imports) = compile_body(&root, TemplateOptions::default());
+        let (body, imports) = compile_body(&root, TemplateOptions::default()).unwrap();
         let j = body.join("\n");
         assert!(j.contains("instance.foo") && j.contains("htmlEscape(String(attrValue), true)") && j.contains("normalizeClass"), "{j}");
         assert!(imports.contains(&"htmlEscape") && imports.contains(&"normalizeClass"));
@@ -335,7 +343,7 @@ mod tests {
     #[test]
     fn void_no_close() {
         let root = Root { children: vec![el("img", vec![("src", lit("a\"b"))], vec![]), el("br", vec![], vec![])], ..Default::default() };
-        let (body, _) = compile_body(&root, TemplateOptions::default());
+        let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         // element.ts: literal values are yielded verbatim; void elements end with `>` and no close tag.
         assert_eq!(body[3], "__lwcYield += ' src=\"a\"b\"';");
         assert_eq!(body[4], "__lwcYield += '>';");
@@ -347,10 +355,10 @@ mod tests {
     #[test]
     fn comment_preserved_vs_stripped() {
         let root = Root { children: vec![cmt(" it's ")], ..Default::default() };
-        assert!(compile_body(&root, TemplateOptions::default()).0.is_empty());
-        assert_eq!(compile_body(&root, TemplateOptions { preserve_comments: true, ..Default::default() }).0, vec!["__lwcYield += '<!-- it\\'s -->';"]);
+        assert!(compile_body(&root, TemplateOptions::default()).unwrap().0.is_empty());
+        assert_eq!(compile_body(&root, TemplateOptions { preserve_comments: true, ..Default::default() }).unwrap().0, vec!["__lwcYield += '<!-- it\\'s -->';"]);
         let root = Root { children: vec![cmt("x")], directives: vec![RootDirective::PreserveComments(true)], ..Default::default() };
-        assert_eq!(compile_body(&root, TemplateOptions::default()).0, vec!["__lwcYield += '<!--x-->';"]);
+        assert_eq!(compile_body(&root, TemplateOptions::default()).unwrap().0, vec!["__lwcYield += '<!--x-->';"]);
     }
     fn legacy_if(m: &str) -> ChildNode {
         ChildNode::If(lwc_shared::template_ir::If { modifier: m.into(), condition: id("show"), children: vec![text(TextValue::Literal("hi".into()))], location: Default::default(), directive_location: Default::default() })
@@ -358,12 +366,12 @@ mod tests {
     #[test]
     fn if_true_text() {
         let root = Root { children: vec![legacy_if("true")], ..Default::default() };
-        assert_eq!(compile_body(&root, TemplateOptions::default()).0, vec!["if (instance.show) {", "__lwcYield += renderTextContent(normalizeTextContent('hi'));", "}"]);
+        assert_eq!(compile_body(&root, TemplateOptions::default()).unwrap().0, vec!["if (instance.show) {", "__lwcYield += renderTextContent(normalizeTextContent('hi'));", "}"]);
     }
     #[test]
     fn if_false() {
         let root = Root { children: vec![legacy_if("false")], ..Default::default() };
-        assert_eq!(compile_body(&root, TemplateOptions::default()).0[0], "if (!instance.show) {");
+        assert_eq!(compile_body(&root, TemplateOptions::default()).unwrap().0[0], "if (!instance.show) {");
     }
     #[test]
     fn lwc_if_chain() {
@@ -372,7 +380,7 @@ mod tests {
         let root = Root { children: vec![ChildNode::IfBlock(IfBlock { condition: id("a"), children: t("A"), location: Default::default(), directive_location: Default::default(),
             else_: Some(Box::new(ElseBranch::Elseif(ElseifBlock { condition: id("b"), children: t("B"), location: Default::default(), directive_location: Default::default(),
                 else_: Some(Box::new(ElseBranch::Else(ElseBlock { children: t("C"), location: Default::default(), directive_location: Default::default() }))) }))) })], ..Default::default() };
-        let (body, _) = compile_body(&root, TemplateOptions::default());
+        let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         let bk = "__lwcYield += '<!---->';";
         let r = |s: &str| format!("__lwcYield += renderTextContent(normalizeTextContent('{s}'));");
         assert_eq!(body, vec!["if (instance.a) {".into(), bk.into(), r("A"), bk.into(), "} else if (instance.b) {".into(), bk.into(), r("B"), bk.into(), "} else {".into(), bk.into(), r("C"), bk.into(), "}".into()]);
@@ -387,7 +395,7 @@ mod tests {
     fn for_each_item_local_text_and_attr() {
         let li = el("li", vec![("title", AttributeValue::Expression(mem("item", "id")))], vec![]);
         let root = Root { children: vec![for_each(id("items"), "item", None, vec![li, tv(mem("item", "name")), tv(id("other"))])], ..Default::default() };
-        let (body, _) = compile_body(&root, TemplateOptions::default());
+        let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body[0], "for (let [__unused__, item] of Object.entries(instance.items ?? {})) {");
         assert!(body[4].contains("let attrValue = item.id;"), "{body:?}");
         assert!(body.contains(&"__lwcYield += renderTextContent(normalizeTextContent(item.name) + normalizeTextContent(instance.other));".to_string()), "{body:?}");
@@ -397,13 +405,13 @@ mod tests {
     #[test]
     fn for_each_with_index() {
         let root = Root { children: vec![for_each(id("items"), "item", Some("i"), vec![tv(id("i"))]), tv(id("i"))], ..Default::default() };
-        let (body, _) = compile_body(&root, TemplateOptions::default());
+        let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body, vec!["for (let [i, item] of Object.entries(instance.items ?? {})) {".to_string(), rt("i"), "}".into(), rt("instance.i")]);
     }
     #[test]
     fn for_of_iterator() {
         let root = Root { children: vec![ChildNode::ForOf(lwc_shared::template_ir::ForOf { expression: id("items"), iterator: Identifier { name: "it".into() }, children: vec![tv(Expression::Member(lwc_shared::template_ir::MemberExpression { object: Box::new(mem("it", "value")), property: Box::new(id("name")), computed: false }))], location: Default::default(), directive_location: Default::default() })], ..Default::default() };
-        let (body, imports) = compile_body(&root, TemplateOptions::default());
+        let (body, imports) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body, vec!["for (let it of toIteratorDirective(instance.items ?? [])) {".to_string(), rt("it.value.name"), "}".into()]);
         assert!(imports.contains(&"toIteratorDirective"));
         assert!(crate::compile_template_for_ssr(&root, &Default::default()).unwrap().code.contains("toIteratorDirective"));
@@ -412,7 +420,7 @@ mod tests {
     fn nested_for_each_scopes() {
         let inner = for_each(mem("row", "cells"), "cell", None, vec![tv(mem("cell", "v")), tv(mem("row", "k"))]);
         let root = Root { children: vec![for_each(id("rows"), "row", None, vec![inner, tv(id("cell"))])], ..Default::default() };
-        let (body, _) = compile_body(&root, TemplateOptions::default());
+        let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body, vec![
             "for (let [__unused__, row] of Object.entries(instance.rows ?? {})) {".to_string(),
             "for (let [__unused__, cell] of Object.entries(row.cells ?? {})) {".into(),

@@ -544,6 +544,7 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             let lwc_ref = attrs.iter().find(|a| a.name == "lwc:ref").map(|a| a.value.clone()).filter(|v| !v.is_empty() && parse_binding(v).is_none() && !(v.starts_with('{') && v.ends_with('}')));
             let lifted = lifted_directives(attrs);
             let slot_bind = attrs.iter().find(|a| a.name == "lwc:slot-bind");
+            let all_attrs: Vec<&parse5::Attribute> = attrs.iter().collect();
             // TS: element directives are applied to elements only; on `<template>` lwc:on / lwc:slot-bind
             // stay attributes (validateTemplate reports them as unsupported, 1145).
             let attrs: Vec<_> = attrs.iter().filter(|a| !is_directive_attr(&a.name)
@@ -553,8 +554,9 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
                 if let Some(sd) = attrs.iter().find(|a| a.name == "lwc:slot-data").copied() {
                     return scoped_slot_fragment(sd, &attrs, dir.is_some() || lp.is_some() || lwc.is_some(), template_content, child_nodes, n, cfg, d, location);
                 }
-                // TS validateTemplate reports 1145 before the 1153 "no directive" warning.
-                if validate::template(&attrs, dir.is_some() || lp.is_some() || lwc.is_some(), &location.location, d) { return None; }
+                // TS validateTemplate reports 1145 (every attribute parseElementDirectives did not pick,
+                // including key / lwc:dom / ...) before the 1153 "no directive" warning.
+                if validate::template(&all_attrs, dir.is_some() || lp.is_some() || lwc.is_some(), &location.location, d) { return None; }
                 // `<template>` in foreign (svg) content has no template_content; children are direct.
                 let kids = match template_content { Some(c) => c.borrow().child_nodes().cloned().unwrap_or_default(), None => child_nodes.clone() };
                 d.in_loop = lp.is_some();
@@ -621,17 +623,14 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
                 // TS: `isCustomElementTag && parsedAttr.get(External)` → ExternalComponent; attrs stay
                 // attributes (no prop split) and the directive itself is consumed.
                 let attributes: Vec<Attribute> = attributes.into_iter().filter(|a: &Attribute| a.name != "lwc:external").collect();
-                validate::ssr_inner_outer_html(&attributes, tag_name, cfg, d);
                 ChildNode::ExternalComponent(ExternalComponent { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() })
             } else if is_custom_element_tag(tag_name) {
                 { let (attributes, properties) = split_props(attributes, component_keeps_attr, d); ChildNode::Component(Component { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() }) }
             } else if tag_name == "lwc:component" {
                 // TS parseLwcComponent → ast.lwcComponent; isAttribute uses the component table.
-                validate::ssr_inner_outer_html(&attributes, tag_name, cfg, d);
                 let (attributes, properties) = split_props(attributes, component_keeps_attr, d);
                 ChildNode::LwcComponent(LwcComponent { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone() })
             } else {
-                validate::ssr_inner_outer_html(&attributes, tag_name, cfg, d);
                 // TS isAttribute: `<input value|checked>` are props.
                 let (attributes, properties) = if tag_name == "input" { split_props(attributes, |a| a != "value" && a != "checked", d) }
                     else { (attributes, Vec::new()) };
@@ -790,7 +789,7 @@ pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseR
         src16: source.encode_utf16().collect(), seen_ids: HashSet::new(), for_of: None, for_each: None, chain_open: false,
     };
     if let NodeData::Element { attrs, .. } = &tb.data {
-        if element_check::root_errors(attrs, &tmpl, &location, &mut cx) {
+        if element_check::root_errors(attrs, &tmpl, &location, config, &mut cx) {
             return TemplateParseResult { root: None, warnings: cx.diags };
         }
     }
@@ -820,12 +819,6 @@ pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseR
     TemplateParseResult { root: Some(Root { location, directives, children }), warnings: cx.diags }
 }
 
-/// Directives consumed from a nested `<template>` (anything else → INVALID_TEMPLATE_ATTRIBUTE).
-fn is_template_directive_attr(n: &str) -> bool {
-    matches!(n, "if:true" | "if:false" | "if:strict-true" | "for:each" | "for:item" | "for:index" | "lwc:if" | "lwc:elseif" | "lwc:else" | "lwc:slot-data" | "lwc:preserve-comments" | "lwc:render-mode")
-        || n.starts_with("iterator:")
-}
-
 /// TS `isValidHTMLAttribute`.
 fn is_valid_html_attribute(tag: &str, attr: &str) -> bool {
     use tables::*;
@@ -835,11 +828,6 @@ fn is_valid_html_attribute(tag: &str, attr: &str) -> bool {
         return true;
     }
     HTML_ATTRIBUTE_ELEMENT_MAP.iter().find(|(a, _)| *a == attr).is_some_and(|(_, els)| els.is_empty() || els.contains(&tag))
-}
-
-/// Error diagnostic; `None` = uncoded (TS plain `Error`). `Some(0)` is rejected by `CompilerDiagnostic::new`.
-fn diag_opt(code: Option<u32>, message: String, l: SourceLocation) -> CompilerDiagnostic {
-    CompilerDiagnostic::new(code, message, DiagnosticLevel::Error, None, Some(l))
 }
 
 const ROOT_DIRECTIVES: &[&str] = &["lwc:render-mode", "lwc:preserve-comments"];

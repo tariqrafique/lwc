@@ -1,7 +1,7 @@
 //! Port of transformers/element.ts (Element / ExternalComponent / the `<slot>` element of Slot), plus the
 //! @lwc/shared helpers it uses (isBooleanAttribute, isVoidElement, normalizeStyleAttributeValue,
 //! normalizeTabIndex) and shared.ts normalizeClassAttributeValue.
-use super::{add, emit_children, expr, js_str, Cx, TemplateOptions};
+use super::{add, emit_children, expr, js_str, Cx, Emit, TemplateOptions};
 use crate::runtime_abi as abi;
 use lwc_shared::template_ir::{Attribute, AttributeValue, ChildNode, ElementDirective, LiteralValue, Property};
 
@@ -192,13 +192,28 @@ fn dynamic_value(el: &str, name: &str, e: &lwc_shared::template_ir::Expression, 
         js_str(name), is_boolean_attribute(name, el), o.y("' ' + attrName"), o.y("`=\"${htmlEscape(String(attrValue), true)}\"`"))
 }
 
-pub(crate) fn emit_element(n: &ElView, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) {
+/// element.ts:234-235: `if (type === 'Attribute' && (name === 'inner-h-t-m-l' || name === 'outer-h-t-m-l'))
+/// throw new Error(`Cannot set attribute "${name}" on <${node.name}>.`)`. A plain `Error` (no LWC code, no
+/// filename/location) that @lwc/compiler transformer.ts:99 returns uncaught, so every field but `message` is `None`.
+pub(crate) fn reject_inner_outer_html(tag: &str, name: &str) -> Emit {
+    if name == "inner-h-t-m-l" || name == "outer-h-t-m-l" {
+        return Err(lwc_shared::CompileError {
+            message: format!("Cannot set attribute \"{name}\" on <{tag}>."),
+            filename: None, diagnostics: vec![], name: None, line: None, column: None,
+        });
+    }
+    Ok(())
+}
+
+pub(crate) fn emit_element(n: &ElView, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
     let inner_html = if n.is_element { n.directives.iter().find_map(|d| if let ElementDirective::InnerHtml(v) = d { Some(v) } else { None }) } else { None };
     let mut has_class = false;
     let mut attr_stmts = Vec::new();
     for a in reorder(n.attributes, n.properties) {
         let name = a.name();
         if n.name == "input" && (name == "value" || name == "checked") { continue; }
+        // element.ts:234: Attributes only (props, e.g. a component's innerHTML, never throw).
+        if let AttrOrProp::Attr(_) = a { reject_inner_outer_html(n.name, name)?; }
         let r = match a.value() {
             AttributeValue::Literal(l) => literal_value(name, &l.value, o),
             AttributeValue::Expression(e) => vec![dynamic_value(n.name, name, e, o, cx, sc)],
@@ -208,7 +223,7 @@ pub(crate) fn emit_element(n: &ElView, o: TemplateOptions, out: &mut Vec<String>
     }
     let mut child = Vec::new();
     if !n.children.is_empty() {
-        emit_children(n.children, o, &mut child, cx, sc);
+        emit_children(n.children, o, &mut child, cx, sc)?;
     } else if let Some(v) = inner_html {
         let e = match v {
             AttributeValue::Literal(l) => match &l.value { LiteralValue::String(s) => js_str(s), LiteralValue::Bool(b) => b.to_string() },
@@ -229,6 +244,7 @@ pub(crate) fn emit_element(n: &ElView, o: TemplateOptions, out: &mut Vec<String>
         out.extend(child);
         out.push(o.y(&js_str(&format!("</{}>", n.name))));
     }
+    Ok(())
 }
 
 #[cfg(test)]

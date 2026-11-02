@@ -19,8 +19,6 @@ pub struct Config {
     pub enable_lwc_on: Option<bool>,
     pub api_version: Option<u32>,
     pub disable_synthetic_shadow_support: Option<bool>,
-    /// Compile for `@lwc/ssr-compiler` semantics (enables SSR-only template errors).
-    pub ssr: Option<bool>,
     /// TS `instrumentation` (`incrementCounter` for directive metrics).
     pub instrumentation: Option<InstrumentationHandle>,
 }
@@ -40,7 +38,6 @@ pub struct NormalizedConfig {
     pub enable_lwc_on: bool,
     pub api_version: u32,
     pub disable_synthetic_shadow_support: bool,
-    pub ssr: bool,
     pub instrumentation: Option<InstrumentationHandle>,
 }
 
@@ -83,7 +80,6 @@ impl Config {
             disable_synthetic_shadow_support: self
                 .disable_synthetic_shadow_support
                 .unwrap_or(false),
-            ssr: self.ssr.unwrap_or(false),
             instrumentation: self.instrumentation,
         })
     }

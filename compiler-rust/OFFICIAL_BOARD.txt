@@ -1,12 +1,21 @@
-OFFICIAL BOARD (VALID): produced only by scripts/official-board.sh after every gate passed
-src_snapshot_sha256_12=ae6f360e4294
-commit=e51153793d93c5722bb2f8784064203d5801082d   (lwc-compiler-rust main)
+status=VALID
+producer=scripts/official-board.sh
+oracle_repo=/workspace/lwc
+oracle_commit=b9e8007f9810edb59596536b596f80ca6c0d3fab
+oracle_clean=true
+gates=golden-gate,shim-gate,option-gate,snapshot-unchanged,board-rc-0
+src_snapshot_sha256_12=ac1b61fb239a
+commit=c731fb601f40836af06e65a7b5c7a328620d0da6
+commit_repo=lwc-compiler-rust@main
 parse5_rust_commit=2826427193fb1fff6beaf8e9504e10fab134daee
-notes_commit=b4a69e626579a7c052f3c078cb9f8c694c540726
-napi_sha256_12=37baef983799
-parse5_rust_sha256_12=2ff244545879   (build dep; not in tgz)
-oracle=/workspace/lwc @ b9e8007 (clean)
-gates=golden-gate(goldens == fresh JS-oracle recording) shim-gate(untagged=0) option-gate(all mapped) snapshot-unchanged board-rc=0
-tgz_sha256=90a2abff6ed6f989a5dc7f9a9c5de73b0324e92e7a50a303ef5022b274416be6
-board_txt_sha256=78e97024eb1870de976c150b6fd5ab01c9aa0a4a57de27020bd90c5f254851c4
-published=2026-11-01T21:33:47-08:00
+notes_commit=c210db3afa3cb39b2d498b68d45f4a2162d0cc11
+external_inputs_sha256_12=cac475305ab2
+external_inputs_lock=harness/external-inputs.lock
+napi_sha256_12=acfc2e0095b1
+parse5_rust_sha256_12=2ff244545879
+tgz_sha256=d9af710a1abf414d006c89e72d9bb436b244bd70adc45ff58f18b20a8054ed8c
+board_txt_sha256=01d0a3bf50437a599c8c2c35243b6b785ebdde0c5bfed6f5bfcd4bd024791d5e
+template_diag_json_sha256=3dcfee3e1ec83f86db68801f87a151932c985741714eeb97b7fcc8961e0b76af
+template_diag_napi_json_sha256=68024410496e7a14a779113bd0bcb87e6304d5fd4819321fd9e2f70df4d66440
+template_diag_napi_authoritative=false
+published=2026-11-01T21:58:37-08:00

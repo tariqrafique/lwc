@@ -1,5 +1,5 @@
-official board  commit=e51153793d93  src=ae6f360e4294  napi=37baef983799  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-01T21:33:46-08:00
-napi sha256:37baef983799  pinned=/tmp/lwc-board-h.b3TNMr/harness/.pins/lwc-compiler-napi.37baef983799.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  2026-11-01T21:32:46-08:00
+official board  commit=c731fb601f40  src=ac1b61fb239a  napi=acfc2e0095b1  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-01T21:58:36-08:00
+napi sha256:acfc2e0095b1  pinned=/tmp/lwc-board-h.7EnKMJ/harness/.pins/lwc-compiler-napi.acfc2e0095b1.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-01T21:57:16-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -20,6 +20,8 @@ ssr_dynamic_imports    Tests  16 passed (16)
 style-api              Tests  829 passed (829)
 template-api           Tests  5671 passed (5671)
 ssr_render_api         Tests  2710 passed | 14 skipped (2724)
+template-diag          cases 63224  clean 62588  mismatches 636 (code 37, message 22, level 0, location 0, order 6, missing-diag 349, extra-diag 222)  crash 0  oracle-error 0  codegen-only 17547  (diagnostic, non-gating)
+template-diag-napi     cases 63224  clean 61594  mismatches 1630 (code 18, message 1, level 0, location 0, order 4, missing-diag 156, extra-diag 331, seam-reject 1120)  crash 0  oracle-error 0  codegen-only 17079  (diagnostic, non-gating)
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid
 csr-clusters[ssr]: pass 352 fail 35 slot-name=16 other=14 attr-values=4 attr-order=1

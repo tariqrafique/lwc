@@ -2,7 +2,7 @@
 use lwc_template::*;
 fn ssr_parse(src: &str, f: impl FnOnce(&mut Config)) -> TemplateParseResult {
     // Same Config shape lwc-ssr::transform_html passes (index.ts:83 of @lwc/ssr-compiler).
-    let mut c = Config { name: Some("c".into()), namespace: Some("x".into()), ssr: Some(true), ..Default::default() };
+    let mut c = Config { name: Some("c".into()), namespace: Some("x".into()), ..Default::default() };
     f(&mut c);
     lwc_template::parse(src, c).unwrap()
 }

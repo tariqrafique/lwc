@@ -397,11 +397,16 @@ fn is_event_handler_name(s: &str) -> bool {
 /// TS parseRoot after the tag check: parseAttributes (1055/1037/1036/1035), applyRootLwcDirectives
 /// (1133 render-mode, 1146 preserve-comments), validateRoot (1080 unknown attributes, 1078 no end tag).
 /// Returns `true` when an error was reported (no root).
-pub(super) fn root_errors(attrs: &[parse5::Attribute], n: &NodeRef, el: &ElementSourceLocation, d: &mut Ctx) -> bool {
+pub(super) fn root_errors(attrs: &[parse5::Attribute], n: &NodeRef, el: &ElementSourceLocation, cfg: &NormalizedConfig, d: &mut Ctx) -> bool {
     let l = el.location.clone();
     let mut pas = Vec::new();
+    // TS parseAttributes: per attribute, normalizeAttributeValue (1055/1037/1036/1034/1035) then the
+    // expression parse; the first error aborts the root.
     for a in attrs {
         match normalize("template", a, n, d) { Ok(p) => pas.push(p), Err(e) => { d.push(e); return true; } }
+        let before = d.diags.len();
+        validate::attribute_expressions(std::slice::from_ref(a), n, cfg, d);
+        if d.diags[before..].iter().any(|x| x.level == DiagnosticLevel::Error) { return true; }
     }
     if pas.iter().any(|p| p.name.starts_with("lwc:")) {
         if let Some(p) = pick(&mut pas, |x| x == "lwc:render-mode") {

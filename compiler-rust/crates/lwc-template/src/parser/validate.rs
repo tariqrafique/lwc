@@ -254,16 +254,6 @@ pub(super) fn root_attributes(attrs: &[parse5::Attribute], l: &SourceLocation, o
     }
 }
 
-/// SSR-only: TS `@lwc/ssr-compiler` element.ts throws a plain `Error` (no LWC error code) for
-/// `inner-h-t-m-l` / `outer-h-t-m-l` *attributes* on elements and external components. Components
-/// are unaffected (those become `innerHTML` props). TS throws a plain (uncoded) `Error`, so `code: None`.
-pub(super) fn ssr_inner_outer_html(attrs: &[Attribute], tag: &str, cfg: &NormalizedConfig, d: &mut Ctx) {
-    if !cfg.ssr { return; }
-    if let Some(a) = attrs.iter().find(|a| a.name == "inner-h-t-m-l" || a.name == "outer-h-t-m-l") {
-        d.push(diag_opt(None, format!("Cannot set attribute \"{}\" on <{tag}>.", a.name), a.location.clone()));
-    }
-}
-
 /// TS validateElement 1123 (UNKNOWN_HTML_TAG_IN_TEMPLATE) at the element location. Returns the warning;
 /// the caller pushes it (element_check can push it ahead of a validateAttributes throw).
 /// 1184 / 1057 come from `unknown_lwc_tag` / `attr_name_warnings`.

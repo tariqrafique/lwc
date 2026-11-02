@@ -1,4 +1,4 @@
-use lwc_shared::{CompileError, CompileOptions, CompileResult, DiagnosticLevel};
+use lwc_shared::{CompileError, CompileOptions, CompileResult};
 pub mod compile_js;
 pub mod compile_template;
 pub mod runtime_abi;
@@ -14,6 +14,7 @@ pub struct TemplateTransformOptions {
 }
 
 /// SSR template module emit from IR, in `options.mode` (sync | async | asyncYield).
+/// `Err` = a transformer's compile-time throw (e.g. element.ts:234-235), surfaced as-is.
 pub fn compile_template_for_ssr(
     root: &lwc_shared::template_ir::Root,
     options: &TemplateTransformOptions,
@@ -30,7 +31,7 @@ pub fn compile_template_for_ssr(
                 namespace: options.namespace.clone(),
                 name: options.name.clone(),
             },
-        ),
+        )?,
         map: None,
         warnings: vec![],
         css_scope_tokens: None,
@@ -84,8 +85,6 @@ fn transform_html(
         // ssr-compiler compileTemplate forwards customRendererConfig to template-compiler parse().
         custom_renderer_config: options.custom_renderer_config.clone(),
         instrumentation: options.instrumentation.clone(),
-        // SSR path: template parser must apply SSR-only rejects (inner-h-t-m-l, etc.).
-        ssr: Some(true),
         ..lwc_template::Config::default()
     };
 
@@ -99,30 +98,6 @@ fn transform_html(
         line: None,
         column: None,
     })?;
-
-    let first_err = parsing
-        .warnings
-        .iter()
-        // TS SSR ignores parse diagnostics (bails only on missing root); the one exception is the
-        // SSR-only inner/outer-h-t-m-l reject, which TS throws from element.ts as an uncoded Error.
-        .find(|w| matches!(w.level, DiagnosticLevel::Error | DiagnosticLevel::Fatal) && w.code.is_none())
-        .cloned();
-    if let Some(d) = first_err {
-        let errors: Vec<_> = parsing
-            .warnings
-            .iter()
-            .filter(|w| matches!(w.level, DiagnosticLevel::Error | DiagnosticLevel::Fatal) && w.code.is_none())
-            .cloned()
-            .collect();
-        return Err(CompileError {
-            message: d.message.clone(),
-            filename: Some(filename.into()),
-            diagnostics: errors,
-            name: None,
-            line: d.location.map(|l| l.start_line),
-            column: d.location.map(|l| l.start_column),
-        });
-    }
 
     // template-compiler parser/index.ts parse(): any Error-level diagnostic from parseHTML (parse5 errors →
     // INVALID_HTML_SYNTAX; TREAT_ALL_PARSE5_ERRORS_AS_ERRORS widens the set from API 59) returns no root, and
@@ -156,7 +131,10 @@ fn transform_html(
         Some(options.namespace.as_str()).filter(|s| !s.is_empty()),
         Some(options.name.as_str()).filter(|s| !s.is_empty()),
     );
-    // SSR behavioral goldens expect `warnings: []` (JS oracle). Keep errors as hard fails above.
+    // Parse warnings are not returned, matching upstream: ssr-compiler compile-template/index.ts:101-105
+    // only `console.error`s each warning (throwing just on `!root`, :110-112), and compileTemplateForSSR
+    // returns `{ code, map: undefined }` (ssr-compiler index.ts:35-36). The console.error side effect is
+    // not reproduced (stderr only; no value reaches the caller).
     let _template_warnings = parsing.warnings;
     result.warnings = vec![];
     result.css_scope_tokens = Some(tokens.css_scope_tokens);
@@ -204,6 +182,37 @@ mod transform_tests {
         assert_eq!(r.code.matches("'tabIndex'").count(), 13, "{}", r.code);
         for v in ["'true'", "'false'", "'truthy'"] {
             assert!(r.code.contains(v), "missing {v}: {}", r.code);
+        }
+    }
+
+    /// ssr-compiler element.ts:234-235: inner/outer-h-t-m-l *attributes* on Element, ExternalComponent and
+    /// the `<slot>` element throw a plain Error (message only); props (Component, lwc:component) do not.
+    #[test]
+    fn transform_html_inner_outer_html_attribute_rejected() {
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), target_ssr: true, ..Default::default() };
+        let err = |src: &str| transform(src, "x/c/c.html", &opts).expect_err(src);
+        for (src, msg) in [
+            ("<template><div inner-h-t-m-l=\"x\">o</div></template>", "Cannot set attribute \"inner-h-t-m-l\" on <div>."),
+            ("<template><div outer-h-t-m-l={x}></div></template>", "Cannot set attribute \"outer-h-t-m-l\" on <div>."),
+            ("<template><omg-whatever lwc:external outer-h-t-m-l={x}></omg-whatever></template>", "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>."),
+            // slot.ts:90-91: the slot's own attributes are checked before its children.
+            ("<template><slot inner-h-t-m-l=\"x\"><p outer-h-t-m-l=\"y\"></p></slot></template>", "Cannot set attribute \"inner-h-t-m-l\" on <slot>."),
+            ("<template><section><template if:true={a}><span inner-h-t-m-l=\"x\"></span></template></section></template>", "Cannot set attribute \"inner-h-t-m-l\" on <span>."),
+            ("<template><x-c><b inner-h-t-m-l=\"x\"></b></x-c></template>", "Cannot set attribute \"inner-h-t-m-l\" on <b>."),
+        ] {
+            let e = err(src);
+            assert_eq!(e.message, msg, "{src}");
+            // Plain `Error`: no filename, location, code, or diagnostics.
+            assert_eq!((e.filename.as_deref(), e.line, e.column, e.diagnostics.len()), (None, None, None, 0), "{src}");
+        }
+        // A light-DOM `<slot inner-h-t-m-l>` never reaches the transformer: the parser drops it with LWC1134
+        // (template-compiler parser/index.ts:1494), a warning SSR only console.errors.
+        for src in [
+            "<template><x-c inner-h-t-m-l=\"x\"></x-c></template>",
+            "<template><lwc:component lwc:is={ctor} inner-h-t-m-l=\"x\"></lwc:component></template>",
+            "<template lwc:render-mode=\"light\"><slot inner-h-t-m-l=\"x\"></slot></template>",
+        ] {
+            transform(src, "x/c/c.html", &opts).unwrap_or_else(|e| panic!("{src}: {e:?}"));
         }
     }
 
