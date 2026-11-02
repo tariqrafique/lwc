@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./unquoted-value-unary.css",
+    "./unquoted-value-unary.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-682q3s59guc",
+    "lwc-682q3s59guc-host",
+    "x-unquoted-value-unary_unquoted-value-unary",
+    "x-unquoted-value-unary_unquoted-value-unary-host"
+  ]
+}

@@ -1,0 +1,334 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./foreign-object.css",
+   "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5pja51876ng",
+   "lwc-5pja51876ng-host",
+   "x-foreign-object_foreign-object",
+   "x-foreign-object_foreign-object-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg width=\"706\" height=\"180\"${3}><g transform=\"translate(3,3)\"${3}><g transform=\"translate(250,0)\"${3}><foreignObject width=\"200\" height=\"36\" xlink:href=\"javascript:alert(1)\"${3}><a${3}>x</a></foreignObject></g></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5pja51876ng"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./foreign-object.css",
+   "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5pja51876ng",
+   "lwc-5pja51876ng-host",
+   "x-foreign-object_foreign-object",
+   "x-foreign-object_foreign-object-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${3}>x</a>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-foreign-object_foreign-object"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./foreign-object.css",
+   "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5pja51876ng",
+   "lwc-5pja51876ng-host",
+   "x-foreign-object_foreign-object",
+   "x-foreign-object_foreign-object-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${3}>x</a>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-foreign-object_foreign-object"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./foreign-object.css",
+   "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5pja51876ng",
+   "lwc-5pja51876ng-host",
+   "x-foreign-object_foreign-object",
+   "x-foreign-object_foreign-object-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg width=\"706\" height=\"180\"${3}><g transform=\"translate(3,3)\"${3}><g transform=\"translate(250,0)\"${3}><foreignObject width=\"200\" height=\"36\" xlink:href=\"javascript:alert(1)\"${3}><a${3}>x</a></foreignObject></g></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5pja51876ng"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./foreign-object.css",
+   "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5pja51876ng",
+   "lwc-5pja51876ng-host",
+   "x-foreign-object_foreign-object",
+   "x-foreign-object_foreign-object-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg width=\"706\" height=\"180\"${3}><g transform=\"translate(3,3)\"${3}><g transform=\"translate(250,0)\"${3}><foreignObject width=\"200\" height=\"36\" xlink:href=\"javascript:alert(1)\"${3}><a${3}>x</a></foreignObject></g></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5pja51876ng"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./foreign-object.css",
+   "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5pja51876ng",
+   "lwc-5pja51876ng-host",
+   "x-foreign-object_foreign-object",
+   "x-foreign-object_foreign-object-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg width=\"706\" height=\"180\"${3}><g transform=\"translate(3,3)\"${3}><g transform=\"translate(250,0)\"${3}><foreignObject width=\"200\" height=\"36\" xlink:href=\"javascript:alert(1)\"${3}><a${3}>x</a></foreignObject></g></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5pja51876ng"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./foreign-object.css",
+   "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5pja51876ng",
+   "lwc-5pja51876ng-host",
+   "x-foreign-object_foreign-object",
+   "x-foreign-object_foreign-object-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg width=\"706\" height=\"180\"${3}><g transform=\"translate(3,3)\"${3}><g transform=\"translate(250,0)\"${3}><foreignObject width=\"200\" height=\"36\" xlink:href=\"javascript:alert(1)\"${3}><a${3}>x</a></foreignObject></g></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5pja51876ng"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./foreign-object.css",
+   "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5pja51876ng",
+   "lwc-5pja51876ng-host",
+   "x-foreign-object_foreign-object",
+   "x-foreign-object_foreign-object-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg width=\"706\" height=\"180\"${3}><g transform=\"translate(3,3)\"${3}><g transform=\"translate(250,0)\"${3}><foreignObject width=\"200\" height=\"36\" xlink:href=\"javascript:alert(1)\"${3}><a${3}>x</a></foreignObject></g></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5pja51876ng"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./foreign-object.css",
+   "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5pja51876ng",
+   "lwc-5pja51876ng-host",
+   "x-foreign-object_foreign-object",
+   "x-foreign-object_foreign-object-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg width=\"706\" height=\"180\"${3}><g transform=\"translate(3,3)\"${3}><g transform=\"translate(250,0)\"${3}><foreignObject width=\"200\" height=\"36\" xlink:href=\"javascript:alert(1)\"${3}><a${3}>x</a></foreignObject></g></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5pja51876ng"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./foreign-object.css",
+   "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5pja51876ng",
+   "lwc-5pja51876ng-host",
+   "x-foreign-object_foreign-object",
+   "x-foreign-object_foreign-object-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg width=\"706\" height=\"180\"${3}><g transform=\"translate(3,3)\"${3}><g transform=\"translate(250,0)\"${3}><foreignObject width=\"200\" height=\"36\" xlink:href=\"javascript:alert(1)\"${3}><a${3}>x</a></foreignObject></g></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5pja51876ng"
+  }
+ }
+}

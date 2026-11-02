@@ -1,0 +1,352 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-named-slot.css",
+   "./duplicate-named-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1137,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3im0sh599q6",
+   "lwc-3im0sh599q6-host",
+   "x-duplicate-named-slot_duplicate-named-slot",
+   "x-duplicate-named-slot_duplicate-named-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3im0sh599q6"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-named-slot.css",
+   "./duplicate-named-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1137,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3im0sh599q6",
+   "lwc-3im0sh599q6-host",
+   "x-duplicate-named-slot_duplicate-named-slot",
+   "x-duplicate-named-slot_duplicate-named-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-duplicate-named-slot_duplicate-named-slot"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-named-slot.css",
+   "./duplicate-named-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1137,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3im0sh599q6",
+   "lwc-3im0sh599q6-host",
+   "x-duplicate-named-slot_duplicate-named-slot",
+   "x-duplicate-named-slot_duplicate-named-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-duplicate-named-slot_duplicate-named-slot"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-named-slot.css",
+   "./duplicate-named-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1137,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3im0sh599q6",
+   "lwc-3im0sh599q6-host",
+   "x-duplicate-named-slot_duplicate-named-slot",
+   "x-duplicate-named-slot_duplicate-named-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3im0sh599q6"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-named-slot.css",
+   "./duplicate-named-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1137,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3im0sh599q6",
+   "lwc-3im0sh599q6-host",
+   "x-duplicate-named-slot_duplicate-named-slot",
+   "x-duplicate-named-slot_duplicate-named-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3im0sh599q6"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-named-slot.css",
+   "./duplicate-named-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1137,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3im0sh599q6",
+   "lwc-3im0sh599q6-host",
+   "x-duplicate-named-slot_duplicate-named-slot",
+   "x-duplicate-named-slot_duplicate-named-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3im0sh599q6"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-named-slot.css",
+   "./duplicate-named-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1137,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3im0sh599q6",
+   "lwc-3im0sh599q6-host",
+   "x-duplicate-named-slot_duplicate-named-slot",
+   "x-duplicate-named-slot_duplicate-named-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3im0sh599q6"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-named-slot.css",
+   "./duplicate-named-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1137,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3im0sh599q6",
+   "lwc-3im0sh599q6-host",
+   "x-duplicate-named-slot_duplicate-named-slot",
+   "x-duplicate-named-slot_duplicate-named-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3im0sh599q6"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-named-slot.css",
+   "./duplicate-named-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1137,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3im0sh599q6",
+   "lwc-3im0sh599q6-host",
+   "x-duplicate-named-slot_duplicate-named-slot",
+   "x-duplicate-named-slot_duplicate-named-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3im0sh599q6"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-named-slot.css",
+   "./duplicate-named-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1137,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3im0sh599q6",
+   "lwc-3im0sh599q6-host",
+   "x-duplicate-named-slot_duplicate-named-slot",
+   "x-duplicate-named-slot_duplicate-named-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3im0sh599q6"
+  }
+ }
+}

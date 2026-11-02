@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "compile",
+  "error": "LWC1200: Computed property in @wire config must be a constant or primitive literal.",
+  "html": ""
+ },
+ "v57": {
+  "stage": "compile",
+  "error": "LWC1200: Computed property in @wire config must be a constant or primitive literal.",
+  "html": ""
+ },
+ "v58": {
+  "stage": "compile",
+  "error": "LWC1200: Computed property in @wire config must be a constant or primitive literal.",
+  "html": ""
+ },
+ "v59": {
+  "stage": "compile",
+  "error": "LWC1200: Computed property in @wire config must be a constant or primitive literal.",
+  "html": ""
+ },
+ "v65": {
+  "stage": "compile",
+  "error": "LWC1200: Computed property in @wire config must be a constant or primitive literal.",
+  "html": ""
+ },
+ "v66": {
+  "stage": "compile",
+  "error": "LWC1200: Computed property in @wire config must be a constant or primitive literal.",
+  "html": ""
+ },
+ "v67": {
+  "stage": "compile",
+  "error": "LWC1200: Computed property in @wire config must be a constant or primitive literal.",
+  "html": ""
+ }
+}

@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "eval": {
+    "imports": [],
+    "lwcImports": [],
+    "exports": {
+      "test": "object"
+    },
+    "defaultExport": null,
+    "decorators": []
+  },
+  "warnings": [],
+  "signals": {
+    "objectSpreadPreserved": true,
+    "asyncToGenerator": false,
+    "wrapAsyncGenerator": false,
+    "asyncIterator": false,
+    "locationRewrite": false,
+    "nativeAsync": false,
+    "registerDecoratorsCalls": 0,
+    "registerComponentCalls": 0
+  }
+}

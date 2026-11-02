@@ -1,0 +1,362 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-combined.css",
+   "./deep-data-combined.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ekql9nb2jd",
+   "lwc-2ekql9nb2jd-host",
+   "x-deep-data-combined_deep-data-combined",
+   "x-deep-data-combined_deep-data-combined-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${\"a4:data-name\"}${\"s4\"}${3}>${\"t5\"}</div></div></div><div${\"a6:data-name\"}${\"s6\"}${3}>${\"t7\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ekql9nb2jd"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-combined.css",
+   "./deep-data-combined.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ekql9nb2jd",
+   "lwc-2ekql9nb2jd-host",
+   "x-deep-data-combined_deep-data-combined",
+   "x-deep-data-combined_deep-data-combined-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${\"a4:data-name\"}${\"s4\"}${3}>${\"t5\"}</div></div></div><div${\"a6:data-name\"}${\"s6\"}${3}>${\"t7\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-deep-data-combined_deep-data-combined"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-combined.css",
+   "./deep-data-combined.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ekql9nb2jd",
+   "lwc-2ekql9nb2jd-host",
+   "x-deep-data-combined_deep-data-combined",
+   "x-deep-data-combined_deep-data-combined-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${\"a4:data-name\"}${\"s4\"}${3}>${\"t5\"}</div></div></div><div${\"a6:data-name\"}${\"s6\"}${3}>${\"t7\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-deep-data-combined_deep-data-combined"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-combined.css",
+   "./deep-data-combined.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ekql9nb2jd",
+   "lwc-2ekql9nb2jd-host",
+   "x-deep-data-combined_deep-data-combined",
+   "x-deep-data-combined_deep-data-combined-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${\"a4:data-name\"}${\"s4\"}${3}>${\"t5\"}</div></div></div><div${\"a6:data-name\"}${\"s6\"}${3}>${\"t7\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ekql9nb2jd"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-combined.css",
+   "./deep-data-combined.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ekql9nb2jd",
+   "lwc-2ekql9nb2jd-host",
+   "x-deep-data-combined_deep-data-combined",
+   "x-deep-data-combined_deep-data-combined-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${\"a4:data-name\"}${\"s4\"}${3}>${\"t5\"}</div></div></div><div${\"a6:data-name\"}${\"s6\"}${3}>${\"t7\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ekql9nb2jd"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-combined.css",
+   "./deep-data-combined.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ekql9nb2jd",
+   "lwc-2ekql9nb2jd-host",
+   "x-deep-data-combined_deep-data-combined",
+   "x-deep-data-combined_deep-data-combined-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${\"a4:data-name\"}${\"s4\"}${3}>${\"t5\"}</div></div></div><div${\"a6:data-name\"}${\"s6\"}${3}>${\"t7\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ekql9nb2jd"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-combined.css",
+   "./deep-data-combined.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ekql9nb2jd",
+   "lwc-2ekql9nb2jd-host",
+   "x-deep-data-combined_deep-data-combined",
+   "x-deep-data-combined_deep-data-combined-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${\"a4:data-name\"}${\"s4\"}${3}>${\"t5\"}</div></div></div><div${\"a6:data-name\"}${\"s6\"}${3}>${\"t7\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ekql9nb2jd"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-combined.css",
+   "./deep-data-combined.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ekql9nb2jd",
+   "lwc-2ekql9nb2jd-host",
+   "x-deep-data-combined_deep-data-combined",
+   "x-deep-data-combined_deep-data-combined-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${\"a4:data-name\"}${\"s4\"}${3}>${\"t5\"}</div></div></div><div${\"a6:data-name\"}${\"s6\"}${3}>${\"t7\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ekql9nb2jd"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-combined.css",
+   "./deep-data-combined.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ekql9nb2jd",
+   "lwc-2ekql9nb2jd-host",
+   "x-deep-data-combined_deep-data-combined",
+   "x-deep-data-combined_deep-data-combined-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${\"a4:data-name\"}${\"s4\"}${3}>${\"t5\"}</div></div></div><div${\"a6:data-name\"}${\"s6\"}${3}>${\"t7\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ekql9nb2jd"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-combined.css",
+   "./deep-data-combined.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ekql9nb2jd",
+   "lwc-2ekql9nb2jd-host",
+   "x-deep-data-combined_deep-data-combined",
+   "x-deep-data-combined_deep-data-combined-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${\"a4:data-name\"}${\"s4\"}${3}>${\"t5\"}</div></div></div><div${\"a6:data-name\"}${\"s6\"}${3}>${\"t7\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ekql9nb2jd"
+  }
+ }
+}

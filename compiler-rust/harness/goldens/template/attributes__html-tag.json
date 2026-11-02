@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./html-tag.css",
+    "./html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-qbql3m9vn6",
+    "lwc-qbql3m9vn6-host",
+    "x-html-tag_html-tag",
+    "x-html-tag_html-tag-host"
+  ]
+}

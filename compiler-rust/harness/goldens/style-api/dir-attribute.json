@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+     "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "*[x] {}",
+        "x|host=false|dir=true": "*[x] {}",
+        "x|host=false|dir=false": "*[x] {}",
+        "x|host=true|dir=true": "*[x] {}",
+        "-|host=true|dir=false": "* {}"
+      }
+    }
+  ]
+}

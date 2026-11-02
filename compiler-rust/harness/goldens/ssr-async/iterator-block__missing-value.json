@@ -1,0 +1,56 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/iterator-block/iterator-block.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./iterator-block.css",
+        "./iterator-block.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-4o1erao58fk",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/iterator-block/iterator-block.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./iterator-block.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-iterator-block",
+          "publicProps": [
+            "list"
+          ],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

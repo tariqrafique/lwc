@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./stranded-open-svg-ellipse.css",
+    "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4l5bd87bi6t",
+    "lwc-4l5bd87bi6t-host",
+    "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+    "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ]
+}

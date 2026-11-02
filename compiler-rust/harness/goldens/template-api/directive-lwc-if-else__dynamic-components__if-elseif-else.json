@@ -1,0 +1,362 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else.css",
+   "./if-elseif-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-78th695ov3g",
+   "lwc-78th695ov3g-host",
+   "x-if-elseif-else_if-elseif-else",
+   "x-if-elseif-else_if-elseif-else-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-78th695ov3g"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else.css",
+   "./if-elseif-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-78th695ov3g",
+   "lwc-78th695ov3g-host",
+   "x-if-elseif-else_if-elseif-else",
+   "x-if-elseif-else_if-elseif-else-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-if-elseif-else_if-elseif-else"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else.css",
+   "./if-elseif-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-78th695ov3g",
+   "lwc-78th695ov3g-host",
+   "x-if-elseif-else_if-elseif-else",
+   "x-if-elseif-else_if-elseif-else-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-if-elseif-else_if-elseif-else"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else.css",
+   "./if-elseif-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-78th695ov3g",
+   "lwc-78th695ov3g-host",
+   "x-if-elseif-else_if-elseif-else",
+   "x-if-elseif-else_if-elseif-else-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-78th695ov3g"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else.css",
+   "./if-elseif-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-78th695ov3g",
+   "lwc-78th695ov3g-host",
+   "x-if-elseif-else_if-elseif-else",
+   "x-if-elseif-else_if-elseif-else-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-78th695ov3g"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else.css",
+   "./if-elseif-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-78th695ov3g",
+   "lwc-78th695ov3g-host",
+   "x-if-elseif-else_if-elseif-else",
+   "x-if-elseif-else_if-elseif-else-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-78th695ov3g"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else.css",
+   "./if-elseif-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-78th695ov3g",
+   "lwc-78th695ov3g-host",
+   "x-if-elseif-else_if-elseif-else",
+   "x-if-elseif-else_if-elseif-else-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-78th695ov3g"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else.css",
+   "./if-elseif-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-78th695ov3g",
+   "lwc-78th695ov3g-host",
+   "x-if-elseif-else_if-elseif-else",
+   "x-if-elseif-else_if-elseif-else-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-78th695ov3g"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else.css",
+   "./if-elseif-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-78th695ov3g",
+   "lwc-78th695ov3g-host",
+   "x-if-elseif-else_if-elseif-else",
+   "x-if-elseif-else_if-elseif-else-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-78th695ov3g"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else.css",
+   "./if-elseif-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-78th695ov3g",
+   "lwc-78th695ov3g-host",
+   "x-if-elseif-else_if-elseif-else",
+   "x-if-elseif-else_if-elseif-else-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-78th695ov3g"
+  }
+ }
+}

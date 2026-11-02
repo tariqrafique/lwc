@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./foreach-with-if.css",
+    "./foreach-with-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5c8pq6oa1m7",
+    "lwc-5c8pq6oa1m7-host",
+    "x-foreach-with-if_foreach-with-if",
+    "x-foreach-with-if_foreach-with-if-host"
+  ]
+}

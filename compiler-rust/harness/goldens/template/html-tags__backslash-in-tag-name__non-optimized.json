@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./non-optimized.css",
+    "./non-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1123,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-71tdq7g4m0k",
+    "lwc-71tdq7g4m0k-host",
+    "x-non-optimized_non-optimized",
+    "x-non-optimized_non-optimized-host"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/elementChild/elementChild.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./elementChild.css",
+        "./elementChild.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-fv9ggriteq",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/elementChild/elementChild.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./elementChild.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-element-child",
+          "publicProps": [
+            "activatefalsepath",
+            "activatetruepath"
+          ],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/if-element-child/if-element-child.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/elementChild",
+        "./if-element-child.css",
+        "./if-element-child.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-7opru7svpdv",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/if-element-child/if-element-child.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./if-element-child.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-if-element-child",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./slot-name-with-dash.css",
+    "./slot-name-with-dash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-69tppsdg3l4",
+    "lwc-69tppsdg3l4-host",
+    "x-slot-name-with-dash_slot-name-with-dash",
+    "x-slot-name-with-dash_slot-name-with-dash-host"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./named-slot-in-iterator.css",
+    "./named-slot-in-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1138,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-66hm9o8u2h",
+    "lwc-66hm9o8u2h-host",
+    "x-named-slot-in-iterator_named-slot-in-iterator",
+    "x-named-slot-in-iterator_named-slot-in-iterator-host"
+  ]
+}

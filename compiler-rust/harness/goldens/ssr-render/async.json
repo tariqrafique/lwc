@@ -1,0 +1,2417 @@
+{
+ "adjacent-text-nodes/preserve-comments-off/comments-at-end": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/comments-then-element": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/deep": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/deep-for-each": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/deep-for-each-with-rendered-item": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/deep-iterator": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/deep2": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/emptier": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/empty": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/empty1": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/empty2": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/empty3": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/html-escaping": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/html-escaping-single": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/if-as-sibling": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/just-comments": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/lwcIf-as-sibling": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/nonempty": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/nonempty-dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/nonempty-literals-outside": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/nonempty1": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/nonempty2": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/nonempty3": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-off/text-comment-text-comment": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-on/comments-then-element": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-on/emptier": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-on/emptier-with-text-comment-text": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-on/empty": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-on/just-comments": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-on/preserve-comments": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-on/preserve-comments2": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "adjacent-text-nodes/preserve-comments-on/preserve-comments3": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "api-prop-in-file-superclass": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "api-prop-in-file-superclass-chain": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "api-prop-in-file-superclass-class-expression": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "api-prop-in-file-superclass-separate-export": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "api/decorated-getter": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "api/decorated-setter": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "api/inherited": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "api/property": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-and-class-modify/parent-child": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-and-class-modify/simple": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test aria-label=\"haha\" class=\"woot yolo\" data-foo=\"bar\" data-lwc-host-mutated=\"aria-label bar class data-foo foo\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-aria-modify": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test aria-activedescendant=\"foo\" aria-busy=\"true\" data-lwc-host-mutated=\"aria-activedescendant aria-busy\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-aria/dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-aria/static": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-boolean": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-boolean-expr": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/unstyled/array": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/unstyled/child": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/unstyled/component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/unstyled/dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/unstyled/object": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/unstyled/static": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/with-scoped-styles-only-in-child/dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/with-scoped-styles-only-in-child/static": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/with-scoped-styles-only-in-parent/dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-ts1rr7v761-host\" data-lwc-host-scope-token=\"lwc-ts1rr7v761-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/with-scoped-styles-only-in-parent/static": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-ts1rr7v761-host\" data-lwc-host-scope-token=\"lwc-ts1rr7v761-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/with-scoped-styles/dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-ts1rr7v761-host\" data-lwc-host-scope-token=\"lwc-ts1rr7v761-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-class/with-scoped-styles/static": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-ts1rr7v761-host\" data-lwc-host-scope-token=\"lwc-ts1rr7v761-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-component-aria": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-component-global-html": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-dynamic-complex": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error-ssr.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-dynamic-escape": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-dynamic-with-scoped-css": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-47oqt8q93b2-host\" data-lwc-host-scope-token=\"lwc-47oqt8q93b2-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-empty-string": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-global-html/as-component-prop/undeclared": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-global-html/as-component-prop/with-@api": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-global-html/as-component-prop/without-@api": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-global-html/as-component-prop/without-@api-values": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-global-html/basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-global-html/draggable": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-global-html/hidden": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-global-html/spellcheck": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-global-html/tabindex": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error-ssr.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-live-bindings": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-modify-uppercase": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test aria-label=\"haha\" data-foo=\"bar\" data-lwc-host-mutated=\"aria-label data-bar data-foo\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-namespace": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-scoped-id": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-static": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-style/basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attribute-style/dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "attributes-aria": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "comments-basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "comments-foreach": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "comments-if": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "comments-slot": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "comments-text-preserve": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "comments-text-preserve-off": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "computed": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "context-deep": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "context-nested": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "context-no-provider": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "context-shadowed": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "context-simple": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "context-simple-method": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "context-simple-setter": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "context-slotted/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "context-slotted/scoped": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "context-slotted/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "custom-styles-with-newlines": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "decorator-api": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "deeply-nested": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "delegates-focus": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "directive-external": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "duplicate-slots-in-template/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "duplicate-slots-in-template/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-components/basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-components/invalid-ctor": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-components/invalid-ctor-function": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-components/mixed": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-components/no-ctor": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-components/scoped-styles": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-components/slots/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-components/slots/light-fallback": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-components/slots/scoped-slots": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-components/slots/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-imports/basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "dynamic-slots": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "empty-text-with-comments-non-static-optimized": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "exports/component-as-default": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "exports/const-component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "exports/default-class-named": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "exports/default-class-unnamed": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "exports/default-identifier": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "face-callback": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "for-each-block/basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "for-each-block/child-nested": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "for-each-block/child-nested-complex": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "for-each-block/complex": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error-ssr.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "for-each-block/item-and-index": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "for-each-block/nested": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "for-each-block/nested-no-index": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "for-each-block/no-index": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "for-each-block/static-content": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "getter-is-connected": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "global-html-attributes": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "host-mutate-in-connected-callback": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test data-lwc-host-mutated=\"data-mutated-in-connected-callback\" data-mutated-in-connected-callback=\"true\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "host-mutate-in-render": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test data-mutated-in-render=\"true\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "if-block": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "if-conditional-slot": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "if-conditional-slot-content": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "if-custom-element-child": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "if-element-child": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "if-true-if-false": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "if-true-if-true": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "import-lwc-from-helper": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "inner-outer-html/inner-lwc": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "inner-outer-html/outer-lwc": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "iterator-block/basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "iterator-block/missing-value": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "iterator-block/multiple": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "iterator-block/variables": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/correct-tag-attr-pair/boolean-true": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/correct-tag-attr-pair/dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/correct-tag-attr-pair/empty-string": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/correct-tag-attr-pair/invalid-string": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/correct-tag-attr-pair/string-false-uppercase": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/correct-tag-attr-pair/string-true-uppercase": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/default-def-html-attributes/dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/default-def-html-attributes/static": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/default-def-html-attributes/static-on-component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/incorrect-tag-attr-pair/dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/incorrect-tag-attr-pair/static": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/input/dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/input/static": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "known-boolean-attributes/spellcheck": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lifecycle-disconnected-callback": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lifecycle-hooks": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "light-dom": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "light-dom-multiple": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "light-dom-scoped-styles": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-1rssj1tib70-host\" data-lwc-host-scope-token=\"lwc-1rssj1tib70-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "light-dom-scoped-styles-render": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-7q48250iir7-host\" data-lwc-host-scope-token=\"lwc-7q48250iir7-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "light-dom-styles-dir-host": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-1rssj1tib70-host\" data-lwc-host-scope-token=\"lwc-1rssj1tib70-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-dom-manual": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-dynamic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error-ssr.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-if": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-if-else": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-if-else-complex": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error-ssr.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-if-else-if": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-if-else-if-else": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-if-else-if-else-empty": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-if-no-content": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-inner-html": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "lwc-on": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "method-get-attribute": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "no-boundary-protection-child": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "no-boundary-protection-deep-child": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "no-boundary-protection-slotted": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "no-dup-styles": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "non-lwc-class": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "overwrite-properties": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "overwrite-properties-template": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "parent-child-connected-callback": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "read-only-props/basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "read-only-props/dynamic-child": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "read-only-props/function": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "read-only-props/pseudo-attribute": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "reflection/attr-to-prop": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test aria-current=\"connectedCallback\" aria-label=\"connectedCallback\" data-lwc-host-mutated=\"aria-current aria-label\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "reflection/prop-to-attr": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test aria-label=\"connectedCallback\" data-lwc-host-mutated=\"aria-label\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "rehydration": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "render-correct-tags": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-4q9u0sqsfc0-host\" data-lwc-host-scope-token=\"lwc-4q9u0sqsfc0-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "render-dynamic-value": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "render-mode-mismatch/default-template-light-component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "render-mode-mismatch/default-template-shadow-component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "render-mode-mismatch/light-template-default-component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "render-mode-mismatch/light-template-shadow-component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "render-mode-mismatch/shadow-template-default-component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "render-mode-mismatch/shadow-template-light-component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "render-with-unused-default-template": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "reordered-duplicate-nonexistent-slots/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "reordered-duplicate-nonexistent-slots/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "reserved-keywords": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/advanced": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/complex": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error-ssr.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/deep": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/deep-different-variable-names": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/deep-different-variable-names-attr-value": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/default-slot": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/expression": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/for-each": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/mixed-with-light-dom-slots-inside": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/mixed-with-light-dom-slots-inside-2": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/mixed-with-light-dom-slots-inside-3": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/mixed-with-light-dom-slots-outside": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/mixed-with-light-dom-slots-outside-2": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/named-slot": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/same-var-name-in-child-and-scoped-slot": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/same-variable-used-outside": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-slots/undefined-var-name-in-child-and-scoped-slot": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "scoped-styles-with-existing-class": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-6a8uqob2ku4-host\" data-lwc-host-scope-token=\"lwc-6a8uqob2ku4-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "shadow-dom-styles-dir-host": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-1rssj1tib70-host\" data-lwc-host-scope-token=\"lwc-1rssj1tib70-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-forwarding/scoped-slots": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-forwarding/slots/dangling": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-forwarding/slots/dangling-component": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-forwarding/slots/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-forwarding/slots/mixed": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-forwarding/slots/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/advanced/ifTrue/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/advanced/ifTrue/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/advanced/lwcIf/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/advanced/lwcIf/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/element/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/element/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/external/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/external/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/ifTrue/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/ifTrue/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/lwcIf-inside-slot/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/lwcIf-inside-slot/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/lwcIf-inside-slotted-element/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/lwcIf-inside-slotted-element/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/lwcIf/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/lwcIf/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/nested-elements/ifTrue/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/nested-elements/ifTrue/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/nested-elements/lwcIf/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/nested-elements/lwcIf/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/with-adjacent-text-nodes/if-as-sibling/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/with-adjacent-text-nodes/if-as-sibling/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/with-adjacent-text-nodes/if/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/with-adjacent-text-nodes/if/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/with-adjacent-text-nodes/lwcIf-as-sibling/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/with-adjacent-text-nodes/lwcIf-as-sibling/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/with-adjacent-text-nodes/lwcIf/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slot-not-at-top-level/with-adjacent-text-nodes/lwcIf/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slotchange": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots-basic/fallback/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots-basic/fallback/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots-basic/implicit-no-template/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots-basic/implicit-no-template/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots-basic/slotted/light": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots-basic/slotted/shadow": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots-fallback": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots-light-evil-template-as-prop": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots-nested": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slots-unknown": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "slotted-content-nested": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "ssr-internals": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "static-stylesheets/scoped-and-unscoped": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "static-stylesheets/scoped-and-unscoped-dynamic-render": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-72njdrv8nr1-host\" data-lwc-host-scope-token=\"lwc-72njdrv8nr1-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "static-stylesheets/scoped-and-unscoped-with-class": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "static-stylesheets/scoped-and-unscoped-with-dynamic-class": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "static-stylesheets/unscoped-only": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "static-stylesheets/unscoped-only-with-class": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "static-stylesheets/unscoped-only-with-dynamic-class": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "static-stylesheets/unscoped-with-scoped-template-styles": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "static-stylesheets/unscoped-with-scoped-template-styles-and-class": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "style-class-whitespace": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "style-dedupe-with-prefix": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "style-newline": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "styles": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "styles-escaping-invalid-multiple-levels": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "styles-escaping-invalid-trailing-close-tag": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "styles-escaping-invalid-trailing-open-tag": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "styles-escaping-invalid-unclosed-open-tag": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "styles-escaping-safe": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "styles-escaping-unsafe": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "styles-keyframes": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "styles-shared": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/fancy": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test data-lwc-host-mutated=\"data-yolo\" data-yolo>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/mixin": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test data-lwc-host-mutated=\"data-yolo\" data-yolo>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/no-template-in-superclass": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/not-superclass": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test data-lwc-host-mutated=\"data-yolo\" data-yolo>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/override": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/render-in-superclass/no-template-in-subclass": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/render-in-superclass/render-in-subclass": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/render-in-superclass/template-in-subclass": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/render-in-superclass/unused-default-in-subclass": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/render-in-superclass/unused-default-in-superclass": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/template-in-superclass/basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/template-in-superclass/render-in-subclass": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/template-in-superclass/template-in-super-render-in-super-super": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/template-in-superclass/template-in-super-super": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/template-in-superclass/template-in-super-super-render-in-super": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "superclass/with-props": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "svgs": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "tag-name": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "text-interpolation": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "text-interpolation-complex": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error-ssr.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "text-interpolation-escape": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "text-static": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "this-dot-host-element": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "track-revoked-proxy-fails": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "unused-imported-template": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "very-deeply-nested-each": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/adapter-lifecycle": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/basic": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/collision/get-set": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/collision/method-prop": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/collision/prop-method": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/config": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/ctor-on-adapter-prop": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/deep-reference": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/errors/computed-prop-updates-incorrectly": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error-ssr.txt": "",
+   "expected-ssr.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/field": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/get-set": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/imported-member": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/invocation-sequence/method": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/invocation-sequence/prop": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/method": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ },
+ "wire/static-field": {
+  "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
+  }
+ }
+}

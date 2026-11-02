@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./usage-if-for-each.css",
+    "./usage-if-for-each.scoped.css?scoped=true",
+    "a/b"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5m49nb9vba",
+    "lwc-5m49nb9vba-host",
+    "x-usage-if-for-each_usage-if-for-each",
+    "x-usage-if-for-each_usage-if-for-each-host"
+  ]
+}

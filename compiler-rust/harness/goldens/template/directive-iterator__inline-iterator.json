@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./inline-iterator.css",
+    "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4sfvv4u31r7",
+    "lwc-4sfvv4u31r7-host",
+    "x-inline-iterator_inline-iterator",
+    "x-inline-iterator_inline-iterator-host"
+  ]
+}

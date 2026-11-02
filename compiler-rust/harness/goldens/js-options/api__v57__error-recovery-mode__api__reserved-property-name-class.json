@@ -1,0 +1,35 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1102,
+    1110
+  ],
+  "line": null,
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1102,
+        "message": "LWC1102: Invalid 'api' decorator usage. Supported decorators (api, wire, track) should be imported from \"lwc\"",
+        "location": {
+          "line": 4,
+          "column": 2,
+          "start": 102,
+          "length": 10
+        }
+      },
+      {
+        "code": 1110,
+        "message": "LWC1110: Invalid property name \"class\". \"class\" is a reserved attribute.",
+        "location": {
+          "line": 4,
+          "column": 2,
+          "start": 102,
+          "length": 10
+        }
+      }
+    ]
+  }
+}

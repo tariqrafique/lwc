@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": ":host(.selected) button[x] {color: #0070d2;}:host:not(.selected) button[x] {color: #6d6d70;transition: all .2s ease-in-out;}:host:not(.selected):hover button[x],:host button:focus[x] {color: #005fb2;transform: scale(1.2);}button:focus[x] {outline: none;box-shadow: none;background-color: #f3f2f2;}",
+        "x|host=false|dir=true": "[x-host].selected button[x] {color: #0070d2;}[x-host]:not(.selected) button[x] {color: #6d6d70;transition: all .2s ease-in-out;}[x-host]:not(.selected):hover button[x],[x-host] button:focus[x] {color: #005fb2;transform: scale(1.2);}button:focus[x] {outline: none;box-shadow: none;background-color: #f3f2f2;}",
+        "x|host=false|dir=false": "[x-host].selected button[x] {color: #0070d2;}[x-host]:not(.selected) button[x] {color: #6d6d70;transition: all .2s ease-in-out;}[x-host]:not(.selected):hover button[x],[x-host] button:focus[x] {color: #005fb2;transform: scale(1.2);}button:focus[x] {outline: none;box-shadow: none;background-color: #f3f2f2;}",
+        "x|host=true|dir=true": ":host(.selected) button[x] {color: #0070d2;}:host:not(.selected) button[x] {color: #6d6d70;transition: all .2s ease-in-out;}:host:not(.selected):hover button[x],:host button:focus[x] {color: #005fb2;transform: scale(1.2);}button:focus[x] {outline: none;box-shadow: none;background-color: #f3f2f2;}",
+        "-|host=true|dir=false": ":host(.selected) button {color: #0070d2;}:host:not(.selected) button {color: #6d6d70;transition: all .2s ease-in-out;}:host:not(.selected):hover button,:host button:focus {color: #005fb2;transform: scale(1.2);}button:focus {outline: none;box-shadow: none;background-color: #f3f2f2;}"
+      }
+    }
+  ]
+}

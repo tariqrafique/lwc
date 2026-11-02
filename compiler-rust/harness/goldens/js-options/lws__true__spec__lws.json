@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "eval": {
+    "evalError": "TypeError"
+  },
+  "warnings": [],
+  "signals": {
+    "objectSpreadPreserved": false,
+    "asyncToGenerator": true,
+    "wrapAsyncGenerator": true,
+    "asyncIterator": true,
+    "locationRewrite": true,
+    "nativeAsync": false,
+    "registerDecoratorsCalls": 0,
+    "registerComponentCalls": 0
+  }
+}

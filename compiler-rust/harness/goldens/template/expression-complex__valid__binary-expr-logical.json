@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./binary-expr-logical.css",
+    "./binary-expr-logical.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4oq3a4d8tu9",
+    "lwc-4oq3a4d8tu9-host",
+    "x-binary-expr-logical_binary-expr-logical",
+    "x-binary-expr-logical_binary-expr-logical-host"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./svg-within-g.css",
+    "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5k70b9009s8",
+    "lwc-5k70b9009s8-host",
+    "x-svg-within-g_svg-within-g",
+    "x-svg-within-g_svg-within-g-host"
+  ]
+}

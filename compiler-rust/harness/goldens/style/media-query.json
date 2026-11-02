@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "@media screen and (min-width: 900px) {h1[x] {}}",
+        "x|host=false|dir=true": "@media screen and (min-width: 900px) {h1[x] {}}",
+        "x|host=false|dir=false": "@media screen and (min-width: 900px) {h1[x] {}}",
+        "x|host=true|dir=true": "@media screen and (min-width: 900px) {h1[x] {}}",
+        "-|host=true|dir=false": "@media screen and (min-width: 900px) {h1 {}}"
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./inline-both-custom-element.css",
+    "./inline-both-custom-element.scoped.css?scoped=true",
+    "c/hello"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1182,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-6nf737430vn",
+    "lwc-6nf737430vn-host",
+    "x-inline-both-custom-element_inline-both-custom-element",
+    "x-inline-both-custom-element_inline-both-custom-element-host"
+  ]
+}

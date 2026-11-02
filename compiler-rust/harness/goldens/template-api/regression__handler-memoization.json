@@ -1,0 +1,402 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./handler-memoization.css",
+   "./handler-memoization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3trccpvgsbq",
+   "lwc-3trccpvgsbq-host",
+   "x-handler-memoization_handler-memoization",
+   "x-handler-memoization_handler-memoization-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>New</button>",
+   "parseFragment:<li${3}>${\"t1\"}<button${3}>[X]</button></li>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3trccpvgsbq"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./handler-memoization.css",
+   "./handler-memoization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3trccpvgsbq",
+   "lwc-3trccpvgsbq-host",
+   "x-handler-memoization_handler-memoization",
+   "x-handler-memoization_handler-memoization-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>New</button>",
+   "parseFragment:<li${3}>${\"t1\"}<button${3}>[X]</button></li>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-handler-memoization_handler-memoization"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./handler-memoization.css",
+   "./handler-memoization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3trccpvgsbq",
+   "lwc-3trccpvgsbq-host",
+   "x-handler-memoization_handler-memoization",
+   "x-handler-memoization_handler-memoization-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>New</button>",
+   "parseFragment:<li${3}>${\"t1\"}<button${3}>[X]</button></li>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-handler-memoization_handler-memoization"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./handler-memoization.css",
+   "./handler-memoization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3trccpvgsbq",
+   "lwc-3trccpvgsbq-host",
+   "x-handler-memoization_handler-memoization",
+   "x-handler-memoization_handler-memoization-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>New</button>",
+   "parseFragment:<li${3}>${\"t1\"}<button${3}>[X]</button></li>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3trccpvgsbq"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./handler-memoization.css",
+   "./handler-memoization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3trccpvgsbq",
+   "lwc-3trccpvgsbq-host",
+   "x-handler-memoization_handler-memoization",
+   "x-handler-memoization_handler-memoization-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>New</button>",
+   "parseFragment:<li${3}>${\"t1\"}<button${3}>[X]</button></li>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3trccpvgsbq"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./handler-memoization.css",
+   "./handler-memoization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3trccpvgsbq",
+   "lwc-3trccpvgsbq-host",
+   "x-handler-memoization_handler-memoization",
+   "x-handler-memoization_handler-memoization-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>New</button>",
+   "parseFragment:<li${3}>${\"t1\"}<button${3}>[X]</button></li>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3trccpvgsbq"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./handler-memoization.css",
+   "./handler-memoization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3trccpvgsbq",
+   "lwc-3trccpvgsbq-host",
+   "x-handler-memoization_handler-memoization",
+   "x-handler-memoization_handler-memoization-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>New</button>",
+   "parseFragment:<li${3}>${\"t1\"}<button${3}>[X]</button></li>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3trccpvgsbq"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./handler-memoization.css",
+   "./handler-memoization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3trccpvgsbq",
+   "lwc-3trccpvgsbq-host",
+   "x-handler-memoization_handler-memoization",
+   "x-handler-memoization_handler-memoization-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>New</button>",
+   "parseFragment:<li${3}>${\"t1\"}<button${3}>[X]</button></li>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3trccpvgsbq"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./handler-memoization.css",
+   "./handler-memoization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3trccpvgsbq",
+   "lwc-3trccpvgsbq-host",
+   "x-handler-memoization_handler-memoization",
+   "x-handler-memoization_handler-memoization-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>New</button>",
+   "parseFragment:<li${3}>${\"t1\"}<button${3}>[X]</button></li>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3trccpvgsbq"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./handler-memoization.css",
+   "./handler-memoization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3trccpvgsbq",
+   "lwc-3trccpvgsbq-host",
+   "x-handler-memoization_handler-memoization",
+   "x-handler-memoization_handler-memoization-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>New</button>",
+   "parseFragment:<li${3}>${\"t1\"}<button${3}>[X]</button></li>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3trccpvgsbq"
+  }
+ }
+}

@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./template-expression.css",
+    "./template-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5uvenajcmlb",
+    "lwc-5uvenajcmlb-host",
+    "x-template-expression_template-expression",
+    "x-template-expression_template-expression-host"
+  ]
+}

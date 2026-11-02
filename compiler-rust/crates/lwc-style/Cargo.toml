@@ -1,0 +1,16 @@
+[package]
+name = "lwc-style"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cssparser = "0.34"
+lwc-shared = { path = "../lwc-shared" }
+
+[dev-dependencies]
+serde_json = "1"
+
+[[test]]
+name = "fixtures"
+path = "tests/fixtures.rs"
+harness = false

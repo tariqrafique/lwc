@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-href-with-id.css",
+    "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-k7u0u67but",
+    "lwc-k7u0u67but-host",
+    "x-attribute-href-with-id_attribute-href-with-id",
+    "x-attribute-href-with-id_attribute-href-with-id-host"
+  ]
+}

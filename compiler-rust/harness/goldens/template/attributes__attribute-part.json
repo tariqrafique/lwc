@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-part.css",
+    "./attribute-part.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4plj0m3hj0",
+    "lwc-4plj0m3hj0-host",
+    "x-attribute-part_attribute-part",
+    "x-attribute-part_attribute-part-host"
+  ]
+}

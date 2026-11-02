@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./xlink-with-literal-value.css",
+    "./xlink-with-literal-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate",
+    "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-59dgv24hpm8",
+    "lwc-59dgv24hpm8-host",
+    "x-xlink-with-literal-value_xlink-with-literal-value",
+    "x-xlink-with-literal-value_xlink-with-literal-value-host"
+  ]
+}

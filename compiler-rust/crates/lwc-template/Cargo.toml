@@ -1,0 +1,16 @@
+[package]
+name = "lwc-template"
+version = "0.1.0"
+edition = "2024"
+description = "Rust port of @lwc/template-compiler (ESM emit, behavioral goldens)"
+
+[dependencies]
+lwc-shared = { path = "../lwc-shared" }
+parse5 = { path = "../../../parse5-rust/crates/parse5" }
+serde = { version = "1", features = ["derive"], optional = true }
+
+[features]
+default = []
+serde = ["dep:serde"]
+
+[dev-dependencies]

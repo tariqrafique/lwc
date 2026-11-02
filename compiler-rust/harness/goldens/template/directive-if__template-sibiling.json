@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./template-sibiling.css",
+    "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4m9tr5ct9rp",
+    "lwc-4m9tr5ct9rp-host",
+    "x-template-sibiling_template-sibiling",
+    "x-template-sibiling_template-sibiling-host"
+  ]
+}

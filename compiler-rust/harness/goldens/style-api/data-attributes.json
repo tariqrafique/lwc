@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+     "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+    }
+   }
+  ]
+ }
+}

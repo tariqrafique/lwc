@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./if-elseif-multiple.css",
+    "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1187,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-4ht1tjprfr4",
+    "lwc-4ht1tjprfr4-host",
+    "x-if-elseif-multiple_if-elseif-multiple",
+    "x-if-elseif-multiple_if-elseif-multiple-host"
+  ]
+}

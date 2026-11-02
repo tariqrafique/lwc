@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./shallow-data.css",
+    "./shallow-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-1li76rtl7bn",
+    "lwc-1li76rtl7bn-host",
+    "x-shallow-data_shallow-data",
+    "x-shallow-data_shallow-data-host"
+  ]
+}

@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id.css",
+   "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-k7u0u67but",
+   "lwc-k7u0u67but-host",
+   "x-attribute-href-with-id_attribute-href-with-id",
+   "x-attribute-href-with-id_attribute-href-with-id-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-k7u0u67but"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id.css",
+   "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-k7u0u67but",
+   "lwc-k7u0u67but-host",
+   "x-attribute-href-with-id_attribute-href-with-id",
+   "x-attribute-href-with-id_attribute-href-with-id-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-attribute-href-with-id_attribute-href-with-id"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id.css",
+   "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-k7u0u67but",
+   "lwc-k7u0u67but-host",
+   "x-attribute-href-with-id_attribute-href-with-id",
+   "x-attribute-href-with-id_attribute-href-with-id-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-attribute-href-with-id_attribute-href-with-id"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id.css",
+   "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-k7u0u67but",
+   "lwc-k7u0u67but-host",
+   "x-attribute-href-with-id_attribute-href-with-id",
+   "x-attribute-href-with-id_attribute-href-with-id-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-k7u0u67but"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id.css",
+   "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-k7u0u67but",
+   "lwc-k7u0u67but-host",
+   "x-attribute-href-with-id_attribute-href-with-id",
+   "x-attribute-href-with-id_attribute-href-with-id-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-k7u0u67but"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id.css",
+   "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-k7u0u67but",
+   "lwc-k7u0u67but-host",
+   "x-attribute-href-with-id_attribute-href-with-id",
+   "x-attribute-href-with-id_attribute-href-with-id-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-k7u0u67but"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id.css",
+   "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-k7u0u67but",
+   "lwc-k7u0u67but-host",
+   "x-attribute-href-with-id_attribute-href-with-id",
+   "x-attribute-href-with-id_attribute-href-with-id-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-k7u0u67but"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id.css",
+   "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-k7u0u67but",
+   "lwc-k7u0u67but-host",
+   "x-attribute-href-with-id_attribute-href-with-id",
+   "x-attribute-href-with-id_attribute-href-with-id-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-k7u0u67but"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id.css",
+   "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-k7u0u67but",
+   "lwc-k7u0u67but-host",
+   "x-attribute-href-with-id_attribute-href-with-id",
+   "x-attribute-href-with-id_attribute-href-with-id-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-k7u0u67but"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id.css",
+   "./attribute-href-with-id.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-k7u0u67but",
+   "lwc-k7u0u67but-host",
+   "x-attribute-href-with-id_attribute-href-with-id",
+   "x-attribute-href-with-id_attribute-href-with-id-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Don&#x27;t forget your passport!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-k7u0u67but"
+  }
+ }
+}

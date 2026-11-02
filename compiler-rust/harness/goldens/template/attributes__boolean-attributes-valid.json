@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./boolean-attributes-valid.css",
+    "./boolean-attributes-valid.scoped.css?scoped=true",
+    "x/foo"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3s2d8ffesnq",
+    "lwc-3s2d8ffesnq-host",
+    "x-boolean-attributes-valid_boolean-attributes-valid",
+    "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ]
+}

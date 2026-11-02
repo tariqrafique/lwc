@@ -1,0 +1,326 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-image.css",
+   "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3jdtng6574g",
+   "lwc-3jdtng6574g-host",
+   "x-valid-image_valid-image",
+   "x-valid-image_valid-image-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"200\" height=\"200\"${3}><image xlink:href=\"/foo.png\" x=\"1\" y=\"2\" height=\"200\" width=\"200\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3jdtng6574g"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-image.css",
+   "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3jdtng6574g",
+   "lwc-3jdtng6574g-host",
+   "x-valid-image_valid-image",
+   "x-valid-image_valid-image-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-valid-image_valid-image"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-image.css",
+   "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3jdtng6574g",
+   "lwc-3jdtng6574g-host",
+   "x-valid-image_valid-image",
+   "x-valid-image_valid-image-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-valid-image_valid-image"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-image.css",
+   "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3jdtng6574g",
+   "lwc-3jdtng6574g-host",
+   "x-valid-image_valid-image",
+   "x-valid-image_valid-image-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"200\" height=\"200\"${3}><image xlink:href=\"/foo.png\" x=\"1\" y=\"2\" height=\"200\" width=\"200\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3jdtng6574g"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-image.css",
+   "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3jdtng6574g",
+   "lwc-3jdtng6574g-host",
+   "x-valid-image_valid-image",
+   "x-valid-image_valid-image-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"200\" height=\"200\"${3}><image xlink:href=\"/foo.png\" x=\"1\" y=\"2\" height=\"200\" width=\"200\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3jdtng6574g"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-image.css",
+   "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3jdtng6574g",
+   "lwc-3jdtng6574g-host",
+   "x-valid-image_valid-image",
+   "x-valid-image_valid-image-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"200\" height=\"200\"${3}><image xlink:href=\"/foo.png\" x=\"1\" y=\"2\" height=\"200\" width=\"200\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3jdtng6574g"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-image.css",
+   "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3jdtng6574g",
+   "lwc-3jdtng6574g-host",
+   "x-valid-image_valid-image",
+   "x-valid-image_valid-image-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"200\" height=\"200\"${3}><image xlink:href=\"/foo.png\" x=\"1\" y=\"2\" height=\"200\" width=\"200\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3jdtng6574g"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-image.css",
+   "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3jdtng6574g",
+   "lwc-3jdtng6574g-host",
+   "x-valid-image_valid-image",
+   "x-valid-image_valid-image-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"200\" height=\"200\"${3}><image xlink:href=\"/foo.png\" x=\"1\" y=\"2\" height=\"200\" width=\"200\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3jdtng6574g"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-image.css",
+   "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3jdtng6574g",
+   "lwc-3jdtng6574g-host",
+   "x-valid-image_valid-image",
+   "x-valid-image_valid-image-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"200\" height=\"200\"${3}><image xlink:href=\"/foo.png\" x=\"1\" y=\"2\" height=\"200\" width=\"200\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3jdtng6574g"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-image.css",
+   "./valid-image.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3jdtng6574g",
+   "lwc-3jdtng6574g-host",
+   "x-valid-image_valid-image",
+   "x-valid-image_valid-image-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"200\" height=\"200\"${3}><image xlink:href=\"/foo.png\" x=\"1\" y=\"2\" height=\"200\" width=\"200\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3jdtng6574g"
+  }
+ }
+}

@@ -1,0 +1,45 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./not-scoped.css",
+    "./not-scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1057,
+      "level": 2
+    },
+    {
+      "code": 1057,
+      "level": 2
+    },
+    {
+      "code": 1057,
+      "level": 2
+    },
+    {
+      "code": 1057,
+      "level": 2
+    },
+    {
+      "code": 1057,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-68v9rhsbkkg",
+    "lwc-68v9rhsbkkg-host",
+    "x-not-scoped_not-scoped",
+    "x-not-scoped_not-scoped-host"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./boolean-true.css",
+    "./boolean-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3ud34a26h2d",
+    "lwc-3ud34a26h2d-host",
+    "x-boolean-true_boolean-true",
+    "x-boolean-true_boolean-true-host"
+  ]
+}

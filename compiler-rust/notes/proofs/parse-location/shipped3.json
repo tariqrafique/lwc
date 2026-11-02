@@ -1,0 +1,112 @@
+[
+ {
+  "src": "var static = 1;",
+  "code": 1007,
+  "location": {
+   "line": 1,
+   "column": 4,
+   "index": 4
+  },
+  "first": "SyntaxError: LWC1007: <cwd>/foo.js: Unexpected reserved word 'static'. (1:4)"
+ },
+ {
+  "src": "function f(yield){}",
+  "code": 1007,
+  "location": {
+   "line": 1,
+   "column": 11,
+   "index": 11
+  },
+  "first": "SyntaxError: LWC1007: <cwd>/foo.js: Unexpected reserved word 'yield'. (1:11)"
+ },
+ {
+  "src": "({let});",
+  "code": 1007,
+  "location": {
+   "line": 1,
+   "column": 2,
+   "index": 2
+  },
+  "first": "SyntaxError: LWC1007: <cwd>/foo.js: Unexpected reserved word 'let'. (1:2)"
+ },
+ {
+  "src": "x = implements;",
+  "code": 1007,
+  "location": {
+   "line": 1,
+   "column": 4,
+   "index": 4
+  },
+  "first": "SyntaxError: LWC1007: <cwd>/foo.js: Unexpected reserved word 'implements'. (1:4)"
+ },
+ {
+  "src": "class A { static = 1; let = 2; }",
+  "ok": true
+ },
+ {
+  "src": "obj.public = 1; ({private: 1});",
+  "ok": true
+ },
+ {
+  "src": "function package(){}",
+  "code": 1007,
+  "location": {
+   "line": 1,
+   "column": 9,
+   "index": 9
+  },
+  "first": "SyntaxError: LWC1007: <cwd>/foo.js: Unexpected reserved word 'package'. (1:9)"
+ },
+ {
+  "src": "try{}catch(interface){}",
+  "code": 1007,
+  "location": {
+   "line": 1,
+   "column": 11,
+   "index": 11
+  },
+  "first": "SyntaxError: LWC1007: <cwd>/foo.js: Unexpected reserved word 'interface'. (1:11)"
+ },
+ {
+  "src": "(protected) => 1;",
+  "code": 1007,
+  "location": {
+   "line": 1,
+   "column": 1,
+   "index": 1
+  },
+  "first": "SyntaxError: LWC1007: <cwd>/foo.js: Unexpected reserved word 'protected'. (1:1)"
+ },
+ {
+  "src": "let x = 1;\nx = let;",
+  "code": 1007,
+  "location": {
+   "line": 2,
+   "column": 4,
+   "index": 15
+  },
+  "first": "SyntaxError: LWC1007: <cwd>/foo.js: Unexpected reserved word 'let'. (2:4)"
+ },
+ {
+  "src": "const a = `${let}`;",
+  "code": 1007,
+  "location": {
+   "line": 1,
+   "column": 13,
+   "index": 13
+  },
+  "first": "SyntaxError: LWC1007: <cwd>/foo.js: Unexpected reserved word 'let'. (1:13)"
+ },
+ {
+  "src": "import { let as l } from 'm';",
+  "ok": true
+ },
+ {
+  "src": "label: x;",
+  "ok": true
+ },
+ {
+  "src": "let /* let */ x = 'let';",
+  "ok": true
+ }
+]

@@ -1,0 +1,27 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1094
+  ],
+  "line": null,
+  "expectedCodes": [
+    1094
+  ],
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1094,
+        "message": "LWC1094: @wire expects a configuration object expression as second parameter.",
+        "location": {
+          "line": 5,
+          "column": 19,
+          "start": 170,
+          "length": 9
+        }
+      }
+    ]
+  }
+}

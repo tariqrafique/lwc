@@ -1,0 +1,312 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./excaped-json.css",
+   "./excaped-json.scoped.css?scoped=true",
+   "x/test"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mip20h8vh2",
+   "lwc-2mip20h8vh2-host",
+   "x-excaped-json_excaped-json",
+   "x-excaped-json_excaped-json-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2mip20h8vh2"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./excaped-json.css",
+   "./excaped-json.scoped.css?scoped=true",
+   "x/test"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mip20h8vh2",
+   "lwc-2mip20h8vh2-host",
+   "x-excaped-json_excaped-json",
+   "x-excaped-json_excaped-json-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-excaped-json_excaped-json"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./excaped-json.css",
+   "./excaped-json.scoped.css?scoped=true",
+   "x/test"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mip20h8vh2",
+   "lwc-2mip20h8vh2-host",
+   "x-excaped-json_excaped-json",
+   "x-excaped-json_excaped-json-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-excaped-json_excaped-json"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./excaped-json.css",
+   "./excaped-json.scoped.css?scoped=true",
+   "x/test"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mip20h8vh2",
+   "lwc-2mip20h8vh2-host",
+   "x-excaped-json_excaped-json",
+   "x-excaped-json_excaped-json-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2mip20h8vh2"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./excaped-json.css",
+   "./excaped-json.scoped.css?scoped=true",
+   "x/test"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mip20h8vh2",
+   "lwc-2mip20h8vh2-host",
+   "x-excaped-json_excaped-json",
+   "x-excaped-json_excaped-json-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2mip20h8vh2"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./excaped-json.css",
+   "./excaped-json.scoped.css?scoped=true",
+   "x/test"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mip20h8vh2",
+   "lwc-2mip20h8vh2-host",
+   "x-excaped-json_excaped-json",
+   "x-excaped-json_excaped-json-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2mip20h8vh2"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./excaped-json.css",
+   "./excaped-json.scoped.css?scoped=true",
+   "x/test"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mip20h8vh2",
+   "lwc-2mip20h8vh2-host",
+   "x-excaped-json_excaped-json",
+   "x-excaped-json_excaped-json-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2mip20h8vh2"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./excaped-json.css",
+   "./excaped-json.scoped.css?scoped=true",
+   "x/test"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mip20h8vh2",
+   "lwc-2mip20h8vh2-host",
+   "x-excaped-json_excaped-json",
+   "x-excaped-json_excaped-json-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2mip20h8vh2"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./excaped-json.css",
+   "./excaped-json.scoped.css?scoped=true",
+   "x/test"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mip20h8vh2",
+   "lwc-2mip20h8vh2-host",
+   "x-excaped-json_excaped-json",
+   "x-excaped-json_excaped-json-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2mip20h8vh2"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./excaped-json.css",
+   "./excaped-json.scoped.css?scoped=true",
+   "x/test"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mip20h8vh2",
+   "lwc-2mip20h8vh2-host",
+   "x-excaped-json_excaped-json",
+   "x-excaped-json_excaped-json-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2mip20h8vh2"
+  }
+ }
+}

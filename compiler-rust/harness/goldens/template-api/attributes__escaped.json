@@ -1,0 +1,332 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./escaped.css",
+   "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-20g0qi2hoa7",
+   "lwc-20g0qi2hoa7-host",
+   "x-escaped_escaped",
+   "x-escaped_escaped-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input title=\"\\\\\\\\{myValue}\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-20g0qi2hoa7"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./escaped.css",
+   "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-20g0qi2hoa7",
+   "lwc-20g0qi2hoa7-host",
+   "x-escaped_escaped",
+   "x-escaped_escaped-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input title=\"\\\\\\\\{myValue}\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-escaped_escaped"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./escaped.css",
+   "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-20g0qi2hoa7",
+   "lwc-20g0qi2hoa7-host",
+   "x-escaped_escaped",
+   "x-escaped_escaped-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input title=\"\\\\\\\\{myValue}\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-escaped_escaped"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./escaped.css",
+   "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-20g0qi2hoa7",
+   "lwc-20g0qi2hoa7-host",
+   "x-escaped_escaped",
+   "x-escaped_escaped-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input title=\"\\\\\\\\{myValue}\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-20g0qi2hoa7"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./escaped.css",
+   "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-20g0qi2hoa7",
+   "lwc-20g0qi2hoa7-host",
+   "x-escaped_escaped",
+   "x-escaped_escaped-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input title=\"\\\\\\\\{myValue}\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-20g0qi2hoa7"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./escaped.css",
+   "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-20g0qi2hoa7",
+   "lwc-20g0qi2hoa7-host",
+   "x-escaped_escaped",
+   "x-escaped_escaped-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input title=\"\\\\\\\\{myValue}\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-20g0qi2hoa7"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./escaped.css",
+   "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-20g0qi2hoa7",
+   "lwc-20g0qi2hoa7-host",
+   "x-escaped_escaped",
+   "x-escaped_escaped-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input title=\"\\\\\\\\{myValue}\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-20g0qi2hoa7"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./escaped.css",
+   "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-20g0qi2hoa7",
+   "lwc-20g0qi2hoa7-host",
+   "x-escaped_escaped",
+   "x-escaped_escaped-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input title=\"\\\\\\\\{myValue}\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-20g0qi2hoa7"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./escaped.css",
+   "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-20g0qi2hoa7",
+   "lwc-20g0qi2hoa7-host",
+   "x-escaped_escaped",
+   "x-escaped_escaped-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input title=\"\\\\\\\\{myValue}\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-20g0qi2hoa7"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./escaped.css",
+   "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-20g0qi2hoa7",
+   "lwc-20g0qi2hoa7-host",
+   "x-escaped_escaped",
+   "x-escaped_escaped-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input title=\"\\\\\\\\{myValue}\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-20g0qi2hoa7"
+  }
+ }
+}

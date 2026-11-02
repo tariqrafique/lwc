@@ -1,0 +1,322 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./component-definition.css",
+   "./component-definition.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5kp75peq61d",
+   "lwc-5kp75peq61d-host",
+   "x-component-definition_component-definition",
+   "x-component-definition_component-definition-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5kp75peq61d"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./component-definition.css",
+   "./component-definition.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5kp75peq61d",
+   "lwc-5kp75peq61d-host",
+   "x-component-definition_component-definition",
+   "x-component-definition_component-definition-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-component-definition_component-definition"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./component-definition.css",
+   "./component-definition.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5kp75peq61d",
+   "lwc-5kp75peq61d-host",
+   "x-component-definition_component-definition",
+   "x-component-definition_component-definition-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-component-definition_component-definition"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./component-definition.css",
+   "./component-definition.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5kp75peq61d",
+   "lwc-5kp75peq61d-host",
+   "x-component-definition_component-definition",
+   "x-component-definition_component-definition-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5kp75peq61d"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./component-definition.css",
+   "./component-definition.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5kp75peq61d",
+   "lwc-5kp75peq61d-host",
+   "x-component-definition_component-definition",
+   "x-component-definition_component-definition-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5kp75peq61d"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./component-definition.css",
+   "./component-definition.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5kp75peq61d",
+   "lwc-5kp75peq61d-host",
+   "x-component-definition_component-definition",
+   "x-component-definition_component-definition-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5kp75peq61d"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./component-definition.css",
+   "./component-definition.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5kp75peq61d",
+   "lwc-5kp75peq61d-host",
+   "x-component-definition_component-definition",
+   "x-component-definition_component-definition-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5kp75peq61d"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./component-definition.css",
+   "./component-definition.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5kp75peq61d",
+   "lwc-5kp75peq61d-host",
+   "x-component-definition_component-definition",
+   "x-component-definition_component-definition-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5kp75peq61d"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./component-definition.css",
+   "./component-definition.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5kp75peq61d",
+   "lwc-5kp75peq61d-host",
+   "x-component-definition_component-definition",
+   "x-component-definition_component-definition-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5kp75peq61d"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./component-definition.css",
+   "./component-definition.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5kp75peq61d",
+   "lwc-5kp75peq61d-host",
+   "x-component-definition_component-definition",
+   "x-component-definition_component-definition-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5kp75peq61d"
+  }
+ }
+}

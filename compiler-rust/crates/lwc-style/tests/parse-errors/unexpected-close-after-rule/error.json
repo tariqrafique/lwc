@@ -1,0 +1,6 @@
+{
+    "name": "CssSyntaxError",
+    "reason": "Unexpected }",
+    "column": 7,
+    "line": 1
+}

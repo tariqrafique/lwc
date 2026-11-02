@@ -1,0 +1,106 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/childWithForEach/childWithForEach.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./childWithForEach.css",
+        "./childWithForEach.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-3hcm5f0v5gc",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/childWithForEach/childWithForEach.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./childWithForEach.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-child-with-for-each",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/parentOfChildWithForEach/parentOfChildWithForEach.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/parentOfChildWithForEach/parentOfChildWithForEach.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/childWithForEach",
+        "./parentOfChildWithForEach.css",
+        "./parentOfChildWithForEach.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-2de24rt7cu7",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/parentOfChildWithForEach/parentOfChildWithForEach.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./parentOfChildWithForEach.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-parent-of-child-with-for-each",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

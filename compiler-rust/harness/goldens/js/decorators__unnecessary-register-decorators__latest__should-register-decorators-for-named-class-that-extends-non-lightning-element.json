@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./test.html",
+    "./mixin.js"
+  ],
+  "lwcImports": [
+    "registerComponent",
+    "registerDecorators"
+  ],
+  "exports": {
+    "default": "class"
+  },
+  "defaultExport": {
+    "kind": "class",
+    "extendsLightningElement": false,
+    "registered": true,
+    "registerOptions": {
+      "sel": "lwc-test",
+      "apiVersion": "number",
+      "hasTmpl": true
+    }
+  },
+  "decorators": [
+    {
+      "className": "MyElement",
+      "meta": {
+        "publicProps": {
+          "foo": {
+            "config": 0
+          }
+        }
+      }
+    }
+  ],
+  "warnings": []
+}

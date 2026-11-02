@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "[x]::after {}h1[x]::before {}*[x], *[x]::before {}*[x], [x]::before {}*[x], [x]:before {}*[x], .ancestor[x] [x]::before {}*[x],[x]::before {}",
+        "x|host=false|dir=true": "[x]::after {}h1[x]::before {}*[x], *[x]::before {}*[x], [x]::before {}*[x], [x]:before {}*[x], .ancestor[x] [x]::before {}*[x],[x]::before {}",
+        "x|host=false|dir=false": "[x]::after {}h1[x]::before {}*[x], *[x]::before {}*[x], [x]::before {}*[x], [x]:before {}*[x], .ancestor[x] [x]::before {}*[x],[x]::before {}",
+        "x|host=true|dir=true": "[x]::after {}h1[x]::before {}*[x], *[x]::before {}*[x], [x]::before {}*[x], [x]:before {}*[x], .ancestor[x] [x]::before {}*[x],[x]::before {}",
+        "-|host=true|dir=false": "::after {}h1::before {}*, *::before {}*, ::before {}*, :before {}*, .ancestor ::before {}*,::before {}"
+      }
+    }
+  ]
+}

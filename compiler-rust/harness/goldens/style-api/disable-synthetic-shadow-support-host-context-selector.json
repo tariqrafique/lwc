@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":host-context(.foo) {}",
+     "x|host=false|dir=true": ":host-context(.foo) {}",
+     "x|host=false|dir=false": ":host-context(.foo) {}",
+     "x|host=true|dir=true": ":host-context(.foo) {}",
+     "-|host=true|dir=false": ":host-context(.foo) {}"
+    }
+   }
+  ]
+ }
+}

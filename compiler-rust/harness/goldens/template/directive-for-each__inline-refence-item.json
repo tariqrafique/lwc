@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./inline-refence-item.css",
+    "./inline-refence-item.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3uqjlat37b3",
+    "lwc-3uqjlat37b3-host",
+    "x-inline-refence-item_inline-refence-item",
+    "x-inline-refence-item_inline-refence-item-host"
+  ]
+}

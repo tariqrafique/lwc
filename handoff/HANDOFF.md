@@ -1,0 +1,32 @@
+# LWC → Rust migration: handoff (2026-11-02 01:02 PST)
+
+Paused for usage. Nothing is running. Every bot's work is either on main or on a committed bot/* branch, and all of it is in the bundle below.
+
+## What's here
+- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ 9c96ee4 plus every bot/* branch. Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
+- `notes.bundle`: full notes repo @ dcaf1da (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/notes-commit, bin/d-id).
+- `notes/`: plain copies of the notes, for reading on GitHub.
+- `semdiff-uncommitted.patch`: Semdiff's uncommitted WIP from wt/semdiff (exec.rs, lib.rs, tests/exec.rs, new spelling.rs). Apply it on bot/semdiff.
+
+## Ground truth
+- Oracle: salesforce/lwc 9.5.3 @ b9e8007 (clean). This branch's base is upstream-b9e8007.
+- `compiler-rust/` on this branch = the last **official** board's source: board ac1b61fb239a @ c731fb601f40 (2026-11-01 21:58 PST). Main is newer (9c96ee4, unmeasured). Boards are provisional until AB-0006 lands.
+- Plan of record: notes/lwc-rust-migrate/PLAN.md. Decisions: notes/lwc-rust-migrate/decisions.tsv (D-0001..D-0231).
+
+## Unlanded branches (rebase onto main and re-gate before landing)
+- bot/hygiene a28dd50 (Harness): OWNERS + lane enforcement. Landing order is AB-0006 → D-0219 → hygiene → D-0223 → D-0231.
+- bot/harness-gate 18da4d2 (Harness): gate WIP. Resume point is notes state/harness.md.
+- bot/template 56d1d2c (Template): AB-X0017 rework #2, then resubmit to Arch.
+- bot/template-expr 922fc45 (Template): AB-D0004 S1, after X0017. D-0230 drops TemplateCompileResult.root.
+- bot/template-clusters b22df87, bot/diagnostics-directives 3bc4435 (Template).
+- bot/js 45e0859, bot/js-slice2 b80a4bd, bot/js-sourcemap fff6018 (JS Style). Slice 2 has AB-L0056 gaps: level_url for Origin::Ssr, and seam_x0013 pins LWC1121 at napi. bot/js-pre-reorder 1230144 can be deleted.
+- bot/semdiff-sd1b d5c4a58 + semdiff-uncommitted.patch (Semdiff).
+- bot/ship 95b85c3 (Ship): queued CI for D-0225 and D-0226. No npm publish.
+
+## Remaining gaps on the last official board (ac1b61fb239a)
+csr-render 355/390, csr-render-template 545/570, ssr-render 384/389 with 5 skips. style, js, template-options, and template-api are full.
+
+## How to resume
+1. Restore both bundles under /workspace (lwc-compiler-rust, notes). Check out the oracle at b9e8007.
+2. Read PLAN.md §3 (ownership) and §5 (rules), then each state/<bot>.md.
+3. Land in this order: hygiene chain → Template X0017 → S1 → JS slice2 → Semdiff SD-1B → SSR skips → Ship CI. Then publish a fresh official board from main.

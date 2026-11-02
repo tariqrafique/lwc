@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./dataset-complex.css",
+    "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-71sssdb1eho",
+    "lwc-71sssdb1eho-host",
+    "x-dataset-complex_dataset-complex",
+    "x-dataset-complex_dataset-complex-host"
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/receiver/receiver.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./receiver.css",
+        "./receiver.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-e9hj8so9ot",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/receiver/receiver.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./receiver.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-receiver",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/slots-unknown/slots-unknown.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/receiver",
+        "./slots-unknown.css",
+        "./slots-unknown.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-65usdvltjfi",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/slots-unknown/slots-unknown.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./slots-unknown.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-slots-unknown",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

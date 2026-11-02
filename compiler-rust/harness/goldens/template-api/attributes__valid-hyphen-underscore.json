@@ -1,0 +1,312 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-underscore.css",
+   "./valid-hyphen-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-52sd2331v5c",
+   "lwc-52sd2331v5c-host",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-52sd2331v5c"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-underscore.css",
+   "./valid-hyphen-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-52sd2331v5c",
+   "lwc-52sd2331v5c-host",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-valid-hyphen-underscore_valid-hyphen-underscore"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-underscore.css",
+   "./valid-hyphen-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-52sd2331v5c",
+   "lwc-52sd2331v5c-host",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-valid-hyphen-underscore_valid-hyphen-underscore"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-underscore.css",
+   "./valid-hyphen-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-52sd2331v5c",
+   "lwc-52sd2331v5c-host",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-52sd2331v5c"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-underscore.css",
+   "./valid-hyphen-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-52sd2331v5c",
+   "lwc-52sd2331v5c-host",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-52sd2331v5c"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-underscore.css",
+   "./valid-hyphen-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-52sd2331v5c",
+   "lwc-52sd2331v5c-host",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-52sd2331v5c"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-underscore.css",
+   "./valid-hyphen-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-52sd2331v5c",
+   "lwc-52sd2331v5c-host",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-52sd2331v5c"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-underscore.css",
+   "./valid-hyphen-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-52sd2331v5c",
+   "lwc-52sd2331v5c-host",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-52sd2331v5c"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-underscore.css",
+   "./valid-hyphen-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-52sd2331v5c",
+   "lwc-52sd2331v5c-host",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-52sd2331v5c"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-hyphen-underscore.css",
+   "./valid-hyphen-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-52sd2331v5c",
+   "lwc-52sd2331v5c-host",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore",
+   "x-valid-hyphen-underscore_valid-hyphen-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-52sd2331v5c"
+  }
+ }
+}

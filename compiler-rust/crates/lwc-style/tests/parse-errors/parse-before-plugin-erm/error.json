@@ -1,0 +1,8 @@
+[
+    {
+        "name": "CssSyntaxError",
+        "reason": "Unclosed block",
+        "column": 28,
+        "line": 1
+    }
+]

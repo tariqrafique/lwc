@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./foo.css",
+    "./foo.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1187,
+      "level": 2
+    },
+    {
+      "code": 1187,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-1hl7358i549",
+    "lwc-1hl7358i549-host",
+    "x-foo_foo",
+    "x-foo_foo-host"
+  ]
+}

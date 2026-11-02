@@ -1,0 +1,342 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-ref-only.css",
+   "./deep-data-ref-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-64u42t5nfmt",
+   "lwc-64u42t5nfmt-host",
+   "x-deep-data-ref-only_deep-data-ref-only",
+   "x-deep-data-ref-only_deep-data-ref-only-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div></div></div><div${3}></div><div${3}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-64u42t5nfmt"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-ref-only.css",
+   "./deep-data-ref-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-64u42t5nfmt",
+   "lwc-64u42t5nfmt-host",
+   "x-deep-data-ref-only_deep-data-ref-only",
+   "x-deep-data-ref-only_deep-data-ref-only-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div></div></div><div${3}></div><div${3}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-deep-data-ref-only_deep-data-ref-only"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-ref-only.css",
+   "./deep-data-ref-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-64u42t5nfmt",
+   "lwc-64u42t5nfmt-host",
+   "x-deep-data-ref-only_deep-data-ref-only",
+   "x-deep-data-ref-only_deep-data-ref-only-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div></div></div><div${3}></div><div${3}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-deep-data-ref-only_deep-data-ref-only"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-ref-only.css",
+   "./deep-data-ref-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-64u42t5nfmt",
+   "lwc-64u42t5nfmt-host",
+   "x-deep-data-ref-only_deep-data-ref-only",
+   "x-deep-data-ref-only_deep-data-ref-only-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div></div></div><div${3}></div><div${3}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-64u42t5nfmt"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-ref-only.css",
+   "./deep-data-ref-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-64u42t5nfmt",
+   "lwc-64u42t5nfmt-host",
+   "x-deep-data-ref-only_deep-data-ref-only",
+   "x-deep-data-ref-only_deep-data-ref-only-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div></div></div><div${3}></div><div${3}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-64u42t5nfmt"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-ref-only.css",
+   "./deep-data-ref-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-64u42t5nfmt",
+   "lwc-64u42t5nfmt-host",
+   "x-deep-data-ref-only_deep-data-ref-only",
+   "x-deep-data-ref-only_deep-data-ref-only-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div></div></div><div${3}></div><div${3}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-64u42t5nfmt"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-ref-only.css",
+   "./deep-data-ref-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-64u42t5nfmt",
+   "lwc-64u42t5nfmt-host",
+   "x-deep-data-ref-only_deep-data-ref-only",
+   "x-deep-data-ref-only_deep-data-ref-only-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div></div></div><div${3}></div><div${3}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-64u42t5nfmt"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-ref-only.css",
+   "./deep-data-ref-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-64u42t5nfmt",
+   "lwc-64u42t5nfmt-host",
+   "x-deep-data-ref-only_deep-data-ref-only",
+   "x-deep-data-ref-only_deep-data-ref-only-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div></div></div><div${3}></div><div${3}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-64u42t5nfmt"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-ref-only.css",
+   "./deep-data-ref-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-64u42t5nfmt",
+   "lwc-64u42t5nfmt-host",
+   "x-deep-data-ref-only_deep-data-ref-only",
+   "x-deep-data-ref-only_deep-data-ref-only-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div></div></div><div${3}></div><div${3}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-64u42t5nfmt"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data-ref-only.css",
+   "./deep-data-ref-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-64u42t5nfmt",
+   "lwc-64u42t5nfmt-host",
+   "x-deep-data-ref-only_deep-data-ref-only",
+   "x-deep-data-ref-only_deep-data-ref-only-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div></div></div><div${3}></div><div${3}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-64u42t5nfmt"
+  }
+ }
+}

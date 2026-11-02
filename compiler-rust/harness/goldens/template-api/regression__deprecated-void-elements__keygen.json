@@ -1,0 +1,522 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./keygen.css",
+   "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1tm45udomu6",
+   "lwc-1tm45udomu6-host",
+   "x-keygen_keygen",
+   "x-keygen_keygen-host"
+  ],
+  "apiHelpers": [
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<input type=\"text\"${3}>",
+   "parseFragment:<keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1tm45udomu6"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./keygen.css",
+   "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1tm45udomu6",
+   "lwc-1tm45udomu6-host",
+   "x-keygen_keygen",
+   "x-keygen_keygen-host"
+  ],
+  "apiHelpers": [
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<input type=\"text\"${3}>",
+   "parseFragment:<keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-keygen_keygen"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./keygen.css",
+   "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1tm45udomu6",
+   "lwc-1tm45udomu6-host",
+   "x-keygen_keygen",
+   "x-keygen_keygen-host"
+  ],
+  "apiHelpers": [
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<input type=\"text\"${3}>",
+   "parseFragment:<keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-keygen_keygen"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./keygen.css",
+   "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1tm45udomu6",
+   "lwc-1tm45udomu6-host",
+   "x-keygen_keygen",
+   "x-keygen_keygen-host"
+  ],
+  "apiHelpers": [
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<input type=\"text\"${3}>",
+   "parseFragment:<keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1tm45udomu6"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./keygen.css",
+   "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1tm45udomu6",
+   "lwc-1tm45udomu6-host",
+   "x-keygen_keygen",
+   "x-keygen_keygen-host"
+  ],
+  "apiHelpers": [
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<input type=\"text\"${3}>",
+   "parseFragment:<keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1tm45udomu6"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./keygen.css",
+   "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1tm45udomu6",
+   "lwc-1tm45udomu6-host",
+   "x-keygen_keygen",
+   "x-keygen_keygen-host"
+  ],
+  "apiHelpers": [
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<input type=\"text\"${3}>",
+   "parseFragment:<keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1tm45udomu6"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./keygen.css",
+   "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1tm45udomu6",
+   "lwc-1tm45udomu6-host",
+   "x-keygen_keygen",
+   "x-keygen_keygen-host"
+  ],
+  "apiHelpers": [
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<input type=\"text\"${3}>",
+   "parseFragment:<keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1tm45udomu6"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./keygen.css",
+   "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1tm45udomu6",
+   "lwc-1tm45udomu6-host",
+   "x-keygen_keygen",
+   "x-keygen_keygen-host"
+  ],
+  "apiHelpers": [
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<input type=\"text\"${3}>",
+   "parseFragment:<keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1tm45udomu6"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./keygen.css",
+   "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1tm45udomu6",
+   "lwc-1tm45udomu6-host",
+   "x-keygen_keygen",
+   "x-keygen_keygen-host"
+  ],
+  "apiHelpers": [
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<input type=\"text\"${3}>",
+   "parseFragment:<keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1tm45udomu6"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./keygen.css",
+   "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   },
+   {
+    "code": 1057,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1tm45udomu6",
+   "lwc-1tm45udomu6-host",
+   "x-keygen_keygen",
+   "x-keygen_keygen-host"
+  ],
+  "apiHelpers": [
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<input type=\"text\"${3}>",
+   "parseFragment:<keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1tm45udomu6"
+  }
+ }
+}

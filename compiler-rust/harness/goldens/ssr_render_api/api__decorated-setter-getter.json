@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "compile",
+  "error": "LWC1112: @api get setterGetterApi and @api set setterGetterApi detected in class declaration. Only one of the two needs to be decorated with @api.",
+  "html": ""
+ },
+ "v57": {
+  "stage": "compile",
+  "error": "LWC1112: @api get setterGetterApi and @api set setterGetterApi detected in class declaration. Only one of the two needs to be decorated with @api.",
+  "html": ""
+ },
+ "v58": {
+  "stage": "compile",
+  "error": "LWC1112: @api get setterGetterApi and @api set setterGetterApi detected in class declaration. Only one of the two needs to be decorated with @api.",
+  "html": ""
+ },
+ "v59": {
+  "stage": "compile",
+  "error": "LWC1112: @api get setterGetterApi and @api set setterGetterApi detected in class declaration. Only one of the two needs to be decorated with @api.",
+  "html": ""
+ },
+ "v65": {
+  "stage": "compile",
+  "error": "LWC1112: @api get setterGetterApi and @api set setterGetterApi detected in class declaration. Only one of the two needs to be decorated with @api.",
+  "html": ""
+ },
+ "v66": {
+  "stage": "compile",
+  "error": "LWC1112: @api get setterGetterApi and @api set setterGetterApi detected in class declaration. Only one of the two needs to be decorated with @api.",
+  "html": ""
+ },
+ "v67": {
+  "stage": "compile",
+  "error": "LWC1112: @api get setterGetterApi and @api set setterGetterApi detected in class declaration. Only one of the two needs to be decorated with @api.",
+  "html": ""
+ }
+}

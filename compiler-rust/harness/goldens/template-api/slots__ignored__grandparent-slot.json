@@ -1,0 +1,392 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandparent-slot.css",
+   "./grandparent-slot.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1201,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-g41ii4u05q",
+   "lwc-g41ii4u05q-host",
+   "x-grandparent-slot_grandparent-slot",
+   "x-grandparent-slot_grandparent-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-g41ii4u05q"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandparent-slot.css",
+   "./grandparent-slot.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1201,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-g41ii4u05q",
+   "lwc-g41ii4u05q-host",
+   "x-grandparent-slot_grandparent-slot",
+   "x-grandparent-slot_grandparent-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-grandparent-slot_grandparent-slot"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandparent-slot.css",
+   "./grandparent-slot.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1201,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-g41ii4u05q",
+   "lwc-g41ii4u05q-host",
+   "x-grandparent-slot_grandparent-slot",
+   "x-grandparent-slot_grandparent-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-grandparent-slot_grandparent-slot"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandparent-slot.css",
+   "./grandparent-slot.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1201,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-g41ii4u05q",
+   "lwc-g41ii4u05q-host",
+   "x-grandparent-slot_grandparent-slot",
+   "x-grandparent-slot_grandparent-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-g41ii4u05q"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandparent-slot.css",
+   "./grandparent-slot.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1201,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-g41ii4u05q",
+   "lwc-g41ii4u05q-host",
+   "x-grandparent-slot_grandparent-slot",
+   "x-grandparent-slot_grandparent-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-g41ii4u05q"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandparent-slot.css",
+   "./grandparent-slot.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1201,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-g41ii4u05q",
+   "lwc-g41ii4u05q-host",
+   "x-grandparent-slot_grandparent-slot",
+   "x-grandparent-slot_grandparent-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-g41ii4u05q"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandparent-slot.css",
+   "./grandparent-slot.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1201,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-g41ii4u05q",
+   "lwc-g41ii4u05q-host",
+   "x-grandparent-slot_grandparent-slot",
+   "x-grandparent-slot_grandparent-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-g41ii4u05q"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandparent-slot.css",
+   "./grandparent-slot.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1201,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-g41ii4u05q",
+   "lwc-g41ii4u05q-host",
+   "x-grandparent-slot_grandparent-slot",
+   "x-grandparent-slot_grandparent-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-g41ii4u05q"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandparent-slot.css",
+   "./grandparent-slot.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1201,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-g41ii4u05q",
+   "lwc-g41ii4u05q-host",
+   "x-grandparent-slot_grandparent-slot",
+   "x-grandparent-slot_grandparent-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-g41ii4u05q"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandparent-slot.css",
+   "./grandparent-slot.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1201,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-g41ii4u05q",
+   "lwc-g41ii4u05q-host",
+   "x-grandparent-slot_grandparent-slot",
+   "x-grandparent-slot_grandparent-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-g41ii4u05q"
+  }
+ }
+}

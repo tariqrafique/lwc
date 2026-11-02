@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "h1[x]:before {content: '$test\"escaping quote(\\')'}h1[x]:after {content: \"$my test'escaping quote(\\\")\"}h2[x]:before {content: \"\\\\\\\\\"}h2[x]:after {content: \"`\"}",
+        "x|host=false|dir=true": "h1[x]:before {content: '$test\"escaping quote(\\')'}h1[x]:after {content: \"$my test'escaping quote(\\\")\"}h2[x]:before {content: \"\\\\\\\\\"}h2[x]:after {content: \"`\"}",
+        "x|host=false|dir=false": "h1[x]:before {content: '$test\"escaping quote(\\')'}h1[x]:after {content: \"$my test'escaping quote(\\\")\"}h2[x]:before {content: \"\\\\\\\\\"}h2[x]:after {content: \"`\"}",
+        "x|host=true|dir=true": "h1[x]:before {content: '$test\"escaping quote(\\')'}h1[x]:after {content: \"$my test'escaping quote(\\\")\"}h2[x]:before {content: \"\\\\\\\\\"}h2[x]:after {content: \"`\"}",
+        "-|host=true|dir=false": "h1:before {content: '$test\"escaping quote(\\')'}h1:after {content: \"$my test'escaping quote(\\\")\"}h2:before {content: \"\\\\\\\\\"}h2:after {content: \"`\"}"
+      }
+    }
+  ]
+}

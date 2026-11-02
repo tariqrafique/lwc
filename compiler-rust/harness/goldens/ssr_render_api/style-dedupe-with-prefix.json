@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <style id=\"lwc-style-island1-0\" type=\"text/css\">\n          :host {color: chocolate;}\n        </style>\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <style id=\"lwc-style-island1-0\" type=\"text/css\">\n          :host {color: chocolate;}\n        </style>\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <style id=\"lwc-style-island1-0\" type=\"text/css\">\n          :host {color: chocolate;}\n        </style>\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <style id=\"lwc-style-island1-0\" type=\"text/css\">\n          :host {color: chocolate;}\n        </style>\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <style id=\"lwc-style-island1-0\" type=\"text/css\">\n          :host {color: chocolate;}\n        </style>\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <style id=\"lwc-style-island1-0\" type=\"text/css\">\n          :host {color: chocolate;}\n        </style>\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <style id=\"lwc-style-island1-0\" type=\"text/css\">\n          :host {color: chocolate;}\n        </style>\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n    <x-child>\n      <template shadowrootmode=\"open\">\n        <lwc-style style-id=\"lwc-style-island1-0\">\n        </lwc-style>\n      </template>\n    </x-child>\n  </template>\n</fixture-test>"
+ }
+}

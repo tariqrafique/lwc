@@ -1,0 +1,502 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./no-escaping-tags.css",
+   "./no-escaping-tags.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-49vb5jurkcl",
+   "lwc-49vb5jurkcl-host",
+   "x-no-escaping-tags_no-escaping-tags",
+   "x-no-escaping-tags_no-escaping-tags-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<xmp${3}>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp>",
+   "parseFragment:<noembed${3}>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed>",
+   "parseFragment:<noframes${3}><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-49vb5jurkcl"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./no-escaping-tags.css",
+   "./no-escaping-tags.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-49vb5jurkcl",
+   "lwc-49vb5jurkcl-host",
+   "x-no-escaping-tags_no-escaping-tags",
+   "x-no-escaping-tags_no-escaping-tags-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<xmp${3}>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp>",
+   "parseFragment:<noembed${3}>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed>",
+   "parseFragment:<noframes${3}><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-no-escaping-tags_no-escaping-tags"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./no-escaping-tags.css",
+   "./no-escaping-tags.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-49vb5jurkcl",
+   "lwc-49vb5jurkcl-host",
+   "x-no-escaping-tags_no-escaping-tags",
+   "x-no-escaping-tags_no-escaping-tags-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<xmp${3}>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp>",
+   "parseFragment:<noembed${3}>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed>",
+   "parseFragment:<noframes${3}><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-no-escaping-tags_no-escaping-tags"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./no-escaping-tags.css",
+   "./no-escaping-tags.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-49vb5jurkcl",
+   "lwc-49vb5jurkcl-host",
+   "x-no-escaping-tags_no-escaping-tags",
+   "x-no-escaping-tags_no-escaping-tags-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<xmp${3}>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp>",
+   "parseFragment:<noembed${3}>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed>",
+   "parseFragment:<noframes${3}><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-49vb5jurkcl"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./no-escaping-tags.css",
+   "./no-escaping-tags.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-49vb5jurkcl",
+   "lwc-49vb5jurkcl-host",
+   "x-no-escaping-tags_no-escaping-tags",
+   "x-no-escaping-tags_no-escaping-tags-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<xmp${3}>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp>",
+   "parseFragment:<noembed${3}>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed>",
+   "parseFragment:<noframes${3}><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-49vb5jurkcl"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./no-escaping-tags.css",
+   "./no-escaping-tags.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-49vb5jurkcl",
+   "lwc-49vb5jurkcl-host",
+   "x-no-escaping-tags_no-escaping-tags",
+   "x-no-escaping-tags_no-escaping-tags-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<xmp${3}>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp>",
+   "parseFragment:<noembed${3}>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed>",
+   "parseFragment:<noframes${3}><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-49vb5jurkcl"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./no-escaping-tags.css",
+   "./no-escaping-tags.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-49vb5jurkcl",
+   "lwc-49vb5jurkcl-host",
+   "x-no-escaping-tags_no-escaping-tags",
+   "x-no-escaping-tags_no-escaping-tags-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<xmp${3}>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp>",
+   "parseFragment:<noembed${3}>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed>",
+   "parseFragment:<noframes${3}><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-49vb5jurkcl"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./no-escaping-tags.css",
+   "./no-escaping-tags.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-49vb5jurkcl",
+   "lwc-49vb5jurkcl-host",
+   "x-no-escaping-tags_no-escaping-tags",
+   "x-no-escaping-tags_no-escaping-tags-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<xmp${3}>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp>",
+   "parseFragment:<noembed${3}>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed>",
+   "parseFragment:<noframes${3}><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-49vb5jurkcl"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./no-escaping-tags.css",
+   "./no-escaping-tags.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-49vb5jurkcl",
+   "lwc-49vb5jurkcl-host",
+   "x-no-escaping-tags_no-escaping-tags",
+   "x-no-escaping-tags_no-escaping-tags-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<xmp${3}>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp>",
+   "parseFragment:<noembed${3}>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed>",
+   "parseFragment:<noframes${3}><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-49vb5jurkcl"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./no-escaping-tags.css",
+   "./no-escaping-tags.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-49vb5jurkcl",
+   "lwc-49vb5jurkcl-host",
+   "x-no-escaping-tags_no-escaping-tags",
+   "x-no-escaping-tags_no-escaping-tags-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<xmp${3}>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp>",
+   "parseFragment:<noembed${3}>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed>",
+   "parseFragment:<noframes${3}><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-49vb5jurkcl"
+  }
+ }
+}

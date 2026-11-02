@@ -1,0 +1,442 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-invalid-in-slot.css",
+   "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1ajl4r27aqe",
+   "lwc-1ajl4r27aqe-host",
+   "x-key-invalid-in-slot_key-invalid-in-slot",
+   "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ],
+  "apiHelpers": [
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Default fallback</div>",
+   "parseFragment:<div${3}>Named fallback</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1ajl4r27aqe"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-invalid-in-slot.css",
+   "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1ajl4r27aqe",
+   "lwc-1ajl4r27aqe-host",
+   "x-key-invalid-in-slot_key-invalid-in-slot",
+   "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ],
+  "apiHelpers": [
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Default fallback</div>",
+   "parseFragment:<div${3}>Named fallback</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-key-invalid-in-slot_key-invalid-in-slot"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-invalid-in-slot.css",
+   "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1ajl4r27aqe",
+   "lwc-1ajl4r27aqe-host",
+   "x-key-invalid-in-slot_key-invalid-in-slot",
+   "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ],
+  "apiHelpers": [
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Default fallback</div>",
+   "parseFragment:<div${3}>Named fallback</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-key-invalid-in-slot_key-invalid-in-slot"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-invalid-in-slot.css",
+   "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1ajl4r27aqe",
+   "lwc-1ajl4r27aqe-host",
+   "x-key-invalid-in-slot_key-invalid-in-slot",
+   "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ],
+  "apiHelpers": [
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Default fallback</div>",
+   "parseFragment:<div${3}>Named fallback</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1ajl4r27aqe"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-invalid-in-slot.css",
+   "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1ajl4r27aqe",
+   "lwc-1ajl4r27aqe-host",
+   "x-key-invalid-in-slot_key-invalid-in-slot",
+   "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ],
+  "apiHelpers": [
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Default fallback</div>",
+   "parseFragment:<div${3}>Named fallback</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1ajl4r27aqe"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-invalid-in-slot.css",
+   "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1ajl4r27aqe",
+   "lwc-1ajl4r27aqe-host",
+   "x-key-invalid-in-slot_key-invalid-in-slot",
+   "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ],
+  "apiHelpers": [
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Default fallback</div>",
+   "parseFragment:<div${3}>Named fallback</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1ajl4r27aqe"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-invalid-in-slot.css",
+   "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1ajl4r27aqe",
+   "lwc-1ajl4r27aqe-host",
+   "x-key-invalid-in-slot_key-invalid-in-slot",
+   "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ],
+  "apiHelpers": [
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Default fallback</div>",
+   "parseFragment:<div${3}>Named fallback</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1ajl4r27aqe"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-invalid-in-slot.css",
+   "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1ajl4r27aqe",
+   "lwc-1ajl4r27aqe-host",
+   "x-key-invalid-in-slot_key-invalid-in-slot",
+   "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ],
+  "apiHelpers": [
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Default fallback</div>",
+   "parseFragment:<div${3}>Named fallback</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1ajl4r27aqe"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-invalid-in-slot.css",
+   "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1ajl4r27aqe",
+   "lwc-1ajl4r27aqe-host",
+   "x-key-invalid-in-slot_key-invalid-in-slot",
+   "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ],
+  "apiHelpers": [
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Default fallback</div>",
+   "parseFragment:<div${3}>Named fallback</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1ajl4r27aqe"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-invalid-in-slot.css",
+   "./key-invalid-in-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-1ajl4r27aqe",
+   "lwc-1ajl4r27aqe-host",
+   "x-key-invalid-in-slot_key-invalid-in-slot",
+   "x-key-invalid-in-slot_key-invalid-in-slot-host"
+  ],
+  "apiHelpers": [
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Default fallback</div>",
+   "parseFragment:<div${3}>Named fallback</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1ajl4r27aqe"
+  }
+ }
+}

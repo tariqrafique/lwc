@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./underscore.css",
+    "./underscore.scoped.css?scoped=true",
+    "x/button"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5b02te4b5vj",
+    "lwc-5b02te4b5vj-host",
+    "x-underscore_underscore",
+    "x-underscore_underscore-host"
+  ]
+}

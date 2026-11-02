@@ -1,0 +1,30 @@
+{
+ "omitted": {
+  "stage": "compile",
+  "error": "Template compilation failure; see warnings in the console."
+ },
+ "v57": {
+  "stage": "ok",
+  "warnings": []
+ },
+ "v58": {
+  "stage": "ok",
+  "warnings": []
+ },
+ "v59": {
+  "stage": "compile",
+  "error": "Template compilation failure; see warnings in the console."
+ },
+ "v65": {
+  "stage": "compile",
+  "error": "Template compilation failure; see warnings in the console."
+ },
+ "v66": {
+  "stage": "compile",
+  "error": "Template compilation failure; see warnings in the console."
+ },
+ "v67": {
+  "stage": "compile",
+  "error": "Template compilation failure; see warnings in the console."
+ }
+}

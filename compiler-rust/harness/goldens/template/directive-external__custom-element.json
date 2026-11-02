@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./custom-element.css",
+    "./custom-element.scoped.css?scoped=true",
+    "x/test"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-i4i43q1672",
+    "lwc-i4i43q1672-host",
+    "x-custom-element_custom-element",
+    "x-custom-element_custom-element-host"
+  ]
+}

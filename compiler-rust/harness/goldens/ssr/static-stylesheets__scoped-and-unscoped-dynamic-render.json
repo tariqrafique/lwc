@@ -1,0 +1,73 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/stylish/dazzling.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/stylish/dazzling.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dazzling.css",
+        "./dazzling.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-72njdrv8nr1",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/stylish/dazzling.scoped.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/stylish/glamorous.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/stylish/snazzy.scoped.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/stylish/stylish.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./stylish.html",
+        "./glamorous.css",
+        "./snazzy.scoped.css?scoped=true",
+        "./dazzling.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-stylish",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}
