@@ -32,16 +32,18 @@ fn transform_inner(src: &str, filename: &str, options: &CompileOptions) -> Resul
     // outputConfig.sourcemap: every text stage below records its offset map in `chain` (no-op when off).
     let mut chain = srcmap::Chain::new(options.sourcemap.is_enabled());
     // 1. private-method forward rename (validate-only when the flag is off)
-    let (src1, renamed) = {
+    let (src1, renamed, rename_pieces) = {
         let alloc = oxc::allocator::Allocator::default();
         let program = parse::parse(&alloc, src, filename)?;
         let (edits, names) = transforms::private_methods::forward(&program, filename, options)?;
         let (out, pieces) = edits::apply_mapped(src, edits);
-        chain.push_edit(pieces);
-        (out, names)
+        chain.push_edit(pieces.clone());
+        (out, names, pieces)
     };
-    // 2. LWC class transform
-    let mut edited = pass(&src1, filename, &mut chain, |p, s| transforms::run(p, s, filename, options))?;
+    // 2. LWC class transform. Its error spans are offsets into the renamed `src1`; shipped Babel reports the
+    // original `#m` source positions, so map them back through the rename edits before framing.
+    let mut edited = pass(&src1, filename, &mut chain, |p, s| transforms::run(p, s, filename, options))
+        .map_err(|e| unrename_locations(e, src, &rename_pieces))?;
     // 3a. loose private fields (always on in shipped): `#x` -> classPrivateFieldLoose{Key,Base} + markers
     edited = pass(&edited, filename, &mut chain, |p, s| Ok(transforms::private_fields::run(p, s)))?;
     // 3. class-properties (loose), to a fixpoint so nested classes in moved initializers are lowered
@@ -128,4 +130,29 @@ fn pass(
     let (out, pieces) = edits::apply_mapped(src, edits);
     chain.push_edit(pieces);
     Ok(out)
+}
+
+/// Output offset of the private-method forward rename -> original-source offset. Inside a replaced
+/// `#m` -> `__lwc_component_class_internal_private_m` run, a start maps to the `#`, an end past the name.
+fn unrename_offset(pieces: &[edits::Piece], off: u32, is_end: bool) -> u32 {
+    for (i, p) in pieces.iter().enumerate() {
+        let inside = if is_end { off > p.out_start && off <= p.out_end } else { off >= p.out_start && off < p.out_end };
+        if !inside { continue; }
+        if p.kept { return p.in_start + (off - p.out_start); }
+        if !is_end { return p.in_start; }
+        return pieces.get(i + 1).map(|n| n.in_start).unwrap_or(p.in_start);
+    }
+    off
+}
+
+fn unrename_locations(mut e: CompileError, src: &str, pieces: &[edits::Piece]) -> CompileError {
+    if pieces.iter().all(|p| p.kept) { return e; }
+    for (i, d) in e.diagnostics.iter_mut().enumerate() {
+        let Some(l) = d.location.as_mut() else { continue };
+        let (start, end) = (unrename_offset(pieces, l.start, false), unrename_offset(pieces, l.end, true));
+        let ((sl, sc), (el, ec)) = (lwc_shared::babel_line_col(src, start), lwc_shared::babel_line_col(src, end));
+        *l = lwc_shared::SourceLocation { start_line: sl, start_column: sc, end_line: el, end_column: ec, start, end };
+        if i == 0 && e.line.is_some() { e.line = Some(sl); e.column = Some(sc); }
+    }
+    e
 }

@@ -5,10 +5,7 @@
 
 use super::*;
 
-// Not declared in mod.rs yet (Template Rust owns it); proposed: `mod messages;` there, drop this.
-#[path = "messages.rs"]
-pub(super) mod messages;
-use messages::lwc;
+use super::messages::lwc;
 
 /// Text node: 1083/1196/1060/1074 for `{...}` segments that are not simple bindings.
 /// Returns `true` when the text node must be dropped (TS `withErrorRecovery` around
@@ -17,7 +14,8 @@ pub(super) fn text_expressions(segments: &[(String, bool)], l: &SourceLocation, 
     let before = d.diags.len();
     let o = expr_opts(cfg, false);
     // TS parseTextNode parses the raw (entity-undecoded) source text, not parse5's decoded value.
-    let raw_segments = clean_text(&raw_source(l, d)).map(|r| split_mustache(&r));
+    let raw = raw_source(l, d);
+    let raw_segments = clean_text(&raw, &raw).map(|r| split_mustache(&r));
     let segments = match &raw_segments { Some(r) if r.iter().any(|(_, e)| *e) => r.as_slice(), _ => segments };
     if o.complex && cfg.api_version >= expr_check::MIN_CTE_API_VERSION {
         // TS parseTextComplex: the acorn source (and the message's `{source}`) is the whole cleaned text.
@@ -89,11 +87,11 @@ fn expr_opts(cfg: &NormalizedConfig, unquoted: bool) -> expr_check::Opts {
 
 /// Non-template element checks, in TS order: 1176 (lwc:slot-data off <template>),
 /// element validation (1127/1051/1123/1187/1057), then 1171 (lwc:slot-bind off <slot>).
-pub(super) fn non_template_element(tag: &str, ns: &str, attrs: &[parse5::Attribute], n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx) {
+pub(super) fn non_template_element(tag: &str, _ns: &str, attrs: &[parse5::Attribute], n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx) {
     if let Some(sd) = attrs.iter().find(|a| a.name == "lwc:slot-data") {
         d.push(lwc(1176, &[], attr_loc(n, &sd.name)));
     }
-    element(tag, ns, attrs, n, d, cfg.experimental_dynamic_directive);
+    element(tag, attrs, n, d, cfg.experimental_dynamic_directive);
     // TS applyLwcSlotBindDirective runs after the lwc:dynamic/lwc:is directives.
     if tag != "slot" && attrs.iter().any(|a| a.name == "lwc:slot-bind") {
         d.push(lwc(1171, &[&format!("<{tag}>")], elem_loc(n).location));
@@ -123,8 +121,9 @@ pub(super) fn element_attributes(tag: &str, attrs: &[parse5::Attribute], has_loo
 }
 
 /// 1149: `key` outside an iteration. Returns `true` when the key is kept (lowering drops it otherwise).
-pub(super) fn key_in_iteration(tag: &str, has_key: bool, has_loop: bool, in_loop: bool, n: &NodeRef, d: &mut Ctx) -> bool {
-    if tag != "template" && has_key && !has_loop && !in_loop {
+/// TS applyKey: kept iff a for:each / for:of parent exists (through templates, up to the nearest element).
+pub(super) fn key_in_iteration(tag: &str, has_key: bool, has_loop: bool, _in_loop: bool, n: &NodeRef, d: &mut Ctx) -> bool {
+    if tag != "template" && has_key && !has_loop && d.for_of.is_none() && d.for_each.is_none() {
         d.push(lwc(1149, &[tag], attr_loc(n, "key")));
         return false;
     }
@@ -161,6 +160,10 @@ pub(super) fn slot(slot_name: &str, bind: Option<&parse5::Attribute>, l: &Source
         } else {
             d.push(lwc(1137, &[&label], l.clone()));
         }
+    }
+    else if !scoped && d.iter_depth > 0 {
+        // TS parseSlot: a (non-scoped) slot inside an iterator.
+        d.push(lwc(1138, &[&label], l.clone()));
     }
     if scoped { d.seen_scoped_slots.insert(slot_name.to_string()); }
     if bind.is_some_and(|b| parse_binding(&b.value).is_none() && !(b.value.starts_with('{') && b.value.ends_with('}'))) {
@@ -213,10 +216,10 @@ pub(super) fn orphan_else(directive: &str, l: SourceLocation, d: &mut Ctx) {
 pub(super) fn parse5_errors(errors: &[parse5::ParserError], cfg: &NormalizedConfig, out: &mut Vec<CompilerDiagnostic>) {
     for e in errors {
         let code = e.code.as_str();
-        // TODO: INVALID_HTML_SYNTAX_WARNING for the older-API set below v59 (warning work, deferred).
-        if PARSE5_ERROR_ON.contains(&code) || (PARSE5_WARN_OLDER.contains(&code) && cfg.api_version >= 59) {
-            out.push(lwc(1058, &[code], loc(&e.location)));
-        }
+        // TS getLwcErrorFromParse5Error: ErrorOn → 1058; the older-API set → 1058 from API 59
+        // (TREAT_ALL_PARSE5_ERRORS_AS_ERRORS), else the 1148 warning; unknown codes → 1148.
+        let error = PARSE5_ERROR_ON.contains(&code) || (PARSE5_WARN_OLDER.contains(&code) && cfg.api_version >= 59);
+        out.push(lwc(if error { 1058 } else { 1148 }, &[code], loc(&e.location)));
     }
 }
 
@@ -238,17 +241,15 @@ pub(super) fn ssr_inner_outer_html(attrs: &[Attribute], tag: &str, cfg: &Normali
     }
 }
 
-/// Element-level validation: UNKNOWN_LWC_DIRECTIVE (1127), FORBIDDEN_TAG_ON_TEMPLATE (1051),
-/// UNKNOWN_HTML_TAG (1123), lwc:dynamic deprecation (1187), INVALID_HTML_ATTRIBUTE (1057).
-/// Location = element location, like TS `throwOnNode(…, element)`.
-fn element(tag: &str, ns: &str, attrs: &[parse5::Attribute], n: &NodeRef, d: &mut Ctx, dynamic_ok: bool) {
+/// Element-level validation: unsupported lwc:* tag (1184), UNKNOWN_HTML_TAG (1123), lwc:dynamic
+/// deprecation (1187), INVALID_HTML_ATTRIBUTE (1057). Location = element location, like TS `throwOnNode(…, element)`.
+fn element(tag: &str, attrs: &[parse5::Attribute], n: &NodeRef, d: &mut Ctx, dynamic_ok: bool) {
     let l = elem_loc(n).location;
-    if let Some(a) = attrs.iter().find(|a| a.name.starts_with("lwc:") && !LWC_ELEMENT_DIRECTIVES.contains(&a.name.as_str())) {
-        d.push(lwc(1127, &[&a.name, &format!("<{tag}>")], l.clone()));
+    // TS parseLwcElementAsBuiltIn: unrecognized `lwc:*` tags warn at creation, then lower as plain elements.
+    if tag.starts_with("lwc:") && tag != "lwc:component" {
+        d.push(lwc(1184, &[tag], l.clone()));
     }
-    if ns == parse5::common::html::NS_HTML && DISALLOWED_HTML_TAGS.contains(&tag) {
-        d.push(lwc(1051, &[tag], l.clone()));
-    }
+    // 1127 / 1051 are thrown by element_check (applyLwcDirectives / validateElement).
     use tables::*;
     let known = tag.contains('-') || tag == "lwc:component" || KNOWN_HTML_AND_SVG_ELEMENTS.contains(&tag)
         || SUPPORTED_SVG_TAGS.contains(&tag) || DASHED_TAGNAME_ELEMENT_SET.contains(&tag);
@@ -262,10 +263,32 @@ fn element(tag: &str, ns: &str, attrs: &[parse5::Attribute], n: &NodeRef, d: &mu
             d.count(lwc_shared::CompilerMetric::LwcDynamicDirective);
         }
     }
+    // TS applyHandlers / directive parsers consume these names before applyAttributes (1057).
     for a in attrs {
-        let handler = a.name.starts_with("on") && parse_binding(&a.value).is_some();
-        if !handler && !is_valid_html_attribute(tag, &a.name) {
+        let directive = a.name == "key" || ["lwc", "if", "for", "iterator"].iter().any(|p| a.name.starts_with(p));
+        if !directive && !is_event_handler_name(&a.name) && !is_valid_html_attribute(tag, &a.name) {
             d.push(lwc(1057, &[&a.name, tag], attr_loc(n, &a.name)));
         }
     }
+}
+
+/// TS `EVENT_HANDLER_NAME_RE`: `/^on[a-z][a-z0-9_]*$/` (applyHandlers takes these before applyAttributes).
+fn is_event_handler_name(name: &str) -> bool {
+    let mut cs = name.strip_prefix("on").map(str::chars).into_iter().flatten();
+    cs.next().is_some_and(|c| c.is_ascii_lowercase()) && cs.all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_')
+}
+
+/// TS normalizeLocation(undefined): `{ line: 0, column: 0, start: 0, length: 0 }`.
+const NO_LOCATION: SourceLocation = SourceLocation { start_line: 0, start_column: 0, end_line: 0, end_column: 0, start: 0, end: 0 };
+
+/// TS parseElementLocation: 1144 (location-less warning) for an element parse5 inserted while recovering.
+/// The parent is the immediate AST parent when it is a base element, else `template`.
+/// Not wired yet: needs a `validate::html_recovery(n, d);` call before `element_check::element_errors` in mod.rs.
+#[allow(dead_code)]
+pub(super) fn html_recovery(n: &NodeRef, d: &mut Ctx) {
+    let b = n.borrow();
+    if b.source_code_location_ref().is_some() { return; }
+    let Some(tag) = b.tag_name() else { return };
+    let parent = b.parent().and_then(|p| p.borrow().tag_name().filter(|t| *t != "template").map(str::to_string));
+    d.push(lwc(1144, &[tag, parent.as_deref().unwrap_or("template")], NO_LOCATION));
 }

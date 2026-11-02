@@ -6,7 +6,7 @@
 //! - acorn SyntaxError → `LWC1083: Error parsing template expression: Invalid expression {src} - <msg> (line:col)`
 //! - `invariant` CompilerError → `Invalid expression {src} - LWC<code>: <msg>`, code kept.
 
-use super::validate::messages::message;
+use super::messages::message;
 
 /// First API version with complex template expressions (TS `minApiVersion(ENABLE_COMPLEX_TEMPLATE_EXPRESSIONS)`).
 pub(crate) const MIN_CTE_API_VERSION: u32 = 66;

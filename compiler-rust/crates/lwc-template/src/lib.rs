@@ -91,7 +91,7 @@ mod tests {
         match &root.children[0] {
             ChildNode::Text(Text { value: TextValue::Literal(s), raw, .. }) => {
                 assert_eq!(s, "foo");
-                assert_eq!(raw, "\n    foo\n");
+                assert_eq!(raw, "foo"); // TS Text.raw = cleaned source token
             }
             o => panic!("{o:?}"),
         }

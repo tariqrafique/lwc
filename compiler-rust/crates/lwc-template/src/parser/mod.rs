@@ -73,10 +73,34 @@ fn node_loc(n: &NodeRef) -> SourceLocation {
     n.borrow().source_code_location().map(|l| loc(&l.location)).unwrap_or_default()
 }
 
-/// LWC `cleanTextNode`-ish: drop whitespace-only text, trim surrounding whitespace incl. newlines.
-fn clean_text(raw: &str) -> Option<String> {
-    let t = raw.trim_matches(|c: char| c.is_ascii_whitespace());
-    if t.is_empty() { None } else { Some(t.to_string()) }
+/// TS `cleanTextNode` (babel JSX text cleaning): per line, tabs become spaces, leading spaces are
+/// trimmed except on the first line and trailing spaces except on the last; non-empty lines are joined
+/// with a single space after every line but the last non-empty one.
+fn clean_text_node(value: &str) -> String {
+    let lines: Vec<&str> = value.split("\r\n").flat_map(|l| l.split(['\n', '\r'])).collect();
+    let last_non_empty = lines.iter().rposition(|l| l.chars().any(|c| c != ' ' && c != '\t')).unwrap_or(0);
+    let mut out = String::new();
+    for (i, line) in lines.iter().enumerate() {
+        let mut t = line.replace('\t', " ");
+        if i != 0 { t = t.trim_start_matches(' ').to_string(); }
+        if i != lines.len() - 1 { t = t.trim_end_matches(' ').to_string(); }
+        if !t.is_empty() {
+            if i != last_non_empty { t.push(' '); }
+            out.push_str(&t);
+        }
+    }
+    out
+}
+
+/// JS `String.prototype.trim` emptiness (Unicode whitespace plus U+FEFF).
+fn js_blank(s: &str) -> bool { s.chars().all(|c| c.is_whitespace() || c == '\u{feff}') }
+
+/// TS parseTextNode: `cleanTextNode(rawSource)`; no node when it is blank. The emptiness test reads the
+/// undecoded source (`&nbsp;` keeps a node); the returned text is the cleaned decoded value.
+fn clean_text(value: &str, raw: &str) -> Option<String> {
+    let probe = if raw.is_empty() { value } else { raw };
+    if js_blank(&clean_text_node(probe)) { return None; }
+    Some(clean_text_node(value))
 }
 
 /// Split text into alternating literal / `{expr}` segments (brace-balanced). Unclosed `{` stays literal.
@@ -168,7 +192,7 @@ enum Loop {
 /// `for:each={x} for:item="i" [for:index="j"]` or `iterator:it={x}`.
 fn loop_directive(attrs: &[parse5::Attribute], n: &NodeRef) -> Option<Loop> {
     if let Some(a) = attrs.iter().find(|a| a.name == "for:each") {
-        let expression = parse_binding(&a.value)?;
+        let expression = bound_expr(&a.value)?;
         // TODO: diagnostic when for:item is missing / not an identifier.
         let item = attrs.iter().find(|a| a.name == "for:item").filter(|a| is_ident(&a.value))?;
         let index = attrs.iter().find(|a| a.name == "for:index").filter(|a| is_ident(&a.value))
@@ -178,7 +202,14 @@ fn loop_directive(attrs: &[parse5::Attribute], n: &NodeRef) -> Option<Loop> {
     let a = attrs.iter().find(|a| a.name.starts_with("iterator:"))?;
     let name = &a.name["iterator:".len()..];
     if !is_ident(name) { return None; }
-    Some(Loop::Of { expression: parse_binding(&a.value)?, iterator: Identifier { name: name.to_string() }, directive_location: attr_loc(n, &a.name) })
+    Some(Loop::Of { expression: bound_expr(&a.value)?, iterator: Identifier { name: name.to_string() }, directive_location: attr_loc(n, &a.name) })
+}
+
+/// The parsed expression of a `{…}` directive value (for:each, iterator:*, lwc:spread/on/slot-bind/is/…):
+/// a member path, or (complex expressions, quoted complex values, computed members) opaque source.
+/// Values that failed to parse were rejected by the element pre-pass.
+fn bound_expr(v: &str) -> Option<Expression> {
+    parse_binding(v).or_else(|| expr_check::is_expression(v).then(|| complex_source(v)))
 }
 
 fn wrap_loop(l: Loop, children: Vec<ChildNode>, location: SourceLocation) -> ChildNode {
@@ -189,7 +220,7 @@ fn wrap_loop(l: Loop, children: Vec<ChildNode>, location: SourceLocation) -> Chi
 }
 
 fn is_directive_attr(name: &str) -> bool {
-    matches!(name, "lwc:if" | "lwc:elseif" | "lwc:else" | "if:true" | "if:false" | "for:each" | "for:item" | "for:index" | "key" | "lwc:ref" | "lwc:dom" | "lwc:inner-html" | "lwc:spread" | "lwc:dynamic" | "lwc:is") || name.starts_with("iterator:")
+    matches!(name, "lwc:if" | "lwc:elseif" | "lwc:else" | "if:true" | "if:false" | "for:each" | "for:item" | "for:index" | "key" | "lwc:ref" | "lwc:dom" | "lwc:inner-html" | "lwc:spread" | "lwc:dynamic" | "lwc:is" | "lwc:on" | "lwc:slot-bind") || name.starts_with("iterator:")
 }
 
 /// TS `isAttribute` for Component / LwcComponent: style, class, key, slot, exportparts and `data-*`
@@ -254,17 +285,19 @@ fn split_props(attrs: Vec<Attribute>, keep: impl Fn(&str) -> bool, d: &mut Ctx) 
     (attrs, props)
 }
 
-/// lwc:dom / lwc:inner-html / lwc:spread / lwc:dynamic / lwc:is → ElementDirective (TS applyLwcDirectives;
+/// lwc:dom / lwc:inner-html / lwc:spread / lwc:on / lwc:slot-bind / lwc:dynamic / lwc:is → ElementDirective (TS applyLwcDirectives;
 /// values were validated by the element pre-pass).
 fn lifted_directives(attrs: &[parse5::Attribute]) -> Vec<ElementDirective> {
     let mut out = Vec::new();
     for a in attrs {
         let dir = match a.name.as_str() {
-            "lwc:dynamic" => parse_binding(&a.value).map(ElementDirective::Dynamic),
-            "lwc:is" => parse_binding(&a.value).map(ElementDirective::Is),
-            "lwc:spread" => parse_binding(&a.value).map(ElementDirective::Spread),
+            "lwc:dynamic" => bound_expr(&a.value).map(ElementDirective::Dynamic),
+            "lwc:is" => bound_expr(&a.value).map(ElementDirective::Is),
+            "lwc:spread" => bound_expr(&a.value).map(ElementDirective::Spread),
+            "lwc:on" => bound_expr(&a.value).map(ElementDirective::OnDirective),
+            "lwc:slot-bind" => bound_expr(&a.value).map(ElementDirective::SlotBind),
             "lwc:dom" => Some(ElementDirective::Dom(LiteralValue::String(a.value.clone()))),
-            "lwc:inner-html" => Some(ElementDirective::InnerHtml(match parse_binding(&a.value) {
+            "lwc:inner-html" => Some(ElementDirective::InnerHtml(match bound_expr(&a.value) {
                 Some(e) => AttributeValue::Expression(e),
                 None => AttributeValue::Literal(Literal { value: LiteralValue::String(a.value.clone()) }),
             })),
@@ -283,13 +316,64 @@ fn elem_loc(n: &NodeRef) -> ElementSourceLocation {
     }).unwrap_or_default()
 }
 
-fn lower_attr(a: &parse5::Attribute, n: &NodeRef) -> Attribute {
+/// TS `isComplexTemplateExpressionEnabled`: the flag and API version ≥ 66.
+fn complex_enabled(cfg: &NormalizedConfig) -> bool {
+    cfg.experimental_complex_expressions && cfg.api_version >= expr_check::MIN_CTE_API_VERSION
+}
+
+/// `{ src }` → `Expression::Complex("src")` (opaque JS source, braces stripped).
+fn complex_source(v: &str) -> Expression {
+    let inner = v.strip_prefix('{').and_then(|s| s.strip_suffix('}')).unwrap_or(v);
+    Expression::Complex(inner.trim().to_string())
+}
+
+/// The cooked value of `src` when the whole source is one JS string literal (`'a'` / `"a"`), else None.
+/// Escapes beyond the simple single-char, `\xHH` and `\uHHHH` forms return None (kept as an expression).
+fn js_string_literal(src: &str) -> Option<String> {
+    let q = src.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+    let body = src.get(1..src.len().checked_sub(1)?)?;
+    if src.len() < 2 || !src.ends_with(q) { return None; }
+    let mut out = String::new();
+    let mut it = body.chars();
+    while let Some(c) = it.next() {
+        match c {
+            '\\' => {
+                let e = it.next()?;
+                let hex = |it: &mut std::str::Chars, n: usize| -> Option<char> {
+                    let h: String = (0..n).map(|_| it.next()).collect::<Option<String>>()?;
+                    char::from_u32(u32::from_str_radix(&h, 16).ok()?)
+                };
+                out.push(match e {
+                    'n' => '\n', 't' => '\t', 'r' => '\r', 'b' => '\u{8}', 'f' => '\u{c}', 'v' => '\u{b}', '0' if !it.clone().next().is_some_and(|c| c.is_ascii_digit()) => '\0',
+                    'x' => hex(&mut it, 2)?,
+                    'u' if !it.clone().next().is_some_and(|c| c == '{') => hex(&mut it, 4)?,
+                    '\'' | '"' | '\\' => e,
+                    '\n' => continue,
+                    _ => return None,
+                });
+            }
+            '\n' | '\r' => return None,
+            c if c == q => return None,
+            c => out.push(c),
+        }
+    }
+    Some(out)
+}
+
+/// TS getTemplateAttribute + normalizeAttributeValue value lowering: an expression (member path, or
+/// opaque source for anything acorn parsed), `true` for a valueless attribute, else the string.
+/// Elements whose values failed to normalize or parse were dropped by the element pre-pass.
+fn lower_attr(tag: &str, a: &parse5::Attribute, n: &NodeRef, d: &Ctx) -> Attribute {
     let location = n.borrow().source_code_location().and_then(|l| l.attrs.get(&a.name).map(loc)).unwrap_or_default();
-    let value = if let Some(e) = parse_binding(&a.value) {
-        AttributeValue::Expression(e)
-    } else {
-        let v = if a.name == "class" { a.value.split_ascii_whitespace().collect::<Vec<_>>().join(" ") } else { a.value.clone() };
+    let string = |s: String| {
+        let v = if a.name == "class" { s.split_ascii_whitespace().collect::<Vec<_>>().join(" ") } else { s };
         AttributeValue::Literal(Literal { value: LiteralValue::String(v) })
+    };
+    let value = match element_check::normalize(tag, a, n, d).map(|p| p.v) {
+        Ok(element_check::Av::Expr(v)) => AttributeValue::Expression(parse_binding(&v).unwrap_or_else(|| complex_source(&v))),
+        Ok(element_check::Av::Bool) => AttributeValue::Literal(Literal { value: LiteralValue::Bool(true) }),
+        Ok(element_check::Av::Str(v)) => string(v),
+        Err(_) => match parse_binding(&a.value) { Some(e) => AttributeValue::Expression(e), None => string(a.value.clone()) },
     };
     Attribute { name: a.name.clone(), value, location }
 }
@@ -341,17 +425,37 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
     let one = |c: ChildNode| Some(Lowered { content: vec![c], lwc: None, location: SourceLocation::default() });
     match &b.data {
         NodeData::Text { value } => {
-            let v = clean_text(value)?;
             let l = node_loc(n);
+            let src = raw_source(&l, d);
+            let v = clean_text(value, &src)?;
             let segments = split_mustache(&v);
             // TS `withErrorRecovery` around parseTextNode: a text node whose expression fails to parse
             // is dropped entirely (the error is still reported).
             if validate::text_expressions(&segments, &l, cfg, d) { return None; }
-            let content: Vec<ChildNode> = segments.into_iter().map(|(seg, is_expr)| {
+            // TS parseText / parseTextComplex: every `{…}` token is an expression (complex mode parses any
+            // `{`; otherwise EXPRESSION_RE needs a non-empty body). Non-member expressions stay opaque source.
+            let complex = complex_enabled(cfg);
+            // TS Text.raw is the token from the cleaned undecoded source; fall back to the decoded token
+            // when the source split does not align.
+            let raw_tokens = split_mustache(&clean_text_node(&src));
+            let aligned = raw_tokens.len() == segments.len() && raw_tokens.iter().zip(&segments).all(|(a, b)| a.1 == b.1);
+            let content: Vec<ChildNode> = segments.into_iter().enumerate().map(|(i, (seg, is_expr))| {
+                let raw = if aligned { raw_tokens[i].0.clone() } else { seg.clone() };
                 let tv = if !is_expr { TextValue::Literal(seg) } else {
-                    match parse_binding(&seg) { Some(e) => TextValue::Expression(e), None => TextValue::Literal(seg) }
+                    match parse_binding(&seg) {
+                        Some(e) => TextValue::Expression(e),
+                        // TS transformText: `isStringLiteral(value) ? value.value : bindExpression(value)`.
+                        None if complex || expr_check::is_expression(&seg) => match complex_source(&seg) {
+                            Expression::Complex(src) => match js_string_literal(&src) {
+                                Some(text) => TextValue::Literal(text),
+                                None => TextValue::Expression(Expression::Complex(src)),
+                            },
+                            e => TextValue::Expression(e),
+                        },
+                        None => TextValue::Literal(seg),
+                    }
                 };
-                ChildNode::Text(Text { value: tv, raw: value.clone(), location: l.clone() })
+                ChildNode::Text(Text { value: tv, raw, location: l.clone() })
             }).collect();
             Some(Lowered { content, lwc: None, location: SourceLocation::default() })
         }
@@ -385,7 +489,11 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             // `lwc:ref="foo"`: string literal only. TODO: diagnostics for boolean/empty/expression values (skipped for now).
             let lwc_ref = attrs.iter().find(|a| a.name == "lwc:ref").map(|a| a.value.clone()).filter(|v| !v.is_empty() && parse_binding(v).is_none() && !(v.starts_with('{') && v.ends_with('}')));
             let lifted = lifted_directives(attrs);
-            let attrs: Vec<_> = attrs.iter().filter(|a| !is_directive_attr(&a.name)).collect();
+            let slot_bind = attrs.iter().find(|a| a.name == "lwc:slot-bind");
+            // TS: element directives are applied to elements only; on `<template>` lwc:on / lwc:slot-bind
+            // stay attributes (validateTemplate reports them as unsupported, 1145).
+            let attrs: Vec<_> = attrs.iter().filter(|a| !is_directive_attr(&a.name)
+                || (tag_name == "template" && matches!(a.name.as_str(), "lwc:on" | "lwc:slot-bind"))).collect();
             let location = elem_loc(n);
             if tag_name == "template" {
                 if let Some(sd) = attrs.iter().find(|a| a.name == "lwc:slot-data").copied() {
@@ -422,7 +530,7 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
                     _ => true,
                 }
             }).collect();
-            let attributes = attrs.iter().map(|a| lower_attr(a, n)).collect();
+            let attributes = attrs.iter().map(|a| lower_attr(tag_name, a, n, d)).collect();
             let directives: Vec<ElementDirective> = key.into_iter().map(ElementDirective::Key).chain(lwc_ref.map(ElementDirective::Ref)).chain(lifted).collect();
             let depth = d.iter_depth; if lp.is_some() { d.iter_depth += 1; }
             let is_comp = is_custom_element_tag(tag_name);
@@ -446,7 +554,9 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
                 let slot_name = attrs.iter().find(|a| a.name == "name").map(|a| a.value.clone()).unwrap_or_default();
                 // TS parseSlot: scoped (`lwc:slot-bind`) slots are light-DOM only and may not be duplicated
                 // or mixed with standard slots of the same name.
-                validate::slot(&slot_name, attrs.iter().copied().find(|a| a.name == "lwc:slot-bind"), &location.location, d);
+                // TS parseSlot registers the name before any later (childless) throw empties the attributes.
+                let seen_name = qualified.iter().find(|a| a.name == "name").map_or(slot_name.as_str(), |a| a.value.as_str());
+                validate::slot(seen_name, slot_bind, &location.location, d);
                 ChildNode::Slot(Slot { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, directives: directives.clone(), listeners, children, location: location.clone(), slot_name, ..Default::default() })
             } else if is_custom_element_tag(tag_name) && attrs.iter().any(|a| a.name == "lwc:external") {
                 // TS: `isCustomElementTag && parsedAttr.get(External)` → ExternalComponent; attrs stay
@@ -456,11 +566,15 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
                 ChildNode::ExternalComponent(ExternalComponent { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() })
             } else if is_custom_element_tag(tag_name) {
                 { let (attributes, properties) = split_props(attributes, component_keeps_attr, d); ChildNode::Component(Component { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() }) }
+            } else if tag_name == "lwc:component" {
+                // TS parseLwcComponent → ast.lwcComponent; isAttribute uses the component table.
+                validate::ssr_inner_outer_html(&attributes, tag_name, cfg, d);
+                let (attributes, properties) = split_props(attributes, component_keeps_attr, d);
+                ChildNode::LwcComponent(LwcComponent { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone() })
             } else {
                 validate::ssr_inner_outer_html(&attributes, tag_name, cfg, d);
-                // TS isAttribute: lwc:component uses the component table; `<input value|checked>` are props.
-                let (attributes, properties) = if tag_name == "lwc:component" { split_props(attributes, component_keeps_attr, d) }
-                    else if tag_name == "input" { split_props(attributes, |a| a != "value" && a != "checked", d) }
+                // TS isAttribute: `<input value|checked>` are props.
+                let (attributes, properties) = if tag_name == "input" { split_props(attributes, |a| a != "value" && a != "checked", d) }
                     else { (attributes, Vec::new()) };
                 ChildNode::Element(Element { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() })
             };
@@ -487,7 +601,7 @@ fn scoped_slot_fragment(
     let loc = location.location.clone();
     let sd_loc = attr_loc(n, &sd.name);
     let slot_data = validate::scoped_slot_data(sd, other_directive, &loc, &sd_loc, d)?;
-    let slot_name = attrs.iter().find(|a| a.name == "slot").map(|a| lower_attr(a, n).value)
+    let slot_name = attrs.iter().find(|a| a.name == "slot").map(|a| lower_attr("template", a, n, d).value)
         .unwrap_or(AttributeValue::Literal(Literal { value: LiteralValue::String(String::new()) }));
     let kids = match template_content { Some(c) => c.borrow().child_nodes().cloned().unwrap_or_default(), None => child_nodes.to_vec() };
     let prev_sd = std::mem::replace(&mut d.slot_data_parent_ok, false);
@@ -635,8 +749,19 @@ pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseR
         preserved = NormalizedConfig { preserve_html_comments: true, ..config.clone() };
         &preserved
     } else { config };
+    // TS applyRootLwcDirectives: renderModeDirective then preserveCommentsDirective, when present
+    // (root_errors already rejected invalid values).
+    let mut directives = Vec::new();
+    if let NodeData::Element { attrs, .. } = &tb.data {
+        match attrs.iter().find(|a| a.name == "lwc:render-mode").map(|a| a.value.as_str()) {
+            Some("light") => directives.push(RootDirective::RenderMode(RenderMode::Light)),
+            Some("shadow") => directives.push(RootDirective::RenderMode(RenderMode::Shadow)),
+            _ => {}
+        }
+        if attrs.iter().any(|a| a.name == "lwc:preserve-comments") { directives.push(RootDirective::PreserveComments(true)); }
+    }
     let children = lower_children(&kids, config, &mut cx);
-    TemplateParseResult { root: Some(Root { location, directives: vec![], children }), warnings: cx.diags }
+    TemplateParseResult { root: Some(Root { location, directives, children }), warnings: cx.diags }
 }
 
 /// Directives consumed from a nested `<template>` (anything else → INVALID_TEMPLATE_ATTRIBUTE).
@@ -693,3 +818,17 @@ const PARSE5_WARN_OLDER: &[&str] = &[
     "abandoned-head-element-child", "misplaced-start-tag-for-head-element", "nested-noscript-in-head",
     "eof-in-element-that-can-contain-only-text",
 ];
+
+#[cfg(test)]
+mod string_literal_tests {
+    use super::js_string_literal as s;
+    #[test]
+    fn whole_source_string_literals_only() {
+        assert_eq!(s("'foo foo'").as_deref(), Some("foo foo"));
+        assert_eq!(s(r#""a\"b\x41\u0042""#).as_deref(), Some("a\"bAB"));
+        assert_eq!(s("'a' + 'b'"), None);
+        assert_eq!(s("`a`"), None);
+        assert_eq!(s("'"), None);
+        assert_eq!(s("foo"), None);
+    }
+}

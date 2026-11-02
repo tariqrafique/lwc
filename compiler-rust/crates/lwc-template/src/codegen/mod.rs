@@ -166,10 +166,19 @@ impl Gen {
             }
             data.push_str(&format!("{pad}  }},\n"));
         }
+        // TS genDynamicEventListeners (lwc:on): raw value, then a null-prototype clone.
+        if let Some(e) = directives.iter().find_map(|d| match d { ElementDirective::OnDirective(e) => Some(e), _ => None }) {
+            let x = self.expr(e);
+            data.push_str(&format!("{pad}  dynamicOnRaw: {x},\n{pad}  dynamicOn: {{\n{pad}    __proto__: null,\n{pad}    ...{x},\n{pad}  }},\n"));
+        }
         if needs_renderer {
             // TS: `renderer: renderer` data property + `renderer` lwc import.
             self.renderer = true;
             data.push_str(&format!("{pad}  renderer: renderer,\n"));
+        }
+        // TS elementDataBag: `slotData` (lwc:slot-bind) after the renderer.
+        if let Some(e) = directives.iter().find_map(|d| match d { ElementDirective::SlotBind(e) => Some(e), _ => None }) {
+            data.push_str(&format!("{pad}  slotData: {},\n", self.expr(e)));
         }
         self.cur_cr = outer_cr;
         data.push_str(&format!("{pad}}}"));
@@ -219,6 +228,14 @@ impl Gen {
                 self.static_fragment(c, key.to_string())
             }
             ChildNode::Element(e) => { self.cur_ns = e.namespace.clone(); self.element(e, ind) }
+            ChildNode::LwcComponent(e) => {
+                // TS genLwcComponent → api_dynamic_component(ctor, data, children).
+                self.cur_ns = e.namespace.clone();
+                let (head, data, kids) = self.parts(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, ind, CrKind::Element);
+                if let Some(r) = self.dynamic_ctor(&e.name, &e.directives, &data, &kids) { return Some(r); }
+                self.element = true;
+                format!("api_element({head}, {data}, {kids})")
+            }
             ChildNode::Component(e) => {
                 // TS genCustomElement registers the import after transforming children (post-order).
                 let (head, data, kids) = self.parts(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, ind, CrKind::Component);
@@ -560,6 +577,8 @@ impl Gen {
 
     /// Attribute value incl. TS `sanitizeAttribute` wrap for svg `<use href>`.
     fn bound_attr(&mut self, tag: &str, ns: &str, a: &Attribute) -> String {
+        // TS computeAttrValue: a boolean used as an attribute is always `''`.
+        if matches!(a.value, AttributeValue::Literal(Literal { value: LiteralValue::Bool(_) })) { return "\"\"".into(); }
         let v = self.attr_value(&a.value);
         if is_svg_use_href(tag, &a.name, ns) && !self.cur_cr {
             self.sanitize = true;

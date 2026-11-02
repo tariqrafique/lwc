@@ -3,6 +3,7 @@
 # Other agents edit the tree concurrently; live-tree runs mixed edits into the binary mid-run (20:16, 20:18).
 #   1. snapshot: Rust tree {Cargo.*, crates, scripts, tools, docs, README.md, decisions.tsv} + ../parse5-rust (build dep)
 #      + harness source/goldens (no node_modules/.pins/render-out/.vitest/*.node) + ../notes/lwc-rust-migrate; hash it (src sha)
+#   1b. golden-gate: snapshot goldens must equal a fresh JS-backend recording (oracle b9e8007) -> abort otherwise
 #   2. fresh target dir (== cargo clean): cargo check --workspace --all-targets + seam crate tests -> abort on failure
 #   3. napi built from the snapshot; installed into the SNAPSHOT harness (and atomically into the live harness for others)
 #   4. board.sh runs from the snapshot harness (tests+goldens frozen too); shim-gate + option-gate read snapshot crates (CRATES_ROOT)
@@ -38,6 +39,8 @@ p5="$(cd "$snap/parse5-rust" && find . -type f -print0 | sort -z | xargs -0 sha2
 echo "src snapshot sha256:$h0  parse5-rust sha256:$p5  ($snap, $hsnap)"
 export CARGO_TARGET_DIR="$snap/target"
 ws="$snap/repo"
+GOLDEN_GATE_PROGRESS="$snap/golden.progress" "$hsnap/harness/scripts/golden-gate.sh" "$hsnap/harness" \
+  || { echo "!! BOARD ABORTED: goldens @ $h0 != fresh JS-oracle recording" >&2; exit 3; }
 (cd "$ws" && cargo check --workspace --all-targets) || { echo "!! BOARD ABORTED: snapshot $h0 does not compile" >&2; exit 3; }
 (cd "$ws" && cargo test -p lwc-shared -p lwc-compiler -p lwc-compiler-napi) || { echo "!! BOARD ABORTED: seam crate tests fail @ $h0" >&2; exit 3; }
 (cd "$ws" && cargo build -p lwc-compiler-napi --release)

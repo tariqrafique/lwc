@@ -14,9 +14,9 @@ use parse5::common::html::{NS_HTML, NS_MATHML, NS_SVG};
 
 /// TS `ast.*Literal` / expression value after normalizeAttributeValue.
 #[derive(Clone, PartialEq)]
-enum Av { Expr(String), Str(String), Bool }
+pub(super) enum Av { Expr(String), Str(String), Bool }
 
-struct Pa { name: String, v: Av, loc: SourceLocation }
+pub(super) struct Pa { pub(super) name: String, pub(super) v: Av, pub(super) loc: SourceLocation }
 
 impl Pa { fn expr(&self) -> bool { matches!(self.v, Av::Expr(_)) } }
 
@@ -68,7 +68,7 @@ fn identifier(s: &str, l: &SourceLocation) -> Result<(), CompilerDiagnostic> {
 
 /// TS getTemplateAttribute + normalizeAttributeValue errors other than 1034 / expression errors
 /// (those are `validate::attribute_expressions`): 1055, 1037/1036, 1035.
-fn normalize(tag: &str, a: &parse5::Attribute, n: &NodeRef, d: &Ctx) -> Result<Pa, CompilerDiagnostic> {
+pub(super) fn normalize(tag: &str, a: &parse5::Attribute, n: &NodeRef, d: &Ctx) -> Result<Pa, CompilerDiagnostic> {
     let ra = raw_attr(n, a, d);
     let l = ra.location.clone();
     if !ra.raw.starts_with(&a.name) { return Err(lwc(1055, &[&ra.raw, tag], l)); }

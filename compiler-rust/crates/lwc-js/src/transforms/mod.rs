@@ -25,14 +25,20 @@ pub mod version_stamp;
 pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions) -> Result<Vec<Edit>, CompileError> {
     let mut edits = Vec::new();
     scoped_css::run(program, &mut edits);
-    let mut dyn_errs = dynamic_imports::run(program, src, filename, o, &mut edits);
-    if !dyn_errs.is_empty() {
-        if !o.experimental_error_recovery_mode { return Err(dyn_errs.swap_remove(0)); }
-        if let Err(e) = decorators::run(program, src, filename, o, &mut Vec::new()) { dyn_errs.push(e); }
-        return Err(CompileError::aggregate(dyn_errs, filename));
-    }
+    let dyn_errs = dynamic_imports::run(program, src, filename, o, &mut edits);
     // decorators before component: same-offset inserts keep push order (registerDecorators before registerComponent)
-    let late_import = decorators::run(program, src, filename, o, &mut edits)?;
+    let dec = decorators::run(program, src, filename, o, &mut edits);
+    if !dyn_errs.is_empty() || dec.is_err() {
+        // Shipped visit order: Program enter (decorator import usage), then pre-order `Class` / `Import` nodes,
+        // so errors interleave by source position; non-recovery throws the first one.
+        let mut all = dec.err().unwrap_or_default();
+        all.extend(dyn_errs.into_iter().map(|e| (e.diagnostics.first().and_then(|d| d.location).map_or(0, |l| l.start), e)));
+        all.sort_by_key(|(k, _)| *k);
+        let mut errs: Vec<CompileError> = all.into_iter().map(|(_, e)| e).collect();
+        if !o.experimental_error_recovery_mode { return Err(errs.swap_remove(0)); }
+        return Err(CompileError::aggregate(errs, filename));
+    }
+    let late_import = dec.unwrap_or_default();
     // version_stamp: runs post-codegen in lib.rs (oxc codegen drops class-body comments)
     component::run(program, src, filename, o, &mut edits);
     if let Some(i) = late_import { edits.push(Edit::insert(0, i)); }

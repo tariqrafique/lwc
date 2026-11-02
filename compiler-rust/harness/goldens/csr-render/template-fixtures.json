@@ -197,8 +197,8 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><ns-baz-1 accesskey=\"with-hyphen\"><template shadowrootmode=\"open\"></template></ns-baz-1><ns-baz-2 accesskey=\"without-hyphen\"><template shadowrootmode=\"open\"></template></ns-baz-2></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/duplicate-props/duplicate-props.html (4:9): @lwc/rollup-plugin: LWC1147: Found multiple HTML attributes mapping to the same JavaScript property. \"accesskey\" and \"access-key\" both map to \"accessKey\".",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/duplicate-props/duplicate-props.html (8:9): @lwc/rollup-plugin: LWC1147: Found multiple HTML attributes mapping to the same JavaScript property. \"access-key\" and \"accesskey\" both map to \"accessKey\"."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/duplicate-props/duplicate-props.html (4:9): @lwc/rollup-plugin: LWC1147: Found multiple HTML attributes mapping to the same JavaScript property. \"accesskey\" and \"access-key\" both map to \"accessKey\".",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/duplicate-props/duplicate-props.html (8:9): @lwc/rollup-plugin: LWC1147: Found multiple HTML attributes mapping to the same JavaScript property. \"access-key\" and \"accesskey\" both map to \"accessKey\"."
   ]
  },
  "attributes/error-ambiguous-attribute": {
@@ -241,7 +241,7 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><section><textarea minlength=\"1\" maxlength=\"5\" unknown-attr=\"should-error\">x</textarea></section></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/html-tag-invalid/html-tag-invalid.html (3:47): @lwc/rollup-plugin: LWC1057: unknown-attr is not valid attribute for textarea. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/html-tag-invalid/html-tag-invalid.html (3:47): @lwc/rollup-plugin: LWC1057: unknown-attr is not valid attribute for textarea. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea"
   ]
  },
  "attributes/id": {
@@ -275,11 +275,11 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><div></div></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/not-scoped/not-scoped.html (5:9): @lwc/rollup-plugin: LWC1057: aria-described-by is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/not-scoped/not-scoped.html (6:9): @lwc/rollup-plugin: LWC1057: aria-active-descendant is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/not-scoped/not-scoped.html (7:9): @lwc/rollup-plugin: LWC1057: aria-error-message is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/not-scoped/not-scoped.html (8:9): @lwc/rollup-plugin: LWC1057: aria-flow-to is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/not-scoped/not-scoped.html (9:9): @lwc/rollup-plugin: LWC1057: aria-labelled-by is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/not-scoped/not-scoped.html (5:9): @lwc/rollup-plugin: LWC1057: aria-described-by is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/not-scoped/not-scoped.html (6:9): @lwc/rollup-plugin: LWC1057: aria-active-descendant is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/not-scoped/not-scoped.html (7:9): @lwc/rollup-plugin: LWC1057: aria-error-message is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/not-scoped/not-scoped.html (8:9): @lwc/rollup-plugin: LWC1057: aria-flow-to is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/not-scoped/not-scoped.html (9:9): @lwc/rollup-plugin: LWC1057: aria-labelled-by is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
   ]
  },
  "attributes/scoped-id/expression/scoped": {
@@ -364,7 +364,7 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><somefancytag min=\"4\"></somefancytag></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/unknown-html-tag-known-attribute/unknown-html-tag-known-attribute.html (2:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<somefancytag>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/unknown-html-tag-known-attribute/unknown-html-tag-known-attribute.html (2:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<somefancytag>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
   ]
  },
  "attributes/unquoted-value-unary": {
@@ -501,7 +501,7 @@
    "uncaught: TypeError: Cannot read properties of undefined (reading 'foo')"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/only-child/only-child.html (2:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/only-child/only-child.html (2:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
  },
  "directive-dynamic/sibbling": {
@@ -511,7 +511,7 @@
    "uncaught: TypeError: Cannot read properties of undefined (reading 'foo')"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/sibbling/sibbling.html (3:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/sibbling/sibbling.html (3:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
  },
  "directive-external/built-ins": {
@@ -680,14 +680,14 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/inline-both-custom-element/inline-both-custom-element.html (2:5): @lwc/rollup-plugin: LWC1182: Multiple if: directives found on 'c-hello'. Only one if: directive is allowed; the rest are ignored."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/inline-both-custom-element/inline-both-custom-element.html (2:5): @lwc/rollup-plugin: LWC1182: Multiple if: directives found on 'c-hello'. Only one if: directive is allowed; the rest are ignored."
   ]
  },
  "directive-if/inline-both-standard-element": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/inline-both-standard-element/inline-both-standard-element.html (2:5): @lwc/rollup-plugin: LWC1182: Multiple if: directives found on 'h1'. Only one if: directive is allowed; the rest are ignored."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/inline-both-standard-element/inline-both-standard-element.html (2:5): @lwc/rollup-plugin: LWC1182: Multiple if: directives found on 'h1'. Only one if: directive is allowed; the rest are ignored."
   ]
  },
  "directive-if/inline-multiple": {
@@ -710,7 +710,7 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/template-both/template-both.html (2:5): @lwc/rollup-plugin: LWC1182: Multiple if: directives found on 'template'. Only one if: directive is allowed; the rest are ignored."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/template-both/template-both.html (2:5): @lwc/rollup-plugin: LWC1182: Multiple if: directives found on 'template'. Only one if: directive is allowed; the rest are ignored."
   ]
  },
  "directive-if/template-expression": {
@@ -860,7 +860,7 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><div></div></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/outside-iterator/outside-iterator.html (2:10): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/outside-iterator/outside-iterator.html (2:10): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC."
   ]
  },
  "directive-lwc-if-else/directive-for-each/html-elements": {
@@ -933,7 +933,7 @@
    "uncaught: TypeError: Cannot read properties of undefined (reading 'if')"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/if/if.html (3:9): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/if/if.html (3:9): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
  },
  "directive-lwc-if-else/dynamic/if-else": {
@@ -943,7 +943,7 @@
    "uncaught: TypeError: Cannot read properties of undefined (reading 'if')"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/if-else/if-else.html (6:9): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/if-else/if-else.html (6:9): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
  },
  "directive-lwc-if-else/dynamic/if-elseif": {
@@ -953,7 +953,7 @@
    "uncaught: TypeError: Cannot read properties of undefined (reading 'if')"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/if-elseif/if-elseif.html (6:9): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/if-elseif/if-elseif.html (6:9): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
  },
  "directive-lwc-if-else/dynamic/if-elseif-else": {
@@ -963,7 +963,7 @@
    "uncaught: TypeError: Cannot read properties of undefined (reading 'if')"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/if-elseif-else/if-elseif-else.html (9:9): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/if-elseif-else/if-elseif-else.html (9:9): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
  },
  "directive-lwc-if-else/dynamic/if-elseif-else-nested": {
@@ -973,7 +973,7 @@
    "uncaught: TypeError: Cannot read properties of undefined (reading 'if')"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/if-elseif-else-nested/if-elseif-else-nested.html (16:13): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/if-elseif-else-nested/if-elseif-else-nested.html (16:13): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
  },
  "directive-lwc-if-else/dynamic/if-elseif-multiple": {
@@ -983,7 +983,7 @@
    "uncaught: TypeError: Cannot read properties of undefined (reading 'if')"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/if-elseif-multiple/if-elseif-multiple.html (9:9): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/if-elseif-multiple/if-elseif-multiple.html (9:9): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
  },
  "directive-lwc-if-else/error-invalid-expression": {
@@ -1117,21 +1117,21 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><!----><slot name=\"outside-slot\"></slot><!----></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/not-in-same-condition-tree/not-in-same-condition-tree.html (18:13): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"outside-slot\")."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/not-in-same-condition-tree/not-in-same-condition-tree.html (18:13): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"outside-slot\")."
   ]
  },
  "directive-lwc-if-else/slots/duplicate-slots-warning/same-branch-condition-tree": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><!---->Alternative Text<!----></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/same-branch-condition-tree/same-branch-condition-tree.html (5:13): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"nested-slot\")."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/same-branch-condition-tree/same-branch-condition-tree.html (5:13): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"nested-slot\")."
   ]
  },
  "directive-lwc-if-else/slots/duplicate-slots-warning/simple": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><div><div><slot name=\"conditional-slot\"></slot></div></div><div>Separator</div><div><slot name=\"conditional-slot\"></slot></div></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/simple/simple.html (9:9): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"conditional-slot\")."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/simple/simple.html (9:9): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"conditional-slot\")."
   ]
  },
  "directive-lwc-if-else/slots/named-slots/simple": {
@@ -1200,7 +1200,7 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><div></div></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/dynamic-ref/dynamic-ref.html (2:24): @lwc/rollup-plugin: LWC1057: dynamic is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/dynamic-ref/dynamic-ref.html (2:24): @lwc/rollup-plugin: LWC1057: dynamic is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
   ]
  },
  "directive-ref/invalid": {
@@ -1259,7 +1259,7 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/no-renderer-hook/no-renderer-hook.html (3:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/no-renderer-hook/no-renderer-hook.html (3:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
  },
  "directive-spread/valid": {
@@ -1847,14 +1847,14 @@
    "uncaught: InvalidCharacterError: \"s\\ection\" did not match the Name production"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/non-optimized/non-optimized.html (2:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<s\\ection>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/non-optimized/non-optimized.html (2:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<s\\ection>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
   ]
  },
  "html-tags/backslash-in-tag-name/optimized": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><s\\ection></s\\ection></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/optimized/optimized.html (2:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<s\\ection>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/optimized/optimized.html (2:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<s\\ection>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
   ]
  },
  "html-tags/blacklisted-svg": {
@@ -1868,8 +1868,8 @@
    "warn: [LWC warn]: Unknown public property \"someTruthyValue\" of element <x-custom-component>. This is either a typo on the corresponding attribute \"some-truthy-value\", or the attribute does not exist in this browser or DOM implementation."
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/unkown-element/unkown-element.html (2:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<unknonwtag>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/unkown-element/unkown-element.html (5:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<spam>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/unkown-element/unkown-element.html (2:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<unknonwtag>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/unkown-element/unkown-element.html (5:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<spam>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
   ]
  },
  "input/non-static-optimized/dynamic": {
@@ -1932,8 +1932,8 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><lwc:invalid></lwc:invalid></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/invalid/invalid.html (3:5): @lwc/rollup-plugin: LWC1184: lwc:invalid is not a special LWC tag name and will be treated as an HTML element.",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/invalid/invalid.html (3:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<lwc:invalid>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/invalid/invalid.html (3:5): @lwc/rollup-plugin: LWC1184: lwc:invalid is not a special LWC tag name and will be treated as an HTML element.",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/invalid/invalid.html (3:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<lwc:invalid>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
   ]
  },
  "metadata/used-attrs": {
@@ -1963,7 +1963,7 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><h1>hello</h1></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/double-close-template-older-api-version/double-close-template-older-api-version.html (4:1): @lwc/rollup-plugin: LWC1148: Invalid HTML syntax: end-tag-without-matching-open-element. This will not be supported in future versions of LWC. For more information, please visit https://html.spec.whatwg.org/multipage/parsing.html#parse-error-end-tag-without-matching-open-element"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/double-close-template-older-api-version/double-close-template-older-api-version.html (4:1): @lwc/rollup-plugin: LWC1148: Invalid HTML syntax: end-tag-without-matching-open-element. This will not be supported in future versions of LWC. For more information, please visit https://html.spec.whatwg.org/multipage/parsing.html#parse-error-end-tag-without-matching-open-element"
   ]
  },
  "parsing-errors/double-close-template-undefined-api-version": {
@@ -1974,14 +1974,14 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot><slot></slot></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/duplicate-default-slot/duplicate-default-slot.html (3:5): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (default)."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/duplicate-default-slot/duplicate-default-slot.html (3:5): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (default)."
   ]
  },
  "parsing-errors/duplicate-named-slot": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"foo\"></slot><slot name=\"foo\"></slot></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/duplicate-named-slot/duplicate-named-slot.html (3:5): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"foo\")."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/duplicate-named-slot/duplicate-named-slot.html (3:5): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"foo\")."
   ]
  },
  "parsing-errors/empty-template": {
@@ -2036,16 +2036,16 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/invalid-attribute/invalid-attribute.html (2:5): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: onfoo. For more information, please visit https://sfdc.co/template-directives",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/invalid-attribute/invalid-attribute.html (2:5): @lwc/rollup-plugin: LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/invalid-attribute/invalid-attribute.html (2:5): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: onfoo. For more information, please visit https://sfdc.co/template-directives",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/invalid-attribute/invalid-attribute.html (2:5): @lwc/rollup-plugin: LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives"
   ]
  },
  "parsing-errors/invalid-template-attribute/enableStrictTemplateSyntax-flag-disabled/invalid-attribute-with-children": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/invalid-attribute-with-children/invalid-attribute-with-children.html (2:5): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: class. For more information, please visit https://sfdc.co/template-directives",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/invalid-attribute-with-children/invalid-attribute-with-children.html (2:5): @lwc/rollup-plugin: LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/invalid-attribute-with-children/invalid-attribute-with-children.html (2:5): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: class. For more information, please visit https://sfdc.co/template-directives",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/invalid-attribute-with-children/invalid-attribute-with-children.html (2:5): @lwc/rollup-plugin: LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives"
   ]
  },
  "parsing-errors/invalid-template-attribute/enableStrictTemplateSyntax-flag-disabled/mixed-valid-invalid-attributes": {
@@ -2055,7 +2055,7 @@
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/mixed-valid-invalid-attributes/mixed-valid-invalid-attributes.html (4:9): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: onfoo. For more information, please visit https://sfdc.co/template-directives"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/mixed-valid-invalid-attributes/mixed-valid-invalid-attributes.html (4:9): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: onfoo. For more information, please visit https://sfdc.co/template-directives"
   ]
  },
  "parsing-errors/invalid-template-attribute/enableStrictTemplateSyntax-flag-disabled/nested-invalid-attributes": {
@@ -2065,9 +2065,9 @@
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/nested-invalid-attributes/nested-invalid-attributes.html (3:9): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: onfoo. For more information, please visit https://sfdc.co/template-directives",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/nested-invalid-attributes/nested-invalid-attributes.html (4:13): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: class. For more information, please visit https://sfdc.co/template-directives",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/nested-invalid-attributes/nested-invalid-attributes.html (4:13): @lwc/rollup-plugin: LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/nested-invalid-attributes/nested-invalid-attributes.html (3:9): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: onfoo. For more information, please visit https://sfdc.co/template-directives",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/nested-invalid-attributes/nested-invalid-attributes.html (4:13): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: class. For more information, please visit https://sfdc.co/template-directives",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/nested-invalid-attributes/nested-invalid-attributes.html (4:13): @lwc/rollup-plugin: LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives"
   ]
  },
  "parsing-errors/invalid-template-element": {
@@ -2085,7 +2085,7 @@
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/named-slot-in-iterator/named-slot-in-iterator.html (4:7): @lwc/rollup-plugin: LWC1138: Invalid slot (name=\"james\"). A slot cannot appear inside of an iterator."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/named-slot-in-iterator/named-slot-in-iterator.html (4:7): @lwc/rollup-plugin: LWC1138: Invalid slot (name=\"james\"). A slot cannot appear inside of an iterator."
   ]
  },
  "parsing-errors/no-closing-tag": {
@@ -2103,7 +2103,7 @@
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/slot-in-iterator/slot-in-iterator.html (4:7): @lwc/rollup-plugin: LWC1138: Invalid slot (default). A slot cannot appear inside of an iterator."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/slot-in-iterator/slot-in-iterator.html (4:7): @lwc/rollup-plugin: LWC1138: Invalid slot (default). A slot cannot appear inside of an iterator."
   ]
  },
  "parsing-errors/stranded-close-template": {
@@ -2137,7 +2137,7 @@
    "warn: [LWC warn]: Unknown public property \"props\" of element <x-foo>. This is either a typo on the corresponding attribute \"props\", or the attribute does not exist in this browser or DOM implementation."
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/attribute-with-equal/attribute-with-equal.html (3:10): @lwc/rollup-plugin: LWC1057: props is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/attribute-with-equal/attribute-with-equal.html (3:10): @lwc/rollup-plugin: LWC1057: props is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
   ]
  },
  "regression/class-name-slash": {
@@ -2155,17 +2155,17 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><input type=\"text\"><keygen name=\"name\" challenge=\"some challenge\" keytype=\"type\" keyparams=\"some-params\">&lt;/input&gt;</template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/keygen/keygen.html (3:17): @lwc/rollup-plugin: LWC1057: name is not valid attribute for keygen. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/keygen",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/keygen/keygen.html (3:29): @lwc/rollup-plugin: LWC1057: challenge is not valid attribute for keygen. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/keygen",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/keygen/keygen.html (3:56): @lwc/rollup-plugin: LWC1057: keytype is not valid attribute for keygen. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/keygen",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/keygen/keygen.html (3:71): @lwc/rollup-plugin: LWC1057: keyparams is not valid attribute for keygen. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/keygen"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/keygen/keygen.html (3:17): @lwc/rollup-plugin: LWC1057: name is not valid attribute for keygen. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/keygen",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/keygen/keygen.html (3:29): @lwc/rollup-plugin: LWC1057: challenge is not valid attribute for keygen. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/keygen",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/keygen/keygen.html (3:56): @lwc/rollup-plugin: LWC1057: keytype is not valid attribute for keygen. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/keygen",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/keygen/keygen.html (3:71): @lwc/rollup-plugin: LWC1057: keyparams is not valid attribute for keygen. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/keygen"
   ]
  },
  "regression/deprecated-void-elements/menuitem": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><menu><menuitem label=\"my-menuitem\"></menu></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/menuitem/menuitem.html (3:19): @lwc/rollup-plugin: LWC1057: label is not valid attribute for menuitem. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menuitem"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/menuitem/menuitem.html (3:19): @lwc/rollup-plugin: LWC1057: label is not valid attribute for menuitem. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menuitem"
   ]
  },
  "regression/deprecated-void-elements/param": {
@@ -2198,7 +2198,7 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><h1>hello</h1><br></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/invalid-html-recovery/invalid-html-recovery.html (0:0): @lwc/rollup-plugin: LWC1144: Invalid HTML detected, \"<br>\" was automatically inserted within \"<template>\"; the compiled template may not match the template source."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/invalid-html-recovery/invalid-html-recovery.html (0:0): @lwc/rollup-plugin: LWC1144: Invalid HTML detected, \"<br>\" was automatically inserted within \"<template>\"; the compiled template may not match the template source."
   ]
  },
  "regression/nested-if-loops": {
@@ -2219,24 +2219,24 @@
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/static-id-in-iteration/static-id-in-iteration.html (4:15): @lwc/rollup-plugin: LWC1041: Static id values are not allowed in iterators. Id values must be unique within a template and must therefore be computed with an expression.",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/static-id-in-iteration/static-id-in-iteration.html (9:30): @lwc/rollup-plugin: LWC1041: Static id values are not allowed in iterators. Id values must be unique within a template and must therefore be computed with an expression.",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/static-id-in-iteration/static-id-in-iteration.html (14:15): @lwc/rollup-plugin: LWC1041: Static id values are not allowed in iterators. Id values must be unique within a template and must therefore be computed with an expression.",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/static-id-in-iteration/static-id-in-iteration.html (19:30): @lwc/rollup-plugin: LWC1041: Static id values are not allowed in iterators. Id values must be unique within a template and must therefore be computed with an expression."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/static-id-in-iteration/static-id-in-iteration.html (4:15): @lwc/rollup-plugin: LWC1041: Static id values are not allowed in iterators. Id values must be unique within a template and must therefore be computed with an expression.",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/static-id-in-iteration/static-id-in-iteration.html (9:30): @lwc/rollup-plugin: LWC1041: Static id values are not allowed in iterators. Id values must be unique within a template and must therefore be computed with an expression.",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/static-id-in-iteration/static-id-in-iteration.html (14:15): @lwc/rollup-plugin: LWC1041: Static id values are not allowed in iterators. Id values must be unique within a template and must therefore be computed with an expression.",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/static-id-in-iteration/static-id-in-iteration.html (19:30): @lwc/rollup-plugin: LWC1041: Static id values are not allowed in iterators. Id values must be unique within a template and must therefore be computed with an expression."
   ]
  },
  "regression/table-with-tr": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><table><tbody><tr></tr></tbody></table></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/table-with-tr/table-with-tr.html (0:0): @lwc/rollup-plugin: LWC1144: Invalid HTML detected, \"<tbody>\" was automatically inserted within \"<table>\"; the compiled template may not match the template source."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/table-with-tr/table-with-tr.html (0:0): @lwc/rollup-plugin: LWC1144: Invalid HTML detected, \"<tbody>\" was automatically inserted within \"<table>\"; the compiled template may not match the template source."
   ]
  },
  "renderer-hooks/config/disallowed-on-custom-element": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template></x-foo></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/disallowed-on-custom-element/disallowed-on-custom-element.html (6:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/disallowed-on-custom-element/disallowed-on-custom-element.html (6:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
  },
  "renderer-hooks/config/external-component": {
@@ -2590,28 +2590,28 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><div></div></x-foo></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/grandparent-element/grandparent-element.html (5:15): @lwc/rollup-plugin: LWC1201: The slot attribute in <span> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/grandparent-element/grandparent-element.html (5:15): @lwc/rollup-plugin: LWC1201: The slot attribute in <span> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
   ]
  },
  "slots/ignored/grandparent-slot": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><slot></slot></x-foo></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/grandparent-slot/grandparent-slot.html (5:15): @lwc/rollup-plugin: LWC1201: The slot attribute in <span> will be ignored due to its ancestor <slot>. It must be a direct child of the containing component."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/grandparent-slot/grandparent-slot.html (5:15): @lwc/rollup-plugin: LWC1201: The slot attribute in <span> will be ignored due to its ancestor <slot>. It must be a direct child of the containing component."
   ]
  },
  "slots/ignored/parent-element": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><x-inner><template shadowrootmode=\"open\"></template><div><span slot=\"foo\">I am the foo slot</span></div></x-inner></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/parent-element/parent-element.html (4:19): @lwc/rollup-plugin: LWC1201: The slot attribute in <span> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/parent-element/parent-element.html (4:19): @lwc/rollup-plugin: LWC1201: The slot attribute in <span> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
   ]
  },
  "slots/ignored/parent-slot": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><x-inner><template shadowrootmode=\"open\"></template><slot><span slot=\"foo\">I am the foo slot</span></slot></x-inner></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/parent-slot/parent-slot.html (4:19): @lwc/rollup-plugin: LWC1201: The slot attribute in <span> will be ignored due to its ancestor <slot>. It must be a direct child of the containing component."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/parent-slot/parent-slot.html (4:19): @lwc/rollup-plugin: LWC1201: The slot attribute in <span> will be ignored due to its ancestor <slot>. It must be a direct child of the containing component."
   ]
  },
  "slots/ignored/valid": {
@@ -2660,16 +2660,16 @@
    "uncaught: InvalidCharacterError: \"a`b`c\" did not match the Name production"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/non-optimized/non-optimized.html (2:10): @lwc/rollup-plugin: LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/non-optimized/non-optimized.html (3:10): @lwc/rollup-plugin: LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/non-optimized/non-optimized.html (2:10): @lwc/rollup-plugin: LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/non-optimized/non-optimized.html (3:10): @lwc/rollup-plugin: LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
   ]
  },
  "static-content/attr-name-escape/optimized": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><div a`b`c=\"\"></div><div a`b`c=\"yolo\"></div></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/optimized/optimized.html (2:10): @lwc/rollup-plugin: LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/optimized/optimized.html (3:10): @lwc/rollup-plugin: LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/optimized/optimized.html (2:10): @lwc/rollup-plugin: LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/optimized/optimized.html (3:10): @lwc/rollup-plugin: LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
   ]
  },
  "static-content/class-attr-escaping": {
@@ -2719,8 +2719,8 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><slot><div>Default fallback</div></slot><slot name=\"foo\"><div>Named fallback</div></slot></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/key-invalid-in-slot/key-invalid-in-slot.html (3:14): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/key-invalid-in-slot/key-invalid-in-slot.html (6:14): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/key-invalid-in-slot/key-invalid-in-slot.html (3:14): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/key-invalid-in-slot/key-invalid-in-slot.html (6:14): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC."
   ]
  },
  "static-content/key-multiple": {
@@ -2737,18 +2737,18 @@
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
   ],
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/key-non-top-level/key-non-top-level.html (6:25): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <td>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/key-non-top-level/key-non-top-level.html (7:25): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <td>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/key-non-top-level/key-non-top-level.html (8:25): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <td>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC."
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/key-non-top-level/key-non-top-level.html (6:25): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <td>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/key-non-top-level/key-non-top-level.html (7:25): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <td>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/key-non-top-level/key-non-top-level.html (8:25): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <td>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC."
   ]
  },
  "static-content/no-escaping-tags": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><xmp>&lt;/xmp&gt;Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></xmp><iframe>Hello <div>world</div> <div>foo</div></iframe><noembed>Hello &lt;div&gt;world&lt;/div&gt; <div>foo</div></noembed><noframes><p>It seems your browser does not support frames or is configured to not allow them.</p></noframes></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/no-escaping-tags/no-escaping-tags.html (2:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<xmp>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/no-escaping-tags/no-escaping-tags.html (10:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<noembed>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/no-escaping-tags/no-escaping-tags.html (13:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<noframes>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/no-escaping-tags/no-escaping-tags.html (2:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<xmp>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/no-escaping-tags/no-escaping-tags.html (10:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<noembed>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/no-escaping-tags/no-escaping-tags.html (13:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<noframes>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
   ]
  },
  "static-content/no-th-or-td": {
@@ -2795,9 +2795,9 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><div>Escape `me`</div><div data-message=\"Escape `me`\"></div><div><!-- Escape `me` --></div><xmp>Escape `me`</xmp><div>Escape \\`me`</div><div data-message=\"Escape \\`me`\"></div><div><!-- Escape \\`me` --></div><xmp>Escape \\`me`</xmp><div>Escape $</div><div data-message=\"Escape ${me}\"></div><div><!-- Escape ${me} --></div><xmp>Escape $</xmp></template></fixture-test>",
   "warnings": [
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/template-string-escape/template-string-escape.html (5:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<xmp>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/template-string-escape/template-string-escape.html (10:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<xmp>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element",
-   "[plugin rollup-plugin-lwc-compiler] ../../../virtual-csr/x/template-string-escape/template-string-escape.html (15:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<xmp>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/template-string-escape/template-string-escape.html (5:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<xmp>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/template-string-escape/template-string-escape.html (10:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<xmp>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element",
+   "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/template-string-escape/template-string-escape.html (15:5): @lwc/rollup-plugin: LWC1123: Unknown html tag '<xmp>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
   ]
  },
  "static-content/text-escaping": {

@@ -1,7 +1,8 @@
 //! @api / @track / @wire -> registerDecorators (port of babel-plugin-component/src/decorators/**).
 //! Span-edit style: decorators are deleted by span, the meta object is built as source text,
 //! lwc decorator import specifiers are dropped by rewriting the import declaration.
-//! Binding resolution is name-based (no scope analysis): shadowed `api`/`track`/`wire` locals are a known gap.
+//! Decorator import usage (LWC1103/1104) resolves references with oxc semantic; member/class decorators
+//! are matched by name.
 use lwc_shared::api_version::{self, ApiFeature};
 use crate::constants::*;
 use crate::edits::Edit;
@@ -48,41 +49,84 @@ fn decorator_name<'a>(d: &'a Decorator<'_>) -> Option<&'a str> {
 }
 
 // ---------- transform 2: every reference to an lwc decorator import must be a member decorator ----------
-struct UsageCheck<'m> { names: Vec<&'m str>, err: Option<DErr> }
-impl<'a> Visit<'a> for UsageCheck<'_> {
-    fn visit_class(&mut self, it: &Class<'a>) {
-        for d in &it.decorators {
-            if let Some(n) = decorator_name(d).filter(|n| self.names.contains(n)) {
-                self.err.get_or_insert_with(|| derr(1103, "\"@{0}\" can only be applied on class properties", &[n], d.span));
+// Port of validateImportedLwcDecoratorUsage (Program enter): for each `lwc` import specifier of api/track/wire
+// (specifier order), for each reference to its binding (source order): `decorator` = the reference's parent when
+// that is a Decorator, else its grandparent -> LWC1104 when not a Decorator; then `decorator.parentPath` must
+// be a ClassProperty/ClassMethod (not private/accessor) -> else LWC1103. Parents are Babel's, mapped from oxc.
+// Shipped quirk not reproduced: an aliased decorator import (`api as A`) crashes there (getBinding('api')).
+fn usage_errors(program: &Program<'_>, src: &str) -> Vec<DErr> {
+    use oxc::ast::AstKind;
+    use oxc::semantic::{AstNodes, SemanticBuilder};
+    use oxc::semantic::NodeId;
+    let sem = SemanticBuilder::new().with_build_nodes(true).build(program).semantic;
+    let (nodes, scoping): (&AstNodes, _) = (sem.nodes(), sem.scoping());
+    // Babel parent: oxc ParenthesizedExpression nodes don't exist in Babel; a class/object method's Function
+    // is part of Babel's ClassMethod/ObjectMethod.
+    let parent = |id: NodeId| -> NodeId {
+        let mut p = nodes.parent_id(id);
+        while matches!(nodes.kind(p), AstKind::ParenthesizedExpression(_)) && p != nodes.parent_id(p) { p = nodes.parent_id(p); }
+        match nodes.kind(p) {
+            AstKind::Function(_) => {
+                let gp = nodes.parent_id(p);
+                match nodes.kind(gp) {
+                    AstKind::MethodDefinition(_) => gp,
+                    AstKind::ObjectProperty(op) if op.method || op.kind != PropertyKind::Init => gp,
+                    _ => p,
+                }
+            }
+            _ => p,
+        }
+    };
+    // Babel node location: a class starts at its first decorator; Program spans the whole file, except that
+    // after a trailing newline its end is column 0, which normalizeLocation turns into length 0.
+    let span_of = |id: NodeId| -> Span {
+        match nodes.kind(id) {
+            AstKind::Program(_) => Span::new(0, if src.is_empty() || src.ends_with('\n') { 0 } else { src.len() as u32 }),
+            AstKind::Class(c) => Span::new(c.decorators.iter().map(|d| d.span.start).min().unwrap_or(c.span.start).min(c.span.start), c.span.end),
+            k => k.span(),
+        }
+    };
+    let mut out = Vec::new();
+    for stmt in &program.body {
+        let Statement::ImportDeclaration(d) = stmt else { continue };
+        if d.source.value != LWC_PACKAGE_ALIAS { continue; }
+        for spec in d.specifiers.iter().flatten() {
+            let ImportDeclarationSpecifier::ImportSpecifier(spec) = spec else { continue };
+            let name = spec.imported.name();
+            let Some(name) = DECORATOR_NAMES.iter().copied().find(|n| *n == name.as_str()) else { continue };
+            let Some(sym) = spec.local.symbol_id.get() else { continue };
+            let mut refs: Vec<NodeId> = scoping.get_resolved_reference_ids(sym).iter().map(|r| scoping.get_reference(*r).node_id()).collect();
+            refs.sort_by_key(|id| nodes.kind(*id).span().start);
+            for r in refs {
+                let p = parent(r);
+                let deco = if matches!(nodes.kind(p), AstKind::Decorator(_)) || p == nodes.parent_id(p) { p } else { parent(p) };
+                if !matches!(nodes.kind(deco), AstKind::Decorator(_)) {
+                    out.push(derr(1104, "\"{0}\" can only be used as a class decorator", &[name], span_of(deco)));
+                }
+                let pm = parent(deco);
+                let ok = match nodes.kind(pm) {
+                    AstKind::PropertyDefinition(pd) => !matches!(pd.key, PropertyKey::PrivateIdentifier(_)),
+                    AstKind::MethodDefinition(md) => !matches!(md.key, PropertyKey::PrivateIdentifier(_)),
+                    _ => false,
+                };
+                if !ok || pm == deco {
+                    out.push(derr(1103, "\"@{0}\" can only be applied on class properties", &[name], span_of(pm)));
+                }
             }
         }
-        walk::walk_class(self, it);
     }
-    fn visit_decorator(&mut self, it: &Decorator<'a>) {
-        match &it.expression {
-            Expression::Identifier(_) => {}
-            Expression::CallExpression(c) if matches!(c.callee, Expression::Identifier(_)) => {
-                for a in &c.arguments { self.visit_argument(a); }
-            }
-            _ => walk::walk_decorator(self, it),
-        }
-    }
-    fn visit_identifier_reference(&mut self, it: &IdentifierReference<'a>) {
-        if self.names.contains(&it.name.as_str()) {
-            self.err.get_or_insert_with(|| derr(1104, "\"{0}\" can only be used as a class decorator", &[it.name.as_str()], it.span));
-        }
-    }
+    out
 }
 
 // ---------- transform 5: registerDecorators ----------
 #[derive(Clone, Copy, PartialEq)]
-enum Kind { Property, Getter, Setter, Method }
+enum Kind { Property, Getter, Setter, Method, /** getDecoratedNodeType -> undefined (private field) */ Invalid }
 
 struct Meta<'s, 'a> { name: &'s str, prop: String, kind: Kind, dec: &'s Decorator<'a>, el: usize, el_span: Span, computed: bool, bool_true: bool }
 
 struct Classes<'s, 'o> {
     src: &'s str, imports: &'o HashMap<String, String>, skip_no_super: bool, reg_ids: Vec<String>,
-    edits: Vec<Edit>, used: bool, first_expr: Option<bool>, errs: Vec<DErr>, recover: bool, imported: &'o HashSet<String>, consts: &'o HashSet<String>,
+    edits: Vec<Edit>, used: bool, first_expr: Option<bool>, errs: Vec<(u32, DErr)>, recover: bool, imported: &'o HashSet<String>, consts: &'o HashSet<String>,
 }
 
 fn sname(k: &PropertyKey<'_>) -> Option<String> { k.static_name().and_then(|n| n.as_str().map(String::from)) }
@@ -174,6 +218,8 @@ impl<'s> Classes<'s, '_> {
         let src = self.src;
         let mut metas: Vec<Meta> = Vec::new();
         let mut pre_errs: Vec<DErr> = Vec::new();
+        // shipped collects every decorator's meta (LWC1101) before validate() reports LWC1102s.
+        let mut type_errs: Vec<DErr> = Vec::new();
         for (el_idx, el) in body.iter().enumerate() {
             let (decs, key, kind) = match el {
                 ClassElement::MethodDefinition(m) => (&m.decorators, &m.key, match m.kind {
@@ -201,9 +247,12 @@ impl<'s> Classes<'s, '_> {
                         None => derr(1100, "Invalid decorator usage. Supported decorators ({0}) should be imported from \"{1}\"", &[AVAILABLE, LWC_PACKAGE_ALIAS], el.span()),
                     }]);
                 };
-                if matches!(key, PropertyKey::PrivateIdentifier(_)) {
-                    return Err(vec![derr(1212, "Decorators cannot be applied to private methods. Private methods are not part of the component API.", &[], d.span)]);
-                }
+                // A private field is a Babel ClassPrivateProperty: getDecoratedNodeType reports LWC1101 and the
+                // decorator is validated with no node type (only reachable in recovery; LWC1103 is thrown first).
+                let kind = if matches!(key, PropertyKey::PrivateIdentifier(_)) {
+                    type_errs.push(derr(1101, "Invalid property of field type", &[], el.span()));
+                    Kind::Invalid
+                } else { kind };
                 let prop = sname(key).unwrap_or_else(|| slice(src, key.span()).to_string());
                 let (computed, bool_true) = match el {
                     ClassElement::MethodDefinition(m) => (m.computed, false),
@@ -214,7 +263,8 @@ impl<'s> Classes<'s, '_> {
             }
         }
         // validate (decorators/index.ts order: api, wire, track)
-        let mut errs = pre_errs;
+        let mut errs = type_errs;
+        errs.append(&mut pre_errs);
         validate_api(&metas, &mut errs);
         self.validate_wire(&metas, &mut errs);
         for m in metas.iter().filter(|m| m.name == "track" && m.kind != Kind::Property) {
@@ -283,7 +333,7 @@ impl<'s> Classes<'s, '_> {
 impl<'a> Visit<'a> for Classes<'_, '_> {
     fn visit_class(&mut self, it: &Class<'a>) {
         if self.recover || self.errs.is_empty() {
-            if let Err(e) = self.process(it) { self.errs.extend(e); }
+            if let Err(e) = self.process(it) { self.errs.extend(e.into_iter().map(|d| (it.span.start, d))); }
         }
         walk::walk_class(self, it);
     }
@@ -402,7 +452,9 @@ impl Classes<'_, '_> {
     }
 }
 
-pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions, edits: &mut Vec<Edit>) -> Result<Option<String>, CompileError> {
+/// Errors come back keyed by Babel traversal position (Program enter = 0, class errors = class start) so the
+/// caller can interleave them with dynamic-import errors in shipped visit order.
+pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions, edits: &mut Vec<Edit>) -> Result<Option<String>, Vec<(u32, CompileError)>> {
     let err = |DErr(code, m, sp): DErr| {
         match sp {
             Some(s) => CompileError::lwc_at(code, m, filename, src, s.start, s.end),
@@ -410,11 +462,9 @@ pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions,
         }
     };
     let imports = lwc_imports(program);
-    let dec_locals: Vec<&str> = imports.iter().filter(|(_, i)| DECORATOR_NAMES.contains(&i.as_str())).map(|(l, _)| l.as_str()).collect();
-    let mut uc = UsageCheck { names: dec_locals, err: None };
-    uc.visit_program(program);
+    let mut usage = usage_errors(program, src);
     let recover = o.experimental_error_recovery_mode;
-    if !recover { if let Some(m) = uc.err.take() { return Err(err(m)); } }
+    if !recover && !usage.is_empty() { return Err(vec![(0, err(usage.swap_remove(0)))]); }
 
     let skip = api_version::is_api_feature_enabled(ApiFeature::SkipUnnecessaryRegisterDecorators, api_version::get_api_version_from_number(o.api_version));
     let imported: HashSet<String> = program.body.iter().filter_map(|s| match s { Statement::ImportDeclaration(d) => d.specifiers.as_ref(), _ => None })
@@ -425,11 +475,11 @@ pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions,
     }).flat_map(|d| d.declarations.iter()).flat_map(|v| v.id.get_binding_identifiers()).map(|b| b.name.to_string()).collect();
     let mut c = Classes { consts: &consts, imported: &imported, src, imports: &imports, skip_no_super: skip, reg_ids: Vec::new(), edits: Vec::new(), used: false, first_expr: None, errs: Vec::new(), recover: o.experimental_error_recovery_mode };
     c.visit_program(program);
-    let mut all: Vec<DErr> = uc.err.into_iter().collect();
+    let mut all: Vec<(u32, DErr)> = usage.into_iter().map(|d| (0, d)).collect();
     all.extend(c.errs);
     if !all.is_empty() {
-        if !recover { return Err(err(all.swap_remove(0))); }
-        return Err(CompileError::aggregate(all.into_iter().map(err).collect(), filename));
+        if !recover { all.truncate(1); }
+        return Err(all.into_iter().map(|(k, d)| (k, err(d))).collect());
     }
     // Babel quirk: when the first registered class is a class expression, the registerDecorators
     // import lands after the template import (component.ts); for declarations it lands first.

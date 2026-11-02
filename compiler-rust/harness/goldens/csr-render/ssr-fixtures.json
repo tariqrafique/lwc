@@ -739,11 +739,11 @@
  },
  "duplicate-slots-in-template/light": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/duplicate-slots-in-template/light/modules/x/inner/inner.html (5:5): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"foo\")."
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/duplicate-slots-in-template/light/modules/x/inner/inner.html (5:5): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"foo\")."
  },
  "duplicate-slots-in-template/shadow": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/duplicate-slots-in-template/shadow/modules/x/inner/inner.html (5:5): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"foo\")."
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/duplicate-slots-in-template/shadow/modules/x/inner/inner.html (5:5): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"foo\")."
  },
  "dynamic-components/basic": {
   "status": "ok",
@@ -937,7 +937,7 @@
  },
  "inner-outer-html/inner-div": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/inner-outer-html/inner-div/modules/x/inner/inner.html (2:58): @lwc/rollup-plugin: LWC1057: inner-h-t-m-l is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/inner-outer-html/inner-div/modules/x/inner/inner.html (2:58): @lwc/rollup-plugin: LWC1057: inner-h-t-m-l is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
  },
  "inner-outer-html/inner-external": {
   "status": "ok",
@@ -958,7 +958,7 @@
  },
  "inner-outer-html/outer-div": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/inner-outer-html/outer-div/modules/x/outer/outer.html (2:58): @lwc/rollup-plugin: LWC1057: outer-h-t-m-l is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/inner-outer-html/outer-div/modules/x/outer/outer.html (2:58): @lwc/rollup-plugin: LWC1057: outer-h-t-m-l is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"
  },
  "inner-outer-html/outer-external": {
   "status": "ok",
@@ -1120,7 +1120,7 @@
  },
  "lwc-dynamic": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/lwc-dynamic/modules/x/lwc-dynamic/lwc-dynamic.html (2:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/lwc-dynamic/modules/x/lwc-dynamic/lwc-dynamic.html (2:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
  },
  "lwc-if": {
   "status": "ok",
@@ -1274,7 +1274,7 @@
  },
  "render-correct-tags": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/render-correct-tags/modules/x/elements/elements.html (19:9): @lwc/rollup-plugin: LWC1123: Unknown html tag '<mrow>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/render-correct-tags/modules/x/elements/elements.html (19:9): @lwc/rollup-plugin: LWC1123: Unknown html tag '<mrow>'. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element and https://developer.mozilla.org/en-US/docs/Web/SVG/Element"
  },
  "render-dynamic-value": {
   "status": "render-error",
@@ -1517,11 +1517,11 @@
  },
  "slot-not-at-top-level/element/light": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/element/light/modules/x/outer/outer.html (4:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/element/light/modules/x/outer/outer.html (4:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
  },
  "slot-not-at-top-level/element/shadow": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/element/shadow/modules/x/outer/outer.html (4:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/element/shadow/modules/x/outer/outer.html (4:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
  },
  "slot-not-at-top-level/external/light": {
   "status": "ok",
@@ -1565,19 +1565,19 @@
  },
  "slot-not-at-top-level/nested-elements/ifTrue/light": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/nested-elements/ifTrue/light/modules/x/outer/outer.html (6:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/nested-elements/ifTrue/light/modules/x/outer/outer.html (6:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
  },
  "slot-not-at-top-level/nested-elements/ifTrue/shadow": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/nested-elements/ifTrue/shadow/modules/x/outer/outer.html (6:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/nested-elements/ifTrue/shadow/modules/x/outer/outer.html (6:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
  },
  "slot-not-at-top-level/nested-elements/lwcIf/light": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/nested-elements/lwcIf/light/modules/x/outer/outer.html (6:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/nested-elements/lwcIf/light/modules/x/outer/outer.html (6:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
  },
  "slot-not-at-top-level/nested-elements/lwcIf/shadow": {
   "status": "compile-error",
-  "error": "[plugin rollup-plugin-lwc-compiler] ../../lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/nested-elements/lwcIf/shadow/modules/x/outer/outer.html (6:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
+  "error": "[plugin rollup-plugin-lwc-compiler] <lwc>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/slot-not-at-top-level/nested-elements/lwcIf/shadow/modules/x/outer/outer.html (6:18): @lwc/rollup-plugin: LWC1201: The slot attribute in <div> will be ignored due to its ancestor <div>. It must be a direct child of the containing component."
  },
  "slot-not-at-top-level/with-adjacent-text-nodes/if-as-sibling/light": {
   "status": "ok",

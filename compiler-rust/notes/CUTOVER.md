@@ -76,3 +76,6 @@ Retirement gate: ssr-render, ssr-render-async and ssr-render-asyncYield each at 
 ## Official board procedure (2026-11-01 20:22)
 - `scripts/official-board.sh` is the ONLY official path: frozen snapshot of Cargo.toml/Cargo.lock/crates + ../parse5-rust, fresh target dir (== cargo clean), cargo check --workspace --all-targets + seam crate tests must pass, napi built from snapshot, board.sh with SHIM_ROOT=snapshot, snapshot re-hashed after (mutation => INVALID). Report napi sha + src sha.
 - `cargo clean && install-napi.sh && board.sh` on the live tree is NOT official: concurrent agent edits leaked into two runs (20:16, 20:18).
+- VALID run (snapshot unchanged AND board rc 0, full row set) writes push artifacts: `/workspace/push/official-<srcsha>.tgz` + `official-<srcsha>.board.txt`. Only these may be pushed (Migrate 2026-11-01). parse5-rust is a build dep hashed into src sha but NOT in the tgz.
+- Harness runs from the snapshot too (tests/goldens frozen); gates read snapshot crates via CRATES_ROOT.
+- Golden integrity: `harness/scripts/golden-gate.sh` re-records all rows on the JS backend (oracle b9e8007) into a scratch copy and diffs goldens/ (pending wiring into official-board.sh).
