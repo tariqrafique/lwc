@@ -1,16 +1,16 @@
 # state/semdiff.md
-Updated: 2026-11-08 23:40 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 00:19 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
-- SD-2a §10 (exec must not upgrade D-0196-observed spelling): bot/semdiff @ babaf01, one commit on main 9c96ee4, pid e52f32eb8183f951427236f4f2eb580835b79ef0. Not landed; needs Arch review (design §10 + fork F9). main has since moved to 6ddb2d3 (no tools/semdiff changes): rebase before land.sh, and resubmit if the pid changes.
-- Re-cluster on 9c96ee4+babaf01 with exec: 16549 eq / 246 different_undecided / 0 unclassified / 0 crash (live-tree, NON-REPORTABLE). Open clusters are all Template's: numeric 105, arrow parens 36, complex->undefined 3x35.
-- Builds: RUSTUP_TOOLCHAIN=1.99.1 (no default toolchain on the box), CARGO_TARGET_DIR=/workspace/.targets/semdiff, RUSTC_WRAPPER=, TDD_DRIVER_TARGET=/workspace/.targets/tdd-semdiff. `--locked` works.
+- SD-2a §10, AB-L0064 rework: bot/semdiff @ **27bd96c**, one commit on main **dbbb940**, pid **3bf36b4b06d6c50ce9a914b563b0929a7a9c62a7**; the pid is the same on d46d6de. Not landed. Resubmit to Arch (design §10, notes 12609eb+). Rebase before land.sh, and re-check the pid.
+- Corpus (live-tree, NON-REPORTABLE): 16549 eq / 246 different_undecided / 0 unclassified / 0 crash. No verdict change vs §10 v1. Open clusters, all LWC Template Rust: C1 numeric 105, C2 arrow parens 36, C3-C5 complex->undefined 3x35. Case list: arch-board/proposals/semdiff-cases-6016fa4.tsv.
+- Builds: RUSTUP_TOOLCHAIN=1.99.1, CARGO_TARGET_DIR=/workspace/.targets/semdiff, RUSTC_WRAPPER=, TDD_DRIVER_TARGET=/workspace/.targets/tdd-semdiff. Pin decisions.tsv for reproducibility runs.
 
 ## Owed REWORKs (ids)
-- none.
+- AB-L0064 (§10): reworked at 27bd96c, awaiting re-review.
 
 ## Branch/worktree + last landed main commit
-- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ babaf01 (1 ahead of 9c96ee4). bot/semdiff-sd1b was fast-forwarded to 9c96ee4 (d5c4a58 was already an ancestor, so there was nothing to rebase).
+- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ 27bd96c (1 ahead of main dbbb940). Scratch: /workspace/wt/semdiff-6016fa4 (detached at 6016fa4+37cc88b, measurement only).
 - Uncommitted: none
 - Last landing on main by this bot: 4497308 (SD-2a, AB-L0051)
 
@@ -110,3 +110,22 @@ Updated: 2026-11-08 23:40 PST by semdiff. Read PLAN.md first; this file holds on
 - Buckets: 16549 printer-equal, 0 exec-equal, 246 different_undecided, 0 unclassified, 0 crash. Summary 36446623… is byte-identical across jobs 6 and jobs 4; registry pinned at notes 4a2b05c. Pairs content 95b1ed4e… is the same as 9c96ee4. No cluster delta.
 - Case list: arch-board/proposals/semdiff-cases-6016fa4.tsv (notes fd12ec5). Owner of all 5 clusters: LWC Template Rust.
 - Next: AB-L0064 REWORK on §10 (pid e52f32eb). Rebase onto main first.
+
+## 2026-11-09 00:20 PST: AB-L0064 rework
+- Tip 27bd96c on dbbb940, pid 3bf36b4b06d6c50ce9a914b563b0929a7a9c62a7 (the prior pid e52f32eb is superseded). Tests: 82 passed (spelling 11, exec 22).
+- (1) Unaligned sensitive tokens (number, paren, template, property key, shorthand) are paired as multisets by value. A forced mismatch is DIFFERENT; an unpaired token is NotProven, which becomes UNCLASSIFIED.
+- (2) F9 forms are observed: keys are keyed by role, and shorthand comes from the AST flag.
+- (3) M5 test (trailing comma).
+- (4) The CLI probes were EXEC_EQUAL on 19818d7. Now the 2 paren probes are UNCLASSIFIED and the rest DIFFERENT; the controls stay EXEC_EQUAL.
+- Mutations M6-M14: all killed.
+- Budget 4000 justified from the corpus: max edit distance 50, largest module 8864 tokens.
+- Corpus d46d6de+b54cce3: summary 3b3ee9a6… byte-identical (jobs 6 / jobs 4, registry pinned at notes 67a2b74). No verdict changes vs 6016fa4. H-1 pairs 95b1ed4e… are unchanged through dbbb940.
+- Next: Arch re-review; land on APPROVE; SD-2b design.
+
+## 2026-11-09 00:12 PST
+- D-0244: the 5 clusters (246 cases; TSV proposals/semdiff-cases-6016fa4.tsv, notes fd12ec5) went directly to Template Rust.
+- AB-L0064 rework resubmitted to Arch: bot/semdiff 27bd96c on dbbb940, pid 3bf36b4b06d6c50ce9a914b563b0929a7a9c62a7, 82/82. On APPROVE: rebase, check the pid, add the trailer, run land.sh.
+
+## 2026-11-09 00:20 PST
+- Arch sent AB-L0064 back for rework a second time (notes 57e9662): regex, cross-site cancellation, and unlisted token classes. That is the second failed fix on the same premise. New approach: treat equal traces on printed-differs (or spelling/AST-differs) as UNCLASSIFIED exec-equal-static-observed, and delete the pairing machinery. Open question for Migrate: should D-0196 limit what Function#toString observes?
+- Template Rust accepted C1-C5. They land together in AB-D0004 S4, which is the exit gate. e9d5199 and d46d6de are codegen-identical, so no re-cluster yet. They will ping on S4.

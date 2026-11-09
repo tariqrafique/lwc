@@ -1,3 +1,77 @@
+# js divergences 2–3: AB-L0068 / AB-L0063 round 2 (2026-11-09 00:20 PST)
+
+Both rebased onto main **dbbb940**. Local gates, PROVISIONAL. lwc-js only on div 3; div 2 also pins one D-0248 case in napi `errors.rs` (JS-owned per D-0227/D-0229). `bot/js` (898e7ca) untouched.
+
+| branch | head | base | pid (`scripts/review-patch-id.sh`) |
+|---|---|---|---|
+| `bot/js-div3` | **0dd98df** | dbbb940 | **e817872d342eb044136c18807d63acf489763497** |
+| `bot/js-div2` | **e1035f5** | dbbb940 | **4a6118f02f1d34e69f9430e76fee6b2cf175c0a8** |
+
+## Div 3: `bot/js-div3` 0dd98df, pid e817872d (AB-L0068)
+
+`git range-diff a051a35..d9bf476 main..bot/js-div3`: commit 1 (`337b306` = `36ddcab`) is `=` as `3094d50`. Only commit 2 changed.
+
+`Origin::map` no longer `debug_assert`s then returns `src.len()` or `0` (an in-bounds wrong position in release). After the piece walk, an end at 0 returns 0; a start at the output end `assert!`s and returns `src.len()`; anything else panics in every profile (same idea as lib.rs `expect`). The `should_panic` test has no `#[cfg(debug_assertions)]`; `cargo test --release -p lwc-js --lib origin` runs it (3/3).
+
+## Div 2: `bot/js-div2` e1035f5, pid 4a6118f0 (AB-L0063 r2; D-0245, D-0248)
+
+1. `first_reserved_ident` and `STRICT_RESERVED` deleted. `parse_source` (not recovering) runs `SemanticBuilder::with_check_syntax_error(true)` once after a clean parse. The 8 inputs that compiled on main and that 9.5.3 rejects with LWC1007 each have a test (`closes_*` in `tests/semantic_errors.rs`) asserting LWC1007, `SyntaxError: LWC1007: foo.js: ` and filename `foo.js`, plus the position (shipped's, or our D-0248 pin). Live 9.5.3 values are in `tests/fixtures/semantic-errors-shipped.json` (62 inputs × 2 modes; regenerator `proofs/js-divergences/dump-semantic-fixture.cjs`). No new errors on the 78 ts-parse fixtures (5 reserved-word-before-parse-error cases moved to `LOCATION_DIVERGENCES`) or on the compiler fixture board (js 174, js-api 1239, same as main).
+2. Recovery mode leaves the semantic check off. 14 inputs where 9.5.3 still throws later are pinned `ACCEPTED_DIVERGENCES` under the placeholder **`D-PENDING-recovery-semantic`** (Migrate D-id owed):
+
+   | id | src | 9.5.3 (recovery) |
+   |---|---|---|
+   | `dup-let-rec` | `let a; let a;` | TypeError LWC1007 Duplicate declaration "a" (location null) |
+   | `dup-let-var-rec` | `let a; var a;` | same shape, "a" |
+   | `dup-var-let-rec` | `var a; let a;` | same |
+   | `dup-const-let-rec` | `const a = 1; let a;` | same |
+   | `dup-class-let-rec` | `class A {} let A;` | Duplicate declaration "A" |
+   | `dup-fn-let-rec` | `function f() {} let f;` | Duplicate declaration "f" |
+   | `dup-let-fn-rec` | `let f; function f() {}` | same |
+   | `dup-import-let-rec` | `import a from 'x'; let a;` | Duplicate declaration "a" |
+   | `dup-block-let-rec` | `{ let a; let a; }` | same |
+   | `dup-param-let-rec` | `function f(a) { let a; }` | same |
+   | `dup-catch-let-rec` | `try {} catch (e) { let e; }` | Duplicate declaration "e" |
+   | `lwc-comp-dup-rec` | LWC component wrapping `let a; let a;` | Duplicate declaration "a" |
+   | `priv-dup-rec` | `class A { #x; #x; }` | SyntaxError Duplicate private field (location null) |
+   | `delete-private-rec` | `class A { #x; m() { delete this.#x; } }` | Error "Internal Babel error: deleting private element" (location null) |
+
+   We compile all 14 in recovery mode (and reject them in normal mode). Never classified by message text: each row is a fixture id. Ten more recovery inputs where oxc's *parser* rejects what Babel `errorRecovery` recovers are listed as **D-0245** (`dup-export`, `dup-default-export`, `new-target-top`, `return-top`, `await-top-id`, `getter-param`, `setter-noparam`, `abstract-decl`, `abstract-default`, `abstract-default-named`, each `-rec`). Two of those (`abstract-default{,-named}-rec`) additionally trip an internal re-parse after codegen because oxc left `abstract` in the printed JS; still a D-0245-shaped outcome divergence (we throw / 9.5.3 compiles or throws a different SyntaxError), not keyed on text.
+3. `earlier_reserved_ident` deleted. Its 5 ts-parse cases (`ts-interface`, `ts-syntax`, `interface.ts`, `interface.tsx`, `interface.jsx`) are in `LOCATION_DIVERGENCES`. LWC1007 location parity on the 78-case fixture: **43/73** (was 48/73; 30 pinned, 2 non-1007 LWC1198 also match location). `locparity.cjs` vs napi `d6d78ec87e22`: outcome 77/78 (the miss is D-0245 `interface.ts-rec`); code 75/75; 1007 class+filename 73/73; location 45/75 both-throw = 43/73 LWC1007 + 2/2 LWC1198; message text 3/75. Arch probes: location 3/6, text 0/6 (unchanged).
+4. The abstract guard is `default_export_abstract_class` only (`export default abstract class …`, the one form oxc's JS parser accepts). It runs only when not recovering. Message is LWC-owned: `'abstract' classes are TypeScript syntax; LWC compiles JavaScript only.` Class remains `SyntaxError`, facade code LWC1007, position at the end of `abstract` (1:23), matching 9.5.3's Missing-semicolon column.
+5. `tests/no_oxc_message_match.rs` deleted. `tests/oxc_diagnostic_boundary.rs` is a token gate over every `.rs` under `crates/lwc-js/src` (recursive, comments/literals stripped, no stop at `#[cfg(test)]`). Argument: an `OxcDiagnostic` value can be used without naming the type, so naming it is not enough. Values come only from oxc's producers (`Parser::parse` / `parse_expression`, `SemanticBuilder::build`, `Transformer::build*`); other public oxc fns that return one live in private modules. The gate therefore: (R1) `OxcDiagnostic` / `Diagnostics` / `LabeledSpan` / `oxc::diagnostics` / `oxc_diagnostics` / `miette` named only inside `parse.rs::first_error`; (R2) those producers (and `Compiler`, `CompilerInterface`, `regular_expression`, crate names) named only in parse.rs, their `*Return` types nowhere; (R3) `.diagnostics` read only as a `first_error(..)` argument, accessors (`errors`, `warnings`, `into_vec`, `has_errors`, …) only inside `first_error`; (R4) parse.rs exports only `pub fn`s whose return types are on an allowlist (`SourceType`, `Result<Program, CompileError>`, `Scoping`, `Semantic`, `Result<(), CompileError>`), so no diagnostic value can leave it; (R5) the boundary pair `first_error` / `syntax_error` uses only an allowlisted identifier set and no `==`/`!=`/`&&`/`||` (the text is formatted, never inspected), and the rest of parse.rs never names `message`; (R6) no `include!` or `#[path]`. `lower.rs`, `unforgeables.rs` and `decorators.rs` go through `parse::{parse_with, scoping, semantic_with_nodes, transform}`. Residual outside the gate: after conversion the text lives in `CompileError.message` (a `String`); comparing that elsewhere is not an oxc diagnostic value.
+
+   Planted negatives, every one failed the gate (baseline clean):
+   - Arch's 7 shapes (`matches!(d.message.as_ref(),…)`, `.message().starts_with`, alias `m.contains`, multi-line `.contains`, `.to_lowercase().contains`, `format!(…d.message).contains`, `d.to_string().contains`) at 4 sites (inside `first_error`; elsewhere in parse.rs after reading `.diagnostics` directly; `lower.rs` running its own `Parser`; `decorators.rs` running `SemanticBuilder`) = 28 plants.
+   - After an early `#[cfg(test)]` in parse.rs and in lib.rs (appended module names `OxcDiagnostic` and compares `.message`) = 2 plants.
+   - 10 bypasses that never name the type in the "useful" way: parse.rs leaking `impl Iterator`, returning `ParserReturn`, exporting a `struct`, filtering the converted `CompileError.message`; `use oxc::diagnostics as dx`; glob-import + `Transformer`; `include!`; `#[path]`; the boundary fn calling `.len()` on the text; a second `fn first_error` in lib.rs.
+6. D-0245 golden (`d0245_recovery_mode_ts_interface_is_lwc1007_not_ok`): asserts code 1007, filename `foo.ts`, `(line, column, index) = (2, 9, 54)`, and the `SyntaxError: LWC1007: foo.ts: ` prefix. It no longer pins oxc's full message text. napi `errors.rs` `js-parse-1007` (`let = ;`) is pinned the same way at (1, 6, 6) (D-0248; 9.5.3 is (1, 0, 0) "Unexpected reserved word 'let'.").
+
+### Gates vs merge-base dbbb940 (2026-11-09 00:15–00:20 PST, local, PROVISIONAL)
+napi via `scripts/install-napi.sh`: main `85409fe563ed`, div3 `5a51794b3f52`, div2 `d6d78ec87e22`. Oracle b9e8007 clean.
+| gate | main dbbb940 | bot/js-div3 0dd98df | bot/js-div2 e1035f5 |
+|---|---|---|---|
+| cargo check --workspace --all-targets | green | green | green |
+| cargo clippy --workspace --all-targets | exit 0, 0 errors | same | same |
+| cargo test --workspace | 462 pass / 0 fail | 466 / 0 | 481 / 0 |
+| lwc-style fixtures | 136/136 | 136/136 | 136/136 |
+| style-diff | 3150 jobs, 0 fail | same | same |
+| js | 174/174 | 174/174 | 174/174 |
+| js-options | 302 | 302 | 302 |
+| js-api | 1239 | 1239 | 1239 |
+| template (diag) | 568/568 | 568/568 | 568/568 |
+| style | 70/70 | 70/70 | 70/70 |
+| style-api | 829/829 | 829/829 | 829/829 |
+| ssr (diag) | 388/388 | 388/388 | 388/388 |
+| csr-render | 390/390 | 390/390 | 390/390 |
+| csr-render-template | 567/570 | 567/570 (same 3) | 567/570 (same 3) |
+| shim gate | untagged 0, scanners 9=9 | same | same |
+| option gate | 61/61 | 61/61 | 61/61 |
+| golden-io-guard | ok | ok | ok |
+| lint-shared-tables | ok 23/23 | ok 23/23 | ok 23/23 |
+
+`cargo clippy --workspace --all-targets -- -D warnings` is not green on main either (pre-existing warnings in lwc-shared/lwc-js/napi). Clippy on the changed files introduced no errors.
+
+---
 # js divergences 2–3: resubmission after AB-L0063 (2026-11-08 23:50 PST)
 
 The two are now separate branches, each based on main **a051a35**. Both rebase cleanly onto main d46d6de (lwc-template only) with the SAME pids (checked on scratch branches). lwc-js only.

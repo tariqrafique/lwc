@@ -60,3 +60,28 @@
 
 ## 2026-11-08 23:40 PST
 - D-0251 queued (Migrate): driver becomes root workspace member, delete its Cargo.lock; land with/just after D-0238.
+
+## 2026-11-09 00:03 PST
+- AB-0006 rework at bot/harness-gate b33321d (main dbbb940), pid 6b225beb; sent to Arch. Forward cond (mv/ln removed) met. Official board INVALID rc4 until D-0238 (lock gap). Open comparator-fix row (UNSOUND ws-stripped hash).
+- D-0254 amends D-0226: land.sh runs $MAIN (pre-land sha) tools/ssr-compile-js-oracle/run.mjs with --root=<branch tree> --main=<sha>; branch copy never self-judges. main dbbb940 already provides --root.
+
+## 2026-11-09 00:09 PST
+- AB-0006 REWORK #2 (Arch notes cfddaa3, F1-F6; items 1-8: git-read regular blobs, missing=rc2, passed-delta>=dropped ids, DIAG row required + drop ws-stripped counts, trap rc2, empty OPTGATE rc2, land runs board set-equality, per-F tests + reseed). In progress on bot/harness-gate. If land board step is too slow, raise sequencing with Migrate.
+
+## 2026-11-09 00:13 PST
+- D-0219 at bot/harness-d0219 df5ae6c (pid 77983707), early look sent to Arch; lands after AB-0006 (rebase: soundness label from meta.codegenCompare.mode, v2-only summary). Non-official: crate clean 62869, napi 61779. Asked Migrate: baseline 4 lint hits (SSR run.mjs:91-92 real); semdiff exec leg default off. TODO: lint-no-stripped-compare on every land.
+
+## 2026-11-09 00:14 PST
+- D-0255: land.sh runs board.sh check on rebased tree, ratchets vs pre-land $MAIN baseline; symlink/deleted baseline rejected; removed/skipped case needs cited D-id. Steered AB-0006 rework.
+- D-0256: lint-no-stripped-compare on every land; allowlist = closed exact-site list read from $MAIN: gen.mjs:106, csr-render-clusters.mjs:24, run.mjs:91-92 (delete when SSR fix lands). Semdiff exec leg OFF on official until Semdiff signs off. Apply on D-0219 rebase.
+- D-0226/D-0254 wiring: `node $MAIN_TREE/tools/ssr-compile-js-oracle/run.mjs --root=$wt --main=<pre-land sha>`, fail on rc 1|2 (dbbb940 on main).
+
+## 2026-11-09 00:18 PST
+- AGREE Cross-Lane harness: Template S2 88fabe2 (driver lock only). Tagged SHIM(AB-D0004 S2, expires S6) kept in code, no allowlist row.
+- D-0219 rebase checklist (Arch early look + Migrate D-0257): clean = closed enum {STATIC_EQUAL, EXEC_EQUAL} only; semdiff+registry from snapshot/$MAIN never branch; lint allowlist = closed path+rule list from $MAIN, each entry D-id (gen.mjs:106, csr-render-clusters.mjs:24 need D-ids; run.mjs:91-92 drop when SSR 8c2a65c lands; SSR wire/members/markup/dynamic decoded-literal compares allowed citing D-0257 until SD-2b); v2-only summary, delete UNSOUND label path; send 246/247 unclean buckets to Template as findings.
+
+## 2026-11-09 00:24 PST
+- AB-0006 rework #2 at bot/harness-gate 40e0996 (main 2e03887), pid 95011bec; sent to Arch. land board check 71s. Baseline reseeded (template-diag rows crash/oracle-error only).
+
+## 2026-11-09 00:25 PST
+- AB-L0070: building harness/shim-registry.tsv + shim-gate UNTRACKED/STALE gating on bot/harness-shimreg (executor). Template S2 then carries its row w/ Cross-Lane harness. Overlaps AB-0006 shim-gate edits.

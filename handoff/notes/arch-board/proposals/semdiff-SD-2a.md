@@ -274,77 +274,169 @@ equivalent 0, different_undecided 200, different_decided 0, unclassified 0, cras
   verdict too. `cargo test -p semdiff --locked`: 69 passed (exec 19).
 - The §8 smoke has not been re-run on 65b0e76.
 
-## 10. Observed spelling is never EQUIVALENT-BY-EXECUTION (bot/semdiff babaf01 on main 9c96ee4, pid e52f32eb…)
+## 10. Observed spelling is never EQUIVALENT-BY-EXECUTION (AB-L0064 rework: bot/semdiff 27bd96c on main dbbb940, pid 3bf36b4b…)
+History:
+- First submission babaf01 on 9c96ee4, pid e52f32eb…; Arch AB-L0064 REWORK (notes 41d1de9/109d718).
+- This section replaces that text.
+- Tip **27bd96c** on main **dbbb940**, pid **3bf36b4b06d6c50ce9a914b563b0929a7a9c62a7**. The pid is the same on
+  d46d6de, where the corpus was run.
+
 ### 10.1 Problem
-D-0196 lists only whitespace and quote/escape spelling as unobservable. Arch (AB-L0041) ruled numeric-literal spelling
-and parens inside `tmpl` OBSERVED (Function#toString); D-0196 also observes template raw text exactly. No trace step
-can see any of them: the values, calls and DOM are the same. The rewrite leg leaves such pairs UNCLASSIFIED
-(`token-spelling-differs`, `printer-equal-ast-differs`), or hides them behind a real code difference
-(`printed-differs`). Both shapes are exec-eligible, and equal traces then made them EQUIVALENT-BY-EXECUTION.
+D-0196 lists only whitespace and quote/escape spelling as unobservable. These are observed, and only statically, since
+no trace step sees them (same values, same calls, same DOM):
+- numeric-literal spelling and parens (AB-L0041, via Function#toString);
+- template raw text (D-0196);
+- property-key form (identifier, string, numeric, computed, method), shorthand vs longhand, and TemplateLiteral vs
+  StringLiteral (AB-L0064 F9, recorded in ARCHITECTURE.md).
 
-### 10.2 Proof it was a false-pass path
-Pre-fix binary built from main 9c96ee4 (`semdiff run --exec`, seed 1, 6-case manifest from the tests/exec.rs fixtures):
+Exec-eligible pairs carry them in two shapes:
+- alone: the rewrite leg says `token-spelling-differs` / `printer-equal-ast-differs`, or `printed-differs` when the
+  printer keeps the form;
+- inside or next to moved or hoisted code: `printed-differs`.
 
-| case | rewrite reason | 9c96ee4 (pre-fix) | babaf01 |
-|---|---|---|---|
-| `key: 75` vs `key: 0b1001011` | token-spelling-differs | **EQUIVALENT-BY-EXECUTION exec-equal** | DIFFERENT exec-static-spelling-differs |
-| same, next to the stc0 hoist | printed-differs | **EQUIVALENT-BY-EXECUTION exec-equal** | DIFFERENT exec-static-spelling-differs |
-| `` api_text(`h\x69`) `` vs `` api_text(`hi`) ``, next to the hoist | printed-differs | **EQUIVALENT-BY-EXECUTION exec-equal** | DIFFERENT exec-static-spelling-differs (template-raw) |
-| `.map((foo)=>foo)` vs `.map(foo=>foo)` | token-spelling-differs | UNCLASSIFIED exec-uncovered (callback gap only) | DIFFERENT exec-static-spelling-differs |
-| same, next to the hoist | printed-differs | UNCLASSIFIED exec-uncovered | DIFFERENT exec-static-spelling-differs |
-| control: `'lang': '\x65n'` vs `"lang": "en"`, next to the hoist | printed-differs | EQUIVALENT-BY-EXECUTION | EQUIVALENT-BY-EXECUTION (unchanged) |
+Either way, equal traces made them EQUIVALENT-BY-EXECUTION.
 
-The paren cases only escaped a false pass because of an unrelated coverage gap.
+### 10.2 Proof of the false-pass paths
+`semdiff run --exec`, seed 1, on a 12-case probe manifest built from the tests/exec.rs fixtures. The pre-fix binary is
+§10 v1 (19818d7, the same patch as babaf01); before §10 existed, main also passed the v1 cases.
+
+| probe | §10 v1 (19818d7) | rework (27bd96c) |
+|---|---|---|
+| `(stc0)` grouping paren next to the hoist (oracle) | **EXEC_EQUAL** | UNCLASSIFIED `unpaired-parens` |
+| `({…})` around the inlined object (rust) | **EXEC_EQUAL** | UNCLASSIFIED `unpaired-parens` |
+| hoisted `key: 0` vs inlined `key: 0x0` | **EXEC_EQUAL** | DIFFERENT numeric |
+| `"title":` vs `title:` alone | **EXEC_EQUAL** | DIFFERENT property-key |
+| same, masked by the hoist | **EXEC_EQUAL** | DIFFERENT property-key |
+| `const {_m0}` vs `{_m0: _m0}` alone | DIFFERENT (observe_rewrite) | DIFFERENT property-key |
+| same, masked by the hoist | **EXEC_EQUAL** | DIFFERENT property-key |
+| `` `hi` `` vs `"hi"` alone | **EXEC_EQUAL** | DIFFERENT string-vs-template |
+| same, masked by the hoist | **EXEC_EQUAL** | DIFFERENT string-vs-template |
+| trailing comma `[x,]` vs `[x]` (M5: only observe_rewrite sees it) | DIFFERENT | DIFFERENT token-spelling-differs |
+| control: hoist only | EXEC_EQUAL | EXEC_EQUAL |
+| control: `'lang': '\x65n'` vs `"lang": "en"` next to the hoist | EXEC_EQUAL | EXEC_EQUAL |
+
+The original §10 v1 cases (`75`/`0b1001011` alone and masked, template `h\x69`/`hi` masked) were EXEC_EQUAL on
+main 9c96ee4 and stay DIFFERENT.
 
 ### 10.3 Algorithm (`tools/semdiff/src/spelling.rs`, `InputSet::observe_rewrite`)
-1. **Rewrite reason.** If the rewrite leg said `token-spelling-differs` or `printer-equal-ast-differs`, the pair is
-   printer-equal and differs only in spelling the printer drops, with quotes and whitespace already ignored. That is a
-   static difference whatever exec finds (`what` = the rewrite reason, `rewrite_first_diff` kept).
-2. **Masked spelling.** `divergence(oracle, rust)` lexes both modules with oxc (`TokensParserConfig`) and keys every
-   token: string literals by decoded value (the AST `StringLiteral.value` at the token's span), numeric literals by
-   value (`number_key`: radix/legacy-octal/separators/bigint → `big:<u128>` or `f:<f64 bits>`), everything else by
-   kind plus exact text. It removes the common prefix and suffix, then aligns the middle with Myers. Walking the
-   alignment, it reports the first of these:
-   - a matched number whose raw spelling differs (`numeric`);
-   - an unmatched run that is parens only on both sides, one side possibly empty (`parens`: grouping parens, arrow
-     parameter parens, `new X` vs `new X()`);
-   - an unmatched run that is template-literal parts only on both sides, both non-empty (`template-raw`: equal raw
-     text would have matched).
-3. `decide` order: comments (§5 4b), then spelling → `DIFFERENT exec-static-spelling-differs`,
-   `first_diff.coords = "static-spelling"`. As with comments, a seen static difference does not depend on coverage.
+1. **Rewrite reason** (approved as is). `token-spelling-differs` / `printer-equal-ast-differs` → static DIFFERENT. This
+   also covers spelling outside the sensitive set when it is the only difference (M5).
+2. **Tokens.** oxc lexer (`TokensParserConfig`) plus one AST pass. Every token gets a value `key` and an observed
+   `spell`. Sensitive tokens are numbers, parens, template parts and property keys.
 
-### 10.4 Budget
-`spelling::MAX_EDITS = 4000` Myers edits on the middle (after prefix/suffix trimming). The worst-case backtrace is
-about MAX_EDITS² i32 (~64 MB). Time is O((N+M)·D). The budget is a constant, so the result is deterministic.
+   | token | key | spell | sensitive |
+   |---|---|---|---|
+   | string literal | `s` + decoded value | `string` (quotes/escapes unobservable) | no, it is only a counterpart |
+   | no-substitution template | `s` + cooked value | `template:` + raw | yes |
+   | template head/middle/tail | `t` + part kind + cooked | raw | yes |
+   | numeric literal | `n` + value (`number_key`) | raw | yes |
+   | `(` `)` | kind | text | yes |
+   | property key (ObjectProperty, BindingProperty, AssignmentTarget*) | `pk` + name (numeric keys by value) | `<kind>[+method]:<form>` | yes |
+   | other | kind + text | text | no |
+
+   For property keys, `form` is one of `ident`, `string`, `numeric:<raw>`, `computed` or `shorthand`.
+   - **Shorthand** is taken from the AST flag, not from tokens.
+   - **Computed keys** count only when the key is a literal or a no-substitution template. Any other computed key
+     keeps ordinary tokens.
+   - **Role keying.** A key token pairs only with key tokens, so `"a":` vs `a:` pair and then differ in spell, and a
+     key never pairs with a value string.
+3. **Align.** Myers on the key ids, after trimming the common prefix and suffix. Budget: `MAX_EDITS`.
+4. **Walk** the alignment, stopping at the first finding:
+   - an aligned pair with a different spell → DIFFERENT (`numeric`, `property-key`, `string-vs-template`,
+     `template-raw`);
+   - an unaligned run that is all parens → DIFFERENT `parens`;
+   - an unaligned run that is template parts only on both sides → DIFFERENT `template-raw`.
+5. **Moved code.** Pool every unaligned token per side. For each key whose pool holds a sensitive token (sorted, so the
+   result is deterministic), compare the two spell multisets:
+   - if the equal-spell matches are fewer than min(|O|,|R|), a mismatch is forced → DIFFERENT;
+   - else if |O| ≠ |R|, some token cannot be paired → NotProven `unpaired-<what>@<side>:<idx>:<text>`.
+6. `decide` order: a trace divergence first, then comments, then spelling DIFFERENT. NotProven is added to the
+   coverage misses → UNCLASSIFIED exec-uncovered. With no static difference and no misses → EXEC_EQUAL
+   (`branch_coverage: not-proven`). So EXEC_EQUAL is only possible when every sensitive token is aligned with an
+   equal spell, or is paired in a moved pool with an equal spell.
+
+### 10.4 Budget: why 4000
+`spelling::MAX_EDITS = 4000` Myers edits on the trimmed middle.
+
+Measured on the H-1 codegen-only corpus at d46d6de (16795 pairs, full streams, no trimming; a measurement-only
+instrument that was not committed):
+- edit distance p50 0, p99 0, p99.9 50, **max 50**;
+- largest module 8864 tokens.
+
+So 4000 is about 80× the worst observed distance. It is far below the ~17.7k edits a fully rewritten largest module
+would need, and such a pair fails closed as NotProven, which is acceptable because it means rewritten code.
+
+Cost at the cap:
+- backtrace about D² i32 = 64 MB per case, so about 0.4 GB at `--exec-jobs 6`;
+- time O((N+M)·D) ≈ 7·10⁷ steps (well under 1 s).
+
+A larger cap would buy nothing on this corpus and would multiply worst-case memory quadratically. The cap is a
+constant, so the result is deterministic.
 
 ### 10.5 Fail closed
-`Spelling::NotProven(reason)` is added to the coverage misses, giving `UNCLASSIFIED exec-uncovered` and never
-EXEC_EQUAL. Three causes produce it:
-- `static-spelling-not-proven:alignment-over-4000-edits`;
-- `…:token-lex-failed` (cannot happen, because exec_eligible already drops parse errors, but it never reads as Same);
-- `…:unkeyed-number@i/j`, a numeric literal in an unmatched run that `number_key` cannot value (an integer past u128).
-  Such a literal is keyed by spelling, so an equal-valued respelling could hide there.
+NotProven (→ UNCLASSIFIED, never EXEC_EQUAL) covers:
+- `alignment-over-4000-edits`;
+- `token-lex-failed`;
+- `unkeyed-number@…` (a literal that `number_key` cannot value, e.g. an integer past u128);
+- `unpaired-<what>@…`.
 
-A found `Differs` wins over not-proven, and comments win over both.
+A DIFFERENT that is found wins over NotProven, and comments win over both. Value changes in sensitive tokens (`1` vs
+`2`) are unpaired by design. The trace usually reports them first (exec-differs). When it does not, they stay
+UNCLASSIFIED.
 
-### 10.6 Known limit (stated, not hidden)
-A paren token inside an unmatched run that also has other differing tokens on both sides is attributed to that code
-difference, which the trace judges. The minimal alignment only produces such a run when the paren sits next to a
-replaced token. Property-key spelling (`a:` vs `"a":`) and shorthand (`{a}` vs `{a: a}`) are not checked here: they
-are not quote/escape spelling, so by D-0196's default they are observed. **Fork F9 for Arch:** should
-`spelling::divergence` also flag them? On the current corpus their population inside exec-equal is measured in
-SD-1B-clusters (2026-11-08).
+### 10.6 Remaining limit (precise)
+- **Positional pairing.** In step 5, pairing is by key across all unaligned runs and ignores position. Take a sensitive
+  token removed at one place, with a token of the same key and the same spelling added at another. They pair, and
+  neither is flagged. Every token is still examined: the pair has equal key and equal spelling, which D-0196 cannot
+  distinguish per token. What can differ is where the token sits, and that is a code move the trace judges.
+- **Not in the sensitive set.** These are not examined when another difference masks them: statement punctuation
+  (`;`, trailing commas), identifier escapes, regex-literal source, and non-literal computed keys.
+  - Alone, they are caught by observe_rewrite (M5).
+  - Masked, they are code differences, left to the trace.
+  - Widening the set is mechanical (add the token kind as sensitive). Each addition turns more value-or-code changes
+    into UNCLASSIFIED when the trace is equal.
+- Arch accepted this limit (AB-L0064).
 
-### 10.7 Tests (`cargo test -p semdiff --locked`: 78 passed)
-- spelling unit tests (+4):
-  - `75`/`0b1001011`, `(foo)=>foo`/`foo=>foo` (both directions), `new X`/`new X()`, `1_000`/`1000`, `1.0`/`1`, each
-    alone and next to a real difference;
-  - template raw `` `a\x41` ``/`` `aA` `` including a `${}` tail;
-  - controls: string escapes, quotes and `\u{41}` give Same;
-  - over budget gives NotProven (and the same pair within budget gives Same), unlexable gives NotProven, and an
-    unkeyed number gives NotProven while a found difference still wins;
-  - default budget: 3800 edits → Same, 4200 → NotProven.
-- tests/exec.rs CLI table (+6 rows): num-75 and paren-foo, alone and masked; masked-template-raw; and the
-  masked-quotes control, which stays EXEC_EQUAL.
-- `not_proven_spelling_is_unclassified_never_equivalent`: real equal traces plus NotProven give UNCLASSIFIED
-  exec-uncovered carrying the not-proven marker.
+### 10.7 Tests (`cargo test -p semdiff --locked`: 82 passed; spelling unit 11, exec 22)
+Unit tests in spelling.rs (11):
+- the brief's spellings, alone and next to a difference;
+- template raw text, and controls for string escapes and quotes;
+- `unpaired_sensitive_tokens_are_not_proven_never_same`;
+- `moved_or_hoisted_spelling_is_paired_by_value`: the AB-L0064 probes, i.e. the hoisted number, key quoting masked,
+  the grouping paren in both directions, shorthand masked, and backtick masked;
+- `property_key_form_and_literal_kind_are_observed`: identifier vs string, quote style as the control, shorthand,
+  computed, numeric key, method, binding shorthand, assignment-target shorthand, and backtick vs quote;
+- over budget, unlexable, and unkeyed numbers;
+- default budget, 3800 vs 4200 edits.
+
+CLI `--exec` table in tests/exec.rs (22 rows, as Arch ran it):
+- every §10.2 probe except M5, which has its own test;
+- num/paren pure and masked;
+- `observe_rewrite_alone_makes_a_spelling_pair_different` (M5), which asserts `divergence` says Same and the CLI
+  verdict is DIFFERENT;
+- `not_proven_spelling_is_unclassified_never_equivalent`.
+
+### 10.8 Mutation pass (each change applied alone, then `cargo test --lib --test exec`)
+| mutation | result |
+|---|---|
+| M6 step-5 forced mismatch disabled | killed (moved_or_hoisted…, brief_negatives…) |
+| M7 step-5 unpaired → no NotProven | killed (moved_or_hoisted…, unpaired…) |
+| M8 property-key facts dropped | killed (3 tests) |
+| M9 shorthand flag ignored | killed (property_key_form…, moved_or_hoisted…) |
+| M10 template spelled like a string | killed (3 tests) |
+| M11 aligned-pair spell compare off | killed (6 tests) |
+| M12 observe_rewrite no-op | killed (observe_rewrite_alone… only), which closes M5 |
+| M13 template parts keyed by raw, not cooked | killed (3 tests) |
+| M14 NotProven dropped in `decide` | killed (not_proven…, observed_token_spelling… CLI) |
+
+### 10.9 Corpus (live-tree, NON-REPORTABLE)
+- Base and pairs:
+  - d46d6de + b54cce3 (same pid as 27bd96c);
+  - H-1 pairs content 95b1ed4e…, identical to 6016fa4, 9c96ee4 and dbbb940;
+  - registry pinned at notes 67a2b74 (sha 71d5d6e6…).
+- Runs: jobs 6 and jobs 4 give **byte-identical** summaries, sha 3b3ee9a6fb93997dd06489607dc95562e5e1436a756a67016e3a091fef99d5ab.
+- Buckets: equivalent 16549 (printer-equal 16549, exec-equal 0), different_undecided 246, different_decided 0,
+  unclassified 0, crash 0.
+- Delta vs §10 v1 on 6016fa4 (summary 36446623…): **no verdict changes**. Every class, reason and first_diff is
+  identical, and only `decisions.registry_sha256` differs. Expected: no case was exec-equal, and every rework change
+  only narrows EXEC_EQUAL.
