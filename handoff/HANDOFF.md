@@ -1,10 +1,10 @@
-# LWC → Rust migration: handoff (2026-11-02 01:02 PST)
+# LWC → Rust migration: handoff (refreshed 2026-11-08 22:51 PST)
 
-Paused for usage. Nothing is running. Every bot's work is either on main or on a committed bot/* branch, and all of it is in the bundle below.
+Fleet resumed 2026-11-08 22:40 PST; branches below are in flight and move often. Every bot's work is either on main or on a committed bot/* branch, and all of it is in the bundle below.
 
 ## What's here
 - `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ 9c96ee4 plus every bot/* branch. Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
-- `notes.bundle`: full notes repo @ dcaf1da (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/notes-commit, bin/d-id).
+- `notes.bundle`: full notes repo @ da52580 (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/notes-commit, bin/d-id).
 - `notes/`: plain copies of the notes, for reading on GitHub.
 - `semdiff-uncommitted.patch`: Semdiff's uncommitted WIP from wt/semdiff (exec.rs, lib.rs, tests/exec.rs, new spelling.rs). Apply it on bot/semdiff.
 
@@ -30,3 +30,7 @@ csr-render 355/390, csr-render-template 545/570, ssr-render 384/389 with 5 skips
 1. Restore both bundles under /workspace (lwc-compiler-rust, notes). Check out the oracle at b9e8007.
 2. Read PLAN.md §3 (ownership) and §5 (rules), then each state/<bot>.md.
 3. Land in this order: hygiene chain → Template X0017 → S1 → JS slice2 → Semdiff SD-1B → SSR skips → Ship CI. Then publish a fresh official board from main.
+
+
+## Refresh note
+Main @ 9c96ee4 is unmeasured: the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/). Bundles contain current bot/* branch tips; the Unlanded list above is from the 2026-11-02 pause and is stale, see state/*.md. D-0233: remote stays tariqrafique/lwc rust-compiler.

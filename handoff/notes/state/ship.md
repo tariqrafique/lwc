@@ -1,10 +1,10 @@
 # state/ship.md
-Updated: 2026-11-02 00:30 PST by ship. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-08 22:40 PST by ship. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
 - S1 LANDED main 95b85c3 (AB-L0043). Next: S3 (transformSync rename w/ harness H1, AsyncTask single entry, errors via js-style J1, instrumentation/deprecation replay) — depends on J1-J3; S2 waits AB-0008. Nit due by S3: index.js SUPPORTED list duplicates package.json optionalDependencies -> derive or assert equal in loader_guard. Also S3: fix stale lib.rs doc comments (~165/167/196 mention single_error.rs/aggregate.rs); wire throw on errors.rs (JS Style e0749a5, OK'd 23:59).
 
-## Queued (S5 CI)
+## Queued (S5 CI) — IN PROGRESS 2026-11-08 22:41 (RESUME from Migrate; parse5 git dep landed f51f2e0, unblocked; main 9c96ee4; build caches wiped). D-0230 CUTOVER row already present (C2).
 - D-0225: `cargo check --workspace --locked` in GH Actions workflow (CI half of D-0223)
 - D-0226: mirror SSR ssr-compile-js-oracle gate in CI against built napi; never SSR_ORACLE_NAPI
 - Cross-lane OK given to JS Style for napi tests/serialize_only_gate.rs (D-0227), 00:30

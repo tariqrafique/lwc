@@ -1,5 +1,5 @@
 # state/template.md
-Updated: 2026-11-02 00:54 PST by LWC Template Rust. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-08 22:40 PST by LWC Template Rust. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Ownership change (2026-11-01 23:10 PST)
 - Template Diagnostics retired; Template Rust owns all of crates/lwc-template incl. diagnostics. Handoff: state/diagnostics.md 'HANDED OFF' (notes c00402d). Diagnostics worktrees removed (all 7 merged into main, clean; branches kept).
@@ -81,3 +81,5 @@ Unlanded branches (both committed, worktrees clean, BOTH based on pre-9c96ee4 ma
 - bot/template-expr @ 922fc45 (/workspace/wt/template-expr): AB-D0004 S1 rework (AB-L0055: cargo-metadata allowlist done; (b) unwrap_or(raw) fallback — verify; Cross-Lane: ssr trailer present, SSR AGREED w/ conditions: keep let _template_warnings, bind_expr.rs deletion is SSR's in S5). Expect conflicts with AB-L0058 member_chain + codegen/mod.rs. Blocked also on Migrate D-row for dropping TemplateCompileResult.root.
 Next, in order: X0017 land → S1 land → S2.. binder steps (slot_parent stays typed param; no Gen fields for per-node facts; member_chain frozen).
 Backlog: cur_cr Gen field → local (L0058 nit); 1144 parent-tag message mismatch; AB-0011(b) delete parser/tables.rs; AB-X0016 js_string after SSR L0045; normalize CTE 1083 message residuals → AB-D0004; D-0205 instrumentation; P2 AB-0012 split; official board gate check (csr 389/390, 567/570) not yet reported.
+
+- 2026-11-08 22:40 PST: RESUME per Migrate (Tariq approved 22:40 PST). main 9c96ee4; caches cold. D-0230 rules root drop. Order: X0017 rebase+gates+resubmit -> S1 rebase+gates+resubmit -> S2+. Harness hygiene/OWNERS chain lands first; rebase again after.

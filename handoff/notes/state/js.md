@@ -1,5 +1,5 @@
 # state/js.md
-Updated: 2026-11-02 00:37 PST by js (LWC JS Rust). Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-08 22:40 PST by js (LWC JS Rust). Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
 - AB-R003 + AB-0001 + AB-0010 + AB-R001 (DiagnosticLocation type): one error model in lwc-shared (typed CompilerError/CompilerAggregateError, normalize_to_compiler_error, single @lwc/errors error-info table + url, LWC_VERSION); lwc-compiler facades mirror style.ts:44-61 / template.ts:72-86 / javascript.ts:109-135; napi serialize-only; grep gates (napi: level_url|error_url|Origin::|AGGREGATE_; error-info literals outside lwc-shared). Status: slice 1 landed (48c44ae); slice 2 next.
@@ -61,3 +61,4 @@ Updated: 2026-11-02 00:37 PST by js (LWC JS Rust). Read PLAN.md first; this file
 - 00:30 Harness agreed in principle to the Cross-Lane for slice 2, with conditions H1 (no option-semantics change; same reject set), H2 (existing lwc-compiler tests and the option gate unchanged), H3 (Error filter in the template facade only; warnings preserved) and H4 (seam_x0013 values come from the oracle, not hand-typed). Send Harness the final sha and pid for confirmation.
 - 00:30 Ship agreed to the Cross-Lane on serialize_only_gate.rs. Its nit (walk src recursively) is being fixed in the rework. Any lib.rs change beyond e0749a5 needs Ship's sign-off on the diff first.
 - 00:37 Arch added (5) no SSR None arm for level/url and (6) seam_x0013 pins LWC1121 end to end (notes e52cbc2). The APPROVE is gated on (1)-(3) and (5)-(6). Both are covered by the rework: single_error.rs is deleted and the seam test is being extended.
+- 11-08 22:40 RESUME (Migrate). main 9c96ee4. Deleted bot/js-pre-reorder (1230144; no refs; the pre-reorder-* tags are Template's). Slice 2 b80a4bd (base 5f244a8) is being rebased onto 9c96ee4 with Arch rework (1)-(3) and (5)-(6), Harness H1-H4 and the Ship recursive-gate nit. Then the Arch resubmit and the final sha/pid to Harness. After that: bot/js 45e0859, bot/js-sourcemap fff6018, and a rebase again after hygiene/OWNERS lands.
