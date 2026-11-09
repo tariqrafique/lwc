@@ -163,3 +163,18 @@
 - shim-registry.tsv owner cells (template/js) repointed to harness so the owner column stays a valid lane after the OWNERS collapse.
 - Proved from the worktree: `bash scripts/test-land-classify.sh` rc 0; `scripts/lint-shell-pipes.sh --self-test` rc 0; `bash scripts/test-shim-registry.sh` rc 0; `scripts/check-land-main-refs.sh --check scripts/land.sh scripts/land-main-refs.tsv .` rc 0. Copied main's harness/lwc-compiler-napi.node in for the run and removed it afterwards (untracked).
 - Dry check: main's current land.sh classify+Arch-Review block still refuses this slice (no Arch-Review trailer; rc 97; needs an Arch-Review trailer).
+
+## 2026-11-09 13:23 PST
+- D-0276 split into two landable commits after the stale-vs-MAIN-table checker bug. Not landed. Did not message agents.
+- Commit 1 on bot/harness-d0276 **4f0c5303fa2c2d472bafd2eabb6ddda79830f626**, pid **2c6d6ec7ade6782ac7d6e79a058402ccc45af30f**. Worktree /workspace/wt/harness (only compiler-rust slice worktree; D-0268). OWNERS collapse, shim-registry owner cells, external-inputs.lock, docs, land.sh drops per-land Arch-Review, Baseline-Raise vs Arch-Review-id rule deleted, review-patch-id.sh, and check-land-main-refs stale-vs-incoming + plants. Keeps land-classify.sh and its main_run (result feeds an echo; comment "removed in the next land (D-0276 step 2)") so MAIN f679437's checker and table still accept the tree.
+- Commit 2 on bot/harness-d0276-step2 (stacked on commit 1) **3322bb232fbef1041a207977c127c6e971a5306a**. Deletes the classify call, scripts/land-classify.sh, its land-main-refs.tsv row, the classify cases in test-land-classify.sh, and the test-shim-registry trivial-paths guard. Branch ref only; verified in a temporary worktree that was removed without --force.
+- Checkers: MAIN f679437 check-land-main-refs.sh + MAIN table over the commit-1 tree rc 0 (`check-land-main-refs: ok (20 helper args, 28 box-config deps)`). Commit-1 checker + commit-1 table over the commit-2 tree rc 0 (`check-land-main-refs: ok (19 helper args, 28 box-config deps)`).
+- `scripts/test-land-classify.sh` rc 0 at both commits (copied main's harness/lwc-compiler-napi.node in for each run, then removed). Both tails end `ok   check-land-main-refs --self-test`.
+
+## 2026-11-09 13:32 PST
+- AB-M0001 REWORK (notes 2fafbbe): stale rows are now (incoming ∩ MAIN) minus found uses. Unlisted still vs MAIN. Incoming-only unused row accepted (pending addition); MAIN-only drop accepted; row in both unused fails; missing incoming table rc 2. Match MAIN_* by path+class and box rows by path+dep.
+- Commit 1 amended on bot/harness-d0276 **8fdd07b0a8a918f01e5a935c9426a290a15b354f**, pid **826cf74da0ca7c292fdc82a86589de6abc56c379**. Not landed. Did not message agents.
+- bot/harness-d0276-step2 rebased onto it: **3cbadda09e16bb10b596f0df14af26420bf1569a**. Verified in a temporary worktree, then removed without --force. D-0268: only /workspace/wt/harness remains as the compiler-rust slice worktree.
+- Checkers: MAIN f679437 checker + MAIN table over commit-1 rc 0 (`ok (20 helper args, 28 box-config deps)`). New commit-1 checker + its table over step-2 rc 0 (`ok (19 helper args, 28 box-config deps)`).
+- test-land-classify.sh rc 0 at both (napi .node copied in, then removed). Both tails end `ok   check-land-main-refs --self-test`.
+- Plants: incoming-only unused MAIN_* row is accepted; unused MAIN_* row in both tables fails; MAIN table extra row dropped from incoming is accepted; incoming-only unused BOX_CONFIG_DEPENDENT row is accepted; unused BOX_CONFIG_DEPENDENT row in both tables fails; MAIN table extra BOX_CONFIG_DEPENDENT row dropped from incoming is accepted; missing incoming table is rc 2.
