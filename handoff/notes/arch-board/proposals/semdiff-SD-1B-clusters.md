@@ -260,3 +260,40 @@ limit.
   rt-1 rule).
 - Minimal repros are unchanged from the 9cc1c0a table above (mutation corpus `expression-complex/valid/{numeric-literal-binary,-hex,-octal,arrowfn-scoped-vars,template-literal-tagged,object-expr,template-literal}`,
   `experimentalComplexExpressions: true`).
+
+## Re-cluster 2026-11-08 23:40 PST: main 6016fa4 + semdiff 37cc88b, with exec (live-tree, NON-REPORTABLE)
+- Tree: detached worktree /workspace/wt/semdiff-6016fa4 = **6016fa4** + 37cc88b. That commit is the same patch as
+  bot/semdiff 19818d7 on 6ddb2d3, pid e52f32eb8183f951427236f4f2eb580835b79ef0 on both bases. Oracle b9e8007, clean.
+- H-1 (private `TDD_DRIVER_TARGET=/workspace/.targets/tdd-semdiff`, driver sha256 25d3b7fdb334…), run twice;
+  `diff -r pairs1 pairs2` is identical.
+  - diag-exact 63115/63224, codegen-only 16795, stripped-equal 16514, crash 0.
+  - Manifest (ids and paths) de43daea…; pairs content **95b1ed4e…**. Both are the same as on 9c96ee4: the rust output
+    for this corpus is byte-identical between 9c96ee4 and 6016fa4, although the driver binary changed (lwc-shared).
+- `semdiff run --exec --gate none`, seed 1, registry pinned to notes 4a2b05c decisions.tsv (sha 44f920fd…):
+  - jobs 6 on pairs1 and jobs 4 on pairs2 give **byte-identical** summaries, sha256 **364466232a2473d9294c7069cd596888b4abf18d931d0b3e097ee54d90b09fae**.
+  - It differs from the 9c96ee4 summary fa3c58c6… only in `decisions.registry_sha256`.
+  - runner_sha256 f13d2c07…, exec.cases_run 246.
+
+| Bucket | Cases |
+|---|---|
+| equivalent | 16549 = printer-equal 16549 + exec-equal 0 |
+| different_undecided | 246 |
+| different_decided | 0 |
+| unclassified | 0 |
+| crash | 0 |
+
+Per-case list (D-0244 routing): `arch-board/proposals/semdiff-cases-6016fa4.tsv`. It has 246 rows; its header lists
+each cluster's minimal repro. Its pair files are under /workspace/scratch/h1-6016fa4/pairs1, so regenerate them with
+H-1 to reproduce.
+
+| cluster | n @9c96ee4 | n @6016fa4 | delta | owner | minimal repro (experimentalComplexExpressions) |
+|---|---|---|---|---|---|
+| C1 numeric spelling | 105 | 105 | 0 | LWC Template Rust (printer.rs) | `<x-pert attr={0b1001011}>`: oracle `75`, rust `0b1001011` (also 0x42/66, 0o42/34) |
+| C2 arrow param parens | 36 | 36 | 0 | LWC Template Rust (printer.rs) | `<x-pert foo={[foo, foo => foo]}>`: oracle `foo => foo`, rust `(foo) => foo` (35 static + 1 exec-differs via lwc:external toString) |
+| C3 tagged template → undefined (one-side throw) | 35 | 35 | 0 | LWC Template Rust (AB-D0004) | `<x-pert attr={foo`a${b}`}>`: the oracle calls `$cmp.foo` as a tag and throws; rust `undefined` |
+| C4 object literal → undefined | 35 | 35 | 0 | LWC Template Rust (AB-D0004) | `<x-pert attr={{obj:'literal'}}>`: oracle hoists the literal, rust `undefined` |
+| C5 template literal → undefined | 35 | 35 | 0 | LWC Template Rust (AB-D0004) | ``<x-pert attr={`${name}: ${occupation}`}>``: rust `undefined` |
+
+No delta: nothing collapsed, nothing new, nothing partial. Main 9c96ee4..6016fa4 has no lwc-template change. **Caveat:**
+these buckets come from the §10 checker before the AB-L0064 rework, which flagged false-pass holes in it. Nothing in
+this corpus is exec-equal, so those holes cannot have hidden any case here.

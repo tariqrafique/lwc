@@ -1,3 +1,92 @@
+# js divergences 2–3: resubmission after AB-L0063 (2026-11-08 23:50 PST)
+
+The two are now separate branches, each based on main **a051a35**. Both rebase cleanly onto main d46d6de (lwc-template only) with the SAME pids (checked on scratch branches). lwc-js only.
+
+| branch | head | commits | pid (`scripts/review-patch-id.sh`) |
+|---|---|---|---|
+| `bot/js-div3` | **d9bf476** | 337b306 (= 36ddcab, as approved in shape; own pid d3849106 confirmed) + d9bf476 (nit) | **5a945ec2736daea16ca7ad91d38e6490ad7fde54** |
+| `bot/js-div2` | **84702f6** | 84702f6 (one commit, directly on main, independent of div 3) | **aa3eb7d8d201db842fad0530151f70205e85ec51** |
+
+`bot/js` (898e7ca, held by /tmp/abjs) is untouched and superseded by these two.
+
+## Div 3: `bot/js-div3` d9bf476, pid 5a945ec2
+- **337b306** is the cherry-pick of 36ddcab. Alone over a051a35 its pid is `d38491068dff45e9cee53f2084124e4716070b30`, Arch's d3849106.
+- **d9bf476** fixes the nit (AB-L0063) in `Origin::map` with an explicit mapping plus a `debug_assert`; no error type is added.
+  - `edits::apply_mapped` tiles the input: piece *i* covers input `[in_start, pieces[i+1].in_start)`, and the last piece ends at `src.len()`. So a replaced run's end is the next piece's `in_start`, or `src.len()` when the run is last. That is the real meaning, not a guess.
+  - The old `unwrap_or(p.in_start)` returned the run's own start for a trailing run, a zero-length span. That was a wrong mapping, not a harmless fallback.
+  - An offset inside no piece is legitimate only at a span boundary: a start at the end of the output maps to `src.len()`, and an end at 0 maps to 0.
+  - Any other offset is a span outside the renamed source, an internal bug, so it `debug_assert`s.
+  - Why not an error type: every caller maps spans of the AST it just parsed from this same renamed source, so a bad offset can't come from user input. An `Err` would thread a never-taken path through decorators.rs and lib.rs.
+  - Unit tests in origin.rs: mid-run, trailing run (the case the old fallback got wrong), start at EOF, end at 0, and `#[should_panic]` past the output.
+- **Gates, local and provisional:**
+  - `cargo check --workspace --all-targets` green at both commits;
+  - lwc-js tests 76 pass / 0 fail;
+  - js 174/174 and js-api 1239 on both main a051a35 (napi 09ba8afae23c) and the branch (napi b11ae3a76d3b);
+  - shim gate untagged 0, option gate 61/61.
+- **Div-3 oracle diff (t3, t3b, class-features-shipped.json; 69 inputs):** branch **65/69**, main 7/69. Same 4 out-of-scope misses as before: three item-4 `*-off` cases and `rename-before-cls-deco`.
+- Why and upstream cites: unchanged; see "Why" → div 3 below.
+
+## Div 2: `bot/js-div2` 84702f6, pid aa3eb7d8 (cites D-0245 and D-0248)
+Based directly on main, not stacked on div 3: the two touch disjoint code (parse.rs/unforgeables.rs vs lib.rs/decorators.rs/origin.rs), and an independent pid can be reviewed and landed in either order.
+- **Kept:** the plain-JS source type through the single `parse::source_type()` (parse.rs, unforgeables.rs), and the D-0245 golden.
+- **Deleted from parse.rs:**
+  - `babel_error` and `enum Babel` (the oxc-message → Babel-message table);
+  - `matching_paren`, `innermost_open`, `ends_with("export")`, `next_tok`, `word_end`, `find_word`, `word_at`;
+  - the dead `let _ = m`;
+  - `missing_plugin_error`, which only the table reached (Babel prose too);
+  - the `unwrap_or((0,0))` position.
+- **New shape (D-0248, restates D-0155):**
+  - `parse()` takes oxc's first error. Its message text goes through unchanged, and its FIRST label offset becomes the 1-based line / 0-based column, with a UTF-16 index via `LineIndex`, in the existing `parse_error`: `SyntaxError` class, `<file>: <text> (<l>:<c>)` + code frame, normalized by the facade to LWC1007.
+  - No label → `CompileError::new("internal: oxc parse error without a label: …")`, not position 0.
+  - A `debug_assert` checks that the label lies within the source.
+- **Not deleted, flagged for Arch** (AST-based, not keyed on oxc text, and not in the delete list):
+  - `abstract_class` (oxc accepts `abstract class` in JS; Babel rejects it as `abstract` + Missing semicolon);
+  - main's pre-existing `first_reserved_ident` / `earlier_reserved_ident` (strict reserved words).
+  - Both still emit Babel's text for errors oxc doesn't raise at all.
+- **Tests:**
+  - `tests/ts_parse.rs` compares outcome, code, the `SyntaxError: LWC1007: <file>: ` prefix and `{line,column,index}`. For LWC1007 it never compares the text: `const OXC_MESSAGE_DIVERGENCE = "D-0248"`, one line. Non-syntax errors (2 LWC1198 cases) still compare the whole message.
+  - `ACCEPTED_DIVERGENCES = [("interface.ts-rec","D-0245")]`.
+  - `LOCATION_DIVERGENCES` holds 25 cases, each with OUR pinned position. Each must exist in the fixture and still differ from shipped, and the parity count is asserted.
+  - Orphan proof: `divergence_lists_reject_orphan_ids` shows `("no-such-case","D-9999")` is reported. Mutation checks:
+    - adding it to `ACCEPTED_DIVERGENCES` fails `ts_and_jsx_parse_failures_match_shipped` ("ACCEPTED_DIVERGENCES orphan");
+    - dropping a `LOCATION_DIVERGENCES` row fails with that case's location.
+  - The D-0245 golden now pins oxc's text: `Expected a semicolon or an implicit semicolon after a statement, but found none (2:9)`, location {2, 9, 54}, code 1007, single error. It still asserts 9.5.3 = `ok`.
+- **Grep gate `tests/no_oxc_message_match.rs`:**
+  - Walks lwc-js/src recursively (non-test code). It bans `.message` / `msg` / `message` with `==`, `!=`, `starts_with`, `ends_with`, `contains`, `strip_prefix`, `strip_suffix`, `find`, `matches`, the comparison on either side, and `match … message … {`.
+  - Negative check: 10 lines from the deleted table must hit, and 4 pass-through lines must not. Dropping the old b7fdd63 parse.rs into src/ makes the gate fail on all 12 table comparisons, which I checked.
+- **Location parity (measured, not faked; live 9.5.3 vs napi f31921e40977):**
+  - fixture = proofs t2+tsx+tsx2+tsx3, 78 cases: outcome 77/78 (D-0245), code 75/75, class+code+filename 73/73;
+  - location {line,column,index}: **48/73** LWC1007 cases. One of the 48 is a class-features case whose location is null on both sides. Of the 72 with a location, the line is equal in all 72; the 25 misses are column/index;
+  - message text: 7/73;
+  - Arch probes: location **3/6**, text 0/6.
+  - Details and examples: `proofs/js-divergences/D0248.md` (notes 5e215a8), `arch-probes.json`, `locparity.cjs`.
+- **Nit:** `dump-ts-fixture.cjs` writes to `$LWC_JS_CRATE/tests/fixtures`. It fails loudly when the variable is unset or isn't an lwc-js crate. Regenerating gives a byte-identical fixture.
+
+### Gates: main a051a35 vs `bot/js-div2` 84702f6 (2026-11-08 23:36–23:40 PST, local, PROVISIONAL)
+napi: main 09ba8afae23c, branch f31921e40977, both via install-napi.sh. Oracle b9e8007 clean.
+| gate | main | branch |
+|---|---|---|
+| cargo check --workspace --all-targets | green | green |
+| cargo test --workspace | 449 pass / 0 fail | 454 pass / 0 fail (+ts_parse 3, +no_oxc_message_match 2) |
+| lwc-style fixtures | 136/136 | 136/136 |
+| style-diff | 3150 jobs, 0 fail | same |
+| js | 174/174 | 174/174 |
+| js-options | 302 | 302 |
+| js-api | 1239 | 1239 |
+| template (diag) | 568/568 | 568/568 |
+| style | 70/70 | 70/70 |
+| style-api | 829/829 | 829/829 |
+| ssr (diag) | 388/388 | 388/388 |
+| csr-render | 390/390 | 390/390 |
+| csr-render-template | 567/570 | 567/570 (same 3) |
+| shim gate | untagged 0, scanners 9=9 | same |
+| option gate | 61/61 | 61/61 |
+| golden-io-guard | ok | ok |
+| lint-shared-tables | ok 23/23 | ok 23/23 |
+
+---
+# History (superseded submissions below)
+
 # js divergences 2–3: lwc-js parses every script as plain JS; class-features code frames from the original source
 
 **Current head (2026-11-08 23:25 PST): branch `bot/js-d0245` @ 36ddcab on main e9d5199**, 2 commits (b7fdd63 div 2 + D-0245, 36ddcab div 3), pid **1a901cd08c9325e30ad9fb234d90d1737c246c4f** (`scripts/review-patch-id.sh`, merge-base e9d5199). This supersedes the pid 4c107e0f submission below: same change, rebased, plus the D-0245 golden (see "D-0245" section). `bot/js` itself still points to 898e7ca (= pid 4c107e0f on e9d5199) because it is checked out in `/tmp/abjs`; it moves to 36ddcab once that worktree is released.

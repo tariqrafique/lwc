@@ -270,3 +270,14 @@ Upstream `parser/attribute.ts` is a sibling module whose `normalizeAttributeValu
 
 ### Invariant: dependency allowlist is cargo metadata (AB-L0055, 2026-11-08)
 `lwc-shared/tests/dependency_allowlist.rs` reads `cargo metadata`, covering normal, build, target-cfg and renamed dependencies. No TOML text scanners.
+
+### Invariant: JS syntax errors come from oxc's diagnostic (D-0248 restating D-0155, AB-L0063, 2026-11-08)
+For JS syntax errors, the LWC1007 code, the filename, the SyntaxError class and the line/column convention match upstream. The message text and the exact position come from oxc's diagnostic (its message and label span). No code in lwc-js may compare oxc message text or rebuild @babel/parser messages; any proposal that matches on oxc text is permanently rejected. Positions come only from AST or diagnostic spans, never from scanning source text.
+
+### Ruling: semdiff F9 observation (AB-L0064, 2026-11-08, applying D-0196's default)
+These are OBSERVED, not quote/escape spelling, because each one is a different AST node kind or flag and Function#toString shows it:
+- property-key form: Identifier vs StringLiteral vs computed;
+- shorthand vs longhand properties;
+- TemplateLiteral vs StringLiteral.
+
+semdiff must never certify EXEC_EQUAL while a spelling-sensitive token sits unexamined in an unaligned or moved run.

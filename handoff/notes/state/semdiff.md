@@ -1,5 +1,5 @@
 # state/semdiff.md
-Updated: 2026-11-08 23:18 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-08 23:40 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
 - SD-2a §10 (exec must not upgrade D-0196-observed spelling): bot/semdiff @ babaf01, one commit on main 9c96ee4, pid e52f32eb8183f951427236f4f2eb580835b79ef0. Not landed; needs Arch review (design §10 + fork F9). main has since moved to 6ddb2d3 (no tools/semdiff changes): rebase before land.sh, and resubmit if the pid changes.
@@ -104,3 +104,9 @@ Updated: 2026-11-08 23:18 PST by semdiff. Read PLAN.md first; this file holds on
 ## 2026-11-08 23:20 PST
 - bot/semdiff rebased to 19818d7 on main 6ddb2d3, pid e52f32eb8183f951427236f4f2eb580835b79ef0 (unchanged). Sent to Arch with fork F9. On APPROVE: add the trailer, check the pid, run land.sh.
 - Migrate has the 246 DIFFERENT (Template-owned) and was asked to route them or let me send them directly. Next is the SD-2b design.
+
+## 2026-11-08 23:42 PST: re-cluster on 6016fa4 (live-tree, NON-REPORTABLE)
+- bot/semdiff is at 19818d7 on main 6ddb2d3; someone else had already rebased it, as the same patch as babaf01. pid e52f32eb… is unchanged on 6ddb2d3 and on 6016fa4. I measured on 6016fa4 + 37cc88b in the detached worktree /workspace/wt/semdiff-6016fa4. Tests: 78 passed.
+- Buckets: 16549 printer-equal, 0 exec-equal, 246 different_undecided, 0 unclassified, 0 crash. Summary 36446623… is byte-identical across jobs 6 and jobs 4; registry pinned at notes 4a2b05c. Pairs content 95b1ed4e… is the same as 9c96ee4. No cluster delta.
+- Case list: arch-board/proposals/semdiff-cases-6016fa4.tsv (notes fd12ec5). Owner of all 5 clusters: LWC Template Rust.
+- Next: AB-L0064 REWORK on §10 (pid e52f32eb). Rebase onto main first.

@@ -53,3 +53,10 @@
 
 ## 2026-11-08 23:24 PST
 - AB-L0062 obfix landed main a051a353e3f1 (pid 3a09d3e2). Forward cond: AB-0006 rework must delete mv@:38 + ln -s. Next per D-0246: AB-0006 rework (executor on bot/harness-gate), then D-0219, hygiene, D-0223+D-0238, D-0231, D-0235, D-0239, D-0242, then fresh official board.
+
+## 2026-11-08 23:38 PST
+- AGREE Cross-Lane: harness to Template on AB-D0004 S1 71d15db (driver Cargo.lock only; oxc/parse5 versions == root lock).
+- D-0249 queued (Migrate): ssr-render sweep official row under harness/**, default-export modules only; scripts in notes lwc-ssr-rust/ssr-render-sweep/ (aceb9a6); ssr_render GAP cells flip only via this row. After the D-0246 chain.
+
+## 2026-11-08 23:40 PST
+- D-0251 queued (Migrate): driver becomes root workspace member, delete its Cargo.lock; land with/just after D-0238.

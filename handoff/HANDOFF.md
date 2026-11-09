@@ -1,10 +1,10 @@
-# LWC → Rust migration: handoff (refreshed 2026-11-08 23:30 PST)
+# LWC → Rust migration: handoff (refreshed 2026-11-08 23:58 PST)
 
 Fleet resumed 2026-11-08 22:40 PST; branches below are in flight and move often. Every bot's work is either on main or on a committed bot/* branch, and all of it is in the bundle below.
 
 ## What's here
-- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ a051a35 plus every bot/* branch. Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
-- `notes.bundle`: full notes repo @ 77ff958 (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/notes-commit, bin/d-id).
+- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ 0e8b07a plus every bot/* branch. Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
+- `notes.bundle`: full notes repo @ 35676b6 (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/notes-commit, bin/d-id).
 - `notes/`: plain copies of the notes, for reading on GitHub.
 - `semdiff-uncommitted.patch`: Semdiff's uncommitted WIP from wt/semdiff (exec.rs, lib.rs, tests/exec.rs, new spelling.rs). Apply it on bot/semdiff.
 
@@ -32,23 +32,28 @@ csr-render 355/390, csr-render-template 545/570, ssr-render 384/389 with 5 skips
 3. Land in this order: hygiene chain → Template X0017 → S1 → JS slice2 → Semdiff SD-1B → SSR skips → Ship CI. Then publish a fresh official board from main.
 
 
-## Refresh note (2026-11-08 23:30 PST)
-Main @ a051a35 is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/). Notes @ 77ff958. The 'Unlanded branches' list above is stale; see state/*.md and these current tips:
+## Refresh note (2026-11-08 23:58 PST)
+Main @ 0e8b07a is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/ stays there). Notes @ 35676b6. The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
 - bot/diagnostics-directives 3bc4435
 - bot/harness 5739df7
-- bot/harness-gate 40e7143
+- bot/harness-gate cf9d667
 - bot/harness-obfix a051a35
 - bot/hygiene a28dd50
 - bot/js 898e7ca
 - bot/js-d0240 6016fa4
 - bot/js-d0245 36ddcab
-- bot/js-j3 704371a
+- bot/js-div2 84702f6
+- bot/js-div3 d9bf476
+- bot/js-j3 c471bb3
 - bot/js-slice2 c08fbf6
 - bot/js-sourcemap fff6018
-- bot/semdiff 19818d7
+- bot/semdiff b54cce3
 - bot/semdiff-sd1b 9c96ee4
-- bot/ship aa938f7
-- bot/ssr 90c06b9
+- bot/ship 8327f60
+- bot/ssr 0c80e4e
 - bot/template e9d5199
 - bot/template-clusters b22df87
-- bot/template-expr 95bb2ba
+- bot/template-expr d46d6de
+- bot/template-s2 d46d6de
+
+Note: semdiff-uncommitted.patch is from an earlier refresh; wt/semdiff is currently clean, so it may already be committed on bot/semdiff.
