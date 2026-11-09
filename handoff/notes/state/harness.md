@@ -85,3 +85,34 @@
 
 ## 2026-11-09 00:25 PST
 - AB-L0070: building harness/shim-registry.tsv + shim-gate UNTRACKED/STALE gating on bot/harness-shimreg (executor). Template S2 then carries its row w/ Cross-Lane harness. Overlaps AB-0006 shim-gate edits.
+
+## 2026-11-09 00:29 PST
+- shimreg bot/harness-shimreg ee0cc5d pid 414aa4ab sent to Arch. Template row: `lwc-template/src/parser/expression_complex/validate.rs<TAB>AB-D0004 S2, expires S6<TAB>template<TAB>S6<TAB>acorn_text_on_oxc_error re-lexer (AB-D0004 Q2); expires at S6`. Template validate.rs:394 bare "shim" word will fail untagged gate.
+- D-0260 queued after D-0246 chain: shim expiry fail when stage landed (registry, from $MAIN), + lint banning encode_utf16 / hand line-col outside lwc_shared LineIndex; mutation tests.
+
+## 2026-11-09 00:30 PST
+- AB-0006 REWORK #3 (Arch notes 4725ae0): MAIN board.sh --root=wt runner; Case-Set row must list ids (subset check); trap first; drop xargs 2>/dev/null; bootstrap logs of branch gate path; seed-landed test every land; cite D-0219; official-board.sh:27 nit. In progress.
+
+## 2026-11-09 00:31 PST
+- D-0261: case-set rows migrate-authored + id subset; land side steered into rework #3. Asked Migrate who edits bin/d-id (theirs, 49c9a0d) and flagged author check is honor-system (notes-commit takes bot arg). D-0260 home = shim-registry.tsv confirmed.
+
+## 2026-11-09 00:32 PST
+- D-0261 bin/d-id check+test ready in /workspace/scratch/harness/d0261 (6 ok patched / 3 FAIL unpatched). Blocked on OWNERS.tsv (bin/* -> migrate); asked Migrate to add bin/d-id + bin/test-d-id-caseset.sh rows. Migrate accepts honor-system authorship, no signing.
+
+## 2026-11-09 00:32 PST
+- D-0261 d-id check committed by Migrate as notes b0b4450. bin/* stays migrate-only: send bin/ changes as patches. Cite b0b4450 in rework #3.
+
+## 2026-11-09 00:35 PST
+- AB-L0072 shimreg REWORK (notes d8338f1): OWNERS/constants from MAIN; internal errors rc2; strict TSV + anchored expiry; repo-wide git ls-files scan; per-rule tests + trivial-paths guard. In progress; Template S2 waits on it. Second lander re-reviews merged land.sh shim-gate line (SHIM_REGISTRY + SHIM_RATCHET_DIR).
+
+## 2026-11-09 00:41 PST
+- AB-0006 rework #3 bot/harness-gate c39e30c (main 4e1a48a) pid 3c8eb41e sent to Arch. Bootstrap logs /workspace/scratch/harness/ab0006-r3/. Land board check 93s.
+
+## 2026-11-09 00:41 PST
+- AB-L0072 rework bot/harness-shimreg 057ee10 (main 4e1a48a) pid 6ef9a8d9 sent to Arch. Template row now repo-relative: crates/lwc-template/src/parser/expression_complex/validate.rs<TAB>AB-D0004 S2, expires S6<TAB>template<TAB>S6<TAB>acorn_text_on_oxc_error re-lexer (AB-D0004 Q2); expires at S6
+
+## 2026-11-09 00:42 PST
+- AB-L0072 r2 REWORK (notes 991ad23): seed OWNERS in shimreg (from hygiene a28dd50 + D-0229 edits, per D-0227), remove lowercase fallback, malformed/missing OWNERS rc2; drop board.sh from scan exclusions. In progress. Hygiene OWNERS commit becomes redundant after this lands.
+- 2026-11-09 00:46 PST: shimreg r3 at 6d6fbac (pid 24ba12a4), seeds OWNERS (js token); sent to Arch for re-review; Migrate told. On APPROVE: add the trailer, land, then send Template the main sha and row.
+- 2026-11-09 00:51 PST: AB-L0072 LANDED main cdfbc0b (shim registry and OWNERS seed, js token). Template has been sent the sha and row, and has my AGREE. Carry-forwards: (1) whichever of AB-0006/shimreg lands second, i.e. AB-0006, must make board.sh SHIM_OWNERS read MAIN ($here/../OWNERS), not the wt copy; (2) the registry header expiry text changes with D-0260; (3) relabel the negative-probe FAIL lines in test-shim-registry.sh. Hygiene: drop its OWNERS commit (now redundant). AB-0006 r3 must rebase onto cdfbc0b with the combined land.sh shim line.
+- 2026-11-09 00:51 PST: AB-0006 r3 REWORK (notes 9f54c9d): A obs forging (env -u, setsid pgroup, sha256), B pinned vitest config from MAIN, C anchored case-set, D notes-missing rc2, E notes sha once, F -G anchor, xargs nit; plus the AB-L0072 merge conditions. r4 in progress after rebase onto 34175ef+.

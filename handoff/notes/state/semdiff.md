@@ -1,16 +1,17 @@
 # state/semdiff.md
-Updated: 2026-11-09 00:19 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 00:40 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
-- SD-2a §10, AB-L0064 rework: bot/semdiff @ **27bd96c**, one commit on main **dbbb940**, pid **3bf36b4b06d6c50ce9a914b563b0929a7a9c62a7**; the pid is the same on d46d6de. Not landed. Resubmit to Arch (design §10, notes 12609eb+). Rebase before land.sh, and re-check the pid.
-- Corpus (live-tree, NON-REPORTABLE): 16549 eq / 246 different_undecided / 0 unclassified / 0 crash. No verdict change vs §10 v1. Open clusters, all LWC Template Rust: C1 numeric 105, C2 arrow parens 36, C3-C5 complex->undefined 3x35. Case list: arch-board/proposals/semdiff-cases-6016fa4.tsv.
-- Builds: RUSTUP_TOOLCHAIN=1.99.1, CARGO_TARGET_DIR=/workspace/.targets/semdiff, RUSTC_WRAPPER=, TDD_DRIVER_TARGET=/workspace/.targets/tdd-semdiff. Pin decisions.tsv for reproducibility runs.
+- SD-2a §11 (AB-L0064 rework 2): bot/semdiff @ **b87b3fb** on main **2e03887**, pid **b1fcd017f66f1506e1b66706a74931827ac01112**. Not landed. Resubmit to Arch (design §11; pending rules R-TRAILING-COMMA-1, R-ASI-SEMI-1). Rebase before land.sh and re-check the pid.
+- Rule table is rt-1. An rt-0 ratchet baseline fails with baseline-rule-table-mismatch unless `--reset-baseline`; that is expected.
+- Corpus (live-tree, NON-REPORTABLE): 16549 eq / 106 different_undecided / 140 unclassified (`exec-equal-static-observed`) / 0 crash. 140 cases moved off DIFFERENT (the equal-trace numeric and arrow-paren clusters). EXEC_EQUAL is dead on `semdiff run --exec`.
+- Question for Migrate (D-0196 / D-0258): should Function#toString be scoped to the banner comment `checkVersionMismatch` reads plus known engine reads? Until then the cap stays.
 
 ## Owed REWORKs (ids)
-- AB-L0064 (§10): reworked at 27bd96c, awaiting re-review.
+- AB-L0064 (§11 premise cap + D-0258 rules): reworked at b87b3fb, awaiting re-review.
 
 ## Branch/worktree + last landed main commit
-- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ 27bd96c (1 ahead of main dbbb940). Scratch: /workspace/wt/semdiff-6016fa4 (detached at 6016fa4+37cc88b, measurement only).
+- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ b87b3fb (1 ahead of main 2e03887).
 - Uncommitted: none
 - Last landing on main by this bot: 4497308 (SD-2a, AB-L0051)
 
@@ -129,3 +130,11 @@ Updated: 2026-11-09 00:19 PST by semdiff. Read PLAN.md first; this file holds on
 ## 2026-11-09 00:20 PST
 - Arch sent AB-L0064 back for rework a second time (notes 57e9662): regex, cross-site cancellation, and unlisted token classes. That is the second failed fix on the same premise. New approach: treat equal traces on printed-differs (or spelling/AST-differs) as UNCLASSIFIED exec-equal-static-observed, and delete the pairing machinery. Open question for Migrate: should D-0196 limit what Function#toString observes?
 - Template Rust accepted C1-C5. They land together in AB-D0004 S4, which is the exit gate. e9d5199 and d46d6de are codegen-identical, so no re-cluster yet. They will ping on S4.
+
+## 2026-11-09 01:05 PST: AB-L0064 rework 2 (premise) + D-0258
+- Tip b87b3fb on 2e03887, pid b1fcd017f66f1506e1b66706a74931827ac01112. Tests: 78 passed (`cargo test -p semdiff --locked`).
+- Premise: pairing cannot prove spelling equality next to a real difference. printed-differs / token-spelling-differs / printer-equal-ast-differs + equal traces → UNCLASSIFIED exec-equal-static-observed. Deleted spelling.rs (516 lines). vs main the commit is +551 / −77 (main never had spelling.rs).
+- D-0258 rules R-TRAILING-COMMA-1 and R-ASI-SEMI-1 in rules/rt-1.toml, arch_review PENDING, applied because D-0258 is locked. Tests in tests/rules.rs (positives + required negatives).
+- Mutations: cap off → arch_probes fail; trailing-comma skip off → trailing_comma_is_unobservable fails; ASI skip off → asi_semicolon… fails; elision treated as trailing → trailing_comma_predicate fails. The built-in test `without_the_static_cap_printed_differs_probes_become_exec_equal` documents the false pass.
+- Corpus: summary f53ca75c… byte-identical (jobs 6 / jobs 4). 16549 / 106 / 140 / 0 / 0. 140 class changes, all exec-static-spelling-differs → exec-equal-static-observed.
+- Next: Arch re-review of b87b3fb and of the two pending rules; Migrate on the D-0196 toString scope question; land on APPROVE (needs `--reset-baseline` for the rt-0 → rt-1 ratchet).

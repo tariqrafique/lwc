@@ -1,3 +1,46 @@
+# js divergences 2–3: AB-L0063 r3 / D-0259 (2026-11-09 00:40 PST)
+
+Div 3 (AB-L0068) is on main **662f474** (parent landed; this executor stopped touching `bot/js-div3` and `/workspace/wt/js-div3`). Earlier this executor had rebased it to `6f6d94c` (pid **e817872d342eb044136c18807d63acf489763497**, unchanged from the pre-land rebase). Current `bot/js-div3` tip is 662f474 (same as main).
+
+Div 2: `bot/js-div2` **12d8059** on main **662f474**, pid **bb89f17ff6d81472bde5c289683ee6d396557bc6**. Local gates, PROVISIONAL. Cite D-0245, D-0248, D-0259. `bot/js` (898e7ca) untouched. Not landed.
+
+### What changed vs the in-`parse()` draft (fa98942 / 9caba50)
+
+(a) `SemanticBuilder::with_check_syntax_error(true)` runs only in `parse_source`, always, with no recover branch. Intermediate `parse()` of printed output (lib.rs ~112, 134, 166, 196) does not run it.
+(b) The abstract-class AST guard runs in both modes (recovery of `export default abstract class A {}` no longer dies on `intermediate output failed to re-parse`). `abstract-default-named-rec` is a D-0245 outcome row at (1, 23, 23). `abstract-default-rec` is a `LOCATION_DIVERGENCES` row (both throw; (1, 23, 23) vs shipped (1, 30, 30)).
+(c) The 14 former D-PENDING inputs both reject, so they are **not** in outcome `ACCEPTED_DIVERGENCES`. TypeError/Error (or SyntaxError) + null location vs our SyntaxError + Position are `SHAPE_DIVERGENCES` under D-0259. The `D-PENDING-recovery-semantic` constant is gone; a crate walk fails on any `D-PENDING` token.
+(d) 29 semantic-fixture recovery inputs that 9.5.3 compiles (none load as ESM) stay D-0245 outcome rows, one `d0245_*` test each (plus earlier parser-level D-0245 rows; 38 outcome rows total). After rebase onto class-features, `rename-before-cls-deco-rec` is an extra D-0245: we report LWC1007 at (3, 19, 46); 9.5.3 reports LWC1198 after recovering past the undeclared private field.
+(e) Location parity, re-measured: **semantic fixture 33/64** (31 `LOCATION_DIVERGENCES`). Denominator 64 = LWC1007 cases that are not outcome-accepted and not the 14 D-0259 shape rows; 33 match shipped Position, 31 are pinned. Arch's **33/63** (30 pins) was `e1035f5`, when `abstract-default-rec` was still an outcome-accepted D-0245. The **43/73** figure is the separate ts-parse corpus (78 cases, 73 LWC1007) and is unchanged.
+
+Guards: `tests/oxc_diagnostic_boundary.rs` R7 — `with_check_syntax_error` may be named only inside `parse_source` (`SemanticBuilder` without that flag remains in `scoping` / `semantic_with_nodes`). `lwc_js_contains_no_d_pending_token`.
+
+### Gates vs merge-base 662f474 (2026-11-09 00:34–00:40 PST, local, PROVISIONAL)
+
+napi via `scripts/install-napi.sh` only: main **5a51794b3f52**, div2 **6cf19029f93c**. Oracle `/workspace/lwc` @ b9e8007 clean.
+
+| gate | main 662f474 | bot/js-div2 12d8059 |
+|---|---|---|
+| cargo check --workspace --all-targets | green | green |
+| cargo clippy --workspace --all-targets | exit 0, 0 errors | same |
+| cargo test --workspace | 466 pass / 0 fail | 539 pass / 0 fail |
+| lwc-style fixtures | green | green |
+| style-diff | 3150 jobs, 0 fail, 100% MATCH | same |
+| js | 174/174 | 174/174 |
+| js-options | 302 | 302 |
+| js-api | 1239 | 1239 |
+| template (diag) | 568/568 | 568/568 |
+| style | 70/70 | 70/70 |
+| style-api | 829/829 | 829/829 |
+| ssr (diag) | 388/388 | 388/388 |
+| csr-render | 390/390 | 390/390 |
+| csr-render-template | 567/570 | 567/570 (same 3: object-expr, template-literal, template-literal-tagged) |
+| shim gate | untagged 0, scanners 9=9 | same |
+| option gate | 61/61 | 61/61 |
+| golden-io-guard | ok | ok |
+| lint-shared-tables | ok 23/23 | ok 23/23 |
+
+---
+
 # js divergences 2–3: AB-L0068 / AB-L0063 round 2 (2026-11-09 00:20 PST)
 
 Both rebased onto main **dbbb940**. Local gates, PROVISIONAL. lwc-js only on div 3; div 2 also pins one D-0248 case in napi `errors.rs` (JS-owned per D-0227/D-0229). `bot/js` (898e7ca) untouched.

@@ -1,16 +1,16 @@
-# LWC → Rust migration: handoff (refreshed 2026-11-09 00:25 PST)
+# LWC → Rust migration: handoff (refreshed 2026-11-09 00:52 PST)
 
 Fleet resumed 2026-11-08 22:40 PST; branches below are in flight and move often. Every bot's work is either on main or on a committed bot/* branch, and all of it is in the bundle below.
 
 ## What's here
-- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ 2e03887 plus every bot/* branch. Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
-- `notes.bundle`: full notes repo @ 89d7148 (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/notes-commit, bin/d-id).
+- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ cdfbc0b plus every bot/* branch. Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
+- `notes.bundle`: full notes repo @ e997d02 (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/notes-commit, bin/d-id).
 - `notes/`: plain copies of the notes, for reading on GitHub.
 - `semdiff-uncommitted.patch`: Semdiff's uncommitted WIP from wt/semdiff (exec.rs, lib.rs, tests/exec.rs, new spelling.rs). Apply it on bot/semdiff.
 
 ## Ground truth
 - Oracle: salesforce/lwc 9.5.3 @ b9e8007 (clean). This branch's base is upstream-b9e8007.
-- `compiler-rust/` on this branch = the last **official** board's source: board ac1b61fb239a @ c731fb601f40 (2026-11-01 21:58 PST). Main (a051a35) is newer and unmeasured. Boards are provisional until AB-0006 lands.
+- `compiler-rust/` on this branch = the last **official** board's source: board ac1b61fb239a @ c731fb601f40 (2026-11-01 21:58 PST). Main (cdfbc0b) is newer and unmeasured. Boards are provisional until AB-0006 lands.
 - Plan of record: notes/lwc-rust-migrate/PLAN.md. Decisions: notes/lwc-rust-migrate/decisions.tsv (D-0001..D-0231).
 
 ## Unlanded branches (rebase onto main and re-gate before landing)
@@ -32,28 +32,25 @@ csr-render 355/390, csr-render-template 545/570, ssr-render 384/389 with 5 skips
 3. Land in this order: hygiene chain → Template X0017 → S1 → JS slice2 → Semdiff SD-1B → SSR skips → Ship CI. Then publish a fresh official board from main.
 
 
-## Refresh note (2026-11-09 00:25 PST)
-Main @ 2e03887 is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/ stays there). Notes @ 89d7148. The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
+## Refresh note
+Main @ cdfbc0b is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/ stays there). Notes @ e997d02. The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
 - bot/diagnostics-directives 3bc4435
 - bot/harness 5739df7
 - bot/harness-d0219 df5ae6c
-- bot/harness-gate 40e0996
+- bot/harness-gate c39e30c
 - bot/harness-obfix a051a35
-- bot/harness-shimreg 2e03887
+- bot/harness-shimreg cdfbc0b
 - bot/hygiene a28dd50
-- bot/js 898e7ca
-- bot/js-d0240 6016fa4
-- bot/js-d0245 36ddcab
-- bot/js-div2 fa98942
-- bot/js-div3 6f6d94c
+- bot/js-div2 34175ef
 - bot/js-j3 c471bb3
 - bot/js-slice2 c08fbf6
 - bot/js-sourcemap fff6018
-- bot/semdiff 27bd96c
+- bot/semdiff ad6d47f
 - bot/semdiff-sd1b 9c96ee4
 - bot/ship 8327f60
-- bot/ssr 1d3238e
+- bot/ssr 4e1a48a
 - bot/template e9d5199
 - bot/template-clusters b22df87
 - bot/template-expr d46d6de
-- bot/template-s2 88fabe2
+- bot/template-s2 7b8c7c5
+- bot/template-s3 440e212

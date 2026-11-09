@@ -440,3 +440,93 @@ CLI `--exec` table in tests/exec.rs (22 rows, as Arch ran it):
 - Delta vs §10 v1 on 6016fa4 (summary 36446623…): **no verdict changes**. Every class, reason and first_diff is
   identical, and only `decisions.registry_sha256` differs. Expected: no case was exec-equal, and every rework change
   only narrows EXEC_EQUAL.
+
+## 11. AB-L0064 rework 2: premise (bot/semdiff b87b3fb on main 2e03887, pid b1fcd017…)
+Two pairing attempts (babaf01 / 27bd96c) that shared one premise have now failed the same gate: that token pairing
+can prove spelling equality next to a real code difference. Arch's second REWORK (notes 57e9662) still found
+EXEC_EQUAL on regex source and flags, on forms swapped across sites, on `$cmp.label` vs `$cmp["label"]`, and on a
+masked missing `;`. Each hole is a place pairing certified equality that Function#toString can see.
+
+The subtraction: D-0196 makes Function#toString an observation channel. A template module whose printed code differs
+by anything other than whitespace or quote/escape spelling has an observed textual difference. The rewrite leg already
+proves exactly that (`printed-differs`, `token-spelling-differs`, `printer-equal-ast-differs`). The exec traces cannot
+see those spellings, so equal traces are not evidence the texts agree, and exec must never certify EQUIVALENT for those
+pairs.
+
+### 11.1 New verdict rule
+When traces are equal (or a prepare gap does not already crash):
+- comments still differ → DIFFERENT `exec-static-comments-differ` (unchanged);
+- the rewrite reason is `printed-differs`, `token-spelling-differs`, or `printer-equal-ast-differs` → UNCLASSIFIED
+  `exec-equal-static-observed`. `first_diff` and `exec.detail` carry the rewrite reason and the rewrite `first_diff`;
+- otherwise coverage gaps → `exec-uncovered`;
+- otherwise EXEC_EQUAL, `branch_coverage: not-proven`.
+
+A trace divergence or a throw on one side only is still DIFFERENT (`exec-differs` / `exec-throw-one-side`). Exec still
+runs on these cases: it produces DIFFERENT evidence. It cannot produce EXEC_EQUAL.
+
+`semdiff run --exec` only runs rewrite-UNCLASSIFIED cases (`exec_eligible`). Printer-equal and other rewrite-equivalent
+pairs never reach exec, so **EXEC_EQUAL is dead on the CLI path**. It remains reachable if someone calls `decide` on a
+printer-equal pair (the AB-L0051 trace-parser control does this with rust-vs-rust). No use was invented for it.
+
+A hoist-only pair is `printed-differs`, so it is now UNCLASSIFIED `exec-equal-static-observed`. A quote-style-only pair
+stays EQUIVALENT-BY-REWRITE and never reaches exec.
+
+### 11.2 What was deleted
+`tools/semdiff/src/spelling.rs` (Myers alignment, value-keying, multiset pairing of unaligned runs, `MAX_EDITS`,
+`Spelling::{Same,Differs,NotProven}`, `divergence`). It existed only to certify equality next to a code difference.
+`Reason::ExecStaticSpellingDiffers` went with it. `observe_rewrite` now only records the rewrite reason and
+`first_diff` so `decide` can refuse EXEC_EQUAL. Nothing in the deleted code fed a DIFFERENT first_diff that the traces
+or the rewrite leg did not already have.
+
+### 11.3 D-0258 rules (rt-1)
+D-0258 (locked) extends D-0196's UNOBSERVABLE list by two classes, encoded as rewrite-leg token-spelling rules, not as
+exec-leg special cases. The token check runs only after a clean parse, identical printed text, and `Program::content_eq`,
+so an AST difference never reaches them.
+
+| id | what it skips | required negatives |
+|---|---|---|
+| R-TRAILING-COMMA-1 | one comma immediately before `]`, `}` or `)` whose previous token is not a comma and not an opener | a hole is not a trailing comma: `[a,,]` vs `[a,]`, `[,]` vs `[]`; the predicate `is_trailing_comma` rejects a comma after a comma or an opener |
+| R-ASI-SEMI-1 | a `;` token on exactly one side | an ASI difference that changes the AST: `a\n(b)` (call) vs `a;(b)` (two statements); `return\nx` vs `return x` |
+
+Both live in `tools/semdiff/rules/rt-1.toml` with `arch_review = "PENDING"`, `decision = "D-0258"`. Loading is
+fail-closed per AB-D0003 (6): a rule that claimed an `AB-…` id without APPROVE in reviews.tsv would make the run an
+internal error. PENDING does not claim an approval, so `semdiff run` applies the rules (D-0258 is already locked) and
+records `rules_applied` when they skip a token. Land waits on Arch APPROVE of each rule (positive and negative tests in
+`tools/semdiff/tests/rules.rs`). Rules are reviewed one at a time, never en bloc.
+
+The rule-table version is `rt-1` (was `rt-0`). A ratchet against an rt-0 baseline fails with
+`baseline-rule-table-mismatch` unless the run is `--reset-baseline` on a board that records the reset. That is expected.
+
+Pairs that differ only by these two classes become EQUIVALENT-BY-REWRITE and never reach exec. Everything else that the
+rewrite leg still flags stays under the `exec-equal-static-observed` cap.
+
+Member-access form (`a.b` vs `a["b"]`), regex source and flags, and property-key form (F9) stay OBSERVED.
+
+### 11.4 Open question for Migrate
+D-0196 currently treats Function#toString as an unrestricted observation channel (anything not listed is observed).
+The cap in §11.1 follows from that reading: a hoist, a number respelling, a regex literal, and a swapped key form all
+change `tmpl.toString()`, so exec cannot call them equivalent.
+
+Should D-0196 scope the Function#toString channel, for example to the banner comment that `checkVersionMismatch` reads
+plus known engine reads? That would make exec-equal meaningful for hoists and similar. Until Migrate decides, the cap
+stays in place.
+
+### 11.5 Corpus (live-tree, NON-REPORTABLE)
+- Tree: /workspace/wt/semdiff @ **b87b3fb** on main **2e03887**, pid **b1fcd017f66f1506e1b66706a74931827ac01112**. Oracle b9e8007, clean.
+- H-1 pairs content **95b1ed4e…** (identical to 6016fa4 / 9c96ee4 / d46d6de). Manifest ids/paths de43daea….
+- `semdiff run --exec`, seed 1, registry pinned to notes a1d7398 (sha 7199549d…): jobs 6 and jobs 4 give
+  **byte-identical** summaries, sha256 **f53ca75c6da3d1bd1b70e6e55810fae498653c6ad422e526d4227325ab068e17**.
+  rule_table_version rt-1, exec.cases_run 246.
+
+| Bucket | n | notes |
+|---|---|---|
+| equivalent | 16549 | all printer-equal; 0 exec-equal (dead on this path) |
+| different_undecided | 106 | exec-differs 71 + exec-throw-one-side 35 |
+| unclassified | 140 | exec-equal-static-observed |
+| different_decided | 0 | |
+| crash | 0 | |
+
+Class changes vs d46d6de+b54cce3 (pairing checker, summary 3b3ee9a6…): exactly 140 cases moved
+DIFFERENT `exec-static-spelling-differs` → UNCLASSIFIED `exec-equal-static-observed` (the C1 numeric 105 and C2 arrow
+parens 35 whose traces agreed). The 71+35 trace divergences are unchanged. No case became rewrite-equivalent via
+D-0258 (this corpus had no trailing-comma-only or ASI-only codegen-only pair).
