@@ -1,14 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, it, expect, beforeAll } from 'vitest';
+import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import { compareError } from '../src/compareError';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalTemplateModule } from '../src/evalTemplate';
 
 const ROOT = '/workspace/lwc/packages/@lwc/template-compiler/src/__tests__/fixtures';
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/template');
-const UPDATE = !!process.env.UPDATE_GOLDENS;
-if (UPDATE && process.env.LWC_COMPILER_BACKEND === 'rust') throw new Error('Refusing UPDATE_GOLDENS with rust backend: goldens are the JS oracle');
 
 function findFixtures(dir: string): string[] {
     return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
@@ -72,11 +71,10 @@ describe('template behavioral', () => {
             }
             if (expectError) expect(observed.ok).toBe(false);
             const g = path.join(GOLDEN_DIR, rel.replace(/[\\/]/g, '__') + '.json');
-            if (UPDATE || !fs.existsSync(g)) {
-                fs.mkdirSync(GOLDEN_DIR, { recursive: true });
-                fs.writeFileSync(g, JSON.stringify(observed, null, 2) + '\n');
+            if (UPDATE) {
+                writeGolden(g, observed);
             } else {
-                const golden = JSON.parse(fs.readFileSync(g, 'utf8'));
+                const golden = readGolden(g);
                 // Shared error comparator (src/compareError.ts): goldens carry no message text, so this asserts the
                 // error outcome (no false pass on a non-throw; parser errors by kind + line). Exact fields: toEqual below.
                 if (golden.ok === false) {

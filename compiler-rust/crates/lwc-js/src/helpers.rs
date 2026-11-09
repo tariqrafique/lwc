@@ -32,12 +32,12 @@ fn refs(text: &str) -> impl Iterator<Item = &'static str> + '_ {
     })
 }
 
-/// Edits replacing each `babelHelpers.x` with its module-local name, plus the declarations prelude
-/// (to insert at 0), or `None` when the code uses no helper.
-pub fn localize(program: &oxc::ast::ast::Program<'_>, code: &str) -> Option<(Vec<crate::edits::Edit>, String)> {
+/// Prelude of module-local helper declarations plus the (`babelHelpers` name -> local name) map,
+/// or `None` when the program uses no helper. Call sites in printed output are rewritten by
+/// [`post_codegen_edits`] (oxc transformer nodes often have a 0-span, so we cannot remap them).
+pub fn localize(program: &oxc::ast::ast::Program<'_>) -> Option<(String, Vec<(&'static str, String)>)> {
     use oxc::ast::ast::{Expression, StaticMemberExpression};
     use oxc::ast_visit::{walk, Visit};
-    if !code.contains("babelHelpers.") { return None; }
     struct C { hits: Vec<(u32, u32, &'static str)> }
     impl<'a> Visit<'a> for C {
         fn visit_static_member_expression(&mut self, it: &StaticMemberExpression<'a>) {
@@ -65,7 +65,6 @@ pub fn localize(program: &oxc::ast::ast::Program<'_>, code: &str) -> Option<(Vec
     let mut uids = crate::transforms::hoist::Uids::new(program);
     let order: Vec<&str> = HELPERS.iter().map(|(n, _)| *n).filter(|n| used.contains(n)).collect();
     let locals: Vec<(&str, String)> = order.iter().map(|n| (*n, uids.generate(n))).collect();
-    let local = |n: &str| locals.iter().find(|(h, _)| *h == n).unwrap().1.clone();
     let mut pre = String::new();
     for (n, l) in &locals {
         let mut body = HELPERS.iter().find(|(h, _)| h == n).unwrap().1.to_string();
@@ -80,8 +79,7 @@ pub fn localize(program: &oxc::ast::ast::Program<'_>, code: &str) -> Option<(Vec
             None => pre += &format!("var {l} = {body};\n"),
         }
     }
-    let edits = c.hits.iter().map(|(s, e, n)| crate::edits::Edit::replace(*s, *e, local(n))).collect();
-    Some((edits, pre))
+    Some((pre, locals))
 }
 
 /// Replace every `babelHelpers.<ident>` in `text` with `f(ident)` (left alone when `f` gives None).
@@ -100,4 +98,115 @@ fn subst(text: &str, f: &dyn Fn(&str) -> Option<String>) -> String {
         rest = &after[n..];
     }
     out + rest
+}
+
+/// Version-stamp + helper-localize edits in `input` coordinates, remapped onto `output` via oxc's
+/// codegen map (D-0262: no re-parse of printed JS). Prelude inserts stay at 0.
+/// SHIM(D-0262 P1 post_codegen_edits, expires D-0265): find+replace babelHelpers.* on printed codegen output (D-0264 residual 2).
+pub fn post_codegen_edits(
+    program: &oxc::ast::ast::Program<'_>,
+    input: &str,
+    output: &str,
+    map: &oxc_sourcemap::SourceMap<'_>,
+    filename: &str,
+) -> Result<Vec<lwc_shared::edits::Edit>, lwc_shared::CompileError> {
+    let mut stamps = Vec::new();
+    crate::transforms::version_stamp::run(program, &mut stamps);
+    if input != output && !stamps.is_empty() {
+        let pts = codegen_points(map, input, output);
+        stamps = stamps.into_iter().map(|e| remap_via_map(&pts, e, filename)).collect::<Result<Vec<_>, _>>()?;
+    }
+    if let Some((pre, locals)) = localize(program) {
+        for (name, local) in &locals {
+            let pat = format!("babelHelpers.{name}");
+            let mut i = 0;
+            while let Some(rel) = output[i..].find(&pat) {
+                let at = i + rel;
+                let after = at + pat.len();
+                if output[after..].starts_with(|c: char| c.is_ascii_alphanumeric() || c == '_' || c == '$') {
+                    i = after;
+                    continue;
+                }
+                stamps.push(lwc_shared::edits::Edit::replace(at as u32, after as u32, local.clone()));
+                i = after;
+            }
+        }
+        stamps.push(lwc_shared::edits::Edit::insert(0, pre));
+    }
+    Ok(stamps)
+}
+
+/// Remap edits through a subsequent span-edit (kept text shifts; inserts at 0 stay at 0).
+pub fn remap_edits(edits: Vec<lwc_shared::edits::Edit>, pieces: &[lwc_shared::edits::Piece]) -> Vec<lwc_shared::edits::Edit> {
+    edits.into_iter().map(|e| {
+        if e.start == 0 && e.end == 0 { return e; }
+        lwc_shared::edits::Edit {
+            start: forward_piece(pieces, e.start).unwrap_or_else(|| panic!("post-codegen edit start {} left the kept text", e.start)),
+            end: forward_piece(pieces, e.end).unwrap_or_else(|| panic!("post-codegen edit end {} left the kept text", e.end)),
+            text: e.text,
+        }
+    }).collect()
+}
+
+fn codegen_points(map: &oxc_sourcemap::SourceMap<'_>, input: &str, output: &str) -> Vec<(u32, u32)> {
+    let (li, lo) = (lwc_shared::LineIndex::new(input), lwc_shared::LineIndex::new(output));
+    let mut pts: Vec<(u32, u32)> = map.get_tokens().filter_map(|t| {
+        Some((li.to_offset(t.get_src_line(), t.get_src_col())?, lo.to_offset(t.get_dst_line(), t.get_dst_col())?))
+    }).collect();
+    pts.sort_by_key(|p| p.0);
+    pts.dedup_by_key(|p| p.0);
+    assert!(!pts.is_empty(), "codegen map produced no tokens");
+    pts
+}
+
+fn map_gen(pts: &[(u32, u32)], off: u32) -> Result<u32, u32> {
+    match pts.binary_search_by_key(&off, |p| p.0) {
+        Ok(i) => Ok(pts[i].1),
+        Err(_) => Err(off),
+    }
+}
+
+fn remap_via_map(
+    pts: &[(u32, u32)],
+    e: lwc_shared::edits::Edit,
+    filename: &str,
+) -> Result<lwc_shared::edits::Edit, lwc_shared::CompileError> {
+    let miss = |off| lwc_shared::CompileError::new(
+        format!("internal: codegen map has no token at source offset {off}"),
+        filename,
+    );
+    Ok(lwc_shared::edits::Edit {
+        start: map_gen(pts, e.start).map_err(miss)?,
+        end: map_gen(pts, e.end).map_err(miss)?,
+        text: e.text,
+    })
+}
+
+fn forward_piece(p: &[lwc_shared::edits::Piece], i: u32) -> Option<u32> {
+    let idx = p.partition_point(|x| x.in_start <= i);
+    let x = p[..idx].iter().rev().find(|x| x.kept)?;
+    let len = x.out_end - x.out_start;
+    (i <= x.in_start + len).then(|| x.out_start + (i - x.in_start))
+}
+
+#[cfg(test)]
+mod map_gen_tests {
+    #[test]
+    fn map_gen_requires_an_exact_source_offset_hit() {
+        let pts = [(10, 20), (15, 26)];
+        assert_eq!(super::map_gen(&pts, 10), Ok(20));
+        assert_eq!(super::map_gen(&pts, 15), Ok(26));
+        assert_eq!(super::map_gen(&pts, 12), Err(12), "no extrapolation");
+        assert_eq!(super::map_gen(&pts, 0), Err(0), "no fallback to pts[0]");
+        assert_eq!(super::map_gen(&pts, 99), Err(99));
+    }
+
+    #[test]
+    fn unmapped_offset_is_an_internal_error() {
+        let pts = [(10, 20), (15, 26)];
+        let e = lwc_shared::edits::Edit { start: 12, end: 12, text: "/*x*/".into() };
+        let err = super::remap_via_map(&pts, e, "t.js").expect_err("unmapped offset must not extrapolate");
+        assert!(err.message.contains("internal: codegen map has no token at source offset 12"), "{err:?}");
+        assert_eq!(err.filename.as_deref(), Some("t.js"));
+    }
 }

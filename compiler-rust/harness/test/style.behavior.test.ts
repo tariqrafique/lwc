@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, it, expect, beforeAll } from 'vitest';
+import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalStylesheetModule } from '../src/evalStyle';
 
 const ROOT = '/workspace/lwc/packages/@lwc/style-compiler/src/__tests__/fixtures';
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/style');
-const UPDATE = !!process.env.UPDATE_GOLDENS;
 
 function findFixtures(dir: string): string[] {
     return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
@@ -59,11 +59,10 @@ describe('style behavioral', () => {
             }
             if (expectError) expect(observed.ok).toBe(false);
             const g = path.join(GOLDEN_DIR, rel.replace(/[\\/]/g, '__') + '.json');
-            if (UPDATE || !fs.existsSync(g)) {
-                fs.mkdirSync(GOLDEN_DIR, { recursive: true });
-                fs.writeFileSync(g, JSON.stringify(observed, null, 2) + '\n');
+            if (UPDATE) {
+                writeGolden(g, observed);
             } else {
-                expect(observed).toEqual(JSON.parse(fs.readFileSync(g, 'utf8')));
+                expect(observed).toEqual(readGolden(g));
             }
         });
     }

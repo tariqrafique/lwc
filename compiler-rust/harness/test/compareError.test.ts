@@ -51,7 +51,7 @@ describe('compareError', () => {
     it('observeError reads rollup-wrapped and rust-backend errors', () => {
         const rollup = Object.assign(new SyntaxError('m'), { code: 'PLUGIN_ERROR', pluginCode: 'BABEL_PARSER_SYNTAX_ERROR', id: FILE, loc: { file: FILE, line: 3, column: 12 } });
         expect(observeError(rollup)).toEqual({ name: 'SyntaxError', message: 'm', code: 'BABEL_PARSER_SYNTAX_ERROR', filename: FILE, line: 3, column: 12 });
-        const rust = Object.assign(new Error('LWC1061: a'), { code: 1061, location: { line: 1, column: 5 }, line: 1, column: 5 });
+        const rust = Object.assign(new Error('LWC1061: a'), { code: 1061, location: { line: 1, column: 5 } }); // D-0239: location only
         expect(observeError(rust)).toEqual({ name: 'Error', message: 'LWC1061: a', code: 1061, filename: null, line: 1, column: 5 });
     });
     it('lwc-framed: first line exact, code frame ignored; bare LWC message fails', () => {

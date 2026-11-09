@@ -11,10 +11,10 @@ pub(crate) const HTML_NAMESPACE: &str = "http://www.w3.org/1999/xhtml";
 pub(crate) struct ElView<'a> {
     pub name: &'a str,
     pub namespace: &'a str,
-    pub attributes: &'a [Attribute],
-    pub properties: &'a [Property],
-    pub directives: &'a [ElementDirective],
-    pub children: &'a [ChildNode],
+    pub attributes: &'a [Attribute<'a>],
+    pub properties: &'a [Property<'a>],
+    pub directives: &'a [ElementDirective<'a>],
+    pub children: &'a [ChildNode<'a>],
     /// `node.type === 'Element'` (only plain elements honor lwc:inner-html).
     pub is_element: bool,
 }
@@ -48,8 +48,7 @@ pub(crate) fn is_void_element(name: &str) -> bool {
     VOID.contains(&name.to_lowercase().as_str())
 }
 
-fn js_ws(c: char) -> bool { c.is_whitespace() || c == '\u{feff}' }
-fn js_trim(s: &str) -> &str { s.trim_matches(js_ws) }
+use lwc_shared::js::{js_trim, js_ws};
 
 /// shared.ts normalizeClassAttributeValue: trim, then collapse `\s+` to one space.
 pub(crate) fn normalize_class_attribute_value(v: &str) -> String {
@@ -63,54 +62,7 @@ pub(crate) fn normalize_class_attribute_value(v: &str) -> String {
     out
 }
 
-/// parseStyleText: split on `;(?![^(]*\))`, then each declaration on the first `:` followed by ≥1 char.
-fn parse_style_text(css: &str) -> Vec<(String, String)> {
-    let chars: Vec<char> = css.chars().collect();
-    let mut decls = Vec::new();
-    let mut start = 0;
-    for i in 0..chars.len() {
-        if chars[i] != ';' { continue; }
-        // Negative lookahead: a `)` reachable without crossing a `(` blocks the split.
-        let blocked = chars[i + 1..].iter().find(|c| **c == '(' || **c == ')') == Some(&')');
-        if !blocked { decls.push(chars[start..i].iter().collect::<String>()); start = i + 1; }
-    }
-    decls.push(chars[start..].iter().collect::<String>());
-    let mut map: Vec<(String, String)> = Vec::new();
-    for d in decls {
-        if d.is_empty() { continue; }
-        let Some(ix) = d.find(':') else { continue };
-        let (prop, rest) = (&d[..ix], &d[ix + 1..]);
-        if rest.is_empty() { continue; }
-        let (k, v) = (js_trim(prop).to_string(), js_trim(rest).to_string());
-        if let Some(e) = map.iter_mut().find(|(ek, _)| *ek == k) { e.1 = v; } else { map.push((k, v)); }
-    }
-    // Object.entries: canonical array-index keys first, ascending.
-    let is_index = |k: &str| !k.is_empty() && k.chars().all(|c| c.is_ascii_digit()) && (k == "0" || !k.starts_with('0')) && k.parse::<u32>().is_ok_and(|n| n < u32::MAX);
-    let (mut idx, rest): (Vec<_>, Vec<_>) = map.into_iter().partition(|(k, _)| is_index(k));
-    idx.sort_by_key(|(k, _)| k.parse::<u32>().unwrap());
-    idx.extend(rest);
-    idx
-}
-
-/// IMPORTANT_FLAG `/\s*!\s*important\s*$/i` → `' !important'`.
-fn replace_important(v: &str) -> String {
-    let t = v.trim_end_matches(js_ws);
-    let lower = t.to_lowercase();
-    if lower.len() == t.len() && lower.ends_with("important") {
-        let head = t[..t.len() - "important".len()].trim_end_matches(js_ws);
-        if let Some(h) = head.strip_suffix('!') {
-            return format!("{} !important", h.trim_end_matches(js_ws));
-        }
-    }
-    v.to_string()
-}
-
-/// @lwc/shared normalizeStyleAttributeValue.
-pub(crate) fn normalize_style_attribute_value(style: &str) -> String {
-    parse_style_text(style).into_iter()
-        .map(|(k, v)| format!("{k}: {};", js_trim(&replace_important(&v))))
-        .collect::<Vec<_>>().join(" ")
-}
+pub(crate) use lwc_shared::style::normalize_style_attribute_value;
 
 /// JS `Number(str)` (enough for normalizeTabIndex's `value > 0`).
 fn js_number(s: &str) -> f64 {
@@ -131,10 +83,10 @@ pub(crate) fn normalize_tab_index_literal(s: &str) -> String {
     if js_number(s) > 0.0 { "0".into() } else { js_str(s) }
 }
 
-enum AttrOrProp<'a> { Attr(&'a Attribute), Prop(&'a Property) }
+enum AttrOrProp<'a> { Attr(&'a Attribute<'a>), Prop(&'a Property<'a>) }
 impl AttrOrProp<'_> {
     fn name(&self) -> &str { match self { Self::Attr(a) => &a.name, Self::Prop(p) => &p.name } }
-    fn value(&self) -> &AttributeValue { match self { Self::Attr(a) => &a.value, Self::Prop(p) => &p.value } }
+    fn value(&self) -> &AttributeValue<'_> { match self { Self::Attr(a) => &a.value, Self::Prop(p) => &p.value } }
 }
 
 /// reorderAttributes: class, style, other attrs, props, slot.

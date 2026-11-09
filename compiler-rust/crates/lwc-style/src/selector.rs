@@ -131,7 +131,7 @@ pub fn unescape(s: &str) -> String {
     while let Some(c) = it.next() {
         if c == '\\' {
             let mut hex = String::new();
-            while hex.len() < 6 && it.peek().is_some_and(|c| c.is_ascii_hexdigit()) { hex.push(it.next().unwrap()); }
+            while hex.len() < 6 { let Some(h) = it.next_if(|c| c.is_ascii_hexdigit()) else { break }; hex.push(h); }
             if !hex.is_empty() {
                 if it.peek() == Some(&' ') { it.next(); }
                 if let Some(ch) = u32::from_str_radix(&hex, 16).ok().and_then(char::from_u32) { out.push(ch); }

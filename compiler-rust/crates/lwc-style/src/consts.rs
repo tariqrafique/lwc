@@ -1,6 +1,5 @@
 pub const KEY_SCOPED_CSS: &str = "$scoped$";
 pub const KEY_NATIVE_ONLY_CSS: &str = "$nativeOnly$";
-pub const LWC_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const SHADOW_ATTRIBUTE: &str = "__shadowAttribute__";
 pub const HOST_ATTRIBUTE: &str = "__hostAttribute__";
 pub const DIR_ATTRIBUTE_NATIVE_LTR: &str = "__dirAttributeNativeLtr__";

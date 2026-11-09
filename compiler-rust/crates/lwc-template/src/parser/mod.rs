@@ -2,28 +2,38 @@
 
 use crate::config::NormalizedConfig;
 use lwc_shared::template_ir::*;
+use lwc_shared::errors::ParserDiagnostics;
+use lwc_shared::js::{js_trim, js_ws};
 use lwc_shared::{CompilerDiagnostic, DiagnosticLevel};
 use parse5::{Location, NodeData, NodeRef, ParserOptions};
 use std::collections::HashSet;
 
 mod tables;
-mod expr_check;
-mod validate;
-pub(crate) mod element_check;
-/// Diagnostic table. validate.rs still carries its own `#[path]` copy until its owner switches to
-/// `super::messages`; this copy is unused until then.
+/// Generated from @lwc/template-compiler parser/constants.ts + shared/constants.ts and
+/// parser/utils/html-element-attributes.ts (tools/gen-shared-tables). Unused until AB-0011 (b)
+/// moves the tables.rs callers here.
 #[allow(dead_code)]
-mod messages;
+mod constants;
+#[allow(dead_code)]
+mod utils;
+mod expr_check;
+pub(crate) mod expression_complex;
+mod validate;
+mod diags;
+use diags::Diags;
+use element_check::attribute::{is_data_attribute, ParsedAttribute};
+pub(crate) use element_check::attribute::{is_attribute, ElementKind};
+pub(crate) mod element_check;
 
 /// Parser state threaded through lowering (TS `ParserCtx` subset).
-pub(crate) struct Ctx {
-    diags: Vec<CompilerDiagnostic>,
+pub(crate) struct Ctx<'a> {
+    /// The compile's arena: complex expression ASTs and their sources live here (AB-D0004).
+    alloc: &'a oxc_allocator::Allocator,
+    diags: Diags,
     /// Slot names seen in the current if-chain scope (TS `seenSlots`, approximated).
     seen_slots: HashSet<String>,
     /// Direct children of a `<template for:each|iterator:*>`.
     in_loop: bool,
-    /// Nesting depth of for:each / iterator:* (TS `isInIteration`).
-    iter_depth: u32,
     /// Nearest rendered element/slot ancestor, reset at components (TS `validateSlotAttribute`).
     slot_ancestor: Option<String>,
     /// TS parseScopedSlotFragment 1178: the nearest ancestor, skipping lwc:if/elseif/else blocks,
@@ -36,28 +46,107 @@ pub(crate) struct Ctx {
     /// Inside a ScopedSlotFragment (any depth): TS validateChildren applies 1177 to every
     /// template directive's direct children there.
     in_slot_fragment: bool,
+    /// experimentalComputedMemberExpression without experimentalComplexExpressions: computed member
+    /// chains are typed IR ([`non_binding_expr`]).
+    legacy_computed: bool,
     /// TS `ctx.instrumentation`.
     instrumentation: Option<lwc_shared::InstrumentationHandle>,
     /// Template source as UTF-16 code units (parse5 offsets index this); see [`raw_attr`] / [`raw_source`].
     src16: Vec<u16>,
     /// TS `seenIds` (1042).
     seen_ids: HashSet<String>,
-    /// Nearest `iterator:<name>` in the current element scope (TS getForOfParent; reset under base elements).
-    for_of: Option<String>,
-    /// Nearest `for:each` (its index name) in the current element scope (TS getForEachParent).
-    for_each: Option<Option<String>>,
-    /// TS `getSiblingIfNode()` is an open IfBlock/ElseifBlock chain among the current siblings.
-    chain_open: bool,
+    /// TS `ParserCtx.elementScopes`: one scope per element being parsed, holding the nodes its
+    /// directive parsers and parseBaseElement added. A parseElement that throws never pops its scope
+    /// (withErrorRecovery skips endElementScope), so it leaks into every later ancestor query.
+    scopes: Vec<Vec<ScopeNode>>,
+    /// TS `ifContext.currentNode` kind for the current sibling scope (`None`: no open chain).
+    chain: Option<Chain>,
+    /// TS `parse5ParentLocation`: the parse5 location of the element whose children are being parsed
+    /// (the root template's at the top level), [`elem_parse5_loc`]'s last fallback. Kept raw: like TS, its
+    /// start tag is only read where a node is created from it.
+    parent_loc: parse5::ElementLocation,
 }
 
-impl Ctx {
+/// A TS `ctx.throw*` inside parseChildren's `withErrorRecovery`: `diag` is reported and the rest of
+/// that child's parse is skipped (no endElementScope, no if-chain bookkeeping).
+struct Thrown<'a> {
+    diag: CompilerDiagnostic,
+    /// The node TS had already pushed into the parent before the throw (an lwc:if/elseif/else block, a
+    /// created element left childless, or an element / fragment whose validateChildren threw).
+    kept: Option<Lowered<'a>>,
+}
+
+/// What stops one child's parse: a recoverable `ctx.throw*` ([`Thrown`]), or an internal error, which
+/// TS's withErrorRecovery rethrows and which ends the whole parse.
+enum Throw<'a> {
+    Recovered(Thrown<'a>),
+    Internal(InternalError),
+}
+
+impl<'a> From<Thrown<'a>> for Throw<'a> { fn from(t: Thrown<'a>) -> Self { Throw::Recovered(t) } }
+impl From<InternalError> for Throw<'_> { fn from(e: InternalError) -> Self { Throw::Internal(e) } }
+
+/// One parse5 child lowered (TS parseElement / parseTextNode / parseComment).
+type Parsed<'a> = Result<Option<Lowered<'a>>, Throw<'a>>;
+
+/// A node in a TS element scope (only what the ancestor queries look at).
+#[derive(Debug, Clone, PartialEq)]
+pub(super) enum ScopeNode {
+    IfBlock,
+    ElseifBlock,
+    ElseBlock,
+    /// `for:each`, with its index name.
+    ForEach(Option<String>),
+    /// `iterator:<name>`.
+    ForOf(String),
+    If,
+    ScopedSlotFragment,
+    /// A base element (Element / Component / Slot / ExternalComponent / LwcComponent).
+    Base,
+}
+
+/// The current node of an open if-chain (TS `ifContext.currentNode`).
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub(super) enum Chain { If, Elseif, Else }
+
+impl<'a> Ctx<'a> {
+    /// A `{…}` value as an [`Expression::Complex`] in this parse's arena, located at its owner.
+    fn complex(&self, raw: &str, location: SourceLocation) -> Located<Expression<'a>> {
+        expression_complex::build(self.alloc, raw, location).map(Expression::Complex)
+    }
     fn count(&self, m: lwc_shared::CompilerMetric) { if let Some(i) = &self.instrumentation { i.increment_counter(m); } }
     fn push(&mut self, d: CompilerDiagnostic) { self.diags.push(d); }
+    /// TS addNodeCurrentElementScope.
+    pub(super) fn add_scope_node(&mut self, n: ScopeNode) {
+        if let Some(s) = self.scopes.last_mut() { s.push(n); }
+    }
+    /// TS `findAncestor(pred, ({ parent }) => parent && !isBaseElement(parent))` over the flattened
+    /// scopes, from the innermost node outwards (getForOfParent / getForEachParent).
+    fn find_before_base<T>(&self, f: impl Fn(&ScopeNode) -> Option<T>) -> Option<T> {
+        let flat: Vec<&ScopeNode> = self.scopes.iter().flatten().collect();
+        for i in (0..flat.len()).rev() {
+            if let Some(t) = f(flat[i]) { return Some(t); }
+            match i.checked_sub(1).map(|j| flat[j]) { Some(p) if *p != ScopeNode::Base => {} _ => return None }
+        }
+        None
+    }
+    /// TS getForOfParent: the iterator name.
+    pub(super) fn for_of_parent(&self) -> Option<String> {
+        self.find_before_base(|n| match n { ScopeNode::ForOf(s) => Some(s.clone()), _ => None })
+    }
+    /// TS getForEachParent: the for:each index name.
+    pub(super) fn for_each_parent(&self) -> Option<Option<String>> {
+        self.find_before_base(|n| match n { ScopeNode::ForEach(i) => Some(i.clone()), _ => None })
+    }
+    /// TS isInIteration: any ForEach / ForOf in scope.
+    pub(super) fn in_iteration(&self) -> bool {
+        self.scopes.iter().flatten().any(|n| matches!(n, ScopeNode::ForEach(_) | ScopeNode::ForOf(_)))
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct TemplateParseResult {
-    pub root: Option<Root>,
+pub struct TemplateParseResult<'a> {
+    pub root: Option<Root<'a>>,
     pub warnings: Vec<CompilerDiagnostic>,
 }
 
@@ -65,12 +154,58 @@ fn loc(l: &Location) -> SourceLocation {
     SourceLocation {
         start_line: l.start_line as u32, start_column: l.start_col as u32,
         end_line: l.end_line as u32, end_column: l.end_col as u32,
-        start: Some(l.start_offset as u32), end: Some(l.end_offset as u32),
+        start: l.start_offset as u32, end: l.end_offset as u32,
     }
 }
 
-fn node_loc(n: &NodeRef) -> SourceLocation {
-    n.borrow().source_code_location().map(|l| loc(&l.location)).unwrap_or_default()
+/// A node's parse5 location; `None` only where TS sees `sourceCodeLocation` undefined.
+fn node_loc(n: &NodeRef) -> Option<SourceLocation> {
+    n.borrow().source_code_location().map(|l| loc(&l.location))
+}
+
+/// A node's location where TS requires one (parseTextNode, parseComment): `missing` is the internal
+/// error TS throws at that read.
+fn required_loc(n: &NodeRef, missing: &'static str) -> Located<SourceLocation> {
+    node_loc(n).ok_or(InternalError(missing))
+}
+
+const NO_ROOT_LOCATION: &str = "An internal parsing error occurred during node creation; the root template node does not have a sourceCodeLocation.";
+const NO_TEXT_LOCATION: &str = "An internal parsing error occurred during node creation; a text node was found without a sourceCodeLocation.";
+const NO_COMMENT_LOCATION: &str = "An internal parsing error occurred during node creation; a comment node was found without a sourceCodeLocation.";
+const NO_ATTR_LOCATION: &str = "An internal parsing error occurred while parsing attributes; attributes were found without a location.";
+/// The `TypeError` TS `sourceLocation(parse5Elm.sourceCodeLocation.startTag!)` raises without a start tag.
+const NO_START_TAG: &str = "Cannot read properties of undefined (reading 'startLine')";
+
+/// TS parser's istanbul-ignored "internal parsing error" throws (parseRoot, parseTextNode, parseComment,
+/// parseAttributes, elementSourceLocation's `startTag!`) for a node parse5 left without a location, raised
+/// by the location readers at the read where TS throws. They are plain `Error`s: withErrorRecovery
+/// rethrows them and `compile` turns the first into its only diagnostic (see [`InternalError::diagnostic`]).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct InternalError(&'static str);
+
+/// A location read that may raise TS's internal parsing error.
+pub(crate) type Located<T> = Result<T, InternalError>;
+
+impl InternalError {
+    pub(crate) fn new(msg: &'static str) -> Self { InternalError(msg) }
+
+    /// `normalizeToDiagnostic(GENERIC_PARSING_ERROR, error)` prefixed `Unexpected compilation error: `, with
+    /// no location.
+    pub(crate) fn diagnostic(self) -> CompilerDiagnostic {
+        let info = &ParserDiagnostics::GENERIC_PARSING_ERROR;
+        let message = format!("Unexpected compilation error: {}", lwc_shared::generate_error_message(info, Some(&[self.0])));
+        CompilerDiagnostic::new(Some(info.code), message, info.level, None, None)
+    }
+}
+
+/// A located element's parse5 location as the IR's (TS `elementSourceLocation`).
+/// Reads the start tag, so it runs where TS creates the node (ast.root / ast.element / ...).
+fn element_location(l: &parse5::ElementLocation) -> Located<ElementSourceLocation> {
+    Ok(ElementSourceLocation {
+        location: loc(&l.location),
+        start_tag: loc(l.start_tag.as_ref().ok_or(InternalError(NO_START_TAG))?),
+        end_tag: l.end_tag.as_ref().map(loc),
+    })
 }
 
 /// TS `cleanTextNode` (babel JSX text cleaning): per line, tabs become spaces, leading spaces are
@@ -92,14 +227,11 @@ fn clean_text_node(value: &str) -> String {
     out
 }
 
-/// JS `String.prototype.trim` emptiness (Unicode whitespace plus U+FEFF).
-fn js_blank(s: &str) -> bool { s.chars().all(|c| c.is_whitespace() || c == '\u{feff}') }
-
 /// TS parseTextNode: `cleanTextNode(rawSource)`; no node when it is blank. The emptiness test reads the
 /// undecoded source (`&nbsp;` keeps a node); the returned text is the cleaned decoded value.
 fn clean_text(value: &str, raw: &str) -> Option<String> {
     let probe = if raw.is_empty() { value } else { raw };
-    if js_blank(&clean_text_node(probe)) { return None; }
+    if js_trim(&clean_text_node(probe)).is_empty() { return None; }
     Some(clean_text_node(value))
 }
 
@@ -135,19 +267,23 @@ fn is_ident(s: &str) -> bool {
 }
 
 /// `{a}` / `{a.b.c}` → Identifier / nested MemberExpression. No brackets/calls yet.
-pub(crate) fn parse_binding(v: &str) -> Option<Expression> {
-    let inner = v.strip_prefix('{')?.strip_suffix('}')?.trim();
-    let (e, rest) = member_chain(inner)?;
-    rest.trim().is_empty().then_some(e)
+pub(crate) fn parse_binding<'a>(v: &str) -> Option<Expression<'a>> { braced_chain(v, false) }
+
+/// `{chain}` where `chain` is a [`member_chain`] (with `[chain]` steps when `computed`).
+fn braced_chain<'a>(v: &str, computed: bool) -> Option<Expression<'a>> {
+    let inner = js_trim(v.strip_prefix('{')?.strip_suffix('}')?);
+    let (e, rest) = member_chain(inner, computed)?;
+    js_trim(rest).is_empty().then_some(e)
 }
 
-/// `primary ('.' ident)*` with `primary := ident | '(' member_chain ')'`. Parentheses are transparent, as in
-/// the TS (acorn/ESTree) AST: `((foo).bar)` is the member expression `foo.bar`.
-fn member_chain(s: &str) -> Option<(Expression, &str)> {
-    let s = s.trim_start();
+/// `primary ('.' ident)*` with `primary := ident | '(' member_chain ')'`, plus `'[' member_chain ']'` steps
+/// when `computed`. Parentheses are transparent, as in the TS (acorn/ESTree) AST: `((foo).bar)` is the
+/// member expression `foo.bar`.
+fn member_chain<'a>(s: &str, computed: bool) -> Option<(Expression<'a>, &str)> {
+    let s = s.trim_start_matches(js_ws);
     let (mut e, mut rest) = if let Some(r) = s.strip_prefix('(') {
-        let (e, r) = member_chain(r)?;
-        (e, r.trim_start().strip_prefix(')')?)
+        let (e, r) = member_chain(r, computed)?;
+        (e, r.trim_start_matches(js_ws).strip_prefix(')')?)
     } else {
         let end = s.find(|c: char| !(c.is_alphanumeric() || c == '_' || c == '$')).unwrap_or(s.len());
         let first = &s[..end];
@@ -155,9 +291,15 @@ fn member_chain(s: &str) -> Option<(Expression, &str)> {
         (Expression::Identifier(Identifier { name: first.to_string() }), &s[end..])
     };
     loop {
-        let t = rest.trim_start();
+        let t = rest.trim_start_matches(js_ws);
+        if let Some(r) = t.strip_prefix('[').filter(|_| computed) {
+            let (p, r) = member_chain(r, true)?;
+            rest = r.trim_start_matches(js_ws).strip_prefix(']')?;
+            e = Expression::Member(MemberExpression { object: Box::new(e), property: Box::new(p), computed: true });
+            continue;
+        }
         let Some(r) = t.strip_prefix('.') else { return Some((e, rest)) };
-        let r = r.trim_start();
+        let r = r.trim_start_matches(js_ws);
         let end = r.find(|c: char| !(c.is_alphanumeric() || c == '_' || c == '$')).unwrap_or(r.len());
         let p = &r[..end];
         if !is_ident(p) { return None; }
@@ -170,8 +312,16 @@ fn member_chain(s: &str) -> Option<(Expression, &str)> {
     }
 }
 
-fn attr_loc(n: &NodeRef, name: &str) -> SourceLocation {
-    n.borrow().source_code_location().and_then(|l| l.attrs.get(name).or_else(|| l.attrs.get(&name.to_lowercase())).map(loc)).unwrap_or_default()
+/// An attribute's location in its element's parse5 location `l` (TS parseAttributes:
+/// `attrLocations[attributeName(attr).toLowerCase()]`, else the internal error).
+fn attr_loc_in(l: &parse5::ElementLocation, name: &str) -> Located<SourceLocation> {
+    l.attrs.get(&name.to_lowercase()).map(loc).ok_or(InternalError(NO_ATTR_LOCATION))
+}
+
+/// [`attr_loc_in`] the location TS parseElementLocation gives element `n` ([`elem_parse5_loc`]): an element
+/// parse5 recreated without a location reads its attributes from the ancestor location it falls back to.
+pub(crate) fn attr_loc(n: &NodeRef, name: &str, d: &Ctx) -> Located<SourceLocation> {
+    attr_loc_in(&elem_parse5_loc(n, d), name)
 }
 
 /// One attribute as written in the source (TS `getTemplateAttribute` inputs).
@@ -181,19 +331,16 @@ pub(crate) struct RawAttr {
     pub raw: String,
     /// Text after the first `=` (quotes kept, undecoded); `None` when there is no `=`.
     pub raw_value: Option<String>,
-    /// TS `isQuotedAttribute(rawAttrVal)`: starts and ends with `"`.
-    pub quoted: bool,
     pub location: SourceLocation,
 }
 
 /// Raw source of attribute `a` on element `n`. Falls back to `name="value"` when parse5 has no location.
-pub(crate) fn raw_attr(n: &NodeRef, a: &parse5::Attribute, d: &Ctx) -> RawAttr {
-    let location = attr_loc(n, &a.name);
+pub(crate) fn raw_attr(n: &NodeRef, a: &parse5::Attribute, d: &Ctx) -> Located<RawAttr> {
+    let location = attr_loc(n, &a.name, d)?;
     let raw = if location.end > location.start { raw_source(&location, d).trim_end().to_string() } else { String::new() };
     let raw = if raw.is_empty() { if a.value.is_empty() { a.name.clone() } else { format!("{}=\"{}\"", a.name, a.value) } } else { raw };
     let raw_value = raw.find('=').map(|i| raw[i + 1..].to_string());
-    let quoted = raw_value.as_deref().is_some_and(|v| v.starts_with('"') && v.ends_with('"'));
-    RawAttr { raw, raw_value, quoted, location }
+    Ok(RawAttr { raw, raw_value, location })
 }
 
 /// Source text at `l` (UTF-16 offsets), e.g. a text node's undecoded raw text. Empty when out of range.
@@ -210,54 +357,49 @@ fn decode_text_content(s: &str) -> String {
 }
 
 pub(crate) fn raw_source(l: &SourceLocation, d: &Ctx) -> String {
-    let (s, e) = l.span();
-    let (s, e) = (s as usize, e as usize);
+    let (s, e) = (l.start as usize, l.end as usize);
     if s <= e && e <= d.src16.len() { String::from_utf16_lossy(&d.src16[s..e]) } else { String::new() }
 }
 
-enum Loop {
-    Each { expression: Expression, item: Identifier, index: Option<Identifier>, directive_location: SourceLocation },
-    Of { expression: Expression, iterator: Identifier, directive_location: SourceLocation },
+enum Loop<'a> {
+    Each { expression: Expression<'a>, item: Identifier, index: Option<Identifier>, directive_location: SourceLocation },
+    Of { expression: Expression<'a>, iterator: Identifier, directive_location: SourceLocation },
 }
 
 /// `for:each={x} for:item="i" [for:index="j"]` or `iterator:it={x}`.
-fn loop_directive(attrs: &[parse5::Attribute], n: &NodeRef) -> Option<Loop> {
-    if let Some(a) = attrs.iter().find(|a| a.name == "for:each") {
-        let expression = bound_expr(&a.value)?;
+/// TS parseForEach then parseForOf: picks for:each / for:item / for:index and the first `iterator:*`.
+fn loop_directive<'a>(p: &mut ParsedAttribute, n: &NodeRef, d: &Ctx<'a>) -> Located<Option<Loop<'a>>> {
+    let (each, item, index) = (p.pick("for:each"), p.pick("for:item"), p.pick("for:index"));
+    let iterator = p.pick_prefix("iterator:");
+    if let Some(a) = each {
+        let Some(expression) = bound_expr(&a.value, || attr_loc(n, &a.name, d), d)? else { return Ok(None) };
         // TODO: diagnostic when for:item is missing / not an identifier.
-        let item = attrs.iter().find(|a| a.name == "for:item").filter(|a| is_ident(&a.value))?;
-        let index = attrs.iter().find(|a| a.name == "for:index").filter(|a| is_ident(&a.value))
-            .map(|a| Identifier { name: a.value.clone() });
-        return Some(Loop::Each { expression, item: Identifier { name: item.value.clone() }, index, directive_location: attr_loc(n, &a.name) });
+        let Some(item) = item.filter(|a| is_ident(&a.value)) else { return Ok(None) };
+        let index = index.filter(|a| is_ident(&a.value)).map(|a| Identifier { name: a.value.clone() });
+        return Ok(Some(Loop::Each { expression, item: Identifier { name: item.value.clone() }, index, directive_location: attr_loc(n, &a.name, d)? }));
     }
-    let a = attrs.iter().find(|a| a.name.starts_with("iterator:"))?;
+    let Some(a) = iterator else { return Ok(None) };
     let name = &a.name["iterator:".len()..];
-    if !is_ident(name) { return None; }
-    Some(Loop::Of { expression: bound_expr(&a.value)?, iterator: Identifier { name: name.to_string() }, directive_location: attr_loc(n, &a.name) })
+    if !is_ident(name) { return Ok(None); }
+    let Some(expression) = bound_expr(&a.value, || attr_loc(n, &a.name, d), d)? else { return Ok(None) };
+    Ok(Some(Loop::Of { expression, iterator: Identifier { name: name.to_string() }, directive_location: attr_loc(n, &a.name, d)? }))
 }
 
 /// The parsed expression of a `{…}` directive value (for:each, iterator:*, lwc:spread/on/slot-bind/is/…):
 /// a member path, or (complex expressions, quoted complex values, computed members) opaque source.
-/// Values that failed to parse were rejected by the element pre-pass.
-fn bound_expr(v: &str) -> Option<Expression> {
-    parse_binding(v).or_else(|| expr_check::is_expression(v).then(|| complex_source(v)))
+/// Values that failed to parse were rejected by the element pre-pass. `location` (the attribute's) is
+/// read only for a complex value.
+fn bound_expr<'a>(v: &str, location: impl FnOnce() -> Located<SourceLocation>, d: &Ctx<'a>) -> Located<Option<Expression<'a>>> {
+    if let Some(e) = parse_binding(v) { return Ok(Some(e)); }
+    if !expr_check::is_expression(v) { return Ok(None); }
+    non_binding_expr(v, location, d).map(Some)
 }
 
-fn wrap_loop(l: Loop, children: Vec<ChildNode>, location: SourceLocation) -> ChildNode {
+fn wrap_loop<'a>(l: Loop<'a>, children: Vec<ChildNode<'a>>, location: SourceLocation) -> ChildNode<'a> {
     match l {
         Loop::Each { expression, item, index, directive_location } => ChildNode::ForEach(ForEach { expression, item, index, children, location, directive_location }),
         Loop::Of { expression, iterator, directive_location } => ChildNode::ForOf(ForOf { expression, iterator, children, location, directive_location }),
     }
-}
-
-fn is_directive_attr(name: &str) -> bool {
-    matches!(name, "lwc:if" | "lwc:elseif" | "lwc:else" | "if:true" | "if:false" | "if:strict-true" | "for:each" | "for:item" | "for:index" | "key" | "lwc:ref" | "lwc:dom" | "lwc:inner-html" | "lwc:spread" | "lwc:dynamic" | "lwc:is" | "lwc:on" | "lwc:slot-bind") || name.starts_with("iterator:")
-}
-
-/// TS `isAttribute` for Component / LwcComponent: style, class, key, slot, exportparts and `data-*`
-/// stay attributes; everything else becomes a Property.
-fn component_keeps_attr(name: &str) -> bool {
-    matches!(name, "style" | "class" | "key" | "slot" | "exportparts") || name.starts_with("data-")
 }
 
 /// `@lwc/shared` AriaPropertyNames (attr = lowercased `aria-…`; `role` maps to itself).
@@ -296,8 +438,8 @@ fn attr_to_prop(name: &str) -> String {
 
 /// TS applyAttributes attr/prop split. `keep(name)` is TS `isAttribute`. Properties are keyed by
 /// prop name (a later duplicate replaces the value in place and warns 1147).
-fn split_props(attrs: Vec<Attribute>, keep: impl Fn(&str) -> bool, d: &mut Ctx) -> (Vec<Attribute>, Vec<Property>) {
-    let mut props: Vec<Property> = Vec::new();
+fn split_props<'a>(attrs: Vec<Attribute<'a>>, keep: impl Fn(&str) -> bool, d: &mut Ctx) -> (Vec<Attribute<'a>>, Vec<Property<'a>>) {
+    let mut props: Vec<Property<'a>> = Vec::new();
     let attrs = attrs.into_iter().filter_map(|a| {
         // Remaining `lwc:*` (lwc:on, lwc:slot-data, …) are directives TS strips before isAttribute;
         // codegen still reads them from attributes, so they never become props.
@@ -306,7 +448,7 @@ fn split_props(attrs: Vec<Attribute>, keep: impl Fn(&str) -> bool, d: &mut Ctx) 
         let p = Property { name: name.clone(), attribute_name: a.name, value: a.value, location: a.location };
         match props.iter_mut().find(|x| x.name == name) {
             Some(x) => {
-                d.push(messages::lwc(1147, &[&x.attribute_name, &p.attribute_name, &name], p.location.clone()));
+                d.push(ParserDiagnostics::DUPLICATE_ATTR_PROP_TRANSFORM.generate(&[&x.attribute_name, &p.attribute_name, &name], p.location.clone()));
                 *x = p;
             }
             None => props.push(p),
@@ -316,115 +458,99 @@ fn split_props(attrs: Vec<Attribute>, keep: impl Fn(&str) -> bool, d: &mut Ctx) 
     (attrs, props)
 }
 
-/// lwc:dom / lwc:inner-html / lwc:spread / lwc:on / lwc:slot-bind / lwc:dynamic / lwc:is → ElementDirective (TS applyLwcDirectives;
-/// values were validated by the element pre-pass).
-fn lifted_directives(attrs: &[parse5::Attribute]) -> Vec<ElementDirective> {
-    let mut out = Vec::new();
-    for a in attrs {
-        let dir = match a.name.as_str() {
-            "lwc:dynamic" => bound_expr(&a.value).map(ElementDirective::Dynamic),
-            "lwc:is" => bound_expr(&a.value).map(ElementDirective::Is),
-            "lwc:spread" => bound_expr(&a.value).map(ElementDirective::Spread),
-            "lwc:on" => bound_expr(&a.value).map(ElementDirective::OnDirective),
-            "lwc:slot-bind" => bound_expr(&a.value).map(ElementDirective::SlotBind),
-            "lwc:dom" => Some(ElementDirective::Dom(LiteralValue::String(a.value.clone()))),
-            "lwc:inner-html" => Some(ElementDirective::InnerHtml(match bound_expr(&a.value) {
-                Some(e) => AttributeValue::Expression(e),
-                None => AttributeValue::Literal(Literal { value: LiteralValue::String(a.value.clone()) }),
-            })),
-            _ => None,
-        };
-        out.extend(dir);
-    }
-    out
+/// TS applyKey + LWC_DIRECTIVE_PROCESSORS, in their order: key, lwc:external, lwc:dynamic, lwc:is,
+/// lwc:dom, lwc:inner-html, lwc:ref, lwc:spread, lwc:on, lwc:slot-bind. Each picks its attribute;
+/// values were validated by the element pre-pass. Returns the directives and whether lwc:external was set.
+fn element_directives<'a>(p: &mut ParsedAttribute, key: Option<Expression<'a>>, n: &NodeRef, d: &Ctx<'a>) -> Located<(Vec<ElementDirective<'a>>, bool)> {
+    let bound = |p: &mut ParsedAttribute, name: &str, f: fn(Expression<'a>) -> ElementDirective<'a>| -> Located<Option<ElementDirective<'a>>> {
+        match p.pick(name) { Some(a) => Ok(bound_expr(&a.value, || attr_loc(n, &a.name, d), d)?.map(f)), None => Ok(None) }
+    };
+    let external = p.pick("lwc:external").is_some();
+    let dynamic = bound(p, "lwc:dynamic", ElementDirective::Dynamic)?;
+    let is = bound(p, "lwc:is", ElementDirective::Is)?;
+    let dom = p.pick("lwc:dom").map(|a| ElementDirective::Dom(LiteralValue::String(a.value.clone())));
+    let inner = match p.pick("lwc:inner-html") {
+        Some(a) => Some(ElementDirective::InnerHtml(match bound_expr(&a.value, || attr_loc(n, &a.name, d), d)? {
+            Some(e) => AttributeValue::Expression(e),
+            None => AttributeValue::Literal(Literal { value: LiteralValue::String(a.value.clone()) }),
+        })),
+        None => None,
+    };
+    // `lwc:ref="foo"`: string literal only. TODO: diagnostics for boolean/empty/expression values (skipped for now).
+    let lwc_ref = p.pick("lwc:ref").map(|a| a.value.clone())
+        .filter(|v| !v.is_empty() && parse_binding(v).is_none() && !(v.starts_with('{') && v.ends_with('}')))
+        .map(ElementDirective::Ref);
+    let spread = bound(p, "lwc:spread", ElementDirective::Spread)?;
+    let on = bound(p, "lwc:on", ElementDirective::OnDirective)?;
+    let slot_bind = bound(p, "lwc:slot-bind", ElementDirective::SlotBind)?;
+    let out = [key.map(ElementDirective::Key), dynamic, is, dom, inner, lwc_ref, spread, on, slot_bind].into_iter().flatten().collect();
+    Ok((out, external))
 }
 
 /// TS parseElementLocation: an element parse5 inserted while recovering (e.g. an implied `<tbody>`) has no
-/// location; it takes the nearest element ancestor's (start/end tags included).
-fn elem_loc(n: &NodeRef) -> ElementSourceLocation {
+/// location; it takes the nearest element ancestor's (attributes and start/end tags included), else
+/// `parse5ParentLocation`.
+pub(crate) fn elem_parse5_loc(n: &NodeRef, d: &Ctx) -> parse5::ElementLocation {
     let mut cur = n.clone();
     loop {
         let parent = { let b = cur.borrow(); if b.source_code_location_ref().is_some() { break; } b.parent() };
         match parent { Some(p) if matches!(p.borrow().data, NodeData::Element { .. }) => cur = p, _ => break }
     }
-    cur.borrow().source_code_location().map(|l| ElementSourceLocation {
-        location: loc(&l.location),
-        start_tag: l.start_tag.as_ref().map(loc).unwrap_or_default(),
-        end_tag: l.end_tag.as_ref().map(loc),
-    }).unwrap_or_default()
+    let l = cur.borrow().source_code_location();
+    l.unwrap_or_else(|| d.parent_loc.clone())
 }
+
+/// TS `ast.sourceLocation(parse5ElmLocation)`: the span of [`elem_parse5_loc`], no start tag read.
+pub(crate) fn elem_span(n: &NodeRef, d: &Ctx) -> SourceLocation { loc(&elem_parse5_loc(n, d).location) }
 
 /// TS `isComplexTemplateExpressionEnabled`: the flag and API version ≥ 66.
 fn complex_enabled(cfg: &NormalizedConfig) -> bool {
     cfg.experimental_complex_expressions && lwc_shared::api_version::is_api_feature_enabled(lwc_shared::api_version::ApiFeature::EnableComplexTemplateExpressions, cfg.api_version)
 }
 
-/// `{ src }` → `Expression::Complex("src")` (opaque JS source, braces stripped).
-fn complex_source(v: &str) -> Expression {
-    let inner = v.strip_prefix('{').and_then(|s| s.strip_suffix('}')).unwrap_or(v);
-    Expression::Complex(inner.trim().to_string())
+/// A `{…}` value that is not a simple binding. Without complex expressions, TS validateExpression admits
+/// only Identifier / MemberExpression trees, so under experimentalComputedMemberExpression a computed
+/// member chain is typed ([`legacy_computed_chain`]); anything else is an oxc-parsed `Complex`.
+/// `location` is read only for the complex case.
+fn non_binding_expr<'a>(v: &str, location: impl FnOnce() -> Located<SourceLocation>, d: &Ctx<'a>) -> Located<Expression<'a>> {
+    match legacy_computed_chain(v, d) { Some(e) => Ok(e), None => d.complex(v, location()?) }
 }
 
-/// The cooked value of `src` when the whole source is one JS string literal (`'a'` / `"a"`), else None.
-/// Escapes beyond the simple single-char, `\xHH` and `\uHHHH` forms return None (kept as an expression).
-fn js_string_literal(src: &str) -> Option<String> {
-    let q = src.chars().next().filter(|c| *c == '\'' || *c == '"')?;
-    let body = src.get(1..src.len().checked_sub(1)?)?;
-    if src.len() < 2 || !src.ends_with(q) { return None; }
-    let mut out = String::new();
-    let mut it = body.chars();
-    while let Some(c) = it.next() {
-        match c {
-            '\\' => {
-                let e = it.next()?;
-                let hex = |it: &mut std::str::Chars, n: usize| -> Option<char> {
-                    let h: String = (0..n).map(|_| it.next()).collect::<Option<String>>()?;
-                    char::from_u32(u32::from_str_radix(&h, 16).ok()?)
-                };
-                out.push(match e {
-                    'n' => '\n', 't' => '\t', 'r' => '\r', 'b' => '\u{8}', 'f' => '\u{c}', 'v' => '\u{b}', '0' if !it.clone().next().is_some_and(|c| c.is_ascii_digit()) => '\0',
-                    'x' => hex(&mut it, 2)?,
-                    'u' if !it.clone().next().is_some_and(|c| c == '{') => hex(&mut it, 4)?,
-                    '\'' | '"' | '\\' => e,
-                    '\n' => continue,
-                    _ => return None,
-                });
-            }
-            '\n' | '\r' => return None,
-            c if c == q => return None,
-            c => out.push(c),
-        }
-    }
-    Some(out)
+/// Legacy mode under experimentalComputedMemberExpression: `{a[b].c}` as a typed computed member chain
+/// (`computed: true`) that codegen binds like TS bindExpression. Frozen legacy (AB-L0058); deleted with
+/// legacy mode in AB-D0004 S6.
+fn legacy_computed_chain<'a>(v: &str, d: &Ctx<'a>) -> Option<Expression<'a>> {
+    if d.legacy_computed { braced_chain(v, true) } else { None }
 }
 
 /// TS getTemplateAttribute + normalizeAttributeValue value lowering: an expression (member path, or
 /// opaque source for anything acorn parsed), `true` for a valueless attribute, else the string.
-/// Elements whose values failed to normalize or parse were dropped by the element pre-pass.
-fn lower_attr(tag: &str, a: &parse5::Attribute, n: &NodeRef, d: &Ctx) -> Attribute {
-    let location = n.borrow().source_code_location().and_then(|l| l.attrs.get(&a.name).map(loc)).unwrap_or_default();
+/// `v` is the element pre-pass's normalized value (the [`element_check::CheckedAttr`] pair); elements whose
+/// values failed to normalize or parse were dropped there.
+fn lower_attr<'a>(a: &parse5::Attribute, v: &element_check::Av, n: &NodeRef, d: &Ctx<'a>) -> Located<Attribute<'a>> {
+    let location = attr_loc(n, &a.name, d)?;
     let string = |s: String| {
         let v = if a.name == "class" { s.split_ascii_whitespace().collect::<Vec<_>>().join(" ") } else { s };
         AttributeValue::Literal(Literal { value: LiteralValue::String(v) })
     };
-    let value = match element_check::normalize(tag, a, n, d).map(|p| p.v) {
-        Ok(element_check::Av::Expr(v)) => AttributeValue::Expression(parse_binding(&v).unwrap_or_else(|| complex_source(&v))),
-        Ok(element_check::Av::Bool) => AttributeValue::Literal(Literal { value: LiteralValue::Bool(true) }),
-        Ok(element_check::Av::Str(v)) => string(v),
-        Err(_) => match parse_binding(&a.value) { Some(e) => AttributeValue::Expression(e), None => string(a.value.clone()) },
+    let value = match v {
+        element_check::Av::Expr(v) => AttributeValue::Expression(match parse_binding(v) { Some(e) => e, None => non_binding_expr(v, || Ok(location), d)? }),
+        element_check::Av::Bool => AttributeValue::Literal(Literal { value: LiteralValue::Bool(true) }),
+        element_check::Av::Str(v) => string(v.clone()),
     };
-    Attribute { name: a.name.clone(), value, location }
+    Ok(Attribute { name: a.name.clone(), value, location })
 }
 
 /// `if:true={x}` / `if:false={x}`; when both are present LWC keeps `if:true` only.
-fn if_directive(attrs: &[parse5::Attribute], n: &NodeRef) -> Option<(String, Expression, SourceLocation)> {
-    let a = attrs.iter().find(|a| a.name.starts_with("if:"))?;
+/// TS parseIf: `pickAll(IF_RE)`, the first one is the directive (extras warn 1182 in validate::multiple_if).
+fn if_directive<'a>(p: &mut ParsedAttribute, n: &NodeRef, d: &Ctx) -> Located<Option<(String, Expression<'a>, SourceLocation)>> {
+    let Some(a) = p.pick_all_prefix("if:").first().copied() else { return Ok(None) };
     // TODO: diagnostic for non-identifier values.
-    let e = parse_binding(&a.value)?;
-    Some((a.name["if:".len()..].to_string(), e, attr_loc(n, &a.name)))
+    let Some(e) = braced_chain(&a.value, d.legacy_computed) else { return Ok(None) };
+    Ok(Some((a.name["if:".len()..].to_string(), e, attr_loc(n, &a.name, d)?)))
 }
 
-enum Lwc { If(Expression, SourceLocation), Elseif(Expression, SourceLocation), Else(SourceLocation) }
+enum Lwc<'a> { If(Expression<'a>, SourceLocation), Elseif(Expression<'a>, SourceLocation), Else(SourceLocation) }
 
 /// `lwc:if={x}` / `lwc:elseif={x}` / `lwc:else`. TODO: diagnostics (bad values, multiple directives).
 ///
@@ -432,42 +558,40 @@ enum Lwc { If(Expression, SourceLocation), Elseif(Expression, SourceLocation), E
 /// acorn (`{isTrue()}` is a CallExpression under experimentalComplexExpressions) and the element
 /// still opens/continues the chain. Dropping the role here turned `<template lwc:if={f()}>` into a
 /// directive-less template (1153, dropped) and its `lwc:else` sibling into an orphan (1165).
-/// Non-binding conditions become `Expression::Complex(<inner source>)`; invalid ones were already
+/// Non-binding conditions become `Expression::Complex` (oxc-parsed inner source); invalid ones were already
 /// reported by `check_expr`.
-fn lwc_directive(attrs: &[parse5::Attribute], n: &NodeRef) -> Option<Lwc> {
+fn lwc_directive<'a>(p: &mut ParsedAttribute, n: &NodeRef, d: &Ctx<'a>) -> Located<Option<Lwc<'a>>> {
     // TS DIRECTIVE_PARSERS order (IfBlock, ElseifBlock, ElseBlock), not attribute order: on a dropped
-    // `<template lwc:else lwc:if>` (1162) the node TS already pushed is the lwc:if block.
-    let a = ["lwc:if", "lwc:elseif", "lwc:else"].iter().find_map(|k| attrs.iter().find(|a| a.name == *k))?;
-    let l = attr_loc(n, &a.name);
-    Some(match a.name.as_str() {
-        "lwc:if" => Lwc::If(condition_expr(&a.value), l),
-        "lwc:elseif" => Lwc::Elseif(condition_expr(&a.value), l),
+    // `<template lwc:else lwc:if>` (1162) the node TS already pushed is the lwc:if block. Each parser
+    // picks its own attribute.
+    let picked = [p.pick("lwc:if"), p.pick("lwc:elseif"), p.pick("lwc:else")];
+    let Some(a) = picked.into_iter().flatten().next() else { return Ok(None) };
+    let l = attr_loc(n, &a.name, d)?;
+    Ok(Some(match a.name.as_str() {
+        "lwc:if" => Lwc::If(condition_expr(&a.value, l, d)?, l),
+        "lwc:elseif" => Lwc::Elseif(condition_expr(&a.value, l, d)?, l),
         _ => Lwc::Else(l),
-    })
+    }))
 }
 
-/// Simple binding → Identifier/Member; anything else → opaque `Complex` source (braces stripped).
-fn condition_expr(v: &str) -> Expression {
-    parse_binding(v).unwrap_or_else(|| {
-        let inner = v.strip_prefix('{').and_then(|s| s.strip_suffix('}')).unwrap_or(v);
-        Expression::Complex(inner.trim().to_string())
-    })
+/// Simple binding → Identifier/Member; anything else → [`non_binding_expr`].
+fn condition_expr<'a>(v: &str, location: SourceLocation, d: &Ctx<'a>) -> Located<Expression<'a>> {
+    match parse_binding(v) { Some(e) => Ok(e), None => non_binding_expr(v, || Ok(location), d) }
 }
 
 /// One lowered sibling: its branch content, optional `lwc:*` role, and element location.
-struct Lowered { content: Vec<ChildNode>, lwc: Option<Lwc>, location: SourceLocation }
+struct Lowered<'a> { content: Vec<ChildNode<'a>>, lwc: Option<Lwc<'a>>, location: SourceLocation }
 
 /// TS `isCustomElementTag`: dashed, but not one of the dashed built-in SVG/MathML tags.
 fn is_custom_element_tag(tag: &str) -> bool { tag.contains('-') && !tables::DASHED_TAGNAME_ELEMENT_SET.contains(&tag) }
 
-fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) -> Option<Lowered> {
+fn lower_one<'a>(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx<'a>, in_loop: bool) -> Parsed<'a> {
     let b = n.borrow();
-    let one = |c: ChildNode| Some(Lowered { content: vec![c], lwc: None, location: SourceLocation::default() });
     match &b.data {
         NodeData::Text { value } => {
-            let l = node_loc(n);
+            let l = required_loc(n, NO_TEXT_LOCATION)?;
             let src = raw_source(&l, d);
-            let v = clean_text(value, &src)?;
+            let Some(v) = clean_text(value, &src) else { return Ok(None) };
             let mut segments = split_mustache(&v);
             // TS parseText splits the *undecoded* source, so `&#123; x &#125;` stays literal text. Use the raw
             // split (literals decoded); parse5 can also merge text around a dropped end tag (`</input>`), which
@@ -479,7 +603,7 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             }
             // TS `withErrorRecovery` around parseTextNode: a text node whose expression fails to parse
             // is dropped entirely (the error is still reported).
-            if validate::text_expressions(&segments, &l, cfg, d) { return None; }
+            if validate::text_expressions(&segments, &l, cfg, d)? { return Ok(None); }
             // TS parseText / parseTextComplex: every `{…}` token is an expression (complex mode parses any
             // `{`; otherwise EXPRESSION_RE needs a non-empty body). Non-member expressions stay opaque source.
             let complex = complex_enabled(cfg);
@@ -487,29 +611,38 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
             // when the source split does not align.
             let raw_tokens = split_mustache(&clean_text_node(&src));
             let aligned = raw_tokens.len() == segments.len() && raw_tokens.iter().zip(&segments).all(|(a, b)| a.1 == b.1);
-            let content: Vec<ChildNode> = segments.into_iter().enumerate().map(|(i, (seg, is_expr))| {
+            let content = segments.into_iter().enumerate().map(|(i, (seg, is_expr))| {
                 let raw = if aligned { raw_tokens[i].0.clone() } else { seg.clone() };
                 let tv = if !is_expr { TextValue::Literal(seg) } else {
                     match parse_binding(&seg) {
                         Some(e) => TextValue::Expression(e),
                         // TS transformText: `isStringLiteral(value) ? value.value : bindExpression(value)`.
-                        None if complex || expr_check::is_expression(&seg) => match complex_source(&seg) {
-                            Expression::Complex(src) => match js_string_literal(&src) {
-                                Some(text) => TextValue::Literal(text),
-                                None => TextValue::Expression(Expression::Complex(src)),
-                            },
-                            e => TextValue::Expression(e),
-                        },
+                        // Inner text comes from build()/ComplexExpression.source (AB-L0055 S3 (a)); the
+                        // S4: StringLiteral comes off the AST via as_literal (isStringLiteral).
+                        None if complex || expr_check::is_expression(&seg) => match legacy_computed_chain(&seg, d) {
+                            Some(e) => TextValue::Expression(e),
+                            None => {
+                                let c = expression_complex::build(d.alloc, &seg, l)?;
+                                match c.as_literal() {
+                                    Some(lwc_shared::template_ir::LiteralView::String(text)) => TextValue::Literal(text.to_string()),
+                                    _ => TextValue::Expression(Expression::Complex(c)),
+                                }
+                            }
+                        }
                         None => TextValue::Literal(seg),
                     }
                 };
-                ChildNode::Text(Text { value: tv, raw, location: l.clone() })
-            }).collect();
-            Some(Lowered { content, lwc: None, location: SourceLocation::default() })
+                Ok(ChildNode::Text(Text { value: tv, raw, location: l }))
+            }).collect::<Located<Vec<_>>>()?;
+            Ok(Some(Lowered { content, lwc: None, location: l }))
         }
-        NodeData::Comment { data } if cfg.preserve_html_comments => {
+        NodeData::Comment { data } => {
+            // TS parseChildren pushes every comment (parseComment reads its location); whether it is
+            // preserved is decided by its consumers (codegen, validateChildren), as in TS.
+            let location = required_loc(n, NO_COMMENT_LOCATION)?;
             // TS parseComment: value = decodeTextContent(data).
-            one(ChildNode::Comment(Comment { value: decode_text_content(data), raw: format!("<!--{data}-->"), location: node_loc(n) }))
+            let comment = Comment { value: decode_text_content(data), raw: format!("<!--{data}-->"), location: location.clone() };
+            Ok(Some(Lowered { content: vec![ChildNode::Comment(comment)], lwc: None, location }))
         }
         NodeData::Element { tag_name, attrs, namespace_uri, child_nodes, template_content, .. } => {
             // Foreign attrs (`xlink:href`) carry a prefix; LWC uses the qualified name.
@@ -518,123 +651,134 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
                 Some(p) if !p.is_empty() => parse5::Attribute { name: format!("{p}:{}", a.name), ..a.clone() },
                 _ => a.clone(),
             }).collect();
-            let attrs = &qualified;
+            // TS parseElementLocation: an element parse5 recreated without a location reads its attributes
+            // (in element_errors, TS parseAttributes) and takes its span from the ancestor it falls back to.
+            let el = elem_parse5_loc(n, d);
+            let span = loc(&el.location);
             // TS parseElement throws (withErrorRecovery): the element and its subtree are dropped.
             validate::html_recovery(n, d);
-            let chk = element_check::element_errors(tag_name, namespace_uri, attrs, n, cfg, d);
-            // TS parseIfBlock/parseElseifBlock/parseElseBlock push the (empty) block into the parent and
-            // update the sibling if-chain before a later throw drops the element.
-            if chk.dropped {
-                return chk.lwc_parsed.then(|| Lowered { content: Vec::new(), lwc: lwc_directive(attrs, n), location: elem_loc(n).location });
-            }
-            // A childless (post-creation throw) element got exactly one error; TS runs no further checks on it.
-            let mark = d.diags.len();
-            let no_attrs: Vec<parse5::Attribute> = Vec::new();
-            let attrs = if chk.bare { &no_attrs } else { attrs };
-            if tag_name != "template" { validate::non_template_element(tag_name, namespace_uri, attrs, n, cfg, d); }
-            let lwc = lwc_directive(attrs, n);
-            let dir = if_directive(attrs, n);
-            validate::multiple_if(tag_name, attrs, n, d);
-            let lp = loop_directive(attrs, n);
-            validate::element_attributes(tag_name, attrs, lp.is_some(), n, d);
-            let mut key = attrs.iter().find(|a| a.name == "key").and_then(|a| parse_binding(&a.value)); // TODO: diag on bad key
-            if !validate::key_in_iteration(tag_name, key.is_some(), lp.is_some(), in_loop, n, d) { key = None; }
-            if chk.childless { d.diags.truncate(mark); }
-            // `lwc:ref="foo"`: string literal only. TODO: diagnostics for boolean/empty/expression values (skipped for now).
-            let lwc_ref = attrs.iter().find(|a| a.name == "lwc:ref").map(|a| a.value.clone()).filter(|v| !v.is_empty() && parse_binding(v).is_none() && !(v.starts_with('{') && v.ends_with('}')));
-            let lifted = lifted_directives(attrs);
-            let slot_bind = attrs.iter().find(|a| a.name == "lwc:slot-bind");
-            let all_attrs: Vec<&parse5::Attribute> = attrs.iter().collect();
-            // TS: element directives are applied to elements only; on `<template>` lwc:on / lwc:slot-bind
-            // stay attributes (validateTemplate reports them as unsupported, 1145).
-            let attrs: Vec<_> = attrs.iter().filter(|a| !is_directive_attr(&a.name)
-                || (tag_name == "template" && matches!(a.name.as_str(), "lwc:on" | "lwc:slot-bind"))).collect();
-            let location = elem_loc(n);
+            let pre = element_check::element_errors(tag_name, namespace_uri, &qualified, n, cfg, d)?;
+            // TS parseAttributes: the one ParsedAttribute every directive parser picks from, over the
+            // pre-pass (attribute, normalized value) pairs.
+            let mut parsed = ParsedAttribute::new(match &pre { Ok(chk) => &chk.attrs, Err(e) => e.lwc_parsed.as_deref().unwrap_or_default() });
+            let chk = match &pre {
+                Ok(chk) => chk,
+                // TS parseIfBlock/parseElseifBlock/parseElseBlock push the (empty) block into the parent and
+                // update the sibling if-chain before a later throw drops the element.
+                Err(e) => {
+                    let kept = if e.lwc_parsed.is_some() { Some(Lowered { content: Vec::new(), lwc: lwc_directive(&mut parsed, n, d)?, location: span }) } else { None };
+                    return Err(Thrown { diag: e.diag.clone(), kept }.into());
+                }
+            };
+            // A childless (post-creation throw) element: TS runs no further checks on it.
+            let threw = chk.thrown.is_some();
+            // A bare (post-creation throw) element still sits in the IfBlock / Elseif / Else its directive
+            // parser created, so its lwc role is picked first; none of its other attributes were applied.
+            let lwc = lwc_directive(&mut parsed, n, d)?;
+            if chk.bare { parsed.clear(); }
+            let attrs: &[parse5::Attribute] = if chk.bare { &[] } else { &qualified };
+            if tag_name != "template" && !threw { validate::non_template_element(tag_name, namespace_uri, attrs, n, cfg, d)?; }
+            let lp = loop_directive(&mut parsed, n, d)?;
+            let dir = if_directive(&mut parsed, n, d)?;
+            if !threw { validate::multiple_if(tag_name, attrs, n, d); }
             if tag_name == "template" {
-                if let Some(sd) = attrs.iter().find(|a| a.name == "lwc:slot-data").copied() {
-                    return scoped_slot_fragment(sd, &attrs, dir.is_some() || lp.is_some() || lwc.is_some(), template_content, child_nodes, n, cfg, d, location);
+                // No base element: TS reads only `sourceLocation(parse5ElmLocation)`, never its start tag.
+                if let Some(sd) = parsed.pick("lwc:slot-data") {
+                    return scoped_slot_fragment(sd, parsed, dir.is_some() || lp.is_some() || lwc.is_some(), template_content, child_nodes, n, cfg, d, el);
                 }
                 // TS validateTemplate reports 1145 (every attribute parseElementDirectives did not pick,
                 // including key / lwc:dom / ...) before the 1153 "no directive" warning.
-                if validate::template(&all_attrs, dir.is_some() || lp.is_some() || lwc.is_some(), &location.location, d) { return None; }
+                if validate::template(parsed.get_attributes(), dir.is_some() || lp.is_some() || lwc.is_some(), &span, d) { return Ok(None); }
                 // `<template>` in foreign (svg) content has no template_content; children are direct.
                 let kids = match template_content { Some(c) => c.borrow().child_nodes().cloned().unwrap_or_default(), None => child_nodes.clone() };
                 d.in_loop = lp.is_some();
-                let depth = d.iter_depth; if lp.is_some() { d.iter_depth += 1; }
                 // lwc:if/elseif/else blocks are transparent for the slot-data parent check; for:each / if:* are not.
                 let prev_sd = d.slot_data_parent_ok; if dir.is_some() || lp.is_some() { d.slot_data_parent_ok = false; }
-                // Templates are transparent for the iteration scope (TS findAncestor through non-base nodes).
-                let prev_scope = (d.for_of.clone(), d.for_each.clone());
-                if chk.for_of.is_some() { d.for_of = chk.for_of.clone(); }
-                if chk.for_each.is_some() { d.for_each = chk.for_each.clone(); }
-                let mut children = lower_children(&kids, cfg, d);
-                (d.for_of, d.for_each) = prev_scope;
-                d.iter_depth = depth; d.slot_data_parent_ok = prev_sd;
-                if d.in_slot_fragment { validate::non_element_slot_content(&children, d); }
+                let prev_parent = std::mem::replace(&mut d.parent_loc, el);
+                let children = lower_children(&kids, cfg, d);
+                d.slot_data_parent_ok = prev_sd; d.parent_loc = prev_parent;
+                let mut children = children?;
+                // TS validateChildren throws after the children were parsed: the node stays in the tree.
+                let mut slot_content = Vec::new();
+                if d.in_slot_fragment { validate::non_element_slot_content(&children, cfg.preserve_html_comments, &mut slot_content); }
                 if let Some((modifier, condition, directive_location)) = dir {
-                    children = vec![ChildNode::If(If { modifier, condition, children, location: location.location.clone(), directive_location })];
+                    children = vec![ChildNode::If(If { modifier, condition, children, location: span.clone(), directive_location })];
                 }
-                if let Some(l) = lp { children = vec![wrap_loop(l, children, location.location.clone())]; }
-                return Some(Lowered { content: children, lwc, location: location.location });
+                if let Some(l) = lp { children = vec![wrap_loop(l, children, span.clone())]; }
+                let node = Lowered { content: children, lwc, location: span };
+                return match slot_content.into_iter().next() {
+                    Some(diag) => Err(Thrown { diag, kept: Some(node) }.into()),
+                    None => Ok(Some(node)),
+                };
             }
+            // TS parseBaseElement creates the element (ast.element / ast.component / ...: elementSourceLocation
+            // reads the start tag).
+            let location = element_location(&el)?;
+            // TS applyKey + applyLwcDirectives (elements only: on `<template>` every one of these stays
+            // unpicked and validateTemplate reports it, 1145).
+            // Any expression value is the key (element_check reported the non-expression and index cases), under
+            // complex expressions too (`key="{x()}"` → `api_key(n, $cmp.x())`).
+            let mut key = match parsed.pick("key") { Some(a) => bound_expr(&a.value, || attr_loc(n, &a.name, d), d)?, None => None };
+            if !validate::key_in_iteration(tag_name, key.is_some(), lp.is_some(), in_loop, n, d) { key = None; }
+            let (directives, external) = element_directives(&mut parsed, key, n, d)?;
             // `on<event>={handler}` → EventListener (stripped from attributes).
             let mut listeners = Vec::new();
-            let attrs: Vec<_> = attrs.into_iter().filter(|a| {
+            let mut attrs = Vec::new();
+            for c in parsed.get_attributes().iter().copied() {
+                let a = c.attr;
                 let is_on = a.name.len() > 2 && a.name.starts_with("on") && a.name.as_bytes()[2].is_ascii_alphabetic();
                 // TS applyHandlers: any expression value is a listener; under complex expressions that includes
-                // non-member sources (arrows, calls, computed members).
-                let handler = parse_binding(&a.value).or_else(|| (complex_enabled(cfg) && a.value.starts_with('{') && a.value.ends_with('}')).then(|| complex_source(&a.value)));
-                match (is_on, handler) {
-                    (true, Some(handler)) => { listeners.push(EventListener { name: a.name[2..].to_string(), handler, location: attr_loc(n, &a.name) }); false }
-                    _ => true,
+                // non-member sources (arrows, calls, computed members). Only `on*` values are lowered: a
+                // non-handler `{…}` is lowered as an attribute below (AB-D0004 S0: `data-foo={}` built and
+                // discarded a handler oxc cannot parse).
+                if !is_on { attrs.push(c); continue; }
+                let handler = match parse_binding(&a.value) {
+                    Some(e) => Some(e),
+                    None if complex_enabled(cfg) && a.value.starts_with('{') && a.value.ends_with('}') => Some(d.complex(&a.value, attr_loc(n, &a.name, d)?)?),
+                    None => None,
+                };
+                match handler {
+                    Some(handler) => listeners.push(EventListener { name: a.name[2..].to_string(), handler, location: attr_loc(n, &a.name, d)? }),
+                    None => attrs.push(c),
                 }
-            }).collect();
-            let attributes = attrs.iter().map(|a| lower_attr(tag_name, a, n, d)).collect();
-            let directives: Vec<ElementDirective> = key.into_iter().map(ElementDirective::Key).chain(lwc_ref.map(ElementDirective::Ref)).chain(lifted).collect();
-            let depth = d.iter_depth; if lp.is_some() { d.iter_depth += 1; }
+            }
+            let attributes = attrs.iter().map(|c| lower_attr(c.attr, &c.value, n, d)).collect::<Located<Vec<_>>>()?;
             let is_comp = is_custom_element_tag(tag_name);
             // `<lwc:component>` is transparent for the slot-ancestor lookup (its children are slotted into the dynamic component).
             let anc = if tag_name == "lwc:component" { d.slot_ancestor.clone() } else if is_comp { None } else { Some(tag_name.clone()) };
             let prev_anc = std::mem::replace(&mut d.slot_ancestor, anc);
-            let is_cmp_parent = tag_name == "lwc:component" || (is_comp && tag_name != "slot" && !attrs.iter().any(|a| a.name == "lwc:external"));
+            let is_cmp_parent = tag_name == "lwc:component" || (is_comp && tag_name != "slot" && !external);
             let prev_sd = std::mem::replace(&mut d.slot_data_parent_ok, is_cmp_parent && dir.is_none() && lp.is_none());
-            // A base element ends the iteration scope for its children (TS getForOfParent/getForEachParent).
-            let prev_scope = (d.for_of.take(), d.for_each.take());
-            let children = if chk.childless { Vec::new() } else { lower_children(child_nodes, cfg, d) };
-            (d.for_of, d.for_each) = prev_scope;
-            d.slot_ancestor = prev_anc; d.iter_depth = depth; d.slot_data_parent_ok = prev_sd;
-            // TS validateChildren: lwc:dom / lwc:inner-html elements must be empty (comments count only
-            // when preserved, which `children` already reflects). Thrown after the children were parsed,
-            // so the element stays in the tree.
-            if !children.is_empty() {
-                if directives.iter().any(|x| matches!(x, ElementDirective::Dom(_))) { d.push(messages::lwc(1086, &[], location.location.clone())); }
-                else if directives.iter().any(|x| matches!(x, ElementDirective::InnerHtml(_))) { d.push(messages::lwc(1142, &[&format!("<{tag_name}>")], location.location.clone())); }
+            let prev_parent = std::mem::replace(&mut d.parent_loc, el);
+            let children = if threw { Ok(Vec::new()) } else { lower_children(child_nodes, cfg, d) };
+            d.slot_ancestor = prev_anc; d.slot_data_parent_ok = prev_sd; d.parent_loc = prev_parent;
+            let children = children?;
+            // TS validateChildren: lwc:dom / lwc:inner-html elements must be empty; `effectiveChildren`
+            // counts comments only when preserved. Thrown after the children were parsed, so the element
+            // stays in the tree.
+            let mut thrown = chk.thrown.clone();
+            if children.iter().any(|c| cfg.preserve_html_comments || !matches!(c, ChildNode::Comment(_))) {
+                if directives.iter().any(|x| matches!(x, ElementDirective::Dom(_))) { thrown = Some(ParserDiagnostics::LWC_DOM_INVALID_CONTENTS.generate(&[], location.location.clone())); }
+                else if directives.iter().any(|x| matches!(x, ElementDirective::InnerHtml(_))) { thrown = Some(ParserDiagnostics::LWC_INNER_HTML_INVALID_CONTENTS.generate(&[&format!("<{tag_name}>")], location.location.clone())); }
             }
             let node = if tag_name == "slot" {
                 // `name` stays in attributes too; slot_name is the TS `slotName`.
-                let slot_name = attrs.iter().find(|a| a.name == "name").map(|a| a.value.clone()).unwrap_or_default();
-                // TS parseSlot: scoped (`lwc:slot-bind`) slots are light-DOM only and may not be duplicated
-                // or mixed with standard slots of the same name.
-                // TS parseSlot registers the name before any later (childless) throw empties the attributes.
-                let seen_name = qualified.iter().find(|a| a.name == "name").map_or(slot_name.as_str(), |a| a.value.as_str());
-                validate::slot(seen_name, slot_bind, &location.location, d);
-                ChildNode::Slot(Slot { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, directives: directives.clone(), listeners, children, location: location.clone(), slot_name, ..Default::default() })
-            } else if is_custom_element_tag(tag_name) && attrs.iter().any(|a| a.name == "lwc:external") {
+                let slot_name = attrs.iter().find(|c| c.attr.name == "name").map(|c| c.attr.value.clone()).unwrap_or_default();
+                ChildNode::Slot(Slot { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, directives: directives.clone(), listeners, children, location: location.clone(), slot_name, properties: Vec::new() })
+            } else if is_custom_element_tag(tag_name) && external {
                 // TS: `isCustomElementTag && parsedAttr.get(External)` → ExternalComponent; attrs stay
-                // attributes (no prop split) and the directive itself is consumed.
-                let attributes: Vec<Attribute> = attributes.into_iter().filter(|a: &Attribute| a.name != "lwc:external").collect();
-                ChildNode::ExternalComponent(ExternalComponent { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() })
+                // attributes (no prop split) and applyLwcExternalDirective picked the directive.
+                ChildNode::ExternalComponent(ExternalComponent { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, directives: directives.clone(), listeners, children, location: location.clone(), properties: Vec::new() })
             } else if is_custom_element_tag(tag_name) {
-                { let (attributes, properties) = split_props(attributes, component_keeps_attr, d); ChildNode::Component(Component { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() }) }
+                { let (attributes, properties) = split_props(attributes, |a| is_attribute(ElementKind::Component, tag_name, a), d); ChildNode::Component(Component { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone() }) }
             } else if tag_name == "lwc:component" {
                 // TS parseLwcComponent → ast.lwcComponent; isAttribute uses the component table.
-                let (attributes, properties) = split_props(attributes, component_keeps_attr, d);
+                let (attributes, properties) = split_props(attributes, |a| is_attribute(ElementKind::LwcComponent, tag_name, a), d);
                 ChildNode::LwcComponent(LwcComponent { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone() })
             } else {
                 // TS isAttribute: `<input value|checked>` are props.
-                let (attributes, properties) = if tag_name == "input" { split_props(attributes, |a| a != "value" && a != "checked", d) }
-                    else { (attributes, Vec::new()) };
-                ChildNode::Element(Element { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone(), ..Default::default() })
+                let (attributes, properties) = split_props(attributes, |a| is_attribute(ElementKind::Element, tag_name, a), d);
+                ChildNode::Element(Element { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, properties, directives: directives.clone(), listeners, children, location: location.clone() })
             };
             // Loop wraps outside; if:* is applied per iteration inside.
             let node = match dir {
@@ -642,69 +786,90 @@ fn lower_one(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, in_loop: bool) ->
                 None => node,
             };
             let node = match lp { Some(l) => wrap_loop(l, vec![node], location.location.clone()), None => node };
-            Some(Lowered { content: vec![node], lwc, location: location.location })
+            let node = Lowered { content: vec![node], lwc, location: location.location };
+            match thrown {
+                Some(diag) => Err(Thrown { diag, kept: Some(node) }.into()),
+                None => Ok(Some(node)),
+            }
         }
-        _ => None,
+        _ => Ok(None),
     }
 }
 
 /// `<template lwc:slot-data="d" [slot=...]>` → ScopedSlotFragment (TS `parseScopedSlotFragment`,
 /// same validation order: 1179, 1178, 1174, identifier 1211/1059; then 1177 on direct text/comment children).
 #[allow(clippy::too_many_arguments)]
-fn scoped_slot_fragment(
-    sd: &parse5::Attribute, attrs: &[&parse5::Attribute], other_directive: bool,
-    template_content: &Option<NodeRef>, child_nodes: &[NodeRef], n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx,
-    location: ElementSourceLocation,
-) -> Option<Lowered> {
-    let loc = location.location.clone();
-    let sd_loc = attr_loc(n, &sd.name);
-    let slot_data = validate::scoped_slot_data(sd, other_directive, &loc, &sd_loc, d)?;
-    let slot_name = attrs.iter().find(|a| a.name == "slot").map(|a| lower_attr("template", a, n, d).value)
+fn scoped_slot_fragment<'a>(
+    sd: &parse5::Attribute, mut parsed: ParsedAttribute, other_directive: bool,
+    template_content: &Option<NodeRef>, child_nodes: &[NodeRef], n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx<'a>,
+    el: parse5::ElementLocation,
+) -> Parsed<'a> {
+    let span = loc(&el.location);
+    let sd_loc = attr_loc(n, &sd.name, d)?;
+    let mut threw = Vec::new();
+    let Some(slot_data) = validate::scoped_slot_data(sd, other_directive, &span, &sd_loc, d, &mut threw) else {
+        let diag = threw.pop().expect("scoped_slot_data reports the diagnostic it drops the fragment for");
+        return Err(Thrown { diag, kept: None }.into());
+    };
+    d.add_scope_node(ScopeNode::ScopedSlotFragment);
+    // TS parseScopedSlotFragment picks `slot`; parseElement then runs validateTemplate on the leftovers.
+    let slot_name = parsed.pick_checked("slot").map(|c| lower_attr(c.attr, &c.value, n, d)).transpose()?.map(|a| a.value)
         .unwrap_or(AttributeValue::Literal(Literal { value: LiteralValue::String(String::new()) }));
+    validate::template(parsed.get_attributes(), true, &span, d);
     let kids = match template_content { Some(c) => c.borrow().child_nodes().cloned().unwrap_or_default(), None => child_nodes.to_vec() };
     let prev_sd = std::mem::replace(&mut d.slot_data_parent_ok, false);
     let prev_in = std::mem::replace(&mut d.in_slot_fragment, true);
+    let prev_parent = std::mem::replace(&mut d.parent_loc, el);
     let children = lower_children(&kids, cfg, d);
-    d.slot_data_parent_ok = prev_sd; d.in_slot_fragment = prev_in;
-    validate::non_element_slot_content(&children, d);
-    let frag = ScopedSlotFragment { slot_data, slot_name, children, location: loc.clone(), directive_location: sd_loc };
-    Some(Lowered { content: vec![ChildNode::ScopedSlotFragment(frag)], lwc: None, location: loc })
+    d.slot_data_parent_ok = prev_sd; d.in_slot_fragment = prev_in; d.parent_loc = prev_parent;
+    let children = children?;
+    // TS validateChildren throws after the children were parsed: the fragment stays in the tree.
+    let mut slot_content = Vec::new();
+    validate::non_element_slot_content(&children, cfg.preserve_html_comments, &mut slot_content);
+    let frag = ScopedSlotFragment { slot_data, slot_name, children, location: span.clone(), directive_location: sd_loc };
+    let node = Lowered { content: vec![ChildNode::ScopedSlotFragment(frag)], lwc: None, location: span };
+    match slot_content.into_iter().next() {
+        Some(diag) => Err(Thrown { diag, kept: Some(node) }.into()),
+        None => Ok(Some(node)),
+    }
 }
 
-/// Build the `else_` chain from consecutive `lwc:elseif` / `lwc:else` siblings.
-fn else_chain(it: &mut std::iter::Peekable<std::vec::IntoIter<Lowered>>) -> Option<Box<ElseBranch>> {
-    match it.peek()?.lwc {
-        Some(Lwc::Elseif(..)) => {
-            let l = it.next().unwrap();
-            let Some(Lwc::Elseif(condition, directive_location)) = l.lwc else { unreachable!() };
-            let else_ = else_chain(it);
-            Some(Box::new(ElseBranch::Elseif(ElseifBlock { condition, children: l.content, else_, location: l.location, directive_location })))
-        }
-        Some(Lwc::Else(..)) => {
-            let l = it.next().unwrap();
-            let Some(Lwc::Else(directive_location)) = l.lwc else { unreachable!() };
-            Some(Box::new(ElseBranch::Else(ElseBlock { children: l.content, location: l.location, directive_location })))
-        }
-        _ => None,
+/// Append `branch` at the tail of an if-chain (an Else tail is final: a later branch got 1165).
+fn attach_else<'a>(slot: &mut Option<Box<ElseBranch<'a>>>, branch: ElseBranch<'a>) {
+    match slot.as_deref_mut() {
+        None => *slot = Some(Box::new(branch)),
+        Some(ElseBranch::Elseif(e)) => attach_else(&mut e.else_, branch),
+        Some(ElseBranch::Else(_)) => {}
     }
 }
 
 /// Whitespace text between chain siblings doesn't break an lwc:if chain.
 fn continue_marker() -> Option<i32> { Some(2) }
 
-fn lower_children(nodes: &[NodeRef], cfg: &NormalizedConfig, d: &mut Ctx) -> Vec<ChildNode> {
+/// TS `ParserCtx.withErrorRecovery`: a throw reports its diagnostic and keeps whatever node TS had
+/// already pushed into the parent; an internal error is rethrown.
+fn with_error_recovery<'a>(d: &mut Ctx<'a>, f: impl FnOnce(&mut Ctx<'a>) -> Parsed<'a>) -> Located<Option<Lowered<'a>>> {
+    match f(d) {
+        Ok(l) => Ok(l),
+        Err(Throw::Recovered(Thrown { diag, kept })) => { d.push(diag); Ok(kept) }
+        Err(Throw::Internal(e)) => Err(e),
+    }
+}
+
+fn lower_children<'a>(nodes: &[NodeRef], cfg: &NormalizedConfig, d: &mut Ctx<'a>) -> Located<Vec<ChildNode<'a>>> {
     let in_loop = std::mem::replace(&mut d.in_loop, false);
-    let prev_chain = std::mem::replace(&mut d.chain_open, false);
+    // TS beginSiblingScope / endSiblingScope (always paired: outside withErrorRecovery).
+    let prev_chain = d.chain.take();
     // lwc:if chain slot scoping: each branch starts from the pre-chain set; after the chain, the union.
     let mut chain: Option<(HashSet<String>, HashSet<String>)> = None;
-    let mut lowered: Vec<Lowered> = Vec::new();
+    let mut lowered: Vec<Lowered<'a>> = Vec::new();
     for n in nodes {
         let role = match &n.borrow().data {
             NodeData::Element { attrs, .. } => attrs.iter().find_map(|a| match a.name.as_str() { "lwc:if" => Some(0), "lwc:elseif" | "lwc:else" => Some(1), _ => None }),
-            NodeData::Text { value } if value.trim().is_empty() => continue_marker(),
+            NodeData::Text { value } if js_trim(value).is_empty() => continue_marker(),
             _ => None,
         };
-        if role == Some(2) { if let Some(l) = lower_one(n, cfg, d, in_loop) { lowered.push(l); } continue; }
+        if role == Some(2) { lowered.extend(with_error_recovery(d, |d| lower_one(n, cfg, d, in_loop))?); continue; }
         if let Some((base, union)) = chain.as_mut() {
             union.extend(d.seen_slots.iter().cloned());
             if role == Some(1) { d.seen_slots = base.clone(); } else { d.seen_slots = union.clone(); chain = None; }
@@ -712,38 +877,50 @@ fn lower_children(nodes: &[NodeRef], cfg: &NormalizedConfig, d: &mut Ctx) -> Vec
         if role == Some(0) { chain = Some((d.seen_slots.clone(), d.seen_slots.clone())); }
         let is_elem = matches!(&n.borrow().data, NodeData::Element { .. });
         let is_comment = matches!(&n.borrow().data, NodeData::Comment { .. });
-        let lowered_one = lower_one(n, cfg, d, in_loop);
-        // TS parseChildren chain bookkeeping: an element whose first node is an If/Elseif block keeps the
-        // chain open; any other parsed element, non-whitespace text, or a preserved comment ends it.
-        // A dropped element (throw / no node) leaves it unchanged.
-        if is_elem {
-            if let Some(l) = &lowered_one { d.chain_open = matches!(l.lwc, Some(Lwc::If(..) | Lwc::Elseif(..))); }
-        } else if !is_comment || cfg.preserve_html_comments {
-            d.chain_open = false;
-        }
+        // TS parseChildren, inside withErrorRecovery: beginElementScope; parseElement; node =
+        // endElementScope(); then an open chain ends unless node is an If/Elseif block. A throw skips the
+        // pop and the chain bookkeeping, leaking the element's scope. Non-whitespace text or a preserved
+        // comment ends the chain.
+        let lowered_one = with_error_recovery(d, |d| {
+            if is_elem {
+                d.scopes.push(Vec::new());
+                let l = lower_one(n, cfg, d, in_loop)?;
+                let node = d.scopes.pop().and_then(|s| s.into_iter().next());
+                if node.is_some() && !matches!(node, Some(ScopeNode::IfBlock | ScopeNode::ElseifBlock)) { d.chain = None; }
+                return Ok(l);
+            }
+            let l = lower_one(n, cfg, d, in_loop)?;
+            if !is_comment || cfg.preserve_html_comments { d.chain = None; }
+            Ok(l)
+        })?;
         if let Some(l) = lowered_one { lowered.push(l); }
     }
-    d.chain_open = prev_chain;
+    d.chain = prev_chain;
     if let Some((_, mut union)) = chain { union.extend(d.seen_slots.drain()); d.seen_slots = union; }
-    let mut it = lowered.into_iter().peekable();
+    // TS parseElseifBlock / parseElseBlock: `conditionalParent.else = node` on the chain's current node,
+    // which may be separated from it by siblings whose parse threw.
     let mut out = Vec::new();
-    while let Some(l) = it.next() {
-        match l.lwc {
-            None => out.extend(l.content),
+    let mut cur_if: Option<usize> = None;
+    for l in lowered {
+        let branch = match l.lwc {
+            None => { out.extend(l.content); continue; }
             Some(Lwc::If(condition, directive_location)) => {
-                let else_ = else_chain(&mut it);
-                out.push(ChildNode::IfBlock(IfBlock { condition, children: l.content, else_, location: l.location, directive_location }));
+                cur_if = Some(out.len());
+                out.push(ChildNode::IfBlock(IfBlock { condition, children: l.content, else_: None, location: l.location, directive_location }));
+                continue;
             }
-            // TS throwAtLocation(LWC_IF_SCOPE_NOT_FOUND, sourceLocation(parse5ElmLocation)): the element's
-            // location (`Lowered.location`), not the directive attribute's.
-            Some(Lwc::Elseif(..)) => validate::orphan_else("lwc:elseif", l.location, d),
-            Some(Lwc::Else(..)) => validate::orphan_else("lwc:else", l.location, d),
-        }
+            Some(Lwc::Elseif(condition, directive_location)) => ElseBranch::Elseif(ElseifBlock { condition, children: l.content, else_: None, location: l.location, directive_location }),
+            Some(Lwc::Else(directive_location)) => ElseBranch::Else(ElseBlock { children: l.content, location: l.location, directive_location }),
+        };
+        // element_check already reported 1165 for a branch without an open chain; with no IfBlock here, the
+        // chain's lwc:if element threw (its node is not lowered) and the compile has failed.
+        if let Some(ChildNode::IfBlock(b)) = cur_if.map(|i| &mut out[i]) { attach_else(&mut b.else_, branch); }
     }
-    out
+    Ok(out)
 }
 
-pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseResult {
+/// Parses `source`; complex expression ASTs are allocated in `alloc`, which the IR borrows.
+pub fn parse_template<'a>(alloc: &'a oxc_allocator::Allocator, source: &str, config: &NormalizedConfig) -> TemplateParseResult<'a> {
     let mut warnings = Vec::new();
     let out = parse5::parse_fragment_with_errors(source, ParserOptions { source_code_location_info: true, ..Default::default() });
     validate::parse5_errors(&out.errors, config, &mut warnings);
@@ -756,43 +933,46 @@ pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseR
     // TS getTemplateRoot: elements and non-blank text nodes are candidate roots.
     let roots: Vec<NodeRef> = top.iter().filter(|n| match &n.borrow().data {
         NodeData::Element { .. } => true,
-        NodeData::Text { value } => !value.trim().is_empty(),
+        NodeData::Text { value } => !js_trim(value).is_empty(),
         _ => false,
     }).cloned().collect();
     if roots.len() > 1 {
-        warnings.push(messages::lwc(1075, &[], node_loc(&roots[1])));
+        warnings.push(ParserDiagnostics::MULTIPLE_ROOTS_FOUND.generate_normalized(&[], node_loc(&roots[1])));
         return TemplateParseResult { root: None, warnings };
     }
     let Some(tmpl) = roots.first().filter(|n| matches!(n.borrow().data, NodeData::Element { .. })).cloned() else {
-        // TS ctx.throw without a location: normalizeLocation(undefined) = line 0, column 0.
-        let zero = SourceLocation { start_line: 0, start_column: 0, end_line: 0, end_column: 0, start: Some(0), end: Some(0) };
-        warnings.push(messages::lwc(1072, &[], zero));
+        // TS ctx.throw without a location: normalizeLocation(undefined).
+        warnings.push(ParserDiagnostics::MISSING_ROOT_TEMPLATE_TAG.generate_normalized(&[], None));
         return TemplateParseResult { root: None, warnings };
     };
+    // TS parseRoot: the internal location check, then 1079 at the root's location.
+    let Some(root_loc) = tmpl.borrow().source_code_location() else {
+        return internal_failure(InternalError(NO_ROOT_LOCATION));
+    };
     if let Some(t) = tmpl.borrow().tag_name().filter(|t| *t != "template") {
-        warnings.push(messages::lwc(1079, &[t], node_loc(&tmpl)));
+        warnings.push(ParserDiagnostics::ROOT_TAG_SHOULD_BE_TEMPLATE.generate(&[t], loc(&root_loc.location)));
         return TemplateParseResult { root: None, warnings };
     }
     let tb = tmpl.borrow();
+    let root_attrs: &[parse5::Attribute] = match &tb.data { NodeData::Element { attrs, .. } => attrs, _ => &[] };
     let content = match &tb.data { NodeData::Element { template_content, .. } => template_content.clone(), _ => None };
     let kids = content.map(|c| c.borrow().child_nodes().cloned().unwrap_or_default()).unwrap_or_default();
-    let el = tb.source_code_location();
-    let location = el.map(|l| ElementSourceLocation {
-        location: loc(&l.location),
-        start_tag: l.start_tag.as_ref().map(loc).unwrap_or_default(),
-        end_tag: l.end_tag.as_ref().map(loc),
-    }).unwrap_or_default();
     let light = matches!(&tb.data, NodeData::Element { attrs, .. } if attrs.iter().any(|a| a.name == "lwc:render-mode" && a.value == "light"));
     let mut cx = Ctx {
-        diags: warnings, seen_slots: HashSet::new(), in_loop: false, iter_depth: 0, slot_ancestor: None, slot_data_parent_ok: false,
-        seen_scoped_slots: HashSet::new(), light, in_slot_fragment: false, instrumentation: config.instrumentation.clone(),
-        src16: source.encode_utf16().collect(), seen_ids: HashSet::new(), for_of: None, for_each: None, chain_open: false,
+        alloc, diags: Diags::new(warnings), seen_slots: HashSet::new(), in_loop: false, slot_ancestor: None, slot_data_parent_ok: false,
+        seen_scoped_slots: HashSet::new(), light, in_slot_fragment: false,
+        legacy_computed: config.experimental_computed_member_expression && !config.experimental_complex_expressions,
+        instrumentation: config.instrumentation.clone(),
+        src16: source.encode_utf16().collect(), seen_ids: HashSet::new(), scopes: Vec::new(), chain: None,
+        parent_loc: root_loc.clone(),
     };
-    if let NodeData::Element { attrs, .. } = &tb.data {
-        if element_check::root_errors(attrs, &tmpl, &location, config, &mut cx) {
-            return TemplateParseResult { root: None, warnings: cx.diags };
-        }
-    }
+    // TS parseRoot → parseAttributes(root, rootLocation), ast.root(rootLocation) (its start tag), then the
+    // root directives and validateRoot.
+    let location = match element_check::root_errors(root_attrs, &tmpl, &root_loc, config, &mut cx) {
+        Ok(Some(location)) => location,
+        Ok(None) => return TemplateParseResult { root: None, warnings: cx.diags.into_vec() },
+        Err(e) => return internal_failure(e),
+    };
     // TS parseRoot → applyLwcRenderModeDirective: counted once a valid lwc:render-mode is applied.
     if matches!(&tb.data, NodeData::Element { attrs, .. } if attrs.iter().any(|a| a.name == "lwc:render-mode" && (a.value == "light" || a.value == "shadow"))) {
         cx.count(lwc_shared::CompilerMetric::LwcRenderModeDirective);
@@ -815,15 +995,23 @@ pub fn parse_template(source: &str, config: &NormalizedConfig) -> TemplateParseR
         }
         if attrs.iter().any(|a| a.name == "lwc:preserve-comments") { directives.push(RootDirective::PreserveComments(true)); }
     }
-    let children = lower_children(&kids, config, &mut cx);
-    TemplateParseResult { root: Some(Root { location, directives, children }), warnings: cx.diags }
+    match lower_children(&kids, config, &mut cx) {
+        Ok(children) => TemplateParseResult { root: Some(Root { location, directives, children }), warnings: cx.diags.into_vec() },
+        Err(e) => internal_failure(e),
+    }
 }
 
-/// TS `isValidHTMLAttribute`.
+/// An internal error ends the parse: `compile` reports it as its only diagnostic and there is no root.
+fn internal_failure<'a>(e: InternalError) -> TemplateParseResult<'a> {
+    TemplateParseResult { root: None, warnings: vec![e.diagnostic()] }
+}
+
+/// TS `isValidHTMLAttribute`, except the `HTML_ATTRIBUTE_ELEMENT_MAP` lookup is own-key only: upstream indexes a
+/// plain object, so `constructor` crashes (1052) and `__proto__` skips 1057; Rust treats both as unknown (D-0197).
 fn is_valid_html_attribute(tag: &str, attr: &str) -> bool {
     use tables::*;
     let directive = attr == "key" || attr.starts_with("lwc:") || attr.starts_with("if:") || attr.starts_with("for:") || attr.starts_with("iterator:");
-    if GLOBAL_ATTRIBUTE.contains(&attr) || ARIA_ATTRS.contains(&attr) || attr.starts_with("data-") || directive
+    if GLOBAL_ATTRIBUTE.contains(&attr) || ARIA_ATTRS.contains(&attr) || is_data_attribute(attr) || directive
         || SUPPORTED_SVG_TAGS.contains(&tag) || DASHED_TAGNAME_ELEMENT_SET.contains(&tag) || !KNOWN_HTML_AND_SVG_ELEMENTS.contains(&tag) {
         return true;
     }
@@ -860,14 +1048,46 @@ const PARSE5_WARN_OLDER: &[&str] = &[
 
 #[cfg(test)]
 mod string_literal_tests {
-    use super::js_string_literal as s;
+    use crate::parser::expression_complex::build;
+    use lwc_shared::template_ir::{LiteralView, SourceLocation};
+    use oxc_allocator::Allocator;
+
+    const AT: SourceLocation = SourceLocation {
+        start_line: 1, start_column: 1, end_line: 1, end_column: 40, start: 0, end: 39,
+    };
+
+    fn lit(src: &str) -> Option<String> {
+        let alloc = Allocator::default();
+        let c = build(&alloc, &format!("{{{src}}}"), AT).ok()?;
+        match c.as_literal() {
+            Some(LiteralView::String(s)) => Some(s.to_string()),
+            _ => None,
+        }
+    }
+
     #[test]
-    fn whole_source_string_literals_only() {
-        assert_eq!(s("'foo foo'").as_deref(), Some("foo foo"));
-        assert_eq!(s(r#""a\"b\x41\u0042""#).as_deref(), Some("a\"bAB"));
-        assert_eq!(s("'a' + 'b'"), None);
-        assert_eq!(s("`a`"), None);
-        assert_eq!(s("'"), None);
-        assert_eq!(s("foo"), None);
+    fn as_literal_reads_string_literal_value() {
+        assert_eq!(lit("'foo foo'").as_deref(), Some("foo foo"));
+        assert_eq!(lit(r#""a\u0041""#).as_deref(), Some("aA"));
+        assert_eq!(lit("'a' + 'b'"), None);
+        assert_eq!(lit("`a`"), None);
+        assert_eq!(lit("foo"), None);
+    }
+}
+
+#[cfg(test)]
+mod generated_tables_tests {
+    use super::constants::{DASHED_TAGNAME_ELEMENT_SET, KNOWN_HTML_AND_SVG_ELEMENTS, SUPPORTED_SVG_TAGS};
+    use super::utils::html_element_attributes::HTML_ATTRIBUTE_ELEMENT_MAP;
+
+    /// The generated tables are looked up with `binary_search`, so they must be strictly sorted.
+    #[test]
+    fn tables_sorted() {
+        let haem: Vec<&str> = HTML_ATTRIBUTE_ELEMENT_MAP.iter().map(|e| e.0).collect();
+        for (name, keys) in [("KNOWN", KNOWN_HTML_AND_SVG_ELEMENTS), ("SVG", SUPPORTED_SVG_TAGS), ("DASHED", DASHED_TAGNAME_ELEMENT_SET), ("HAEM", &haem[..])] {
+            assert!(keys.windows(2).all(|w| w[0] < w[1]), "{name} not strictly sorted");
+        }
+        assert_eq!((KNOWN_HTML_AND_SVG_ELEMENTS.len(), SUPPORTED_SVG_TAGS.len(), DASHED_TAGNAME_ELEMENT_SET.len(), HTML_ATTRIBUTE_ELEMENT_MAP.len()), (145, 69, 8, 177));
+        assert!(SUPPORTED_SVG_TAGS.binary_search(&"clipPath").is_ok() && SUPPORTED_SVG_TAGS.binary_search(&"clippath").is_err());
     }
 }

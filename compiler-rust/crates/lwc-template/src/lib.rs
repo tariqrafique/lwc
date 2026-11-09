@@ -7,9 +7,20 @@
 //! Phase 0 harness entrypoints: [`compile`] and [`parse`].
 
 mod codegen;
+/// Public binder for complex template expressions (D-0221 / AB-D0004 S3).
+/// The implementation lives at `codegen/expression.rs` (Arch layout: no `expr/` directory).
+pub mod expr {
+    pub use crate::codegen::expression::{bind, BindError, BindPlan};
+}
+/// Public printer for complex template expressions (D-0221 / AB-D0004 S4).
+/// The implementation lives at `codegen/printer.rs` (Arch layout: no `expr/` directory).
+pub mod printer {
+    pub use crate::codegen::printer::{print_expr, Js, PrintError};
+}
 pub mod config;
 mod parser;
 mod scope_tokens;
+pub mod shared;
 
 pub use scope_tokens::{generate_scope_tokens, ScopeTokens};
 
@@ -19,20 +30,22 @@ pub type TemplateConfig = Config;
 pub use config::{Config, ConfigError, CustomRendererConfig, CustomRendererElementConfig, NormalizedConfig};
 pub use lwc_shared::{CompilerDiagnostic, DiagnosticLevel};
 pub use parser::TemplateParseResult;
+/// The arena a [`parse`] result's complex expressions live in (AB-D0004).
+pub use oxc_allocator::Allocator;
 
-/// Result of [`compile`].
+/// Result of [`compile`]. Unlike TS, no `root`: the IR borrows `compile`'s own arena (AB-D0004); use
+/// [`parse`] for the IR.
 #[derive(Debug, Clone, PartialEq)]
 pub struct TemplateCompileResult {
     pub code: String,
-    pub root: Option<Root>,
     pub warnings: Vec<CompilerDiagnostic>,
     pub css_scope_tokens: Vec<String>,
 }
 
-/// Parse HTML markup into an AST (no codegen).
-pub fn parse(source: &str, config: Config) -> Result<TemplateParseResult, ConfigError> {
+/// Parse HTML markup into an AST (no codegen). Complex expression ASTs are allocated in `alloc`.
+pub fn parse<'a>(alloc: &'a Allocator, source: &str, config: Config) -> Result<TemplateParseResult<'a>, ConfigError> {
     let options = config.normalize()?;
-    Ok(parser::parse_template(source, &options))
+    Ok(parser::parse_template(alloc, source, &options))
 }
 
 /// Compile an LWC template to ESM source consumable by the engine.
@@ -45,34 +58,62 @@ pub fn compile(
 ) -> Result<TemplateCompileResult, ConfigError> {
     let options = config.normalize()?;
     let tokens = generate_scope_tokens(filename, options.namespace.as_deref(), options.name.as_deref());
-    let parsing = parser::parse_template(source, &options);
+    // The compile entry owns the arena; the IR never outlives this call or leaves its thread.
+    let alloc = Allocator::default();
+    let parsing = parser::parse_template(&alloc, source, &options);
 
     let has_error = parsing
         .warnings
         .iter()
         .any(|w| matches!(w.level, DiagnosticLevel::Error | DiagnosticLevel::Fatal));
 
-    let (code, root) = if !has_error {
-        if let Some(ref root) = parsing.root {
-            (codegen::generate(root, &options, filename, &tokens), parsing.root)
-        } else {
-            (String::new(), None)
-        }
-    } else {
-        (String::new(), parsing.root)
+    let (code, warnings) = match &parsing.root {
+        Some(root) if !has_error => match codegen::generate(root, &options, filename, &tokens) {
+            Ok(code) => (code, parsing.warnings),
+            Err(e) => {
+                let mut warnings = parsing.warnings;
+                warnings.push(codegen_catch(e));
+                (String::new(), warnings)
+            }
+        },
+        _ => (String::new(), parsing.warnings),
     };
 
     Ok(TemplateCompileResult {
         code,
-        root,
-        warnings: parsing.warnings,
+        warnings,
         css_scope_tokens: tokens.css_scope_tokens,
     })
+}
+
+/// `index.ts:76-79`: `normalizeToDiagnostic(GENERIC_PARSING_ERROR, error)` then prefix
+/// `Unexpected compilation error: `. A thrown `CompilerError` (1189 from bind) keeps its code,
+/// level and (absent) location via `toDiagnostic()`; `GENERIC_PARSING_ERROR` is only the fallback
+/// for a non-CompilerError, which PrintError maps to [`InternalError`].
+fn codegen_catch(e: codegen::CodegenError) -> CompilerDiagnostic {
+    match e {
+        codegen::CodegenError::Bind(e) => {
+            let ce = e.compiler_error();
+            CompilerDiagnostic::new(
+                ce.code,
+                format!("Unexpected compilation error: {}", ce.message),
+                ce.level,
+                ce.filename,
+                ce.location,
+            )
+        }
+        codegen::CodegenError::Internal(e) => e.diagnostic(),
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// [`super::parse`] in a leaked per-test arena.
+    fn parse(source: &str, config: Config) -> Result<TemplateParseResult<'static>, ConfigError> {
+        super::parse(Box::leak(Box::default()), source, config)
+    }
 
     const SRC: &str = "<template>\n    foo\n</template>\n";
 
@@ -80,7 +121,7 @@ mod tests {
     fn compile_empty_source() {
         let r = compile("", "x-foo.html", Config::default()).unwrap();
         assert!(r.code.is_empty());
-        assert!(r.root.is_none());
+        assert!(parse("", Config::default()).unwrap().root.is_none());
     }
 
     #[test]
@@ -126,7 +167,7 @@ mod tests {
     #[test]
     fn compile_section_class() {
         let c = compile(SECTION, "x.html", Config { enable_static_content_optimization: Some(false), ..Default::default() }).unwrap().code;
-        for n in ["api_element(\"section\"", "class: \"foo bar baz-fiz\"", "key: 0", "h: api_element"] {
+        for n in ["api_element(\"section\"", "classMap: {", "\"foo\": true", "\"bar\": true", "\"baz-fiz\": true", "key: 0", "h: api_element"] {
             assert!(c.contains(n), "{n}\n{c}");
         }
         if std::env::var("SHOW").is_ok() { eprintln!("{c}");
@@ -152,7 +193,7 @@ mod tests {
     #[test]
     fn compile_binding_attr() {
         let c = cn("<template>\n    <a href={narita}>KIX</a>\n</template>\n");
-        assert!(c.contains("href: $cmp.narita") && c.contains("api_text(\"KIX\")"), "{c}");
+        assert!(c.contains("\"href\": $cmp.narita") && c.contains("api_text(\"KIX\")"), "{c}");
     }
 
     #[test]
@@ -165,6 +206,35 @@ mod tests {
 
     fn c(src: &str) -> String { compile(src, "x.html", Config::default()).unwrap().code }
     /// Static content optimization off: nested static elements stay `api_element`.
+    /// Inline the module-level `const stcN = ...;` hoists back into `tmpl`, for tests that pin shapes.
+    fn unhoist(code: &str) -> String {
+        let mut decls = Vec::new();
+        let mut rest = String::new();
+        for line in code.split_inclusive('\n') {
+            if let Some(d) = line.strip_prefix("const stc") {
+                let (n, v) = d.split_once(" = ").unwrap();
+                decls.push((format!("stc{n}"), String::new()));
+                decls.last_mut().unwrap().1.push_str(v);
+            } else if decls.last().is_some_and(|(_, v)| !v.trim_end().ends_with(';')) {
+                decls.last_mut().unwrap().1.push_str(line);
+            } else { rest.push_str(line); }
+        }
+        for (n, v) in decls.iter().rev() {
+            let v = v.trim_end().trim_end_matches(';');
+            let mut out = String::new();
+            let mut last = 0;
+            for (i, _) in rest.match_indices(n.as_str()) {
+                if rest[i + n.len()..].starts_with(|ch: char| ch.is_ascii_alphanumeric()) { continue; }
+                out.push_str(&rest[last..i]);
+                out.push_str(v);
+                last = i + n.len();
+            }
+            out.push_str(&rest[last..]);
+            rest = out;
+        }
+        rest
+    }
+
     fn cn(src: &str) -> String { compile(src, "x.html", Config { enable_static_content_optimization: Some(false), ..Default::default() }).unwrap().code }
 
     const MIXED: &str = "<template>\n  <div>\n    <section class=\"s\"><p>hi</p></section>\n    {msg}\n  </div>\n</template>\n";
@@ -173,7 +243,7 @@ mod tests {
     fn static_fragment_dynamic_text_part() {
         // JS oracle: `<p>{x}</p>` → static fragment with a text part (partId 1 = the text run).
         let code = c("<template><p>{x}</p></template>");
-        for n in ["import { freezeTemplate, parseFragment, registerTemplate } from \"lwc\";", "const $fragment1 = parseFragment`<p${3}>${\"t1\"}</p>`;",
+        for n in ["import {freezeTemplate, parseFragment, registerTemplate} from \"lwc\";", "const $fragment1 = parseFragment`<p${3}>${\"t1\"}</p>`;",
                   "api_static_fragment($fragment1, 1, [api_static_part(1, null, api_dynamic_text($cmp.x))])", "d: api_dynamic_text", "sp: api_static_part"] {
             assert!(code.contains(n), "{n}\n{code}");
         }
@@ -219,7 +289,7 @@ mod tests {
     fn nested_static_under_dynamic_parent() {
         let code = c(MIXED);
         // JS oracle: dynamic text no longer breaks the fragment — the whole `<div>` is one static fragment.
-        for n in ["import { freezeTemplate, parseFragment, registerTemplate } from \"lwc\";", "const $fragment1 = parseFragment`<div${3}><section class=\"s${0}\"${2}><p${3}>hi</p></section>${\"t4\"}</div>`;", "api_static_part(4, null, api_dynamic_text($cmp.msg))", "st: api_static_fragment"] {
+        for n in ["import {freezeTemplate, parseFragment, registerTemplate} from \"lwc\";", "const $fragment1 = parseFragment`<div${3}><section class=\"s${0}\"${2}><p${3}>hi</p></section>${\"t4\"}</div>`;", "api_static_part(4, null, api_dynamic_text($cmp.msg))", "st: api_static_fragment"] {
             assert!(code.contains(n), "{n}\n{code}");
         }
         assert!(!code.contains("api_element(") && !code.contains("$fragment2"), "{code}");
@@ -290,7 +360,7 @@ mod tests {
         let root = parse(src, Config::default()).unwrap().root.unwrap();
         let ChildNode::Element(p) = &root.children[0] else { panic!() };
         assert!(matches!(&p.attributes[0].value, AttributeValue::Expression(Expression::Member(m)) if !m.computed), "{:?}", p.attributes);
-        assert!(cn(src).contains("title: $cmp.foo.bar"), "{}", cn(src));
+        assert!(cn(src).contains("\"title\": $cmp.foo.bar"), "{}", cn(src));
     }
 
     const FOR_EACH: &str = "<template>\n  <section>\n    <div key={item.id} class=\"my-list\" for:each={items} for:item=\"item\">\n      <p>{item}</p>\n    </div>\n  </section>\n</template>\n";
@@ -313,7 +383,7 @@ mod tests {
     fn compile_for_each() {
         // Static opt off (with it on, JS emits the `<div key>` row as a static fragment; see below).
         let code = cn(FOR_EACH);
-        for n in ["api_iterator($cmp.items, function (item)", "api_key(", "item.id", "api_dynamic_text(item)", "class: \"my-list\"", "i: api_iterator", "k: api_key"] {
+        for n in ["api_iterator($cmp.items, function (item)", "api_key(", "item.id", "api_dynamic_text(item)", "\"my-list\": true", "i: api_iterator", "k: api_key"] {
             assert!(code.contains(n), "{n}\n{code}");
         }
         assert!(!code.contains("$cmp.item.") && !code.contains("$cmp.item)") && !code.contains("for:"), "{code}");
@@ -385,9 +455,9 @@ mod tests {
         assert!(code.contains("$cmp.x ?") && code.contains(": null"), "{code}");
     }
 
-    fn first_slot(src: &str) -> lwc_shared::template_ir::Slot {
+    fn first_slot(src: &str) -> lwc_shared::template_ir::Slot<'static> {
         use lwc_shared::template_ir::ChildNode;
-        fn find(cs: &[ChildNode]) -> Option<lwc_shared::template_ir::Slot> {
+        fn find<'a>(cs: &[ChildNode<'a>]) -> Option<lwc_shared::template_ir::Slot<'a>> {
             cs.iter().find_map(|c| match c {
                 ChildNode::Slot(s) => Some(s.clone()),
                 ChildNode::Element(e) => find(&e.children),
@@ -417,7 +487,12 @@ mod tests {
     #[test]
     fn event_listener() {
         let code = cn("<template>\n  <div onclick={handleClick}>x</div>\n</template>");
-        assert!(code.contains("on: {") && code.contains("click: api_bind($cmp.handleClick)") && code.contains("api_text(\"x\")") && code.contains("b: api_bind") && !code.contains("attrs"), "{code}");
+        assert!(code.contains("const {_m0} = $ctx;\n") && code.contains("on: _m0 || ($ctx._m0 = { ") && code.contains("\"click\": api_bind($cmp.handleClick)") && code.contains("api_text(\"x\")") && code.contains("b: api_bind") && !code.contains("attrs"), "{code}");
+        // TS genEventListeners: with a local-rooted handler only the non-local ones are memoized.
+        let code = cn("<template><template for:each={list} for:item=\"task\"><button key={task.id} onclick={task.del} ontouchstart={foo}>x</button></template><p onclick={a} onkeyup={b}></p></template>");
+        let flat: String = code.split_whitespace().collect();
+        assert!(flat.contains("const{_m0,_m1}=$ctx;") && flat.contains("on:{\"click\":api_bind(task.del),\"touchstart\":_m0||($ctx._m0=api_bind($cmp.foo))}"), "{code}");
+        assert!(flat.contains("on:_m1||($ctx._m1={\"click\":api_bind($cmp.a),\"keyup\":api_bind($cmp.b)})"), "{code}");
     }
 
     #[test]
@@ -463,25 +538,48 @@ mod tests {
         assert_eq!((cmp.properties[0].name.as_str(), cmp.properties[0].attribute_name.as_str()), ("myProp", "my-prop"));
         assert_eq!(cmp.attributes.iter().map(|a| a.name.as_str()).collect::<Vec<_>>(), ["class"]);
         let code = c(src);
-        assert!(code.contains("props: {\n") && code.contains("myProp: $cmp.val,") && code.contains("attrs: {\n") && code.contains("class: \"c\","), "{code}");
+        assert!(code.contains("props: {\n") && code.contains("\"myProp\": $cmp.val\n") && code.contains("classMap: stc0") && code.contains("const stc0 = {\n  \"c\": true\n};"), "{code}");
     }
 
     #[test]
     fn element_keeps_attributes() {
         let code = cn("<template><div my-prop={val} title=\"t\"></div></template>");
-        assert!(!code.contains("props") && code.contains("\"my-prop\": $cmp.val") && code.contains("title: \"t\""), "{code}");
+        assert!(!code.contains("props") && code.contains("\"my-prop\": $cmp.val") && code.contains("\"title\": \"t\""), "{code}");
+    }
+
+    /// TS elementDataBag (index.ts:511-561): string class/style/slot become classMap/styleDecls/
+    /// slotAssignment ahead of attrs; boolean class/style emit nothing; a boolean slot is `""`.
+    /// Expected text is the JS compiler's output.
+    #[test]
+    fn databag_class_style_slot() {
+        let code = cn("<template><div class=\"a&nbsp;b  c a\" style=\"background: url(a;b); x:; color:red;color: blue ! IMPORTANT ;1: q; w: !important\" title=\"t\" onclick={h}></div><div class style></div><x-y slot></x-y><p class={c} style={s} slot={z}></p></template>");
+        for n in [
+            "const stc0 = {\n  \"a\": true,\n  \"b\": true,\n  \"c\": true,\n  \"a\": true\n};",
+            "const stc1 = [[\"1\", \"q\", false], [\"background\", \"url(a;b)\", false], [\"color\", \"blue\", true], [\"w\", \"\", true]];",
+            "classMap: stc0,\n      styleDecls: stc1,\n      attrs: stc2,",
+            "const stc3 = {\n  key: 1\n};",
+            "const stc4 = {\n  slotAssignment: \"\",\n  key: 2\n};",
+            "className: api_normalize_class_name($cmp.c),\n      style: $cmp.s,\n      slotAssignment: $cmp.z,\n      key: 3",
+        ] {
+            assert!(code.contains(n), "{n}\n{code}");
+        }
+        let code = cn("<template><div class=\"\" style=\"\" onclick={h}></div><slot name=\"n\" onslotchange={h}></slot></template>");
+        // Empty classMap/styleDecls hoist like any static literal; `[]` shares a const with the slot's children.
+        for n in ["const stc0 = {};\nconst stc1 = [];\nconst stc2 = {\n  \"name\": \"n\"\n};", "classMap: stc0,\n      styleDecls: stc1,\n      key: 0", "attrs: stc2,", "}, stc1, $slotset)"] {
+            assert!(code.contains(n), "{n}\n{code}");
+        }
     }
 
     #[test]
     fn slot_attr_on_child() {
         let code = c("<template>\n  <x-foo>\n    <p slot=\"footer\">f</p>\n  </x-foo>\n</template>");
-        assert!(code.contains("slot: \"footer\"") && code.contains("api_element(\"p\""), "{code}");
+        assert!(code.contains("slotAssignment: \"footer\"") && code.contains("api_element(\"p\""), "{code}");
     }
 
     #[test]
     fn compile_rich_smoke() {
         let code = c("<template>\n  <section class=\"wrap\">\n    <x-foo onclick={onFoo} title={msg}>\n      <slot></slot>\n    </x-foo>\n  </section>\n</template>");
-        for n in ["api_element(\"section\"", "api_custom_element(\"x-foo\"", "import _xFoo from \"x/foo\"", "api_bind($cmp.onFoo)", "api_slot(\"\"", "props: {", "title: $cmp.msg", "tmpl.slots = [\"\"];"] {
+        for n in ["api_element(\"section\"", "api_custom_element(\"x-foo\"", "import _xFoo from \"x/foo\"", "api_bind($cmp.onFoo)", "api_slot(\"\"", "props: {", "\"title\": $cmp.msg", "tmpl.slots = [\"\"];"] {
             assert!(code.contains(n), "missing {n}\n{code}");
         }
         println!("{code}");
@@ -522,7 +620,7 @@ mod tests {
     fn static_fragment_base_class() {
         let r = compile(SECTION, "class.html", Config { namespace: Some("x".into()), name: Some("class".into()), ..Default::default() }).unwrap();
         let c = &r.code;
-        for n in ["import { freezeTemplate, parseFragment, registerTemplate } from \"lwc\";", "const $fragment1 = parseFragment`<section class=\"foo bar baz-fiz${0}\"${2}></section>`;", "const { st: api_static_fragment } = $api;", "return [api_static_fragment($fragment1, 1)];", "\"./class.css\"", "\"./class.scoped.css?scoped=true\""] {
+        for n in ["import {freezeTemplate, parseFragment, registerTemplate} from \"lwc\";", "const $fragment1 = parseFragment`<section class=\"foo bar baz-fiz${0}\"${2}></section>`;", "const {st: api_static_fragment} = $api;", "return [api_static_fragment($fragment1, 1)];", "\"./class.css\"", "\"./class.scoped.css?scoped=true\""] {
             assert!(c.contains(n), "missing {n}\n{c}");
         }
         assert!(!c.contains("api_element"));
@@ -556,36 +654,36 @@ mod tests {
     fn diag_1127_unknown_lwc_directive() {
         let d = first_err("<template>\n  <div lwc:foo=\"bar\"></div>\n</template>");
         println!("{d:?}");
-        assert_eq!((d.code, d.location.unwrap().start_line), (Some(1127), 2));
+        assert_eq!((d.code, d.location.unwrap().line), (Some(1127), 2));
         assert!(d.message.contains("lwc:foo") && d.message.contains("<div>"));
     }
 
     #[test]
     fn diag_1080_root_unknown_attrs() {
         let d = first_err("<template foo=\"bar\">\n  <div></div>\n</template>");
-        assert_eq!((d.code, d.location.unwrap().start_line), (Some(1080), 1));
+        assert_eq!((d.code, d.location.unwrap().line), (Some(1080), 1));
         assert!(compile("<template lwc:render-mode=\"light\"><div></div></template>", "x.html", Config::default()).unwrap().warnings.is_empty());
     }
 
     #[test]
     fn diag_1051_forbidden_tag() {
         let d = first_err("<template>\n\n  <meta charset=\"utf-8\">\n</template>");
-        assert_eq!((d.code, d.location.unwrap().start_line), (Some(1051), 3));
+        assert_eq!((d.code, d.location.unwrap().line), (Some(1051), 3));
     }
 
     #[test]
     fn diag_1058_invalid_html() {
         let d = first_err("<template>\n  <div a=\"1\" a=\"2\"></div>\n</template>");
-        assert_eq!((d.code, d.location.unwrap().start_line), (Some(1058), 2));
+        assert_eq!((d.code, d.location.unwrap().line), (Some(1058), 2));
         assert!(d.message.contains("duplicate-attribute"));
     }
 
     #[test]
     fn diag_1165_orphan_else() {
         let d = first_err("<template>\n  <div lwc:elseif={x}></div>\n</template>");
-        assert_eq!((d.code, d.location.unwrap().start_line), (Some(1165), 2));
+        assert_eq!((d.code, d.location.unwrap().line), (Some(1165), 2));
         let d = first_err("<template>\n  <p></p>\n  <div lwc:else></div>\n</template>");
-        assert_eq!((d.code, d.location.unwrap().start_line), (Some(1165), 3));
+        assert_eq!((d.code, d.location.unwrap().line), (Some(1165), 3));
     }
 
     fn warns(src: &str, cfg: Config) -> Vec<u32> {
@@ -676,6 +774,19 @@ mod tests {
     }
 
     #[test]
+    fn warn_template_leftovers_after_picks() {
+        // JS oracle: 1145 "class, key" (parseScopedSlotFragment picks lwc:slot-data and slot, then validateTemplate).
+        let msgs = |src: &str| compile(src, "x.html", Config::default()).unwrap().warnings.iter().map(|w| (w.code.unwrap(), w.message.clone())).collect::<Vec<_>>();
+        let w = msgs("<template><x-foo><template lwc:slot-data=\"d\" slot=\"s\" class=\"c\" key=\"k\"></template></x-foo></template>");
+        assert_eq!(w.iter().map(|w| w.0).collect::<Vec<_>>(), vec![1145]);
+        assert!(w[0].1.contains("in LWC: class, key."), "{}", w[0].1);
+        // JS oracle: [1182, 1145 "iterator:jt, class"]: parseForOf picks only the first iterator:*.
+        let w = msgs("<template><template if:true={a} if:false={b} iterator:it={xs} iterator:jt={ys} class=\"c\"></template></template>");
+        assert_eq!(w.iter().map(|w| w.0).collect::<Vec<_>>(), vec![1182, 1145]);
+        assert!(w[1].1.contains("in LWC: iterator:jt, class."), "{}", w[1].1);
+    }
+
+    #[test]
     fn warn_invalid_template_without_directive() {
         // JS oracle (template-compiler dist): [1145, 1153] — validateTemplate reports the bad attribute first.
         assert_eq!(warns("<template><template class=\"c\"><p></p></template></template>", Config::default()), vec![1145, 1153]);
@@ -684,7 +795,7 @@ mod tests {
     #[test]
     fn svg_use_href_sanitized_static() {
         let code = c("<template>\n    <svg viewBox=\"0 0 5 5\" class=\"x\">\n        <use xlink:href=\"/x\"></use>\n    </svg>\n</template>\n");
-        assert!(code.contains("import { freezeTemplate, parseFragment, registerTemplate, sanitizeAttribute } from \"lwc\";"), "{code}");
+        assert!(code.contains("import {freezeTemplate, parseFragment, registerTemplate, sanitizeAttribute} from \"lwc\";"), "{code}");
         assert!(code.contains("<use${\"a1:xlink:href\"}${3}/>"), "{code}");
         assert!(code.contains("api_static_part(1, { attrs: { \"xlink:href\": sanitizeAttribute(\"use\", \"http://www.w3.org/2000/svg\", \"xlink:href\", \"/x\") } }, null)"), "{code}");
     }
@@ -692,13 +803,13 @@ mod tests {
     #[test]
     fn svg_use_href_sanitized_dynamic() {
         let code = cn("<template><svg><use href={h}></use></svg></template>");
-        assert!(code.contains("sanitizeAttribute") && code.contains("href: sanitizeAttribute(\"use\", \"http://www.w3.org/2000/svg\", \"href\", api_scoped_frag_id($cmp.h))"), "{code}");
+        assert!(code.contains("sanitizeAttribute") && code.contains("\"href\": sanitizeAttribute(\"use\", \"http://www.w3.org/2000/svg\", \"href\", api_scoped_frag_id($cmp.h))"), "{code}");
     }
 
     #[test]
     fn svg_fragment_in_iteration() {
         let code = c("<template>\n    <svg>\n        <template for:each={lines} for:item=\"line\">\n            <line key={line.key} x1={line.x1}></line>\n        </template>\n    </svg>\n</template>\n");
-        assert!(code.contains("import { freezeTemplate, parseSVGFragment, registerTemplate } from \"lwc\";"), "{code}");
+        assert!(code.contains("import {freezeTemplate, parseSVGFragment, registerTemplate} from \"lwc\";"), "{code}");
         assert!(code.contains("parseSVGFragment`<line${\"a0:x1\"}${3}/>`"), "{code}");
         assert!(code.contains("api_static_fragment($fragment1, api_key(") && code.contains("\"x1\": line.x1"), "{code}");
     }
@@ -783,7 +894,7 @@ mod tests {
         let code = cn("<template><div><template if:true={a}><p>1</p><p>2</p></template></div></template>");
         assert_eq!(code.matches("$cmp.a ? api_element(\"p\"").count(), 2, "{code}");
         assert!(!code.contains("[api_element(\"p\""), "{code}");
-        let code = cn("<template><div><template if:false={a}><template for:each={items} for:item=\"i\"><p key={i.id}>x</p></template></template></div></template>");
+        let code = unhoist(&cn("<template><div><template if:false={a}><template for:each={items} for:item=\"i\"><p key={i.id}>x</p></template></template></div></template>"));
         assert!(code.contains("!$cmp.a ? api_iterator($cmp.items") && code.contains(" : []"), "{code}");
     }
 
@@ -865,7 +976,7 @@ mod tests {
         assert!(light.contains("<input id=\"i\"${3}>") && !light.contains("api_scoped_id"), "{light}");
         // Dynamic path: literal id and computed tabindex.
         let dynamic = cn("<template><div id=\"x\" tabindex={t}></div></template>");
-        assert!(dynamic.contains("id: api_scoped_id(\"x\")") && dynamic.contains("tabindex: api_tab_index($cmp.t)") && dynamic.contains("ti: api_tab_index"), "{dynamic}");
+        assert!(dynamic.contains("\"id\": api_scoped_id(\"x\")") && dynamic.contains("\"tabindex\": api_tab_index($cmp.t)") && dynamic.contains("ti: api_tab_index"), "{dynamic}");
     }
 
     /// TS isAttribute: on a custom element, `class`/`data-*` are attributes, so a valueless one is `''`.
@@ -927,8 +1038,53 @@ mod tests {
     fn complex_on_handlers_are_listeners() {
         let code = cv("<template><section><button onclick=\"{() => myField = 'foo'}\"></button><a onclick=\"{(e) => go(e, x)}\"></a></section></template>", 66, true, true);
         let scoped = cv("<template><x-p foo=\"{[foo, (foo) => foo, [(foo) => [foo, (foo) => foo, foo], foo]]}\"></x-p></template>", 66, true, true);
-        assert!(scoped.contains("[$cmp.foo, (foo) => foo, [(foo) => [foo, (foo) => foo, foo], $cmp.foo]]"), "{scoped}");
-        assert!(code.contains("api_bind(() => $cmp.myField = 'foo')") && code.contains("api_bind((e) => $cmp.go(e, $cmp.x))") && !code.contains("attrs"), "{code}");
+        assert!(scoped.contains("[$cmp.foo, foo => foo, [foo => [foo, foo => foo, foo], $cmp.foo]]"), "{scoped}");
+        assert!(code.contains("api_bind(() => $cmp.myField = 'foo')") && code.contains("api_bind(e => $cmp.go(e, $cmp.x))") && !code.contains("attrs"), "{code}");
+    }
+
+    /// Default arrow params: bind throws 1189 and compile() applies index.ts:76-79.
+    #[test]
+    fn default_arrow_params_are_1189_at_compile() {
+        let cfg = Config { experimental_complex_expressions: Some(true), namespace: Some("ns".into()), name: Some("x".into()), ..Default::default() };
+        let expected = "Unexpected compilation error: LWC1189: Template expression doesn't allow AssignmentPattern in arrow function params.";
+        for src in [
+            "<template>{(x = 1) => x}</template>",
+            r#"<template><button onclick="{(x = 1) => x}"></button></template>"#,
+            "<template>{({a = 1}) => a}</template>",
+            "<template>{([a = 1]) => a}</template>",
+        ] {
+            let out = compile(src, "x.html", cfg.clone()).unwrap();
+            assert!(out.code.is_empty(), "{src}\n{}", out.code);
+            let w = out.warnings.iter().find(|w| w.code == Some(1189)).unwrap_or_else(|| panic!("{src}: {:?}", out.warnings));
+            assert_eq!(w.code, Some(1189), "{src}");
+            assert_eq!(w.message, expected, "{src}");
+            assert_eq!(w.level, DiagnosticLevel::Error, "{src}");
+            assert_eq!(w.location, None, "{src}: {:?}", w.location);
+        }
+    }
+
+    /// Grouping vs call parens after static hoist, matching oracle JS compile()
+    /// (`typeof stc0`, `!stc0`, `($cmp.x in stc0)`, `stc0`, `$cmp.foo(stc0)`).
+    #[test]
+    fn grouping_wrap_matches_oracle_compile() {
+        let cfg = Config { experimental_complex_expressions: Some(true), namespace: Some("ns".into()), name: Some("x".into()), ..Default::default() };
+        let cases = [
+            ("<template>{typeof ({a: 1})}</template>", "api_dynamic_text(typeof stc0)"),
+            ("<template>{!({a: 1})}</template>", "api_dynamic_text(!stc0)"),
+            ("<template>{x in ({a: 1})}</template>", "api_dynamic_text(($cmp.x in stc0))"),
+            ("<template>{(({a: 1}))}</template>", "api_dynamic_text(stc0)"),
+            ("<template>{foo({a: 1})}</template>", "api_dynamic_text($cmp.foo(stc0))"),
+        ];
+        for (src, want) in cases {
+            let out = compile(src, "x.html", cfg.clone()).unwrap();
+            assert!(out.warnings.iter().all(|w| !matches!(w.level, DiagnosticLevel::Error | DiagnosticLevel::Fatal)), "{src}: {:?}", out.warnings);
+            assert!(out.code.contains("const stc0 = {
+  a: 1
+};"), "{src}
+{}", out.code);
+            assert!(out.code.contains(want), "{src} missing {want}
+{}", out.code);
+        }
     }
 
     /// TS CodeGen.usedApis: the `$api` destructure lists helpers in first-use order (elementDataBag
@@ -936,7 +1092,37 @@ mod tests {
     #[test]
     fn api_helpers_in_first_use_order() {
         let code = cv("<template><template for:each={l} for:item=\"i\"><p key={i} class={i.c} tabindex={i.t}>{i}</p></template><div><span id=\"a\" class={c}>hi</span></div></template>", 66, true, true);
-        assert!(code.contains("const { ncls: api_normalize_class_name, ti: api_tab_index, k: api_key, d: api_dynamic_text, sp: api_static_part, st: api_static_fragment, i: api_iterator, gid: api_scoped_id, f: api_flatten } = $api;"), "{code}");
+        assert!(code.contains("const {ncls: api_normalize_class_name, ti: api_tab_index, k: api_key, d: api_dynamic_text, sp: api_static_part, st: api_static_fragment, i: api_iterator, gid: api_scoped_id, f: api_flatten} = $api;"), "{code}");
+    }
+
+    /// TS shouldFlatten / transformChildren (codegen/helpers.ts L47-64, codegen/index.ts L204-211): the children
+    /// argument is the lone child's expression, `api_flatten([...])`, or a plain array. Expected shapes taken from
+    /// JS compile(), whitespace-stripped, with data objects (JS `stcN`) written as `{}`.
+    #[test]
+    fn flatten_rule_table() {
+        const FOR: &str = "<template for:each={l} for:item=\"i\"><li key={i}></li></template>";
+        let cases: &[(&str, String, u32, &str)] = &[
+            ("light slot, API 59: flattened", "<template lwc:render-mode=\"light\"><div><slot></slot></div></template>".into(), 59, "api_element(\"div\",{},api_slot(\"\","),
+            ("light slot, API 60: fragments, no flatten", "<template lwc:render-mode=\"light\"><div><slot></slot></div></template>".into(), 60, "api_element(\"div\",{},[api_slot(\"\","),
+            ("shadow slot, API 59: no flatten", "<template><div><slot></slot></div></template>".into(), 59, "api_element(\"div\",{},[api_slot(\"\","),
+            ("lone for-each", format!("<template><ul>{FOR}</ul></template>"), 66, "api_element(\"ul\",{},api_iterator($cmp.l,function(i){"),
+            ("for-each with a sibling", format!("<template><ul><li></li>{FOR}</ul></template>"), 66, "api_element(\"ul\",{},api_flatten([api_element(\"li\",{}"),
+            ("lone iterator", "<template><ul><template iterator:it={l}><li key={it.value}></li></template></ul></template>".into(), 66, "api_element(\"ul\",{},api_iterator($cmp.l,function(itValue,itIndex,itFirst,itLast){"),
+            ("if:* over a flattening child", format!("<template><ul><template if:true={{x}}>{FOR}</template></ul></template>"), 66, "api_element(\"ul\",{},$cmp.x?api_iterator($cmp.l,"),
+            ("if:* over a plain child", "<template><ul><template if:true={x}><li></li></template></ul></template>".into(), 66, "api_element(\"ul\",{},[$cmp.x?api_element(\"li\",{}"),
+            ("lone plain child", "<template><ul><li></li></ul></template>".into(), 66, "api_element(\"ul\",{},[api_element(\"li\",{}"),
+        ];
+        for (name, src, api, want) in cases {
+            let mut code: String = unhoist(&cv(src, *api, false, false)).split_whitespace().collect();
+            // `{key:N}` data bags → `{}`, so the table pins only the children shape.
+            let mut from = 0;
+            while let Some(i) = code[from..].find("{key:").map(|i| from + i) {
+                let digits = code[i + 5..].bytes().take_while(u8::is_ascii_digit).count();
+                if digits > 0 && code[i + 5 + digits..].starts_with('}') { code.replace_range(i..i + 6 + digits, "{}"); }
+                from = i + 1;
+            }
+            assert!(code.contains(want), "{name}: missing {want}\n{code}");
+        }
     }
 
     fn codes(src: &str, cfg: Config) -> Vec<u32> {
@@ -980,7 +1166,7 @@ mod tests {
         let src = fixture("ssr-compiler/src/__tests__/fixtures/context-slotted/scoped/modules/x/root/root.html");
         let r = parse(&src, Config::default()).unwrap();
         assert!(r.warnings.is_empty(), "{:?}", r.warnings);
-        fn find<'a>(cs: &'a [ChildNode], out: &mut Vec<&'a ScopedSlotFragment>) {
+        fn find<'a>(cs: &'a [ChildNode<'a>], out: &mut Vec<&'a ScopedSlotFragment<'a>>) {
             for c in cs { match c {
                 ChildNode::ScopedSlotFragment(f) => { out.push(f); find(&f.children, out) }
                 ChildNode::Component(e) => find(&e.children, out),
@@ -1060,6 +1246,16 @@ mod tests {
                 .into_iter().filter(|c| want.contains(c)).collect();
             assert_eq!(&got, want, "{name}");
         }
+        // TS validateChildren: a comment is non-element content (1177) and makes lwc:dom / lwc:inner-html
+        // non-empty (1086 / 1142) only when comments are preserved. Oracle at b9e8007.
+        for (src, code) in [
+            ("<template><x-a><template lwc:slot-data=\"d\"><!-- c --><p></p></template></x-a></template>", 1177),
+            ("<template><div lwc:dom=\"manual\"><!-- c --></div></template>", 1086),
+            ("<template><div lwc:inner-html={h}><!-- c --></div></template>", 1142),
+        ] {
+            assert_eq!(codes(src, Config::default()), Vec::<u32>::new(), "{src}");
+            assert_eq!(codes(src, Config { preserve_html_comments: Some(true), ..Config::default() }), vec![code], "{src}");
+        }
         // 1177 also applies to template directives nested inside the fragment (TS validateChildren).
         let dirs = "template-compiler/src/__tests__/fixtures/scoped-slots/slot-content-with-directives/invalid";
         assert_eq!(codes(&fixture(&format!("{dirs}/if-block/actual.html")), Config { preserve_html_comments: Some(true), ..Config::default() }).iter().filter(|c| **c == 1177).count(), 3);
@@ -1099,7 +1295,7 @@ mod tests {
             let [w] = &r.warnings[..] else { panic!("{:?}", r.warnings) };
             assert_eq!((w.code, w.level), (Some(1072), DiagnosticLevel::Error));
             let l = w.location.clone().expect("1072 carries a location");
-            assert_eq!((l.start_line, l.start_column, l.start, l.end), (0, 0, Some(0), Some(0)));
+            assert_eq!((l.line, l.column, l.start, l.length), (0, 0, Some(0), Some(0)));
         }
     }
 
@@ -1130,6 +1326,52 @@ mod tests {
         assert!(c.contains(&1144), "{c:?}");
     }
 
+    /// AB-X0014, TS parseElementLocation + parseAttributes: an element parse5's adoption agency recreated
+    /// without a location reads its attribute locations from the ancestor location it falls back to
+    /// (here `div.z`, which has a `class`), so only 1144 is warned; an attribute that ancestor lacks
+    /// (`title`) is TS's internal parsing error, reported alone and without a location.
+    #[test]
+    fn recreated_element_reads_attributes_from_fallback_location() {
+        let c = codes("<template><div><b class=\"x\"><div class=\"z\">t</b>u</div></div></template>", Config::default());
+        assert_eq!(c, vec![1144]);
+        let d = diags("<template><div><b class=\"x\" title=\"q\"><div class=\"z\">t</b>u</div></div></template>");
+        assert_eq!(d.len(), 1, "{d:?}");
+        assert_eq!(d[0].0, 1052);
+        assert!(d[0].2.ends_with("Error parsing attribute: An internal parsing error occurred while parsing attributes; attributes were found without a location."), "{d:?}");
+        assert_eq!(d[0].3, None);
+        // TS reads each location just before normalizing that attribute: a throw on an earlier attribute
+        // (1037, at the fallback `hidden`) ends parseAttributes before the unlocated `title` is read.
+        let c = codes("<template><div><b hidden=\"true\" title=\"q\"><div hidden class=\"z\">t</b>u</div></div></template>", Config::default());
+        assert_eq!(c, vec![1037, 1144, 1037]);
+        let c = codes("<template><div><b title=\"q\" hidden=\"true\"><div hidden class=\"z\">t</b>u</div></div></template>", Config::default());
+        assert_eq!(c, vec![1052]);
+    }
+
+    /// TS normalizeAttributeValue: isEscapedAttribute reads the raw (undecoded) value and only gates 1034/1035;
+    /// getTemplateAttribute then parses the parse5-decoded value whenever `isExpression(value) && !escapedExpression`.
+    /// So `&#123;a b&#125;` is the expression `{a b}` (1083), and so is a recreated element's attribute whose
+    /// fallback raw value (`class="z"`) has no braces. Expected values from the oracle (b9e8007, `x.html`, `{}`).
+    #[test]
+    fn entity_encoded_attribute_value_is_an_expression() {
+        let invalid = "Invalid expression {a b} - LWC1083: Error parsing template expression: Unexpected end of expression";
+        assert_eq!(diags("<template><p class=\"&#123;a b&#125;\"></p></template>"),
+            vec![(1083, DiagnosticLevel::Error, invalid.to_string(), Some((1, 14, Some(13), Some(23))))]);
+        let d = diags("<template><b class=\"{a b}\" title=\"q\"><div class=\"z\">x</b>y</div></template>");
+        assert_eq!(d.iter().map(|d| (d.0, d.1, d.3)).collect::<Vec<_>>(), vec![
+            (1034, DiagnosticLevel::Error, Some((1, 14, Some(13), Some(13)))),
+            (1144, DiagnosticLevel::Warning, Some((0, 0, Some(0), Some(0)))),
+            (1083, DiagnosticLevel::Error, Some((1, 43, Some(42), Some(9)))),
+        ]);
+        assert_eq!(d[2].2, invalid);
+        // `\{` is still the only escapedExpression: the decoded value stays a string.
+        assert!(codes("<template><p title=\"\\&#123;a b&#125;\"></p></template>", Config::default()).is_empty());
+        // Complex mode tests isPotentialComplexExpression first: the raw-source pass sees `&#123;`.
+        let cfg = Config { experimental_complex_expressions: Some(true), ..Config::default() };
+        let w = parse("<template><p title=\"&#123;a&#125;\"></p></template>", cfg).unwrap().warnings;
+        assert_eq!(w.iter().map(|w| (w.code, w.message.as_str())).collect::<Vec<_>>(),
+            vec![(Some(1083), "LWC1083: Error parsing template expression: Invalid expression {a} - Unexpected character '1' (1:2)")]);
+    }
+
     /// slots/dynamic-components/usage: `<lwc:component>` is transparent for the slot-ancestor check.
     #[test]
     fn lwc_component_transparent_for_slot_ancestor() {
@@ -1146,5 +1388,98 @@ mod tests {
         let i57 = c.iter().position(|x| *x == 1057);
         let i49 = c.iter().position(|x| *x == 1049);
         assert!(i57.is_some() && i49.is_some() && i57 < i49, "{c:?}");
+    }
+
+    /// Every diagnostic as (code, level, message, @lwc/errors location) from the template parser.
+    fn diags(src: &str) -> Vec<(u32, DiagnosticLevel, String, Option<(u32, u32, Option<u32>, Option<u32>)>)> {
+        parse(src, Config::default()).unwrap().warnings.into_iter()
+            .map(|w| (w.code.expect("coded"), w.level, w.message.clone(), w.location.map(|l| (l.line, l.column, l.start, l.length))))
+            .collect()
+    }
+
+    /// TS attributeExpressionReferencesForOfIndex (parser/index.ts:109-126) reads the parsed key: a computed
+    /// `it[index]` is a MemberExpression with Identifier object and property, so it is 1066 wherever computed
+    /// members parse (quoted under complex expressions, braced under experimentalComputedMemberExpression).
+    /// Expected values from the oracle (@lwc/template-compiler b9e8007).
+    #[test]
+    fn computed_key_referencing_iterator_index_is_1066() {
+        let msg = "LWC1066: Invalid key value for element <p>. Key cannot reference iterator index".to_string();
+        let rows = [
+            ("<template><template iterator:it={l}><p key=\"{it[index]}\"></p></template></template>", Config { experimental_complex_expressions: Some(true), ..Config::default() }, 17),
+            ("<template><template iterator:it={l}><p key={it[index]}></p></template></template>", Config { experimental_computed_member_expression: Some(true), ..Config::default() }, 15),
+        ];
+        for (src, cfg, len) in rows {
+            let got: Vec<_> = parse(src, cfg).unwrap().warnings.into_iter()
+                .map(|w| (w.code, w.level, w.message.clone(), w.location.map(|l| (l.line, l.column, l.start, l.length))))
+                .collect();
+            assert_eq!(got, vec![(Some(1066), DiagnosticLevel::Error, msg.clone(), Some((1, 40, Some(39), Some(len))))], "{src}");
+        }
+    }
+
+    /// TS `isDataAttribute` (DATA_RE, per UTF-16 unit) gates the applyAttributes 1057 warning; a `data-*` name with
+    /// a char outside ATTRIBUTE_NAME_CHAR is not a data attribute. Expected values from the oracle
+    /// (@lwc/template-compiler b9e8007 `compile(src, 'x.html', {})`).
+    #[test]
+    fn data_attribute_is_data_re() {
+        let w57 = |n: &str, len: u32| (1057, DiagnosticLevel::Warning, format!("LWC1057: {n} is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"), Some((1, 16, Some(15), Some(len))));
+        let e25 = |n: &str, len: u32| (1125, DiagnosticLevel::Error, format!("LWC1125: {n} is not valid attribute for div. Attribute name must end with alpha-numeric character."), Some((1, 16, Some(15), Some(len))));
+        assert_eq!(diags("<template><div data-a!b=\"x\"></div></template>"), vec![w57("data-a!b", 12)]);
+        assert_eq!(diags("<template><div data-a\u{1F600}></div></template>"), vec![w57("data-a\u{1F600}", 8), e25("data-a\u{1F600}", 8)]);
+        assert_eq!(diags("<template><div data-\u{e9}></div></template>"), vec![e25("data-\u{e9}", 6)]);
+        assert_eq!(diags("<template><div data-></div></template>"), vec![e25("data-", 5)]);
+        assert!(diags("<template><div data-a:b data-x.y data-a_b></div></template>").is_empty());
+    }
+
+    /// D-0197: the HTML_ATTRIBUTE_ELEMENT_MAP lookup is own-key only, deliberately NOT upstream. TS indexes a plain
+    /// object, so an Object.prototype key resolves to an inherited member: `<div constructor>` crashes with
+    /// "Unexpected compilation error: LWC1052: Error parsing attribute: validElements.includes is not a function",
+    /// `<div __proto__>` skips the 1057 warning (only 1125). Rust treats every such name like any other unknown attribute.
+    /// The names come from node at test time; a missing node fails the test.
+    #[test]
+    fn prototype_keys_are_plain_unknown_attributes() {
+        let out = std::process::Command::new("node")
+            .args(["-e", "console.log([...new Set([...Object.getOwnPropertyNames(Object.prototype), '__proto__'])].join('\\n'))"])
+            .output()
+            .expect("node is required for this test (D-0197 prototype-key pin)");
+        assert!(out.status.success(), "node failed: {}", String::from_utf8_lossy(&out.stderr));
+        let names: Vec<String> = String::from_utf8(out.stdout).unwrap().lines().map(str::to_string).collect();
+        assert!(names.iter().any(|n| n == "constructor") && names.iter().any(|n| n == "__proto__"), "{names:?}");
+        let render = |name: &str| {
+            let src = format!("<template><div {name}></div></template>");
+            (format!("{:?}", parse(&src, Config::default()).unwrap().warnings), format!("{:?}", compile(&src, "x.html", Config::default()).unwrap()))
+        };
+        for name in &names {
+            // Control: same length and letter case, not an Object.prototype key, not a known attribute.
+            let ctl: String = name.chars().map(|c| if c.is_ascii_uppercase() { 'Z' } else if c.is_ascii_lowercase() { 'z' } else { c }).collect();
+            let (diag, code) = render(name);
+            assert!(!diag.contains("1052") && !code.contains("1052"), "{name}: {diag}");
+            let sub = |s: String| s.replace(name.as_str(), &ctl).replace(&name.to_lowercase(), &ctl.to_lowercase());
+            let (cdiag, ccode) = render(&ctl);
+            assert_eq!(sub(diag), cdiag, "{name} vs {ctl}: diagnostics");
+            assert_eq!(sub(code), ccode, "{name} vs {ctl}: compile result");
+        }
+    }
+
+    /// TS `isAttribute` on Component / LwcComponent uses DATA_RE: `data-a!b` is not a data attribute, so it becomes
+    /// a property (`dataA!b`) with no diagnostic; `data-ab` stays an attribute. Expected diagnostics and `stc0`
+    /// blocks are the oracle's (@lwc/template-compiler b9e8007 `compile(src, 'x.html', opts)`; lwc:component with
+    /// `enableDynamicComponents: true`).
+    #[test]
+    fn component_is_attribute_uses_data_re() {
+        let stc0 = |kind: &str, name: &str, value: &str| format!("const stc0 = {{\n  {kind}: {{\n    \"{name}\": {value}\n  }},\n  key: 0\n}};");
+        let dc = Config { enable_dynamic_components: Some(true), ..Config::default() };
+        let cases = [
+            ("<template><x-foo data-a!b=\"x\"></x-foo></template>", Config::default(), stc0("props", "dataA!b", "\"x\"")),
+            ("<template><x-foo data-a!b></x-foo></template>", Config::default(), stc0("props", "dataA!b", "true")),
+            ("<template><x-foo data-ab=\"x\"></x-foo></template>", Config::default(), stc0("attrs", "data-ab", "\"x\"")),
+            ("<template><lwc:component lwc:is={c} data-a!b=\"x\"></lwc:component></template>", dc.clone(), stc0("props", "dataA!b", "\"x\"")),
+            ("<template><lwc:component lwc:is={c} data-a!b></lwc:component></template>", dc.clone(), stc0("props", "dataA!b", "true")),
+            ("<template><lwc:component lwc:is={c} data-ab=\"x\"></lwc:component></template>", dc, stc0("attrs", "data-ab", "\"x\"")),
+        ];
+        for (src, cfg, want) in cases {
+            let r = compile(src, "x.html", cfg).unwrap();
+            assert!(r.warnings.is_empty(), "{src}: {:?}", r.warnings);
+            assert!(r.code.contains(&want), "{src}: want\n{want}\ngot\n{}", r.code);
+        }
     }
 }

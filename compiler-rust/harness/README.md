@@ -85,6 +85,83 @@ from config) — the per-file equivalent of upstream `fixtures.spec.ts`'s rollup
 Not covered yet: **0d.3** — HTML render compare: needs module resolution/bundling (rollup + `@lwc/rollup-plugin` or a harness resolver over
 backend output) then `serverSideRenderComponent` + `formatHTML` vs `expected.html` / `expected-ssr.html`, including the 18 render-time error fixtures.
 
+## Shim registry (tagged SHIM tracking)
+Every `SHIM(<tag>)` anywhere in the repo (`git ls-files`, not just `crates/**/*.rs`) must have
+a matching row in `shim-registry.tsv` (`path` repo-relative, exact tag text, owner, expiry,
+reason). A row whose path+tag no longer occurs is `STALE` and fails the gate — delete it in
+the same commit that removes the shim. `TODO(parity` tags stay count-only (cutover blockers)
+and are not registered. The untagged-word scan stays crates-only.
+
+**Expiry is not machine-evaluated.** `shim-gate.mjs` records it; enforcement happens at the
+named stage's review (`S<n>`, an `AB-...` id, or a `D-NNNN` decision). Owner must be a lane
+from **MAIN's** `OWNERS` file (land.sh passes `SHIM_OWNERS=$MAIN/OWNERS`); a branch that adds
+a lane or deletes `OWNERS` has no effect. Missing, empty, or malformed MAIN `OWNERS` exits 2.
+
+Env: `SHIM_REGISTRY` / `SHIM_ALLOWLIST` / `CRATES_ROOT` = branch inputs; `SHIM_OWNERS` /
+`SHIM_REPO_ROOT` = MAIN's OWNERS path and the scanned tree. Internal errors (missing registry,
+bad `CRATES_ROOT`, …) exit 2; `UNTRACKED` / `STALE` / `INVALID` exit 1.
+
 ## Official board (pinned binary)
 - Install napi only via `../scripts/install-napi.sh` (tmp + `mv`, atomic). Never `cp` over `lwc-compiler-napi.node` — a live vitest fork may have it mmap'd (SIGBUS).
 - Measure only via `./board.sh [suite...]`: snapshots the current `.node` to `.pins/lwc-compiler-napi.<sha12>.node` (read-only), runs every suite against that one file via `LWC_COMPILER_NAPI_PATH`, `--pool=threads`, and prints the hash. Board numbers without a hash are not official.
+
+## Board ratchet (AB-0006): per-case baseline, equality gate, Baseline-Raise, Case-Set
+- `harness/board-baseline.tsv` (`board-baseline/v2`) holds, per vitest row, a `counts` line (`passed failed skipped`) and
+  the SET of passing, failing and skipped case ids (vitest fullName within the row's `-t` filter). Those three sets are
+  the row's case universe (D-0255). template-diag* rows record only `crash oracle-error` (clean/mismatch from the
+  closed enum {STATIC_EQUAL, REWRITE_EQUAL} are not in this file; D-0219). Parser and comparator:
+  `harness/scripts/board-baseline.mjs` (one implementation; `--self-test`). Every number in the file gates.
+- `board.sh` fails when any row's measured set differs from the committed one in EITHER direction. `board.sh check` is
+  the same full run (no row arguments, `BOARD_RATCHET_UPDATE` refused). `--root=<tree>` runs that tree's tests, fixtures,
+  crates and napi; the runner, obs writing, row list, comparator and pinned `vitest.board.config.ts` stay with this script. land.sh runs
+  `$MAIN_TREE/harness/board.sh check --root=$wt` so the branch's `board.sh` is never the measurement producer.
+  `BOARD_RATCHET_UPDATE=1 harness/board.sh` (full run, rust backend; refused on partial runs and on `check`, unset by
+  official-board.sh) rewrites the file only if no row got worse.
+- `land.sh` runs `scripts/baseline-ceiling.sh <repo> <pre-land-sha> <branch-sha>`: both sides are `git ls-tree` +
+  `git show <sha>:harness/board-baseline.tsv` (a symlink / gitlink / missing-or-renamed branch blob is rc 2 and can
+  never be accepted via a raise). A row is worse if it gains a failing or skipped id, loses passed, drops its total,
+  drops ids from the failing/skipped sets without passed rising by at least as many, shrinks its case universe, or (for
+  template-diag*) raises crash or oracle-error. A worse row lands only with `Baseline-Raise: <AB-id>` whose last
+  `reviews.tsv` row is APPROVE with the landing's patch_id, distinct from every `Arch-Review` id.
+- A case-set change (an id that disappears from a row's passed+failed+skipped universe, or that becomes newly skipped)
+  also needs a `Case-Set: D-NNNN` trailer. land.sh captures the notes HEAD sha once at the start of land and uses that
+  sha for every `git show`, `blame` and pickaxe (never a later notes HEAD, never a working tree). Format: a
+  tab-separated field that *starts with* `case-set:<row>:` followed by `|<id>`-separated tokens from the id charset
+  (`[-A-Za-z0-9_ .:/=#@',()+[\]]`), running to the end of the field. Example:
+  `case-set:js-eval: js-eval behavioral private-field-proxy#0|js-eval behavioral private-field-proxy#1`.
+  `foocase-set:js-eval: x` (the token not at the start of a field) is refused with rc 2. A bare `case-set:<row>`
+  token without a colon-and-list does not grant permission. The removed and newly skipped ids for that board row must
+  be a subset of the ids listed in ONE such row (lists are not unioned across D-ids). If notes are unavailable, land
+  exits rc 2 (not die/rc 1).
+- D-0261 / notes `b0b4450` (`bin/d-id`): only migrate may mint or edit a `case-set:` row (`NOTES_COMMIT_BOT=migrate`,
+  and `bin/d-id migrate ...`). land.sh additionally requires that the cited line was ADDED by a notes commit whose
+  author is exactly `migrate <migrate@lwc-bots>` (`git log --reverse -G '^D-NNNN\t'`, line-anchored; a mention of the
+  string in another row is not a mint) and that `git blame` of that line at the pinned notes sha reports the same
+  author (a later rewrite by anyone else is refused; a missing author is refused).
+- board.sh runs each vitest child under `setsid` and `env -u BOARD_LOG_DIR` (no board output path in the child
+  environment), kills the process group after exit (rc 2 if any member survives), then copies stdout and the JSON
+  report into a `mktemp -d` created after the child has exited (a path it never saw) and derives obs only there.
+  Each obs file is copied into a private `mktemp` dir created after the child has exited (a path it never saw)
+  and hashed there; `judge` and `update` read that private dir. `$logdir/obs` is only a published copy written
+  from it. Both the private bytes and the published copy are re-checked against the derivation-time hashes
+  before judge and before return, and `SHA256SUMS` is written from the variables (not by re-hashing files)
+  so `judge-all` can verify them. A same-count ID swap written into `obs/` after `ids()` is refused.
+  Alternating the published copy between the derivation-time bytes and a forged (green) claim cannot
+  produce a green or forged verdict: `judge` reads the private dir, so the outcome is either an
+  `obs sha256 mismatch` or the true ratchet result.
+  Vitest is invoked with `--config <this-tree>/vitest.board.config.ts` (no plugins; closed `setupFiles` /
+  `globalSetup` lists; `envDir` set so a branch `harness/.env` is not loaded). Branch edits to that config or to
+  harness setup / globalSetup files are land-classify gate paths (pid-bound Arch-Review).
+- Residual: branch test code is arbitrary code. A writer that starts a *new session* (`detached: true` / `setsid`)
+  can escape the vitest process group; the pgid check is kept but cannot see that session. There is no `bwrap` or
+  cgroup sandbox. `harness/test/**` and `harness/src/**` are non-trivial paths and need a pid-bound Arch-Review.
+- Case-Set lists: a trailing `|`, an empty or space-only list, or duplicate ids is rc 2 (tokenization does not use
+  `IFS='|' read`, which drops a trailing empty field).
+- After the napi release build and before the fast-forward, `land.sh` runs `$MAIN_TREE/harness/board.sh check --root=$wt`
+  and ratchets that MEASURED run against the pre-land blob (D-0255). The committed baseline must equal the measurement.
+- A pre-land commit that lacks `harness/board-baseline.tsv` is rc 2 (never raise-acceptable). The seed has
+  landed; a missing pre-land baseline is no longer treated as NEW. `land.sh` does not grep `$MAIN`'s
+  `baseline-ceiling.sh` for a leftover seed marker (D-0269): that probe refused every land, including the
+  follow-up that deletes the marker, because only a land can change MAIN.
+- `scripts/test-board-ratchet.sh` is the end-to-end proof (real `board.sh` on js-eval, `--root` mutation, F1–F6, the
+  land.sh block verbatim, Case-Set subset + migrate authorship, and the ceiling EXIT-trap order).

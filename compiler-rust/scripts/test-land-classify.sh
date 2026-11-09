@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Self-test for scripts/land-classify.sh against Arch Board's policy shape. Exit 0 iff every case classifies right.
+# Self-test for scripts/land-classify.sh (and scripts/lint-shell-pipes.sh, ratchet-ceiling.sh, baseline-ceiling.sh --self-test, test-board-ratchet.sh) against Arch Board's policy shape. Exit 0 iff every case classifies right.
 set -euo pipefail
+SELF_DIR="$(cd "$(dirname "$0")" && pwd)"
 C="$(cd "$(dirname "$0")" && pwd)/land-classify.sh"; t="$(mktemp -d)/repo"; P="$(dirname "$t")"; mkdir -p "$t"; trap "rm -rf \"$P\"" EXIT
 cd "$t"; git init -q -b main; git config user.email t@t; git config user.name t
 mkdir -p crates/x/src crates/x/tests docs; seq 1 50 > crates/x/src/a.rs; seq 1 5 > crates/x/tests/old.rs; echo d > docs/d.md
@@ -31,4 +32,38 @@ for mode in "exit 3" "echo crates/x/src/a.rs; exit 1" "kill -9 \$\$"; do
     echo "FAIL land classify block with failing classifier ($mode) -> did not refuse"; fail=1
   else echo "ok   land refuses when classifier fails ($mode)"; fi
 done
+# (B) harness vitest config / setup / globalSetup edits are gate paths (need a pid-bound Arch-Review).
+POLICY="${NOTES_TRIVIAL:-/workspace/notes/arch-board/trivial-paths.txt}"
+if [ -f "$POLICY" ]; then
+  mkdir -p harness/test
+  echo '// vitest' > harness/vitest.config.ts; git add -A; git commit -qm c
+  check "harness vitest.config.ts" nontrivial "$POLICY"
+  mkdir -p harness/test
+  echo '// board' > harness/vitest.board.config.ts; git add -A; git commit -qm c
+  check "harness vitest.board.config.ts" nontrivial "$POLICY"
+  mkdir -p harness/test
+  echo '// setup' > harness/test/setup.ts; git add -A; git commit -qm c
+  check "harness test/setup.ts" nontrivial "$POLICY"
+  mkdir -p harness/test
+  echo '// globalSetup' > harness/test/globalSetup.ts; git add -A; git commit -qm c
+  check "harness test/globalSetup.ts" nontrivial "$POLICY"
+  mkdir -p harness/test harness/src
+  echo '// test' > harness/test/extra.test.ts; git add -A; git commit -qm c
+  check "harness test/** extra.test.ts" nontrivial "$POLICY"
+  mkdir -p harness/src
+  echo '// src' > harness/src/extra.ts; git add -A; git commit -qm c
+  check "harness src/** extra.ts" nontrivial "$POLICY"
+else
+  echo "FAIL notes trivial-paths.txt missing at $POLICY"; fail=1
+fi
+"$SELF_DIR/test-parse5-pin.sh" || fail=1   # AB-L0050 (3): parse5 pin gate negatives stay proven
+"$SELF_DIR/test-shim-registry.sh" || fail=1  # AB-L0070: SHIM registry gating
+# AB-X0008: the shell-pipe lint's own self-test (planted violation fails, clean file passes, grep rc>=2 fails).
+if "$(cd "$(dirname "$C")" && pwd)/lint-shell-pipes.sh" --self-test; then echo "ok   lint-shell-pipes --self-test"; else echo "FAIL lint-shell-pipes --self-test"; fail=1; fi
+# AB-0006 rework: board-baseline/v2 parser + comparator self-test, then the board.sh / land-gate end-to-end test.
+if "$(cd "$(dirname "$C")" && pwd)/baseline-ceiling.sh" --self-test; then echo "ok   baseline-ceiling --self-test"; else echo "FAIL baseline-ceiling --self-test"; fail=1; fi
+if "$(cd "$(dirname "$C")" && pwd)/test-board-ratchet.sh"; then echo "ok   test-board-ratchet"; else echo "FAIL test-board-ratchet"; fail=1; fi
+if "$(cd "$(dirname "$C")" && pwd)/ratchet-ceiling.sh" --self-test; then echo "ok   ratchet-ceiling --self-test"; else echo "FAIL ratchet-ceiling --self-test"; fail=1; fi
+MAIN="$(cd "$SELF_DIR/.." && pwd)" "$SELF_DIR/lint-no-stripped-compare.sh" --self-test || fail=1   # D-0219: the stripped-compare lint still catches every form
+MAIN="$(cd "$SELF_DIR/.." && pwd)" "$SELF_DIR/lint-no-stripped-compare.sh" "$(cd "$SELF_DIR/.." && pwd)" || fail=1  # D-0219: no new whitespace-normalizing compare in board tooling
 exit $fail

@@ -1,0 +1,11 @@
+# D-0219/D-0256/D-0257: closed exact-site allowlist. Columns: path<TAB>line<TAB>rule<TAB>D-id
+# This file is read only from $MAIN so a branch cannot widen it.
+# gen.mjs:106 — generator shape check on oracle TS, not a compiler-output compare (D-0256).
+tools/gen-instrumentation/gen.mjs	106	N1	D-0256
+# csr-render-clusters.mjs:24 — cluster label for already-failing csr-render cases, guarded by got!==want (D-0256).
+harness/scripts/csr-render-clusters.mjs	24	N1	D-0256
+# compare.mjs:9 — D-0257 decoded-value token compare (acorn tokenizer + JSON.stringify(t.value)).
+tools/ssr-compile-js-oracle/compare.mjs	9	N13	D-0257
+# self-test.sh quotes that same token-compare form when proving the token-types rule (D-0257).
+tools/ssr-compile-js-oracle/self-test.sh	48	N13	D-0257
+tools/ssr-compile-js-oracle/self-test.sh	52	N13	D-0257

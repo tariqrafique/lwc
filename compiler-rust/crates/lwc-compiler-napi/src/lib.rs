@@ -5,9 +5,7 @@ use napi::bindgen_prelude::*;
 use napi_derive::napi;
 use serde::Deserialize;
 
-mod aggregate;
-mod error_urls;
-mod single_error;
+mod errors;
 
 /// Options accepted over the seam. Taken as JSON (not a `#[napi(object)]`, which silently ignores extra
 /// keys) and deserialized with `deny_unknown_fields`, so any unknown key, top-level or nested, is an
@@ -131,7 +129,7 @@ pub struct JsDiagnosticLocation {
     pub column: u32,
     pub start: Option<u32>,
     pub length: Option<u32>,
-    /// Babel parser `Position.index` (UTF-16 offset): set only on a Babel-parse LWC1007 (see `babel_position`).
+    /// Babel parser `Position.index` (UTF-16 offset): set only on a Babel-parse LWC1007 (lwc-js `parse_error`).
     pub index: Option<u32>,
 }
 
@@ -139,7 +137,7 @@ fn to_js_diagnostic(d: lwc_shared::CompilerDiagnostic) -> JsDiagnostic {
     JsDiagnostic {
         code: d.code,
         level: d.level.js_value(),
-        location: d.js_location().map(Into::into),
+        location: d.location.map(Into::into),
         filename: d.filename,
         message: Some(d.message),
     }
@@ -147,7 +145,7 @@ fn to_js_diagnostic(d: lwc_shared::CompilerDiagnostic) -> JsDiagnostic {
 
 impl From<lwc_shared::DiagnosticLocation> for JsDiagnosticLocation {
     fn from(l: lwc_shared::DiagnosticLocation) -> Self {
-        Self { line: l.line, column: l.column, start: l.start, length: l.length, index: None }
+        Self { line: l.line, column: l.column, start: l.start, length: l.length, index: l.index }
     }
 }
 
@@ -158,7 +156,8 @@ pub struct JsCompileError {
     pub code: Option<u32>,
     pub line: Option<u32>,
     pub column: Option<u32>,
-    pub filename: Option<String>,
+    /// Same own-but-`undefined` shape as `location` (`Either::B`): shipped `generateCompilerError` with no origin.
+    pub filename: Option<Either<String, Undefined>>,
     /// `{ line, column, start, length }` of the (first) diagnostic. Absent on an aggregate (shipped);
     /// on a single error shipped always has the own key, `undefined` when there is no location (`Either::B`).
     pub location: Option<Either<JsDiagnosticLocation, Undefined>>,
@@ -224,69 +223,6 @@ pub struct JsCompileResult {
 /// The JSON map string from the compiler -> a JS object (`null` when absent).
 fn map_value(map: Option<&str>) -> serde_json::Value {
     map.and_then(|m| serde_json::from_str(m).ok()).unwrap_or(serde_json::Value::Null)
-}
-
-/// `origin`: which shipped path produced the error (sets `level`/`url`, and for `Js` the cwd-resolved
-/// `errors[].filename`).
-/// CssSyntaxError location via `getLocationFromObject`: `{line, column}` only (start/length `undefined`).
-fn css_location(l: JsDiagnosticLocation) -> JsDiagnosticLocation {
-    JsDiagnosticLocation { start: None, length: None, ..l }
-}
-
-/// A Babel parser error (`SyntaxError` normalized to LWC1007) carries Babel's `err.loc`, a `Position`
-/// `{ line, column, index }` (no start/length). lwc-js stores it zero-width with `start = index`.
-fn babel_position(l: JsDiagnosticLocation) -> JsDiagnosticLocation {
-    JsDiagnosticLocation { index: l.start, start: None, length: None, ..l }
-}
-
-fn error_result(e: lwc_shared::CompileError, origin: single_error::Origin) -> JsCompileResult {
-    let babel_paths = origin == single_error::Origin::Js;
-    let error = if aggregate::is_compiler_aggregate(&e) {
-        let cwd = std::env::current_dir().unwrap_or_default();
-        let mut errors = aggregate::entries(&e, babel_paths, &cwd);
-        let (mut message, code, filename) = aggregate::surface(&e, aggregate::AGGREGATE_EXACT_SHAPE);
-        if origin == single_error::Origin::Style {
-            // `transformers/style.ts` throws its own `CompilerAggregateError` message
-            // ("Multiple CSS errors occurred during compilation."); lwc-style puts it on `e.message`.
-            message = e.message.clone();
-            for x in &mut errors { x.location = x.location.take().map(css_location); }
-        }
-        if origin == single_error::Origin::Template {
-            // `templateTransform` passes no message: `new CompilerAggregateError(errors)` -> message "".
-            message = e.message.clone();
-        }
-        JsCompileError {
-            message, name: e.name, code, line: None, column: None, filename, location: None, errors: Some(errors),
-            level: None, url: None,
-        }
-    } else {
-        let first = e.diagnostics.first();
-        let code = first.and_then(|d| d.code);
-        let mut loc: Option<JsDiagnosticLocation> = first.and_then(|d| d.js_location()).map(Into::into);
-        if origin == single_error::Origin::Style { loc = loc.map(css_location); }
-        if origin == single_error::Origin::Js && code == Some(1007) { loc = loc.map(babel_position); }
-        let level_url = single_error::level_url(origin, code, first.map(|d| d.level.js_value()));
-        let location = match (loc, level_url.is_some()) {
-            (Some(l), _) => Some(Either::A(l)),
-            // Shipped CompilerError always owns `location`, `undefined` when unknown.
-            (None, true) => Some(Either::B(())),
-            (None, false) => None,
-        };
-        let (level, url) = level_url.map_or((None, None), |(l, u)| (Some(l), Some(u)));
-        JsCompileError {
-            code,
-            location,
-            message: e.message,
-            name: e.name,
-            line: e.line,
-            column: e.column,
-            filename: e.filename,
-            errors: None,
-            level,
-            url,
-        }
-    };
-    JsCompileResult { code: String::new(), map: serde_json::Value::Null, css_scope_tokens: None, warnings: None, error: Some(error) }
 }
 
 
@@ -452,9 +388,9 @@ mod tests {
 pub fn transform(src: String, filename: String, options: serde_json::Value) -> Result<JsCompileResult> {
     let o = match to_compile_options(options, &filename)? {
         Ok(o) => o,
-        Err(e) => return Ok(error_result(e, single_error::Origin::Options)),
+        Err(e) => return Ok(errors::options_error(e)),
     };
-    Ok(match lwc_compiler::dispatch(&src, &filename, &o) {
+    Ok(match errors::compile(&src, &filename, &o) {
         Ok(r) => {
             let warnings = if r.warnings.is_empty() {
                 None
@@ -474,6 +410,6 @@ pub fn transform(src: String, filename: String, options: serde_json::Value) -> R
                 error: None,
             }
         }
-        Err(e) => error_result(e, single_error::Origin::of(&filename, &o)),
+        Err(e) => e,
     })
 }

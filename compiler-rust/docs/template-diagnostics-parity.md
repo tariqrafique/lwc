@@ -26,7 +26,7 @@ Board, official runs via `harness/board.sh`, test counts:
 | csr-render | 190/390 | 190/390 |
 
 ### What changed
-- All coded diagnostics now go through `messages::lwc()` → `CompilerDiagnostic::generate`, so they carry the `LWCnnnn: ` prefix and the upstream text.
+- All coded diagnostics now go through the lwc-shared `ParserDiagnostics` / `TemplateErrors` entries (`X::NAME.generate(args, loc)`) → `CompilerDiagnostic::generate`, so they carry the `LWCnnnn: ` prefix and the upstream text.
 - `expr_check.rs` is a faithful port of both upstream expression validators:
   - legacy `parseExpression`: validateSourceIsParsedExpression (1074/1083), validateExpression (1060/1038/1207-1210)
   - CTE `validateExpressionAst` (1083 acorn-style `(line:col)`, 1190-1197, 1192)

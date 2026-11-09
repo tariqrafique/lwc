@@ -90,7 +90,8 @@ fn transform_html(
 
     // Complex-expression gating (experimentalComplexExpressions + apiVersion ENABLE_COMPLEX_TEMPLATE_EXPRESSIONS)
     // and lwc:preserve-comments both come from lwc-template via `config` / Root.directives.
-    let parsing = lwc_template::parse(src, config).map_err(|e| CompileError {
+    let alloc = lwc_template::Allocator::default();
+    let parsing = lwc_template::parse(&alloc, src, config).map_err(|e| CompileError {
         message: e.message,
         filename: Some(filename.into()),
         diagnostics: vec![],
@@ -135,7 +136,6 @@ fn transform_html(
     // only `console.error`s each warning (throwing just on `!root`, :110-112), and compileTemplateForSSR
     // returns `{ code, map: undefined }` (ssr-compiler index.ts:35-36). The console.error side effect is
     // not reproduced (stderr only; no value reaches the caller).
-    let _template_warnings = parsing.warnings;
     result.warnings = vec![];
     result.css_scope_tokens = Some(tokens.css_scope_tokens);
     Ok(result)
@@ -216,6 +216,64 @@ mod transform_tests {
         }
     }
 
+    /// AB-L0058: the parser now keeps non-preserved comments as `ChildNode::Comment`, as upstream's parser
+    /// always did (template-compiler parser/index.ts:466-468). Every consumer below matches upstream
+    /// ssr-compiler with the comment present (checked by rendering each shape with both compilers in
+    /// sync/async/asyncYield); these pin the cases where a comment child changes what is emitted.
+    #[test]
+    fn transform_html_comment_children_match_upstream() {
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), target_ssr: true, ..Default::default() };
+        let code = |body: &str, pc: bool| {
+            let src = format!("<template{}>{body}</template>", if pc { " lwc:preserve-comments" } else { "" });
+            transform(&src, "x/c/c.html", &opts).unwrap_or_else(|e| panic!("{src}: {e:?}")).code
+        };
+        // element.ts:269: a foreign element self-closes when its *emitted* children are empty.
+        let c = code("<svg><!--c--></svg>", false);
+        assert!(c.contains("'/>'") && !c.contains("'</svg>'"), "{c}");
+        let c = code("<svg><!--c--></svg>", true);
+        assert!(c.contains("'<!--c-->'") && c.contains("'</svg>'"), "{c}");
+        // element.ts:256 tests `node.children.length` (comments count), so lwc:inner-html is not rendered;
+        // the parser allows it (parser/index.ts:1775 effectiveChildren drops non-preserved comments).
+        let c = code("<div lwc:inner-html={h}><!--c--></div>", false);
+        assert!(!c.contains("sanitizeHtmlContent"), "{c}");
+        assert!(code("<div lwc:inner-html={h}></div>", false).contains("sanitizeHtmlContent("));
+        // adjacent-text-nodes.ts:33-39: a non-preserved comment joins the text run.
+        let c = code("{a}<!--c-->{b}", false);
+        assert!(c.contains("renderTextContent(normalizeTextContent(instance.a) + normalizeTextContent(instance.b))"), "{c}");
+        let c = code("{a}<!--c-->{b}", true);
+        assert!(c.contains("renderTextContent(normalizeTextContent(instance.a))") && c.contains("'<!--c-->'"), "{c}");
+        // slotted-content.ts: a comment-only child yields no shadow content and is not a light-slot leaf.
+        let c = code("<x-d><!--c--></x-d>", false);
+        assert!(c.contains("const shadowSlottedContent = null;") && c.contains("const lightSlottedContentMap = null;"), "{c}");
+        assert!(!c.contains("addSlottedContent"), "{c}");
+        let c = code("<x-d><!--c--></x-d>", true);
+        assert!(c.contains("__lwcGenerateShadowSlottedContent_xD_0") && c.contains("const lightSlottedContentMap = null;"), "{c}");
+        // getLightSlottedContent: a text before a comment is not the last of its run, so it is skipped, and the
+        // pruned lwc:if clone holds only the final text: upstream renders "b" (not "ab") into the light slot.
+        let c = code("<x-d><template lwc:if={t}>a<!--c-->b</template></x-d>", false);
+        let light = &c[c.find("lightSlottedContentMap = Object.create(null);").expect(&c)..];
+        assert!(light.contains("normalizeTextContent('b')") && !light.contains("normalizeTextContent('a')"), "{c}");
+        // lwcIf.ts: the if/else chain is built by the parser across the comment.
+        let c = code("<template lwc:if={f}>A</template><!--c--><template lwc:else>B</template>", false);
+        assert!(c.contains("if (instance.f) {") && c.contains("} else {"), "{c}");
+    }
+
+    /// ir-to-es.ts defaultTransformer: a `<template lwc:slot-data>` that is not a direct component child (here
+    /// under lwc:elseif, integration-wtr light-dom/scoped-slot/if-block mixedSlotParent) reaches irToEs and
+    /// throws a plain Error at compile time; as a direct child it is scoped slotted content.
+    #[test]
+    fn transform_html_nested_scoped_slot_fragment_is_unimplemented() {
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), target_ssr: true, ..Default::default() };
+        let src = "<template><x-child><template lwc:if={a}><span>A</span></template><template lwc:elseif={b}>\
+            <template lwc:slot-data=\"data\"><span>{data.id}</span></template></template></x-child></template>";
+        let e = transform(src, "x/c/c.html", &opts).expect_err("nested lwc:slot-data");
+        assert_eq!(e.message, "Unimplemented IR node: { type: 'ScopedSlotFragment' }");
+        assert_eq!((e.filename.as_deref(), e.line, e.column, e.diagnostics.len()), (None, None, None, 0));
+        let ok = "<template><x-child><template lwc:slot-data=\"data\"><span>{data.id}</span></template></x-child></template>";
+        let c = transform(ok, "x/c/c.html", &opts).expect("direct lwc:slot-data").code;
+        assert!(c.contains("scopedSlottedContentMap = Object.create(null)"), "{c}");
+    }
+
     #[test]
     fn transform_js_text_static() {
         let opts = CompileOptions {
@@ -227,7 +285,7 @@ mod transform_tests {
         let src = "import { LightningElement } from 'lwc';\n\nexport default class TextStatic extends LightningElement {}\n";
         let r = transform(src, "x/text-static/text-static.js", &opts).expect("transform");
         assert!(r.code.contains("@lwc/ssr-runtime"), "{}", r.code);
-        assert!(r.code.contains("__setStaticInternals(TextStatic, 'x-text-static'"), "{}", r.code);
+        assert!(r.code.contains("__setStaticInternals(TextStatic, \"x-text-static\""), "{}", r.code);
         assert!(r.code.contains("./text-static.html"), "{}", r.code);
     }
 }

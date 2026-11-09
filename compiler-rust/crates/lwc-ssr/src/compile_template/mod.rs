@@ -107,12 +107,12 @@ fn expr_in(e: &Expression, top: bool, sc: &[String]) -> String {
         Expression::Identifier(i) => if top && !sc.contains(&i.name) { format!("instance.{}", i.name) } else { i.name.clone() },
         Expression::Member(m) => if m.computed { format!("{}[{}]", expr(&m.object, sc), expr(&m.property, sc)) }
             else { format!("{}.{}", expr(&m.object, sc), expr_in(&m.property, false, sc)) },
-        Expression::Complex(s) => bind_expr::bind(s, sc),
+        Expression::Complex(c) => bind_expr::bind(c.source, sc),
     }
 }
 
 fn text_value(v: &TextValue, sc: &[String]) -> String {
-    match v { TextValue::Literal(s) => js_str(s), TextValue::Expression(e) => expr(e, sc), TextValue::Complex(s) => bind_expr::bind(s, sc) }
+    match v { TextValue::Literal(s) => js_str(s), TextValue::Expression(e) => expr(e, sc) }
 }
 
 pub(crate) fn emit_children(sib: &[ChildNode], o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
@@ -165,7 +165,12 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
             }
             // lwcIf.ts (bookends suppressed when cx.slotted)
             ChildNode::IfBlock(b) => emit_if_chain(&b.condition, &b.children, b.else_.as_deref(), o, out, cx, sc)?,
-            ChildNode::ElseifBlock(b) => emit_if_chain(&b.condition, &b.children, b.else_.as_deref(), o, out, cx, sc)?,
+            // ir-to-es.ts defaultTransformer: lwc:elseif/lwc:else are reached only through their IfBlock, and a
+            // `<template lwc:slot-data>` only as a direct component child (slotted-content.ts). Met anywhere else
+            // (e.g. under lwc:if inside a component), upstream throws `Unimplemented IR node: ${inspect(node)}`.
+            ChildNode::ElseifBlock(_) => return Err(unimplemented_ir_node("ElseifBlock")),
+            ChildNode::ElseBlock(_) => return Err(unimplemented_ir_node("ElseBlock")),
+            ChildNode::ScopedSlotFragment(_) => return Err(unimplemented_ir_node("ScopedSlotFragment")),
             // for-each.ts: `for (let [index, item] of Object.entries(expr ?? {}))`; index defaults to `__unused__`.
             ChildNode::ForEach(f) => {
                 let it = expr(&f.expression, sc);
@@ -190,11 +195,19 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
             ChildNode::Slot(s) => crate::compile_template::slot::emit_slot(s, o, out, cx, sc)?,
             ChildNode::Component(c) => crate::compile_template::component::emit_component(c, o, out, cx, sc)?,
             ChildNode::LwcComponent(c) => crate::compile_template::component::emit_lwc_component(c, o, out, cx, sc)?,
-            // ScopedSlotFragment is only meaningful as a direct Component child (handled in slotted content).
-            _ => {}
+            ChildNode::Text(_) | ChildNode::Comment(_) => {}
         }
     }
     Ok(())
+}
+
+/// ir-to-es.ts `defaultTransformer` throws a plain Error (no code or location). Its message ends with Node's
+/// `util.inspect` dump of the IR node; only the node type is reproduced (D-0247).
+fn unimplemented_ir_node(kind: &str) -> lwc_shared::CompileError {
+    lwc_shared::CompileError {
+        message: format!("Unimplemented IR node: {{ type: '{kind}' }}"),
+        filename: None, diagnostics: vec![], name: None, line: None, column: None,
+    }
 }
 
 fn emit_bookended(children: &[ChildNode], o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
@@ -298,10 +311,13 @@ pub fn wrap_module_with(
 mod tests {
     use super::*;
     use lwc_shared::template_ir::{Attribute, AttributeValue, Identifier, SourceLocation, Text};
-    fn text(value: TextValue) -> ChildNode { ChildNode::Text(Text { value, raw: String::new(), location: SourceLocation::default() }) }
+    /// Test IR location (production locations come from the parser).
+    const AT: SourceLocation = SourceLocation { start_line: 1, start_column: 0, end_line: 1, end_column: 0, start: 0, end: 0 };
+    fn el_at() -> lwc_shared::template_ir::ElementSourceLocation { lwc_shared::template_ir::ElementSourceLocation { location: AT, start_tag: AT, end_tag: None } }
+    fn text(value: TextValue) -> ChildNode { ChildNode::Text(Text { value, raw: String::new(), location: AT }) }
     #[test]
     fn text_static() {
-        let root = Root { children: vec![text(TextValue::Literal("\n    Static text\n".into()))], ..Default::default() };
+        let root = Root { children: vec![text(TextValue::Literal("\n    Static text\n".into()))], directives: vec![], location: el_at() };
         let (body, imports) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body, vec!["__lwcYield += renderTextContent(normalizeTextContent('\\n    Static text\\n'));"]);
         assert_eq!(imports, vec!["normalizeTextContent", "renderTextContent"]);
@@ -314,18 +330,19 @@ mod tests {
     #[test]
     fn adjacent_text_concat_skips_comment() {
         let t = |s: &str| text(TextValue::Expression(Expression::Identifier(Identifier { name: s.into() })));
-        let root = Root { children: vec![t("a"), ChildNode::Comment(lwc_shared::template_ir::Comment { value: "c".into(), raw: String::new(), location: SourceLocation::default() }), t("b")], ..Default::default() };
+        let root = Root { children: vec![t("a"), ChildNode::Comment(lwc_shared::template_ir::Comment { value: "c".into(), raw: String::new(), location: AT }), t("b")], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body, vec!["__lwcYield += renderTextContent(normalizeTextContent(instance.a) + normalizeTextContent(instance.b));"]);
     }
-    fn el(name: &str, attrs: Vec<(&str, AttributeValue)>, children: Vec<ChildNode>) -> ChildNode {
+    fn el(name: &str, attrs: Vec<(&str, AttributeValue<'static>)>, children: Vec<ChildNode<'static>>) -> ChildNode<'static> {
         ChildNode::Element(lwc_shared::template_ir::Element { name: name.into(), children, namespace: element::HTML_NAMESPACE.into(),
-            attributes: attrs.into_iter().map(|(n, value)| Attribute { name: n.into(), value, location: SourceLocation::default() }).collect(), ..Default::default() })
+            attributes: attrs.into_iter().map(|(n, value)| Attribute { name: n.into(), value, location: AT }).collect(),
+            properties: vec![], directives: vec![], listeners: vec![], location: el_at() })
     }
-    fn lit(s: &str) -> AttributeValue { AttributeValue::Literal(lwc_shared::template_ir::Literal { value: LiteralValue::String(s.into()) }) }
+    fn lit(s: &str) -> AttributeValue<'static> { AttributeValue::Literal(lwc_shared::template_ir::Literal { value: LiteralValue::String(s.into()) }) }
     #[test]
     fn static_element() {
-        let root = Root { children: vec![el("div", vec![("class", lit("x"))], vec![text(TextValue::Literal("hi".into()))])], ..Default::default() };
+        let root = Root { children: vec![el("div", vec![("class", lit("x"))], vec![text(TextValue::Literal("hi".into()))])], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body[0], "__lwcYield += '<div';");
         assert!(body[2].contains("__lwcYield += '=\"' + 'x' + suffix + '\"';"), "{body:?}");
@@ -334,7 +351,7 @@ mod tests {
     #[test]
     fn dynamic_attr() {
         let e = AttributeValue::Expression(Expression::Identifier(Identifier { name: "foo".into() }));
-        let root = Root { children: vec![el("p", vec![("title", e.clone()), ("class", e)], vec![])], ..Default::default() };
+        let root = Root { children: vec![el("p", vec![("title", e.clone()), ("class", e)], vec![])], directives: vec![], location: el_at() };
         let (body, imports) = compile_body(&root, TemplateOptions::default()).unwrap();
         let j = body.join("\n");
         assert!(j.contains("instance.foo") && j.contains("htmlEscape(String(attrValue), true)") && j.contains("normalizeClass"), "{j}");
@@ -342,7 +359,7 @@ mod tests {
     }
     #[test]
     fn void_no_close() {
-        let root = Root { children: vec![el("img", vec![("src", lit("a\"b"))], vec![]), el("br", vec![], vec![])], ..Default::default() };
+        let root = Root { children: vec![el("img", vec![("src", lit("a\"b"))], vec![]), el("br", vec![], vec![])], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         // element.ts: literal values are yielded verbatim; void elements end with `>` and no close tag.
         assert_eq!(body[3], "__lwcYield += ' src=\"a\"b\"';");
@@ -350,51 +367,51 @@ mod tests {
         assert_eq!(body.last().unwrap(), "__lwcYield += '>';");
         assert!(!body.join("").contains("</"), "{body:?}");
     }
-    fn id(n: &str) -> Expression { Expression::Identifier(Identifier { name: n.into() }) }
-    fn cmt(v: &str) -> ChildNode { ChildNode::Comment(lwc_shared::template_ir::Comment { value: v.into(), raw: String::new(), location: SourceLocation::default() }) }
+    fn id(n: &str) -> Expression<'static> { Expression::Identifier(Identifier { name: n.into() }) }
+    fn cmt(v: &str) -> ChildNode<'static> { ChildNode::Comment(lwc_shared::template_ir::Comment { value: v.into(), raw: String::new(), location: AT }) }
     #[test]
     fn comment_preserved_vs_stripped() {
-        let root = Root { children: vec![cmt(" it's ")], ..Default::default() };
+        let root = Root { children: vec![cmt(" it's ")], directives: vec![], location: el_at() };
         assert!(compile_body(&root, TemplateOptions::default()).unwrap().0.is_empty());
         assert_eq!(compile_body(&root, TemplateOptions { preserve_comments: true, ..Default::default() }).unwrap().0, vec!["__lwcYield += '<!-- it\\'s -->';"]);
-        let root = Root { children: vec![cmt("x")], directives: vec![RootDirective::PreserveComments(true)], ..Default::default() };
+        let root = Root { children: vec![cmt("x")], directives: vec![RootDirective::PreserveComments(true)], location: el_at() };
         assert_eq!(compile_body(&root, TemplateOptions::default()).unwrap().0, vec!["__lwcYield += '<!--x-->';"]);
     }
-    fn legacy_if(m: &str) -> ChildNode {
-        ChildNode::If(lwc_shared::template_ir::If { modifier: m.into(), condition: id("show"), children: vec![text(TextValue::Literal("hi".into()))], location: Default::default(), directive_location: Default::default() })
+    fn legacy_if(m: &str) -> ChildNode<'static> {
+        ChildNode::If(lwc_shared::template_ir::If { modifier: m.into(), condition: id("show"), children: vec![text(TextValue::Literal("hi".into()))], location: AT, directive_location: AT })
     }
     #[test]
     fn if_true_text() {
-        let root = Root { children: vec![legacy_if("true")], ..Default::default() };
+        let root = Root { children: vec![legacy_if("true")], directives: vec![], location: el_at() };
         assert_eq!(compile_body(&root, TemplateOptions::default()).unwrap().0, vec!["if (instance.show) {", "__lwcYield += renderTextContent(normalizeTextContent('hi'));", "}"]);
     }
     #[test]
     fn if_false() {
-        let root = Root { children: vec![legacy_if("false")], ..Default::default() };
+        let root = Root { children: vec![legacy_if("false")], directives: vec![], location: el_at() };
         assert_eq!(compile_body(&root, TemplateOptions::default()).unwrap().0[0], "if (!instance.show) {");
     }
     #[test]
     fn lwc_if_chain() {
         use lwc_shared::template_ir::{ElseBlock, ElseifBlock, IfBlock};
         let t = |s: &str| vec![text(TextValue::Literal(s.into()))];
-        let root = Root { children: vec![ChildNode::IfBlock(IfBlock { condition: id("a"), children: t("A"), location: Default::default(), directive_location: Default::default(),
-            else_: Some(Box::new(ElseBranch::Elseif(ElseifBlock { condition: id("b"), children: t("B"), location: Default::default(), directive_location: Default::default(),
-                else_: Some(Box::new(ElseBranch::Else(ElseBlock { children: t("C"), location: Default::default(), directive_location: Default::default() }))) }))) })], ..Default::default() };
+        let root = Root { children: vec![ChildNode::IfBlock(IfBlock { condition: id("a"), children: t("A"), location: AT, directive_location: AT,
+            else_: Some(Box::new(ElseBranch::Elseif(ElseifBlock { condition: id("b"), children: t("B"), location: AT, directive_location: AT,
+                else_: Some(Box::new(ElseBranch::Else(ElseBlock { children: t("C"), location: AT, directive_location: AT }))) }))) })], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         let bk = "__lwcYield += '<!---->';";
         let r = |s: &str| format!("__lwcYield += renderTextContent(normalizeTextContent('{s}'));");
         assert_eq!(body, vec!["if (instance.a) {".into(), bk.into(), r("A"), bk.into(), "} else if (instance.b) {".into(), bk.into(), r("B"), bk.into(), "} else {".into(), bk.into(), r("C"), bk.into(), "}".into()]);
     }
-    fn mem(o: &str, p: &str) -> Expression { Expression::Member(lwc_shared::template_ir::MemberExpression { object: Box::new(id(o)), property: Box::new(id(p)), computed: false }) }
-    fn for_each(coll: Expression, item: &str, index: Option<&str>, children: Vec<ChildNode>) -> ChildNode {
-        ChildNode::ForEach(lwc_shared::template_ir::ForEach { expression: coll, item: Identifier { name: item.into() }, index: index.map(|n| Identifier { name: n.into() }), children, location: Default::default(), directive_location: Default::default() })
+    fn mem(o: &str, p: &str) -> Expression<'static> { Expression::Member(lwc_shared::template_ir::MemberExpression { object: Box::new(id(o)), property: Box::new(id(p)), computed: false }) }
+    fn for_each(coll: Expression<'static>, item: &str, index: Option<&str>, children: Vec<ChildNode<'static>>) -> ChildNode<'static> {
+        ChildNode::ForEach(lwc_shared::template_ir::ForEach { expression: coll, item: Identifier { name: item.into() }, index: index.map(|n| Identifier { name: n.into() }), children, location: AT, directive_location: AT })
     }
     fn tv(e: Expression) -> ChildNode { text(TextValue::Expression(e)) }
     fn rt(s: &str) -> String { format!("__lwcYield += renderTextContent(normalizeTextContent({s}));") }
     #[test]
     fn for_each_item_local_text_and_attr() {
         let li = el("li", vec![("title", AttributeValue::Expression(mem("item", "id")))], vec![]);
-        let root = Root { children: vec![for_each(id("items"), "item", None, vec![li, tv(mem("item", "name")), tv(id("other"))])], ..Default::default() };
+        let root = Root { children: vec![for_each(id("items"), "item", None, vec![li, tv(mem("item", "name")), tv(id("other"))])], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body[0], "for (let [__unused__, item] of Object.entries(instance.items ?? {})) {");
         assert!(body[4].contains("let attrValue = item.id;"), "{body:?}");
@@ -404,13 +421,13 @@ mod tests {
     }
     #[test]
     fn for_each_with_index() {
-        let root = Root { children: vec![for_each(id("items"), "item", Some("i"), vec![tv(id("i"))]), tv(id("i"))], ..Default::default() };
+        let root = Root { children: vec![for_each(id("items"), "item", Some("i"), vec![tv(id("i"))]), tv(id("i"))], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body, vec!["for (let [i, item] of Object.entries(instance.items ?? {})) {".to_string(), rt("i"), "}".into(), rt("instance.i")]);
     }
     #[test]
     fn for_of_iterator() {
-        let root = Root { children: vec![ChildNode::ForOf(lwc_shared::template_ir::ForOf { expression: id("items"), iterator: Identifier { name: "it".into() }, children: vec![tv(Expression::Member(lwc_shared::template_ir::MemberExpression { object: Box::new(mem("it", "value")), property: Box::new(id("name")), computed: false }))], location: Default::default(), directive_location: Default::default() })], ..Default::default() };
+        let root = Root { children: vec![ChildNode::ForOf(lwc_shared::template_ir::ForOf { expression: id("items"), iterator: Identifier { name: "it".into() }, children: vec![tv(Expression::Member(lwc_shared::template_ir::MemberExpression { object: Box::new(mem("it", "value")), property: Box::new(id("name")), computed: false }))], location: AT, directive_location: AT })], directives: vec![], location: el_at() };
         let (body, imports) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body, vec!["for (let it of toIteratorDirective(instance.items ?? [])) {".to_string(), rt("it.value.name"), "}".into()]);
         assert!(imports.contains(&"toIteratorDirective"));
@@ -419,7 +436,7 @@ mod tests {
     #[test]
     fn nested_for_each_scopes() {
         let inner = for_each(mem("row", "cells"), "cell", None, vec![tv(mem("cell", "v")), tv(mem("row", "k"))]);
-        let root = Root { children: vec![for_each(id("rows"), "row", None, vec![inner, tv(id("cell"))])], ..Default::default() };
+        let root = Root { children: vec![for_each(id("rows"), "row", None, vec![inner, tv(id("cell"))])], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body, vec![
             "for (let [__unused__, row] of Object.entries(instance.rows ?? {})) {".to_string(),

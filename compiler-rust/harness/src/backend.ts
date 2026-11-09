@@ -35,19 +35,44 @@ export class JsCompilerBackend implements CompilerBackend {
     }
 }
 
+/** Location shape of upstream `@lwc/errors` CompilerError.location / JsDiagnosticLocation. */
+export type NapiLocation = {
+    line?: number | null;
+    column?: number | null;
+    start?: number | null;
+    length?: number | null;
+    index?: number | null;
+};
+
+/**
+ * napi `{ error }` payload as the harness reads it (D-0239/D-0241, AB-L0076 merge).
+ * Own `line`/`column`/`name` are not part of this type (JS Style deletes them from napi).
+ * Location fields live only under `location` (NapiLocation retains its own line/column).
+ */
+export type NapiCompileError = {
+    message: string;
+    code?: number | null;
+    filename?: string | null;
+    location?: NapiLocation | null;
+    level?: number | null;
+    url?: string | null;
+    errors?: Array<{
+        message: string;
+        code?: number | null;
+        filename?: string | null;
+        location?: NapiLocation | null;
+        level?: number | null;
+        url?: string | null;
+    }> | null;
+};
+
 type NativeAddon = {
     transform(src: string, filename: string, options: Record<string, unknown>): {
         code?: string | null;
         map?: string | null;
         cssScopeTokens?: string[];
         warnings?: Diagnostic[] | null;
-        error?: {
-            name?: string | null;
-            message: string;
-            code?: number | null;
-            line?: number | null;
-            column?: number | null;
-        } | null;
+        error?: NapiCompileError | null;
     };
 };
 
@@ -108,6 +133,32 @@ function assertKnownKeys(options: Record<string, unknown>): void {
     }
 }
 
+/**
+ * Shape a napi `{ error }` into a thrown Error matching upstream CompilerError (D-0239 / D-0241 / D-0267).
+ *
+ * - Location comes ONLY from `location`. Own `line` / `column` / `name` / `loc` are not on the type and
+ *   are never consulted, so a diagnostic without `location` is not silently given one.
+ * - AggregateError `name` and `errors` come from the AggregateError constructor.
+ */
+export function errorFromNapi(ne: NapiCompileError): Error {
+    const subs = Array.isArray(ne.errors)
+        ? ne.errors.map((x) => Object.assign(new Error(x.message), {
+            code: x.code ?? undefined,
+            filename: x.filename ?? undefined,
+            location: x.location ?? undefined,
+            level: x.level,
+            url: x.url,
+        }))
+        : null;
+    const err: any = subs
+        ? new AggregateError(subs, ne.message)
+        : new Error(ne.message);
+    if (ne.code != null) err.code = ne.code;
+    if (ne.location != null) err.location = ne.location;
+    if (ne.filename != null) err.filename = ne.filename;
+    return err;
+}
+
 export class RustCompilerBackend implements CompilerBackend {
     readonly id = 'rust';
     private native = loadNative();
@@ -134,23 +185,7 @@ export class RustCompilerBackend implements CompilerBackend {
         for (const k of Object.keys(raw)) if (raw[k] == null) delete raw[k];
         const r = this.native.transform(src, filename, raw);
         if (r.error) {
-            // Recovery mode: napi `errors[]` (JsAggregateEntry) -> AggregateError members shaped like @lwc/errors
-            // CompilerError (code, filename, location {line,column,start,length}, level, url). Never dropped.
-            const subs = Array.isArray(r.error.errors)
-                ? r.error.errors.map((x: any) => Object.assign(new Error(x.message), {
-                    code: x.code ?? undefined, filename: x.filename ?? undefined, location: x.location ?? undefined, level: x.level, url: x.url,
-                }))
-                : null;
-            const err: any = subs ? new AggregateError(subs, r.error.message ?? '') : new Error(r.error.message ?? 'rust compile failed');
-            if (subs) err.errors = subs;
-            err.name = r.error.name ?? (subs ? 'AggregateError' : 'Error');
-            if (r.error.code != null) err.code = r.error.code;
-            if (r.error.location != null) err.location = r.error.location;
-            else if (r.error.line != null) err.location = { line: r.error.line, column: r.error.column ?? null };
-            if (r.error.filename != null) err.filename = r.error.filename;
-            err.line = r.error.line ?? null;
-            err.column = r.error.column ?? null;
-            throw err;
+            throw errorFromNapi(r.error);
         }
         if (r.code == null || r.code === undefined) {
             throw new Error('rust compile failed: empty result');

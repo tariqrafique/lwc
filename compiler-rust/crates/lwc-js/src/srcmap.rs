@@ -7,7 +7,8 @@
 //! their generated positions forward through the edit passes after it (version stamps, unforgeables
 //! is before, helper prelude), and moves their original positions back through every earlier stage
 //! to the user's source. Columns are UTF-16 (source map spec). Valid and sensible, not babel-identical.
-use crate::edits::Piece;
+use lwc_shared::edits::Piece;
+use lwc_shared::location::LineIndex;
 use oxc_sourcemap::{SourceMap, SourceMapBuilder};
 
 enum Stage {
@@ -17,45 +18,6 @@ enum Stage {
 }
 
 pub struct Chain { enabled: bool, stages: Vec<Stage> }
-
-pub struct LineIndex<'s> { text: &'s str, starts: Vec<u32> }
-
-impl<'s> LineIndex<'s> {
-    pub fn new(text: &'s str) -> Self {
-        let mut starts = vec![0];
-        let b = text.as_bytes();
-        let mut i = 0;
-        while i < b.len() {
-            match b[i] {
-                b'\n' => starts.push(i as u32 + 1),
-                b'\r' => { if b.get(i + 1) != Some(&b'\n') { starts.push(i as u32 + 1); } }
-                0xE2 if b.get(i + 1) == Some(&0x80) && matches!(b.get(i + 2), Some(0xA8 | 0xA9)) => { starts.push(i as u32 + 3); i += 2; }
-                _ => {}
-            }
-            i += 1;
-        }
-        Self { text, starts }
-    }
-    pub fn to_offset(&self, line: u32, col16: u32) -> Option<u32> {
-        let start = *self.starts.get(line as usize)?;
-        let end = self.starts.get(line as usize + 1).copied().unwrap_or(self.text.len() as u32);
-        let mut c = 0u32;
-        for (i, ch) in self.text[start as usize..end as usize].char_indices() {
-            if c >= col16 { return Some(start + i as u32); }
-            c += ch.len_utf16() as u32;
-        }
-        Some(end)
-    }
-    pub fn to_line_col(&self, off: u32) -> (u32, u32) {
-        let off = off.min(self.text.len() as u32);
-        let line = self.starts.partition_point(|&s| s <= off) - 1;
-        let start = self.starts[line] as usize;
-        let mut end = off as usize;
-        while !self.text.is_char_boundary(end) { end -= 1; }
-        let col: usize = self.text[start..end].chars().map(char::len_utf16).sum();
-        (line as u32, col as u32)
-    }
-}
 
 impl Chain {
     pub fn new(enabled: bool) -> Self { Self { enabled, stages: vec![] } }

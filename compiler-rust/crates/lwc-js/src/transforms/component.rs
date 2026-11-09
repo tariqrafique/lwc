@@ -1,6 +1,6 @@
 //! registerComponent wrapping (port of babel-plugin-component/src/component.ts).
 use crate::constants::*;
-use crate::edits::Edit;
+use lwc_shared::edits::Edit;
 use crate::transforms::scoped_css::serde_quote;
 use crate::tag_name;
 use lwc_shared::api_version;

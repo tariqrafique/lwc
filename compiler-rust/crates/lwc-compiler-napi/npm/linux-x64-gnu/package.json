@@ -1,0 +1,22 @@
+{
+  "name": "lwc-compiler-rs-linux-x64-gnu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "linux-x64-gnu native binary for lwc-compiler-rs. Not published (D-0202).",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "libc": [
+    "glibc"
+  ],
+  "main": "lwc-compiler.linux-x64-gnu.node",
+  "files": [
+    "lwc-compiler.linux-x64-gnu.node"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}

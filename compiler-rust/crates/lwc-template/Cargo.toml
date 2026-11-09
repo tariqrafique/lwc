@@ -6,7 +6,14 @@ description = "Rust port of @lwc/template-compiler (ESM emit, behavioral goldens
 
 [dependencies]
 lwc-shared = { path = "../lwc-shared" }
-parse5 = { path = "../../../parse5-rust/crates/parse5" }
+oxc_allocator = { workspace = true }
+oxc_ast = { workspace = true }
+oxc_ast_visit = { workspace = true }
+oxc_parser = { workspace = true }
+oxc_span = { workspace = true }
+oxc_ecmascript = { workspace = true }
+oxc_syntax = { workspace = true }
+parse5 = { git = "https://github.com/tariqrafique/parse5-rust", rev = "e3520ba03c9af27eb8dd05d08960b094305910d8" }
 serde = { version = "1", features = ["derive"], optional = true }
 
 [features]
@@ -14,3 +21,4 @@ default = []
 serde = ["dep:serde"]
 
 [dev-dependencies]
+serde_json = "1"

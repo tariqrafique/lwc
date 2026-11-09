@@ -1,3 +1,4 @@
+mod support;
 use lwc_shared::CompileOptions;
 
 fn opts() -> CompileOptions { CompileOptions { name: "test".into(), namespace: "lwc".into(), ..Default::default() } }
@@ -55,8 +56,8 @@ fn optional_meta_keys() {
 
 #[test]
 fn private_methods_rejected_when_flag_off() {
-    let e = lwc_js::transform("class A { #m() {} }", "a.js", &opts()).unwrap_err();
-    assert!(e.diagnostics.iter().any(|d| d.code == Some(1007)), "{e:?}");
+    let e = support::thrown("class A { #m() {} }", "a.js", &opts());
+    assert!(e.errors.iter().any(|d| d.code == Some(1007)), "{e:?}");
     assert!(e.message.contains("Class private methods are not enabled. Please add `@babel/plugin-transform-private-methods` to your configuration."), "{}", e.message);
 }
 
@@ -74,7 +75,7 @@ fn scoped_css_and_parse_errors() {
     assert!(lwc_js::transform("let = ;", "a.js", &opts()).is_err());
 }
 
-fn err(src: &str) -> String { lwc_js::transform(src, "test.js", &opts()).unwrap_err().message }
+fn err(src: &str) -> String { support::thrown(src, "test.js", &opts()).message }
 
 #[test]
 fn decorator_not_imported_from_lwc_errors() {
@@ -98,8 +99,8 @@ fn skip_register_decorators_without_superclass_by_api_version() {
     assert!(v59.contains("_registerDecorators(Plain, { publicProps: { foo: { config: 0 } } })"), "{v59}");
     // Default apiVersion: the class is skipped, so its `@api` stays and Babel class-features throws
     // "Decorators are not enabled." -> @lwc/compiler's LWC1198 sniff (shipped 9.5.3).
-    let e = lwc_js::transform(src, "test.js", &opts()).unwrap_err();
-    assert_eq!(e.diagnostics[0].code, Some(1198), "{}", e.message);
+    let e = support::thrown(src, "test.js", &opts());
+    assert_eq!(e.errors[0].code, Some(1198), "{}", e.message);
 }
 
 #[test]
@@ -123,25 +124,25 @@ fn private_method_survives_sandwich() {
 
 #[test]
 fn private_method_still_rejected_flag_off() {
-    assert!(lwc_js::transform(PM, "a.js", &opts()).unwrap_err().message.contains("Class private methods are not enabled"));
+    assert!(support::thrown(PM, "a.js", &opts()).message.contains("Class private methods are not enabled"));
 }
 
 #[test]
 fn reserved_prefix_collision_errors_when_flag_on() {
     let src = "class A { __lwc_component_class_internal_private_x() {} }";
-    let e = lwc_js::transform(src, "a.js", &pm()).unwrap_err();
+    let e = support::thrown(src, "a.js", &pm());
     assert!(e.message.contains("cannot start with reserved prefix"), "{}", e.message);
     assert!(lwc_js::transform(src, "a.js", &opts()).is_ok());
 }
 
 #[test]
 fn decorated_private_method_and_private_accessor_error() {
-    let e = lwc_js::transform("class A { @api #m() {} }", "a.js", &pm()).unwrap_err();
-    assert_eq!(e.diagnostics[0].code, Some(1212), "{}", e.message);
+    let e = support::thrown("class A { @api #m() {} }", "a.js", &pm());
+    assert_eq!(e.errors[0].code, Some(1212), "{}", e.message);
     assert_eq!((e.line, e.column), (Some(1), Some(10)));
-    let e = lwc_js::transform("class A { get #v() { return 1; } }", "a.js", &pm()).unwrap_err();
+    let e = support::thrown("class A { get #v() { return 1; } }", "a.js", &pm());
     assert!(e.message.contains("Class private methods are not enabled"), "{}", e.message);
-    assert_eq!(e.diagnostics[0].code, Some(1007));
+    assert_eq!(e.errors[0].code, Some(1007));
 }
 
 #[test]
@@ -151,9 +152,9 @@ fn field_init_moves_into_constructor() {
     assert!(!out.contains("super("), "{out}");
 }
 
-fn lwc_err(body: &str) -> lwc_shared::CompileError {
+fn lwc_err(body: &str) -> support::Thrown {
     let src = format!("import {{ api, track, wire, LightningElement }} from 'lwc';\nimport {{ getFoo }} from 'x';\nexport default class T extends LightningElement {{\n{body}\n}}");
-    lwc_js::transform(&src, "test.js", &opts()).unwrap_err()
+    support::thrown(&src, "test.js", &opts())
 }
 
 #[test]
@@ -179,7 +180,7 @@ fn api_validate_lwc_codes() {
     for (body, code, msg) in cases {
         let e = lwc_err(body);
         assert!(e.message.contains(msg), "{body}: {}", e.message);
-        assert_eq!(e.diagnostics.first().and_then(|d| d.code), Some(*code), "{body}");
+        assert_eq!(e.errors.first().and_then(|d| d.code), Some(*code), "{body}");
     }
     let e = lwc_err("  @api class;");
     assert_eq!((e.line, e.column), (Some(4), Some(2)));
@@ -196,25 +197,26 @@ fn rec() -> CompileOptions { CompileOptions { experimental_error_recovery_mode: 
 #[test]
 fn error_recovery_single_error_is_aggregate() {
     let src = "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { @api dataInvalidProperty; }";
-    let e = lwc_js::transform(src, "foo.js", &rec()).unwrap_err();
-    assert_eq!(e.name.as_deref(), Some("AggregateError"));
-    assert_eq!(e.diagnostics.iter().map(|d| d.code).collect::<Vec<_>>(), vec![Some(1107)]);
-    assert!(e.message.contains("LWC1107: Invalid property name \"dataInvalidProperty\""), "{}", e.message);
+    let e = support::thrown(src, "foo.js", &rec());
+    assert_eq!(e.name, Some("AggregateError"));
+    assert_eq!(e.errors.iter().map(|d| d.code).collect::<Vec<_>>(), vec![Some(1107)]);
+    assert_eq!(e.message, "Multiple errors occurred during compilation.");
+    assert!(e.errors[0].message.starts_with("LWC1107: Invalid property name \"dataInvalidProperty\""), "{}", e.errors[0].message);
     // fail-fast without recovery
-    let e = lwc_js::transform(src, "foo.js", &opts()).unwrap_err();
+    let e = support::thrown(src, "foo.js", &opts());
     assert_eq!(e.name, None);
 }
 
 #[test]
 fn error_recovery_collects_multiple() {
     let src = "import { LightningElement, api, track } from 'lwc';\nexport default class Foo extends LightningElement {\n@api onClickHandler;\n@api class;\n@track someMethod() { return 1; }\n@api dup; @api dup;\n}";
-    let e = lwc_js::transform(src, "foo.js", &rec()).unwrap_err();
-    let codes: Vec<_> = e.diagnostics.iter().filter_map(|d| d.code).collect();
-    assert_eq!(codes.len(), e.diagnostics.len());
+    let e = support::thrown(src, "foo.js", &rec());
+    let codes: Vec<_> = e.errors.iter().filter_map(|d| d.code).collect();
+    assert_eq!(codes.len(), e.errors.len());
     assert_eq!(codes, vec![1108, 1110, 1096, 1096, 1113], "{}", e.message);
     assert!(e.message.starts_with("Multiple errors occurred during compilation."));
-    let e = lwc_js::transform(src, "foo.js", &opts()).unwrap_err();
-    assert_eq!(e.diagnostics.iter().map(|d| d.code).collect::<Vec<_>>(), vec![Some(1108)]);
+    let e = support::thrown(src, "foo.js", &opts());
+    assert_eq!(e.errors.iter().map(|d| d.code).collect::<Vec<_>>(), vec![Some(1108)]);
 }
 
 #[test]
@@ -231,4 +233,14 @@ fn object_rest_spread_gated_by_api_version() {
         assert_eq!(code.contains("...a"), keep, "{v:?}: {code}");
         assert_eq!(code.contains("...rest"), keep, "{v:?}: {code}");
     }
+}
+
+/// Babel resolves `filename` against cwd (`path.resolve(process.cwd(), filename)`) before the plugin sees it.
+#[test]
+fn resolve_matches_node_path_resolve() {
+    let c = std::path::Path::new("/a/b");
+    assert_eq!(lwc_js::resolve_like_node(c, "foo.js"), "/a/b/foo.js");
+    assert_eq!(lwc_js::resolve_like_node(c, "./x/../foo.js"), "/a/b/foo.js");
+    assert_eq!(lwc_js::resolve_like_node(c, "../foo.js"), "/a/foo.js");
+    assert_eq!(lwc_js::resolve_like_node(c, "/abs//x/foo.js"), "/abs/x/foo.js");
 }

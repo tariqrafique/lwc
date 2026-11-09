@@ -1,27 +1,11 @@
 //! Rust side of harness/scripts/template-diag-diff.mjs: reads cases.jsonl
 //! (`{id, src, filename, opts}` per line, opts in JS `Config` shape), runs
 //! `lwc_template::compile` for ids in [from, to), prints one JSON line per case:
-//! `{id, threw?, panic?, diags:[{code,level,message,location}], codeHash, codeLen}`.
+//! `{id, threw?, panic?, diags:[{code,level,message,location}], code}` (`code` is the exact output; the caller hashes it).
 //! Emits `{"start":id}` before each case so the caller can attribute an abort/hang.
 use lwc_shared::{CustomRendererConfig, CustomRendererElementConfig};
 use serde_json::{json, Value};
 use std::io::{BufRead, Write};
-
-/// FNV-1a 32 of the code with the `/*LWC compiler vX*/` banner and all ASCII whitespace removed
-/// (same normalization as the JS side; codegen-only is a count, not an exact codegen gate).
-fn fnv1a(s: &str) -> u32 {
-    let mut s = s.to_string();
-    while let Some(a) = s.find("/*LWC compiler v") {
-        let b = s[a..].find("*/").map(|e| a + e + 2).unwrap_or(s.len());
-        s.replace_range(a..b, "");
-    }
-    let mut h: u32 = 0x811c9dc5;
-    for b in s.as_bytes().iter().filter(|b| !b.is_ascii_whitespace()) {
-        h ^= *b as u32;
-        h = h.wrapping_mul(0x01000193);
-    }
-    h
-}
 
 fn config(o: &Value) -> lwc_template::Config {
     let b = |k: &str| o.get(k).and_then(|v| v.as_bool());
@@ -81,9 +65,9 @@ fn main() {
                 "id": id,
                 "diags": r.warnings.iter().map(|d| json!({
                     "code": d.code, "level": d.level.js_value(), "message": d.message,
-                    "location": d.location.map(|l| json!({"line": l.start_line, "column": l.start_column, "start": l.start, "length": l.end.zip(l.start).map(|(e, s)| e - s)})),
+                    "location": d.location.map(|l| json!({"line": l.line, "column": l.column, "start": l.start, "length": l.length})),
                 })).collect::<Vec<_>>(),
-                "codeHash": fnv1a(&r.code), "codeLen": r.code.len(), "code": if std::env::var("TDD_DRIVER_CODE").is_ok() { Some(r.code.clone()) } else { None },
+                "code": r.code,
             }),
         };
         writeln!(out, "{v}").unwrap();

@@ -1,0 +1,5 @@
+# Replacement for /workspace/.cargo/config.toml (D-0238 / D-0273).
+# Do NOT apply until Migrate cutover: removing the live [patch] breaks every bot's --locked build
+# against main's current path-source lock until the git-source lock lands in the same window.
+[net]
+git-fetch-with-cli = true

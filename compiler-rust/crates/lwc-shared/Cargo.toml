@@ -4,3 +4,11 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+# AB-D0004 allowlist (tests/dependency_allowlist.rs): oxc type crates only, no parser/codegen/semantic.
+oxc_allocator = { workspace = true }
+oxc_ast = { workspace = true }
+oxc_span = { workspace = true }
+
+[dev-dependencies]
+regex = "1"
+serde_json = "1"

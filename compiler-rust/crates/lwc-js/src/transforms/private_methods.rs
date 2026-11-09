@@ -3,6 +3,7 @@
 //! `x.#m` member uses to `__lwc_component_class_internal_private_m` so class-properties lowering
 //! never sees it; reverse restores `#m` and checks every forward rename was reversed.
 use crate::constants::PRIVATE_METHOD_PREFIX as P;
+use lwc_shared::errors::error_info::lwc_class::DecoratorErrors as E;
 use lwc_shared::{CompileError, CompileOptions};
 use oxc::ast::ast::{Class, ClassElement, Expression, StaticBlock, 
     MemberExpression, MethodDefinition, MethodDefinitionKind, PrivateFieldExpression, Program, PropertyKey,
@@ -10,7 +11,7 @@ use oxc::ast::ast::{Class, ClassElement, Expression, StaticBlock,
 use oxc::ast_visit::{walk, Visit};
 use std::collections::BTreeSet;
 
-use crate::edits::Edit;
+use lwc_shared::edits::Edit;
 
 /// Babel-thrown errors are normalized by transformSync to `LWC1007` (TransformerErrors.JS_TRANSFORMER_ERROR).
 /// Babel-internal SyntaxError (class-features plugin / `buildCodeFrameError` with an uncoded message), wrapped as LWC1007.
@@ -107,7 +108,7 @@ pub fn forward(program: &Program<'_>, filename: &str, o: &CompileOptions) -> Res
         // Shipped: the LWC decorator visitor runs first and rejects `@api/@track/@wire #m()` as a non-property
         // (LWC1103 IS_NOT_CLASS_PROPERTY_OR_CLASS_METHOD at the member) before class-features sees the method.
         if let Some((d, s, e)) = c.methods.iter().find_map(|(_, d, _)| d.as_ref().filter(|d| matches!(d.0.as_str(), "api" | "track" | "wire"))) {
-            return Err(CompileError::lwc_at(1103, format!("\"@{d}\" can only be applied on class properties"), filename, program.source_text, *s, *e));
+            return Err(CompileError::generate_at(&E::IS_NOT_CLASS_PROPERTY_OR_CLASS_METHOD, &[d.as_str()], filename, program.source_text, *s, *e));
         }
         if !c.methods.is_empty() {
             if c.in_decorated[0] { return Ok(Forward::Deferred); }
@@ -127,7 +128,7 @@ pub fn forward(program: &Program<'_>, filename: &str, o: &CompileOptions) -> Res
             }
             _ if decorated.is_some() => {
                 let (_, s, e) = decorated.as_ref().unwrap();
-                return Err(CompileError::lwc_at(1212, "Decorators cannot be applied to private methods. Private methods are not part of the component API.", filename, program.source_text, *s, *e));
+                return Err(CompileError::generate_at(&E::DECORATOR_ON_PRIVATE_METHOD, &[], filename, program.source_text, *s, *e));
             }
             _ => { names.insert(name.clone()); }
         }

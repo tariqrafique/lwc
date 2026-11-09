@@ -1,9 +1,10 @@
 //! Dynamic imports (port of babel-plugin-component/src/dynamic-imports.ts):
 //! strictSpecifier -> LWC1121 for non-string-literal sources; loader -> `import(x)` becomes `_load(x)`
 //! with `import { load as _load } from "<loader>"`.
-use crate::edits::Edit;
+use lwc_shared::edits::Edit;
 use crate::transforms::component::unique;
 use crate::transforms::scoped_css::serde_quote;
+use lwc_shared::errors::error_info::lwc_class::LWCClassErrors;
 use lwc_shared::{CompileError, CompileOptions};
 use oxc::ast::ast::{Expression, ImportExpression, Program};
 use oxc::ast_visit::{walk, Visit};
@@ -15,9 +16,7 @@ impl<'a> Visit<'a> for V<'_> {
         if self.strict && !matches!(it.source, Expression::StringLiteral(_)) {
             let sp = it.source.span();
             let text = &self.src[sp.start as usize..sp.end as usize];
-            self.errs.push(CompileError::lwc_at(1121,
-                lwc_shared::format_message("Invalid import. The argument \"{0}\" must be a stringLiteral for dynamic imports when strict mode is enabled.", &[text]),
-                self.filename, self.src, sp.start, sp.end));
+            self.errs.push(CompileError::generate_at(&LWCClassErrors::INVALID_DYNAMIC_IMPORT_SOURCE_STRICT, &[text], self.filename, self.src, sp.start, sp.end));
         }
         if let Some(l) = &self.load {
             self.edits.push(Edit::replace(it.span.start, it.span.start + 6, l.clone()));

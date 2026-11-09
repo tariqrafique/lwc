@@ -7,12 +7,11 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { describe, it, expect, beforeAll } from 'vitest';
+import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import { getBackend, type CompilerBackend } from '../src/backend';
 
 const ROOT = path.resolve(import.meta.dirname, '../fixtures/js-eval');
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/js-eval');
-const UPDATE = !!process.env.UPDATE_GOLDENS;
-if (UPDATE && process.env.LWC_COMPILER_BACKEND === 'rust') throw new Error('Refusing UPDATE_GOLDENS with rust backend: goldens are the JS oracle');
 
 let backend: CompilerBackend;
 beforeAll(async () => { backend = await getBackend(); });
@@ -33,12 +32,10 @@ describe('js-eval behavioral', () => {
                 fs.rmSync(tmp, { recursive: true, force: true });
                 const observed = { status: r.status, stdout: r.stdout, stderrFirstLine: r.status === 0 ? '' : (r.stderr.split('\n').find((l) => /Error/.test(l)) ?? '') };
                 const g = path.join(GOLDEN_DIR, `${name}#${i}.json`);
-                if (UPDATE || !fs.existsSync(g)) {
-                    if (!UPDATE) throw new Error(`missing golden ${g} (record with UPDATE_GOLDENS=1 on the JS backend)`);
-                    fs.mkdirSync(GOLDEN_DIR, { recursive: true });
-                    fs.writeFileSync(g, JSON.stringify(observed, null, 2) + '\n');
+                if (UPDATE) {
+                    writeGolden(g, observed);
                 } else {
-                    expect(observed).toEqual(JSON.parse(fs.readFileSync(g, 'utf8')));
+                    expect(observed).toEqual(readGolden(g));
                 }
             });
         });

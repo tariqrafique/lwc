@@ -18,32 +18,28 @@
 //! - destructuring member targets (`({a: X.location} = o)`, `[X.top] = o`) and `super.location` / `super.top`:
 //!   shipped emits invalid JS (a conditional as an assignment target / `super === globalThis`); we raise LWC1007.
 //! Matched as shipped (valid output, access left native): `X.location++` / `X.top--` (update expressions).
-use crate::edits::Edit;
+use lwc_shared::edits::Edit;
 use lwc_shared::CompileError;
 use oxc::allocator::Allocator;
 use oxc::ast::ast::*;
 use oxc::ast_visit::{Visit, walk};
 use oxc::codegen::{Codegen, CodegenOptions};
-use oxc::parser::{ParseOptions, Parser};
-use oxc::semantic::{Scoping, SemanticBuilder};
-use oxc::span::{GetSpan, SourceType, Span};
+use oxc::parser::ParseOptions;
+use oxc::semantic::Scoping;
+use oxc::span::{GetSpan, Span};
 use std::collections::{HashMap, HashSet};
 
 const GLOBALS: [&str; 4] = ["location", "document", "globalThis", "top"];
 
+/// SHIM(D-0262 P1 unforgeables, expires D-0265): parse_with of printed JS (preserve_parens: false) under LWS (D-0264 residual 3).
 pub fn run(code: &str, filename: &str) -> Result<Vec<Edit>, CompileError> {
     // Cheap exit: nothing to rewrite.
     if !code.contains("location") && !code.contains("top") { return Ok(vec![]); }
     let alloc = Allocator::default();
-    let st = SourceType::from_path(filename).unwrap_or_else(|_| SourceType::mjs()).with_module(true);
     // Babel (createParenthesizedExpressions: false) has no paren nodes; validators compare parents directly.
-    let ret = Parser::new(&alloc, code, st).with_options(ParseOptions { preserve_parens: false, ..Default::default() }).parse();
-    if ret.diagnostics.has_errors() {
-        let msg = ret.diagnostics.errors().map(|d| d.to_string()).collect::<Vec<_>>().join("; ");
-        return Err(CompileError::new(format!("internal: LWS input failed to parse: {filename}: {msg}"), filename));
-    }
-    let program = ret.program;
-    let scoping = SemanticBuilder::new().build(&program).semantic.into_scoping();
+    let program = crate::parse::parse_with(&alloc, code, filename, ParseOptions { preserve_parens: false, ..Default::default() })
+        .map_err(|e| CompileError::new(format!("internal: LWS input failed to parse: {}", e.message), filename))?;
+    let scoping = crate::parse::scoping(&program);
     let mut v = Unforgeables::new(code, &program, &scoping);
     v.filename = filename.to_string();
     v.visit_program(&program);

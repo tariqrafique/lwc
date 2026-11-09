@@ -1,8 +1,32 @@
 //! Shared types for the LWC Rust compiler workspace.
 
 pub mod api_version;
+pub mod aria;
+pub mod custom_element;
+pub mod edits;
+pub mod errors;
+mod generated;
+#[cfg(test)]
+mod generated_tests;
+pub mod html_attributes;
+pub mod instrumentation;
+pub mod js_literal;
+pub mod location;
+pub mod meta;
+pub mod namespaces;
+pub mod void_elements;
+pub use errors::{normalize_to_compiler_error, CompilerAggregateError, CompilerError, TransformError, UnnormalizedError};
+pub use instrumentation::{CompilerMetric, DeprecationId, Instrumentation, InstrumentationEvent, InstrumentationHandle, InstrumentationRecorder};
+pub use location::{DiagnosticLocation, LineIndex};
+pub mod js;
+pub mod style;
 pub mod template_ir;
 pub use template_ir::*;
+
+/// Value for `key` in a generated key-sorted pair table.
+pub(crate) fn lookup<V: Copy>(table: &[(&'static str, V)], key: &str) -> Option<V> {
+    table.binary_search_by(|e| e.0.cmp(key)).ok().map(|i| table[i].1)
+}
 
 /// Diagnostic severity matching `@lwc/errors` DiagnosticLevel.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -35,40 +59,34 @@ pub struct CompilerDiagnostic {
     pub message: String,
     pub level: DiagnosticLevel,
     pub filename: Option<String>,
-    pub location: Option<SourceLocation>,
+    /// The `@lwc/errors` `Location` (`{ line, column, start?, length? }`, or a Babel `Position`), converted
+    /// once by the producer; `None` when the origin carries none. This is the only location callers serialize.
+    pub location: Option<DiagnosticLocation>,
+    /// The Babel node range a JS-transform diagnostic was raised at (Babel line/columns, byte offsets into the
+    /// compiled source), kept for the code frame, the private-name unrename remap and source-order sorting.
+    /// Never serialized; `None` for every non-node origin.
+    pub node_location: Option<SourceLocation>,
 }
 
 impl CompilerDiagnostic {
     /// Checked constructor: `code` must be `None` (uncoded) or a real `LWC####` code, never `Some(0)`.
-    pub fn new(code: Option<u32>, message: impl Into<String>, level: DiagnosticLevel, filename: Option<String>, location: Option<SourceLocation>) -> Self {
+    pub fn new(code: Option<u32>, message: impl Into<String>, level: DiagnosticLevel, filename: Option<String>, location: Option<DiagnosticLocation>) -> Self {
         debug_assert!(code != Some(0), "diagnostic code 0 is not a code; use None for uncoded diagnostics");
-        Self { code, message: message.into(), level, filename, location }
+        Self { code, message: message.into(), level, filename, location, node_location: None }
     }
 }
 
-/// 1-based line/column plus absolute offsets (parse5 / LWC convention).
-/// `start`/`end` are `None` when the producer has no honest offset into the compiled input: a CSS error
-/// remapped through an inline source map points into the original source, which may not be available.
+/// 1-based line/column plus absolute start/end offsets of an IR node (parse5 / LWC convention). Every
+/// producer has real offsets; a diagnostic converts it to [`DiagnosticLocation`] once. No `Default`: a
+/// location is never invented (enforced by `tests/source_location_gate.rs`).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct SourceLocation {
     pub start_line: u32,
     pub start_column: u32,
     pub end_line: u32,
     pub end_column: u32,
-    pub start: Option<u32>,
-    pub end: Option<u32>,
-}
-
-impl SourceLocation {
-    /// `(start, end)` offsets of a location whose producer always records them (template parse5 spans,
-    /// Babel/oxc spans). Only CSS errors remapped through a source map lack offsets, and those never reach
-    /// offset-based consumers.
-    pub fn span(&self) -> (u32, u32) {
-        match (self.start, self.end) {
-            (Some(s), Some(e)) => (s, e),
-            _ => panic!("SourceLocation without offsets passed to an offset consumer: {self:?}"),
-        }
-    }
+    pub start: u32,
+    pub end: u32,
 }
 
 /// Minimal compile options needed to dispatch (mirrors `@lwc/compiler` TransformOptions subset).
@@ -153,53 +171,6 @@ pub enum CustomPropertiesResolution {
 pub struct StylesheetConfig {
     pub custom_properties_resolution: CustomPropertiesResolution,
 }
-
-/// `@lwc/errors` `CompilerMetrics`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum CompilerMetric {
-    LwcDynamicDirective,
-    LwcRenderModeDirective,
-    LwcSpreadDirective,
-    DynamicImportTransform,
-}
-
-impl CompilerMetric {
-    pub fn js_value(self) -> &'static str {
-        match self {
-            Self::LwcDynamicDirective => "lwc-dynamic-directive",
-            Self::LwcRenderModeDirective => "lwc-render-mode-directive",
-            Self::LwcSpreadDirective => "lwc-spread-directive",
-            Self::DynamicImportTransform => "dynamic-import-transform",
-        }
-    }
-}
-
-/// `@lwc/errors` `InstrumentationObject` for Rust consumers (not exposed over napi: JS callbacks
-/// can't cross the JSON options object).
-pub trait Instrumentation: Send + Sync {
-    /// JS `log(errorInfo, config)`. Upstream compilers never call it today; kept for API parity.
-    fn log(&self, _diagnostic: &CompilerDiagnostic) {}
-    /// JS `incrementCounter(metric)`.
-    fn increment_counter(&self, metric: CompilerMetric);
-}
-
-/// Shared handle so options stay `Clone + Debug + Eq` (equality is pointer identity).
-#[derive(Clone)]
-pub struct InstrumentationHandle(pub std::sync::Arc<dyn Instrumentation>);
-
-impl InstrumentationHandle {
-    pub fn new(i: impl Instrumentation + 'static) -> Self { Self(std::sync::Arc::new(i)) }
-    pub fn increment_counter(&self, metric: CompilerMetric) { self.0.increment_counter(metric) }
-    pub fn log(&self, d: &CompilerDiagnostic) { self.0.log(d) }
-}
-
-impl std::fmt::Debug for InstrumentationHandle {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { f.write_str("InstrumentationHandle(..)") }
-}
-impl PartialEq for InstrumentationHandle {
-    fn eq(&self, o: &Self) -> bool { std::sync::Arc::ptr_eq(&self.0, &o.0) }
-}
-impl Eq for InstrumentationHandle {}
 
 /// Single source of truth for option defaults: `Default` mirrors shipped `@lwc/compiler`
 /// `DEFAULT_OPTIONS` / `normalizeOptions`. Callers (napi) start from `default()` and override only
@@ -300,7 +271,7 @@ pub struct CompileError {
     pub message: String,
     pub filename: Option<String>,
     pub diagnostics: Vec<CompilerDiagnostic>,
-    /// JS Error.name when thrown across the napi seam (e.g. AggregateError).
+    /// JS `Error.name` of the thrown error (Babel `SyntaxError`, PostCSS `CssSyntaxError`); `None` = `Error`.
     pub name: Option<String>,
     pub line: Option<u32>,
     pub column: Option<u32>,
@@ -348,16 +319,18 @@ impl CompileError {
 }
 
 impl CompileError {
-    /// A non-LWC error thrown inside Babel (parser, class-features plugins, node validators), as
-    /// shipped `normalizeToCompilerError` wraps it: code 1007, message `{kind}: LWC1007: {filename}: {text}`
-    /// (`kind` = the original JS error name, e.g. `SyntaxError`/`TypeError`). Never aggregated in recovery mode.
+    /// A non-LWC error thrown inside Babel (parser, class-features plugins, node validators), raw as
+    /// Babel throws it: `name` = the JS error name (`SyntaxError`/`TypeError`/`Error`), message
+    /// `{filename}: {text}`, no `lwcCode`. The one uncoded diagnostic carries Babel's `err.loc` when known.
+    /// The JS facade normalizes it (javascript.ts `normalizeToCompilerError(JS_TRANSFORMER_ERROR, e)`:
+    /// code 1007, message `{name}: LWC1007: {filename}: {text}`). Never aggregated in recovery mode.
     pub fn babel(kind: &str, text: impl Into<String>, filename: &str, line: Option<u32>, column: Option<u32>) -> Self {
-        let message = format!("{kind}: LWC1007: {filename}: {}", text.into());
+        let message = format!("{filename}: {}", text.into());
         Self {
-            diagnostics: vec![CompilerDiagnostic::new(Some(1007), message.clone(), DiagnosticLevel::Error, Some(filename.into()), None)],
+            diagnostics: vec![CompilerDiagnostic::new(None, message.clone(), DiagnosticLevel::Error, Some(filename.into()), None)],
             message,
             filename: Some(filename.into()),
-            name: None,
+            name: Some(kind.into()),
             line,
             column,
         }
@@ -369,22 +342,14 @@ impl CompileError {
         self.name.is_none() && !self.diagnostics.is_empty() && self.message.starts_with("LWC")
     }
 
-    /// `CompileError::lwc` at a Babel node: line (1-based) / column (0-based, Babel) from `start`, and the
-    /// diagnostic carries the node's `{start, end}` (shipped `location` {line, column, start, length}).
-    pub fn lwc_at(code: u32, message: impl Into<String>, filename: &str, src: &str, start: u32, end: u32) -> Self {
-        let (line, column) = babel_line_col(src, start);
-        let (end_line, end_column) = babel_line_col(src, end);
-        let mut e = Self::lwc(code, message, filename, Some(line), Some(column));
-        e.diagnostics[0].location = Some(SourceLocation { start_line: line, start_column: column, end_line, end_column, start: Some(start), end: Some(end) });
-        e
-    }
-
-    /// Babel `path.buildCodeFrameError`, as shipped surfaces it: `SyntaxError: {filename}: LWC####: msg` (no
-    /// `(line:col)` suffix), then `\n` + the `@babel/code-frame` frame when the error has a node location.
+    /// Babel `path.buildCodeFrameError` as Babel throws it: a `SyntaxError` whose message is
+    /// `{filename}: LWC####: msg` (no `(line:col)` suffix), then `\n` + the `@babel/code-frame` frame when the
+    /// error has a node location; `lwcCode` stays on the diagnostic.
     pub fn framed(mut self, filename: &str, src: &str) -> Self {
         if self.is_unframed_lwc() {
-            self.message = format!("SyntaxError: {filename}: {}", self.message);
-            if let Some(l) = self.diagnostics.first().and_then(|d| d.location) {
+            self.name = Some("SyntaxError".into());
+            self.message = format!("{filename}: {}", self.message);
+            if let Some(l) = self.diagnostics.first().and_then(|d| d.node_location) {
                 // @babel/core File#buildCodeFrameError: `end` only when the node starts and ends on one line.
                 let end = (l.start_line == l.end_line).then_some((l.end_line, l.end_column));
                 self.message.push('\n');
@@ -396,11 +361,9 @@ impl CompileError {
 }
 
 /// Babel location of byte offset `off`: 1-based line, 0-based column in UTF-16 units (JS string index).
+/// Delegates to [`LineIndex`], the one offset conversion; callers move to it in slice 2.
 pub fn babel_line_col(src: &str, off: u32) -> (u32, u32) {
-    let before = &src[..(off as usize).min(src.len())];
-    let line = before.matches('\n').count() as u32 + 1;
-    let col = before.rsplit('\n').next().map(|l| l.encode_utf16().count()).unwrap_or(0) as u32;
-    (line, col)
+    LineIndex::new(src).babel_line_col(off)
 }
 
 /// `@babel/code-frame` `codeFrameColumns` without highlighting (linesAbove 2, linesBelow 3).
@@ -445,24 +408,6 @@ pub fn code_frame(src: &str, start: (u32, u32), end: Option<(u32, u32)>) -> Stri
     out.join("\n")
 }
 
-impl CompileError {
-    /// `CompilerAggregateError` (error-recovery mode): name `AggregateError`, diagnostics concatenated,
-    /// message lists every sub-error so `LWC####` codes survive the single-message napi seam.
-    pub fn aggregate(errors: Vec<CompileError>, filename: &str) -> Self {
-        let mut message = String::from("Multiple errors occurred during compilation.");
-        for e in &errors { message.push('\n'); message.push_str(&e.message); }
-        Self {
-            message,
-            filename: Some(filename.into()),
-            diagnostics: errors.into_iter().flat_map(|e| e.diagnostics).collect(),
-            name: Some("AggregateError".into()),
-            // JS CompilerAggregateError does not expose location on the aggregate itself.
-            line: None,
-            column: None,
-        }
-    }
-}
-
 /// `@lwc/errors` `LWCErrorInfo`: one entry of the error-info tables (`compiler/error-info/*.ts`).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct LwcErrorInfo {
@@ -476,39 +421,11 @@ pub struct LwcErrorInfo {
     pub strict_level: Option<DiagnosticLevel>,
 }
 
-/// `@lwc/errors` `TransformerErrors.CSS_TRANSFORMER_ERROR` (`compiler/error-info/compiler.ts`, @b9e8007):
-/// `{ code: 1009, message: '{0}', level: Error, strictLevel: Fatal, url: 'https://lwc.dev/guide/error_codes#lwc1009' }`.
-/// `@lwc/compiler` `transformers/style.ts` normalizes every style-compiler throw against it.
-pub const CSS_TRANSFORMER_ERROR: LwcErrorInfo = LwcErrorInfo {
-    code: 1009,
-    message: "{0}",
-    level: DiagnosticLevel::Error,
-    url: Some("https://lwc.dev/guide/error_codes#lwc1009"),
-    strict_level: Some(DiagnosticLevel::Fatal),
-};
-
-/// `@lwc/errors` `Location` shape: `{ line, column, start?, length? }`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct DiagnosticLocation {
-    pub line: u32,
-    pub column: u32,
-    pub start: Option<u32>,
-    pub length: Option<u32>,
-}
-
-impl From<SourceLocation> for DiagnosticLocation {
-    /// `@lwc/template-compiler` `normalizeLocation`: line/column = start line/column,
-    /// start = start offset, length = end - start.
-    fn from(l: SourceLocation) -> Self {
-        Self { line: l.start_line, column: l.start_column, start: l.start, length: l.start.zip(l.end).map(|(s, e)| e.saturating_sub(s)) }
-    }
-}
-
 /// `@lwc/errors` `CompilerDiagnosticOrigin`.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct DiagnosticOrigin {
     pub filename: Option<String>,
-    pub location: Option<SourceLocation>,
+    pub location: Option<DiagnosticLocation>,
 }
 
 /// `@lwc/errors` `generateErrorMessage`: `LWC{code}: {message}`, where `{N}` placeholders are filled
@@ -524,7 +441,7 @@ pub fn generate_error_message(info: &LwcErrorInfo, args: Option<&[&str]>) -> Str
 }
 
 /// JS `templateString`: replaces each `/\{([0-9]+)\}/g` match with `args[index]` (`undefined` if absent).
-fn template_string(template: &str, args: &[&str]) -> String {
+pub(crate) fn template_string(template: &str, args: &[&str]) -> String {
     let mut out = String::with_capacity(template.len());
     let mut rest = template;
     while let Some(open) = rest.find('{') {
@@ -550,7 +467,7 @@ impl CompilerDiagnostic {
     /// The message is built by [`generate_error_message`] and already carries the `LWC{code}: `
     /// prefix; callers must not add it again. Level is `strict_level` when `use_strict_error_override`
     /// is set and the info has one, else `level`. Filename and location come only from `origin`
-    /// (both `None` without one). Use [`CompilerDiagnostic::js_location`] for the JS `Location` shape.
+    /// (both `None` without one).
     pub fn generate(info: &LwcErrorInfo, args: Option<&[&str]>, origin: Option<DiagnosticOrigin>, use_strict_error_override: bool) -> Self {
         let level = match (use_strict_error_override, info.strict_level) {
             (true, Some(strict)) => strict,
@@ -558,11 +475,6 @@ impl CompilerDiagnostic {
         };
         let origin = origin.unwrap_or_default();
         Self::new(Some(info.code), generate_error_message(info, args), level, origin.filename, origin.location)
-    }
-
-    /// The diagnostic's location in `@lwc/errors` `Location` shape (`{ line, column, start, length }`).
-    pub fn js_location(&self) -> Option<DiagnosticLocation> {
-        self.location.map(DiagnosticLocation::from)
     }
 }
 
@@ -642,25 +554,25 @@ mod diagnostic_code_tests {
     #[test]
     fn generate_1165_error_with_location() {
         // `<template><div lwc:else></div></template>`; JS @b9e8007 location {line:1,column:11,start:10,length:20}.
-        let loc = SourceLocation { start_line: 1, start_column: 11, end_line: 1, end_column: 31, start: Some(10), end: Some(30) };
-        let d = CompilerDiagnostic::generate(&LWC_IF_SCOPE_NOT_FOUND, Some(&["lwc:else"]), Some(DiagnosticOrigin { filename: None, location: Some(loc) }), false);
+        let loc = SourceLocation { start_line: 1, start_column: 11, end_line: 1, end_column: 31, start: 10, end: 30 };
+        let d = CompilerDiagnostic::generate(&LWC_IF_SCOPE_NOT_FOUND, Some(&["lwc:else"]), Some(DiagnosticOrigin { filename: None, location: Some(loc.into()) }), false);
         assert_eq!(d.message, "LWC1165: 'lwc:else' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.");
         assert_eq!(d.code, Some(1165));
         assert_eq!((d.level, d.level.js_value()), (DiagnosticLevel::Error, 1));
         assert_eq!(d.filename, None);
-        assert_eq!(d.js_location(), Some(DiagnosticLocation { line: 1, column: 11, start: Some(10), length: Some(20) }));
+        assert_eq!(d.location, Some(DiagnosticLocation { line: 1, column: 11, start: Some(10), length: Some(20), index: None }));
     }
 
     #[test]
     fn generate_1182_warning_with_filename() {
         // `<template><div if:true={a} if:false={b}></div></template>`; JS location {line:1,column:11,start:10,length:36}.
-        let loc = SourceLocation { start_line: 1, start_column: 11, end_line: 1, end_column: 47, start: Some(10), end: Some(46) };
-        let origin = DiagnosticOrigin { filename: Some("x.html".into()), location: Some(loc) };
+        let loc = SourceLocation { start_line: 1, start_column: 11, end_line: 1, end_column: 47, start: 10, end: 46 };
+        let origin = DiagnosticOrigin { filename: Some("x.html".into()), location: Some(loc.into()) };
         let d = CompilerDiagnostic::generate(&SINGLE_IF_DIRECTIVE_ALLOWED, Some(&["div"]), Some(origin), false);
         assert_eq!(d.message, "LWC1182: Multiple if: directives found on 'div'. Only one if: directive is allowed; the rest are ignored.");
         assert_eq!((d.level, d.level.js_value()), (DiagnosticLevel::Warning, 2));
         assert_eq!(d.filename.as_deref(), Some("x.html"));
-        assert_eq!(d.js_location(), Some(DiagnosticLocation { line: 1, column: 11, start: Some(10), length: Some(36) }));
+        assert_eq!(d.location, Some(DiagnosticLocation { line: 1, column: 11, start: Some(10), length: Some(36), index: None }));
     }
 
     #[test]

@@ -15,6 +15,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { compareError, observeError, type CompareResult, type ErrorObservation } from '../src/compareError';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { bundleFixture, existsUp, listFixtures, FIXTURES_ROOT, SSR_RUNTIME_ESM, SSR_RUNTIME_KIND, type SsrMode } from '../src/ssrRender';
+import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import { formatHTML } from '/workspace/lwc/scripts/test-utils/format-html';
 
 const SSR_MODE = (process.env.SSR_MODE ?? 'sync') as SsrMode;
@@ -59,11 +60,9 @@ const MODE_REASONS: Record<string, (rel: string, html: string) => string | undef
         rehydration: 'upstream-asyncYield-microtask: Promise.then() in connectedCallback sets `reactive=1` before template renders',
     } as Record<string, string>)[rel],
 };
-const UPDATE = !!process.env.UPDATE_GOLDENS;
-if (UPDATE && BACKEND_ID !== 'js') throw new Error('UPDATE_GOLDENS=1 is JS-backend only (goldens are the JS oracle)');
 const GOLDEN = path.resolve(here, `../goldens/ssr-render/${SSR_MODE}${SSR_RUNTIME_KIND === 'dist' ? '' : `.${SSR_RUNTIME_KIND}`}.json`);
 type ModeGolden = Record<string, { reason: string; outputs: Record<string, string> }>;
-const modeGolden: ModeGolden = UPDATE || !fs.existsSync(GOLDEN) ? {} : JSON.parse(fs.readFileSync(GOLDEN, 'utf8'));
+const modeGolden: ModeGolden = UPDATE ? {} : readGolden(GOLDEN);   // missing golden file = failure, never {} (which would silently drop overrides)
 const recorded: ModeGolden = {};
 
 // In async mode, template errors inside the stringified promises surface as unhandled rejections (see above). They are
@@ -89,9 +88,8 @@ afterAll(() => {
         for (const l of savedRejectionListeners) process.on('unhandledRejection', l as any);
     }
     if (UPDATE) {
-        fs.mkdirSync(path.dirname(GOLDEN), { recursive: true });
         const sorted = Object.fromEntries(Object.entries(recorded).sort(([a], [b]) => a.localeCompare(b)));
-        fs.writeFileSync(GOLDEN, JSON.stringify(sorted, null, 1) + '\n');
+        writeGolden(GOLDEN, sorted, 1);
     }
     const file = path.join(OUT, 'report.json');
     fs.writeFileSync(file, JSON.stringify({ backend: BACKEND_ID, mode: SSR_MODE, runtime: SSR_RUNTIME_KIND, napi: process.env.LWC_COMPILER_NAPI_PATH ?? null, strayRejections, rows: report.sort((a, b) => a.fixture.localeCompare(b.fixture)) }, null, 1));

@@ -1,5 +1,6 @@
 //! Option gaps #4-#9 vs shipped @lwc/compiler 9.5.3 (`transformSync`). Expected strings were captured from the
 //! shipped npm tarballs (oracle script /tmp/lwc953/run/oracle.mjs); comparisons reprint both sides through oxc.
+mod support;
 use lwc_shared::{CompileOptions, Sourcemap};
 use oxc::{allocator::Allocator, codegen::Codegen, parser::{ParseOptions, Parser}, span::SourceType};
 
@@ -12,7 +13,7 @@ fn norm(src: &str) -> String {
     assert!(!r.diagnostics.has_errors(), "parse error in:\n{src}");
     Codegen::new().build(&r.program).code
 }
-fn codes(e: &lwc_shared::CompileError) -> Vec<u32> { e.diagnostics.iter().filter_map(|d| d.code).collect() }
+fn codes(e: &support::Thrown) -> Vec<u32> { e.errors.iter().filter_map(|d| d.code).collect() }
 const CMP: &str = "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement {\n  @api value = 1;\n}\n";
 
 // ---------- #4 LWS ----------
@@ -32,7 +33,7 @@ fn lws_unforgeables_match_shipped() {
     }
 }
 
-fn lws_err(src: &str) -> lwc_shared::CompileError { lwc_js::transform(src, "foo.js", &lws()).unwrap_err() }
+fn lws_err(src: &str) -> support::Thrown { support::thrown(src, "foo.js", &lws()) }
 
 /// Shipped 9.5.3 throws (Babel validator TypeError, wrapped as LWC1007) for unforgeable for-in/of member targets.
 #[test]
@@ -157,7 +158,7 @@ fn sourcemap_off_by_default() {
 #[test]
 fn sourcemap_invalid_string_is_lwc1021() {
     let e = Sourcemap::from_js_str("foo", "foo.js").unwrap_err();
-    assert_eq!(codes(&e), vec![1021]);
+    assert_eq!(e.diagnostics.iter().filter_map(|d| d.code).collect::<Vec<_>>(), vec![1021]);
 }
 
 // ---------- #5 isExplicitImport ----------
@@ -178,7 +179,7 @@ const PRIV: &str = "import { LightningElement } from 'lwc';\nexport default clas
 #[test]
 fn private_methods_default_and_false_reject_like_shipped() {
     for o in [opts(), CompileOptions { enable_private_methods: false, ..opts() }] {
-        let e = lwc_js::transform(PRIV, "foo.js", &o).unwrap_err();
+        let e = support::thrown(PRIV, "foo.js", &o);
         assert_eq!(codes(&e), vec![1007]);
         assert!(e.message.contains("Class private methods are not enabled. Please add `@babel/plugin-transform-private-methods` to your configuration."), "{}", e.message);
     }
@@ -198,7 +199,7 @@ const DYN: &str = "export function f(x) { return import(x); }\n";
 fn strict_specifier_defaults_true() {
     assert!(opts().dynamic_import_strict_specifier);
     for loader in ["", "myLoader"] {
-        let e = lwc_js::transform(DYN, "foo.js", &CompileOptions { dynamic_import_loader: loader.into(), ..opts() }).unwrap_err();
+        let e = support::thrown(DYN, "foo.js", &CompileOptions { dynamic_import_loader: loader.into(), ..opts() });
         assert_eq!(codes(&e), vec![1121], "loader={loader:?}");
         assert!(e.message.contains("Invalid import. The argument \"x\" must be a stringLiteral for dynamic imports when strict mode is enabled."), "{}", e.message);
     }

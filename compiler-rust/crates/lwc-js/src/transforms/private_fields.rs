@@ -13,7 +13,7 @@
 //! Private METHODS are untouched: with the flag on, private_methods::forward already renamed them, so
 //! only `PropertyDefinition`s with a private key are lowered (the shipped "sandwich" result).
 use super::hoist::{Scopes, Uids};
-use crate::edits::Edit;
+use lwc_shared::edits::Edit;
 use oxc::ast::ast::*;
 use oxc::ast_visit::{walk, Visit};
 use oxc::semantic::ScopeFlags;
@@ -59,7 +59,7 @@ impl<'s> Pf<'s> {
         f(self);
         let child: Vec<Edit> = self.edits.split_off(mark).into_iter()
             .map(|e| Edit::replace(e.start - start, e.end - start, e.text)).collect();
-        crate::edits::apply(&self.src[start as usize..end as usize], child)
+        lwc_shared::edits::apply(&self.src[start as usize..end as usize], child).expect("lwc-js edits never partially overlap")
     }
     fn render_expr<'a>(&mut self, e: &Expression<'a>) -> String {
         let s = e.span();

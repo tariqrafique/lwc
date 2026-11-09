@@ -1,0 +1,8 @@
+# path(repo-relative)	tag(exact text inside SHIM(...))	owner	expiry	reason
+# Expiry is NOT machine-evaluated by shim-gate; it is enforced at the named stage's review (S<n>, AB-..., or D-NNNN).
+crates/lwc-template/src/parser/expression_complex/validate.rs	AB-D0004 S2, expires S6	template	S6	acorn_text_on_oxc_error re-lexer (AB-D0004 Q2); expires at S6
+crates/lwc-template/src/codegen/optimize.rs	AB-D0004 S4 grouping_wrap, expires S6	template	S6	grouping vs call paren heuristic in text hoist pass (AB-D0004 S4 cond 3); S6 moves static hoist onto AST
+crates/lwc-js/src/lib.rs	D-0262 P1 pass_with, expires D-0265	js	D-0265	pass_with re-parses span-edited source between class-features edit passes
+crates/lwc-js/src/helpers.rs	D-0262 P1 post_codegen_edits, expires D-0265	js	D-0265	post_codegen_edits find+replaces babelHelpers.* on printed codegen output
+crates/lwc-js/src/transforms/unforgeables.rs	D-0262 P1 unforgeables, expires D-0265	js	D-0265	unforgeables::run parse_with of printed JS under LWS
+crates/lwc-js/src/transforms/lower.rs	D-0262 P1 async_functions, expires D-0265	js	D-0265	async_functions parses printed JS to reprint after unforgeables

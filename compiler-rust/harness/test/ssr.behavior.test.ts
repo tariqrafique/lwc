@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, it, expect, beforeAll } from 'vitest';
+import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import { compareError, observeError } from '../src/compareError';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalSsrModule } from '../src/evalSsr';
@@ -10,8 +11,6 @@ const ROOT = '/workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures';
 const SSR_MODE = (process.env.SSR_MODE ?? 'sync') as 'sync' | 'async' | 'asyncYield';
 if (!['sync', 'async', 'asyncYield'].includes(SSR_MODE)) throw new Error(`bad SSR_MODE ${SSR_MODE}`);
 const GOLDEN_DIR = path.resolve(import.meta.dirname, SSR_MODE === 'sync' ? '../goldens/ssr' : `../goldens/ssr-${SSR_MODE}`);
-const UPDATE = !!process.env.UPDATE_GOLDENS;
-if (UPDATE && process.env.LWC_COMPILER_BACKEND === 'rust') throw new Error('Refusing UPDATE_GOLDENS with rust backend: goldens are the JS oracle');
 
 function walk(dir: string, pred: (p: string) => boolean): string[] {
     return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
@@ -84,11 +83,10 @@ describe(`ssr behavioral [${SSR_MODE}]`, () => {
             if (expectedCode != null) expect(thrownCodes).toContain(expectedCode);
             const observed = { expectedCompileError: expectedCode, uncodedCompileError, renderErrorDeferred: !m && !!errText && !uncodedCompileError, modules: results };
             const g = path.join(GOLDEN_DIR, rel.replace(/[\\/]/g, '__') + '.json');
-            if (UPDATE || !fs.existsSync(g)) {
-                fs.mkdirSync(GOLDEN_DIR, { recursive: true });
-                fs.writeFileSync(g, JSON.stringify(observed, null, 2) + '\n');
+            if (UPDATE) {
+                writeGolden(g, observed);
             } else {
-                expect(observed).toEqual(JSON.parse(fs.readFileSync(g, 'utf8')));
+                expect(observed).toEqual(readGolden(g));
             }
         });
     }

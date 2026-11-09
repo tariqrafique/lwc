@@ -1,12 +1,38 @@
-//! Minimal sync `compileComponentForSSR`: rewrite `lwc` → `@lwc/ssr-runtime`,
-//! inject template import + `setStaticInternals`. Catalogs `@api` / `@wire`;
-//! strips decorator lines. Non-lwc modules pass through. Names anonymous default classes.
+//! compile-js/index.ts `compileJS`: one oxc parse + semantic and one pre-order [`Visit`] (`Index`)
+//! decide `isLWC`, the component class and the default export, and rewrite imports (lwc_import,
+//! remove_decorator_import, stylesheets), validate and collect `@api` / `@track` / `@wire` members
+//! (decorators) and remove decorators, rewrite component class members (constructor, `super(...)`,
+//! lifecycle methods) and reject reserved `__lwc` identifiers in any module, as source edits applied
+//! with `lwc_shared::edits`. Non-LWC modules get only the import and decorator edits. The text passes
+//! after that (base-class registration, `setStaticInternals`) are being ported slice by slice (AB-0002).
 
+use lwc_shared::edits::{apply, Edit};
+use lwc_shared::errors::{LWCClassErrors, SsrCompilerErrors};
+use lwc_shared::js_literal::json_string;
+use lwc_shared::meta::version_comment;
 use lwc_shared::{CompileError, CompileOptions, CompileResult};
+use oxc::allocator::Allocator;
+use oxc::ast::ast::*;
+use oxc::ast::AstKind;
+use oxc::ast_visit::{walk, Visit};
+use oxc::parser::Parser;
+use oxc::semantic::{AstNodes, Scoping, SemanticBuilder};
+use oxc::span::{GetSpan, SourceType, Span};
+use oxc::syntax::scope::ScopeFlags;
 use std::path::Path;
 
-mod class_rewrite;
-mod dynamic_imports;
+mod decorators;
+mod errors;
+mod import_manager;
+mod lwc_import;
+mod remove_decorator_import;
+mod stylesheets;
+
+use decorators::api::is_api_decorator;
+use decorators::api::validate::{validate_api_method, validate_api_property, validate_property_unique, validate_unique_method, ApiDefinition, Definition, PublicProperties};
+use decorators::validate_unique_decorator;
+use decorators::wire::{catalog_wire_adapter, is_wire_decorator, wire_adapters_plumbing, WireAdapter, WiredMember};
+use import_manager::{import_declaration, ImportManager, Spec};
 
 /// Port of `@lwc/shared` `generateCustomElementTagName`.
 pub fn generate_custom_element_tag_name(namespace: &str, name: &str) -> String {
@@ -36,1619 +62,632 @@ fn module_stem(filename: &str, fallback: &str) -> String {
         .to_string()
 }
 
-fn pascal_case(name: &str) -> String {
-    name.split(|c| c == '-' || c == '_' || c == '.')
-        .filter(|s| !s.is_empty())
-        .map(|s| {
-            let mut cs = s.chars();
-            match cs.next() {
-                None => String::new(),
-                Some(f) => f.to_uppercase().collect::<String>() + cs.as_str(),
-            }
-        })
-        .collect()
+/// compile-js/index.ts: the id given to a default-exported anonymous class declaration.
+const DEFAULT_COMPONENT_NAME: &str = "DefaultComponentName";
+/// compile-js/index.ts Program.leave: the binding an `export default <expression>` is extracted into.
+const DEFAULT_EXPORT_BINDING: &str = "__lwcDefaultExport";
+/// index.ts MethodDefinition `constructor` / Super: the param a component constructor gains and
+/// forwards to `super(...)`.
+const PROPS_ARG: &str = "propsAvailableAtConstruction";
+/// index.ts Identifier visitor: user identifiers may not start with this.
+const RESERVED_IDENTIFIER_PREFIX: &str = "__lwc";
+/// register-base-class-props.ts `REGISTER_PUBLIC_PROPERTIES`, the local the runtime export is imported as.
+const REGISTER_PUBLIC_PROPERTIES: &str = "__registerPublicProperties";
+/// index.ts ImportExpression: the loader's `load` export is imported as this.
+const LOAD: &str = "__lwcLoad";
+
+/// compile-js/types.ts `ComponentMetaState`: the fields the ported index.ts visitors fill.
+#[derive(Default)]
+struct ComponentMetaState {
+    lightning_element_identifier: Option<String>,
+    /// index.ts `isLWC` + `lwcClassName`: `Some` once a class matched the component visitors.
+    component: Option<ComponentClass>,
+    /// index.ts `lwcDefaultExportName` (set for any module's default export, LWC or not).
+    lwc_default_export_name: Option<String>,
+    /// `export default <expression>`: (declaration span, expression span), extracted at Program leave.
+    export_default_expression: Option<(Span, Span)>,
+    /// Class bodies that get index.ts's `LWC_VERSION_COMMENT` (every class the visitors match).
+    version_comment_bodies: Vec<Span>,
+    /// index.ts `currentComponent`: set when a class matches, cleared on leaving that class only, so
+    /// it stays set inside nested classes and is cleared by a nested match's leave.
+    current_component: Option<Span>,
+    /// index.ts `publicProperties`, filled while `current_component` is set.
+    public_properties: PublicProperties,
+    /// index.ts `moduleClassNodes`: every class, for base-class `@api` registration.
+    module_classes: Vec<ModuleClass>,
+    /// index.ts `lwcComponentNode`: the last class that matched.
+    lwc_component_node: Option<Span>,
+    /// index.ts `wireAdapters`, with the decorated member's span.
+    wire_adapters: Vec<(WireAdapter, Span)>,
+    /// Where index.ts's MethodDefinition `constructor` / Super visitors append `propsAvailableAtConstruction`
+    /// (`params.push` / `arguments.push`): the offset, and whether the list already has an item.
+    props_arg_sites: Vec<(u32, bool)>,
 }
 
-fn class_has_extends(src: &str, class_name: &str) -> bool {
-    for line in src.lines() {
-        let t = line.trim();
-        let rest = if let Some(r) = t.strip_prefix("export default class ") {
-            r
-        } else if let Some(r) = t.strip_prefix("class ") {
-            r
-        } else {
-            continue;
+/// An entry of `moduleClassNodes`, with what `registerBaseClassProps` reads from it.
+struct ModuleClass {
+    span: Span,
+    /// The ClassBody, whose `body.push` the static block is.
+    body: Span,
+    /// register-base-class-props.ts `ownApiProps`.
+    api_props: Vec<String>,
+}
+
+/// The matched component class. `name` is upstream's nullable `lwcClassName`: an anonymous class
+/// expression outside a variable declarator (`export default (class extends LightningElement {})`)
+/// leaves it null, and upstream still compiles via the default export name (generate-markup.ts:54).
+struct ComponentClass {
+    name: Option<String>,
+}
+
+/// What [`index`] decided about the module.
+#[derive(Debug, PartialEq)]
+enum IndexResult {
+    /// index.ts `!state.isLWC`: no `extends` default export and no `extends LightningElement` class expression.
+    NotLwc,
+    Component {
+        /// generate-markup.ts:54 `(state.lwcDefaultExportName ?? state.lwcClassName)!`.
+        exported_name: String,
+        /// generate-markup.ts:73 `[...publicProperties.keys()]`.
+        public_properties: Vec<String>,
+        /// index.ts:423 `registerBaseClassProps` returned true: some other class got a static block,
+        /// so the `registerPublicProperties` import is unshifted.
+        registered_base_class_props: bool,
+        /// generate-markup.ts:62 `state.wireAdapters`.
+        wire_adapters: Vec<WireAdapter>,
+    },
+}
+
+/// What index.ts's member visitors recorded for one member.
+enum Cataloged {
+    Nothing,
+    Public,
+    Wire(WireAdapter),
+}
+
+/// compile-js/index.ts `visitors`: one read-only pre-order walk that fills [`ComponentMetaState`]
+/// and records source edits for [`lwc_shared::edits::apply`].
+struct Index<'s, 'a> {
+    src: &'s str,
+    filename: &'s str,
+    scoping: &'s Scoping,
+    nodes: &'s AstNodes<'a>,
+    state: ComponentMetaState,
+    edits: Vec<Edit>,
+    /// The class declaration that is `export default`'s direct child.
+    export_default_class: Option<Span>,
+    /// `const X = class …`: the class expression and X.
+    declarator_class: Option<(Span, String)>,
+    /// The first error a visitor throws; upstream's traversal stops there, so later checks are skipped.
+    error: Option<CompileError>,
+    /// For each enclosing function (innermost last): whether it is a constructor's value, i.e. what
+    /// index.ts's Super visitor asks of `path.getFunctionParent()`. Arrows count as functions.
+    functions: Vec<bool>,
+    /// `dynamicImports.strictSpecifier` and `.loader` (`""` for none).
+    strict_specifier: bool,
+    loader: &'s str,
+    /// index.ts `state.importManager`.
+    import_manager: ImportManager,
+    /// registerBaseClassProps injected a static block.
+    registered_base_class_props: bool,
+}
+
+/// index.ts `isKeyIdentifier`: the key is an Identifier node (`x`, or computed `[x]`).
+fn key_identifier<'k>(key: &'k PropertyKey) -> Option<&'k str> {
+    match key {
+        PropertyKey::StaticIdentifier(id) => Some(id.name.as_str()),
+        PropertyKey::Identifier(id) => Some(id.name.as_str()),
+        _ => None,
+    }
+}
+
+/// register-base-class-props.ts `ownApiProps`: the class's own `@api` member names, in source order.
+fn own_api_props(c: &Class) -> Vec<String> {
+    let mut props: Vec<String> = Vec::new();
+    for member in &c.body.body {
+        let (key, decorators) = match member {
+            ClassElement::PropertyDefinition(p) => (&p.key, &p.decorators),
+            ClassElement::MethodDefinition(m) => (&m.key, &m.decorators),
+            _ => continue,
         };
-        let name: String = rest
-            .chars()
-            .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-            .collect();
-        if name == class_name {
-            return rest.contains(" extends ");
-        }
-    }
-    false
-}
-
-fn should_transform_component(src: &str, class_name: &str) -> bool {
-    imports_from_lwc(src)
-        || class_has_extends(src, class_name)
-        || find_le_class_expression_binding(src).is_some()
-}
-
-
-fn validate_reserved_identifiers(src: &str, filename: &str) -> Option<CompileError> {
-    // Reject user identifiers starting with __lwc (SSR reserved). Skip our own emit tokens by running on input src.
-    let mut in_string: Option<char> = None;
-    let mut i = 0;
-    let b = src.as_bytes();
-    while i < b.len() {
-        let c = b[i] as char;
-        if let Some(q) = in_string {
-            if c == '\\' { i += 2; continue; }
-            if c == q { in_string = None; }
-            i += 1;
-            continue;
-        }
-        if c == '\'' || c == '"' || c == '`' {
-            in_string = Some(c);
-            i += 1;
-            continue;
-        }
-        // identifier start
-        if c == '_' || c.is_ascii_alphabetic() {
-            let start = i;
-            i += 1;
-            while i < b.len() {
-                let ch = b[i] as char;
-                if ch.is_ascii_alphanumeric() || ch == '_' || ch == '$' { i += 1; } else { break; }
-            }
-            let ident = &src[start..i];
-            if ident.starts_with("__lwc") {
-                return Some(CompileError::lwc(
-                    1202,
-                    "Identifier name cannot start with \"__lwc\".",
-                    filename,
-                    None,
-                    None,
-                ));
-            }
-            continue;
-        }
-        i += 1;
-    }
-    None
-}
-
-fn validate_wire_decorators(src: &str, filename: &str) -> Option<CompileError> {
-    // Collect imported binding names from import declarations.
-    let mut module_bindings = std::collections::HashSet::new();
-    let mut const_names = std::collections::HashSet::new();
-    let mut let_names = std::collections::HashSet::new();
-    for line in src.lines() {
-        let t = line.trim();
-        if t.starts_with("import ") {
-            if let (Some(a), Some(b)) = (t.find('{'), t.find('}')) {
-                for part in t[a + 1..b].split(',') {
-                    let part = part.trim();
-                    if part.is_empty() {
-                        continue;
-                    }
-                    let local = if let Some((_, right)) = part.split_once(" as ") {
-                        right.trim()
-                    } else {
-                        part.trim()
-                    };
-                    if !local.is_empty() {
-                        module_bindings.insert(local.to_string());
-                    }
-                }
-            }
-            // import Foo from '...'
-            if t.contains(" from ") && !t.contains('{') {
-                if let Some(rest) = t.strip_prefix("import ") {
-                    let name = rest.split_whitespace().next().unwrap_or("");
-                    if !name.is_empty() && name != "type" {
-                        module_bindings.insert(name.to_string());
-                    }
-                }
+        if let Some(name) = key_identifier(key) {
+            if decorators.iter().any(is_api_decorator) && !props.iter().any(|p| p == name) {
+                props.push(name.into());
             }
         }
-        if let Some(rest) = t.strip_prefix("const ") {
-            let name: String = rest
-                .chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect();
-            if !name.is_empty() {
-                const_names.insert(name);
-            }
-        }
-        if let Some(rest) = t.strip_prefix("let ") {
-            let name: String = rest
-                .chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect();
-            if !name.is_empty() {
-                let_names.insert(name);
-            }
-        }
-    }
-
-    let lines: Vec<&str> = src.lines().collect();
-    let mut i = 0;
-    while i < lines.len() {
-        let t = lines[i].trim();
-        if !(t.starts_with("@wire(") || t.starts_with("@wire (") || t == "@wire") {
-            i += 1;
-            continue;
-        }
-
-        // Gather consecutive @wire lines (1105) and full wire call text
-        let mut wire_count = 0;
-        let mut j = i;
-        let mut block = String::new();
-        while j < lines.len() {
-            let tj = lines[j].trim();
-            if tj.starts_with("@wire") {
-                wire_count += 1;
-                // accumulate this wire call
-                let mut depth = tj.chars().filter(|c| *c == '(').count() as i32
-                    - tj.chars().filter(|c| *c == ')').count() as i32;
-                block.push_str(tj);
-                block.push('\n');
-                let mut k = j;
-                while depth > 0 && k + 1 < lines.len() {
-                    k += 1;
-                    block.push_str(lines[k]);
-                    block.push('\n');
-                    depth += lines[k].chars().filter(|c| *c == '(').count() as i32;
-                    depth -= lines[k].chars().filter(|c| *c == ')').count() as i32;
-                }
-                j = k + 1;
-                // Same-line `@wire(A) prop;` — member already on this call; not stacked.
-                let call_end_line = lines[k].trim();
-                if let Some(rp) = call_end_line.rfind(')') {
-                    let after = call_end_line[rp + 1..].trim().trim_start_matches(';').trim();
-                    if !after.is_empty() && !after.starts_with('@') {
-                        break;
-                    }
-                }
-                // peek next non-empty — stacked `@wire` only when no member yet
-                let mut p = j;
-                while p < lines.len() && lines[p].trim().is_empty() {
-                    p += 1;
-                }
-                if p < lines.len() && lines[p].trim().starts_with("@wire") {
-                    continue;
-                }
-                break;
-            } else if tj.is_empty() {
-                j += 1;
-            } else {
-                break;
-            }
-        }
-        if wire_count > 1 {
-            return Some(CompileError::lwc(
-                1105,
-                "Method or property can only have 1 @wire decorator",
-                filename,
-                None,
-                None,
-            ));
-        }
-
-        // Member after wire (and possible other decorators already checked)
-        let mut m = j;
-        while m < lines.len() && lines[m].trim().is_empty() {
-            m += 1;
-        }
-        if m < lines.len() {
-            let member = lines[m].trim();
-            // MethodDefinition with computed key (get/set/method) — PropertyDefinition fields are allowed.
-            let is_methodish = member.starts_with("get ")
-                || member.starts_with("set ")
-                || (member.contains('[') && member.contains('(') && !member.contains('='));
-            if is_methodish && member.contains('[') {
-                return Some(CompileError::new(
-                    "@wire cannot be used on computed properties in SSR context.",
-                    filename,
-                ));
-            }
-        }
-
-        // Parse @wire( args )
-        let open = block.find('(');
-        let close = block.rfind(')');
-        if open.is_none() {
-            // @wire without call — treat as no args
-            return Some(CompileError::lwc(
-                1092,
-                "@wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).",
-                filename,
-                None,
-                None,
-            ));
-        }
-        let open = open.unwrap();
-        let close = close.unwrap_or(block.len());
-        let args = block[open + 1..close].trim();
-        if args.is_empty() {
-            return Some(CompileError::lwc(
-                1092,
-                "@wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).",
-                filename,
-                None,
-                None,
-            ));
-        }
-
-        // Split adapter / config at top-level comma
-        let mut depth = 0i32;
-        let mut split = None;
-        for (idx, c) in args.char_indices() {
-            match c {
-                '(' | '{' | '[' => depth += 1,
-                ')' | '}' | ']' => depth -= 1,
-                ',' if depth == 0 => {
-                    split = Some(idx);
-                    break;
-                }
-                _ => {}
-            }
-        }
-        let (adapter, config) = if let Some(idx) = split {
-            (args[..idx].trim(), Some(args[idx + 1..].trim()))
-        } else {
-            (args.trim(), None)
-        };
-
-        // Adapter checks
-        if adapter.starts_with('\'')
-            || adapter.starts_with('"')
-            || adapter.starts_with('`')
-            || adapter.chars().next().map(|c| c.is_ascii_digit()).unwrap_or(false)
-        {
-            return Some(CompileError::lwc(
-                1097,
-                "@wire expects a function identifier as first parameter.",
-                filename,
-                None,
-                None,
-            ));
-        }
-        if adapter.contains('[') {
-            return Some(CompileError::lwc(
-                1131,
-                "@wire identifier cannot contain computed properties",
-                filename,
-                None,
-                None,
-            ));
-        }
-        // nested member: a.b.c
-        if adapter.matches('.').count() >= 2 {
-            return Some(CompileError::lwc(
-                1132,
-                "@wire identifier cannot contain nested member expressions",
-                filename,
-                None,
-                None,
-            ));
-        }
-        // identifier or simple member a.b
-        let root = adapter.split('.').next().unwrap_or(adapter).trim();
-        if !module_bindings.contains(root) {
-            // local const/let/function → SSR golden uses 1200 for non-module binding
-            if const_names.contains(root) || let_names.contains(root) || root.chars().all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '$') {
-                // if it's a bare identifier not imported
-                if !adapter.contains('.') {
-                    return Some(CompileError::lwc(
-                        1200,
-                        "Computed property in @wire config must be a constant or primitive literal.",
-                        filename,
-                        None,
-                        None,
-                    ));
-                }
-            }
-        }
-
-        if let Some(cfg) = config {
-            let cfg = cfg.trim();
-            if !cfg.starts_with('{') {
-                return Some(CompileError::lwc(
-                    1094,
-                    "@wire expects a configuration object expression as second parameter.",
-                    filename,
-                    None,
-                    None,
-                ));
-            }
-            // template literal computed key
-            if cfg.contains("[`") || cfg.contains("[`") {
-                return Some(CompileError::lwc(
-                    1199,
-                    "Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
-                    filename,
-                    None,
-                    None,
-                ));
-            }
-            if cfg.contains("[`") {
-                return Some(CompileError::lwc(
-                    1199,
-                    "Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
-                    filename,
-                    None,
-                    None,
-                ));
-            }
-            // detect [`...`]
-            if cfg.contains("[`") || cfg.find("[`").is_some() {
-                return Some(CompileError::lwc(1199, "Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.", filename, None, None));
-            }
-            if cfg.contains('[') {
-                // [/key1/] regexp
-                if cfg.contains("[/") {
-                    return Some(CompileError::lwc(
-                        1200,
-                        "Computed property in @wire config must be a constant or primitive literal.",
-                        filename,
-                        None,
-                        None,
-                    ));
-                }
-                // [[symbol]] nested array expression
-                if cfg.contains("[[") {
-                    return Some(CompileError::lwc(
-                        1200,
-                        "Computed property in @wire config must be a constant or primitive literal.",
-                        filename,
-                        None,
-                        None,
-                    ));
-                }
-                // [key1] where key1 is let
-                for name in &let_names {
-                    if cfg.contains(&format!("[{name}]")) {
-                        return Some(CompileError::lwc(
-                            1200,
-                            "Computed property in @wire config must be a constant or primitive literal.",
-                            filename,
-                            None,
-                            None,
-                        ));
-                    }
-                }
-                // template literal key [`key1`]
-                if cfg.contains("[`") || cfg.contains("[`") {
-                    return Some(CompileError::lwc(
-                        1199,
-                        "Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
-                        filename,
-                        None,
-                        None,
-                    ));
-                }
-            }
-            // explicit template literal check
-            if let Some(idx) = cfg.find('[') {
-                let after = &cfg[idx + 1..];
-                if after.starts_with('`') {
-                    return Some(CompileError::lwc(
-                        1199,
-                        "Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
-                        filename,
-                        None,
-                        None,
-                    ));
-                }
-            }
-        }
-
-        i = j;
-    }
-    None
-}
-
-
-fn validate_decorators(src: &str, filename: &str) -> Option<CompileError> {
-    let lines: Vec<&str> = src.lines().collect();
-    let mut api_gets = std::collections::HashSet::new();
-    let mut api_sets = std::collections::HashSet::new();
-    let mut i = 0;
-    while i < lines.len() {
-        let t = lines[i].trim();
-        let member_after_api: Option<String> = if t == "@api" || t.starts_with("@api ") || t.starts_with("@api(") {
-            if let Some(rest) = t.strip_prefix("@api").map(str::trim) {
-                if !rest.is_empty() && !rest.starts_with('(') {
-                    Some(rest.to_string())
-                } else {
-                    let mut j = i + 1;
-                    while j < lines.len() && lines[j].trim().is_empty() {
-                        j += 1;
-                    }
-                    if j < lines.len() {
-                        Some(lines[j].trim().to_string())
-                    } else {
-                        None
-                    }
-                }
-            } else {
-                None
-            }
-        } else {
-            None
-        };
-        if let Some(m) = member_after_api {
-            if let Some(r) = m.strip_prefix("get ") {
-                let name: String = r
-                    .chars()
-                    .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                    .collect();
-                if !name.is_empty() {
-                    api_gets.insert(name);
-                }
-            } else if let Some(r) = m.strip_prefix("set ") {
-                let name: String = r
-                    .chars()
-                    .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                    .collect();
-                if !name.is_empty() {
-                    api_sets.insert(name);
-                }
-            }
-        }
-        if t.starts_with("@wire") {
-            let mut prev = i;
-            while prev > 0 {
-                prev -= 1;
-                let p = lines[prev].trim();
-                if p.is_empty() {
-                    continue;
-                }
-                // Bare decorator only (`@api` / `@track`), not `@track foo = []`.
-                if p == "@api" || p == "@track" || p.starts_with("@api(") || p.starts_with("@track(") {
-                    let other = if p.starts_with("@api") { "api" } else { "track" };
-                    return Some(CompileError::lwc(
-                        1095,
-                        format!("@wire method or property cannot be used with @{other}"),
-                        filename,
-                        None,
-                        None,
-                    ));
-                }
-                break;
-            }
-            let mut j = i + 1;
-            let mut depth = t.chars().filter(|c| *c == '(').count() as i32
-                - t.chars().filter(|c| *c == ')').count() as i32;
-            while depth > 0 && j < lines.len() {
-                depth += lines[j].chars().filter(|c| *c == '(').count() as i32;
-                depth -= lines[j].chars().filter(|c| *c == ')').count() as i32;
-                j += 1;
-            }
-            while j < lines.len() && lines[j].trim().is_empty() {
-                j += 1;
-            }
-            if j < lines.len() {
-                let n = lines[j].trim();
-                if n.starts_with("@api") || n.starts_with("@track") {
-                    let other = if n.starts_with("@api") { "api" } else { "track" };
-                    return Some(CompileError::lwc(
-                        1095,
-                        format!("@wire method or property cannot be used with @{other}"),
-                        filename,
-                        None,
-                        None,
-                    ));
-                }
-            }
-        }
-        i += 1;
-    }
-    for name in api_gets.intersection(&api_sets) {
-        return Some(CompileError::lwc(
-            1112,
-            format!(
-                "@api get {name} and @api set {name} detected in class declaration. Only one of the two needs to be decorated with @api."
-            ),
-            filename,
-            None,
-            None,
-        ));
-    }
-    None
-}
-
-
-
-fn is_export_named_as_default(src: &str) -> bool {
-    src.lines().any(|l| {
-        let t = l.trim();
-        t.starts_with("export {") && t.contains(" as default")
-    })
-}
-
-/// Rewrite `from 'lwc'` → `@lwc/ssr-runtime` without injecting setStaticInternals.
-
-
-
-fn line_imports_lightning_element(t: &str) -> bool {
-    // Avoid matching identifiers like `notLightningElement`.
-    for part in t.split(|c: char| !c.is_ascii_alphanumeric() && c != '_' && c != '$') {
-        if part == "LightningElement" {
-            return true;
-        }
-    }
-    false
-}
-
-fn dedupe_lightning_element_import(src: &str) -> String {
-    // Import bindings only (not `extends LightningElement`).
-    let has_le_elsewhere = {
-        let mut in_import = false;
-        let mut from_runtime = false;
-        let mut found = false;
-        for line in src.lines() {
-            let t = line.trim();
-            if t.starts_with("import ") {
-                in_import = true;
-                from_runtime = t.contains("@lwc/ssr-runtime");
-                if line_imports_lightning_element(t) && !from_runtime {
-                    found = true;
-                }
-                if t.contains(';') {
-                    in_import = false;
-                }
-                continue;
-            }
-            if in_import {
-                if t.contains("@lwc/ssr-runtime") {
-                    from_runtime = true;
-                }
-                if line_imports_lightning_element(t) && !from_runtime {
-                    found = true;
-                }
-                if t.contains(';') || t.starts_with("} from") {
-                    in_import = false;
-                }
-            }
-        }
-        found
-    };
-    if !has_le_elsewhere {
-        return src.to_string();
-    }
-    let mut out = String::new();
-    for line in src.lines() {
-        let t = line.trim();
-        if t.starts_with("import ") && t.contains("@lwc/ssr-runtime") && t.contains("LightningElement") {
-            if let (Some(a), Some(b)) = (t.find('{'), t.find('}')) {
-                let keep: Vec<_> = t[a + 1..b]
-                    .split(',')
-                    .map(str::trim)
-                    .filter(|p| !p.is_empty() && !p.starts_with("LightningElement"))
-                    .collect();
-                if keep.is_empty() {
-                    continue;
-                }
-                out.push_str(&format!("import {{ {} }} from '@lwc/ssr-runtime';\n", keep.join(", ")));
-                continue;
-            }
-        }
-        out.push_str(line);
-        out.push('\n');
-    }
-    out
-}
-fn hoist_ssr_runtime_imports(src: &str) -> String {
-    let mut runtime_lines = Vec::new();
-    let mut tmpl_lines = Vec::new();
-    let mut other = Vec::new();
-    for line in src.lines() {
-        let t = line.trim();
-        if t.starts_with("import ") && t.contains("@lwc/ssr-runtime") {
-            runtime_lines.push(line.to_string());
-        } else if t.starts_with("import ") && t.contains("__lwcTmpl") {
-            tmpl_lines.push(line.to_string());
-        } else {
-            other.push(line.to_string());
-        }
-    }
-    let mut out = String::new();
-    for l in &runtime_lines {
-        out.push_str(l);
-        out.push('\n');
-    }
-    for l in &tmpl_lines {
-        out.push_str(l);
-        out.push('\n');
-    }
-    for l in &other {
-        out.push_str(l);
-        out.push('\n');
-    }
-    out
-}
-
-fn rewrite_scoped_css_imports(src: &str) -> String {
-    let mut out = String::with_capacity(src.len() + 32);
-    for line in src.lines() {
-        let mut l = line.to_string();
-        if l.contains(".scoped.css'") && !l.contains(".scoped.css?scoped=true'") {
-            l = l.replace(".scoped.css'", ".scoped.css?scoped=true'");
-        }
-        if l.contains(".scoped.css\"") && !l.contains(".scoped.css?scoped=true\"") {
-            l = l.replace(".scoped.css\"", ".scoped.css?scoped=true\"");
-        }
-        out.push_str(&l);
-        out.push('\n');
-    }
-    out
-}
-
-fn rewrite_lwc_imports_only(src: &str) -> String {
-    src.replace("from 'lwc'", &format!("from '{}'", crate::runtime_abi::RUNTIME_MODULE))
-        .replace("from \"lwc\"", &format!("from \"{}\"", crate::runtime_abi::RUNTIME_MODULE))
-}
-
-fn imports_from_lwc(src: &str) -> bool {
-    src.contains("from 'lwc'") || src.contains("from \"lwc\"")
-}
-
-/// Returns (class_name, src_with_anonymous_named).
-fn resolve_default_class(src: &str, options_name: &str) -> Result<(String, String), ()> {
-    // export default class Name ...
-    for line in src.lines() {
-        let t = line.trim();
-        if let Some(rest) = t.strip_prefix("export default class ") {
-            // anonymous: "extends ..." or "{" 
-            let first = rest.trim_start();
-            if first.starts_with("extends ") || first.starts_with('{') {
-                let name = pascal_case(options_name);
-                if name.is_empty() {
-                    return Err(());
-                }
-                let mut out = String::with_capacity(src.len() + name.len() + 1);
-                for l in src.lines() {
-                    let lt = l.trim();
-                    if lt.starts_with("export default class ") {
-                        let r = lt.strip_prefix("export default class ").unwrap().trim_start();
-                        if r.starts_with("extends ") || r.starts_with('{') {
-                            // preserve indent
-                            let indent = &l[..l.len() - l.trim_start().len()];
-                            out.push_str(indent);
-                            out.push_str("export default class ");
-                            out.push_str(&name);
-                            out.push(' ');
-                            out.push_str(r);
-                            out.push('\n');
-                            continue;
-                        }
-                    }
-                    out.push_str(l);
-                    out.push('\n');
-                }
-                return Ok((name, out));
-            }
-            let name: String = first
-                .chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect();
-            if !name.is_empty() && name != "extends" {
-                return Ok((name, src.to_string()));
-            }
-        }
-    }
-    // class Name ...; export default Name;
-    let mut class_names = Vec::new();
-    for line in src.lines() {
-        let t = line.trim();
-        if let Some(rest) = t.strip_prefix("class ") {
-            let name: String = rest
-                .chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect();
-            if !name.is_empty() {
-                class_names.push(name);
-            }
-        }
-        if let Some(rest) = t.strip_prefix("export default ") {
-            let name: String = rest
-                .chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect();
-            if class_names.iter().any(|c| c == &name) {
-                return Ok((name, src.to_string()));
-            }
-        }
-        if t.starts_with("export {") && t.contains(" as default") {
-            if let (Some(a), Some(b)) = (t.find('{'), t.find('}')) {
-                for part in t[a + 1..b].split(',') {
-                    let part = part.trim();
-                    if let Some((left, right)) = part.split_once(" as ") {
-                        if right.trim() == "default" {
-                            let name = left.trim().to_string();
-                            if !name.is_empty() {
-                                return Ok((name, src.to_string()));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    Err(())
-}
-
-#[derive(Debug, Clone)]
-struct WireAdapter {
-    adapter_id: String,
-    config_obj: String,
-    field: String,
-    is_method: bool,
-}
-
-fn rewrite_dollar_config(config: &str) -> String {
-    let mut out = String::new();
-    let bytes = config.as_bytes();
-    let mut i = 0;
-    while i < bytes.len() {
-        let c = bytes[i] as char;
-        if c == '\'' || c == '"' {
-            let quote = c;
-            let start = i;
-            i += 1;
-            while i < bytes.len() {
-                let ch = bytes[i] as char;
-                if ch == '\\' {
-                    i += 2;
-                    continue;
-                }
-                if ch == quote {
-                    i += 1;
-                    break;
-                }
-                i += 1;
-            }
-            let lit = &config[start..i];
-            let inner = &lit[1..lit.len().saturating_sub(1)];
-            if inner.starts_with('$') && inner.len() > 1 {
-                let mut expr = String::from("instance");
-                for p in inner[1..].split('.') {
-                    expr.push_str(&format!("[\"{p}\"]"));
-                }
-                out.push_str(&expr);
-            } else {
-                out.push_str(lit);
-            }
-        } else {
-            out.push(c);
-            i += 1;
-        }
-    }
-    out
-}
-
-fn collect_wire_adapters(src: &str) -> Vec<WireAdapter> {
-    let mut out = Vec::new();
-    let lines: Vec<&str> = src.lines().collect();
-    let mut i = 0;
-    while i < lines.len() {
-        let t = lines[i].trim();
-        if t.starts_with("@wire(") || t.starts_with("@wire (") {
-            let mut block = t.to_string();
-            let mut depth = block.chars().filter(|c| *c == '(').count() as i32
-                - block.chars().filter(|c| *c == ')').count() as i32;
-            let mut j = i;
-            while depth > 0 && j + 1 < lines.len() {
-                j += 1;
-                block.push('\n');
-                block.push_str(lines[j]);
-                depth += lines[j].chars().filter(|c| *c == '(').count() as i32;
-                depth -= lines[j].chars().filter(|c| *c == ')').count() as i32;
-            }
-            let Some(open) = block.find('(') else {
-                i += 1;
-                continue;
-            };
-            let Some(close) = block.rfind(')') else {
-                i += 1;
-                continue;
-            };
-            let args = block[open + 1..close].trim();
-            let (adapter_id, config_raw) = if let Some((a, rest)) = args.split_once(',') {
-                (a.trim().to_string(), rest.trim().to_string())
-            } else {
-                (args.trim().to_string(), "{}".into())
-            };
-            let config_obj = if config_raw.is_empty() {
-                "{}".into()
-            } else {
-                rewrite_dollar_config(&config_raw)
-            };
-
-            // Same-line `@wire(A) field;` — member after `)` on the call's end line.
-            let mut same_line_member: Option<String> = None;
-            let end_t = lines[j].trim();
-            if let Some(rp) = end_t.rfind(')') {
-                let after = end_t[rp + 1..].trim().trim_start_matches(';').trim();
-                if !after.is_empty() && !after.starts_with('@') {
-                    same_line_member = Some(after.to_string());
-                }
-            }
-
-            let mut k = j + 1;
-            while k < lines.len() && lines[k].trim().is_empty() {
-                k += 1;
-            }
-            let mut m = if let Some(ref sl) = same_line_member {
-                sl.as_str()
-            } else if k >= lines.len() {
-                i = j + 1;
-                continue;
-            } else {
-                lines[k].trim()
-            };
-            let mut is_method = false;
-            for prefix in ["async ", "static "] {
-                if let Some(r) = m.strip_prefix(prefix) {
-                    m = r.trim_start();
-                }
-            }
-            if let Some(r) = m.strip_prefix("get ") {
-                m = r;
-            } else if let Some(r) = m.strip_prefix("set ") {
-                m = r;
-            } else if m.contains('(') {
-                is_method = true;
-            }
-            let field: String = m
-                .chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect();
-            if !field.is_empty() && !adapter_id.is_empty() {
-                out.push(WireAdapter {
-                    adapter_id,
-                    config_obj,
-                    field,
-                    is_method,
-                });
-            }
-            i = if same_line_member.is_some() { j + 1 } else { k + 1 };
-            continue;
-        }
-        i += 1;
-    }
-    out
-}
-
-fn emit_wire_adapters_lit(adapters: &[WireAdapter]) -> String {
-    if adapters.is_empty() {
-        return "null".into();
-    }
-    let mut parts = Vec::new();
-    for a in adapters {
-        let action = if a.is_method {
-            format!("instance.{}(newValue)", a.field)
-        } else {
-            format!("instance.{} = newValue", a.field)
-        };
-        parts.push(format!(
-            "{{ adapter: {}, dataCallback: (instance) => (newValue) => {{ {action}; }}, config: (instance) => ({}) }}",
-            a.adapter_id, a.config_obj
-        ));
-    }
-    format!("[{}]", parts.join(", "))
-}
-
-fn collect_public_props_in_range(src: &str, start_line: usize, end_line: usize) -> Vec<String> {
-    let mut props = Vec::new();
-    let lines: Vec<&str> = src.lines().collect();
-    let mut i = start_line;
-    while i < end_line.min(lines.len()) {
-        let t = lines[i].trim();
-        let is_api = t == "@api" || t.starts_with("@api ") || t.starts_with("@api(");
-        if is_api {
-            if let Some(rest) = t.strip_prefix("@api").map(str::trim) {
-                if !rest.is_empty() && !rest.starts_with('(') {
-                    let mut m = rest;
-                    for prefix in ["async ", "static ", "get ", "set ", "*"] {
-                        if let Some(r) = m.strip_prefix(prefix) {
-                            m = r.trim_start();
-                        }
-                    }
-                    let name: String = m
-                        .chars()
-                        .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                        .collect();
-                    if !name.is_empty() && !props.contains(&name) {
-                        props.push(name);
-                    }
-                    i += 1;
-                    continue;
-                }
-            }
-            let mut j = i + 1;
-            while j < end_line.min(lines.len()) && lines[j].trim().is_empty() {
-                j += 1;
-            }
-            if j < end_line.min(lines.len()) {
-                let mut m = lines[j].trim();
-                for prefix in ["async ", "static ", "get ", "set ", "*"] {
-                    if let Some(r) = m.strip_prefix(prefix) {
-                        m = r.trim_start();
-                    }
-                }
-                let name: String = m
-                    .chars()
-                    .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                    .collect();
-                if !name.is_empty() && !props.contains(&name) {
-                    props.push(name);
-                }
-            }
-        }
-        i += 1;
     }
     props
 }
 
-fn collect_public_props_for_class(src: &str, class_name: &str) -> Vec<String> {
-    let lines: Vec<&str> = src.lines().collect();
-    let mut start = None;
-    for (i, line) in lines.iter().enumerate() {
-        let t = line.trim();
-        let name = if let Some(r) = t.strip_prefix("export default class ") {
-            r.chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect::<String>()
-        } else if let Some(r) = t.strip_prefix("class ") {
-            r.chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect::<String>()
-        } else if let Some(n) = class_expr_binding_name(t) {
-            n
-        } else {
-            continue;
+impl Index<'_, '_> {
+    /// `class Cmp extends …{}; export default Cmp`: a reference to the class binding sits directly
+    /// under an ExportDefaultDeclaration.
+    fn is_default_exported_binding(&self, c: &Class) -> bool {
+        let Some(sym) = c.id.as_ref().and_then(|id| id.symbol_id.get()) else { return false };
+        self.scoping.get_resolved_reference_ids(sym).iter().any(|r| {
+            matches!(self.nodes.parent_kind(self.scoping.get_reference(*r).node_id()), AstKind::ExportDefaultDeclaration(_))
+        })
+    }
+
+    /// Offset just past the `class` keyword (after any class decorators).
+    fn class_keyword_end(&self, c: &Class) -> u32 {
+        let start = c.decorators.iter().map(|d| d.span.end).max().unwrap_or(c.span.start);
+        let rest = &self.src[start as usize..];
+        start + (rest.len() - rest.trim_start().len()) as u32 + "class".len() as u32
+    }
+
+    /// `const X = class …` gives X, otherwise the class's own id.
+    fn class_binding_name(&self, c: &Class) -> Option<String> {
+        match &self.declarator_class {
+            Some((span, name)) if !c.is_declaration() && *span == c.span => Some(name.clone()),
+            _ => c.id.as_ref().map(|id| id.name.to_string()),
+        }
+    }
+
+    /// index.ts PropertyDefinition / MethodDefinition up to the member-name switch: in a component and
+    /// for an identifier key, `validateUniqueDecorator`, then for an `@api` first decorator the api
+    /// checks and `state.publicProperties.set`, or for a `@wire(...)` one `catalogWireAdapters`.
+    /// Whether the member was wired.
+    fn catalog_member(
+        &mut self,
+        key: &PropertyKey,
+        computed: bool,
+        span: Span,
+        decorators: &[Decorator],
+        kind: ApiDefinition,
+        validate: impl FnOnce(&Definition, &PublicProperties) -> Result<(), CompileError>,
+    ) -> bool {
+        if self.state.current_component.is_none() || self.error.is_some() { return false; }
+        let Some(name) = key_identifier(key) else { return false };
+        let def = Definition { name, span, computed };
+        let checked = validate_unique_decorator(decorators, self.src, self.filename).and_then(|()| match decorators.first() {
+            Some(d) if is_api_decorator(d) => validate(&def, &self.state.public_properties).map(|()| Cataloged::Public),
+            Some(d) if is_wire_decorator(d) => self.catalog_wire(&def, decorators, kind).map(Cataloged::Wire),
+            _ => Ok(Cataloged::Nothing),
+        });
+        match checked {
+            Ok(Cataloged::Public) => self.state.public_properties.push((name.into(), kind, span)),
+            Ok(Cataloged::Wire(adapter)) => {
+                self.state.wire_adapters.push((adapter, span));
+                return true;
+            }
+            Ok(Cataloged::Nothing) => {}
+            Err(e) => self.error = Some(e),
+        }
+        false
+    }
+
+    /// index.ts's `isWireDecorator` branches. A wired getter or setter is replaced by a property
+    /// definition and cataloged when the traversal visits that.
+    fn catalog_wire(&self, def: &Definition, decorators: &[Decorator], kind: ApiDefinition) -> Result<WireAdapter, CompileError> {
+        let (span, is_method) = match kind {
+            ApiDefinition::Property => (Some(def.span), false),
+            ApiDefinition::Method(_) if def.computed => {
+                return Err(CompileError::new("@wire cannot be used on computed properties in SSR context.", self.filename))
+            }
+            ApiDefinition::Method(MethodDefinitionKind::Method) => (Some(def.span), true),
+            ApiDefinition::Method(_) => (None, false),
         };
-        if name == class_name {
-            start = Some(i);
-            break;
-        }
+        catalog_wire_adapter(&WiredMember { decorators, name: def.name, span, is_method }, self.src, self.filename, self.scoping)
     }
-    let Some(s) = start else {
-        return collect_public_props_in_range(src, 0, lines.len());
-    };
-    // find matching closing brace at class nesting 0→done — approximate: next top-level class or EOF
-    let mut end = lines.len();
-    let mut depth = 0i32;
-    let mut seen_body = false;
-    for (i, line) in lines.iter().enumerate().skip(s) {
-        for c in line.chars() {
-            if c == '{' {
-                depth += 1;
-                seen_body = true;
-            } else if c == '}' {
-                depth -= 1;
-                if seen_body && depth == 0 {
-                    end = i + 1;
-                    break;
-                }
-            }
-        }
-        if end != lines.len() {
-            break;
-        }
-    }
-    collect_public_props_in_range(src, s, end)
-}
 
-/// Non-exported classes with @api → (class_name, props).
-fn class_expr_binding_name(t: &str) -> Option<String> {
-    // `const Base = class extends …` / `let Mid = class …`
-    for prefix in ["const ", "let ", "var "] {
-        if let Some(rest) = t.strip_prefix(prefix) {
-            let name: String = rest
-                .chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect();
-            if name.is_empty() {
-                return None;
-            }
-            if rest[name.len()..].trim_start().starts_with("= class") {
-                return Some(name);
-            }
-        }
+    /// `path.replaceWith(b.propertyDefinition(key, null, computed, static))` for a wired getter or
+    /// setter: its implementation is dropped and its decorators go with the rest.
+    fn replace_wired_accessor(&mut self, m: &MethodDefinition) {
+        let decorators_end = m.decorators.iter().map(|d| d.span.end).max().unwrap_or(m.span.start);
+        let rest = &self.src[decorators_end as usize..m.span.end as usize];
+        let start = decorators_end + (rest.len() - rest.trim_start().len()) as u32;
+        let name = key_identifier(&m.key).expect("wired members have an identifier key");
+        self.edits.push(Edit::replace(start, m.span.end, format!("{}{name};", if m.r#static { "static " } else { "" })));
     }
-    None
-}
 
-fn collect_base_class_api(src: &str, default_export_name: &str) -> Vec<(String, Vec<String>)> {
-    let mut out = Vec::new();
-    let lines: Vec<&str> = src.lines().collect();
-    let mut i = 0;
-    while i < lines.len() {
-        let t = lines[i].trim();
-        if t.starts_with("export default class ") {
-            i += 1;
-            continue;
-        }
-        let name_opt = if let Some(rest) = t.strip_prefix("class ") {
-            let name: String = rest
-                .chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect();
-            if name.is_empty() {
-                None
-            } else {
-                Some(name)
-            }
-        } else {
-            class_expr_binding_name(t)
+    /// Program.leave's insertBefore re-traverses the extracted `export default <expression>`: its first
+    /// `@api` member meets its own `publicProperties` entry and throws.
+    fn revisit_extracted_public_property(&mut self, expr: Span) {
+        if self.error.is_some() { return; }
+        let props = &self.state.public_properties;
+        let Some((name, field, span)) = props.iter().find(|(_, _, s)| expr.start <= s.start && s.end <= expr.end) else { return };
+        let def = Definition { name, span: *span, computed: false };
+        let err = match field {
+            ApiDefinition::Property => validate_property_unique(&def, props, self.src, self.filename),
+            ApiDefinition::Method(kind) => validate_unique_method(&def, *kind, props, self.src, self.filename),
         };
-        let Some(name) = name_opt else {
-            i += 1;
-            continue;
-        };
-        if name == default_export_name {
-            i += 1;
-            continue;
-        }
-        let mut depth = 0i32;
-        let mut seen = false;
-        let mut end = lines.len();
-        for (j, line) in lines.iter().enumerate().skip(i) {
-            for c in line.chars() {
-                if c == '{' {
-                    depth += 1;
-                    seen = true;
-                } else if c == '}' {
-                    depth -= 1;
-                    if seen && depth == 0 {
-                        end = j + 1;
-                        break;
-                    }
-                }
-            }
-            if end != lines.len() {
-                break;
-            }
-        }
-        let props = collect_public_props_in_range(src, i, end);
-        if !props.is_empty() {
-            out.push((name, props));
-        }
-        i = end;
+        self.error = err.err();
     }
-    out
-}
 
-fn strip_decorators(src: &str) -> String {
-    let mut out = String::with_capacity(src.len());
-    let mut in_wire = false;
-    let mut depth = 0i32;
-    for line in src.lines() {
-        let t = line.trim();
-        if in_wire {
-            for c in t.chars() {
-                if c == '(' {
-                    depth += 1;
-                } else if c == ')' {
-                    depth -= 1;
-                }
+    /// index.ts MethodDefinition's `switch (node.key.name)`, in a component and for an identifier key
+    /// (computed `[constructor]` and `static constructor` included, string keys not):
+    /// `constructor` appends the props param, the three callbacks are removed. `connectedCallback`
+    /// and the `had*Callback` flags only set state nothing in upstream reads.
+    fn member_name_switch(&mut self, m: &MethodDefinition) {
+        if self.state.current_component.is_none() { return; }
+        match key_identifier(&m.key) {
+            Some("constructor") => {
+                let p = &m.value.params;
+                let last = p.items.last().map(|i| i.span.end).into_iter().chain(p.rest.as_ref().map(|r| r.span.end)).max();
+                self.state.props_arg_sites.push(last.map_or((p.span.end - 1, false), |e| (e, true)));
             }
-            if depth <= 0 {
-                in_wire = false;
-            }
-            continue;
+            // `path.remove()`: the edit covers the member's own decorator edits; its children are still visited.
+            Some("renderedCallback" | "disconnectedCallback" | "errorCallback") => self.edits.push(Edit::replace(m.span.start, m.span.end, "")),
+            _ => {}
         }
-        // same-line @api member — keep member
-        if let Some(rest) = t.strip_prefix("@api") {
-            let rest = rest.trim_start();
-            if !rest.is_empty() && !rest.starts_with('(') {
-                let indent = &line[..line.len() - line.trim_start().len()];
-                out.push_str(indent);
-                out.push_str(rest);
-                out.push('\n');
-                continue;
-            }
-            // bare @api or @api()
-            continue;
-        }
-        if let Some(rest) = t.strip_prefix("@track") {
-            let rest = rest.trim_start();
-            if !rest.is_empty() && !rest.starts_with('(') {
-                let indent = &line[..line.len() - line.trim_start().len()];
-                out.push_str(indent);
-                out.push_str(rest);
-                out.push('\n');
-                continue;
-            }
-            continue;
-        }
-        if t.starts_with("@wire") {
-            depth = 0;
-            for c in t.chars() {
-                if c == '(' {
-                    depth += 1;
-                } else if c == ')' {
-                    depth -= 1;
-                }
-            }
-            if depth > 0 {
-                in_wire = true;
-            }
-            continue;
-        }
-        out.push_str(line);
-        out.push('\n');
     }
-    out
-}
 
-fn inject_base_register(src: &str, bases: &[(String, Vec<String>)]) -> String {
-    if bases.is_empty() {
-        return src.to_string();
-    }
-    let mut out = String::with_capacity(src.len() + 256);
-    let lines: Vec<&str> = src.lines().collect();
-    let mut i = 0;
-    while i < lines.len() {
-        let t = lines[i].trim();
-        let mut matched = None;
-        if !t.starts_with("export default class ") {
-            let name_opt = if let Some(rest) = t.strip_prefix("class ") {
-                let name: String = rest
-                    .chars()
-                    .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                    .collect();
-                if name.is_empty() {
-                    None
-                } else {
-                    Some(name)
-                }
-            } else {
-                class_expr_binding_name(t)
+    /// index.ts ImportExpression (`transformSync` always passes `dynamicImports`, so the visitor's
+    /// `!dynamicImports` return is unreachable): with `strictSpecifier`, a source that is not a string
+    /// literal throws LWC1121 at the node; with a loader, `importManager.add({ load: '__lwcLoad' }, loader)`
+    /// and the node becomes `__lwcLoad(source)` (the options argument is dropped, its children still visited).
+    fn import_expression(&mut self, it: &ImportExpression) {
+        if self.strict_specifier {
+            let arg = match it.source.without_parentheses() {
+                Expression::StringLiteral(_) => None,
+                Expression::NumericLiteral(n) => Some(js_number(n.value)),
+                Expression::BooleanLiteral(b) => Some(b.value.to_string()),
+                Expression::NullLiteral(_) => Some("null".into()),
+                Expression::BigIntLiteral(b) => Some(b.value.to_string()),
+                Expression::RegExpLiteral(r) => Some(format!("/{}/{}", r.regex.pattern.text, r.regex.flags)),
+                _ => Some("undefined".into()),
             };
-            if let Some(name) = name_opt {
-                if let Some((_, props)) = bases.iter().find(|(n, _)| n == &name) {
-                    matched = Some((name, props.clone()));
-                }
+            if let Some(arg) = arg {
+                let info = &LWCClassErrors::INVALID_DYNAMIC_IMPORT_SOURCE_STRICT;
+                self.error = Some(errors::generate_error(self.src, self.filename, it.span, info, &[&arg]));
+                return;
             }
         }
-        if let Some((_name, props)) = matched {
-            // copy until closing brace of class, inject static block before final }
-            let mut depth = 0i32;
-            let mut seen = false;
-            while i < lines.len() {
-                let line = lines[i];
-                let mut inject_here = false;
-                let mut new_depth = depth;
-                for c in line.chars() {
-                    if c == '{' {
-                        new_depth += 1;
-                        seen = true;
-                    } else if c == '}' {
-                        new_depth -= 1;
-                        if seen && new_depth == 0 {
-                            inject_here = true;
-                        }
-                    }
-                }
-                if inject_here {
-                    // line contains the closing }; inject before last }
-                    let props_lit = props
-                        .iter()
-                        .map(|p| format!("'{p}'"))
-                        .collect::<Vec<_>>()
-                        .join(", ");
-                    let indent = "    ";
-                    // find last } on line
-                    if let Some(pos) = line.rfind('}') {
-                        out.push_str(&line[..pos]);
-                        out.push_str(&format!(
-                            "{indent}static {{ __registerPublicProperties(this, [{props_lit}]); }}\n"
-                        ));
-                        out.push_str(&line[pos..]);
-                        out.push('\n');
-                    } else {
-                        out.push_str(line);
-                        out.push('\n');
-                    }
-                    i += 1;
-                    break;
-                } else {
-                    out.push_str(line);
-                    out.push('\n');
-                    depth = new_depth;
-                    i += 1;
-                }
-            }
-            continue;
-        }
-        out.push_str(lines[i]);
-        out.push('\n');
-        i += 1;
+        if self.loader.is_empty() { return; }
+        self.import_manager.add("load", LOAD, self.loader);
+        let source = it.source.span();
+        self.edits.push(Edit::replace(it.span.start, source.start, format!("{LOAD}(")));
+        self.edits.push(Edit::replace(source.end, it.span.end, ")"));
     }
+
+    /// index.ts Identifier visitor: any Identifier node (keys, labels, specifiers and member
+    /// properties included, private names not) named `__lwc…` throws at the node. The trusted names
+    /// upstream allows are only ever its own output, which this walk over the input never sees.
+    fn check_reserved_identifier(&mut self, name: &str, span: Span) {
+        if self.error.is_none() && name.starts_with(RESERVED_IDENTIFIER_PREFIX) {
+            self.error = Some(errors::generate_error(self.src, self.filename, span, &SsrCompilerErrors::RESERVED_IDENTIFIER_PREFIX, &[]));
+        }
+    }
+
+    /// index.ts Program.leave: `export default <expr>` becomes
+    /// `const __lwcDefaultExport = <expr>;\nexport default __lwcDefaultExport;` in LWC files only.
+    fn leave_program(&mut self) {
+        if self.state.component.is_none() { return; }
+        let extracted = self.state.export_default_expression;
+        if let Some((decl, expr)) = extracted {
+            self.edits.push(Edit::replace(decl.start, expr.start, format!("const {DEFAULT_EXPORT_BINDING} = ")));
+            self.edits.push(Edit::replace(expr.end, decl.end, format!(";\nexport default {DEFAULT_EXPORT_BINDING};")));
+            self.state.lwc_default_export_name = Some(DEFAULT_EXPORT_BINDING.into());
+            self.revisit_extracted_public_property(expr);
+            // The re-traversal catalogs the expression's `@wire` members a second time.
+            let again: Vec<_> = self.state.wire_adapters.iter().filter(|(_, s)| expr.start <= s.start && s.end <= expr.end).cloned().collect();
+            self.state.wire_adapters.extend(again);
+        }
+        // index.ts:423 registerBaseClassProps, after the traversal: `body.push(static { ... })` on every
+        // other module class with own `@api` members (no name needed, so anonymous and nested classes
+        // too). A body item, so it prints before the version comment below. moduleClassNodes is a Set:
+        // the re-traversal of an extracted expression does not add a class twice.
+        for m in &self.state.module_classes {
+            if Some(m.span) == self.state.lwc_component_node || m.api_props.is_empty() { continue; }
+            let names: Vec<String> = m.api_props.iter().map(|p| json_string(p.encode_utf16())).collect();
+            let block = format!("static {{ {REGISTER_PUBLIC_PROPERTIES}(this, [{}]); }}", names.join(", "));
+            self.edits.push(self.body_end_edit(m.body, &[block]));
+            self.registered_base_class_props = true;
+        }
+        // index.ts:136-148 / :185-197: a Block comment appended to the class body's trailingComments,
+        // printed as the body's last item before `}`. Program.leave's insertBefore re-traverses the
+        // extracted expression, so a class matched inside it is entered (and commented) twice.
+        let inside = |s: u32| extracted.is_some_and(|(_, e)| e.start <= s && s <= e.end);
+        for body in std::mem::take(&mut self.state.version_comment_bodies) {
+            self.edits.push(self.version_comment_edit(body, if inside(body.start) { 2 } else { 1 }));
+        }
+        // The re-traversal pushes the props param / argument a second time too.
+        for (at, after_item) in std::mem::take(&mut self.state.props_arg_sites) {
+            let n = if inside(at) { 2 } else { 1 };
+            let list = vec![PROPS_ARG; n].join(", ");
+            self.edits.push(Edit::insert(at, if after_item { format!(", {list}") } else { list }));
+        }
+    }
+
+    /// `n` copies of the version comment, as the class body's trailing comments.
+    fn version_comment_edit(&self, body: Span, n: usize) -> Edit {
+        self.body_end_edit(body, &vec![version_comment(); n])
+    }
+
+    /// `items` before the class body's `}`, laid out like astring prints a ClassBody's last items and
+    /// trailing comments: each on its own line, two spaces in from the `}` line's indent.
+    fn body_end_edit(&self, body: Span, items: &[String]) -> Edit {
+        let close = body.end - 1;
+        let line_start = self.src[..close as usize].rfind('\n').map_or(0, |i| i + 1);
+        let line = &self.src[line_start..close as usize];
+        let indent = &line[..line.len() - line.trim_start().len()];
+        let mut text = String::new();
+        for (i, item) in items.iter().enumerate() {
+            if i > 0 { text.push_str(indent); }
+            text.push_str("  ");
+            text.push_str(item);
+            text.push('\n');
+        }
+        text.push_str(indent);
+        Edit::insert(close, text)
+    }
+}
+
+impl<'a> Visit<'a> for Index<'_, 'a> {
+    fn visit_import_declaration(&mut self, d: &ImportDeclaration<'a>) {
+        let from_lwc = lwc_import::replace_lwc_import(d, self.src, &mut self.state, &mut self.edits);
+        stylesheets::catalog_and_replace_style_imports(d, self.src, &mut self.edits);
+        remove_decorator_import::remove_decorator_import(d, from_lwc, self.src, &mut self.edits);
+        walk::walk_import_declaration(self, d);
+    }
+
+    fn visit_export_from_declaration(&mut self, d: &ExportFromDeclaration<'a>) {
+        lwc_import::replace_lwc_export(&d.source, self.src, &mut self.edits);
+        walk::walk_export_from_declaration(self, d);
+    }
+
+    fn visit_export_all_declaration(&mut self, d: &ExportAllDeclaration<'a>) {
+        lwc_import::replace_lwc_export(&d.source, self.src, &mut self.edits);
+        walk::walk_export_all_declaration(self, d);
+    }
+
+    fn visit_export_default_declaration(&mut self, d: &ExportDefaultDeclaration<'a>) {
+        match &d.declaration {
+            ExportDefaultDeclarationKind::ClassDeclaration(c) => {
+                let name = c.id.as_ref().map_or(DEFAULT_COMPONENT_NAME, |id| id.name.as_str());
+                self.state.lwc_default_export_name = Some(name.into());
+                self.export_default_class = Some(c.span);
+            }
+            ExportDefaultDeclarationKind::FunctionDeclaration(_) | ExportDefaultDeclarationKind::TSInterfaceDeclaration(_) => {}
+            kind => {
+                let expr = kind.as_expression().expect("remaining variants are expressions");
+                match expr.without_parentheses() {
+                    Expression::ClassExpression(c) => {
+                        let name = c.id.as_ref().map(|id| id.name.to_string()).or_else(|| self.state.component.as_ref().and_then(|p| p.name.clone()));
+                        self.state.lwc_default_export_name = Some(name.unwrap_or_else(|| DEFAULT_COMPONENT_NAME.into()));
+                    }
+                    Expression::Identifier(i) => self.state.lwc_default_export_name = Some(i.name.to_string()),
+                    Expression::FunctionExpression(_) => {}
+                    _ => self.state.export_default_expression = Some((d.span, expr.span())),
+                }
+            }
+        }
+        walk::walk_export_default_declaration(self, d);
+    }
+
+    fn visit_variable_declarator(&mut self, d: &VariableDeclarator<'a>) {
+        if let (BindingPattern::BindingIdentifier(id), Some(Expression::ClassExpression(c))) =
+            (&d.id, d.init.as_ref().map(|e| e.without_parentheses()))
+        {
+            self.declarator_class = Some((c.span, id.name.to_string()));
+        }
+        walk::walk_variable_declarator(self, d);
+    }
+
+    fn visit_class(&mut self, c: &Class<'a>) {
+        let mut matched = false;
+        if c.is_declaration() {
+            if c.heritage.is_some() && (self.export_default_class == Some(c.span) || self.is_default_exported_binding(c)) {
+                let name = match &c.id {
+                    Some(id) => id.name.to_string(),
+                    None => {
+                        // A class declaration can omit a name only when it is default-exported.
+                        self.edits.push(Edit::insert(self.class_keyword_end(c), format!(" {DEFAULT_COMPONENT_NAME}")));
+                        DEFAULT_COMPONENT_NAME.into()
+                    }
+                };
+                self.state.component = Some(ComponentClass { name: Some(name) });
+                self.state.version_comment_bodies.push(c.body.span);
+                matched = true;
+            }
+        } else if let Some(Expression::Identifier(sup)) = c.heritage.as_ref().map(|h| &h.expression) {
+            if self.state.lightning_element_identifier.as_deref() == Some(sup.name.as_str()) {
+                let name = self.class_binding_name(c);
+                // Upstream leaves an earlier `lwcClassName` in place when this class has no name.
+                let prev = self.state.component.take().and_then(|p| p.name);
+                self.state.component = Some(ComponentClass { name: name.or(prev) });
+                self.state.version_comment_bodies.push(c.body.span);
+                matched = true;
+            }
+        }
+        if matched {
+            self.state.current_component = Some(c.span);
+            self.state.lwc_component_node = Some(c.span);
+        }
+        self.state.module_classes.push(ModuleClass { span: c.span, body: c.body.span, api_props: own_api_props(c) });
+        walk::walk_class(self, c);
+        if self.state.current_component == Some(c.span) {
+            self.state.current_component = None;
+        }
+    }
+
+    fn visit_property_definition(&mut self, p: &PropertyDefinition<'a>) {
+        let (src, filename) = (self.src, self.filename);
+        self.catalog_member(&p.key, p.computed, p.span, &p.decorators, ApiDefinition::Property, |def, props| {
+            validate_api_property(p, def, props, src, filename)
+        });
+        walk::walk_property_definition(self, p);
+    }
+
+    fn visit_method_definition(&mut self, m: &MethodDefinition<'a>) {
+        let (src, filename) = (self.src, self.filename);
+        let wired = self.catalog_member(&m.key, m.computed, m.span, &m.decorators, ApiDefinition::Method(m.kind), |def, props| {
+            validate_api_method(m, def, props, src, filename)
+        });
+        if wired && m.kind != MethodDefinitionKind::Method {
+            // The replacement has no body to traverse; only its decorators are visited.
+            self.replace_wired_accessor(m);
+            for d in &m.decorators { self.visit_decorator(d); }
+            return;
+        }
+        if self.error.is_none() { self.member_name_switch(m); }
+        walk::walk_method_definition(self, m);
+    }
+
+    /// astring prints no decorators. estree-toolkit has no visitor keys for them, so upstream never
+    /// traverses a decorator's expression (no Identifier check, no nested class) and neither does this.
+    fn visit_decorator(&mut self, d: &Decorator<'a>) {
+        let rest = &self.src[d.span.end as usize..];
+        let ws = (rest.len() - rest.trim_start().len()) as u32;
+        self.edits.push(Edit::replace(d.span.start, d.span.end + ws, ""));
+    }
+
+    fn visit_function(&mut self, f: &Function<'a>, flags: ScopeFlags) {
+        self.functions.push(flags.is_constructor());
+        walk::walk_function(self, f, flags);
+        self.functions.pop();
+    }
+
+    fn visit_arrow_function_expression(&mut self, f: &ArrowFunctionExpression<'a>) {
+        self.functions.push(false);
+        walk::walk_arrow_function_expression(self, f);
+        self.functions.pop();
+    }
+
+    /// index.ts Super: in a component, a `super(...)` call whose function parent is a constructor
+    /// gets the props argument (an arrow in between stops it; nested blocks do not).
+    fn visit_call_expression(&mut self, c: &CallExpression<'a>) {
+        if matches!(c.callee, Expression::Super(_)) && self.state.current_component.is_some() && self.functions.last() == Some(&true) && self.error.is_none() {
+            let site = c.arguments.last().map_or((c.span.end - 1, false), |a| (a.span().end, true));
+            self.state.props_arg_sites.push(site);
+        }
+        walk::walk_call_expression(self, c);
+    }
+
+    fn visit_import_expression(&mut self, it: &ImportExpression<'a>) {
+        if self.error.is_none() { self.import_expression(it); }
+        walk::walk_import_expression(self, it);
+    }
+
+    fn visit_identifier_reference(&mut self, id: &IdentifierReference<'a>) {
+        self.check_reserved_identifier(&id.name, id.span);
+    }
+
+    fn visit_binding_identifier(&mut self, id: &BindingIdentifier<'a>) {
+        self.check_reserved_identifier(&id.name, id.span);
+    }
+
+    fn visit_identifier_name(&mut self, id: &IdentifierName<'a>) {
+        self.check_reserved_identifier(&id.name, id.span);
+    }
+
+    fn visit_label_identifier(&mut self, id: &LabelIdentifier<'a>) {
+        self.check_reserved_identifier(&id.name, id.span);
+    }
+}
+
+/// index.ts `compileJS` up to `traverse`: parse once, build semantic once, walk once.
+fn index(src: &str, filename: &str, options: &CompileOptions) -> Result<(IndexResult, Vec<Edit>, ImportManager), CompileError> {
+    let alloc = Allocator::default();
+    let ret = Parser::new(&alloc, src, SourceType::mjs()).parse();
+    // meriyah throws on syntax errors only; oxc's post-parse module-record early errors (e.g. a
+    // duplicate `export default`, which upstream compiles) leave a complete program and are not fatal.
+    if ret.fatal_error {
+        let message = ret.diagnostics.errors().next().map_or_else(String::new, |d| d.message.to_string());
+        return Err(CompileError::new(message, filename));
+    }
+    let sem = SemanticBuilder::new().with_build_nodes(true).build(&ret.program).semantic;
+    let mut v = Index {
+        src,
+        filename,
+        scoping: sem.scoping(),
+        nodes: sem.nodes(),
+        state: ComponentMetaState::default(),
+        edits: Vec::new(),
+        export_default_class: None,
+        declarator_class: None,
+        error: None,
+        functions: Vec::new(),
+        strict_specifier: options.dynamic_import_strict_specifier,
+        loader: &options.dynamic_import_loader,
+        import_manager: ImportManager::default(),
+        registered_base_class_props: false,
+    };
+    v.visit_program(&ret.program);
+    if let Some(e) = v.error { return Err(e); }
+    v.leave_program();
+    if let Some(e) = v.error { return Err(e); }
+    let ComponentMetaState { component, lwc_default_export_name, public_properties, wire_adapters, .. } = v.state;
+    let (edits, imports, registered_base_class_props) = (v.edits, v.import_manager, v.registered_base_class_props);
+    let Some(ComponentClass { name: class_name }) = component else { return Ok((IndexResult::NotLwc, edits, imports)) };
+    let Some(exported_name) = lwc_default_export_name.or(class_name) else {
+        // generate-markup.ts:54 `b.identifier(null!)`: estree-toolkit's builder assertion throws
+        // (a plain Error, no LWC code; @lwc/compiler's SSR path does not wrap it).
+        return Err(CompileError::new("Expected the value to be a `string` but got a `null`. The value is null.", filename));
+    };
+    let public_properties = public_properties.into_iter().map(|(name, ..)| name).collect();
+    let wire_adapters = wire_adapters.into_iter().map(|(adapter, _)| adapter).collect();
+    Ok((IndexResult::Component { exported_name, public_properties, registered_base_class_props, wire_adapters }, edits, imports))
+}
+
+/// ECMAScript `Number::toString(10)` for a finite, non-negative literal value (`String(value)`).
+fn js_number(n: f64) -> String {
+    if n == 0.0 { return "0".into(); }
+    // Rust's shortest round-trip digits: `d[.ddd]e<x>`, so the value is 0.digits * 10^(x + 1).
+    let sci = format!("{n:e}");
+    let (mantissa, exp) = sci.split_once('e').expect("LowerExp prints an exponent");
+    let digits: String = mantissa.chars().filter(|c| *c != '.').collect();
+    let (k, e) = (digits.len() as i32, exp.parse::<i32>().expect("integer exponent") + 1);
+    if k <= e && e <= 21 {
+        digits + &"0".repeat((e - k) as usize)
+    } else if 0 < e && e <= 21 {
+        format!("{}.{}", &digits[..e as usize], &digits[e as usize..])
+    } else if -6 < e && e <= 0 {
+        format!("0.{}{digits}", "0".repeat(-e as usize))
+    } else {
+        let m = if k == 1 { digits } else { format!("{}.{}", &digits[..1], &digits[1..]) };
+        format!("{m}e{}{}", if e - 1 < 0 { '-' } else { '+' }, (e - 1).abs())
+    }
+}
+
+/// generate-markup.ts `addGenerateMarkupFunction`: unshift the `__lwcTmpl` default import and then the
+/// `setStaticInternals` import, and push the `__setStaticInternals(...)` call.
+fn add_generate_markup_function(
+    code: &str,
+    exported_name: &str,
+    public_properties: &[String],
+    wire_adapters: &[WireAdapter],
+    filename: &str,
+    options: &CompileOptions,
+) -> String {
+    let lit = |s: &str| json_string(s.encode_utf16());
+    let stem = module_stem(filename, &options.name);
+    let tag = generate_custom_element_tag_name(&options.namespace, &options.name);
+    let props: Vec<String> = public_properties.iter().map(|p| lit(p)).collect();
+    let mut out = import_declaration(&[Spec::Named(crate::runtime_abi::SET_STATIC_INTERNALS, "__setStaticInternals")], crate::runtime_abi::RUNTIME_MODULE);
+    out += &import_declaration(&[Spec::Default("__lwcTmpl")], &format!("./{stem}.html"));
+    out += code;
+    out += &format!(
+        "\n__setStaticInternals({exported_name}, {}, [{}], {} ?? null, {}, __lwcTmpl);\n",
+        lit(&tag),
+        props.join(", "),
+        wire_adapters_plumbing(wire_adapters),
+        lit(options.ssr_mode.js_value()),
+    );
     out
 }
 
-fn rewrite_lwc_imports(src: &str, need_register: bool) -> String {
-    let mut out = String::with_capacity(src.len() + 128);
-    let mut saw_runtime = false;
-    for line in src.lines() {
-        let t = line.trim();
-        let from_lwc = t.contains("from 'lwc'") || t.contains("from \"lwc\"");
-        if from_lwc && t.starts_with("import ") {
-            if let (Some(a), Some(b)) = (t.find('{'), t.find('}')) {
-                let inner = &t[a + 1..b];
-                let mut keep: Vec<String> = Vec::new();
-                for part in inner.split(',') {
-                    let name = part.trim().split_whitespace().next().unwrap_or("");
-                    if name.is_empty() {
-                        continue;
-                    }
-                    if matches!(name, "api" | "track" | "wire") {
-                        continue;
-                    }
-                    keep.push(part.trim().to_string());
-                }
-                if !keep.iter().any(|k| k.contains("setStaticInternals")) {
-                    keep.push("setStaticInternals as __setStaticInternals".into());
-                }
-                if need_register && !keep.iter().any(|k| k.contains("registerPublicProperties")) {
-                    keep.push("registerPublicProperties as __registerPublicProperties".into());
-                }
-                out.push_str(&format!(
-                    "import {{ {} }} from '{}';\n",
-                    keep.join(", "),
-                    crate::runtime_abi::RUNTIME_MODULE
-                ));
-                saw_runtime = true;
-                continue;
-            }
-            let rewritten = t
-                .replace(
-                    "from 'lwc'",
-                    &format!("from '{}'", crate::runtime_abi::RUNTIME_MODULE),
-                )
-                .replace(
-                    "from \"lwc\"",
-                    &format!("from \"{}\"", crate::runtime_abi::RUNTIME_MODULE),
-                );
-            out.push_str(&rewritten);
-            out.push('\n');
-            saw_runtime = true;
-            continue;
-        }
-        out.push_str(line);
-        out.push('\n');
-    }
-    if !saw_runtime {
-        let extra = if need_register {
-            ", registerPublicProperties as __registerPublicProperties"
-        } else {
-            ""
-        };
-        out.insert_str(
-            0,
-            &format!(
-                // JS addGenerateMarkupFunction imports only what it emits; no `lwc` import means no LightningElement use.
-                "import {{ setStaticInternals as __setStaticInternals{extra} }} from '{}';\n",
-                crate::runtime_abi::RUNTIME_MODULE
-            ),
-        );
-    }
-    out
-}
-
-
-
-fn lightning_element_aliases(src: &str) -> std::collections::HashSet<String> {
-    let mut aliases = std::collections::HashSet::new();
-    aliases.insert("LightningElement".to_string());
-    for line in src.lines() {
-        let t = line.trim();
-        if !(t.starts_with("import ") || t.starts_with("export ")) {
-            continue;
-        }
-        let from_lwc = t.contains("from 'lwc'")
-            || t.contains("from \"lwc\"")
-            || t.contains("from '@lwc/ssr-runtime'")
-            || t.contains("from \"@lwc/ssr-runtime\"");
-        if !from_lwc {
-            continue;
-        }
-        let (Some(a), Some(b)) = (t.find('{'), t.find('}')) else {
-            continue;
-        };
-        for part in t[a + 1..b].split(',') {
-            let part = part.trim();
-            if part.is_empty() {
-                continue;
-            }
-            // LightningElement as LE  OR  LightningElement
-            if let Some((left, right)) = part.split_once(" as ") {
-                if left.trim() == "LightningElement" {
-                    aliases.insert(right.trim().to_string());
-                }
-            } else if part == "LightningElement" {
-                aliases.insert("LightningElement".to_string());
-            }
-        }
-    }
-    aliases
-}
-
-fn find_le_class_expression_binding(src: &str) -> Option<String> {
-    let aliases = lightning_element_aliases(src);
-    for line in src.lines() {
-        let t = line.trim();
-        let Some(name) = class_expr_binding_name(t) else {
-            continue;
-        };
-        // `= class extends LightningElement` (or alias)
-        if let Some(idx) = t.find("= class") {
-            let after = t[idx + "= class".len()..].trim_start();
-            if let Some(rest) = after.strip_prefix("extends ") {
-                let super_name: String = rest
-                    .chars()
-                    .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                    .collect();
-                if aliases.contains(&super_name) || super_name == "LightningElement" {
-                    return Some(name);
-                }
-            }
-        }
-    }
-    None
-}
-
-fn rewrite_export_default_expression(src: &str) -> Option<String> {
-    // `export default <expr>;` where expr is not `class` and not a bare identifier.
-    let mut out = String::with_capacity(src.len() + 64);
-    let mut found = false;
-    for line in src.lines() {
-        let t = line.trim();
-        if let Some(rest) = t.strip_prefix("export default ") {
-            let rest = rest.trim().trim_end_matches(';').trim();
-            if rest.starts_with("class ") {
-                out.push_str(line);
-                out.push('\n');
-                continue;
-            }
-            // bare identifier?
-            let ident: String = rest
-                .chars()
-                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                .collect();
-            if ident == rest {
-                out.push_str(line);
-                out.push('\n');
-                continue;
-            }
-            out.push_str(&format!("const __lwcDefaultExport = {rest};\n"));
-            out.push_str("export default __lwcDefaultExport;\n");
-            found = true;
-            continue;
-        }
-        out.push_str(line);
-        out.push('\n');
-    }
-    if found {
-        Some(out)
-    } else {
-        None
-    }
-}
-
-fn ensure_default_tmpl_import(code: &str, stem: &str) -> String {
-    let needle_dq = format!("from './{stem}.html'");
-    let needle_sq = format!("from \"./{stem}.html\"");
-    let has = code.contains(&needle_dq) || code.contains(&needle_sq);
-    if has {
-        // Rewrite `import local from './stem.html'` → `import __lwcTmpl from './stem.html'`
-        // and rewrite uses of `local` when it's a simple default import alias.
-        let mut local_name: Option<String> = None;
-        let mut out = String::new();
-        for line in code.lines() {
-            let t = line.trim();
-            if t.starts_with("import ") && (t.contains(&needle_dq) || t.contains(&needle_sq)) {
-                // import tmpl from './x.html';  OR import __lwcTmpl from ...
-                if let Some(rest) = t.strip_prefix("import ") {
-                    let rest = rest.trim_start();
-                    if !rest.starts_with('{') && !rest.starts_with('*') {
-                        let name: String = rest
-                            .chars()
-                            .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '$')
-                            .collect();
-                        if !name.is_empty() && name != "__lwcTmpl" {
-                            local_name = Some(name.clone());
-                            out.push_str(&format!("import __lwcTmpl from './{stem}.html';\n"));
-                            continue;
-                        }
-                    }
-                }
-            }
-            out.push_str(line);
-            out.push('\n');
-        }
-        if let Some(local) = local_name {
-            // Replace identifier uses of local with __lwcTmpl (word-boundary-ish).
-            let mut replaced = String::new();
-            let bytes = out.as_bytes();
-            let loc = local.as_bytes();
-            let mut i = 0;
-            while i < bytes.len() {
-                if i + loc.len() <= bytes.len() && &bytes[i..i + loc.len()] == loc {
-                    let before_ok = i == 0 || !bytes[i - 1].is_ascii_alphanumeric() && bytes[i - 1] != b'_' && bytes[i - 1] != b'$';
-                    let after_i = i + loc.len();
-                    let after_ok = after_i >= bytes.len() || (!bytes[after_i].is_ascii_alphanumeric() && bytes[after_i] != b'_' && bytes[after_i] != b'$');
-                    // Don't rewrite the import we already fixed
-                    if before_ok && after_ok {
-                        replaced.push_str("__lwcTmpl");
-                        i = after_i;
-                        continue;
-                    }
-                }
-                replaced.push(bytes[i] as char);
-                i += 1;
-            }
-            return replaced;
-        }
-        return out;
-    }
-    let tmpl_import = format!("import __lwcTmpl from './{stem}.html';\n");
-    if let Some(pos) = code.find("@lwc/ssr-runtime';\n") {
-        let mut c = code.to_string();
-        let insert_at = pos + "@lwc/ssr-runtime';\n".len();
-        c.insert_str(insert_at, &tmpl_import);
-        c
-    } else if let Some(pos) = code.find("@lwc/ssr-runtime\";\n") {
-        let mut c = code.to_string();
-        let insert_at = pos + "@lwc/ssr-runtime\";\n".len();
-        c.insert_str(insert_at, &tmpl_import);
-        c
-    } else {
-        format!("{tmpl_import}{code}")
-    }
-}
-
-
-/// Sync-only compileComponentForSSR.
+/// Sync-only compileComponentForSSR: index.ts `compileJS` after the traverse.
 pub fn compile_component_for_ssr(
     src: &str,
     filename: &str,
     options: &CompileOptions,
 ) -> Result<CompileResult, CompileError> {
-    // compile-js ImportExpression visitor runs over the original program, before any other output.
-    if let Some(err) = dynamic_imports::check_strict_specifiers(src, filename, options.dynamic_import_strict_specifier) {
-        return Err(err);
-    }
-    // `export { X as default }` + lwc import: JS only rewrites the import (no setStaticInternals).
-    if is_export_named_as_default(src) && imports_from_lwc(src) {
-        // strip setStaticInternals that rewrite adds if we didn't want full transform —
-        // rewrite_lwc_imports always injects setStaticInternals; use import-only rewriter.
-        let code = rewrite_lwc_imports_only(src);
-        return Ok(CompileResult {
-            code,
-            map: None,
-            warnings: vec![],
-            css_scope_tokens: None,
-        });
-    }
-
-    let (class_name, named_src, leaf_for_props) = match resolve_default_class(src, &options.name) {
-        Ok((name, src2)) => (name.clone(), src2, name),
-        Err(_) => {
-            // `const Component = class extends LE {}; export default <expr>`
-            if let (Some(leaf), Some(rewritten)) = (
-                find_le_class_expression_binding(src),
-                rewrite_export_default_expression(src),
-            ) {
-                (
-                    "__lwcDefaultExport".to_string(),
-                    rewritten,
-                    leaf,
-                )
-            } else if imports_from_lwc(src) {
-                return Ok(CompileResult {
-                    code: rewrite_lwc_imports_only(src),
-                    map: None,
-                    warnings: vec![],
-                    css_scope_tokens: None,
-                });
-            } else {
-                return Ok(CompileResult {
-                    code: src.to_string(),
-                    map: None,
-                    warnings: vec![],
-                    css_scope_tokens: None,
-                });
-            }
-        }
+    let (index_result, edits, imports) = index(src, filename, options)?;
+    let body = apply(src, edits).map_err(|e| CompileError::new(e.to_string(), filename))?;
+    // Program.leave: `program.body.unshift(...importManager.getImportDeclarations())`, in every module.
+    let mut code = imports.declarations() + &body;
+    let result = |code| CompileResult { code, map: None, warnings: vec![], css_scope_tokens: None };
+    let IndexResult::Component { exported_name, public_properties, registered_base_class_props, wire_adapters } = index_result else {
+        // Not an `extends` default export or an `extends LightningElement` class expression.
+        return Ok(result(code));
     };
-
-    // Wire adapters: default class with no `extends` and no `lwc` import → pass through.
-    if !should_transform_component(&named_src, &class_name) {
-        return Ok(CompileResult {
-            code: if imports_from_lwc(src) {
-                rewrite_lwc_imports_only(src)
-            } else {
-                src.to_string()
-            },
-            map: None,
-            warnings: vec![],
-            css_scope_tokens: None,
-        });
+    if registered_base_class_props {
+        let spec = Spec::Named(crate::runtime_abi::REGISTER_PUBLIC_PROPERTIES, REGISTER_PUBLIC_PROPERTIES);
+        code = import_declaration(&[spec], crate::runtime_abi::RUNTIME_MODULE) + &code;
     }
-
-    if let Some(err) = validate_reserved_identifiers(src, filename) {
-        return Err(err);
-    }
-    let named_src = class_rewrite::rewrite_component_classes(&named_src).map_err(|message| CompileError {
-        message,
-        filename: Some(filename.into()),
-        diagnostics: vec![],
-        name: None,
-        line: None,
-        column: None,
-    })?;
-    if let Some(err) = validate_wire_decorators(&named_src, filename) {
-        return Err(err);
-    }
-    if let Some(err) = validate_decorators(&named_src, filename) {
-        return Err(err);
-    }
-
-    let public_props = collect_public_props_for_class(&named_src, &leaf_for_props);
-    let props_lit = if public_props.is_empty() {
-        "[]".to_string()
-    } else {
-        format!(
-            "[{}]",
-            public_props
-                .iter()
-                .map(|p| format!("'{p}'"))
-                .collect::<Vec<_>>()
-                .join(", ")
-        )
-    };
-    let wires = match class_rewrite::collect_wire_adapters(&named_src) {
-        Some(w) => w.into_iter().map(|(adapter_id, config_obj, field, is_method)| WireAdapter { adapter_id, config_obj, field, is_method }).collect(),
-        None => collect_wire_adapters(&named_src),
-    };
-    let wire_lit = emit_wire_adapters_lit(&wires);
-    let bases = collect_base_class_api(&named_src, &leaf_for_props);
-    let need_register = !bases.is_empty();
-
-    let mut code = strip_decorators(&named_src);
-    code = inject_base_register(&code, &bases);
-    code = rewrite_lwc_imports(&code, need_register);
-    code = rewrite_scoped_css_imports(&code);
-    code = dynamic_imports::rewrite_with_loader(&code, &options.dynamic_import_loader);
-    code = hoist_ssr_runtime_imports(&code);
-
-        let stem = module_stem(filename, &options.name);
-    let tag = generate_custom_element_tag_name(&options.namespace, &options.name);
-    code = ensure_default_tmpl_import(&code, &stem);
-code = dedupe_lightning_element_import(&code);
-    code = hoist_ssr_runtime_imports(&code);
-    if !code.contains("__setStaticInternals(") {
-        code.push_str(&format!(
-            "\n__setStaticInternals({class_name}, '{tag}', {props_lit}, {wire_lit}, '{}', __lwcTmpl);\n",
-            options.ssr_mode.js_value()
-        ));
-    }
-    Ok(CompileResult {
-        code,
-        map: None,
-        warnings: vec![],
-        css_scope_tokens: None,
-    })
+    Ok(result(add_generate_markup_function(&code, &exported_name, &public_properties, &wire_adapters, filename, options)))
 }
 
 #[cfg(test)]
@@ -1666,7 +705,7 @@ mod tests {
         let r = compile_component_for_ssr(src, "x/text-static/text-static.js", &opts).unwrap();
         assert!(
             r.code.contains(
-                "__setStaticInternals(TextStatic, 'x-text-static', [], null, 'sync', __lwcTmpl)"
+                "__setStaticInternals(TextStatic, \"x-text-static\", [], null ?? null, \"sync\", __lwcTmpl)"
             ),
             "{}",
             r.code
@@ -1682,9 +721,9 @@ mod tests {
             ..Default::default()
         };
         let r = compile_component_for_ssr(src, "x/comments-text/comments-text.js", &opts).unwrap();
-        assert!(r.code.contains("export default class CommentsText extends"), "{}", r.code);
+        assert!(r.code.contains("export default class DefaultComponentName extends"), "{}", r.code);
         assert!(
-            r.code.contains("__setStaticInternals(CommentsText, 'x-comments-text'"),
+            r.code.contains("__setStaticInternals(DefaultComponentName, \"x-comments-text\""),
             "{}",
             r.code
         );
@@ -1702,7 +741,7 @@ mod tests {
         let r = compile_component_for_ssr(src, "x/child/child.js", &opts).unwrap();
         assert!(
             r.code.contains(
-                "__setStaticInternals(Child, 'x-child', ['fieldApi', 'setterGetterApi'], null, 'sync', __lwcTmpl)"
+                "__setStaticInternals(Child, \"x-child\", [\"fieldApi\", \"setterGetterApi\"], null ?? null, \"sync\", __lwcTmpl)"
             ),
             "{}",
             r.code
@@ -1720,7 +759,7 @@ mod tests {
         let r = compile_component_for_ssr(src, "x/api-prop-in-file-superclass/api-prop-in-file-superclass.js", &opts).unwrap();
         assert!(!r.code.contains("@api"), "{}", r.code);
         assert!(r.code.contains("value;"), "{}", r.code);
-        assert!(r.code.contains("__registerPublicProperties(this, ['value', 'level'])"), "{}", r.code);
+        assert!(r.code.contains("__registerPublicProperties(this, [\"value\", \"level\"])"), "{}", r.code);
         assert!(r.code.contains("registerPublicProperties as __registerPublicProperties"), "{}", r.code);
         assert!(r.code.contains("__setStaticInternals(ApiPropInFileSuperclass,"), "{}", r.code);
     }
@@ -1762,6 +801,64 @@ mod tests {
         assert!(r.code.contains("instance[\"bar\"]"), "{}", r.code);
     }
 
+    /// decorators/wire.ts errors as @lwc/ssr-compiler 9.5.3 throws them, located at the member.
+    #[test]
+    fn wire_decorator_errors() {
+        let cls = |members: &str, tail: &str| format!("export default class C extends LightningElement {{\n{members}\n}}\n{tail}");
+        let at_member = Some((4, 2));
+        let cases = [
+            (cls("  @wire(a) @wire(a) p;", ""), "LWC1105: Method or property can only have 1 @wire decorator", at_member),
+            (cls("  @wire() p;", ""), "LWC1092: @wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).", at_member),
+            (cls("  @wire('x') p;", ""), "LWC1097: @wire expects a function identifier as first parameter.", at_member),
+            (cls("  @wire(a['b']) p;", ""), "LWC1131: @wire identifier cannot contain computed properties", at_member),
+            (cls("  @wire(a.b.c) p;", ""), "LWC1132: @wire identifier cannot contain nested member expressions", at_member),
+            (cls("  @wire(local) p;", "const local = 1;\n"), "LWC1200: Computed property in @wire config must be a constant or primitive literal.", at_member),
+            (cls("  @wire(nope) p;", ""), "LWC1200: Computed property in @wire config must be a constant or primitive literal.", at_member),
+            (cls("  @wire(a, cfg) p;", "const cfg = {};\n"), "LWC1094: @wire expects a configuration object expression as second parameter.", at_member),
+            (cls("  @wire(a, { [`k`]: 1 }) p;", ""), "LWC1199: Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.", at_member),
+            (cls("  @wire(a, { [K]: 1 }) p;", "let K = 'k';\n"), "LWC1200: Computed property in @wire config must be a constant or primitive literal.", at_member),
+            (cls("  @wire(a, { [/r/]: 1 }) p;", ""), "LWC1200: Computed property in @wire config must be a constant or primitive literal.", at_member),
+            // A wired getter is replaced by a synthetic property with no location.
+            (cls("  @wire(nope) get g() { return 1; }", ""), "LWC1200: Computed property in @wire config must be a constant or primitive literal.", None),
+            (cls("  @wire(a) [m]() {}", "const m = 'm';\n"), "@wire cannot be used on computed properties in SSR context.", None),
+        ];
+        for (src, message, at) in cases {
+            let err = compile_decorated(&src).unwrap_err();
+            assert_eq!(err.message, message, "{src}");
+            assert_eq!(err.line.zip(err.column), at, "{src}");
+        }
+    }
+
+    fn wire_plumbing(body: &str) -> String {
+        let code = compile_decorated(body).unwrap().code;
+        let start = code.find("__setStaticInternals(").unwrap();
+        code[start..].split_whitespace().collect()
+    }
+
+    #[test]
+    fn wire_adapters_cataloged_on_the_ast() {
+        let cls = |members: &str| format!("export default class C extends LightningElement {{\n{members}\n}}\nconst K = 'k';\n");
+        let entry = |adapter: &str, callback: &str, config: &str| {
+            format!("{{adapter:{adapter},dataCallback:(instance)=>(newValue)=>{{{callback}}},config:(instance)=>({config})}}")
+        };
+        // Decorators split over lines, comments inside the call, `$` paths, constant computed keys.
+        let out = wire_plumbing(&cls("  @wire(\n    a, // id\n    { foo: '$bar.baz', [K]: 1, n: { x: '$y' } }\n  )\n  p;\n  @wire(a.b) m(v) {}"));
+        let expected = [
+            entry("a", "instance.p=newValue;", "{foo:instance[\"bar\"][\"baz\"],[K]:1,n:{x:'$y'}}"),
+            entry("a.b", "instance.m(newValue);", "{}"),
+        ];
+        assert!(out.contains(&format!("[{}]??null,", expected.join(","))), "{out}");
+        // Wired accessors become fields; their bodies are dropped.
+        let code = compile_decorated(&cls("  @wire(a) static get g() { return 1; }\n  @wire(a) set s(v) {}")).unwrap().code;
+        assert!(code.contains("  static g;\n  s;\n"), "{code}");
+        assert!(!code.contains("@wire") && !code.contains("return 1"), "{code}");
+        // Members of a nested class count toward the enclosing component.
+        let out = wire_plumbing(&cls("  @wire(a) p;\n  x = class { @wire(a) q; };"));
+        assert!(out.contains(&entry("a", "instance.q=newValue;", "{}")), "{out}");
+        // A bare `@wire` is not a wire decorator.
+        assert!(wire_plumbing(&cls("  @wire p;")).contains("[],null??null,"));
+    }
+
     #[test]
     fn export_as_default() {
         let src = "import { LightningElement } from 'lwc';
@@ -1782,7 +879,7 @@ export { Light as default };
         let src = "import FancyElement from 'x/fancyElement';\n\nexport default class extends FancyElement {}\n";
         let opts = CompileOptions { name: "component".into(), namespace: "x".into(), ..Default::default() };
         let r = compile_component_for_ssr(src, "x/component/component.js", &opts).unwrap();
-        assert!(r.code.contains("__setStaticInternals(Component, 'x-component'"), "{}", r.code);
+        assert!(r.code.contains("__setStaticInternals(DefaultComponentName, \"x-component\""), "{}", r.code);
         assert!(r.code.contains("@lwc/ssr-runtime"), "{}", r.code);
     }
 
@@ -1794,9 +891,304 @@ export { Light as default };
         assert!(err.message.contains("LWC1095"), "{}", err.message);
     }
 
+    const DECORATED: &str = "import { LightningElement, api, track, wire } from 'lwc';\nimport a from 'x/a';\n";
+
+    fn compile_decorated(body: &str) -> Result<CompileResult, CompileError> {
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), ..Default::default() };
+        compile_component_for_ssr(&format!("{DECORATED}{body}"), "x/c/c.js", &opts)
+    }
+
+    /// decorators/index.ts + api/validate.ts messages, as @lwc/ssr-compiler 9.5.3 throws them.
+    #[test]
+    fn api_track_decorator_errors() {
+        let cls = |members: &str| format!("export default class C extends LightningElement {{\n{members}\n}}\n");
+        let cases = [
+            (cls("  @api get x() { return 1; }\n  @api set x(v) {}"), "LWC1112: @api get x and @api set x detected in class declaration. Only one of the two needs to be decorated with @api."),
+            (cls("  @api get x() { return 1; }\n  @api get x() { return 2; }"), "LWC1112: @api get x and @api set x detected in class declaration. Only one of the two needs to be decorated with @api."),
+            (cls("  @api x;\n  @api x;"), "LWC1096: Duplicate @api property \"x\"."),
+            (cls("  @api x;\n  @api x() {}"), "LWC1096: Duplicate @api property \"x\"."),
+            (cls("  @api x = true;"), "LWC1099: Boolean public property must default to false."),
+            (cls("  @api x = (true);"), "LWC1099: Boolean public property must default to false."),
+            (cls("  @api [x];"), "LWC1106: @api cannot be applied to a computed property, getter, setter or method."),
+            (cls("  @api part;"), "LWC1111: Invalid property name \"part\". \"part\" is a future reserved attribute for web components."),
+            (cls("  @api onclick;"), "LWC1108: Invalid property name \"onclick\". Properties starting with \"on\" are reserved for event handlers."),
+            (cls("  @api dataFoo;"), "LWC1107: Invalid property name \"dataFoo\". Properties starting with \"data\" are reserved attributes."),
+            (cls("  @api slot;"), "LWC1110: Invalid property name \"slot\". \"slot\" is a reserved attribute."),
+            (cls("  @api get class() { return 1; }"), "LWC1110: Invalid property name \"class\". \"class\" is a reserved attribute."),
+            (cls("  @api tabindex;"), "LWC1109: Ambiguous attribute name \"tabindex\". \"tabindex\" will never be called from template because its corresponding property is camel cased. Consider renaming to \"tabIndex\"."),
+            (cls("  @api maxlength() {}"), "LWC1109: Ambiguous attribute name \"maxlength\". \"maxlength\" will never be called from template because its corresponding property is camel cased. Consider renaming to \"maxLength\"."),
+            (cls("  @api is;\n  @api is;"), "LWC1110: Invalid property name \"is\". \"is\" is a reserved attribute."),
+            (cls("  @api @track x;"), "LWC1093: @api method or property cannot be used with @track"),
+            (cls("  @track\n  @api\n  x;"), "LWC1093: @api method or property cannot be used with @track"),
+            (cls("  @wire(a)\n  @api\n  foo() {}"), "LWC1095: @wire method or property cannot be used with @api"),
+            (cls("  @wire(a) @track foo;"), "LWC1095: @wire method or property cannot be used with @track"),
+            // Program.leave re-traverses the extracted default-export expression and meets `x` again.
+            ("export default wrap(class extends LightningElement {\n  @api x;\n});\n".into(), "LWC1096: Duplicate @api property \"x\"."),
+            // The reserved-identifier error is thrown first.
+            (format!("const __lwcX = 1;\n{}", cls("  @api x = true;")), "LWC1202: Identifier name cannot start with \"__lwc\"."),
+        ];
+        for (src, message) in cases {
+            let err = compile_decorated(&src).unwrap_err();
+            assert_eq!(err.message, message, "{src}");
+        }
+    }
+
+    /// `publicProperties` in visit order, as the oracle's `__setStaticInternals` third argument.
+    #[test]
+    fn public_properties_from_the_walk() {
+        let props = |body: &str| {
+            let code = compile_decorated(body).unwrap().code;
+            assert!(!code.contains("@api") && !code.contains("@track") && !code.contains("@foo"), "{code}");
+            let tail = code.rsplit_once("__setStaticInternals(").unwrap().1;
+            tail.split_once('[').unwrap().1.split_once(']').unwrap().0.to_string()
+        };
+        assert_eq!(props("export default class C extends LightningElement {\n  @api\n  foo;\n  @api bar; @track baz;\n}\n"), r#""foo", "bar""#);
+        // A nested class keeps `currentComponent`; a nested component clears it on leave.
+        assert_eq!(props("export default class C extends LightningElement {\n  @api outer;\n  m() { return class { @api inner; }; }\n  @api after;\n}\n"), r#""outer", "inner", "after""#);
+        assert_eq!(props("export default class C extends LightningElement {\n  @api outer;\n  m() { return class extends LightningElement { @api inner; }; }\n  @api after;\n}\n"), r#""outer", "inner""#);
+        assert_eq!(props("export default class C extends LightningElement {\n  @api ['x'];\n  @api #y;\n  @api y;\n  @api data;\n  @api static s;\n}\n"), r#""y", "data", "s""#);
+        assert_eq!(props("function foo() {}\nexport default class C extends LightningElement {\n  @foo x;\n}\n"), "");
+    }
+
+    /// registerBaseClassProps: a static block at the end of every other class with own `@api` members,
+    /// named or not, nested or not, before a matched class's version comment (@lwc/ssr-compiler 9.5.3).
+    #[test]
+    fn base_class_props_on_the_ast() {
+        let src = format!("{DECORATED}class Base extends LightningElement {{\n  @api value;\n  @api level;\n}}\nexport default class C extends Base {{\n  @api own;\n}}\n");
+        let IndexResult::Component { public_properties, registered_base_class_props, .. } = index(&src, "x/c/c.js", &CompileOptions::default()).unwrap().0 else { panic!() };
+        assert_eq!((public_properties, registered_base_class_props), (vec!["own".to_string()], true));
+        let block = |names: &str| format!("static {{ __registerPublicProperties(this, [{names}]); }}");
+        let code = compile_decorated("const Base = class extends Object {\n  @api value;\n};\nexport default class C extends Base {}\n").unwrap().code;
+        assert!(code.contains(&format!("  value;\n  {}\n}};", block("\"value\""))), "{code}");
+        assert!(code.starts_with("import { setStaticInternals as __setStaticInternals } from \"@lwc/ssr-runtime\";\nimport __lwcTmpl from \"./c.html\";\nimport { registerPublicProperties as __registerPublicProperties } from \"@lwc/ssr-runtime\";\n"), "{code}");
+        // Anonymous (`export default class extends` base of a named export is not the component) and nested.
+        let code = compile_decorated("export default class B extends LightningElement {\n  @api a;\n  m() { return class { @api n; }; }\n}\nfoo(class { @api q; });\n").unwrap().code;
+        assert!(code.contains(&format!("return class {{ n;   {}\n  }}; }}", block("\"n\""))), "{code}");
+        assert!(code.contains(&format!("foo(class {{ q;   {}\n}});", block("\"q\""))), "{code}");
+        assert!(!code.contains(&block("\"a\"")), "the component registers through setStaticInternals: {code}");
+        // A matched base class: the block is a body item, the version comment trails it.
+        let code = compile_decorated("const M = class extends LightningElement {\n  @api x;\n};\nexport default class C extends M {}\n").unwrap().code;
+        assert!(code.contains(&format!("  x;\n  {}\n  {}\n}};", block("\"x\""), version_comment())), "{code}");
+        // No `@api` anywhere else: no block, no import.
+        assert!(!compile_decorated("export default class C extends LightningElement {\n  @api x;\n}\n").unwrap().code.contains("registerPublicProperties"));
+    }
+
+    /// index.ts ImportExpression, as @lwc/ssr-compiler 9.5.3 compiles it: strict specifiers throw LWC1121
+    /// at the node in pre-order with LWC1202; a loader rewrites every `import()` in any module.
+    #[test]
+    fn dynamic_imports_on_the_ast() {
+        let opts = |strict: bool, loader: &str| CompileOptions { name: "c".into(), namespace: "x".into(), dynamic_import_strict_specifier: strict, dynamic_import_loader: loader.into(), ..Default::default() };
+        let err = |src: &str| compile_component_for_ssr(src, "x/c/c.js", &opts(true, "")).unwrap_err();
+        let e = err("\nimport { LightningElement } from 'lwc';\nexport default class extends LightningElement {}\nexport default async function rando () {\n  await import(woohoo);\n}\n");
+        let d = &e.diagnostics[0];
+        let l = d.location.unwrap();
+        assert_eq!((d.code, d.level, l.line, l.column, l.start, l.length), (Some(1121), lwc_shared::DiagnosticLevel::Error, 5, 8, Some(139), Some(14)));
+        let thrown = lwc_shared::errors::CompilerError::from_diagnostic(d, None);
+        let info = &LWCClassErrors::INVALID_DYNAMIC_IMPORT_SOURCE_STRICT;
+        assert_eq!((thrown.level, Some(thrown.url.as_str())), (lwc_shared::DiagnosticLevel::Error, info.url));
+        assert!(info.url.is_some_and(|u| u.ends_with("#lwc1121")));
+        assert_eq!(e.message, "LWC1121: Invalid import. The argument \"undefined\" must be a stringLiteral for dynamic imports when strict mode is enabled.");
+        let arg = |source: &str| err(&format!("export function f() {{ return import({source}); }}")).message.split('"').nth(1).unwrap().to_string();
+        for (source, shown) in [("1e21", "1e+21"), ("1.5e-7", "1.5e-7"), ("100", "100"), ("0.5", "0.5"), ("10n", "10"), ("/a/g", "/a/g"), ("null", "null"), ("true", "true"), ("`x`", "undefined")] {
+            assert_eq!(arg(source), shown, "{source}");
+        }
+        // Pre-order: an earlier reserved identifier wins, a later one loses.
+        assert!(err("const __lwcX = 1; export function f() { return import(y); }").message.starts_with("LWC1202"));
+        assert!(err("export function f() { return import(y); } const __lwcX = 1;").message.starts_with("LWC1121"));
+        assert!(compile_component_for_ssr("export function f() { return import(('x')); }", "x/c/c.js", &opts(true, "")).is_ok());
+        // The loader: one import per source, every call rewritten, options dropped, non-LWC modules too.
+        let code = compile_component_for_ssr("export function f() { import('a'); return import(import('b'), { with: {} }); }\nconst s = 'import(x)';\n", "x/c/c.js", &opts(false, "my\"L")).unwrap().code;
+        assert_eq!(code, "import { load as __lwcLoad } from \"my\\\"L\";\nexport function f() { __lwcLoad('a'); return __lwcLoad(__lwcLoad('b')); }\nconst s = 'import(x)';\n");
+        // In a component it sits after registerPublicProperties; a removed member still adds it.
+        let code = compile_component_for_ssr(&format!("{DECORATED}class B {{ @api p; }}\nexport default class C extends LightningElement {{\n  renderedCallback() {{ import('a'); }}\n}}\n"), "x/c/c.js", &opts(true, "L")).unwrap().code;
+        assert!(code.contains("import { registerPublicProperties as __registerPublicProperties } from \"@lwc/ssr-runtime\";\nimport { load as __lwcLoad } from \"L\";\nimport "), "{code}");
+        assert!(!code.contains("import('a')") && !code.contains("__lwcLoad('a')"), "{code}");
+        assert!(code.ends_with("\n__setStaticInternals(C, \"x-c\", [], null ?? null, \"sync\", __lwcTmpl);\n"), "{code}");
+    }
+
+    /// generate-markup.ts: literals are JSON strings (`b.literal`), and the call is pushed unconditionally.
+    #[test]
+    fn generate_markup_literals() {
+        let opts = CompileOptions { name: "fo'o".into(), namespace: "x".into(), ..Default::default() };
+        let code = compile_component_for_ssr("import { LightningElement } from 'lwc';\nexport default class C extends LightningElement {}\n", "x/fo'o/fo'o.js", &opts).unwrap().code;
+        assert!(code.starts_with("import { setStaticInternals as __setStaticInternals } from \"@lwc/ssr-runtime\";\nimport __lwcTmpl from \"./fo'o.html\";\n"), "{code}");
+        assert!(code.ends_with("__setStaticInternals(C, \"x-fo'o\", [], null ?? null, \"sync\", __lwcTmpl);\n"), "{code}");
+    }
+
+    #[test]
+    fn default_export_expression_extracted_for_lwc_only() {
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), ..Default::default() };
+        let src = "import { LightningElement } from 'lwc';\nconst Component = class extends LightningElement {};\nexport default wrap(Component);\n";
+        let r = compile_component_for_ssr(src, "x/c/c.js", &opts).unwrap();
+        assert!(r.code.contains("const __lwcDefaultExport = wrap(Component);\nexport default __lwcDefaultExport;"), "{}", r.code);
+        assert!(r.code.contains("__setStaticInternals(__lwcDefaultExport, \"x-c\""), "{}", r.code);
+        let adapter = "export default { Adapter };\n";
+        assert_eq!(compile_component_for_ssr(adapter, "x/c/c.js", &opts).unwrap().code, adapter);
+    }
+
+    #[test]
+    fn default_exported_binding_resolves_through_scope() {
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), ..Default::default() };
+        let src = "import { LightningElement } from 'lwc';\nfunction f() { class Cmp extends Object {} return Cmp; }\nexport default f;\n";
+        let r = compile_component_for_ssr(src, "x/c/c.js", &opts).unwrap();
+        assert!(!r.code.contains("__setStaticInternals"), "{}", r.code);
+        let src = "import { LightningElement } from 'lwc';\nclass Cmp extends LightningElement {}\nexport default Cmp;\n";
+        let r = compile_component_for_ssr(src, "x/c/c.js", &opts).unwrap();
+        assert!(r.code.contains("__setStaticInternals(Cmp, \"x-c\""), "{}", r.code);
+    }
+
+    #[test]
+    fn duplicate_default_export_is_not_fatal() {
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), ..Default::default() };
+        let src = "import { LightningElement } from 'lwc';\nexport default class extends LightningElement {}\nexport default async function rando() {}\n";
+        let r = compile_component_for_ssr(src, "x/c/c.js", &opts).unwrap();
+        assert!(r.code.contains("__setStaticInternals(DefaultComponentName, \"x-c\""), "{}", r.code);
+        assert!(compile_component_for_ssr("export default class {", "x/c/c.js", &opts).is_err());
+    }
+
+    #[test]
+    fn imports_rewritten_on_the_ast() {
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), ..Default::default() };
+        let src = "import { LightningElement as LE, api, track } from \"lwc\";\nimport { wire } from '@lwc/ssr-runtime';\nimport sheet from './c.scoped.css';\nimport { named } from './n.scoped.css';\nexport { createElement } from 'lwc';\nexport * from 'lwc';\nexport default class C extends LE {\n    @api x;\n}\n";
+        let r = compile_component_for_ssr(src, "x/c/c.js", &opts).unwrap();
+        let c = &r.code;
+        assert!(c.starts_with("import { setStaticInternals as __setStaticInternals } from \"@lwc/ssr-runtime\";\nimport __lwcTmpl from \"./c.html\";\n"), "{c}");
+        assert!(c.contains("import { LightningElement as LE } from \"@lwc/ssr-runtime\";"), "{c}");
+        assert!(c.contains("\nimport \"@lwc/ssr-runtime\";\n"), "{c}");
+        assert!(c.contains("from './c.scoped.css?scoped=true'"), "{c}");
+        assert!(c.contains("from './n.scoped.css';"), "{c}");
+        assert!(c.contains("export { createElement } from '@lwc/ssr-runtime';\nexport * from '@lwc/ssr-runtime';"), "{c}");
+        assert!(c.contains("__setStaticInternals(C, \"x-c\", [\"x\"]"), "{c}");
+    }
+
+    #[test]
+    fn non_lwc_module_gets_import_edits_only() {
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), ..Default::default() };
+        let src = "import { api, createElement } from 'lwc';\nexport const f = () => createElement;\n";
+        let r = compile_component_for_ssr(src, "x/c/c.js", &opts).unwrap();
+        assert_eq!(r.code, "import { createElement } from \"@lwc/ssr-runtime\";\nexport const f = () => createElement;\n");
+    }
+
     #[test]
     fn tag_kebab() {
         assert_eq!(generate_custom_element_tag_name("x", "fooBar"), "x-foo-bar");
-        assert_eq!(pascal_case("comments-text"), "CommentsText");
+    }
+
+    const LE: &str = "import { LightningElement } from 'lwc';\n";
+
+    fn indexed(body: &str) -> (IndexResult, String) {
+        let src = format!("{LE}{body}");
+        let (r, edits, _) = index(&src, "x/c/c.js", &CompileOptions::default()).unwrap();
+        let out = apply(&src, edits).unwrap();
+        (r, out.split_once('\n').unwrap().1.to_string()) // drop the (rewritten) import line
+    }
+
+    fn component(exported: &str) -> IndexResult {
+        IndexResult::Component { exported_name: exported.into(), public_properties: vec![], registered_base_class_props: false, wire_adapters: vec![] }
+    }
+
+    /// Names as upstream's `lwcDefaultExportName ?? lwcClassName` (oracle runs of @lwc/ssr-compiler 9.5.3).
+    #[test]
+    fn index_result_names() {
+        assert_eq!(indexed("export default class Foo extends LightningElement {}\n").0, component("Foo"));
+        assert_eq!(indexed("export default class extends LightningElement {}\n").0, component("DefaultComponentName"));
+        assert_eq!(indexed("const Foo = class extends LightningElement {};\nexport default Foo;\n").0, component("Foo"));
+        // Upstream keeps lwcClassName null here and still compiles against the default export name.
+        assert_eq!(indexed("export default (class extends LightningElement {});\n").0, component("DefaultComponentName"));
+        assert_eq!(indexed("export default foo(class extends LightningElement {});\n").0, component("__lwcDefaultExport"));
+        assert_eq!(indexed("export default { a: 1 };\n").0, IndexResult::NotLwc);
+    }
+
+    /// index.ts MethodDefinition `constructor` / Super / lifecycle removal, as @lwc/ssr-compiler 9.5.3 prints them.
+    #[test]
+    fn class_members_on_the_walk() {
+        let c = version_comment();
+        let out = |body: &str| indexed(body).1.replace(&format!("  {c}\n"), "").replace(PROPS_ARG, "P");
+        // Rest params and spread args; an arrow's super() is left alone, a nested block's is not.
+        assert_eq!(
+            out("export default class C extends LightningElement {\n  constructor(a, ...r) { super(a, ...r); const f = () => super(); if (1) { super(); } }\n  connectedCallback() {}\n  disconnectedCallback() {}\n  errorCallback(e) {}\n  @foo renderedCallback() {}\n}\n"),
+            "export default class C extends LightningElement {\n  constructor(a, ...r, P) { super(a, ...r, P); const f = () => super(); if (1) { super(P); } }\n  connectedCallback() {}\n  \n  \n  \n}\n"
+        );
+        // currentComponent stays set in a nested class: it gets the rewrite too.
+        assert_eq!(
+            out("export default class C extends LightningElement {\n  m() { return class extends Object { constructor(a) { super(a); } renderedCallback() {} }; }\n}\n"),
+            "export default class C extends LightningElement {\n  m() { return class extends Object { constructor(a, P) { super(a, P); }  }; }\n}\n"
+        );
+        // Computed identifier keys and static members count; string keys do not.
+        assert_eq!(
+            out("export default class C extends LightningElement {\n  [constructor](a) {}\n  static constructor() {}\n  'renderedCallback'() {}\n}\n"),
+            "export default class C extends LightningElement {\n  [constructor](a, P) {}\n  static constructor(P) {}\n  'renderedCallback'() {}\n}\n"
+        );
+        // Program.leave's re-traversal of an extracted `export default <expression>` appends twice.
+        assert_eq!(
+            out("export default mix(class extends LightningElement {\n  constructor(a) { super(a); }\n  renderedCallback() {}\n});\n"),
+            "const __lwcDefaultExport = mix(class extends LightningElement {\n  constructor(a, P, P) { super(a, P, P); }\n  \n});\nexport default __lwcDefaultExport;\n"
+        );
+        // A removed member's nested edits go with it; a class that is not a component is untouched.
+        assert_eq!(
+            out("class B extends LightningElement {\n  constructor() { super(); }\n  renderedCallback() {}\n}\nexport default class C extends B {\n  renderedCallback() { return class { constructor() {} }; }\n}\n"),
+            "class B extends LightningElement {\n  constructor() { super(); }\n  renderedCallback() {}\n}\nexport default class C extends B {\n  \n}\n"
+        );
+    }
+
+    /// index.ts Identifier visitor: LWC1202 at the identifier, in any module, first error wins
+    /// (locations from @lwc/ssr-compiler 9.5.3: 1-based line, 0-based column, UTF-16 start).
+    #[test]
+    fn reserved_identifier_at_the_node() {
+        const H: &str = "import { LightningElement, api, wire } from 'lwc';\n";
+        let cls = |members: &str| format!("{H}export default class C extends LightningElement {{\n{members}\n}}\n");
+        let at = |src: &str| {
+            let e = index(src, "x/c/c.js", &CompileOptions::default()).unwrap_err();
+            let l = e.diagnostics[0].location.unwrap();
+            (e.message, l.line, l.column, l.start, l.length)
+        };
+        let msg = "LWC1202: Identifier name cannot start with \"__lwc\".".to_string();
+        // Children of a removed member are still visited.
+        assert_eq!(at(&cls("  renderedCallback() { __lwcX; }")), (msg.clone(), 3, 23, Some(124), Some(6)));
+        assert_eq!(at("const __lwcX = 1;\nexport default {};\n"), (msg.clone(), 1, 6, Some(6), Some(6)));
+        assert_eq!(at(&cls("  m() { return this.__lwcY; }")).1..=at(&cls("  m() { return this.__lwcY; }")).2, 3..=20);
+        assert_eq!(at(&cls("  __lwcK = 1;")).2, 2);
+        assert_eq!(at(&cls("  m() { __lwcL: for(;;) { break __lwcL; } }")).2, 8);
+        assert_eq!(at(&format!("import {{ __lwcI }} from 'x';\n{}", cls(""))).1..=at(&format!("import {{ __lwcI }} from 'x';\n{}", cls(""))).2, 1..=9);
+        assert_eq!(at(&format!("{H}const s = '\u{1F600}';\nexport default class C extends LightningElement {{\n  y = __lwcB;\n}}\n")), (msg.clone(), 4, 6, Some(123), Some(6)));
+        // The member visitor runs before its key, and pre-order puts earlier members first.
+        assert_eq!(at(&cls("  @api __lwcX = true;")).0, "LWC1099: Boolean public property must default to false.");
+        assert_eq!(at(&cls("  @api x = true;\n  y = __lwcB;")).0, "LWC1099: Boolean public property must default to false.");
+        assert_eq!(at(&cls("  y = __lwcB;\n  @api x = true;")).0, msg);
+        // Not identifiers, or never traversed: strings, comments, private names, decorators.
+        for ok in [cls("  m() { return '__lwcQ'; } // __lwcZ"), cls("  #__lwcP = 1;"), cls("  @foo(__lwcA) x;"), cls("  @api @foo(__lwcA) x;"), format!("{H}@__lwcD\nexport default class C extends LightningElement {{}}\n")] {
+            assert!(index(&ok, "x/c/c.js", &CompileOptions::default()).is_ok(), "{ok}");
+        }
+    }
+
+    /// generate-markup.ts:54 `b.identifier(null!)` throws: a component with no name is an error, never "".
+    #[test]
+    fn nameless_component_is_an_error() {
+        let src = format!("{LE}foo(class extends LightningElement {{}});\n");
+        let err = index(&src, "x/c/c.js", &CompileOptions::default()).unwrap_err();
+        assert_eq!(err.message, "Expected the value to be a `string` but got a `null`. The value is null.");
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), ..Default::default() };
+        assert!(compile_component_for_ssr(&src, "x/c/c.js", &opts).is_err());
+    }
+
+    /// index.ts:136-148 / :185-197 placement, as the oracle prints it: last item of every matched
+    /// class body; twice for a class inside an extracted `export default <expression>`.
+    #[test]
+    fn version_comment_placement() {
+        let c = version_comment();
+        assert_eq!(indexed("export default class Foo extends LightningElement {\n  x = 1;\n}\n").1, format!("export default class Foo extends LightningElement {{\n  x = 1;\n  {c}\n}}\n"));
+        assert_eq!(indexed("export default class Foo extends LightningElement {}\n").1, format!("export default class Foo extends LightningElement {{  {c}\n}}\n"));
+        assert_eq!(indexed("const M = class extends LightningElement {};\nexport default class Foo extends LightningElement {}\n").1,
+            format!("const M = class extends LightningElement {{  {c}\n}};\nexport default class Foo extends LightningElement {{  {c}\n}}\n"));
+        assert_eq!(indexed("export default foo(class extends LightningElement {\n  x = 1;\n});\n").1,
+            format!("const __lwcDefaultExport = foo(class extends LightningElement {{\n  x = 1;\n  {c}\n  {c}\n}});\nexport default __lwcDefaultExport;\n"));
+        // Only matched classes: a nested non-component class gets none.
+        assert_eq!(indexed("class Base extends Object {}\nexport default class Foo extends LightningElement {\n  m() { return class extends Base {}; }\n}\n").1,
+            format!("class Base extends Object {{}}\nexport default class Foo extends LightningElement {{\n  m() {{ return class extends Base {{}}; }}\n  {c}\n}}\n"));
+        // Not LWC: nothing.
+        assert!(!indexed("export default { a: 1 };\n").1.contains(&c));
+        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), ..Default::default() };
+        let r = compile_component_for_ssr(&format!("{LE}export default class Foo extends LightningElement {{\n  x = 1;\n}}\n"), "x/c/c.js", &opts).unwrap();
+        assert!(r.code.contains(&format!("  x = 1;\n  {c}\n}}")), "{}", r.code);
     }
 }

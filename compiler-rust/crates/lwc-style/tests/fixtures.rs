@@ -3,7 +3,8 @@
 //! `compiler-error.json` also pins the `@lwc/compiler` transformSync error (message/code/location) via [`transform`].
 //! Env: LWC_FIXTURES=dir override, LWC_FIXTURE=name filter, LWC_STYLE_STRICT=1 to fail on any mismatch,
 //! LWC_STYLE_DIFF=1 to print expected/actual for failures.
-use lwc_style::{transform, transform_with_config, CompileError, CompileOptions, Config, StyleError};
+use lwc_shared::{CompilerError, TransformError};
+use lwc_style::{transform_with_config, CompileOptions, Config, StyleError};
 use serde_json::{json, Value};
 use std::{fs, path::PathBuf};
 
@@ -23,6 +24,8 @@ fn normalize_version(s: &str) -> String {
 
 fn err_json(e: &StyleError) -> Value {
     match e {
+        // jsErr / normalizeError: a non-CssSyntaxError is `{name, message}`.
+        StyleError::Syntax { name, reason, .. } if name != "CssSyntaxError" => json!({"name": name, "message": reason}),
         StyleError::Syntax { name, reason, line, column } => {
             // JSON.stringify drops `undefined` line/column (position-less PostCSS errors).
             let mut o = json!({"name": name, "reason": reason});
@@ -35,23 +38,20 @@ fn err_json(e: &StyleError) -> Value {
 }
 
 /// `@lwc/compiler` transformSync error as JS shows it (see gen-parse-errors.mjs `compilerError`).
-fn compiler_err_json(e: &CompileError) -> Value {
+fn compiler_err_json(e: &TransformError) -> Value {
     let cwd = format!("{}/", std::env::current_dir().unwrap().display());
-    let one = |d: &lwc_shared::CompilerDiagnostic| {
+    let one = |e: &CompilerError| {
         let mut o = json!({
-            "name": "Error", "message": d.message.replace(&cwd, "<cwd>/"), "code": d.code, "filename": d.filename,
-            "level": d.level.js_value(), "url": lwc_shared::CSS_TRANSFORMER_ERROR.url,
+            "name": "Error", "message": e.message.replace(&cwd, "<cwd>/"), "code": e.code, "filename": e.filename,
+            "level": e.level.js_value(), "url": e.url,
         });
-        if let Some(l) = &d.location { o["location"] = json!({"line": l.start_line, "column": l.start_column}); }
+        if let Some(l) = &e.location { o["location"] = json!({"line": l.line, "column": l.column}); }
         o
     };
-    if e.name.as_deref() == Some("AggregateError") {
-        json!({"name": "AggregateError", "message": e.message, "errors": e.diagnostics.iter().map(one).collect::<Vec<_>>()})
-    } else {
-        let mut o = one(&e.diagnostics[0]);
-        assert_eq!(e.message, e.diagnostics[0].message);
-        o["name"] = json!(e.name);
-        o
+    match e {
+        TransformError::Aggregate(a) => json!({"name": "AggregateError", "message": a.message, "errors": a.errors.iter().map(one).collect::<Vec<_>>()}),
+        TransformError::Compiler(e) => one(e),
+        TransformError::Unnormalized(e) => panic!("style errors are normalized: {e:?}"),
     }
 }
 
@@ -88,7 +88,7 @@ fn run_dir(root: &PathBuf, filter: &Option<String>, diff: bool, pass: &mut usize
                 experimental_error_recovery_mode: config.experimental_error_recovery_mode,
                 ..Default::default()
             };
-            let facade = match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| transform(&src, "x.css", &opts))) {
+            let facade = match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| lwc_compiler::dispatch(&src, "x.css", &opts))) {
                 Ok(Err(e)) => compiler_err_json(&e),
                 Ok(Ok(_)) => json!("compiled"),
                 Err(_) => json!("PANIC"),

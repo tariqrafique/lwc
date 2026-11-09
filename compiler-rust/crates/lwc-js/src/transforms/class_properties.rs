@@ -10,7 +10,7 @@
 //! `accessor` fields are left as-is.
 use super::hoist::{Scopes, Uids};
 use super::private_fields::MARKER;
-use crate::edits::Edit;
+use lwc_shared::edits::Edit;
 use oxc::ast::ast::*;
 use oxc::ast_visit::{walk, Visit};
 use oxc::semantic::ScopeFlags;
@@ -164,7 +164,7 @@ impl<'a> Visit<'a> for Lower<'_> {
                     r.visit_expression(v);
                     let a = alias.clone().unwrap_or_else(|| reference.clone());
                     let es = r.hits.into_iter().map(|h| Edit::replace(h.start - s.start, h.end - s.start, a.clone())).collect();
-                    crate::edits::apply(self.slice(s), es)
+                    lwc_shared::edits::apply(self.slice(s), es).expect("lwc-js edits never partially overlap")
                 }
             };
             statics.push(if private {

@@ -2,6 +2,7 @@
 use crate::ast::*;
 use crate::consts::*;
 use crate::Config;
+use crate::StyleError;
 
 #[derive(Clone, Copy, PartialEq)]
 enum Kind { RuleStart, RuleEnd(HostKind), Decl, AtRule, Comment, Other }
@@ -13,26 +14,31 @@ const BINARY_EXPRESSION_LIMIT: usize = 100;
 
 /// Emits parts exactly like PostCSS's Stringifier builder callback.
 fn stringify(root: &Root, out: &mut Vec<(String, Kind)>) {
-    body(&root.nodes, false, out);
+    body(&root.nodes, root.semicolon, out);
     if !root.after.is_empty() { out.push((root.after.clone(), Kind::Other)); }
 }
 
 fn body(nodes: &[Node], semicolon: bool, out: &mut Vec<(String, Kind)>) {
-    let last = nodes.iter().rposition(|n| !matches!(n, Node::Comment(_)));
+    // `while (last > 0) { if (nodes[last].type !== 'comment') break; last -= 1 }`
+    let last = nodes.iter().rposition(|n| !matches!(n, Node::Comment(_))).unwrap_or(0);
     for (i, n) in nodes.iter().enumerate() {
         if !n.before().is_empty() { out.push((n.before().to_string(), Kind::Other)); }
-        let semi = last != Some(i) || semicolon;
+        let semi = last != i || semicolon;
         match n {
             Node::Comment(c) => out.push((format!("/*{}*/", c.text), Kind::Comment)),
             Node::Decl(d) => {
-                let mut s = format!("{}{}{}", d.prop, d.between, d.value);
+                let mut s = format!("{}{}{}", d.prop, d.between, raw_value(&d.value, &d.raw_value));
+                if let Some(imp) = &d.important { s.push_str(imp); }
                 if semi { s.push(';'); }
                 out.push((s, Kind::Decl));
             }
-            Node::Rule(r) => block(&format!("{}{}", r.selector, r.between), &r.block, Kind::RuleStart, Kind::RuleEnd(r.host), out),
+            Node::Rule(r) => {
+                block(&format!("{}{}", raw_value(&r.selector, &r.raw_selector), r.between), &r.block, Kind::RuleStart, Kind::RuleEnd(r.host), out);
+                if !r.own_semicolon.is_empty() { out.push((r.own_semicolon.clone(), Kind::RuleEnd(r.host))); }
+            }
             Node::AtRule(a) => {
-                let name = format!("@{}", a.name);
-                let params = if a.params.is_empty() { String::new() } else { format!("{}{}", a.after_name, a.params) };
+                let name = format!("@{}{}", a.name, a.after_name);
+                let params = if a.params.is_empty() { "" } else { raw_value(&a.params, &a.raw_params) };
                 match &a.block {
                     Some(b) => block(&format!("{name}{params}{}", a.between), b, Kind::AtRule, Kind::AtRule, out),
                     None => out.push((format!("{name}{params}{}{}", a.between, if semi { ";" } else { "" }), Kind::AtRule)),
@@ -147,7 +153,7 @@ fn dedup_host_tokens(native: &[Tok], synthetic: &[Tok]) -> Vec<Tok> {
     out
 }
 
-fn serialize_css(root: &Root) -> String {
+fn serialize_css(root: &Root) -> Result<String, StyleError> {
     let mut parts = Vec::new();
     stringify(root, &mut parts);
     let mut tokens = Vec::new();
@@ -161,7 +167,8 @@ fn serialize_css(root: &Root) -> String {
                 match host {
                     HostKind::Native => native = Some(std::mem::take(&mut cur)),
                     HostKind::Synthetic => {
-                        let n = native.take().expect("Unexpected host rules ordering");
+                        // serialize.ts: `throw new Error('Unexpected host rules ordering')` (reachable, e.g. `:host{};`).
+                        let n = native.take().ok_or_else(|| StyleError::error("Unexpected host rules ordering"))?;
                         tokens.extend(dedup_host_tokens(&n, &cur));
                         cur.clear();
                     }
@@ -177,16 +184,16 @@ fn serialize_css(root: &Root) -> String {
             Kind::Other => cur.push(Tok::Text(normalize_string(&part))),
         }
     }
-    generate_expression(tokens)
+    Ok(generate_expression(tokens))
 }
 
-pub fn serialize(root: &Root, config: &Config) -> String {
+pub fn serialize(root: &Root, config: &Config) -> Result<String, StyleError> {
     let imported = &root.imports;
     let mut buf = String::new();
     for (i, id) in imported.iter().enumerate() { buf += &format!("import stylesheet{i} from \"{id}\";\n"); }
     if !imported.is_empty() { buf.push('\n'); }
     let mut list: Vec<String> = (0..imported.len()).map(|i| format!("stylesheet{i}")).collect();
-    let style = serialize_css(root);
+    let style = serialize_css(root)?;
     let style = style.trim();
     let (dss, scoped) = (config.disable_synthetic_shadow_support, config.scoped);
     if !style.is_empty() {
@@ -201,11 +208,62 @@ pub fn serialize(root: &Root, config: &Config) -> String {
             buf += "  var shadowSelector = token ? (\"[\" + token + \"]\") : \"\";\n  var hostSelector = token ? (\"[\" + token + \"-host]\") : \"\";\n";
         }
         buf += "  var suffixToken = token ? (\"-\" + token) : \"\";\n";
-        buf += &format!("  return {style};\n  /*LWC compiler v{LWC_VERSION}*/\n}}\n");
+        buf += &format!("  return {style};\n  {}\n}}\n", lwc_shared::meta::version_comment());
         if scoped { buf += &format!("stylesheet.{KEY_SCOPED_CSS} = true;\n"); }
         if dss { buf += &format!("stylesheet.{KEY_NATIVE_ONLY_CSS} = true;\n"); }
         list.push("stylesheet".into());
     }
     if list.is_empty() { buf += "export default undefined;"; } else { buf += &format!("export default [{}];", list.join(", ")); }
-    buf
+    Ok(buf)
+}
+
+#[cfg(test)]
+mod lossless {
+    //! AB-R002: every corpus input that parses goes through `parser::parse` and stringifies back
+    //! byte-for-byte (minus a leading BOM, which PostCSS Input strips), like `postcss.parse(css).toString()`.
+    use super::*;
+    use std::{fs, path::{Path, PathBuf}};
+
+    fn roundtrip(css: &str) -> Option<String> {
+        let root = crate::parser::parse(css).ok()?;
+        let mut parts = Vec::new();
+        stringify(&root, &mut parts);
+        Some(parts.into_iter().map(|(s, _)| s).collect())
+    }
+
+    fn inputs(dir: &Path, out: &mut Vec<PathBuf>) {
+        let Ok(rd) = fs::read_dir(dir) else { return };
+        for e in rd.flatten() {
+            let p = e.path();
+            if p.is_dir() { inputs(&p, out) } else if p.file_name().is_some_and(|n| n == "actual.css") { out.push(p) }
+        }
+    }
+
+    #[test]
+    fn corpus_stringifies_losslessly() {
+        let upstream = std::env::var("LWC_FIXTURES").unwrap_or_else(|_| "/workspace/lwc/packages/@lwc/style-compiler/src/__tests__/fixtures".into());
+        let mut files = Vec::new();
+        inputs(Path::new(&upstream), &mut files);
+        inputs(&Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/parse-errors"), &mut files);
+        let (mut parsed, mut bad) = (0, Vec::new());
+        for f in &files {
+            let css = fs::read_to_string(f).unwrap();
+            if let Some(out) = roundtrip(&css) {
+                parsed += 1;
+                if out != css.trim_start_matches(['\u{feff}', '\u{fffe}']) { bad.push(f.display().to_string()); }
+            }
+        }
+        assert!(bad.is_empty(), "not lossless:\n  {}", bad.join("\n  "));
+        assert!(parsed > 0 || files.is_empty());
+    }
+
+    #[test]
+    fn edge_cases_stringify_losslessly() {
+        for css in ["a{b:c}", "a { b : c ; }\r\n", "\u{feff}a{}", "a{b:c!important}", "a{b:c ! important ;}", "a{*b:c;_d:e}",
+            "@media  screen /* x */ {a{}}", "@import 'x' ;", "a /* s */ , b {}", "a{}; b{};", ";;a{;;b:c;;}", "/* only */", "a{/*c*/}",
+            "a{--x: { y } ;--z:}", "a{b:url( x )}", "\r\n\r\na{}\r\n"] {
+            let out = roundtrip(css).unwrap_or_else(|| panic!("should parse: {css:?}"));
+            assert_eq!(out, css.trim_start_matches('\u{feff}'), "input {css:?}");
+        }
+    }
 }

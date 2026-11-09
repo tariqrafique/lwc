@@ -16,3 +16,6 @@ napi-derive = "2"
 
 [build-dependencies]
 napi-build = "2"
+
+[dev-dependencies]
+regex = "1"

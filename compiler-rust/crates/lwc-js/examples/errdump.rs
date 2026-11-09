@@ -38,17 +38,24 @@ fn main() {
             _ => {}
         }
     }
-    match lwc_js::transform(&src, &file, &o) {
+    // The error `transformSync` throws (the lwc-compiler JS facade): one CompilerError, or the aggregate's.
+    match lwc_compiler::dispatch(&src, &file, &o) {
         Ok(_) => println!("\"NO ERROR\""),
         Err(e) => {
-            let loc = |d: &lwc_shared::CompilerDiagnostic| match d.js_location() {
+            let (message, errors) = match e {
+                lwc_shared::TransformError::Compiler(e) => (e.message.clone(), vec![e]),
+                lwc_shared::TransformError::Aggregate(a) => (a.message, a.errors),
+                lwc_shared::TransformError::Unnormalized(e) => (e.message, vec![]),
+            };
+            let loc = |d: &lwc_shared::CompilerError| match d.location {
                 Some(l) => format!("{{\"line\":{},\"column\":{},\"start\":{},\"length\":{}}}", l.line, l.column, n(l.start), n(l.length)),
                 None => "null".into(),
             };
-            let first = e.diagnostics.first();
-            let errs: Vec<String> = e.diagnostics.iter().map(|d| format!("{{\"code\":{},\"message\":{},\"location\":{}}}", n(d.code), q(&d.message), loc(d))).collect();
+            let first = errors.first();
+            let errs: Vec<String> = errors.iter().map(|d| format!("{{\"code\":{},\"message\":{},\"location\":{}}}", n(d.code), q(&d.message), loc(d))).collect();
+            let at = first.and_then(|d| d.location);
             println!("{{\"code\":{},\"line\":{},\"column\":{},\"location\":{},\"message\":{},\"diagnostics\":[{}]}}",
-                n(first.and_then(|d| d.code)), n(e.line), n(e.column), first.map(loc).unwrap_or("null".into()), q(&e.message), errs.join(","));
+                n(first.and_then(|d| d.code)), n(at.map(|l| l.line)), n(at.map(|l| l.column)), first.map(loc).unwrap_or("null".into()), q(&message), errs.join(","));
         }
     }
 }

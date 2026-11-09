@@ -1,52 +1,96 @@
 # LWC Rust cutover checklist (delete JS compiler packages)
 
-ESM-only. **AMD: N/A.** Source maps out of Phase-0 parity (style map = ""). Warnings: match code/level only.
+Updated: 2026-11-01 by ship (folded ship's CUTOVER.draft.md; Migrate approved).
+Policy: **ESM only. No JS shim. No AMD. No CJS loader.** Unknown options rejected at the seam (D-0010, D-0203). Source maps out of Phase-0 parity (style map = ""). Warnings: match code/level only.
+Inputs: PLAN §4 exit criteria, the previous preconditions of this file, ship-survey.md, ship-packaging-plan.md.
+Status source: newest official board `official/ac1b61fb239a` (store-4280618e…/official/ac1b61fb239a/board.txt, published 2026-11-01 21:58 PST, commit c731fb601f40, napi acfc2e0095b1, oracle b9e8007 clean). **PROVISIONAL** until AB-0003/AB-0007 (PLAN §2). Row names as in board.txt. Update the status column only from a newer official board.
+Legend: [x] met on that board · [ ] open · (—) no board row yet.
 
-## Preconditions
-- [ ] Zero parity shims in crates/: board `shim-check` (harness/scripts/shim-gate.mjs; words shim/compat/workaround/hack/mask*/rescan; allowlist harness/shim-allowlist.tsv requires a reason) must read `SHIM(template-gap:`=0, `SHIM(`|`TODO(parity`=0, and untagged `shim` mentions=0 (untagged count is board-GATING now; tagged shims allowed until cutover). Known today: crates/lwc-ssr/src/compile_template/ir_compat.rs (tagged: see "SSR template-gap shims" below) rewrites Template IR + re-scans source for SSR; must be deleted once lwc-template IR parity lands.
-- [ ] Crate-surface review before ANY gate closes: diff each crate's modules + `pub`/`pub(crate)` fns against the upstream package's module list (e.g. lwc-ssr vs @lwc/ssr-compiler/src, lwc-template vs @lwc/template-compiler/src); every Rust module with no upstream counterpart is flagged and must be justified in decisions.tsv or deleted. (Grep gates are dodgeable; this is the structural check.)
-- [ ] Consumers migrated to Rust CLI/API (`lwc-compiler` crate behind `CompilerBackend`); the `@lwc/compiler` name dies at cutover.
-- [ ] Gates green:
-  - [x] style byte fixtures 69/69 (PostCSS-Rust port gate) — GREEN 2026-11-01 via PostCSS Rust
-  - [x] Phase 0 behavioral style suite 70/70 with `LWC_COMPILER_BACKEND=rust` (harness/) — GREEN 2026-11-01
-  - [x] Phase 0 behavioral JS suite 174/174 with `LWC_COMPILER_BACKEND=rust` (babel-plugin-component / lwc-js) — GREEN 2026-11-01
-  - DIAGNOSTIC ONLY — template compile-observation suite on rust (563/568 @ napi 5f56821d9f7e (src d366b22bed97) official): module eval w/ stubs, no DOM render
-  - [ ] CSR DOM render parity on rust via @lwc/engine-dom + jsdom (`test/csr.render.test.ts`, JS-oracle goldens/csr-render) — the template/CSR gate:
-    - [ ] corpus ssr fixtures (row csr-render): 390 tests: 255 @ 5f56821d9f7e (src d366b22bed97) official
-    - [ ] corpus template-compiler fixtures (row csr-render-template): 444/570 tests @ 5f56821d9f7e (src d366b22bed97) official
-  - DIAGNOSTIC ONLY (non-gating, Migrate 2026-11-01) — ssr compile-observation suite on rust, every JS-shipped `CompilationMode` (@lwc/shared: sync | async | asyncYield), one board row each (`SSR_MODE=<mode>`, goldens/ssr[-<mode>]):
-    - [ ] sync 388/388 @ napi 6784606568ec (clean rebuild) — green; not ticked until all modes are
-    - [ ] async 16/388 — lwc-ssr ignores `CompileOptions.ssr_mode` (always emits sync)
-    - [ ] asyncYield 16/388 — same
-  - [ ] ssr RENDER-HTML parity on rust (`test/ssr.render.test.ts`, rows ssr-render[-<mode>]; byte-exact HTML via ssr-runtime vs JS-oracle goldens/ssr-render/<mode>) — the ONLY SSR gate; must hold 384/384 in all 3 modes WITH crates/lwc-ssr/src/compile_template/ir_compat.rs DELETED (Migrate 2026-11-01):
-    - [ ] sync 384/384 @ 5f56821d9f7e (src d366b22bed97) official; ir_compat still present → not closed
-    - [ ] async 384/384 @ 5f56821d9f7e (src d366b22bed97)
-    - [ ] asyncYield 384/384 @ 5f56821d9f7e (src d366b22bed97) ( ssrMode verified reaching codegen: async function* + yield in template, setStaticInternals(...,"asyncYield",...) in component)
-  - [ ] `cargo check && cargo test` in /workspace/lwc-compiler-rust
-- [ ] **Move engine-server fixture tests' fixtures out of `@lwc/ssr-compiler`** (engine-server reads fixtures from inside ssr-compiler) BEFORE deleting it.
+## A. Gates (board rows)
+| # | item | proof (row / id) | status @ ac1b61fb239a |
+|---|---|---|---|
+| A1 | Golden-gate hole closed; fresh official board; earlier boards provisional | AB-0003, AB-0007 | [ ] open, all boards provisional |
+| A2 | Board fails on row regressions; land.sh runs option-gate + ratchet + dependents | AB-0006, AB-0005 | [ ] open |
+| A3 | style | `style` 70/70 | [x] |
+| A4 | style API | `style-api` 829/829 | [x] |
+| A5 | js | `js` 174/174, `js-eval` 2/2 | [x] |
+| A6 | js API | `js-api` 1239 pass / 302 skip; `js-options` 302 pass / 1239 skip (complementary split of 1541) | [x] (skips are the other row's half) |
+| A7 | template options/API | `template-options` 67/67, `template-api` 5671/5671 | [x] |
+| A8 | csr-render 390/390 | `csr-render` 355/390 (35 fail; csr-clusters[ssr] slot-name 16, other 14, attr-values 4, attr-order 1) | [ ] template |
+| A9 | csr-render-template 570/570 | `csr-render-template` 545/570 (25 fail; slot-name 11, attr-order 7, attr-values 4, other 3) | [ ] template |
+| A10 | ssr-render ×3 hold after AB-0002 | `ssr-render`, `ssr-render-async`, `ssr-render-asyncYield` 384/389 each (5 skip) | [ ] AB-0002 not landed, so numbers don't count yet (PLAN §4) |
+| A11 | ssr_render_api, ssr_dynamic_imports hold after AB-0002 | `ssr_render_api` 2710/2724 (14 skip); `ssr_dynamic_imports` 16/16 | [ ] same |
+| A12 | Every skip justified in decisions.tsv or removed | ssr-render 5, ssr_render_api 14, `template-renderer` 554 skip (14 pass) | [ ] |
+| A13 | Option inventory complete | `option-gate` 61 fields / 61 mapped / 0 pending / 0 invalid | [x] |
+| A14 | Unknown-option rejection asserted by board row | (—) row to be added (harness, AB-0008) | [ ] |
+| A15 | semantic-diff gate: DIFFERENT w/o D-id = 0, unclassified = 0 | (—) `semantic-diff` row (semdiff) | [ ] |
+| A16 | Coverage gate: every COVERAGE.tsv cell → row or D-id | (—) coverage-gate (harness; report-only now) | [ ] |
+| A17 | LBC whole-component parity, gating | (—) `lbc` row (harness; Arch design first) | [ ] |
+| A18 | Shims 0 (tagged + untagged) | `shim-check` SHIM(template-gap:=0, SHIM(\|TODO(parity=0, untagged=0 | [x] (ir_compat deleted; 12 shim ids retired) |
+| A19 | Diagnostics parity (non-gating today; decide gate or D-id) | `template-diag` 636 mismatches / 63224; `template-diag-napi` 1630 (1120 seam-reject, apiVersion u32 → AB-0008) | [ ] decision needed |
 
-## Packages that **stay** (do not delete)
-- [ ] `@lwc/ssr-runtime` stays — JS ABI frozen; SSR goldens keep calling it
-- [ ] `@lwc/engine-dom` stays
-- [ ] `@lwc/engine-core` stays
-- [ ] Also keep: `@lwc/errors`, `@lwc/shared`, `@lwc/features`, `@lwc/engine-server` until its own deprecation (not part of this compiler cut)
+## B. Architecture / single sources
+| # | item | proof | status |
+|---|---|---|---|
+| B1 | One option schema; apiVersion f64 floor; undefined-vs-omitted semantics; name/namespace optional | AB-0008 (harness) | [ ] |
+| B2 | Dispatch `.mts` + LWC1005 NO_AVAILABLE_TRANSFORMER | AB-0009 (harness, `crates/lwc-compiler/src/lib.rs:35-50`) | [ ] |
+| B3 | One error model | AB-R003, AB-0001, AB-R001 (js-style) | [ ] AB-R001 rebasing |
+| B4 | One LWC_VERSION | AB-0010 | [ ] |
+| B5 | Shared tables in lwc-shared; crate owners delete own copies | AB-0011, D-0199 | [ ] |
+| B6 | **Duplicate-table lint** (ship-owned, D-0199): tool scans all crates for duplicated literal tables (`&[&str]`, phf, `matches!` lists) by content hash, plus copies of lwc-shared tables; report-only, then gating at cutover. Findings → crate owner (template / js-style / ssr), never fixed by ship. Seeds found in SHIP-0: `VOID` ×3 (lwc-template codegen/mod.rs:588, lwc-template parser/element_check.rs:27, lwc-ssr compile_template/element.rs:47; contents differ, e.g. `param`), `RESERVED` ×2 (lwc-js transforms/decorators.rs:140, lwc-template parser/expr_check.rs:27) | D-0199; lint row (—) | [ ] not built |
+| B7 | Zero open REWORK in arch-board/reviews.tsv | PLAN §3 open list | [ ] |
+| B8 | Crate-surface review (each crate's modules/pub fns vs upstream package; unmatched → D-id or delete) | CUTOVER.md precondition 2; arch-board | [ ] |
+| B9 | `cargo check --workspace && cargo test --workspace` green on main | CUTOVER.md; CI job (S5) | [ ] no CI. Live-tree SHIP-0 run green (368 pass) is non-official |
 
-## Remove / stop publishing
-- [ ] @lwc/compiler
-- [ ] @lwc/style-compiler
-- [ ] @lwc/template-compiler
-- [ ] @lwc/babel-plugin-component
-- [ ] @lwc/ssr-compiler
-- [ ] @lwc/rollup-plugin: re-point to Rust backend (or remove) — it imports @lwc/compiler / ssr-compiler
-- [ ] `lwc` barrel package: drop re-exports of the compiler packages
-- [ ] Remove from workspace config, nx project graph, release/publish scripts, tsconfig references, CODEOWNERS
+## C. Packaging / API (ship unless noted; see ship-survey.md §1-2)
+| # | item | proof | status |
+|---|---|---|---|
+| C1 | Packaging plan (`ship-packaging-plan.md`) APPROVED by Arch before any product-code change | reviews.tsv AB-D0005 APPROVE (plan ab0a49e, notes b8ba1df) | [x] |
+| C2 | npm package name/scope decided (`@lwc/compiler` name dies); working name `lwc-compiler-rs` (ship-packaging-plan.md §1) | registry/scope pending Tariq (D-0202); no publish | [ ] |
+| C3 | Main package + per-triple optionalDependencies; ESM `index.js` loader; `index.d.ts` | S1-S2; `npm pack` + `node -e import()` smoke per triple | [ ] partial: S1 landed main 95b85c3 (AB-L0043): pkg + loader + linux-x64-gnu, untyped d.ts; typed d.ts = S2 after AB-0008; other triples S6 |
+| C4 | Exports: `transformSync`, `version`; async `transform` kept or dropped by D-id | S3 (AsyncTask D-0209); `version` after AB-0010; lib.rs = ship (D-0200) | [ ] only `transform` (sync) today |
+| C5 | Errors thrown as JS Error/AggregateError with code/filename/location/level/url (no `{error}` field) | shape = upstream CompilerError/CompilerAggregateError; js-style supplies `napi/src/errors.rs`, ship wires (D-0200); seam test | [ ] returned today |
+| C6 | `instrumentation` supported or dropped by D-id | D-0205: kept; Rust returns events, loader replays | [ ] missing (S3) |
+| C7 | parse5 out-of-repo path dep → git dep pinned by rev = external-inputs `parse5_rust_commit`; local override via `[patch]` in /workspace/wt/.cargo/config.toml | D-0201 (template edits crates/lwc-template/Cargo.toml); clean-checkout CI build | [ ] |
+| C8 | CI: fmt, clippy (shrink-only ratchet), `cargo check --workspace --locked` (D-0225/D-0223), test, napi matrix build, ssr-compile-js-oracle gate against the built napi, never SSR_ORACLE_NAPI (D-0226), tarball artifacts (no npm publish) | D-0202: GitHub Actions on tariqrafique/lwc branch `rust-compiler`; green workflow run | [ ] |
 
-## Verify
+## C2. Consumer-visible breaking changes vs @lwc/compiler 9.5.3 (all locked rows in decisions.tsv)
+| diff | D-id |
+|---|---|
+| unknown option keys rejected (upstream spreads and ignores) | D-0203, D-0010 |
+| `apiVersion` any JS number, floored | D-0206 |
+| `transform` Promise resolves off main thread (napi AsyncTask); same result/errors as `transformSync` | D-0209 |
+| errors thrown as real `Error` instances with upstream fields; `CompilerError` exported as type only | D-0210 |
+| `TransformResult.map` is a Source Map v3 object, not Babel's type | D-0211 |
+| Node >= 20; triples linux-x64-gnu, linux-arm64-gnu, darwin-x64, darwin-arm64, win32-x64-msvc only; Linux glibc >= 2.28 | D-0213, D-0220 |
+| `NormalizedTransformOptions` type export dropped | D-0214 |
+| package name changes from `@lwc/compiler` (working `lwc-compiler-rs`; not published) | pending Tariq |
+| wtr drops non-upstream `dynamicImports.strict` at port | D-0203 |
+| template `compile()` (Rust lwc-template, replacing `@lwc/template-compiler`) result no longer carries `root` (9.5.3 returned `{code, root, warnings}`); callers needing the IR call `parse()` | D-0230 |
+Kept as upstream (not breaking): `instrumentation` (D-0205), optional `name`/`namespace` (D-0207), normalizeOptions incl. explicit `undefined` (D-0208), deprecation warnings once per process (D-0212).
+
+## D. Consumers (ported in `/workspace/wt/lwc-consumers`, branch ship/consumers @ b9e8007, local only, never pushed, never read by board: D-0202; `/workspace/lwc` stays clean)
+| # | item | replaced by | status |
+|---|---|---|---|
+| D1 | @lwc/rollup-plugin on napi `transformSync` (index.ts:12,17,372); rollup-plugin spec suite green | Rust napi transform | [ ] |
+| D2 | rollup-plugin output format: ESM only vs current es+cjs (scripts/rollup/rollup.config.js:27) | D-id | [ ] |
+| D3 | Move engine-server fixtures out of `@lwc/ssr-compiler/src/__tests__/fixtures` (engine-server fixtures.spec.ts:125) | move fixtures | [ ] |
+| D4 | ssr-runtime styles.spec.ts:2 off `@lwc/style-compiler` | Rust napi transform (.css) | [ ] |
+| D5 | integration-wtr serve-integration.js:28 `dynamicImports.strict` (unknown key: napi rejects) | consumer drops it at port; unknown options stay rejected (D-0203) | [ ] |
+| D6 | wdio, integration-types, perf-benchmarks-components, playground, engine-server, ssr-runtime render tests via rollup-plugin | follows D1 | [ ] |
+| D7 | `lwc` barrel: `./compiler` repoint; delete `./ssr-compiler`, `./style-compiler`, `./template-compiler`, `./babel-plugin-component` subpaths + deps (package.json:25-38,61-75) | delete (D-id: breaking) | [ ] |
+| D8 | vitest.config.mjs project entries; docs (ARCHITECTURE.md, AGENTS.md, READMEs) | delete/update | [ ] |
+
+## E. Delete + Verify + Rollback
+- [ ] Packages that **stay**: `@lwc/ssr-runtime` (JS ABI frozen; SSR goldens call it), `@lwc/engine-dom`, `@lwc/engine-core`, `@lwc/errors`, `@lwc/shared`, `@lwc/features`, `@lwc/engine-server` (until its own deprecation).
+- [ ] Remove / stop publishing in ONE revertable commit: `@lwc/compiler`, `@lwc/style-compiler`, `@lwc/template-compiler`, `@lwc/babel-plugin-component`, `@lwc/ssr-compiler`. Workspaces glob needs no edit; nx/tsconfig/CODEOWNERS have no per-package entries; release scripts glob packages (ship-survey.md §3).
+- [ ] Duplicate-table lint (B6) = 0 findings.
+- [ ] Run Verify:
 ```
 cd /workspace/lwc-compiler-rust && cargo check && cargo test
 cd harness && LWC_COMPILER_BACKEND=rust npx vitest run
-cd /workspace/lwc && grep -rn "@lwc/\(compiler\|style-compiler\|template-compiler\|babel-plugin-component\|ssr-compiler\)" packages --include=package.json --include=*.ts -l   # expect none
-cd /workspace/lwc && yarn build && yarn test
+cd <consumers clone> && grep -rn "@lwc/\(compiler\|style-compiler\|template-compiler\|babel-plugin-component\|ssr-compiler\)" packages --include=package.json --include=*.ts -l   # expect none
+cd <consumers clone> && yarn build && yarn test
 ```
 
 ## Rollback

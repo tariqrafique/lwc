@@ -1,12 +1,15 @@
 //! Template-expression validation without a JS parser: a small tokenizer plus a precedence
-//! classifier that reproduces what upstream gets from acorn + `validateExpression`
-//! (expression.ts, legacy path) and `validateComplexExpression` (expression-complex/validate.ts, CTE path).
+//! classifier that reproduces what upstream gets from acorn + `validateExpression` (expression.ts,
+//! legacy path). The complex (CTE) path validates on oxc (`expression_complex::validate`) and reads only
+//! [`acorn_text`] here, for message text on an oxc rejection (AB-D0004 S2; S6 deletes the lexer).
 //!
 //! Message shapes (TS `withErrorWrapping(…, (err) => \`Invalid expression ${source} - ${err.message}\`)`):
 //! - acorn SyntaxError → `LWC1083: Error parsing template expression: Invalid expression {src} - <msg> (line:col)`
 //! - `invariant` CompilerError → `Invalid expression {src} - LWC<code>: <msg>`, code kept.
 
-use super::messages::message;
+use lwc_shared::errors::ParserDiagnostics;
+use lwc_shared::js::js_ws;
+use lwc_shared::{generate_error_message, LwcErrorInfo};
 use lwc_shared::api_version::{is_api_feature_enabled, min_api_version, ApiFeature};
 
 /// TS `isExpression`: `{...}` with length > 2.
@@ -16,9 +19,20 @@ pub(crate) fn is_expression(s: &str) -> bool { s.len() > 2 && s.starts_with('{')
 pub(crate) struct ExprError { pub code: u32, pub message: String }
 
 impl ExprError {
+    /// An `invariant` CompilerError through `withErrorWrapping`: `Invalid expression {source} - LWCnnnn: …`.
+    pub(crate) fn invariant(source: &str, info: &LwcErrorInfo, args: &[&str]) -> Self {
+        ExprError { code: info.code, message: format!("Invalid expression {source} - {}", generate_error_message(info, Some(args))) }
+    }
+
+    /// An acorn SyntaxError through `withErrorWrapping`: `LWC1083: … Invalid expression {source} - {msg} (line:col)`.
+    pub(crate) fn syntax(source: &str, msg: &str, line: usize, col: usize) -> Self {
+        let info = &ParserDiagnostics::TEMPLATE_EXPRESSION_PARSING_ERROR;
+        ExprError { code: info.code, message: generate_error_message(info, Some(&[&format!("Invalid expression {source} - {msg} ({line}:{col})")])) }
+    }
+
     /// Error-level diagnostic at `l`; `message` already carries the upstream prefix/wrapping.
     pub(crate) fn into_diagnostic(self, l: lwc_shared::SourceLocation) -> lwc_shared::CompilerDiagnostic {
-        lwc_shared::CompilerDiagnostic::new(Some(self.code), self.message, lwc_shared::DiagnosticLevel::Error, None, Some(l))
+        lwc_shared::CompilerDiagnostic::new(Some(self.code), self.message, lwc_shared::DiagnosticLevel::Error, None, Some(l.into()))
     }
 }
 
@@ -66,34 +80,33 @@ pub(crate) fn check_with(src: &str, complex: bool, computed_ok: bool) -> Option<
     check_opts(src, &Opts { complex, computed_ok, api_version: crate::config::Config::default().normalize().expect("default config").api_version, unquoted: false })
 }
 
-/// `src` is one `{…}` expression. CTE (quoted / text) goes through the complex validator, everything
-/// else through TS `parseExpression`.
-pub(crate) fn check_opts(src: &str, o: &Opts) -> Option<ExprError> {
-    let n = src.chars().count();
-    if o.cte() && !o.unquoted { check_complex(src, 0, n, o) } else { check_legacy(src, o) }
+/// `src` is one `{…}` expression through TS `parseExpression` (expression.ts:141). Complex (CTE) quoted
+/// and text expressions never come here: they go to `expression_complex::validate`.
+pub(crate) fn check_opts(src: &str, o: &Opts) -> Option<ExprError> { check_legacy(src, o) }
+
+/// What the lexer models acorn doing with the expression at chars `[start, end)` of `text`; messages
+/// name `source`.
+pub(crate) enum AcornText {
+    /// acorn throws a SyntaxError (1083, `(line:col)`), or onComment's invariant fires first (1197).
+    Syntax(ExprError),
+    /// acorn stops before the closing brace: validate.ts's balanced-parentheses / closing-brace invariant.
+    Cut(ExprError),
+    /// The lexer sees acorn parse the whole expression.
+    Clean,
 }
 
-/// TS `parseComplexExpression(ctx, source, …, expressionStart)`: `source` is the whole message/acorn
-/// source (for text nodes the full cleaned text), the expression spans chars `[start, end)` of it.
-pub(crate) fn check_complex(source: &str, start: usize, end: usize, _o: &Opts) -> Option<ExprError> {
-    let cs: Vec<char> = source.chars().collect();
+/// The lexer's model of acorn on an expression oxc rejected (`expression_complex::validate`, its only
+/// caller; AB-D0004 Q2, deleted in S6).
+pub(crate) fn acorn_text(text: &str, start: usize, end: usize, source: &str) -> AcornText {
+    let cs: Vec<char> = text.chars().collect();
     let p = Parsed::new(&cs, start, end, true);
-    if let Some(e) = p.syntax_error(source) { return Some(e); }
-    let inv = |code: u32, args: &[&str]| Some(ExprError { code, message: format!("Invalid expression {source} - {}", message(code, args)) });
-    if let Some((code, arg)) = p.complex_offense() { return inv(code, &arg.iter().map(|s| s.as_str()).collect::<Vec<_>>()); }
+    if let Some(e) = p.syntax_error(source) { return AcornText::Syntax(e); }
+    let cut = |m: &str| AcornText::Cut(ExprError::invariant(source, &ParserDiagnostics::TEMPLATE_EXPRESSION_PARSING_ERROR, &[m]));
     match p.cut {
-        Cut::End => None,
-        Cut::Extra(i) if p.toks[i].t == ")" => inv(1083, &["expression must have balanced parentheses."]),
-        _ => inv(1083, &["expression must end with curly brace."]),
+        Cut::End => AcornText::Clean,
+        Cut::Extra(i) if p.toks[i].t == ")" => cut("expression must have balanced parentheses."),
+        _ => cut("expression must end with curly brace."),
     }
-}
-
-/// TS validateComplexExpression's second acorn pass: `raw` is the entity-undecoded template source of
-/// the expression `source` (which parsed cleanly). Any difference is an error; messages name `source`.
-pub(crate) fn check_raw_source(source: &str, raw: &str) -> Option<ExprError> {
-    let cs: Vec<char> = raw.chars().collect();
-    let p = Parsed::new(&cs, 0, cs.len(), true);
-    p.syntax_error(source).or_else(|| Some(ExprError { code: 1083, message: format!("Invalid expression {source} - {}", message(1083, &["expression incorrectly formed"])) }))
 }
 
 /// TS `parseExpression`: acorn, `validateSourceIsParsedExpression`, `validateExpression`.
@@ -101,7 +114,7 @@ fn check_legacy(src: &str, o: &Opts) -> Option<ExprError> {
     let cs: Vec<char> = src.chars().collect();
     let p = Parsed::new(&cs, 0, cs.len(), false);
     if let Some(e) = p.syntax_error(src) { return Some(e); }
-    let inv = |code: u32, args: &[&str]| Some(ExprError { code, message: format!("Invalid expression {src} - {}", message(code, args)) });
+    let inv = |info: &LwcErrorInfo, args: &[&str]| Some(ExprError::invariant(src, info, args));
     let (a, b) = p.unwrap_parens(0, p.cut_idx());
     // validateSourceIsParsedExpression
     let node_start = p.toks[a].s;
@@ -110,10 +123,10 @@ fn check_legacy(src: &str, o: &Opts) -> Option<ExprError> {
         let mut open = cs[..node_start].iter().filter(|c| **c == '(').count() as i64;
         for &c in &cs[node_end..cs.len() - 1] {
             if c == ')' { open -= 1; }
-            else if c == ';' { return inv(1074, &[]); }
-            else if !c.is_whitespace() { return inv(1083, &["Unexpected end of expression"]); }
+            else if c == ';' { return inv(&ParserDiagnostics::MULTIPLE_EXPRESSIONS, &[]); }
+            else if !js_ws(c) { return inv(&ParserDiagnostics::TEMPLATE_EXPRESSION_PARSING_ERROR, &["Unexpected end of expression"]); }
         }
-        if open != 0 { return inv(1083, &["Unexpected end of expression"]); }
+        if open != 0 { return inv(&ParserDiagnostics::TEMPLATE_EXPRESSION_PARSING_ERROR, &["Unexpected end of expression"]); }
     }
     // validateExpression
     let api = o.api_version.to_string();
@@ -121,16 +134,16 @@ fn check_legacy(src: &str, o: &Opts) -> Option<ExprError> {
     match p.validate_legacy(a, b) {
         None => None,
         Some(Legacy::Node(ty)) => {
-            if !o.complex { inv(1060, &[ty]) }
-            else if !o.cte() { inv(1210, &[ty, &api, &min]) }
-            else if o.unquoted { inv(1208, &[ty, src]) }
+            if !o.complex { inv(&ParserDiagnostics::INVALID_NODE, &[ty]) }
+            else if !o.cte() { inv(&ParserDiagnostics::INVALID_NODE_CTE_API_VERSION, &[ty, &api, &min]) }
+            else if o.unquoted { inv(&ParserDiagnostics::INVALID_NODE_CTE_UNQUOTED, &[ty, src]) }
             else { None }
         }
         Some(Legacy::Computed) if o.computed_ok => None,
         Some(Legacy::Computed) => {
-            if !o.complex { inv(1038, &[src]) }
-            else if !o.cte() { inv(1209, &[src, &api, &min]) }
-            else if o.unquoted { inv(1207, &[src]) }
+            if !o.complex { inv(&ParserDiagnostics::COMPUTED_PROPERTY_ACCESS_NOT_ALLOWED, &[src]) }
+            else if !o.cte() { inv(&ParserDiagnostics::COMPUTED_PROPERTY_ACCESS_NOT_ALLOWED_CTE_API_VERSION, &[src, &api, &min]) }
+            else if o.unquoted { inv(&ParserDiagnostics::COMPUTED_PROPERTY_ACCESS_NOT_ALLOWED_CTE_UNQUOTED, &[src]) }
             else { None }
         }
     }
@@ -177,7 +190,7 @@ fn lex(cs: &[char], from: usize, to: usize) -> (Vec<Tok>, Option<LexErr>) {
     let tok = |k, s, e, cs: &[char]| Tok { k, s, e, t: cs[s..e].iter().collect(), bigint: false };
     while i < to {
         let c = cs[i];
-        if c.is_whitespace() { i += 1; continue; }
+        if js_ws(c) { i += 1; continue; }
         let s = i;
         let next = cs.get(i + 1).copied();
         if c == '/' && next == Some('/') {
@@ -409,11 +422,11 @@ impl<'a> Parsed<'a> {
         let stop = self.syntax.as_ref().map(|s| s.0)
             .unwrap_or_else(|| self.toks.get(self.cut_idx()).map(|t| t.s).unwrap_or(usize::MAX));
         if self.comments.iter().any(|c| c.s < stop) {
-            return Some(ExprError { code: 1197, message: format!("Invalid expression {source} - {}", message(1197, &[])) });
+            return Some(ExprError::invariant(source, &ParserDiagnostics::INVALID_EXPR_COMMENTS_DISALLOWED, &[]));
         }
         let (pos, msg) = self.syntax.as_ref()?;
         let (l, c) = self.line_col(*pos);
-        Some(ExprError { code: 1083, message: message(1083, &[&format!("Invalid expression {source} - {msg} ({l}:{c})")]) })
+        Some(ExprError::syntax(source, msg, l, c))
     }
 
     fn is(&self, i: usize, s: &str) -> bool { self.toks.get(i).is_some_and(|t| t.t == s && t.k != K::Str) }
@@ -502,87 +515,6 @@ impl<'a> Parsed<'a> {
         if self.node_type(a, obj_end) != "Identifier" { if let Some(e) = self.validate_legacy(a, obj_end) { return Some(e); } }
         None
     }
-
-    /// TS validateExpressionAst (pre-order walk): the first offending node by (start, outermost).
-    fn complex_offense(&self) -> Option<(u32, Vec<String>)> {
-        let b = self.cut_idx();
-        let (a, b) = self.unwrap_parens(0, b);
-        // (token start index, rank: lower = outer node at the same start, code, args)
-        let mut found: Vec<(usize, u8, u32, Vec<String>)> = Vec::new();
-        let prohibited = |what: &str| (1196u32, vec![what.to_string()]);
-        // Arrow bodies: (=> index, body end exclusive).
-        let mut arrows: Vec<(usize, usize, usize)> = Vec::new(); // (start, =>, end)
-        for m in a..b {
-            if !(self.is(m, "=>") && self.toks[m].k == K::Punct) { continue; }
-            let mut e = m + 1;
-            let d = self.depth[m];
-            while e < b && !(self.depth[e] < d || (self.depth[e] == d && (self.is(e, ",") || self.is(e, ":")))) {
-                if self.depth[e] == d && matches!(self.toks[e].t.as_str(), "(" | "[" | "{") && self.mate[e] > e { e = self.mate[e]; }
-                e += 1;
-            }
-            let s = self.arrow_start(m);
-            arrows.push((s, m, e));
-            if self.is(m + 1, "{") { found.push((s, 2, 1193, vec![])); }
-            else if self.is(s, "async") { found.push((s, 2, 1194, vec!["async".into()])); }
-        }
-        let in_arrow = |i: usize| arrows.iter().any(|&(_, m, e)| i > m && i < e);
-        let in_params = |i: usize| arrows.iter().any(|&(s, m, _)| i >= s && i < m);
-        // Sequences: commas at the top level or directly inside a parenthesized expression.
-        let paren_expr = |o: usize| self.is(o, "(") && !(o > 0 && ends_operand(&self.toks[o - 1]) && !self.is(o - 1, "}"))
-            && !self.is(self.mate[o] + 1, "=>");
-        for i in a..b {
-            if !(self.is(i, ",") && self.toks[i].k == K::Punct) { continue; }
-            let opener = (0..i).rev().find(|&o| matches!(self.toks[o].t.as_str(), "(" | "[" | "{") && self.toks[o].k == K::Punct && self.mate[o] > i);
-            match opener {
-                None => found.push((a, 0, 1196, vec!["comma operators".into()])),
-                Some(o) if o < a => found.push((a, 0, 1196, vec!["comma operators".into()])),
-                Some(o) if paren_expr(o) => found.push((o + 1, 0, 1196, vec!["comma operators".into()])),
-                _ => {}
-            }
-        }
-        for i in a..b {
-            let t = &self.toks[i];
-            let after_dot = i > 0 && (self.is(i - 1, ".") || self.is(i - 1, "?."));
-            let is_key = self.is(i + 1, ":") && self.depth[i] > 0 && (0..i).rev().find(|&o| self.mate[o] > i && self.toks[o].k == K::Punct && self.depth[o] < self.depth[i] + 1).is_some_and(|o| self.is(o, "{"));
-            match t.k {
-                K::Punct if ASSIGN_OPS.contains(&t.t.as_str()) && !in_arrow(i) && !in_params(i) => found.push((self.lhs_start(i, a), 1, 1191, vec![])),
-                K::Punct if (t.t == "++" || t.t == "--") && !in_arrow(i) => {
-                    let postfix = i > a && ends_operand(&self.toks[i - 1]);
-                    found.push((if postfix { self.lhs_start(i, a) } else { i }, 1, 1191, vec![]));
-                }
-                K::Ident if after_dot || is_key => {}
-                K::Ident => {
-                    let (code, args) = match t.t.as_str() {
-                        "delete" => (1192, vec![]),
-                        "await" => prohibited("await expressions"),
-                        "class" => prohibited("classes"),
-                        "function" => prohibited("function expressions"),
-                        "import" if self.is(i + 1, "(") => prohibited("imports"),
-                        "new" => prohibited("object instantiation"),
-                        "this" => prohibited("`this`"),
-                        _ => continue,
-                    };
-                    found.push((i, 3, code, args));
-                }
-                K::Regex => found.push((i, 3, 1196, vec!["regular expression literals".into()])),
-                K::Num if t.bigint => found.push((i, 3, 1196, vec!["BigInts".into()])),
-                _ => {}
-            }
-        }
-        found.into_iter().min_by_key(|f| (self.toks[f.0].s, f.1)).map(|f| (f.2, f.3))
-    }
-
-    /// Start of the assignment/update target ending just before token `op`.
-    fn lhs_start(&self, op: usize, lo: usize) -> usize {
-        let mut k = op - 1;
-        loop {
-            if matches!(self.toks[k].t.as_str(), ")" | "]") && self.toks[k].k == K::Punct { k = self.mate[k]; }
-            if self.is(k, "[") && k > lo && ends_operand(&self.toks[k - 1]) { k -= 1; continue; }
-            if k >= lo + 2 && (self.is(k - 1, ".") || self.is(k - 1, "?.")) { k -= 2; continue; }
-            if self.is(k, "(") && k > lo && ends_operand(&self.toks[k - 1]) { k -= 1; continue; }
-            return k;
-        }
-    }
 }
 
 #[cfg(test)]
@@ -617,39 +549,5 @@ mod tests {
         assert_eq!(check_opts("{bar()}", &unq).unwrap().message, "Invalid expression {bar()} - LWC1208: Template expression doesn't allow CallExpression unless the expression is surrounded by quotes: \"{bar()}\"");
         assert_eq!(check_opts("{list[0].name}", &unq).unwrap().code, 1207);
         assert_eq!(check_opts("{val[state.foo]}", &Opts { computed_ok: true, ..o(false) }), None);
-    }
-
-    #[test]
-    fn complex_upstream_fixtures() {
-        let c = |s: &str| check_opts(s, &o(true)).map(|e| e.message);
-        assert_eq!(c("{async () => doSomething()}").unwrap(), "Invalid expression {async () => doSomething()} - LWC1194: Arrow functions in template expressions cannot be async.");
-        assert_eq!(code("{() => { doSomething(); }}", true), Some(1193));
-        assert_eq!(c("{myField = 'foo'}").unwrap(), "Invalid expression {myField = 'foo'} - LWC1191: Field mutations are only permitted within arrow functions.");
-        assert_eq!(code("{foo++}", true), Some(1191));
-        assert_eq!(code("{count += 1}", true), Some(1191));
-        assert_eq!(code("{() => count += 1}", true), None);
-        assert_eq!(c("{await foo()}").unwrap(), "Invalid expression {await foo()} - LWC1196: Use of await expressions is disallowed within template expressions.");
-        assert_eq!(code("{transformBigInt(1n)}", true), Some(1196));
-        assert_eq!(c("{\n    class Bar {\n        method() {}\n    }\n}").map(|m| m.ends_with("Use of classes is disallowed within template expressions.")), Some(true));
-        assert_eq!(c("{one(), two(), three(), iAmTheCount()}").unwrap(), "Invalid expression {one(), two(), three(), iAmTheCount()} - LWC1196: Use of comma operators is disallowed within template expressions.");
-        assert_eq!(code("{\n /* what do you think ? */\n someValue\n }", true), Some(1197));
-        assert_eq!(c("{() => delete baz}").unwrap(), "Invalid expression {() => delete baz} - LWC1192: Use of the delete operator is prohibited within template expressions.");
-        assert_eq!(c("{function Awesomeness (foo) { bar(foo); }}").unwrap(), "Invalid expression {function Awesomeness (foo) { bar(foo); }} - LWC1196: Use of function expressions is disallowed within template expressions.");
-        assert_eq!(c("{foo &#60; bar}").unwrap(), "LWC1083: Error parsing template expression: Invalid expression {foo &#60; bar} - Unexpected character '6' (1:7)");
-        assert_eq!(c("{() => call(").unwrap(), "LWC1083: Error parsing template expression: Invalid expression {() => call( - Unexpected token (1:12)");
-        assert_eq!(c("{() => foo(\"}").unwrap(), "LWC1083: Error parsing template expression: Invalid expression {() => foo(\"} - Unterminated string constant (1:11)");
-        assert_eq!(code("{() => import('foo').then(doThingWithFoo)}", true), Some(1196));
-        assert_eq!(c("{() => doThing(import.meta.env.SSR)}").unwrap(), "LWC1083: Error parsing template expression: Invalid expression {() => doThing(import.meta.env.SSR)} - Cannot use 'import.meta' outside a module (1:15)");
-        assert_eq!(c("{() => new Day()}").unwrap(), "Invalid expression {() => new Day()} - LWC1196: Use of object instantiation is disallowed within template expressions.");
-        assert_eq!(code("{/wannabe/g}", true), Some(1196));
-        assert_eq!(c("{super('duper')}").unwrap(), "LWC1083: Error parsing template expression: Invalid expression {super('duper')} - 'super' keyword outside a method (1:1)");
-        assert_eq!(c("{this.bar}").unwrap(), "Invalid expression {this.bar} - LWC1196: Use of `this` is disallowed within template expressions.");
-        assert_eq!(c("{() => throw 'oh no!'}").unwrap(), "LWC1083: Error parsing template expression: Invalid expression {() => throw 'oh no!'} - Unexpected token (1:7)");
-        assert_eq!(c("{yield bar}").unwrap(), "Invalid expression {yield bar} - LWC1083: Error parsing template expression: expression must end with curly brace.");
-        assert_eq!(c("{foo())}").unwrap(), "Invalid expression {foo())} - LWC1083: Error parsing template expression: expression must have balanced parentheses.");
-        for ok in ["{foo(bar, baz)}", "{a ? b : c}", "{a in b}", "{tag`x`}", "{typeof a}", "{(foo.bar)}", "{((foo ?? bar)())}",
-                   "{(foo ?? bar).baz}", "{x => x.y}", "{() => foo.bar = 1}", "{a / b}", "{[1, 2]}", "{({a: 1, b: 2})}", "{a?.b}", "{-1}"] {
-            assert_eq!(c(ok), None, "{ok}");
-        }
     }
 }

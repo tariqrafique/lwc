@@ -1,6 +1,6 @@
 //! Babel-scope emulation shared by the class-features passes: program-wide unique identifiers
 //! (`scope.generateUid`) and per-function hoisted declarations (`scope.push`).
-use crate::edits::Edit;
+use lwc_shared::edits::Edit;
 use oxc::ast::ast::*;
 use oxc::ast_visit::Visit;
 use std::collections::HashSet;

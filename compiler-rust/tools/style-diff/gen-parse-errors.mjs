@@ -88,6 +88,19 @@ export const CASES = [
   ['ok-url-paren', 'a{b:url(x)}'],
   ['ok-at-rule-eof', '@import "x"'],
   ['ok-decl-eof', 'a{}b:c'],
+  // serialize.ts `throw new Error('Unexpected host rules ordering')`: a rule ownSemicolon (`};`) after a
+  // :host rule ends the native host variant early. Plain Error (no position), not CssSyntaxError; not
+  // wrapped in AggregateError in recovery mode (thrown after the PostCSS pipeline).
+  ['host-ordering', ':host{a:b};x{}'],
+  ['host-ordering-empty', ':host{};'],
+  ['host-ordering-trailing', ':host{a:b};'],
+  ['host-ordering-space', ':host{a:b} ;x{}'],
+  ['host-ordering-media', '@media x{:host{a:b};}'],
+  ['host-ordering-host-fn', ':host(.a){a:b};x{}'],
+  ['host-ordering-erm', ':host{a:b};x{}', ERM],
+  ['host-ordering-scoped', ':host{a:b};x{}', { scoped: true }],
+  ['host-ordering-dss', ':host{a:b};x{}', { disableSyntheticShadowSupport: true }],
+  ['ok-own-semicolon-before-host', 'a{};:host{}'],
   // parse error wins over plugin errors in recovery mode
   ['parse-before-plugin-erm', '#foo{} :host-context(.a){} a{', ERM],
 ];

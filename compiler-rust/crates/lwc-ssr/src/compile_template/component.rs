@@ -90,7 +90,7 @@ fn slotted_content(name: &str, loc: &SourceLocation, children_all: &[ChildNode],
     cx.slotted = prev;
     let has_shadow = !shadow_body.is_empty();
     if has_shadow || !light.is_empty() || !scoped.is_empty() { add(&mut cx.imports, ADD_SLOTTED_CONTENT); }
-    let (start, end) = loc.span();
+    let (start, end) = (loc.start, loc.end);
     let uid = format!("{name}:{start}:{end}");
     let mut locals: Vec<String> = Vec::new();
     for v in sc.iter() { if !locals.contains(v) { locals.push(v.clone()); } }
@@ -121,7 +121,7 @@ fn slotted_content(name: &str, loc: &SourceLocation, children_all: &[ChildNode],
     Ok(res)
 }
 
-fn original_children_scoped(all: &[ChildNode]) -> Vec<&ScopedSlotFragment> {
+fn original_children_scoped<'a>(all: &'a [ChildNode<'a>]) -> Vec<&'a ScopedSlotFragment<'a>> {
     all.iter().filter_map(|c| if let ChildNode::ScopedSlotFragment(f) = c { Some(f) } else { None }).collect()
 }
 
@@ -134,7 +134,7 @@ fn add_slotted(o: TemplateOptions, slot_name: &str, data: Option<&str>, body: Ve
     s
 }
 
-fn kids(n: &mut ChildNode) -> Option<&mut Vec<ChildNode>> {
+fn kids<'n, 'a>(n: &'n mut ChildNode<'a>) -> Option<&'n mut Vec<ChildNode<'a>>> {
     match n {
         ChildNode::If(x) => Some(&mut x.children), ChildNode::IfBlock(x) => Some(&mut x.children),
         ChildNode::ElseifBlock(x) => Some(&mut x.children), ChildNode::ElseBlock(x) => Some(&mut x.children),
@@ -199,7 +199,7 @@ fn light_slotted_content(roots: &[ChildNode], o: TemplateOptions, cx: &mut Cx, s
     Ok(res)
 }
 
-fn kids_ref(n: &ChildNode) -> &[ChildNode] {
+fn kids_ref<'n, 'a>(n: &'n ChildNode<'a>) -> &'n [ChildNode<'a>] {
     match n { ChildNode::If(x) => &x.children, ChildNode::IfBlock(x) => &x.children, ChildNode::ElseifBlock(x) => &x.children, ChildNode::ElseBlock(x) => &x.children, _ => &[] }
 }
 
@@ -264,6 +264,12 @@ pub(crate) fn emit_lwc_component(c: &LwcComponent, o: TemplateOptions, out: &mut
 mod tests {
     use super::*;
     use lwc_shared::template_ir::{Literal, Root, SourceLocation, Text, TextValue};
+    /// Test IR location (production locations come from the parser).
+    const AT: SourceLocation = SourceLocation { start_line: 1, start_column: 0, end_line: 1, end_column: 0, start: 0, end: 0 };
+    fn el_at() -> lwc_shared::template_ir::ElementSourceLocation { lwc_shared::template_ir::ElementSourceLocation { location: AT, start_tag: AT, end_tag: None } }
+    fn component() -> Component<'static> {
+        Component { name: "x-foo".into(), namespace: String::new(), attributes: vec![], properties: vec![], directives: vec![], listeners: vec![], children: vec![], location: el_at() }
+    }
     #[test]
     fn naming() {
         assert_eq!(kebabcase_to_camelcase_path("x-foo-bar"), "x/fooBar");
@@ -274,12 +280,12 @@ mod tests {
         let lit = |s: &str| AttributeValue::Literal(Literal { value: LiteralValue::String(s.into()) });
         let c = Component {
             name: "x-foo".into(),
-            properties: vec![Property { name: "myProp".into(), attribute_name: "my-prop".into(), value: lit("v"), location: SourceLocation::default() }],
-            attributes: vec![Attribute { name: "class".into(), value: lit("a"), location: SourceLocation::default() }],
-            children: vec![ChildNode::Text(Text { value: TextValue::Literal("hi".into()), raw: String::new(), location: SourceLocation::default() })],
-            ..Default::default()
+            properties: vec![Property { name: "myProp".into(), attribute_name: "my-prop".into(), value: lit("v"), location: AT }],
+            attributes: vec![Attribute { name: "class".into(), value: lit("a"), location: AT }],
+            children: vec![ChildNode::Text(Text { value: TextValue::Literal("hi".into()), raw: String::new(), location: AT })],
+            ..component()
         };
-        let root = Root { children: vec![ChildNode::Component(c)], ..Default::default() };
+        let root = Root { children: vec![ChildNode::Component(c)], directives: vec![], location: el_at() };
         let code = super::super::compile_module(&root, TemplateOptions::default(), &super::super::ModuleMeta::default()).unwrap();
         for n in ["ChildComponentCtor_xFoo", "from 'x/foo'", "childProps", "myProp", "class", "SYMBOL__GENERATE_MARKUP", "generateMarkup", "__lwcGenerateShadowSlottedContent_xFoo_0", "fallbackTmplNoYield"] {
             assert!(code.contains(n), "missing {n}: {code}");
@@ -287,17 +293,17 @@ mod tests {
         assert!(!code.contains("yield ") && !code.contains("async"), "{code}");
         println!("{code}");
     }
-    fn lit(s: &str) -> AttributeValue { AttributeValue::Literal(Literal { value: LiteralValue::String(s.into()) }) }
-    fn txt(s: &str) -> ChildNode { ChildNode::Text(Text { value: TextValue::Literal(s.into()), raw: String::new(), location: SourceLocation::default() }) }
+    fn lit(s: &str) -> AttributeValue<'static> { AttributeValue::Literal(Literal { value: LiteralValue::String(s.into()) }) }
+    fn txt(s: &str) -> ChildNode<'static> { ChildNode::Text(Text { value: TextValue::Literal(s.into()), raw: String::new(), location: AT }) }
     fn cmp(children: Vec<ChildNode>) -> String {
-        let c = Component { name: "x-foo".into(), children, ..Default::default() };
-        super::super::compile_module(&Root { children: vec![ChildNode::Component(c)], ..Default::default() }, TemplateOptions::default(), &super::super::ModuleMeta::default()).unwrap()
+        let c = Component { children, ..component() };
+        super::super::compile_module(&Root { children: vec![ChildNode::Component(c)], directives: vec![], location: el_at() }, TemplateOptions::default(), &super::super::ModuleMeta::default()).unwrap()
     }
     #[test]
     fn light_map_named_slot() {
         let div = ChildNode::Element(lwc_shared::template_ir::Element { name: "div".into(), namespace: element::HTML_NAMESPACE.into(),
-            attributes: vec![Attribute { name: "slot".into(), value: lit("footer"), location: SourceLocation::default() }],
-            children: vec![txt("f")], ..Default::default() });
+            attributes: vec![Attribute { name: "slot".into(), value: lit("footer"), location: AT }],
+            children: vec![txt("f")], properties: vec![], directives: vec![], listeners: vec![], location: el_at() });
         let code = cmp(vec![div, txt("d")]);
         println!("{code}");
         assert!(code.contains("const lightSlottedContentMap = Object.create(null);"), "{code}");
@@ -314,8 +320,8 @@ mod tests {
         let f = ChildNode::ScopedSlotFragment(ScopedSlotFragment { slot_data: Expression::Identifier(Identifier { name: "item".into() }), slot_name: lit(""),
             children: vec![ChildNode::Text(Text { value: TextValue::Expression(Expression::Member(lwc_shared::template_ir::MemberExpression {
                 object: Box::new(Expression::Identifier(Identifier { name: "item".into() })), property: Box::new(Expression::Identifier(Identifier { name: "v".into() })), computed: false })),
-                raw: String::new(), location: SourceLocation::default() })],
-            location: Default::default(), directive_location: Default::default() });
+                raw: String::new(), location: AT })],
+            location: AT, directive_location: AT });
         let code = cmp(vec![f]);
         assert!(code.contains("const shadowSlottedContent = null;") && code.contains("const lightSlottedContentMap = null;"), "{code}");
         assert!(code.contains("const scopedSlottedContentMap = Object.create(null);"), "{code}");

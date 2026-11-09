@@ -9,6 +9,7 @@
 //! messages first). @lwc/compiler maps that throw to LWC1198 iff the whole Babel message (filename +
 //! code frame included) matches /\b(track|api|wire)\b/, else LWC1007. It is a real throw: in recovery
 //! mode it replaces the collected LWC errors and has no location.
+mod support;
 use lwc_shared::CompileOptions;
 use serde_json::Value;
 
@@ -26,17 +27,17 @@ fn decorator_outcomes_match_shipped() {
         o.namespace = "x".into();
         o.experimental_error_recovery_mode = c["recover"].as_bool().unwrap();
         o.api_version = c["opts"]["apiVersion"].as_u64().map(|v| v as u32);
-        let r = lwc_js::transform(c["src"].as_str().unwrap(), c["filename"].as_str().unwrap(), &o);
+        let r = lwc_compiler::dispatch(c["src"].as_str().unwrap(), c["filename"].as_str().unwrap(), &o).map_err(support::Thrown::from);
         let want = &c["shipped"];
         let got = match &r {
             Ok(_) => Value::from("ok"),
-            Err(e) if e.name.as_deref() == Some("AggregateError") => {
-                serde_json::json!({ "errors": e.diagnostics.iter().map(|d| d.code).collect::<Vec<_>>() })
+            Err(e) if e.name == Some("AggregateError") => {
+                serde_json::json!({ "errors": e.errors.iter().map(|d| d.code).collect::<Vec<_>>() })
             }
             Err(e) => serde_json::json!({
-                "code": e.diagnostics.first().and_then(|d| d.code),
+                "code": e.code(),
                 "message": e.message,
-                "hasLocation": e.diagnostics.first().and_then(|d| d.location).is_some(),
+                "hasLocation": e.errors[0].location.is_some(),
             }),
         };
         let want = match want {

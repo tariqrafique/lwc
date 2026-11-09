@@ -5,18 +5,20 @@
 //! are matched by name.
 use lwc_shared::api_version::{self, ApiFeature};
 use crate::constants::*;
-use crate::edits::Edit;
+use lwc_shared::edits::Edit;
+use crate::Origin;
 use crate::transforms::scoped_css::serde_quote;
-use lwc_shared::{CompileError, CompileOptions};
+use lwc_shared::errors::error_info::lwc_class::DecoratorErrors as E;
+use lwc_shared::{CompileError, CompileOptions, LwcErrorInfo};
 use oxc::ast::ast::*;
 use oxc::ast_visit::{walk, Visit};
 use oxc::span::GetSpan;
 use std::collections::{HashMap, HashSet};
 use oxc::span::Span;
 
-/// Decorator error: `@lwc/errors` DecoratorErrors code, formatted message, node span (for line/column).
-pub(crate) struct DErr(u32, String, Option<Span>);
-fn derr(code: u32, tpl: &str, args: &[&str], span: Span) -> DErr { DErr(code, lwc_shared::format_message(tpl, args), Some(span)) }
+/// Decorator error: an `@lwc/errors` DecoratorErrors info, its message args, and the node span it is thrown at.
+pub(crate) struct DErr(&'static LwcErrorInfo, Vec<String>, Span);
+fn derr(info: &'static LwcErrorInfo, args: &[&str], span: Span) -> DErr { DErr(info, args.iter().map(|a| a.to_string()).collect(), span) }
 
 /// Port of @lwc/shared html-attributes.ts.
 const DISALLOWED_PROP_SET: [&str; 4] = ["is", "class", "slot", "style"];
@@ -56,9 +58,9 @@ fn decorator_name<'a>(d: &'a Decorator<'_>) -> Option<&'a str> {
 // Shipped quirk not reproduced: an aliased decorator import (`api as A`) crashes there (getBinding('api')).
 fn usage_errors(program: &Program<'_>, src: &str) -> Vec<DErr> {
     use oxc::ast::AstKind;
-    use oxc::semantic::{AstNodes, SemanticBuilder};
+    use oxc::semantic::AstNodes;
     use oxc::semantic::NodeId;
-    let sem = SemanticBuilder::new().with_build_nodes(true).build(program).semantic;
+    let sem = crate::parse::semantic_with_nodes(program);
     let (nodes, scoping): (&AstNodes, _) = (sem.nodes(), sem.scoping());
     // Babel parent: oxc ParenthesizedExpression nodes don't exist in Babel; a class/object method's Function
     // is part of Babel's ClassMethod/ObjectMethod.
@@ -101,7 +103,7 @@ fn usage_errors(program: &Program<'_>, src: &str) -> Vec<DErr> {
                 let p = parent(r);
                 let deco = if matches!(nodes.kind(p), AstKind::Decorator(_)) || p == nodes.parent_id(p) { p } else { parent(p) };
                 if !matches!(nodes.kind(deco), AstKind::Decorator(_)) {
-                    out.push(derr(1104, "\"{0}\" can only be used as a class decorator", &[name], span_of(deco)));
+                    out.push(derr(&E::IS_NOT_DECORATOR, &[name], span_of(deco)));
                 }
                 let pm = parent(deco);
                 let ok = match nodes.kind(pm) {
@@ -110,7 +112,7 @@ fn usage_errors(program: &Program<'_>, src: &str) -> Vec<DErr> {
                     _ => false,
                 };
                 if !ok || pm == deco {
-                    out.push(derr(1103, "\"@{0}\" can only be applied on class properties", &[name], span_of(pm)));
+                    out.push(derr(&E::IS_NOT_CLASS_PROPERTY_OR_CLASS_METHOD, &[name], span_of(pm)));
                 }
             }
         }
@@ -125,7 +127,7 @@ enum Kind { Property, Getter, Setter, Method, /** getDecoratedNodeType -> undefi
 struct Meta<'s, 'a> { name: &'s str, prop: String, kind: Kind, dec: &'s Decorator<'a>, el: usize, el_span: Span, computed: bool, bool_true: bool }
 
 struct Classes<'s, 'o> {
-    src: &'s str, filename: &'s str, imports: &'o HashMap<String, String>, skip_no_super: bool, reg_ids: Vec<String>,
+    src: &'s str, origin: Origin<'s>, filename: &'s str, imports: &'o HashMap<String, String>, skip_no_super: bool, reg_ids: Vec<String>,
     edits: Vec<Edit>, used: bool, first_expr: Option<bool>, errs: Vec<(u32, DErr)>, recover: bool,
     /// Babel class-features throw (`Decorators are not enabled.`) at the first class that still has decorators
     /// after the LWC visitor ran; a real throw, so it ends traversal even in recovery mode.
@@ -244,7 +246,7 @@ impl<'s> Classes<'s, '_> {
                 }),
                 ClassElement::PropertyDefinition(p) => (&p.decorators, &p.key, Kind::Property),
                 ClassElement::AccessorProperty(p) if !p.decorators.is_empty() =>
-                    return Err((vec![derr(1101, "Invalid property of field type", &[], p.span)], true)),
+                    return Err((vec![derr(&E::INVALID_DECORATOR_TYPE, &[], p.span)], true)),
                 _ => continue,
             };
             for d in decs {
@@ -254,23 +256,23 @@ impl<'s> Classes<'s, '_> {
                 let unimported_known = decorator_name(d).filter(|n| !self.imports.contains_key(*n))
                     .and_then(|n| DECORATOR_NAMES.iter().copied().find(|k| *k == n)).filter(|_| self.recover);
                 if let Some(n) = unimported_known {
-                    pre_errs.push(derr(1102, "Invalid '{0}' decorator usage. Supported decorators ({1}) should be imported from \"{2}\"", &[n, AVAILABLE, LWC_PACKAGE_ALIAS], el.span()));
+                    pre_errs.push(derr(&E::INVALID_DECORATOR_WITH_NAME, &[n, AVAILABLE, LWC_PACKAGE_ALIAS], el.span()));
                 }
                 let Some(name) = decorator_name(d).filter(|n| self.imports.contains_key(*n) || unimported_known.is_some()) else {
                     let e = match decorator_name(d) {
-                        Some(n) => derr(1102, "Invalid '{0}' decorator usage. Supported decorators ({1}) should be imported from \"{2}\"", &[n, AVAILABLE, LWC_PACKAGE_ALIAS], el.span()),
-                        None => derr(1100, "Invalid decorator usage. Supported decorators ({0}) should be imported from \"{1}\"", &[AVAILABLE, LWC_PACKAGE_ALIAS], el.span()),
+                        Some(n) => derr(&E::INVALID_DECORATOR_WITH_NAME, &[n, AVAILABLE, LWC_PACKAGE_ALIAS], el.span()),
+                        None => derr(&E::INVALID_DECORATOR, &[AVAILABLE, LWC_PACKAGE_ALIAS], el.span()),
                     };
                     // recovery: handleError collects and the visitor goes on; an unknown name (`@foo`) still
                     // yields a meta that no decorator transform picks up, a non-identifier (LWC1100) yields none.
                     if !self.recover { return Err((vec![e], true)); }
-                    if e.0 == 1100 { type_errs.push(e) } else { pre_errs.push(e) }
+                    if e.0.code == E::INVALID_DECORATOR.code { type_errs.push(e) } else { pre_errs.push(e) }
                     continue;
                 };
                 // A private field is a Babel ClassPrivateProperty: getDecoratedNodeType reports LWC1101 and the
                 // decorator is validated with no node type (only reachable in recovery; LWC1103 is thrown first).
                 let kind = if matches!(key, PropertyKey::PrivateIdentifier(_)) {
-                    type_errs.push(derr(1101, "Invalid property of field type", &[], el.span()));
+                    type_errs.push(derr(&E::INVALID_DECORATOR_TYPE, &[], el.span()));
                     Kind::Invalid
                 } else { kind };
                 let prop = sname(key).unwrap_or_else(|| slice(src, key.span()).to_string());
@@ -288,7 +290,7 @@ impl<'s> Classes<'s, '_> {
         validate_api(&metas, &mut errs);
         self.validate_wire(&metas, &mut errs);
         for m in metas.iter().filter(|m| m.name == "track" && m.kind != Kind::Property) {
-            errs.push(derr(1113, "@track decorator can only be applied to class properties.", &[], m.dec.span));
+            errs.push(derr(&E::TRACK_ONLY_ALLOWED_ON_CLASS_PROPERTIES, &[], m.dec.span));
         }
         if !errs.is_empty() && !self.recover { return Err((errs, true)); }
         let mut list = Vec::new();
@@ -365,7 +367,7 @@ impl<'a> Visit<'a> for Classes<'_, '_> {
             });
             if !it.decorators.is_empty() || (member_decorated && !removed) {
                 let start = it.decorators.iter().map(|d| d.span.start).fold(it.span.start, u32::min);
-                self.fatal = Some((start, class_features_error(it, self.src, self.filename, start)));
+                self.fatal = Some((start, class_features_error(it, self.origin, self.filename, start)));
                 return;
             }
         }
@@ -380,7 +382,7 @@ const DECORATORS_NOT_ENABLED: &str = "Decorators are not enabled.\nIf you are us
 /// first at that member, else `Decorators are not enabled.` at the class (start includes class decorators).
 /// @lwc/compiler then wraps it: LWC1198 when the Babel message (incl. its filename and code frame) mentions
 /// `track`/`api`/`wire` as a word, else LWC1007 (normalizeToCompilerError; no location, Babel set none).
-fn class_features_error(class: &Class<'_>, src: &str, filename: &str, class_start: u32) -> CompileError {
+fn class_features_error(class: &Class<'_>, origin: Origin<'_>, filename: &str, class_start: u32) -> CompileError {
     // shipped checks a private field before a private method, each at the first such member
     let find = |field: bool| class.body.body.iter().find_map(|el| match el {
         ClassElement::PropertyDefinition(p) if field && matches!(p.key, PropertyKey::PrivateIdentifier(_)) => Some(("Private fields in decorated classes are not supported yet.", p.span)),
@@ -392,26 +394,13 @@ fn class_features_error(class: &Class<'_>, src: &str, filename: &str, class_star
         Some((t, sp)) => (t, sp.start, sp.end),
         None => (DECORATORS_NOT_ENABLED, class_start, class.span.end),
     };
+    // offsets are into the renamed source; Babel frames the original (`#m`, not the `__lwc_` rename)
+    let (src, start, end) = (origin.src, origin.map(start, false), origin.map(end, true));
     let s = lwc_shared::babel_line_col(src, start);
     let e = lwc_shared::babel_line_col(src, end);
     let frame = lwc_shared::code_frame(src, s, (s.0 == e.0).then_some(e));
-    let babel_message = format!("{filename}: {text}\n{frame}");
-    let mut err = CompileError::babel("SyntaxError", format!("{text}\n{frame}"), filename, None, None);
-    if babel_message.contains("Decorators are not enabled.") && mentions_lwc_decorator(&babel_message) {
-        err.message = format!("SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. {babel_message}");
-        err.diagnostics[0].code = Some(1198);
-        err.diagnostics[0].message = err.message.clone();
-    }
-    err
-}
-
-/// `/\b(track|api|wire)\b/` (ASCII word boundaries, as in JS).
-fn mentions_lwc_decorator(s: &str) -> bool {
-    let b = s.as_bytes();
-    let word = |c: u8| c.is_ascii_alphanumeric() || c == b'_';
-    DECORATOR_NAMES.iter().any(|w| s.match_indices(w).any(|(i, _)| {
-        (i == 0 || !word(b[i - 1])) && b.get(i + w.len()).is_none_or(|c| !word(*c))
-    }))
+    // javascript.ts sniffs this message for JS_TRANSFORMER_DECORATOR_ERROR (LWC1198); see lwc-compiler.
+    CompileError::babel("SyntaxError", format!("{text}\n{frame}"), filename, None, None)
 }
 
 /// Port of decorators/api/validate.ts.
@@ -419,40 +408,40 @@ fn validate_api(metas: &[Meta<'_, '_>], errs: &mut Vec<DErr>) {
     let apis: Vec<&Meta> = metas.iter().filter(|m| m.name == "api").collect();
     'm: for m in &apis {
         if metas.iter().any(|t| t.name == "track" && t.el == m.el) {
-            { errs.push(derr(1093, "@api method or property cannot be used with @track", &[], m.dec.span)); continue 'm; }
+            { errs.push(derr(&E::API_AND_TRACK_DECORATOR_CONFLICT, &[], m.dec.span)); continue 'm; }
         }
         if m.kind == Kind::Method { continue; }
         let sp = m.el_span;
         if m.computed {
-            { errs.push(derr(1106, "@api cannot be applied to a computed property, getter, setter or method.", &[], sp)); continue 'm; }
+            { errs.push(derr(&E::PROPERTY_CANNOT_BE_COMPUTED, &[], sp)); continue 'm; }
         }
         let n = m.prop.as_str();
         if n == "part" {
-            { errs.push(derr(1111, "Invalid property name \"{0}\". \"part\" is a future reserved attribute for web components.", &[n], sp)); continue 'm; }
+            { errs.push(derr(&E::PROPERTY_NAME_PART_IS_RESERVED, &[n], sp)); continue 'm; }
         } else if n.starts_with("on") {
-            { errs.push(derr(1108, "Invalid property name \"{0}\". Properties starting with \"on\" are reserved for event handlers.", &[n], sp)); continue 'm; }
+            { errs.push(derr(&E::PROPERTY_NAME_CANNOT_START_WITH_ON, &[n], sp)); continue 'm; }
         } else if n.starts_with("data") && n.len() > 4 {
-            { errs.push(derr(1107, "Invalid property name \"{0}\". Properties starting with \"data\" are reserved attributes.", &[n], sp)); continue 'm; }
+            { errs.push(derr(&E::PROPERTY_NAME_CANNOT_START_WITH_DATA, &[n], sp)); continue 'm; }
         } else if DISALLOWED_PROP_SET.contains(&n) {
-            { errs.push(derr(1110, "Invalid property name \"{0}\". \"{0}\" is a reserved attribute.", &[n], sp)); continue 'm; }
+            { errs.push(derr(&E::PROPERTY_NAME_IS_RESERVED, &[n], sp)); continue 'm; }
         } else if let Some((_, camel)) = AMBIGUOUS_PROP_SET.iter().find(|(k, _)| *k == n) {
-            { errs.push(derr(1109, "Ambiguous attribute name \"{0}\". \"{0}\" will never be called from template because its corresponding property is camel cased. Consider renaming to \"{1}\".", &[n, camel], sp)); continue 'm; }
+            { errs.push(derr(&E::PROPERTY_NAME_IS_AMBIGUOUS, &[n, camel], sp)); continue 'm; }
         }
         if m.bool_true {
-            { errs.push(derr(1099, "Boolean public property must default to false.", &[], sp)); continue 'm; }
+            { errs.push(derr(&E::INVALID_BOOLEAN_PUBLIC_PROPERTY, &[], sp)); continue 'm; }
         }
     }
     let mut seen = HashSet::new();
     for m in &apis {
         if matches!(m.kind, Kind::Getter | Kind::Setter) && !seen.insert(m.prop.as_str()) {
-            { errs.push(derr(1112, "@api get {0} and @api set {0} detected in class declaration. Only one of the two needs to be decorated with @api.", &[&m.prop], m.el_span)); continue; }
+            { errs.push(derr(&E::SINGLE_DECORATOR_ON_SETTER_GETTER_PAIR, &[&m.prop], m.el_span)); continue; }
         }
     }
     for cur in &apis {
         for cmp in &apis {
             let pair = matches!((cur.kind, cmp.kind), (Kind::Getter, Kind::Setter) | (Kind::Setter, Kind::Getter));
             if cur.prop == cmp.prop && !std::ptr::eq(*cur, *cmp) && !pair {
-                { errs.push(derr(1096, "Duplicate @api property \"{0}\".", &[&cur.prop], cmp.dec.span)); continue; }
+                { errs.push(derr(&E::DUPLICATE_API_PROPERTY, &[&cur.prop], cmp.dec.span)); continue; }
             }
         }
     }
@@ -464,25 +453,25 @@ impl Classes<'_, '_> {
         'w: for w in metas.iter().filter(|m| m.name == "wire") {
             for d in metas.iter().filter(|d| d.el == w.el) {
                 if d.name == "wire" && !std::ptr::eq(d, w) {
-                    { errs.push(derr(1105, "Method or property can only have 1 @wire decorator", &[], w.dec.span)); continue 'w; }
+                    { errs.push(derr(&E::ONE_WIRE_DECORATOR_ALLOWED, &[], w.dec.span)); continue 'w; }
                 }
                 if d.name == "api" || d.name == "track" {
-                    { errs.push(derr(1095, "@wire method or property cannot be used with @{0}", &[d.name], w.dec.span)); continue 'w; }
+                    { errs.push(derr(&E::CONFLICT_WITH_ANOTHER_DECORATOR, &[d.name], w.dec.span)); continue 'w; }
                 }
             }
             let args = match &w.dec.expression { Expression::CallExpression(c) => Some(&c.arguments), _ => None };
             let Some(first) = args.and_then(|a| a.first()) else {
-                { errs.push(derr(1092, "@wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).", &[], w.dec.span)); continue 'w; }
+                { errs.push(derr(&E::ADAPTER_SHOULD_BE_FIRST_PARAMETER, &[], w.dec.span)); continue 'w; }
             };
             let root = match first.as_expression() {
                 Some(Expression::Identifier(i)) => Some(i.name.as_str()),
                 Some(Expression::ComputedMemberExpression(m)) => {
-                    errs.push(derr(1131, "@wire identifier cannot contain computed properties", &[], m.span)); continue 'w;
+                    errs.push(derr(&E::FUNCTION_IDENTIFIER_CANNOT_HAVE_COMPUTED_PROPS, &[], m.span)); continue 'w;
                 }
                 Some(Expression::StaticMemberExpression(m)) => match &m.object {
                     Expression::Identifier(i) => Some(i.name.as_str()),
                     Expression::StaticMemberExpression(_) | Expression::ComputedMemberExpression(_) => {
-                        errs.push(derr(1132, "@wire identifier cannot contain nested member expressions", &[], m.span)); continue 'w;
+                        errs.push(derr(&E::FUNCTION_IDENTIFIER_CANNOT_HAVE_NESTED_MEMBER_EXRESSIONS, &[], m.span)); continue 'w;
                     }
                     _ => None,
                 },
@@ -490,12 +479,12 @@ impl Classes<'_, '_> {
             };
             match root {
                 // recovery: babel keeps validating the config arg after a bad adapter
-                None => { errs.push(derr(1097, "@wire expects a function identifier as first parameter.", &[], first.span())); if !self.recover { continue 'w; } }
+                None => { errs.push(derr(&E::FUNCTION_IDENTIFIER_SHOULD_BE_FIRST_PARAMETER, &[], first.span())); if !self.recover { continue 'w; } }
                 Some(r) if !self.imported.contains(r) && self.src_declares(r) => {
-                    { errs.push(derr(1098, "@wire expects a function identifier to be imported as first parameter.", &[], first.span())); continue 'w; }
+                    { errs.push(derr(&E::IMPORTED_FUNCTION_IDENTIFIER_SHOULD_BE_FIRST_PARAMETER, &[], first.span())); continue 'w; }
                 }
                 Some(r) if !self.imported.contains(r) => {
-                    errs.push(derr(1119, "Failed to resolve @wire adapter \"{0}\". Ensure it is imported.", &[r], first.span())); continue 'w;
+                    errs.push(derr(&E::WIRE_ADAPTER_SHOULD_BE_IMPORTED, &[r], first.span())); continue 'w;
                 }
                 _ => {}
             }
@@ -505,18 +494,18 @@ impl Classes<'_, '_> {
                     if !op.computed { continue; }
                     let bad = match &op.key {
                         PropertyKey::TemplateLiteral(t) => {
-                            errs.push(derr(1199, "Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.", &[], t.span)); continue 'w;
+                            errs.push(derr(&E::COMPUTED_PROPERTY_CANNOT_BE_TEMPLATE_LITERAL, &[], t.span)); continue 'w;
                         }
                         PropertyKey::Identifier(i) => !(i.name == "undefined" && !self.src_declares("undefined")) && !self.consts.contains(i.name.as_str()),
                         PropertyKey::StringLiteral(_) | PropertyKey::NumericLiteral(_) | PropertyKey::BigIntLiteral(_) | PropertyKey::BooleanLiteral(_) | PropertyKey::NullLiteral(_) => false,
                         _ => true,
                     };
-                    if bad { errs.push(derr(1200, "Computed property in @wire config must be a constant or primitive literal.", &[], op.key.span())); continue 'w; }
+                    if bad { errs.push(derr(&E::COMPUTED_PROPERTY_MUST_BE_CONSTANT_OR_LITERAL, &[], op.key.span())); continue 'w; }
                 }
             }
             if let Some(cfg) = args.and_then(|a| a.get(1)) {
                 if !matches!(cfg.as_expression(), Some(Expression::ObjectExpression(_))) {
-                    { errs.push(derr(1094, "@wire expects a configuration object expression as second parameter.", &[], cfg.span())); continue 'w; } // shipped: handleError(config)
+                    { errs.push(derr(&E::CONFIG_OBJECT_SHOULD_BE_SECOND_PARAMETER, &[], cfg.span())); continue 'w; } // shipped: handleError(config)
                 }
             }
         }
@@ -529,12 +518,10 @@ impl Classes<'_, '_> {
 
 /// Errors come back keyed by Babel traversal position (Program enter = 0, class errors = class start) so the
 /// caller can interleave them with dynamic-import errors in shipped visit order.
-pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions, edits: &mut Vec<Edit>) -> Result<Option<String>, Vec<(u32, CompileError)>> {
-    let err = |DErr(code, m, sp): DErr| {
-        match sp {
-            Some(s) => CompileError::lwc_at(code, m, filename, src, s.start, s.end),
-            None => CompileError::lwc(code, m, filename, None, None),
-        }
+pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions, origin: Origin<'_>, edits: &mut Vec<Edit>) -> Result<Option<String>, Vec<(u32, CompileError)>> {
+    let err = |DErr(info, args, sp): DErr| {
+        let args: Vec<&str> = args.iter().map(String::as_str).collect();
+        CompileError::generate_at(info, &args, filename, src, sp.start, sp.end)
     };
     let imports = lwc_imports(program);
     let mut usage = usage_errors(program, src);
@@ -548,7 +535,7 @@ pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions,
         Statement::VariableDeclaration(d) if d.kind == VariableDeclarationKind::Const => Some(d),
         _ => None,
     }).flat_map(|d| d.declarations.iter()).flat_map(|v| v.id.get_binding_identifiers()).map(|b| b.name.to_string()).collect();
-    let mut c = Classes { consts: &consts, imported: &imported, src, filename, fatal: None, imports: &imports, skip_no_super: skip, reg_ids: Vec::new(), edits: Vec::new(), used: false, first_expr: None, errs: Vec::new(), recover: o.experimental_error_recovery_mode };
+    let mut c = Classes { consts: &consts, imported: &imported, src, origin, filename, fatal: None, imports: &imports, skip_no_super: skip, reg_ids: Vec::new(), edits: Vec::new(), used: false, first_expr: None, errs: Vec::new(), recover: o.experimental_error_recovery_mode };
     c.visit_program(program);
     let mut all: Vec<(u32, DErr)> = usage.into_iter().map(|d| (0, d)).collect();
     all.extend(c.errs);

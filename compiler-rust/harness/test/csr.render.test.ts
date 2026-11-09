@@ -14,6 +14,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { compareError, observeError, type CompareResult, type ErrorObservation } from '../src/compareError';
 import { existsUp, listFixtures, FIXTURES_ROOT } from '../src/ssrRender';
+import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import {
     ENGINE_DOM_ESM, TEMPLATE_FIXTURES_ROOT, bundleSsrFixtureCsr, bundleTemplateFixtureCsr, describeValue,
     listTemplateFixtures, readTemplateFixture, serializeNode, trackShadowRoots,
@@ -26,8 +27,6 @@ import * as engineDom from '/workspace/lwc/packages/@lwc/engine-dom/dist/index.j
 const BACKEND_ID = process.env.LWC_COMPILER_BACKEND ?? 'js';
 const CORPUS = process.env.CORPUS ?? 'all';
 if (!['ssr', 'template', 'all'].includes(CORPUS)) throw new Error(`bad CORPUS ${CORPUS} (ssr | template | all)`);
-const UPDATE = !!process.env.UPDATE_GOLDENS;
-if (UPDATE && BACKEND_ID !== 'js') throw new Error('UPDATE_GOLDENS=1 is JS-backend only (CSR goldens are the JS oracle)');
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 // Scratch bundles live inside harness/ (not node_modules) so vite inlines them and they share this file's engine-dom.
@@ -39,7 +38,7 @@ const GOLDEN_DIR = path.resolve(here, '../goldens/csr-render');
 type Status = 'ok' | 'compile-error' | 'render-error' | 'excluded';
 interface Observed { status: Status; warnings?: string[]; html?: string; head?: string; error?: string; errors?: string[]; logs?: string[]; reason?: string; note?: string }
 type Golden = Record<string, Observed>;
-const loadGolden = (f: string): Golden => (UPDATE || !fs.existsSync(f) ? {} : JSON.parse(fs.readFileSync(f, 'utf8')));
+const loadGolden = (f: string): Golden => (UPDATE ? {} : readGolden(f));   // missing golden file = failure, never {}
 // Scratch paths, and engine-dom's global VM counter in dev messages (`[object:vm Ctor (1211)]`), which depends on how
 // many components rendered earlier in the run (CORPUS=all vs a single corpus), are not compiler output.
 // Rollup prints module ids relative to process.cwd() (`../../lwc/...` from the live harness, `../../../workspace/lwc/...`
@@ -229,9 +228,8 @@ for (const corpus of corpora) {
         }
         afterAll(() => {
             if (UPDATE) {
-                fs.mkdirSync(GOLDEN_DIR, { recursive: true });
                 const sorted = Object.fromEntries(Object.entries(recorded).sort(([a], [b]) => a.localeCompare(b)));
-                fs.writeFileSync(goldenFile, JSON.stringify(sorted, null, 1) + '\n');
+                writeGolden(goldenFile, sorted, 1);
             }
             const sorted = rows.sort((a, b) => a.fixture.localeCompare(b.fixture));
             fs.writeFileSync(path.join(OUT, `report-${corpus.key}.json`), JSON.stringify({ backend: BACKEND_ID, napi: process.env.LWC_COMPILER_NAPI_PATH ?? null, strays, rows: sorted }, null, 1));

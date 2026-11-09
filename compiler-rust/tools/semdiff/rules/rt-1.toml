@@ -1,0 +1,29 @@
+# semdiff rule table rt-1 (D-0258). Loading is fail-closed per AB-D0003 (6):
+# a rule is enabled when its arch_review field holds an AB- id (a reviewed code change).
+# There is no reviews.tsv check and no with_pending_applied. A PENDING rule is loaded so
+# Arch can review its tests, but is not applied. Flipping PENDING to an AB- id is the enable.
+version = "rt-1"
+
+[[rule]]
+id = "R-TRAILING-COMMA-1"
+rev = 1
+kind = "token-spelling"
+decision = "D-0258"
+arch_review = "AB-L0064"
+justification = "D-0258 and D-0266: a single trailing comma in an array or object literal, a parameter or argument list, an import/export specifier list, or a destructuring pattern (ObjectPattern, ArrayPattern, and the same as assignment targets) is UNOBSERVABLE. The printer and ContentEq already drop it; the token check would otherwise keep the pair UNCLASSIFIED. A hole is an Elision or a None slot in the elements array and stays OBSERVED: [a,] vs [a] matches, [a,,] vs [a,] and [,a] vs [a] do not. Distinction is by AST element structure, not token text."
+preconditions = "Both sides parse cleanly. The token check runs only after oxc codegen is identical and Program::content_eq holds, so this rule never hides an AST difference."
+eval_order_argument = "A trailing comma is punctuation after the last element (the elements array's last Some/non-Elision entry), parameter, argument, specifier, or pattern property. Nothing is evaluated, reordered, or dropped. If the last slot is None or Elision, that comma is a hole (different length and slot) and is not skipped."
+positive_tests = "tools/semdiff/tests/rules.rs::trailing_comma_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::a_hole_is_not_a_trailing_comma; tools/semdiff/tests/rules.rs::pattern_elision_is_observed"
+
+[[rule]]
+id = "R-ASI-SEMI-1"
+rev = 1
+kind = "token-spelling"
+decision = "D-0258"
+arch_review = "AB-L0064"
+justification = "D-0258: an ASI-inserted semicolon vs an explicit ';' is UNOBSERVABLE when both sides parse to an identical AST. The printer inserts semicolons; ContentEq already holds; the leftover token is only the explicit ';'."
+preconditions = "Both sides parse cleanly and Program::content_eq already holds (enforced by compare() order). An ASI difference that changes the AST (a\\n(b) call vs a;(b) statements; return\\nx vs return x) never reaches this rule."
+eval_order_argument = "When the ASTs are identical the extra ';' does not introduce, drop, or reorder any statement or expression. An empty-statement ';' is its own AST node, so ContentEq fails and the rule does not run."
+positive_tests = "tools/semdiff/tests/rules.rs::asi_semicolon_with_identical_ast_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::asi_that_changes_the_ast_is_observed"

@@ -1,8 +1,18 @@
 //! IR → ESM module source (behavioral goldens, not astring bytes).
 
 use crate::config::NormalizedConfig;
+use crate::parser::InternalError;
+use expression::BindError;
+use printer::PrintError;
+
+mod optimize;
+pub(crate) mod printer;
+pub(crate) mod expression;
+use printer::Js;
 use lwc_shared::template_ir::*;
 use lwc_shared::api_version::{is_api_feature_enabled, ApiFeature};
+use lwc_shared::js::{js_trim, js_ws};
+use lwc_shared::style::{normalize_style_attribute_value, parse_style_text, split_important};
 
 pub fn js_string(s: &str) -> String {
     let mut o = String::from("\"");
@@ -17,6 +27,23 @@ pub fn js_string(s: &str) -> String {
     }
     o.push('"');
     o
+}
+
+/// Bind (1189) or print (invariant InternalError) failure from generate.
+#[derive(Debug)]
+pub(crate) enum CodegenError {
+    Bind(BindError),
+    Internal(InternalError),
+}
+
+impl From<BindError> for CodegenError {
+    fn from(e: BindError) -> Self { Self::Bind(e) }
+}
+impl From<PrintError> for CodegenError {
+    fn from(e: PrintError) -> Self { Self::Internal(InternalError::new(e.0)) }
+}
+impl From<InternalError> for CodegenError {
+    fn from(e: InternalError) -> Self { Self::Internal(e) }
 }
 
 /// `custom-else` → `customElse`.
@@ -63,133 +90,117 @@ impl ApiHelper {
 }
 
 #[derive(Default)]
-struct Gen { key: u32, locals: Vec<String>, slots: Vec<String>, imports: Vec<(String, String)>, has_refs: bool, static_opt: bool, comments: bool, frags: Vec<(String, bool)>, sanitize: bool, cr: Option<lwc_shared::CustomRendererConfig>, cur_cr: bool, renderer: bool, cur_ns: String, api_version: u32, light: bool, inner_html: u32, synthetic: bool, scope_frag: bool, apis: Vec<ApiHelper>}
+struct Gen { key: u32, locals: Vec<String>, slots: Vec<String>, imports: Vec<(String, String)>, has_refs: bool, static_opt: bool, comments: bool, frags: Vec<(String, bool)>, sanitize: bool, cr: Option<lwc_shared::CustomRendererConfig>, cur_cr: bool, renderer: bool, api_version: u32, light: bool, inner_html: u32, synthetic: bool, scope_frag: bool, apis: Vec<ApiHelper>, memo: u32}
+
+
+/// TS `isExpression` (shared/ast.ts:525): `node.type !== 'Literal'`. A complex expression whose AST
+/// is itself a Literal is not an expression for codegen branching (`computeAttrValue`).
+fn is_estree_expression(v: &AttributeValue) -> bool {
+    match v {
+        AttributeValue::Literal(_) => false,
+        AttributeValue::Expression(Expression::Literal(_)) => false,
+        AttributeValue::Expression(Expression::Complex(c)) => c.as_literal().is_none(),
+        AttributeValue::Expression(_) => true,
+    }
+}
+
+/// TS `isStringLiteral`.
+fn attr_string_literal<'a>(v: &'a AttributeValue<'a>) -> Option<&'a str> {
+    match v {
+        AttributeValue::Literal(Literal { value: LiteralValue::String(s) }) => Some(s),
+        AttributeValue::Expression(Expression::Literal(Literal { value: LiteralValue::String(s) })) => Some(s),
+        AttributeValue::Expression(Expression::Complex(c)) => match c.as_literal() {
+            Some(LiteralView::String(s)) => Some(s),
+            _ => None,
+        },
+        _ => None,
+    }
+}
+
+/// Value spelling of an already-matched ESTree Literal (astring `JSON.stringify` / `ToJsString`).
+fn attr_literal_js(lit: LiteralView<'_>) -> String {
+    match lit {
+        LiteralView::Number(n) => printer::js_number(n),
+        LiteralView::Bool(b) => b.to_string(),
+        LiteralView::Null => "null".into(),
+        LiteralView::String(s) => js_string(s),
+    }
+}
+
+/// Classify an attribute value so `compute_attr` never receives a general expression as a literal.
+enum AttrValueKind<'a> {
+    StringLiteral(&'a str),
+    OtherLiteral(LiteralView<'a>),
+    Expression,
+}
+
+fn attr_value_kind<'a>(v: &'a AttributeValue<'a>) -> AttrValueKind<'a> {
+    match v {
+        AttributeValue::Literal(Literal { value: LiteralValue::String(s) })
+        | AttributeValue::Expression(Expression::Literal(Literal { value: LiteralValue::String(s) })) => {
+            AttrValueKind::StringLiteral(s)
+        }
+        AttributeValue::Literal(Literal { value: LiteralValue::Bool(b) })
+        | AttributeValue::Expression(Expression::Literal(Literal { value: LiteralValue::Bool(b) })) => {
+            AttrValueKind::OtherLiteral(LiteralView::Bool(*b))
+        }
+        AttributeValue::Expression(Expression::Complex(c)) => match c.as_literal() {
+            Some(LiteralView::String(s)) => AttrValueKind::StringLiteral(s),
+            Some(lit) => AttrValueKind::OtherLiteral(lit),
+            None => AttrValueKind::Expression,
+        },
+        AttributeValue::Expression(_) => AttrValueKind::Expression,
+    }
+}
 
 impl Gen {
-    fn attr_value(&self, v: &AttributeValue) -> String {
+    fn attr_value(&self, v: &AttributeValue) -> Result<String, CodegenError> { self.attr_value_at(v, 1) }
+
+    fn attr_value_at(&self, v: &AttributeValue, indent: usize) -> Result<String, CodegenError> {
         match v {
-            AttributeValue::Literal(Literal { value: LiteralValue::String(s) }) => js_string(s),
-            AttributeValue::Literal(Literal { value: LiteralValue::Bool(b) }) => b.to_string(),
-            AttributeValue::Expression(e) => self.expr(e),
+            AttributeValue::Literal(Literal { value: LiteralValue::String(s) }) => Ok(js_string(s)),
+            AttributeValue::Literal(Literal { value: LiteralValue::Bool(b) }) => Ok(b.to_string()),
+            AttributeValue::Expression(e) => self.expr_at(e, indent),
         }
     }
 
-    fn expr(&self, e: &Expression) -> String {
+    fn expr(&self, e: &Expression) -> Result<String, CodegenError> { self.expr_at(e, 1) }
+
+    fn expr_at(&self, e: &Expression, indent: usize) -> Result<String, CodegenError> {
         match e {
-            Expression::Identifier(Identifier { name }) if self.locals.iter().any(|l| l == name) => name.clone(),
-            Expression::Identifier(Identifier { name }) => format!("$cmp.{name}"),
+            Expression::Identifier(Identifier { name }) if self.locals.iter().any(|l| l == name) => Ok(name.clone()),
+            Expression::Identifier(Identifier { name }) => Ok(format!("$cmp.{name}")),
             Expression::Member(MemberExpression { object, property, computed: false }) => match &**property {
-                Expression::Identifier(Identifier { name }) => format!("{}.{name}", self.expr(object)),
-                p => format!("{}[{}]", self.expr(object), self.expr(p)),
+                Expression::Identifier(Identifier { name }) => Ok(format!("{}.{name}", self.expr_at(object, indent)?)),
+                p => Ok(format!("{}[{}]", self.expr_at(object, indent)?, self.expr_at(p, indent)?)),
             },
-            Expression::Member(MemberExpression { object, property, .. }) => format!("{}[{}]", self.expr(object), self.expr(property)),
-            Expression::Literal(Literal { value: LiteralValue::String(s) }) => js_string(s),
-            Expression::Literal(Literal { value: LiteralValue::Bool(b) }) => b.to_string(),
-            Expression::Complex(src) => self.bind_complex(src).unwrap_or_else(|| "undefined".into()),
+            // Typed computed members exist only without complex expressions (parser `non_binding_expr`), i.e.
+            // under TS bindExpression (expression.ts:73-83), which binds an identifier only as the expression
+            // itself or as a member `object`: a computed property identifier stays as written (`arr[index]`).
+            Expression::Member(MemberExpression { object, property, .. }) => match &**property {
+                Expression::Identifier(Identifier { name }) => Ok(format!("{}[{name}]", self.expr_at(object, indent)?)),
+                p => Ok(format!("{}[{}]", self.expr_at(object, indent)?, self.expr_at(p, indent)?)),
+            },
+            Expression::Literal(Literal { value: LiteralValue::String(s) }) => Ok(js_string(s)),
+            Expression::Literal(Literal { value: LiteralValue::Bool(b) }) => Ok(b.to_string()),
+            Expression::Complex(c) => self.print_complex(c, indent),
         }
     }
 
-    /// TS bindComplexExpression for the subset of complex-expression syntax with no new scopes or
-    /// object-literal keys: every free identifier not in an iteration scope becomes `$cmp.<name>`, and
-    /// member access stays plain (so access on `undefined` throws at render time like JS). Arrow functions
-    /// with plain identifier params bind those params as locals within the arrow's own params and body.
-    /// Object and template literals are not
-    /// handled yet (`None` → the `undefined` stub).
-    fn bind_complex(&self, src: &str) -> Option<String> {
-        const UNBOUND: &[&str] = &["true", "false", "null", "this", "typeof", "void", "new", "in", "instanceof", "delete"];
-        let scopes = arrow_scopes(src)?;
-        let b = src.as_bytes();
-        let (mut i, mut out, mut after_dot) = (0, String::new(), false);
-        while i < b.len() {
-            let c = b[i] as char;
-            if c == '{' || c == '`' { return None; }
-            if src[i..].starts_with("=>") { out.push_str("=>"); i += 2; after_dot = false; continue; }
-            if c == '\'' || c == '"' {
-                let mut j = i + 1;
-                while j < b.len() && b[j] as char != c { if b[j] == b'\\' { j += 1; } j += 1; }
-                if j >= b.len() { return None; }
-                out.push_str(&src[i..=j]);
-                i = j + 1;
-                after_dot = false;
-            } else if c.is_ascii_alphabetic() || c == '_' || c == '$' {
-                let mut j = i;
-                while j < b.len() && ((b[j] as char).is_ascii_alphanumeric() || b[j] == b'_' || b[j] == b'$') { j += 1; }
-                let id = &src[i..j];
-                if id == "function" { return None; }
-                if after_dot || UNBOUND.contains(&id) || self.locals.iter().any(|l| l == id) || scopes.iter().any(|(s, e, ps)| (*s..*e).contains(&i) && ps.contains(&id)) { out.push_str(id); } else { out.push_str("$cmp."); out.push_str(id); }
-                i = j;
-                after_dot = false;
-            } else if c.is_ascii_digit() || (c == '.' && b.get(i + 1).is_some_and(u8::is_ascii_digit)) {
-                let mut j = i;
-                while j < b.len() && ((b[j] as char).is_ascii_alphanumeric() || b[j] == b'.' || b[j] == b'_') { j += 1; }
-                out.push_str(&src[i..j]);
-                i = j;
-                after_dot = false;
-            } else if src[i..].starts_with("...") {
-                out.push_str("...");
-                i += 3;
-                after_dot = false;
-            } else if !c.is_ascii() {
-                return None;
-            } else {
-                if c == '.' { after_dot = true; } else if !c.is_whitespace() { after_dot = false; }
-                out.push(c);
-                i += 1;
-            }
-        }
-        Some(out)
+    /// Bind + print `c.ast` (AB-D0004 S4). BindError (1189) and PrintError (InternalError) propagate
+    /// with `?`; never a placeholder, panic, or Gen-field sink.
+    fn print_complex(&self, c: &ComplexExpression, indent: usize) -> Result<String, CodegenError> {
+        let plan = expression::bind(c, &|n| self.locals.iter().any(|l| l == n))?;
+        Ok(printer::print_expr(c.ast, &plan, "$cmp", indent)?.code)
     }
-}
-
-/// Every arrow in `src` (`x => …`, `(a, b) => …`) as (start, end, params): the byte range from its
-/// parameter list through the end of its expression body (an unmatched closer or a depth-0 `,`/`;`).
-/// None when a parameter list is not plain identifiers (destructuring/defaults), which bind_complex
-/// does not model.
-fn arrow_scopes(src: &str) -> Option<Vec<(usize, usize, Vec<&str>)>> {
-    let is_id = |c: char| c.is_ascii_alphanumeric() || c == '_' || c == '$';
-    let b = src.as_bytes();
-    let mut out = Vec::new();
-    let mut from = 0;
-    while let Some(k) = src[from..].find("=>") {
-        let at = from + k;
-        let head = src[..at].trim_end();
-        let (start, params) = if let Some(h) = head.strip_suffix(')') {
-            let open = h.rfind('(')?;
-            let ps: Vec<&str> = h[open + 1..].split(',').map(str::trim).filter(|p| !p.is_empty()).collect();
-            if ps.iter().any(|p| !p.chars().all(is_id)) { return None; }
-            (open, ps)
-        } else {
-            let start = head.rfind(|c: char| !is_id(c)).map_or(0, |j| j + 1);
-            if start == head.len() { return None; }
-            (start, vec![&head[start..]])
-        };
-        let (mut j, mut depth) = (at + 2, 0i32);
-        while j < b.len() {
-            match b[j] {
-                q @ (b'\'' | b'"') => { j += 1; while j < b.len() && b[j] != q { if b[j] == b'\\' { j += 1; } j += 1; } }
-                b'(' | b'[' | b'{' => depth += 1,
-                b')' | b']' | b'}' => { depth -= 1; if depth < 0 { break; } }
-                b',' | b';' if depth == 0 => break,
-                _ => {}
-            }
-            j += 1;
-        }
-        out.push((start, j.min(b.len()), params));
-        from = at + 2;
-    }
-    Some(out)
-}
-
-fn prop_key(name: &str) -> String {
-    let ident = name.chars().next().is_some_and(|c| c.is_ascii_alphabetic() || c == '_' || c == '$')
-        && name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '$');
-    if ident { name.to_string() } else { js_string(name) }
 }
 
 impl Gen {
     /// TS transformChildren's per-child expressions (before the flatten decision). An `if:*` child
-    /// splices its children in, each wrapped in its own ternary (TS transformIf).
-    fn children(&mut self, cs: &[ChildNode], ind: usize) -> Vec<String> {
+    /// splices its children in, each wrapped in its own ternary (TS transformIf). `slot_parent` is the
+    /// TS `isSlot(parent) ? parent.slotName : undefined` of the parent whose children these are
+    /// (index.ts:193); only element children receive it.
+    fn children(&mut self, cs: &[ChildNode], ind: usize, slot_parent: Option<&str>) -> Result<Vec<String>, CodegenError> {
         // TS transformChildren: contiguous text nodes (skipping non-preserved comments) become one api_text.
         let mut res = Vec::new();
         let mut run: Vec<&Text> = Vec::new();
@@ -199,14 +210,14 @@ impl Gen {
                 ChildNode::Comment(_) if !self.comments => continue,
                 _ => {}
             }
-            if !run.is_empty() { res.push(self.text_node(&std::mem::take(&mut run))); }
+            if !run.is_empty() { res.push(self.text_node(&std::mem::take(&mut run))?); }
             match c {
-                ChildNode::If(f) => res.extend(self.inline_if(f, ind)),
-                _ => res.extend(self.node(c, ind)),
+                ChildNode::If(f) => res.extend(self.inline_if(f, ind)?),
+                _ => res.extend(self.node(c, ind, slot_parent)?),
             }
         }
-        if !run.is_empty() { res.push(self.text_node(&run)); }
-        res
+        if !run.is_empty() { res.push(self.text_node(&run)?); }
+        Ok(res)
     }
 
     /// TS shouldFlatten: a for-block child, a light-DOM `<slot>` before USE_FRAGMENTS_FOR_LIGHT_DOM_SLOTS,
@@ -220,56 +231,75 @@ impl Gen {
         })
     }
 
-    /// TS CodeGen._renderApiCall: record a `$api` helper the first time it is used.
-    fn api(&mut self, h: ApiHelper) { if !self.apis.contains(&h) { self.apis.push(h); } }
+    /// TS CodeGen._renderApiCall: register `h` (first use only), then emit `alias(args)` with the alias
+    /// from the names() table. The only place a `$api` helper is registered, so none is registered
+    /// without being emitted. Callers build `args` first, so helpers used inside the arguments register
+    /// before `h` (TS post-order).
+    fn call(&mut self, h: ApiHelper, args: &str) -> String {
+        if !self.apis.contains(&h) { self.apis.push(h); }
+        format!("{}({args})", h.names().1)
+    }
 
     /// TS transformChildren: an array of child vnodes, or (when shouldFlatten) the single child expression
     /// / `api_flatten([...])`, so an iterator's array never lands as a nested non-vnode child.
-    fn kids(&mut self, cs: &[ChildNode], ind: usize) -> Kids {
-        let res = self.children(cs, ind);
-        if !self.should_flatten(cs) { return Kids::Arr(res); }
-        if cs.len() == 1 { return Kids::Expr(res.into_iter().next().unwrap_or_else(|| "[]".into())); }
-        self.api(ApiHelper::Flatten);
-        Kids::Expr(format!("api_flatten([{}])", res.join(", ")))
+    fn kids(&mut self, cs: &[ChildNode], ind: usize, slot_parent: Option<&str>) -> Result<Kids, CodegenError> {
+        let res = self.children(cs, ind, slot_parent)?;
+        if !self.should_flatten(cs) { return Ok(Kids::Arr(res)); }
+        // TS `if (children.length === 1) return res[0]`: the lone child is a for-block, a light-DOM slot or a
+        // flattening if:*, and each of those yields exactly one expression.
+        if cs.len() == 1 {
+            let [only]: [String; 1] = res.try_into().expect("a lone flattening child yields one expression");
+            return Ok(Kids::Expr(only));
+        }
+        Ok(Kids::Expr(self.call(ApiHelper::Flatten, &format!("[{}]", res.join(", ")))))
     }
 
     /// TS transformIf / applyInlineIf: array children → one `test ? child : null` per child; a flattened
     /// expression → `test ? expr : []`.
-    fn inline_if(&mut self, f: &If, ind: usize) -> Vec<String> {
-        let x = self.expr(&f.condition);
+    fn inline_if(&mut self, f: &If, ind: usize) -> Result<Vec<String>, CodegenError> {
+        let x = self.expr(&f.condition)?;
         let test = match f.modifier.as_str() { "false" => format!("!{x}"), "strict-true" => format!("{x} === true"), _ => x };
-        match self.kids(&f.children, ind) {
+        Ok(match self.kids(&f.children, ind, None)? {
             Kids::Arr(v) => v.into_iter().map(|e| format!("{test} ? {e} : null")).collect(),
             Kids::Expr(e) => vec![format!("{test} ? {e} : []")],
-        }
+        })
     }
 
     /// TS transformElement: `lwc:dynamic` → genDeprecatedDynamicElement, `lwc:is` → genDynamicElement
     /// (neither registers a component import; children only when non-empty).
-    fn dynamic_ctor(&mut self, name: &str, directives: &[ElementDirective], data: &str, kids: &str) -> Option<String> {
+    fn dynamic_ctor(&mut self, name: &str, directives: &[ElementDirective], data: &str, kids: &str) -> Result<Option<String>, CodegenError> {
         let tail = if kids == "[]" { String::new() } else { format!(", {kids}") };
         for d in directives {
             if let ElementDirective::Dynamic(e) = d {
-                self.api(ApiHelper::DeprecatedDynamicComponent);
-                return Some(format!("api_deprecated_dynamic_component({}, {}, {data}{tail})", js_string(name), self.expr(e)));
+                let args = format!("{}, {}, {data}{tail}", js_string(name), self.expr(e)?);
+                return Ok(Some(self.call(ApiHelper::DeprecatedDynamicComponent, &args)));
             }
         }
-        directives.iter().find_map(|d| match d { ElementDirective::Is(e) => Some(e), _ => None }).map(|e| {
-            self.api(ApiHelper::DynamicComponent);
-            format!("api_dynamic_component({}, {data}{tail})", self.expr(e))
-        })
+        if let Some(e) = directives.iter().find_map(|d| match d { ElementDirective::Is(e) => Some(e), _ => None }) {
+            let args = format!("{}, {data}{tail}", self.expr(e)?);
+            return Ok(Some(self.call(ApiHelper::DynamicComponent, &args)));
+        }
+        Ok(None)
     }
 
     /// TS genSanitizedHtmlExpr (`$ctx._sanitizedHtml$N` / `$ctx._rawHtml$N` memo).
-    fn sanitized_html(&mut self, v: &AttributeValue) -> String {
+    fn sanitized_html(&mut self, v: &AttributeValue, indent: usize) -> Result<String, CodegenError> {
         let i = self.inner_html;
         self.inner_html += 1;
-        self.api(ApiHelper::SanitizeHtmlContent);
-        let x = self.attr_value(v);
-        match v {
-            AttributeValue::Literal(_) => format!("$ctx._sanitizedHtml${i} || ($ctx._sanitizedHtml${i} = api_sanitize_html_content({x}))"),
-            AttributeValue::Expression(_) => format!("$ctx._rawHtml${i} !== ($ctx._rawHtml${i} = {x}) ? ($ctx._sanitizedHtml${i} = api_sanitize_html_content({x})) : $ctx._sanitizedHtml${i}"),
+        let x = self.attr_value_at(v, indent)?;
+        let shc = self.call(ApiHelper::SanitizeHtmlContent, &x);
+        let (sanitized, raw) = (|| Js::member(format!("$ctx._sanitizedHtml${i}")), || Js::member(format!("$ctx._rawHtml${i}")));
+        Ok(match v {
+            // codegen.ts:510-525: `$ctx._sanitizedHtml$N || ($ctx._sanitizedHtml$N = shc)`.
+            AttributeValue::Literal(_) => Js::binary("||", sanitized(), Js::assign(sanitized(), &shc)),
+            // codegen.ts:537-560: astring leaves the consequent assignment bare.
+            AttributeValue::Expression(_) => Js::conditional(
+                Js::binary("!==", raw(), Js::assign(raw(), &x)),
+                Js::assign(sanitized(), &shc),
+                sanitized(),
+            ),
         }
+        .code)
     }
 
     /// `x-foo-bar` → (`_xFooBar`, `x/fooBar`) (TS kebabcaseToCamelcase on the name after the namespace).
@@ -286,267 +316,323 @@ impl Gen {
     /// TS elementDataBag: the element's data object. The single place databag `$api` helpers
     /// (ncls, gid/fid/ti, shc, k, b) are registered; `transform_element` calls it for every element,
     /// static ones included.
-    fn element_data_bag(&mut self, el: &ElementView, ind: usize) -> String {
-        let ElementView { name, attrs, props, directives, listeners, kind, .. } = *el;
+    fn element_data_bag(&mut self, el: &ElementView, ind: usize, slot_parent: Option<&str>) -> Result<String, CodegenError> {
+        let ElementView { name, ns, attrs, props, directives, listeners, kind, .. } = *el;
         let key = self.key;
         self.key += 1;
         let pad = "  ".repeat(ind);
-        let needs_renderer = self.needs_renderer(name, &self.cur_ns.clone(), attrs, directives, kind);
+        let needs_renderer = self.needs_renderer(name, ns, attrs, directives, kind);
         let outer_cr = std::mem::replace(&mut self.cur_cr, needs_renderer);
-        let mut data = String::from("{\n");
-        // TS elementDataBag: an expression `class` becomes `className` (genClassExpression: normalized
-        // with TEMPLATE_CLASS_NAME_OBJECT_BINDING), not an attribute.
-        // Values are computed in attribute order (TS walks `attributes` once), so `$api` helpers register
-        // in the same order.
-        let mut class_v: Option<String> = None;
+        // astring ObjectExpression: one property per line, no trailing comma.
+        let obj = |props: Vec<String>, pad: &str| format!("{{\n{}\n{pad}}}", props.iter().map(|p| format!("{pad}  {p}")).collect::<Vec<_>>().join(",\n"));
+        let mut data: Vec<String> = Vec::new();
+        let inner_pad = format!("{pad}  ");
+        // TS elementDataBag (index.ts:511-561), one walk over `attributes` so `$api` helpers register in
+        // attribute order. `class`, `style` and `slot` become their own databag properties, pushed as
+        // they are met and so ahead of `attrs`:
+        // - class: expression → `className` (genClassExpression); string → `classMap` of
+        //   parseClassNames (helpers.ts:219) → `true`; a boolean `class` emits nothing.
+        // - style: expression → `style`; string → `styleDecls` (parseStyleText +
+        //   styleMapToStyleDeclsAST, helpers.ts:202); a boolean `style` emits nothing.
+        // - slot: expression → `slotAssignment`; string → its value; boolean → `""`.
         let mut attr_vs: Vec<(String, String)> = Vec::new();
+        let bag_indent = ind + 1;
+        let nest_indent = ind + 2;
         for a in attrs {
-            if a.name == "class" && matches!(a.value, AttributeValue::Expression(_)) {
-                if class_v.is_some() { continue; }
-                class_v = Some(self.gen_class_expression(&a.value));
-                continue;
+            let lit = attr_string_literal(&a.value);
+            match a.name.as_str() {
+                "class" if is_estree_expression(&a.value) => data.push(format!("className: {}", self.gen_class_expression(&a.value, bag_indent)?)),
+                "class" => if let Some(v) = lit {
+                    let names = parse_class_names(v).into_iter().map(|n| format!("{}: true", js_string(n))).collect::<Vec<_>>();
+                    data.push(format!("classMap: {}", if names.is_empty() { "{}".into() } else { obj(names, &inner_pad) }));
+                },
+                "style" if is_estree_expression(&a.value) => data.push(format!("style: {}", self.attr_value_at(&a.value, bag_indent)?)),
+                "style" => if let Some(v) = lit {
+                    let decls = parse_style_text(v).into_iter().map(|(k, v)| {
+                        let (v, important) = split_important(&v);
+                        format!("[{}, {}, {important}]", js_string(&k), js_string(js_trim(v)))
+                    }).collect::<Vec<_>>();
+                    data.push(format!("styleDecls: [{}]", decls.join(", ")));
+                },
+                "slot" if is_estree_expression(&a.value) => data.push(format!("slotAssignment: {}", self.attr_value_at(&a.value, bag_indent)?)),
+                "slot" => data.push(format!("slotAssignment: {}", js_string(lit.unwrap_or("")))),
+                _ => {
+                    let used = is_attribute(kind, name, &a.name);
+                    let v = self.compute_attr(name, ns, &a.name, &a.value, used, !self.cur_cr, nest_indent)?;
+                    attr_vs.push((js_string(&a.name), v));
+                }
             }
-            let used = attr_used_as_attribute(name, kind, &a.name);
-            let v = self.compute_attr(name, &self.cur_ns.clone(), &a.name, &a.value, used, !self.cur_cr);
-            attr_vs.push((prop_key(&a.name), v));
         }
-        if let Some(v) = class_v { data.push_str(&format!("{pad}  className: {v},\n")); }
+        // TS objectToAST (helpers.ts:35) / the props loop (index.ts:573): attrs, props and `on` keys
+        // are always `t.literal`, i.e. quoted.
         if !attr_vs.is_empty() {
-            data.push_str(&format!("{pad}  attrs: {{\n"));
-            for (k, v) in attr_vs { data.push_str(&format!("{pad}    {k}: {v},\n")); }
-            data.push_str(&format!("{pad}  }},\n"));
+            data.push(format!("attrs: {}", obj(attr_vs.into_iter().map(|(k, v)| format!("{k}: {v}")).collect(), &inner_pad)));
         }
         // TS elementDataBag order: attrs, ref, props (properties, innerHTML, spread last), context, key, on.
         if let Some(r) = directives.iter().find_map(|d| match d { ElementDirective::Ref(r) => Some(r), _ => None }) {
             self.has_refs = true;
-            data.push_str(&format!("{pad}  ref: {},\n", js_string(r)));
+            data.push(format!("ref: {}", js_string(r)));
         }
         let inner = directives.iter().find_map(|d| match d { ElementDirective::InnerHtml(v) => Some(v), _ => None });
         let spread = directives.iter().find_map(|d| match d { ElementDirective::Spread(e) => Some(e), _ => None });
-        let ns = self.cur_ns.clone();
         let mut entries: Vec<String> = Vec::new();
         for p in props {
             // TS computeAttrValue on a property: keyed by the attribute name.
-            let v = self.compute_attr(name, &ns, &p.attribute_name, &p.value, attr_used_as_attribute(name, kind, &p.attribute_name), !self.cur_cr);
-            entries.push(format!("{}: {v}", prop_key(&p.name)));
+            let v = self.compute_attr(name, ns, &p.attribute_name, &p.value, is_attribute(kind, name, &p.attribute_name), !self.cur_cr, nest_indent)?;
+            entries.push(format!("{}: {v}", js_string(&p.name)));
         }
         if let Some(v) = inner {
             // A custom-renderer element gets the raw value (the renderer sanitizes).
-            let x = if needs_renderer { self.attr_value(v) } else { self.sanitized_html(v) };
+            let x = if needs_renderer { self.attr_value_at(v, bag_indent)? } else { self.sanitized_html(v, bag_indent)? };
             entries.push(format!("innerHTML: {x}"));
         }
-        if let Some(e) = spread { entries.push(format!("...{}", self.expr(e))); }
-        if !entries.is_empty() {
-            data.push_str(&format!("{pad}  props: {{\n"));
-            for en in entries { data.push_str(&format!("{pad}    {en},\n")); }
-            data.push_str(&format!("{pad}  }},\n"));
-        }
+        if let Some(e) = spread { entries.push(format!("...{}", self.expr_at(e, nest_indent)?)); }
+        if !entries.is_empty() { data.push(format!("props: {}", obj(entries, &inner_pad))); }
         if inner.is_some() || directives.iter().any(|d| matches!(d, ElementDirective::Dom(_))) {
-            data.push_str(&format!("{pad}  context: {{\n{pad}    lwc: {{\n{pad}      dom: \"manual\",\n{pad}    }},\n{pad}  }},\n"));
+            data.push(format!("context: {{\n{pad}    lwc: {{\n{pad}      dom: \"manual\"\n{pad}    }}\n{pad}  }}"));
         }
         let key_dir = directives.iter().find_map(|d| match d { ElementDirective::Key(e) => Some(e), _ => None });
         let key = match key_dir {
-            Some(e) => { self.api(ApiHelper::Key); format!("api_key({key}, {})", self.expr(e)) }
-            None => key.to_string(),
+            Some(e) => { let args = format!("{key}, {}", self.expr_at(e, bag_indent)?); self.call(ApiHelper::Key, &args) }
+            None => standalone_key(key, slot_parent),
         };
-        data.push_str(&format!("{pad}  key: {key},\n"));
-        if !listeners.is_empty() {
-            // TODO: memoize handlers on $ctx (_m0) like LWC; inline api_bind for now.
-            data.push_str(&format!("{pad}  on: {{\n"));
-            for l in listeners {
-                let b = self.gen_bind(&l.handler);
-                data.push_str(&format!("{pad}    {}: {b},\n", prop_key(&l.name)));
-            }
-            data.push_str(&format!("{pad}  }},\n"));
-        }
+        data.push(format!("key: {key}"));
+        if !listeners.is_empty() { data.push(format!("on: {}", self.gen_event_listeners(listeners)?)); }
         // TS genDynamicEventListeners (lwc:on): raw value, then a null-prototype clone.
         if let Some(e) = directives.iter().find_map(|d| match d { ElementDirective::OnDirective(e) => Some(e), _ => None }) {
-            let x = self.expr(e);
-            data.push_str(&format!("{pad}  dynamicOnRaw: {x},\n{pad}  dynamicOn: {{\n{pad}    __proto__: null,\n{pad}    ...{x},\n{pad}  }},\n"));
+            let x = self.expr(e)?;
+            data.push(format!("dynamicOnRaw: {x}"));
+            data.push(format!("dynamicOn: {}", obj(vec!["__proto__: null".into(), format!("...{x}")], &inner_pad)));
         }
+        // TS elementDataBag (index.ts:640): `svg: true` for any element in the SVG namespace.
+        if ns == SVG_NS { data.push("svg: true".into()); }
         if needs_renderer {
             // TS: `renderer: renderer` data property + `renderer` lwc import.
             self.renderer = true;
-            data.push_str(&format!("{pad}  renderer: renderer,\n"));
+            data.push("renderer: renderer".into());
         }
         // TS elementDataBag: `slotData` (lwc:slot-bind) after the renderer.
         if let Some(e) = directives.iter().find_map(|d| match d { ElementDirective::SlotBind(e) => Some(e), _ => None }) {
-            data.push_str(&format!("{pad}  slotData: {},\n", self.expr(e)));
+            data.push(format!("slotData: {}", self.expr(e)?));
         }
         self.cur_cr = outer_cr;
-        data.push_str(&format!("{pad}}}"));
-        data
+        // TS CSR ExternalComponent: plain api_element + `external: true` at the end of the databag.
+        if kind == CrKind::External { data.push("external: true".into()); }
+        Ok(obj(data, &pad))
     }
 
     /// TS genClassExpression: normalized with TEMPLATE_CLASS_NAME_OBJECT_BINDING.
-    fn gen_class_expression(&mut self, v: &AttributeValue) -> String {
-        let x = self.attr_value(v);
-        if !is_api_feature_enabled(ApiFeature::TemplateClassNameObjectBinding, self.api_version) { return x; }
-        self.api(ApiHelper::NormalizeClassName);
-        format!("api_normalize_class_name({x})")
+    fn gen_class_expression(&mut self, v: &AttributeValue, indent: usize) -> Result<String, CodegenError> {
+        let x = self.attr_value_at(v, indent)?;
+        if !is_api_feature_enabled(ApiFeature::TemplateClassNameObjectBinding, self.api_version) { return Ok(x); }
+        Ok(self.call(ApiHelper::NormalizeClassName, &x))
     }
 
-    /// TS genBind. TODO: memoize handlers on $ctx (_m0) like LWC; inline api_bind for now.
-    fn gen_bind(&mut self, handler: &Expression) -> String {
-        let x = self.expr(handler);
-        self.api(ApiHelper::Bind);
-        format!("api_bind({x})")
+    /// TS genEventListeners (codegen.ts:386-450), the `on` value for a databag or a static part: bind
+    /// every handler in listener order, keyed like a JS object (a repeated name keeps its first
+    /// position, last value). With a handler rooted at a local (iteration item, slot data) only the
+    /// non-local handlers are memoized, one `_mN` each; otherwise the whole object is one `_mN`.
+    fn gen_event_listeners(&mut self, listeners: &[EventListener]) -> Result<String, CodegenError> {
+        let mut on: Vec<(String, String, bool)> = Vec::new();
+        let mut has_local = false;
+        for l in listeners {
+            let local = self.is_local_root(&l.handler);
+            has_local |= local;
+            let b = self.gen_bind(&l.handler)?;
+            let k = js_string(&l.name);
+            match on.iter_mut().find(|e| e.0 == k) { Some(e) => { e.1 = b; e.2 = local; } None => on.push((k, b, local)) }
+        }
+        if has_local {
+            let props: Vec<String> = on.into_iter().map(|(k, b, local)| format!("{k}: {}", if local { b } else { self.memoize(&b) })).collect();
+            Ok(format!("{{ {} }}", props.join(", ")))
+        } else {
+            let o = format!("{{ {} }}", on.into_iter().map(|(k, b, _)| format!("{k}: {b}")).collect::<Vec<_>>().join(", "));
+            Ok(self.memoize(&o))
+        }
+    }
+
+    /// TS getMemoizationId + genEventListeners' memoize (codegen.ts:373-418): `_mN || ($ctx._mN = expr)`,
+    /// with `_mN` destructured from `$ctx` at the top of `tmpl`.
+    fn memoize(&mut self, expr: &str) -> String {
+        let id = self.memo;
+        self.memo += 1;
+        format!("_m{id} || ($ctx._m{id} = {expr})")
+    }
+
+    /// TS isLocalIdentifier(getMemberExpressionRoot(handler)): the handler's root identifier is an
+    /// iteration / slot-data local. Any other expression shape has no identifier root.
+    fn is_local_root(&self, e: &Expression) -> bool {
+        match e {
+            Expression::Identifier(Identifier { name }) => self.locals.iter().any(|l| l == name),
+            Expression::Member(m) => self.is_local_root(&m.object),
+            _ => false,
+        }
+    }
+
+    /// TS genBind.
+    fn gen_bind(&mut self, handler: &Expression) -> Result<String, CodegenError> {
+        let x = self.expr(handler)?;
+        Ok(self.call(ApiHelper::Bind, &x))
     }
 
     /// TS transformChildren for an element's children argument.
-    fn child_list(&mut self, children: &[ChildNode], ind: usize) -> String {
+    fn child_list(&mut self, children: &[ChildNode], ind: usize, slot_parent: Option<&str>) -> Result<String, CodegenError> {
         let pad = "  ".repeat(ind);
-        match self.kids(children, ind + 1) {
+        Ok(match self.kids(children, ind + 1, slot_parent)? {
             Kids::Expr(e) => e,
             Kids::Arr(kids) if kids.is_empty() => "[]".to_string(),
             Kids::Arr(kids) => format!("[\n{}\n{pad}]", kids.iter().map(|k| format!("{pad}  {k}")).collect::<Vec<_>>().join(",\n")),
-        }
-    }
-
-    /// TS transformElement. `None` for node kinds that are not elements.
-    fn transform_element(&mut self, c: &ChildNode, ind: usize) -> Option<String> {
-        let slot_attrs: Vec<Attribute>;
-        let el = match c {
-            ChildNode::Element(e) => { self.cur_ns = e.namespace.clone(); ElementView::new(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Element) }
-            ChildNode::LwcComponent(e) => { self.cur_ns = e.namespace.clone(); ElementView::new(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Element) }
-            ChildNode::Component(e) => ElementView::new(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Component),
-            ChildNode::ExternalComponent(e) => { self.cur_ns = e.namespace.clone(); ElementView::new(&e.name, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::External) }
-            ChildNode::Slot(e) => {
-                if !self.slots.contains(&e.slot_name) { self.slots.push(e.slot_name.clone()); }
-                // `name` is carried by slot_name; don't repeat it as an attr.
-                slot_attrs = e.attributes.iter().filter(|a| a.name != "name").cloned().collect();
-                ElementView::new(&e.name, &slot_attrs, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Element)
-            }
-            _ => return None,
-        };
-        // TODO [#4077] (lwc): TS gathers the databag before the static-element check and discards it on the
-        // static path; its `$api` registrations and key are still observable, so do the same.
-        let data = self.element_data_bag(&el, ind);
-        if matches!(c, ChildNode::Element(_)) && self.static_opt && self.is_static(c) {
-            return Some(self.static_fragment(c));
-        }
-        let kids = self.child_list(el.children, ind);
-        let head = js_string(el.name);
-        Some(match c {
-            ChildNode::Element(e) => match self.dynamic_ctor(&e.name, &e.directives, &data, &kids) {
-                Some(r) => r,
-                None => { self.api(ApiHelper::Element); format!("api_element({head}, {data}, {kids})") }
-            },
-            // TS genLwcComponent → api_dynamic_component(ctor, data, children).
-            ChildNode::LwcComponent(e) => match self.dynamic_ctor(&e.name, &e.directives, &data, &kids) {
-                Some(r) => r,
-                None => { self.api(ApiHelper::Element); format!("api_element({head}, {data}, {kids})") }
-            },
-            // TS genCustomElement registers the import after transforming children (post-order).
-            ChildNode::Component(e) => match self.dynamic_ctor(&e.name, &e.directives, &data, &kids) {
-                Some(r) => r,
-                None => {
-                    let b = self.component_binding(&e.name);
-                    self.api(ApiHelper::CustomElement);
-                    format!("api_custom_element({head}, {b}, {data}, {kids})")
-                }
-            },
-            // TS CSR: plain api_element + `external: true`; no custom-element import.
-            ChildNode::ExternalComponent(_) => {
-                let pad = "  ".repeat(ind);
-                let data = format!("{}{pad}  external: true,\n{pad}}}", &data[..data.len() - pad.len() - 1]);
-                self.api(ApiHelper::Element);
-                format!("api_element({head}, {data}, {kids})")
-            }
-            ChildNode::Slot(e) => { self.api(ApiHelper::Slot); format!("api_slot({}, {data}, {kids}, $slotset)", js_string(&e.slot_name)) }
-            _ => unreachable!(),
         })
     }
 
-    /// TS transformConditionalParentBlock: each branch is `api_fragment(ifBlockKey, children, 0)`.
-    fn branch(&mut self, cs: &[ChildNode], key: u32, ind: usize) -> String {
-        let kids = match self.kids(cs, ind) { Kids::Expr(e) => e, Kids::Arr(v) => format!("[{}]", v.join(", ")) };
-        self.api(ApiHelper::Fragment);
-        format!("api_fragment({key}, {kids}, 0)")
-    }
-
-    fn else_branch(&mut self, e: Option<&ElseBranch>, key: u32, ind: usize) -> String {
-        match e {
-            None => "null".into(),
-            Some(ElseBranch::Else(b)) => self.branch(&b.children, key, ind),
-            Some(ElseBranch::Elseif(b)) => {
-                let body = self.branch(&b.children, key, ind);
-                let alt = self.else_branch(b.else_.as_deref(), key, ind);
-                format!("{} ? {body} : {alt}", self.expr(&b.condition))
+    /// TS transformElement(element, slotParentName). `None` for node kinds that are not elements.
+    fn transform_element(&mut self, c: &ChildNode, ind: usize, slot_parent: Option<&str>) -> Result<Option<String>, CodegenError> {
+        let el = match c {
+            ChildNode::Element(e) => ElementView::new(&e.name, &e.namespace, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Element),
+            ChildNode::LwcComponent(e) => ElementView::new(&e.name, &e.namespace, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::LwcComponent),
+            ChildNode::Component(e) => ElementView::new(&e.name, &e.namespace, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Component),
+            ChildNode::ExternalComponent(e) => ElementView::new(&e.name, &e.namespace, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::External),
+            ChildNode::Slot(e) => {
+                if !self.slots.contains(&e.slot_name) { self.slots.push(e.slot_name.clone()); }
+                // TS elementDataBag keeps `name` in `attrs` (index.ts:556); slot_name only feeds api_slot.
+                ElementView::new(&e.name, &e.namespace, &e.attributes, &e.properties, &e.directives, &e.listeners, &e.children, CrKind::Element)
             }
+            _ => return Ok(None),
+        };
+        // TODO [#4077] (lwc): TS gathers the databag before the static-element check and discards it on the
+        // static path; its `$api` registrations and key are still observable, so do the same.
+        let data = self.element_data_bag(&el, ind, slot_parent)?;
+        if matches!(c, ChildNode::Element(_)) && self.static_opt && self.is_static(c) {
+            return Ok(Some(self.static_fragment(c, slot_parent)?));
         }
+        // TS transformChildren (index.ts:193): a `<slot>`'s element children get its slotName.
+        let own_slot = match c { ChildNode::Slot(e) => Some(e.slot_name.as_str()), _ => None };
+        let kids = self.child_list(el.children, ind, own_slot)?;
+        // TS genElement/genCustomElement: the children argument is omitted when it is `[]`.
+        let kids_arg = if kids == "[]" { String::new() } else { format!(", {kids}") };
+        let head = js_string(el.name);
+        Ok(Some(match c {
+            ChildNode::Element(e) => match self.dynamic_ctor(&e.name, &e.directives, &data, &kids)? {
+                Some(r) => r,
+                None => self.call(ApiHelper::Element, &format!("{head}, {data}{kids_arg}")),
+            },
+            // TS genLwcComponent → api_dynamic_component(ctor, data, children).
+            ChildNode::LwcComponent(e) => match self.dynamic_ctor(&e.name, &e.directives, &data, &kids)? {
+                Some(r) => r,
+                None => self.call(ApiHelper::Element, &format!("{head}, {data}{kids_arg}")),
+            },
+            // TS genCustomElement registers the import after transforming children (post-order).
+            ChildNode::Component(e) => match self.dynamic_ctor(&e.name, &e.directives, &data, &kids)? {
+                Some(r) => r,
+                None => {
+                    let b = self.component_binding(&e.name);
+                    self.call(ApiHelper::CustomElement, &format!("{head}, {b}, {data}{kids_arg}"))
+                }
+            },
+            // TS CSR: plain api_element + `external: true`; no custom-element import.
+            ChildNode::ExternalComponent(_) => self.call(ApiHelper::Element, &format!("{head}, {data}{kids_arg}")),
+            ChildNode::Slot(e) => self.call(ApiHelper::Slot, &format!("{}, {data}, {kids}, $slotset", js_string(&e.slot_name))),
+            _ => unreachable!(),
+        }))
     }
 
-    fn loop_body(&mut self, cs: &[ChildNode], ind: usize) -> String {
+    /// TS transformConditionalParentBlock: each branch is `api_fragment(ifBlockKey, children, 0)`.
+    fn branch(&mut self, cs: &[ChildNode], key: u32, ind: usize) -> Result<String, CodegenError> {
+        let kids = match self.kids(cs, ind, None)? { Kids::Expr(e) => e, Kids::Arr(v) => format!("[{}]", v.join(", ")) };
+        Ok(self.call(ApiHelper::Fragment, &format!("{key}, {kids}, 0")))
+    }
+
+    fn else_branch(&mut self, e: Option<&ElseBranch>, key: u32, ind: usize) -> Result<String, CodegenError> {
+        Ok(match e {
+            None => "null".into(),
+            Some(ElseBranch::Else(b)) => self.branch(&b.children, key, ind)?,
+            Some(ElseBranch::Elseif(b)) => {
+                let body = self.branch(&b.children, key, ind)?;
+                let alt = self.else_branch(b.else_.as_deref(), key, ind)?;
+                format!("{} ? {body} : {alt}", self.expr(&b.condition)?)
+            }
+        })
+    }
+
+    fn loop_body(&mut self, cs: &[ChildNode], ind: usize) -> Result<String, CodegenError> {
         let pad = "  ".repeat(ind);
         // TS transformForBlock: a one-element children array is unwrapped.
-        let ret = match self.kids(cs, ind + 1) {
+        let ret = match self.kids(cs, ind + 1, None)? {
             Kids::Expr(e) => e,
             Kids::Arr(kids) => match kids.len() { 1 => kids.into_iter().next().unwrap(), _ => format!("[{}]", kids.join(", ")) },
         };
-        format!("{pad}  return {ret};\n{pad}")
+        Ok(format!("{pad}  return {ret};\n{pad}"))
     }
 
-    fn node(&mut self, c: &ChildNode, ind: usize) -> Option<String> {
-        Some(match c {
-            ChildNode::Text(t) => self.text_node(&[t]),
+    fn node(&mut self, c: &ChildNode, ind: usize, slot_parent: Option<&str>) -> Result<Option<String>, CodegenError> {
+        Ok(Some(match c {
+            ChildNode::Text(t) => self.text_node(&[t])?,
             // TS transformComment → api_comment (only reached when comments are preserved).
-            ChildNode::Comment(cm) if self.comments => { self.api(ApiHelper::Comment); format!("api_comment({})", js_string(&cm.value)) }
-            ChildNode::Element(_) | ChildNode::LwcComponent(_) | ChildNode::Component(_) | ChildNode::ExternalComponent(_) | ChildNode::Slot(_) => return self.transform_element(c, ind),
+            ChildNode::Comment(cm) if self.comments => self.call(ApiHelper::Comment, &js_string(&cm.value)),
+            ChildNode::Element(_) | ChildNode::LwcComponent(_) | ChildNode::Component(_) | ChildNode::ExternalComponent(_) | ChildNode::Slot(_) => return Ok(self.transform_element(c, ind, slot_parent)?),
             // `if:*` children are spliced by `children` (TS transformIf); one alone in a slot is unreachable here.
-            ChildNode::If(f) => { let v = self.inline_if(f, ind); return (!v.is_empty()).then(|| v.join(", ")); }
+            ChildNode::If(f) => { let v = self.inline_if(f, ind)?; return Ok((!v.is_empty()).then(|| v.join(", "))); }
             ChildNode::IfBlock(b) => {
                 let key = self.key;
                 self.key += 1;
-                let body = self.branch(&b.children, key, ind);
-                let alt = self.else_branch(b.else_.as_deref(), key, ind);
-                format!("{} ? {body} : {alt}", self.expr(&b.condition))
+                let body = self.branch(&b.children, key, ind)?;
+                let alt = self.else_branch(b.else_.as_deref(), key, ind)?;
+                format!("{} ? {body} : {alt}", self.expr(&b.condition)?)
             }
             ChildNode::ForEach(f) => {
-                let list = self.expr(&f.expression);
+                let list = self.expr(&f.expression)?;
                 let mut params = vec![f.item.name.clone()];
                 if let Some(i) = &f.index { params.push(i.name.clone()); }
                 let n = self.locals.len();
                 self.locals.extend(params.iter().cloned());
-                let body = self.loop_body(&f.children, ind);
+                let body = self.loop_body(&f.children, ind)?;
                 self.locals.truncate(n);
-                self.api(ApiHelper::Iterator);
-                format!("api_iterator({list}, function ({}) {{\n{body}}})", params.join(", "))
+                self.call(ApiHelper::Iterator, &format!("{list}, function ({}) {{\n{body}}}", params.join(", ")))
             }
             ChildNode::ForOf(f) => {
                 // LWC shape: function (itValue, itIndex, itFirst, itLast) { const it = {...}; return ...; }
-                let list = self.expr(&f.expression);
+                let list = self.expr(&f.expression)?;
                 let it = &f.iterator.name;
                 let n = self.locals.len();
                 self.locals.push(it.clone());
-                let body = self.loop_body(&f.children, ind);
+                let body = self.loop_body(&f.children, ind)?;
                 self.locals.truncate(n);
-                self.api(ApiHelper::Iterator);
                 let pad = "  ".repeat(ind + 1);
-                format!("api_iterator({list}, function ({it}Value, {it}Index, {it}First, {it}Last) {{\n{pad}const {it} = {{\n{pad}  value: {it}Value,\n{pad}  index: {it}Index,\n{pad}  first: {it}First,\n{pad}  last: {it}Last,\n{pad}}};\n{body}}})")
+                self.call(ApiHelper::Iterator, &format!("{list}, function ({it}Value, {it}Index, {it}First, {it}Last) {{\n{pad}const {it} = {{\n{pad}  value: {it}Value,\n{pad}  index: {it}Index,\n{pad}  first: {it}First,\n{pad}  last: {it}Last\n{pad}}};\n{body}}}"))
             }
             ChildNode::ScopedSlotFragment(f) => {
                 // TS transformScopedSlotFragment: the slot-data identifier and `key` are bound locals
                 // of `function (data, key) { return api_fragment(key, [...], 0); }`.
-                let name = self.attr_value(&f.slot_name);
-                let Expression::Identifier(Identifier { name: data }) = &f.slot_data else { return None };
+                let name = self.attr_value(&f.slot_name)?;
+                let Expression::Identifier(Identifier { name: data }) = &f.slot_data else { return Ok(None) };
                 let n = self.locals.len();
                 self.locals.push(data.clone());
                 self.locals.push("key".into());
                 let pad = "  ".repeat(ind);
-                let kids = self.kids(&f.children, ind + 2);
+                let kids = self.kids(&f.children, ind + 2, None)?;
                 self.locals.truncate(n);
                 let kids = match kids {
                     Kids::Expr(e) => e,
                     Kids::Arr(kids) if kids.is_empty() => "[]".to_string(),
                     Kids::Arr(kids) => format!("[\n{}\n{pad}    ]", kids.iter().map(|k| format!("{pad}      {k}")).collect::<Vec<_>>().join(",\n")),
                 };
-                self.api(ApiHelper::Fragment); self.api(ApiHelper::ScopedSlotFactory);
-                format!("api_scoped_slot_factory({name}, function ({data}, key) {{\n{pad}  return api_fragment(\n{pad}    key,\n{pad}    {kids},\n{pad}    0\n{pad}  );\n{pad}}})")
+                // TS registers fr (inner) before ssf (outer).
+                let fr = self.call(ApiHelper::Fragment, &format!("\n{pad}    key,\n{pad}    {kids},\n{pad}    0\n{pad}  "));
+                self.call(ApiHelper::ScopedSlotFactory, &format!("{name}, function ({data}, key) {{\n{pad}  return {fr};\n{pad}}}"))
             }
             // Other node kinds: future codegen cut.
-            _ => return None,
-        })
+            _ => return Ok(None),
+        }))
+    }
+}
+
+/// TS genKeyExpression without a `key` directive (codegen.ts:481-493): the numeric key, or for an
+/// element whose parent is a `<slot>` (slotName may be "") the string `@${slotParentName}:${key}`.
+fn standalone_key(key: u32, slot_parent: Option<&str>) -> String {
+    match slot_parent {
+        // astring prints the string Literal with JSON.stringify.
+        Some(name) => lwc_shared::js_literal::json_string(format!("@{name}:{key}").encode_utf16()),
+        None => key.to_string(),
     }
 }
 
@@ -570,16 +656,6 @@ fn is_id_referencing(attr: &str) -> bool {
 
 /// TS `isAllowedFragOnlyUrlsXHTML`.
 fn is_frag_only_xhtml(tag: &str, attr: &str, ns: &str) -> bool { attr == "href" && (tag == "a" || tag == "area") && ns == HTML_NS }
-
-/// TS `isAttribute(element, attrName)` for the codegen element kinds.
-fn attr_used_as_attribute(tag: &str, kind: CrKind, attr: &str) -> bool {
-    match kind {
-        CrKind::External => true,
-        _ if kind == CrKind::Component || tag == "lwc:component" =>
-            matches!(attr, "style" | "class" | "key" | "slot" | "exportparts") || attr.starts_with("data-"),
-        _ => !(tag == "input" && (attr == "value" || attr == "checked")),
-    }
-}
 
 /// TS `hasIdAttribute`: any element (attribute or property) named `id`, descending through `children`.
 fn has_id_attribute(cs: &[ChildNode]) -> bool {
@@ -610,20 +686,24 @@ const RAW_CONTENT: &[&str] = &["STYLE", "SCRIPT", "XMP", "IFRAME", "NOEMBED", "N
 fn is_text_expr(c: &ChildNode) -> bool { matches!(c, ChildNode::Text(t) if text_literal(t).is_none()) }
 
 /// TS `isStringLiteral(text.value)`: a literal text, or a `{'str'}` expression, is static text.
-fn text_literal(t: &Text) -> Option<&str> {
+fn text_literal<'t>(t: &'t Text) -> Option<&'t str> {
     match &t.value {
         TextValue::Literal(s) | TextValue::Expression(Expression::Literal(Literal { value: LiteralValue::String(s) })) => Some(s),
+        TextValue::Expression(Expression::Complex(c)) => match c.as_literal() {
+            Some(LiteralView::String(s)) => Some(s),
+            _ => None,
+        },
         _ => None,
     }
 }
 fn is_void(name: &str, ns: &str) -> bool { ns == HTML_NS && VOID.contains(&name.to_ascii_lowercase().as_str()) }
 
 /// TS `transformStaticChildren` output item: a run of contiguous text nodes, or any other node.
-enum SChild<'a> { Texts(Vec<&'a Text>), Node(&'a ChildNode) }
+enum SChild<'a> { Texts(Vec<&'a Text<'a>>), Node(&'a ChildNode<'a>) }
 
 /// TS `transformStaticChildren`: only elements with dynamic text group contiguous text nodes; non-preserved
-/// comments are dropped without breaking the run (Rust IR already omits them when not preserved).
-fn static_children(e: &Element, comments: bool) -> Vec<SChild<'_>> {
+/// comments are dropped without breaking the run.
+fn static_children<'a>(e: &'a Element<'a>, comments: bool) -> Vec<SChild<'a>> {
     if !e.children.iter().any(is_text_expr) { return e.children.iter().map(SChild::Node).collect(); }
     let mut out: Vec<SChild> = Vec::new();
     let mut open = false;
@@ -640,38 +720,9 @@ fn static_children(e: &Element, comments: bool) -> Vec<SChild<'_>> {
     out
 }
 
-/// TS `normalizeStyleAttributeValue` (`parseStyleText` + `key: value;` join).
-fn normalize_style(style: &str) -> String {
-    // DECLARATION_DELIMITER = /;(?![^(]*\))/g : a `;` not followed by `)` before any `(`.
-    let b = style.as_bytes();
-    let mut decls = Vec::new();
-    let mut start = 0;
-    for i in 0..b.len() {
-        if b[i] != b';' { continue; }
-        let rest = &style[i + 1..];
-        let in_parens = rest.find(|c| c == '(' || c == ')').map_or(false, |j| rest.as_bytes()[j] == b')');
-        if !in_parens { decls.push(&style[start..i]); start = i + 1; }
-    }
-    decls.push(&style[start..]);
-    let mut map: Vec<(String, String)> = Vec::new();
-    for d in decls {
-        if d.is_empty() { continue; }
-        let Some(j) = d.find(':') else { continue };
-        let (k, v) = (d[..j].trim().to_string(), d[j + 1..].trim().to_string());
-        if v.is_empty() && d[j + 1..].is_empty() { continue; } // `(.+)` needs ≥1 char after ':'
-        match map.iter_mut().find(|(mk, _)| *mk == k) { Some(e) => e.1 = v, None => map.push((k, v)) }
-    }
-    map.into_iter().map(|(k, v)| {
-        let lower = v.to_ascii_lowercase();
-        let t = lower.trim_end();
-        let v = if t.ends_with("important") {
-            // IMPORTANT_FLAG = /\s*!\s*important\s*$/i
-            let pre = t[..t.len() - "important".len()].trim_end();
-            if pre.ends_with('!') { format!("{} !important", v[..pre.len() - 1].trim_end()) } else { v.clone() }
-        } else { v.clone() };
-        format!("{k}: {};", v.trim())
-    }).collect::<Vec<_>>().join(" ")
-}
+/// TS `parseClassNames` (helpers.ts:219): split on `/\s+/`, drop empties. Duplicates are kept, like
+/// the TS property list.
+fn parse_class_names(v: &str) -> Vec<&str> { v.split(js_ws).filter(|n| !n.is_empty()).collect() }
 
 fn tpl_escape(s: &str) -> String { s.replace('\\', "\\\\").replace('`', "\\`").replace("${", "\\${") }
 /// `@lwc/shared` `htmlEscape`: attr mode escapes `"&`, text mode `"'<>&`.
@@ -718,19 +769,27 @@ impl Gen {
 
     /// TS `genConcatenatedText`.
     /// TS genText: `api_text("lit" + api_dynamic_text(x) + ...)`.
-    fn text_node(&mut self, ts: &[&Text]) -> String {
-        let x = self.concat_text(ts);
-        self.api(ApiHelper::Text);
-        format!("api_text({x})")
+    fn text_node(&mut self, ts: &[&Text]) -> Result<String, CodegenError> {
+        let x = self.concat_text(ts)?;
+        Ok(self.call(ApiHelper::Text, &x))
     }
 
-    fn concat_text(&mut self, ts: &[&Text]) -> String {
-        ts.iter().map(|t| match &t.value {
-            _ if text_literal(t).is_some() => js_string(text_literal(t).unwrap()),
-            TextValue::Literal(s) => js_string(s),
-            TextValue::Expression(e) => { self.api(ApiHelper::DynamicText); format!("api_dynamic_text({})", self.expr(e)) }
-            TextValue::Complex(c) => { self.api(ApiHelper::DynamicText); format!("api_dynamic_text({})", self.expr(&Expression::Complex(c.clone()))) }
-        }).collect::<Vec<_>>().join(" + ")
+    fn concat_text(&mut self, ts: &[&Text]) -> Result<String, CodegenError> {
+        let mut parts = Vec::new();
+        for t in ts {
+            parts.push(if let Some(s) = text_literal(t) {
+                js_string(s)
+            } else {
+                match &t.value {
+                    TextValue::Literal(s) => js_string(s),
+                    TextValue::Expression(e) => {
+                        let x = self.expr(e)?;
+                        self.call(ApiHelper::DynamicText, &x)
+                    }
+                }
+            });
+        }
+        Ok(parts.join(" + "))
     }
 
     fn static_text(t: &Text, parent: &str) -> String {
@@ -740,19 +799,19 @@ impl Gen {
                 tpl_escape(&v)
             }
             TextValue::Expression(Expression::Literal(Literal { value: LiteralValue::String(s) })) => tpl_escape(&html_escape(s, false)),
-            TextValue::Expression(_) | TextValue::Complex(_) => unreachable!("dynamic text outside a grouped run"),
+            TextValue::Expression(_) => unreachable!("dynamic text outside a grouped run"),
         }
     }
 
     /// Port of TS `serializeStaticElement` fused with `genStaticParts`: both walk the subtree in the
     /// same pre-order and bump `partId` for every node (text runs count once; comments only when preserved).
-    fn serialize(&mut self, c: &SChild, parent: &str, ser: &mut Ser) -> String {
-        match c {
+    fn serialize(&mut self, c: &SChild, parent: &str, ser: &mut Ser) -> Result<String, CodegenError> {
+        Ok(match c {
             SChild::Texts(ts) => {
                 ser.part += 1;
                 if ts.iter().any(|t| text_literal(t).is_none()) {
                     let id = ser.part;
-                    let text = self.concat_text(ts);
+                    let text = self.concat_text(ts)?;
                     ser.parts.push((id, Vec::new(), Some(text)));
                     format!("${{{}}}", js_string(&format!("t{id}")))
                 } else {
@@ -761,7 +820,7 @@ impl Gen {
             }
             SChild::Node(ChildNode::Text(t)) => { ser.part += 1; Self::static_text(t, parent) }
             SChild::Node(ChildNode::Comment(cm)) => {
-                if !ser.comments { return String::new(); }
+                if !ser.comments { return Ok(String::new()); }
                 ser.part += 1;
                 format!("<!--{}-->", html_escape(&tpl_escape(&cm.value), false))
             }
@@ -769,10 +828,7 @@ impl Gen {
                 ser.part += 1;
                 let id = ser.part;
                 let mut databag: Vec<String> = Vec::new();
-                if !e.listeners.is_empty() {
-                    let on = e.listeners.iter().map(|l| format!("{}: {}", js_string(&l.name), self.gen_bind(&l.handler))).collect::<Vec<_>>().join(", ");
-                    databag.push(format!("on: {{ {on} }}"));
-                }
+                if !e.listeners.is_empty() { databag.push(format!("on: {}", self.gen_event_listeners(&e.listeners)?)); }
                 for d in &e.directives {
                     if let ElementDirective::Ref(r) = d { self.has_refs = true; databag.push(format!("ref: {}", js_string(r))); }
                 }
@@ -782,7 +838,7 @@ impl Gen {
                 for a in &e.attributes {
                     let is_bool = matches!(a.value, AttributeValue::Literal(Literal { value: LiteralValue::Bool(_) }));
                     if (a.name == "class" || a.name == "style") && is_bool { continue; }
-                    let is_expr = matches!(a.value, AttributeValue::Expression(_));
+                    let is_expr = is_estree_expression(&a.value);
                     // TS genStaticParts: ids/idrefs and `<a|area href="#frag">` are parts under synthetic shadow.
                     let is_id = (a.name == "id" || is_id_referencing(&a.name)) && !is_bool;
                     let is_frag = self.scope_frag && is_frag_only_xhtml(&e.name, &a.name, &e.namespace)
@@ -791,16 +847,16 @@ impl Gen {
                     let placeholder = is_expr || (is_svg_use_href(&e.name, &a.name, &e.namespace) && !is_bool) || needs_scoping;
                     if placeholder {
                         let token = match a.name.as_str() {
-                            "style" => { databag.push(format!("style: {}", self.attr_value(&a.value))); format!("s{id}") }
+                            "style" => { databag.push(format!("style: {}", self.attr_value_at(&a.value, 1)?)); format!("s{id}") }
                             "class" => {
                                 has_class = true;
-                                let v = self.gen_class_expression(&a.value);
+                                let v = self.gen_class_expression(&a.value, 1)?;
                                 databag.push(format!("className: {v}"));
                                 format!("c{id}")
                             }
                             _ => {
                                 // TS bindAttributeExpression (literals too: bindExpression keeps them as-is).
-                                let v = self.bind_attr_expr(&e.name, &e.namespace, &a.name, &a.value, true, true);
+                                let v = self.bind_attr_expr(&e.name, &e.namespace, &a.name, &a.value, true, true, 1)?;
                                 attrs.push(format!("{}: {v}", js_string(&a.name)));
                                 format!("a{id}:{}", a.name)
                             }
@@ -809,10 +865,7 @@ impl Gen {
                         continue;
                     }
                     let name = tpl_escape(&a.name);
-                    let mut v = match &a.value {
-                        AttributeValue::Literal(Literal { value: LiteralValue::String(v) }) => Some(v.clone()),
-                        _ => None,
-                    };
+                    let mut v = attr_string_literal(&a.value).map(str::to_string);
                     if let Some(s) = v.clone() {
                         if a.name == "class" {
                             let n = s.split_whitespace().collect::<Vec<_>>().join(" ");
@@ -824,7 +877,7 @@ impl Gen {
                         }
                         if a.name == "spellcheck" { v = Some(if s.to_ascii_lowercase() == "false" { "false".into() } else { "true".into() }); }
                         if a.name == "style" {
-                            let n = normalize_style(&s);
+                            let n = normalize_style_attribute_value(&s);
                             if n.is_empty() { continue; }
                             v = Some(n);
                         }
@@ -837,45 +890,44 @@ impl Gen {
                 if !attrs.is_empty() { databag.push(format!("attrs: {{ {} }}", attrs.join(", "))); }
                 if !databag.is_empty() { ser.parts.push((id, databag, None)); }
                 h.push_str(if has_class { "${2}" } else { "${3}" });
-                if e.namespace != HTML_NS && e.children.is_empty() { h.push_str("/>"); return h; }
+                if e.namespace != HTML_NS && e.children.is_empty() { h.push_str("/>"); return Ok(h); }
                 h.push('>');
-                for k in static_children(e, ser.comments) { h.push_str(&self.serialize(&k, &e.name, ser)); }
+                for k in static_children(e, ser.comments) { h.push_str(&self.serialize(&k, &e.name, ser)?); }
                 if !is_void(&e.name, &e.namespace) || !e.children.is_empty() { h.push_str(&format!("</{}>", tpl_escape(&e.name))); }
                 h
             }
             SChild::Node(_) => unreachable!(),
-        }
+        })
     }
 
     /// TS `genStaticElement`: hoist the serialized fragment; returns the `api_static_fragment(...)` call.
-    fn static_fragment(&mut self, c: &ChildNode) -> String {
+    fn static_fragment(&mut self, c: &ChildNode, slot_parent: Option<&str>) -> Result<String, CodegenError> {
         // TS genKeyExpression, after elementDataBag took the previous key.
-        let key = self.key.to_string();
+        let key = self.key;
         self.key += 1;
         let mut ser = Ser { comments: self.comments, part: -1, parts: Vec::new() };
-        let html = self.serialize(&SChild::Node(c), "", &mut ser);
+        let html = self.serialize(&SChild::Node(c), "", &mut ser)?;
         let svg = matches!(c, ChildNode::Element(e) if e.name != "svg" && e.namespace == SVG_NS);
         self.frags.push((html, svg));
         // TS genStaticElement: genStaticParts (sp) runs before genKeyExpression (k) and api_static_fragment (st).
-        if !ser.parts.is_empty() { self.api(ApiHelper::StaticPart); }
-        let key = match c {
-            ChildNode::Element(e) => match e.directives.iter().find_map(|d| match d { ElementDirective::Key(k) => Some(k), _ => None }) {
-                Some(k) => { self.api(ApiHelper::Key); format!("api_key({key}, {})", self.expr(k)) }
-                None => key,
-            },
-            _ => key,
-        };
-        self.api(ApiHelper::StaticFragment);
-        if ser.parts.is_empty() { return format!("api_static_fragment($fragment{}, {key})", self.frags.len()); }
         let parts: Vec<String> = ser.parts.iter().map(|(id, bag, text)| {
             let bag = if bag.is_empty() { "null".to_string() } else { format!("{{ {} }}", bag.join(", ")) };
-            format!("api_static_part({id}, {bag}, {})", text.as_deref().unwrap_or("null"))
+            self.call(ApiHelper::StaticPart, &format!("{id}, {bag}, {}", text.as_deref().unwrap_or("null")))
         }).collect();
-        format!("api_static_fragment($fragment{}, {key}, [{}])", self.frags.len(), parts.join(", "))
+        let key = match c {
+            ChildNode::Element(e) => match e.directives.iter().find_map(|d| match d { ElementDirective::Key(k) => Some(k), _ => None }) {
+                Some(k) => { let args = format!("{key}, {}", self.expr(k)?); self.call(ApiHelper::Key, &args) }
+                None => standalone_key(key, slot_parent),
+            },
+            _ => standalone_key(key, slot_parent),
+        };
+        let n = self.frags.len();
+        if parts.is_empty() { return Ok(self.call(ApiHelper::StaticFragment, &format!("$fragment{n}, {key}"))); }
+        Ok(self.call(ApiHelper::StaticFragment, &format!("$fragment{n}, {key}, [{}]", parts.join(", "))))
     }
 
-    fn scoped_id(&mut self, v: String) -> String { if self.synthetic { self.api(ApiHelper::ScopedId); format!("api_scoped_id({v})") } else { v } }
-    fn scoped_frag_id(&mut self, v: String) -> String { if self.synthetic { self.api(ApiHelper::ScopedFragId); format!("api_scoped_frag_id({v})") } else { v } }
+    fn scoped_id(&mut self, v: String) -> String { if self.synthetic { self.call(ApiHelper::ScopedId, &v) } else { v } }
+    fn scoped_frag_id(&mut self, v: String) -> String { if self.synthetic { self.call(ApiHelper::ScopedFragId, &v) } else { v } }
     fn sanitize_wrap(&mut self, tag: &str, ns: &str, attr: &str, v: String, hook: bool) -> String {
         if !hook { return v; }
         self.sanitize = true;
@@ -884,41 +936,41 @@ impl Gen {
 
     /// TS `computeAttrValue`: literal ids/idrefs/`#frag` hrefs are scoped, svg `<use href>` sanitized
     /// (`hook` = TS addLegacySanitizationHook), booleans used as attributes become `''`.
-    fn compute_attr(&mut self, tag: &str, ns: &str, attr: &str, value: &AttributeValue, used: bool, hook: bool) -> String {
-        match value {
-            AttributeValue::Expression(_) => self.bind_attr_expr(tag, ns, attr, value, used, hook),
-            AttributeValue::Literal(Literal { value: LiteralValue::String(s) }) => {
+    fn compute_attr(&mut self, tag: &str, ns: &str, attr: &str, value: &AttributeValue, used: bool, hook: bool, indent: usize) -> Result<String, CodegenError> {
+        match attr_value_kind(value) {
+            AttrValueKind::Expression => self.bind_attr_expr(tag, ns, attr, value, used, hook, indent),
+            AttrValueKind::StringLiteral(s) => {
                 let lit = js_string(s);
-                if attr == "id" { return self.scoped_id(lit); }
-                if attr == "spellcheck" { return (s.to_lowercase() != "false").to_string(); }
-                if !used && crate::parser::element_check::is_boolean_attribute(attr, tag) { return "true".into(); }
-                if is_id_referencing(attr) { return self.scoped_id(lit); }
-                if self.scope_frag && is_frag_only_xhtml(tag, attr, ns) && s.starts_with('#') { return self.scoped_frag_id(lit); }
+                if attr == "id" { return Ok(self.scoped_id(lit)); }
+                if attr == "spellcheck" { return Ok((s.to_lowercase() != "false").to_string()); }
+                if !used && crate::parser::element_check::is_boolean_attribute(attr, tag) { return Ok("true".into()); }
+                if is_id_referencing(attr) { return Ok(self.scoped_id(lit)); }
+                if self.scope_frag && is_frag_only_xhtml(tag, attr, ns) && s.starts_with('#') { return Ok(self.scoped_frag_id(lit)); }
                 if is_svg_use_href(tag, attr, ns) {
                     let v = if s.starts_with('#') { self.scoped_frag_id(lit) } else { lit };
-                    return self.sanitize_wrap(tag, ns, attr, v, hook);
+                    return Ok(self.sanitize_wrap(tag, ns, attr, v, hook));
                 }
-                lit
+                Ok(lit)
             }
-            AttributeValue::Literal(Literal { value: LiteralValue::Bool(b) }) => if used { "\"\"".into() } else { b.to_string() },
+            AttrValueKind::OtherLiteral(lit) => Ok(if used { "\"\"".into() } else { attr_literal_js(lit) }),
         }
     }
 
     /// TS `bindAttributeExpression`.
-    fn bind_attr_expr(&mut self, tag: &str, ns: &str, attr: &str, value: &AttributeValue, used: bool, hook: bool) -> String {
-        let x = self.attr_value(value);
-        if used && crate::parser::element_check::is_boolean_attribute(attr, tag) { return format!("{x} ? \"\" : null"); }
-        if attr == "tabindex" { self.api(ApiHelper::TabIndex); return format!("api_tab_index({x})"); }
-        if attr == "id" || is_id_referencing(attr) { return self.scoped_id(x); }
-        if self.scope_frag && is_frag_only_xhtml(tag, attr, ns) { return self.scoped_frag_id(x); }
+    fn bind_attr_expr(&mut self, tag: &str, ns: &str, attr: &str, value: &AttributeValue, used: bool, hook: bool, indent: usize) -> Result<String, CodegenError> {
+        let x = self.attr_value_at(value, indent)?;
+        if used && crate::parser::element_check::is_boolean_attribute(attr, tag) { return Ok(format!("{x} ? \"\" : null")); }
+        if attr == "tabindex" { return Ok(self.call(ApiHelper::TabIndex, &x)); }
+        if attr == "id" || is_id_referencing(attr) { return Ok(self.scoped_id(x)); }
+        if self.scope_frag && is_frag_only_xhtml(tag, attr, ns) { return Ok(self.scoped_frag_id(x)); }
         if is_svg_use_href(tag, attr, ns) {
             let v = match value {
                 AttributeValue::Literal(Literal { value: LiteralValue::String(s) }) if !s.starts_with('#') => x,
                 _ => self.scoped_frag_id(x),
             };
-            return self.sanitize_wrap(tag, ns, attr, v, hook);
+            return Ok(self.sanitize_wrap(tag, ns, attr, v, hook));
         }
-        x
+        Ok(x)
     }
 
     /// TS `isCustomRendererHookRequired` / `shouldAddCustomRenderer`.
@@ -935,19 +987,21 @@ impl Gen {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq)]
-enum CrKind { Element, External, Component }
+use crate::parser::{is_attribute, ElementKind as CrKind};
 
 /// TS BaseElement fields shared by Element, Component, ExternalComponent, LwcComponent and Slot.
 #[derive(Clone, Copy)]
+/// One element node as codegen reads it. `ns` is the node's own namespace (TS `element.namespace`),
+/// never state carried over from a previously generated element.
 struct ElementView<'a> {
-    name: &'a str, attrs: &'a [Attribute], props: &'a [Property], directives: &'a [ElementDirective],
-    listeners: &'a [EventListener], children: &'a [ChildNode], kind: CrKind,
+    name: &'a str, ns: &'a str, attrs: &'a [Attribute<'a>], props: &'a [Property<'a>], directives: &'a [ElementDirective<'a>],
+    listeners: &'a [EventListener<'a>], children: &'a [ChildNode<'a>], kind: CrKind,
 }
 
 impl<'a> ElementView<'a> {
-    fn new(name: &'a str, attrs: &'a [Attribute], props: &'a [Property], directives: &'a [ElementDirective], listeners: &'a [EventListener], children: &'a [ChildNode], kind: CrKind) -> Self {
-        ElementView { name, attrs, props, directives, listeners, children, kind }
+    #[allow(clippy::too_many_arguments)]
+    fn new(name: &'a str, ns: &'a str, attrs: &'a [Attribute], props: &'a [Property], directives: &'a [ElementDirective], listeners: &'a [EventListener], children: &'a [ChildNode], kind: CrKind) -> Self {
+        ElementView { name, ns, attrs, props, directives, listeners, children, kind }
     }
 }
 
@@ -968,19 +1022,14 @@ fn directive_name(d: &ElementDirective) -> &'static str {
     }
 }
 
-pub fn generate(root: &Root, config: &NormalizedConfig, filename: &str, tokens: &crate::scope_tokens::ScopeTokens) -> String {
+pub fn generate(root: &Root, config: &NormalizedConfig, filename: &str, tokens: &crate::scope_tokens::ScopeTokens) -> Result<String, CodegenError> {
     let mut g = Gen { static_opt: config.enable_static_content_optimization, comments: config.preserve_html_comments || root.directives.iter().any(|d| matches!(d, RootDirective::PreserveComments(true))), cr: config.custom_renderer_config.clone(), api_version: config.api_version,
         light: root.directives.iter().any(|d| matches!(d, RootDirective::RenderMode(RenderMode::Light))), scope_frag: has_id_attribute(&root.children), ..Default::default() };
     // TS CodeGen.isSyntheticShadow.
     g.synthetic = !g.light && !config.disable_synthetic_shadow_support;
-    let use_static = config.enable_static_content_optimization && !root.children.is_empty()
-        && root.children.iter().all(|c| matches!(c, ChildNode::Element(_)) && g.is_static(c));
+    // TS transform(): `return transformChildren(codeGen.root)`.
     let mut root_expr: Option<String> = None;
-    let items = if use_static {
-        root.children.iter().filter_map(|c| g.transform_element(c, 2)).collect()
-    } else {
-        match g.kids(&root.children, 2) { Kids::Arr(v) => v, Kids::Expr(e) => { root_expr = Some(e); Vec::new() } }
-    };
+    let items = match g.kids(&root.children, 2, None)? { Kids::Arr(v) => v, Kids::Expr(e) => { root_expr = Some(e); Vec::new() } };
     let fragments = std::mem::take(&mut g.frags);
     let base = std::path::Path::new(filename).file_stem().and_then(|s| s.to_str()).unwrap_or("");
     let mut out = format!("import _implicitStylesheets from {};\nimport _implicitScopedStylesheets from {};\n", js_string(&format!("./{base}.css")), js_string(&format!("./{base}.scoped.css?scoped=true")));
@@ -991,25 +1040,33 @@ pub fn generate(root: &Root, config: &NormalizedConfig, filename: &str, tokens: 
     lwc.push("registerTemplate");
     if g.renderer { lwc.push("renderer"); }
     if g.sanitize { lwc.push("sanitizeAttribute"); }
-    out.push_str(&format!("import {{ {} }} from \"lwc\";\n", lwc.join(", ")));
+    // astring ImportDeclaration / ObjectPattern (astring.mjs ImportDeclaration, ObjectPattern): `{a, b}`, no inner spaces.
+    out.push_str(&format!("import {{{}}} from \"lwc\";\n", lwc.join(", ")));
     for (i, (f, svg)) in fragments.iter().enumerate() {
         out.push_str(&format!("const $fragment{} = {}`{f}`;\n", i + 1, if *svg { "parseSVGFragment" } else { "parseFragment" }));
     }
+    // astring ArrayExpression: `[a, b]` on one line, no trailing comma.
+    let ret = root_expr.unwrap_or_else(|| format!("[{}]", items.join(", ")));
+    // TS format(): optimizeStaticExpressions(templateFn); the `stcN` consts follow the hoisted
+    // `$fragmentN` nodes and precede `function tmpl`.
+    let mut stcs = Vec::new();
+    let ret = optimize::hoist_static_expressions(&ret, &mut stcs);
+    for (n, (_, v)) in stcs.iter().enumerate() { out.push_str(&format!("const stc{n} = {v};\n")); }
     out.push_str("function tmpl($api, $cmp, $slotset, $ctx) {\n");
     // TS CodeGen.usedApis: `$api` helpers in first-use order of the codegen traversal.
     let helpers: Vec<String> = g.apis.iter().map(|h| { let (a, n) = h.names(); format!("{a}: {n}") }).collect();
-    if !helpers.is_empty() { out.push_str(&format!("  const {{ {} }} = $api;\n", helpers.join(", "))); }
-    if let Some(e) = &root_expr {
-        out.push_str(&format!("  return {e};\n}}\n"));
-    } else if items.is_empty() {
-        out.push_str("  return [];\n}\n");
-    } else if use_static {
-        out.push_str(&format!("  return [{}];\n}}\n", items.join(", ")));
-    } else {
-        out.push_str(&format!("  return [\n{},\n  ];\n}}\n", items.iter().map(|i| format!("    {i}")).collect::<Vec<_>>().join(",\n")));
-    }
+    if !helpers.is_empty() { out.push_str(&format!("  const {{{}}} = $api;\n", helpers.join(", "))); }
+    // TS index.ts:694: `const { _m0, ... } = $ctx;` after the `$api` destructuring.
+    if g.memo > 0 { out.push_str(&format!("  const {{{}}} = $ctx;\n", (0..g.memo).map(|i| format!("_m{i}")).collect::<Vec<_>>().join(", "))); }
+    out.push_str(&format!("  return {ret};\n"));
+    // index.ts:713-716: the function body BlockStatement carries `trailingComments: [LWC_VERSION_COMMENT]`;
+    // astring BlockStatement (astring.mjs:302-306) prints it via formatComments at the statement indent,
+    // after the last statement and before the closing brace.
+    out.push_str(&format!("  /*{}*/\n}}\n", lwc_shared::meta::LWC_VERSION_COMMENT));
     out.push_str("export default registerTemplate(tmpl);\n");
     if !g.slots.is_empty() {
+        // TS generateTemplateMetadata (helpers.ts:97-99): `Array.from(slotNames).sort()`.
+        g.slots.sort_by(|a, b| lwc_shared::js::js_default_sort_cmp(a, b));
         out.push_str(&format!("tmpl.slots = [{}];\n", g.slots.iter().map(|s| js_string(s)).collect::<Vec<_>>().join(", ")));
     }
     // TS generateTemplateMetadata: slots, renderMode (light only), hasRefs, stylesheets, token.
@@ -1022,5 +1079,5 @@ pub fn generate(root: &Root, config: &NormalizedConfig, filename: &str, tokens: 
     out.push_str(&format!("tmpl.stylesheetToken = {};\n", js_string(token)));
     out.push_str("if (_implicitStylesheets) {\n  tmpl.stylesheets.push.apply(tmpl.stylesheets, _implicitStylesheets);\n}\nif (_implicitScopedStylesheets) {\n  tmpl.stylesheets.push.apply(tmpl.stylesheets, _implicitScopedStylesheets);\n}\n");
     out.push_str("freezeTemplate(tmpl);\n");
-    out
+    Ok(out)
 }

@@ -8,6 +8,8 @@ use std::io::{BufRead, Write};
 
 fn err_json(e: &StyleError) -> Value {
     match e {
+        // jsErr / normalizeError: a non-CssSyntaxError is `{name, message}`.
+        StyleError::Syntax { name, reason, .. } if name != "CssSyntaxError" => json!({"name": name, "message": reason}),
         StyleError::Syntax { name, reason, line, column } => {
             // JSON.stringify drops `undefined` line/column (position-less PostCSS errors).
             let mut o = json!({"name": name, "reason": reason});

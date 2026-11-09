@@ -29,18 +29,26 @@ export function errorMultiset(e: any): number[] {
     return members.flatMap((x) => (x?.code != null ? [Number(x.code)] : lwcCodes(x?.message ?? '').slice(0, 1))).sort((a, b) => a - b);
 }
 
+/** Read a committed golden; a missing golden is a FAILURE (never silently empty, never written outside UPDATE). */
+export function readGolden(g: string): any {
+    if (!fs.existsSync(g)) throw new Error(`missing golden ${g} (record with UPDATE_GOLDENS=1 on the JS backend)`);
+    return JSON.parse(fs.readFileSync(g, 'utf8'));
+}
+
+/** Write a golden. Only reachable with UPDATE, which the module-level guard above restricts to the JS backend. */
+export function writeGolden(g: string, data: unknown, indent = 2): void {
+    if (!UPDATE || BACKEND_ID !== 'js') throw new Error(`refusing to write golden ${g}: only UPDATE_GOLDENS=1 on the JS backend records goldens`);
+    fs.mkdirSync(path.dirname(g), { recursive: true });
+    fs.writeFileSync(g, JSON.stringify(data, null, indent) + '\n');
+}
+
 export const goldenName = (key: string) => key.replace(/[\\/]/g, '__') + '.json';
 
 /** One golden file per case. */
 export function checkGolden(dir: string, key: string, observed: unknown): void {
     const g = path.join(dir, goldenName(key));
-    if (UPDATE || !fs.existsSync(g)) {
-        if (!UPDATE) throw new Error(`missing golden ${g} (record with UPDATE_GOLDENS=1 on the JS backend)`);
-        fs.mkdirSync(dir, { recursive: true });
-        fs.writeFileSync(g, JSON.stringify(observed, null, 2) + '\n');
-    } else {
-        expect(observed).toEqual(JSON.parse(fs.readFileSync(g, 'utf8')));
-    }
+    if (UPDATE) writeGolden(g, observed);
+    else expect(observed).toEqual(readGolden(g));
 }
 
 /**
@@ -50,15 +58,13 @@ export function checkGolden(dir: string, key: string, observed: unknown): void {
 export function checkGoldenCell(dir: string, key: string, cell: string, observed: unknown): void {
     const g = path.join(dir, goldenName(key));
     if (UPDATE) {
-        fs.mkdirSync(dir, { recursive: true });
-        const cur = fs.existsSync(g) ? JSON.parse(fs.readFileSync(g, 'utf8')) : {};
+        const cur = fs.existsSync(g) ? JSON.parse(fs.readFileSync(g, 'utf8')) : {};   // UPDATE-only merge of this run's cells
         cur[cell] = observed;
         const sorted = Object.fromEntries(Object.entries(cur).sort(([a], [b]) => a.localeCompare(b)));
-        fs.writeFileSync(g, JSON.stringify(sorted, null, 1) + '\n');
+        writeGolden(g, sorted, 1);
         return;
     }
-    if (!fs.existsSync(g)) throw new Error(`missing golden ${g} (record with UPDATE_GOLDENS=1 on the JS backend)`);
-    const want = JSON.parse(fs.readFileSync(g, 'utf8'));
+    const want = readGolden(g);
     if (!(cell in want)) throw new Error(`golden ${g} has no cell ${cell}`);
     expect(observed).toEqual(want[cell]);
 }

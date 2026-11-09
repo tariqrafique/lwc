@@ -1,14 +1,16 @@
 #![allow(unused)]
 use lwc_template::*;
-fn ssr_parse(src: &str, f: impl FnOnce(&mut Config)) -> TemplateParseResult {
+fn ssr_parse(src: &str, f: impl FnOnce(&mut Config)) -> TemplateParseResult<'static> {
     // Same Config shape lwc-ssr::transform_html passes (index.ts:83 of @lwc/ssr-compiler).
     let mut c = Config { name: Some("c".into()), namespace: Some("x".into()), ..Default::default() };
     f(&mut c);
-    lwc_template::parse(src, c).unwrap()
+    lwc_template::parse(Box::leak(Box::default()), src, c).unwrap()
 }
-fn root(src: &str, f: impl FnOnce(&mut Config)) -> Root { ssr_parse(src, f).root.unwrap() }
-fn lit(s: &str) -> AttributeValue { AttributeValue::Literal(Literal { value: LiteralValue::String(s.into()) }) }
-fn id(s: &str) -> Expression { Expression::Identifier(Identifier { name: s.into() }) }
+fn root(src: &str, f: impl FnOnce(&mut Config)) -> Root<'static> { ssr_parse(src, f).root.unwrap() }
+/// The source of a complex expression (None for any other expression).
+fn complex_source<'a>(e: &Expression<'a>) -> Option<&'a str> { match e { Expression::Complex(c) => Some(c.source), _ => None } }
+fn lit(s: &str) -> AttributeValue<'static> { AttributeValue::Literal(Literal { value: LiteralValue::String(s.into()) }) }
+fn id(s: &str) -> Expression<'static> { Expression::Identifier(Identifier { name: s.into() }) }
 macro_rules! el { ($n:expr, $v:ident) => { match $n { ChildNode::$v(e) => e, other => panic!("expected {}, got {:?}", stringify!($v), other) } } }
 
 #[test]
@@ -80,9 +82,11 @@ fn empty_ns_prefix() {
 fn complex_expr_literal() {
     let r = root("<template><div class=\"{bar() + foo()}\"></div>{bar() + \' \' + foo()}</template>", |c| c.experimental_complex_expressions = Some(true));
     let d = el!(&r.children[0], Element);
-    assert_eq!(d.attributes[0].value, AttributeValue::Expression(Expression::Complex("bar() + foo()".into())));
+    let AttributeValue::Expression(e) = &d.attributes[0].value else { panic!("{:?}", d.attributes[0].value) };
+    assert_eq!(complex_source(e), Some("bar() + foo()"));
+    assert!(matches!(e, Expression::Complex(c) if matches!(c.ast, oxc_ast::ast::Expression::BinaryExpression(_))));
     assert!(matches!(&el!(&r.children[1], Text).value,
-      TextValue::Expression(Expression::Complex(s)) | TextValue::Complex(s) if s == "bar() + \' \' + foo()"));
+      TextValue::Expression(e) if complex_source(e) == Some("bar() + \' \' + foo()")));
 }
 
 #[test]
@@ -91,6 +95,6 @@ fn complex_for_each() {
     assert!(p.warnings.iter().all(|w| w.code != Some(1153)), "{:?}", p.warnings);
     let r = p.root.unwrap(); let ul = el!(&r.children[0], Element);
     let f = el!(&ul.children[0], ForEach);
-    assert_eq!(f.expression, Expression::Complex("list()".into()));
+    assert_eq!(complex_source(&f.expression), Some("list()"));
     assert_eq!(f.item.name, "item"); assert_eq!(f.index.as_ref().unwrap().name, "index");
 }

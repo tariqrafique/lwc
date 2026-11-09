@@ -1,5 +1,5 @@
 //! Append `?scoped=true` to top-level `*.scoped.css` imports.
-use crate::edits::Edit;
+use lwc_shared::edits::Edit;
 use oxc::ast::ast::{Program, Statement};
 
 pub fn run(program: &Program<'_>, edits: &mut Vec<Edit>) {
