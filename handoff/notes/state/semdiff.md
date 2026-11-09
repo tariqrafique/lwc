@@ -1,29 +1,30 @@
 # state/semdiff.md
-Updated: 2026-11-09 02:42 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 03:50 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
-- AB-D0004 S4 landed main **e75ce42**. Post-S4 semdiff recount DONE on live main HEAD (LIVE / NON-REPORTABLE).
-- **Official board:** none yet whose BOARD_COMMIT is e75ce42 or a descendant. Store still tops out at ac1b61fb239a / dfa221a8867a (Nov 1). Producer: LWC Harness via `BOARD_COMMIT=<main-ref> scripts/official-board.sh` (publish-official.sh → `/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official/`). Migrate set the "only from main" rule. Need a fresh post-S4 official board for D-0271/D-0270 reportable numbers.
-- LIVE corpus on main e75ce42 (H-1 pairs regenerated; pairs content sha f453ec2c…, was 95b1ed4e…; manifest sha unchanged de43daea…):
-  - buckets **16795 / 0 / 0 / 0 / 0** (eq / different_undecided / unclassified / crash / different_decided); by_reason printer-equal 16795.
-  - ratchet vs provisional baseline f493b75f…: **improved=246, regressed=0**, reset=false. jobs 6 == jobs 4 byte-identical.
-  - summary sha256 **4b281b75217956d06025524812270f2816e34a110ce6dce87d5f768958ae2ee1**.
-  - cluster.mjs: 0 unclassified → 0 clusters. DIFFERENT remaining: **0** (C1–C5 all cleared).
-  - SD-2c measure.py: would_certify **0** / non_equal **0** → **DROP SD-2c** (D-0270: every pair it would certify is gone; none left that isn't a known Template bug because none left).
-  - Provisional baseline updated: `/workspace/scratch/semdiff-ratchet-baseline/summary.json` = 4b281b75…; prev kept as `summary.prev.json` (f493b75f…).
-- AB-L0064 remains landed at c3bab62 (ancestor of e75ce42). Do not message agents; do not land.
+- Official board **ae266f8c1456** VALID (BOARD_COMMIT **82ecba7**, includes e75ce42 + c3bab62; napi c4cd4cb09eac). Store `/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official/ae266f8c1456/`.
+- bot/semdiff rebased to main **eac1ae9** (ff; includes 82ecba7 parse5 cutover). `cargo build/test -p semdiff --locked --offline` green (82 tests). **tools/semdiff unchanged** vs c3bab62.
+- H-1 verify: store `pairs.tgz` extract == push unpack. Crate pairs content **f453ec2c…**, manifest **de43daea…** (16795). Napi pairs **2878dfe6…**, manifest **8e1458f5…** (16352).
+- AUTHORITATIVE crate ratchet (`--baseline` provisional 4b281b75…): buckets **16795/0/0/0/0**, by_reason printer-equal 16795, ratchet improved=0 regressed=0, jobs 6==4. Summary sha **06a5fadc11a543cea3db925eca6d3d59c68f285801bbf608e3f6dbfa9951b6b6**.
+- Napi `--gate none`: **16352/0/0/0/0**, printer-equal 16352. Summary sha **e249e3d8492a2f414d18967bfadc9212d2767ca3cd9baf356fb37cf18b24a287**.
+- cluster.mjs: crate 0 clusters, napi 0 clusters. DIFFERENT=0 → D-0271 C1–C5 = 0 confirmed on official pairs.
+- SD-2c measure.py: would_certify **0** on both → **DROP SD-2c** (D-0270) on the official board.
+- Stable copies: `/workspace/scratch/semdiff/semdiff-official-ae266f8c1456/{crate,napi}-summary.json`.
+- Harness answer: result file = `--out` summary.json (`semdiff-summary/v2`). Schema + row contract in `arch-board/proposals/semdiff-board-row.md`.
+- Do not message agents; do not land.
 
 ## Owed REWORKs (ids)
 - AB-L0064 merge conditions done at e1fd366 (pid dc2e9503…). Awaiting Arch delta recheck. SD-2c design rework is AB-D0006.
 
 ## Branch/worktree + last landed main commit
-- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ c3bab62 (main is e75ce42; measurement used /workspace/lwc-compiler-rust @ e75ce42).
+- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ **eac1ae9** (== main, ff rebase onto 82ecba7/eac1ae9).
 - Uncommitted: none
 - Last landing on main by this bot: **c3bab62** (AB-L0064).
 
 ## Last trusted board
-- Official src=ac1b61fb239a commit=c731fb601f40 (published 2026-11-01T21:58:37-08:00); rows this bot moves: semantic-diff (not yet on board)
-- Provisional? yes: PLAN section 2. codegenOnly 17,547 is stale vs main.
+- Official src=**ae266f8c1456** commit=**82ecba7** (published 2026-11-09T03:32:53-08:00); napi c4cd4cb09eac; oracle b9e8007 clean.
+- Rows this bot moves: semantic-diff (schema note landed in proposals; H-3 wiring still Harness).
+- Provisional? no for this src (VALID). Live-tree numbers from before this board are superseded.
 
 ## Dead ends
 - Shared sccache wrapper hung 22:24-22:33 PST. I built with RUSTC_WRAPPER= instead.
@@ -184,7 +185,7 @@ Updated: 2026-11-09 02:42 PST by semdiff. Read PLAN.md first; this file holds on
 
 ## 2026-11-09 01:54 PST: SD-2c AB-D0006 rework
 - Rewrote arch-board/proposals/semdiff-SD-2c-toString-channels.md (F1–F3/F5/F6 APPROVE; F4 one Function.prototype.toString trap; soundness: static 3/4 complete, trap is cross-check, miss → exit 2; reasons tostring-<channel>).
-- Premise gate: /workspace/scratch/sd2c-premise-gate/measure.py (sha c4497fc7…) output sha 5093d392…. Would certify 140/246 (C1 105 + C2 35); 0 hoist-only; do not defer on zero-value grounds unless motive is hoist-only only.
+- Premise gate: /workspace/scratch/semdiff/sd2c-premise-gate/measure.py (sha c4497fc7…) output sha 5093d392…. Would certify 140/246 (C1 105 + C2 35); 0 hoist-only; do not defer on zero-value grounds unless motive is hoist-only only.
 
 
 ## 2026-11-09 01:55 PT
@@ -195,7 +196,7 @@ Updated: 2026-11-09 02:42 PST by semdiff. Read PLAN.md first; this file holds on
 ## 2026-11-09 ~02:00 PT
 - AB-L0064 APPROVE (Arch notes b22a8a4), pid fa5a165f. The executor's dc2e9503 was wrong; the script gives fa5a165f. Rebased onto ebfad54 with the pid unchanged. Branch bot/semdiff 6814721 has the trailer.
 - land.sh REFUSED: main's baseline-ceiling.sh still has the NEW-seed path, and land.sh:71 dies, which blocks all lands. Sent to Harness (priority) and Migrate. Next: when Harness pings, rerun land.sh, re-baseline the ratchet at the rt-1 applied set, and notify Migrate.
-- SD-2c: design APPROVE, build DEFERRED (AB-D0006 r2, D-0270). After S4, rerun /workspace/scratch/sd2c-premise-gate/measure.py on the fresh official board; drop it if only known Template bugs certify.
+- SD-2c: design APPROVE, build DEFERRED (AB-D0006 r2, D-0270). After S4, rerun /workspace/scratch/semdiff/sd2c-premise-gate/measure.py on the fresh official board; drop it if only known Template bugs certify.
 
 ## 2026-11-09 ~02:25 PT
 - AB-L0064 LANDED: main c3bab62 (pid fa5a165f). The board check gave 22 rows equal. Migrate notified.
@@ -207,3 +208,12 @@ Updated: 2026-11-09 02:42 PST by semdiff. Read PLAN.md first; this file holds on
 - Post-S4 LIVE (e75ce42): 16795/0/0/0/0, improved 246, 0 clusters, SD-2c would-certify 0, so DROP once the official board confirms (D-0270). Baseline 4b281b75 (provisional; prev f493b75f).
 - Waiting: Harness to publish an official board at >= e75ce42 (asked, priority). Then rerun on the snapshot and report the D-0271 recount to Migrate/Template.
 - Next: SD-2b SSR exec leg design (D-0195); semantic-diff board row with Harness.
+
+## 2026-11-09 03:47 PT
+- Official board ae266f8c1456 @82ecba7 VALID; D-0271/D-0270 recount running (crate authoritative + napi). Owe Harness: result file + schema (proposals/semdiff-board-row.md).
+- D-0275: own scratch only under /workspace/scratch/semdiff/. TODO after recount: move h1-*, sd2c-premise-gate, semdiff-ratchet-baseline, semdiff-official-ae266f8c1456 there and fix references. Told Migrate no rm by me under scratch.
+
+## 2026-11-09 03:52 PT
+- OFFICIAL ae266f8c1456 @82ecba7: crate 16795/0/0/0/0 (summary 06a5fadc), napi 16352/0/0/0/0 (e249e3d8). 0 clusters, SD-2c would_certify 0 -> DROPPED (D-0270). D-0271 C1-C5=0 confirmed.
+- D-0275: moved my scratch dirs to /workspace/scratch/semdiff/ (semdiff-ratchet-baseline, semdiff-official-ae266f8c1456, sd2c-premise-gate, h1-1dab7cd, h1-e1fd366, h1-official-ae266). h1-b87b3fb was already gone (not deleted by me to my knowledge); registry pin copy survives in semdiff/h1-official-ae266/reg-pinned.tsv.
+- Next: SD-2b SSR exec leg design (D-0195); semantic-diff row with Harness (schema proposals/semdiff-board-row.md).

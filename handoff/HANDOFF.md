@@ -33,22 +33,17 @@ csr-render 355/390, csr-render-template 545/570, ssr-render 384/389 with 5 skips
 
 
 ## Refresh note
-Main @ e75ce42 is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/ stays there). Notes @ af16d79 (refreshed 2026-11-09 03:21 PST). The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
+Main @ 6a905a4 is UNMEASURED: no official board matches it. The latest official board is ae266f8c1456 @ 82ecba7af88f (published 2026-11-09 03:32 PST), and compiler-rust/ holds exactly that source. The 'Ground truth' and 'Remaining gaps' sections above still describe the older board ac1b61fb239a and are stale; compiler-rust/board.txt is current. Notes @ ff75836 (refreshed 2026-11-09 03:54 PST). The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
 - bot/diagnostics-directives 3bc4435
 - bot/harness 5739df7
-- bot/harness-d0219 82ecba7
 - bot/harness-obfix a051a35
 - bot/hygiene a28dd50
-- bot/js-d0265 2c0fc83
+- bot/js-d0265 b89e44a
 - bot/js-slice2 c08fbf6
 - bot/js-sourcemap fff6018
-- bot/semdiff c3bab62
+- bot/semdiff eac1ae9
 - bot/semdiff-sd1b 9c96ee4
-- bot/ship 8327f60
-- bot/ssr 4e1a48a
-- bot/template e9d5199
-- bot/template-clusters b22df87
-- bot/template-expr d46d6de
-- bot/template-s2 7b8c7c5
-- bot/template-s3 2a5cff8
-- bot/template-s4 e75ce42
+- bot/ship eac1ae9
+- bot/ssr 82ecba7
+- bot/template 82ecba7
+- bot/template-fu 4a31e50

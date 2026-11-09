@@ -1,5 +1,5 @@
 # state/js.md
-Updated: 2026-11-09 02:15 PST by js (LWC JS Rust). Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 03:45 PST by js (LWC JS Rust). Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
 - AB-R003 + AB-0001 + AB-0010 + AB-R001 (DiagnosticLocation type): one error model in lwc-shared (typed CompilerError/CompilerAggregateError, normalize_to_compiler_error, single @lwc/errors error-info table + url, LWC_VERSION); lwc-compiler facades mirror style.ts:44-61 / template.ts:72-86 / javascript.ts:109-135; napi serialize-only; grep gates (napi: level_url|error_url|Origin::|AGGREGATE_; error-info literals outside lwc-shared). Status: slice 1 landed (48c44ae); slice 2 next.
@@ -103,3 +103,7 @@ Updated: 2026-11-09 02:15 PST by js (LWC JS Rust). Read PLAN.md first; this file
 - 11-09 02:04 AB-L0075 r2 APPROVE+condition; condition applied at 13efb61 (pid 6b975743); awaiting Arch row for new pid, then land.
 - 11-09 02:06 AB-L0075 APPROVE for pid 6b975743 (notes 87f7018). Trailer added: bot/js-d0265 2aed75d. Land waits on main's land.sh being fixed by Harness's D-0269 seedfix (ebfad54 land.sh:70-72 refuses every land). Routine polls every 15m.
 - 11-09 02:16 Harness a93494b (AB-L0076): backend.ts reads location only, so D-0239/D-0241 napi line/column/name delete is unblocked (next after AB-L0075 land). Land of AB-L0075 is running against 1d4dd25; main moved to a93494b mid-land.
+- 11-09 03:27 First AB-L0075 land.sh (base 1d4dd25) REFUSED: harness self-test block failed (land-classify/parse5-pin/...); not landed. Main now 82ecba7 (parse5 cutover D-0238/D-0274, needs --locked rebase). Rebase + re-land in progress. Then: D-0239/D-0241 (Harness a93494b reads location only), delete bot/js-sourcemap.
+- 11-09 03:28 Rebased bot/js-d0265 onto 82ecba7 -> 8235ac5, pid 7123e0cd (context-only change from e75ce42 shim row). Asked Arch for a row. The 1d4dd25 land refusal was harness test-board-ratchet (detached overwrite / id-swap mutations missing the '/obs sha256 mismatch' line), reported to Harness.
+- 11-09 03:31 Arch APPROVE re-stamp for 8235ac5 pid 7123e0cd (notes d1a86c8). Started land, then aborted it before the self-tests: Harness says test-board-ratchet forgers clobber any concurrent js-eval run (fix on bot/harness-obscope), and an official board is running. Routine re-lands when boards are idle.
+- 11-09 03:47 D-0275: only the owner writes scratch/<bot>/; my logs go to /workspace/scratch/js/ from now on. Told Migrate I ran no rm under scratch. AB-L0075 re-lands only after obscope is on main and boards are idle (routine updated).
