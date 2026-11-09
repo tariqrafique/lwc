@@ -94,3 +94,7 @@ From `totals` + gate rc:
 Gate ok iff process exit 0. DIAG phase: print FAIL but do not fail the board until Migrate flips the row out of DIAG. Phase R already uses the per-key ratchet; phase strict uses `--gate strict` (no baseline) once DIFFERENT/unclassified/crash are driven to 0.
 
 **Napi secondary set:** same CLI with `--gate none` (or ratchet against its own prior napi summary once one exists); do not mix corpora in one baseline (`baseline-corpus-mismatch` → exit 2).
+
+## Erratum (AB-L0078 REWORK, Arch notes 03112c1)
+- No vendored inputs. Registry = `git -C notes show <NOTES_COMMIT>:lwc-rust-migrate/decisions.tsv` at the board-recorded notes commit.
+- Row runs `--gate strict` with no baseline (an all-clean baseline makes ratchet == strict). A baseline returns only for a corpus with accepted debt, as its own id+bucket+totals schema design.

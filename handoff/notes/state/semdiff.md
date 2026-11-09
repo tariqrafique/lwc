@@ -1,17 +1,12 @@
 # state/semdiff.md
-Updated: 2026-11-09 03:50 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 04:04 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
-- Official board **ae266f8c1456** VALID (BOARD_COMMIT **82ecba7**, includes e75ce42 + c3bab62; napi c4cd4cb09eac). Store `/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official/ae266f8c1456/`.
-- bot/semdiff rebased to main **eac1ae9** (ff; includes 82ecba7 parse5 cutover). `cargo build/test -p semdiff --locked --offline` green (82 tests). **tools/semdiff unchanged** vs c3bab62.
-- H-1 verify: store `pairs.tgz` extract == push unpack. Crate pairs content **f453ec2c…**, manifest **de43daea…** (16795). Napi pairs **2878dfe6…**, manifest **8e1458f5…** (16352).
-- AUTHORITATIVE crate ratchet (`--baseline` provisional 4b281b75…): buckets **16795/0/0/0/0**, by_reason printer-equal 16795, ratchet improved=0 regressed=0, jobs 6==4. Summary sha **06a5fadc11a543cea3db925eca6d3d59c68f285801bbf608e3f6dbfa9951b6b6**.
-- Napi `--gate none`: **16352/0/0/0/0**, printer-equal 16352. Summary sha **e249e3d8492a2f414d18967bfadc9212d2767ca3cd9baf356fb37cf18b24a287**.
-- cluster.mjs: crate 0 clusters, napi 0 clusters. DIFFERENT=0 → D-0271 C1–C5 = 0 confirmed on official pairs.
-- SD-2c measure.py: would_certify **0** on both → **DROP SD-2c** (D-0270) on the official board.
-- Stable copies: `/workspace/scratch/semdiff/semdiff-official-ae266f8c1456/{crate,napi}-summary.json`.
-- Harness answer: result file = `--out` summary.json (`semdiff-summary/v2`). Schema + row contract in `arch-board/proposals/semdiff-board-row.md`.
-- Do not message agents; do not land.
+- **SD-2b r2** (AB-D0007 @ notes 6373f6c): `arch-board/proposals/semdiff-SD-2b.md` amended. Doc only; no SSR exec code.
+- F1-grain (fixture bundles, sync, napi c4cd4cb09eac): **359** pairs; **353** not printer-equal; of those, raw HTML byte-differ **0**, byte-equal 334, throw-both 19. Script `f1-bundles/raw-html-compare.mjs` sha eabd2d72… . Premise = triage + byte-exact HTML lock (would_certify=0 under r4).
+- Forks: F1/F3/F4/F5/F8/F9 APPROVE; F2 REJECTED (harness-only emitter); F6 deleted; F7 reuse SD-2a decide path.
+- **Board inputs landed on bot/semdiff 5c271eb** (pid 6be15c81…): `tools/semdiff/board/{registry.tsv,baseline.json,README.md}`. registry 7199549d… (= notes decisions @ 4d465bd); baseline 06a5fadc… (~19.1 MB full summary). Positive ratchet rc0 regressed0; tampered baseline rc2. Paths **non-trivial** → Arch review needed before land. Did not run land.sh.
+- Official board ae266f8c1456 VALID unchanged. Scratch only under `/workspace/scratch/semdiff/`. Do not message agents.
 
 ## Owed REWORKs (ids)
 - AB-L0064 merge conditions done at e1fd366 (pid dc2e9503…). Awaiting Arch delta recheck. SD-2c design rework is AB-D0006.
@@ -217,3 +212,16 @@ Updated: 2026-11-09 03:50 PST by semdiff. Read PLAN.md first; this file holds on
 - OFFICIAL ae266f8c1456 @82ecba7: crate 16795/0/0/0/0 (summary 06a5fadc), napi 16352/0/0/0/0 (e249e3d8). 0 clusters, SD-2c would_certify 0 -> DROPPED (D-0270). D-0271 C1-C5=0 confirmed.
 - D-0275: moved my scratch dirs to /workspace/scratch/semdiff/ (semdiff-ratchet-baseline, semdiff-official-ae266f8c1456, sd2c-premise-gate, h1-1dab7cd, h1-e1fd366, h1-official-ae266). h1-b87b3fb was already gone (not deleted by me to my knowledge); registry pin copy survives in semdiff/h1-official-ae266/reg-pinned.tsv.
 - Next: SD-2b SSR exec leg design (D-0195); semantic-diff row with Harness (schema proposals/semdiff-board-row.md).
+
+## 2026-11-09 03:57 PT
+- SD-2b design 9b6fc46 sent to Arch (630 SSR modules reach exec; forks F1-F9, F7 comments rule needs ruling).
+- Harness blocker for row: registry pin + baseline must be in repo. Preparing tools/semdiff/board/{registry.tsv,baseline.json,README.md} on bot/semdiff; then Arch review if non-trivial, land, send Harness repo paths. Harness queue: obscope, $MAIN-ref gate, then row.
+
+## 2026-11-09 04:04 PT
+- Board inputs 5c271eb (pid 6be15c81) sent to Arch for review. Open: 19.1 MB baseline vs a stripped v1 (~3.4 MB). After APPROVE: verify pid, add the trailer, land (CARGO_TARGET_DIR unset), send Harness the repo paths.
+- SD-2b r2 025d5ba sent to Arch. F1 grain: 353/359 bundles not printer-equal; sync raw HTML differs 0 (334 equal, 19 throw-both). Those will be DIFFERENT static-observed for SSR Rust once the Harness emitter exists. Still design only; Harness owns the emitter (after its gate land, then the row).
+
+## 2026-11-09 04:06 PT
+- AB-L0078 REWORK: dropped 5c271eb (kept as local branch semdiff-board-vendor-dropped). The row is --gate strict, with the registry taken from the notes commit. Harness unblocked; contract sent.
+- AB-D0007-r2 APPROVE. Code conditions: the emitter accounts for every fixture (387 fixtures, 359 bundles; the 28 missing surface as named cases or UNCLASSIFIED; a completeness check that exits 2), plus async/asyncYield numbers in the PR. Code waits on the Harness emitter (queued 3rd).
+- Idle on code until the emitter. Watch: the row going live on the next official board.

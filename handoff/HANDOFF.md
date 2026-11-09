@@ -33,15 +33,16 @@ csr-render 355/390, csr-render-template 545/570, ssr-render 384/389 with 5 skips
 
 
 ## Refresh note
-Main @ 6a905a4 is UNMEASURED: no official board matches it. The latest official board is ae266f8c1456 @ 82ecba7af88f (published 2026-11-09 03:32 PST), and compiler-rust/ holds exactly that source. The 'Ground truth' and 'Remaining gaps' sections above still describe the older board ac1b61fb239a and are stale; compiler-rust/board.txt is current. Notes @ ff75836 (refreshed 2026-11-09 03:54 PST). The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
+Main @ 828d7f9 is UNMEASURED: no official board matches it. The latest official board is ae266f8c1456 @ 82ecba7af88f (published 2026-11-09 03:32 PST), and compiler-rust/ holds exactly that source. The 'Ground truth' and 'Remaining gaps' sections above still describe the older board ac1b61fb239a and are stale; compiler-rust/board.txt is current. Notes @ 9e8672f (refreshed 2026-11-09 04:57 PST). The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
 - bot/diagnostics-directives 3bc4435
 - bot/harness 5739df7
+- bot/harness-mainref 4df67e8
 - bot/harness-obfix a051a35
 - bot/hygiene a28dd50
-- bot/js-d0265 b89e44a
+- bot/js-d0239 828d7f9
+- bot/js-d0265 5e2d886
 - bot/js-slice2 c08fbf6
-- bot/js-sourcemap fff6018
-- bot/semdiff eac1ae9
+- bot/semdiff 6a905a4
 - bot/semdiff-sd1b 9c96ee4
 - bot/ship eac1ae9
 - bot/ssr 82ecba7
