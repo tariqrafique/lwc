@@ -156,3 +156,10 @@
 - 2026-11-09 04:29 PST: mainref rework 86fb291 (pid 15ea5575) sent to Arch for delta review; asked them to rule on the class for the sourced files cargo-locked.sh and board-rows.sh.
 - 2026-11-09 04:51 PST: mainref r3 4df67e8 (pid 74775a2d) sent to Arch for delta review.
 - 2026-11-09 05:07 PST: mainref e3c362e (pid 3357eddf, trailer AB-L0079) has the merge conditions done and is awaiting Arch's APPROVE row under the new pid, then land. Carry-forward: unlocked cargo in tools/style-diff/run.mjs:99 and template-diag-diff.mjs:375, plus a .mjs/.py scan rule.
+
+## 2026-11-09 13:08 PST
+- D-0276 slice on bot/harness-d0276 **e49530db6b1f41ff88204e53f4bffc3bd7700559**, pid **0059df97ee15a18a7e32a8e9f21f73134340f3ec**, not landed. Worktree /workspace/wt/harness (on current main f679437).
+- Deleted scripts/land-classify.sh and the land.sh classify block (it only fed an echo after D-0276). Baseline-Raise still needs its own Arch APPROVE row; the "must not also be an Arch-Review id" rule is gone.
+- shim-registry.tsv owner cells (template/js) repointed to harness so the owner column stays a valid lane after the OWNERS collapse.
+- Proved from the worktree: `bash scripts/test-land-classify.sh` rc 0; `scripts/lint-shell-pipes.sh --self-test` rc 0; `bash scripts/test-shim-registry.sh` rc 0; `scripts/check-land-main-refs.sh --check scripts/land.sh scripts/land-main-refs.tsv .` rc 0. Copied main's harness/lwc-compiler-napi.node in for the run and removed it afterwards (untracked).
+- Dry check: main's current land.sh classify+Arch-Review block still refuses this slice (no Arch-Review trailer; rc 97; needs an Arch-Review trailer).
