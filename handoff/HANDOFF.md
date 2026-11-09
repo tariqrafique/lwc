@@ -33,17 +33,16 @@ csr-render 355/390, csr-render-template 545/570, ssr-render 384/389 with 5 skips
 
 
 ## Refresh note
-Main @ ebfad54 is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/ stays there). Notes @ b22a8a4. The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
+Main @ c3bab62 is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/ stays there). Notes @ c73885c (refreshed 2026-11-09 02:29 PST). The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
 - bot/diagnostics-directives 3bc4435
 - bot/harness 5739df7
-- bot/harness-d0219 df5ae6c
-- bot/harness-loc d383f64
+- bot/harness-d0219 bb05690
 - bot/harness-obfix a051a35
 - bot/hygiene a28dd50
-- bot/js-d0265 f79ea1b
+- bot/js-d0265 2c0fc83
 - bot/js-slice2 c08fbf6
 - bot/js-sourcemap fff6018
-- bot/semdiff 6814721
+- bot/semdiff c3bab62
 - bot/semdiff-sd1b 9c96ee4
 - bot/ship 8327f60
 - bot/ssr 4e1a48a
@@ -52,4 +51,4 @@ Main @ ebfad54 is UNMEASURED: no official board matches it; the latest official 
 - bot/template-expr d46d6de
 - bot/template-s2 7b8c7c5
 - bot/template-s3 2a5cff8
-- bot/template-s4 7957794
+- bot/template-s4 d62d381

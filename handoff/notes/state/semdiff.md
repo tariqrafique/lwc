@@ -1,5 +1,5 @@
 # state/semdiff.md
-Updated: 2026-11-09 01:53 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 02:22 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
 - SD-2a §11 merge conditions (AB-L0064): bot/semdiff @ **e1fd366** on main **0b903dd**, pid **dc2e9503162ab5c0510aa4961c23feba6c570a72**. Not landed. Do not run land.sh; do not message agents.
@@ -186,3 +186,14 @@ Updated: 2026-11-09 01:53 PST by semdiff. Read PLAN.md first; this file holds on
 - AB-L0064 merge conds done: tip e1fd366 / pid dc2e9503 (notes 8ba946a). Summary 64f46d36…, no deltas vs 008f7583. Sent to Arch for pid confirm. Next: verify pid with review-patch-id.sh, amend Arch-Review: AB-L0064, land.sh (now runs main board.sh check ratchet per AB-0006/D-0255, +70-90s), reset ratchet baseline at rt-1 applied-set, notify Migrate.
 - SD-2c reworked (notes 7b40438), resubmitted. Premise gate: 140/246 certify (C1 105, C2 35), 0 hoist-only. Asked Arch: build now vs defer until S4.
 - Land gate: case removal needs Case-Set: D-NNNN trailer (D-0261); harness/test|src edits need pid-bound Arch-Review.
+
+## 2026-11-09 ~02:00 PT
+- AB-L0064 APPROVE (Arch notes b22a8a4), pid fa5a165f. The executor's dc2e9503 was wrong; the script gives fa5a165f. Rebased onto ebfad54 with the pid unchanged. Branch bot/semdiff 6814721 has the trailer.
+- land.sh REFUSED: main's baseline-ceiling.sh still has the NEW-seed path, and land.sh:71 dies, which blocks all lands. Sent to Harness (priority) and Migrate. Next: when Harness pings, rerun land.sh, re-baseline the ratchet at the rt-1 applied set, and notify Migrate.
+- SD-2c: design APPROVE, build DEFERRED (AB-D0006 r2, D-0270). After S4, rerun /workspace/scratch/sd2c-premise-gate/measure.py on the fresh official board; drop it if only known Template bugs certify.
+
+## 2026-11-09 ~02:25 PT
+- AB-L0064 LANDED: main c3bab62 (pid fa5a165f). The board check gave 22 rows equal. Migrate notified.
+- Re-baselining the ratchet at rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1 (executor running).
+- land.sh:229 hardcodes $wt/target and ignores CARGO_TARGET_DIR. The workaround is to land with CARGO_TARGET_DIR unset and TDD_DRIVER_TARGET=/workspace/.targets/tdd-semdiff. Reported to Harness.
+- Waiting: Template S4, then re-cluster plus rerun the SD-2c measure.py on a fresh official board (D-0270). Later: SD-2b SSR leg, H-2.
