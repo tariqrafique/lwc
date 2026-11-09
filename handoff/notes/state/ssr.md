@@ -1,5 +1,5 @@
 # state/ssr.md
-Updated: 2026-11-09 03:25 PST by ssr (LWC SSR Rust). Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 12:47 PST by ssr (LWC SSR Rust). Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
 - AB-0002: rebuild lwc-ssr `compile_js` on the oxc AST; design APPROVED as AB-D0001 (notes f46fc9f, conditions @e77e849). Status: S0 prereq LANDED main 909573f0fed7 (AB-L0017: lwc_shared::edits w/ OverlapError + workspace oxc). S0+S1 code in progress on bot/ssr (Migrate go 22:09 PST, PLAN @faaa5e7); Ratchet: Migrate approved (PLAN @d44d60e) my single edit to harness/scripts/shim-gate.mjs + baseline file in the S0 commit; Harness reviews + Arch-Review. Ratchet commit 7f811d9 on bot/ssr (baseline 145), S0/S1 in progress. AB-L0020 (JS slice 1: lwc_shared::errors incl. SsrCompilerErrors, location::LineIndex, meta) LANDED main 48c44ae -> S2–S5 unblocked (call form: lwc-rust-migrate/error-callsite-form.md); lower error_literal_gate PENDING_MAX in slices that delete compile_js literals. Template AB-L0022 will swap element.rs:67 parse_style_text -> lwc_shared::style (no local copy; U+0085 no longer trimmed, JS-exact); I rebase. Design doc amended notes 6e37ec8. Each slice its own AB-L review; SSR numbers count only after S5.
@@ -99,3 +99,14 @@ Updated: 2026-11-09 03:25 PST by ssr (LWC SSR Rust). Read PLAN.md first; this fi
 - 00:33 Sent AB-L0071 rework fdc6009 (pid 5b201553) to Arch: expectAbsent closed set, unique callees, reg guard (10 fixtures declare reg), land.sh wording fixed, self-test 62/62.
 - 00:36 AB-L0071 LANDED: main 4e1a48a (oracle AST extraction, closed expectAbsent, reg guard, self-test 62/62). Nit for next touch: the self-test napi-missing-in-root case must unset CARGO_TARGET_DIR itself. Idle: S5 bind_expr waits on Template's AB-D0004 binder; diag-prefix waits on Harness; members/wire extractors still use regex (Arch noted, out of scope).
 - 2026-11-09 03:25 PST: bot/ssr fast-forwarded 4e1a48a -> main 82ecba7 (parse5 cutover D-0238/D-0274; no local edits, Cargo.lock untouched). D-0268: `cargo clean` in wt/ssr (11G freed); wt/ssr is my only worktree. Gates now: land runs MAIN board.sh check ratchet (D-0255); case removal needs Migrate-minted Case-Set D-id (D-0261). Idle: S5 bind_expr waits Template AB-D0004 binder; diag-prefix waits Harness. Nit queued: oracle self-test napi-missing-in-root must unset CARGO_TARGET_DIR.
+
+## FINAL HANDOFF — 2026-11-09 12:50 PST (D-0276: parked; crates/lwc-ssr now owned by LWC Worker 28881e7c)
+- Current item: none in flight. Nothing unlanded. bot/ssr in /workspace/wt/ssr = 82ecba7 (ff of main at cutover; clean tree, target/ cleaned per D-0268). Last SSR landing: 4e1a48a (AB-L0071, oracle AST extraction).
+- Numbers at last board: ssr-render 384x3 (+5 skipped), ssr 388x3, ssr_render_api 2710 (+14 skipped), dyn imports 16/16, shims 0, scanner ratchet 9=9, oracle 141 cases / 23 known diffs (shrink-only; gate = branch diff ids ⊆ $MAIN).
+- Next steps:
+  1. 5 ssr-render skips (D-0242, Harness-owned unskips, none are lwc-ssr bugs): fixtures 1-3 barrel exports fail only because the dist runtime renames unwrap→unwrap$1 → switch to src runtime; fixture 4 scope-token = upstream flake skip; fixture 5 wire colliding prop, deterministic on both compilers → needs JS-oracle golden. Write-up: notes/lwc-ssr-rust/ssr-render-sweep/ (aceb9a6).
+  2. AB-D0004 S5: delete lwc-ssr bind_expr.rs, repoint to lwc-template expr::bind + printer::print_expr once Template's binder lands; closes the 18 wire known-diffs.
+  3. diag-prefix: adopt lwc_shared LWCnnnn helper (12 csr fixtures) when shipped.
+  4. Owed nits: oracle self-test napi-missing-in-root must unset CARGO_TARGET_DIR; AB-X0006 (`pos = t` in lwc_shared::edits apply_mapped); dead `let _template_warnings` in lwc-ssr lib.rs; members/wire extractors still regex (Arch, out of scope).
+  5. Coverage GAP rows 10/12/13/15 close via Harness sweep board row. Quoter duplication (compile_template/mod.rs:245/250/270, js_str:91) is Migrate-owned debt.
+- Oracle: tools/ssr-compile-js-oracle (run.mjs --root= --main= [--napi=] [--print]; self-test.sh 62/62); D-0226/D-0254 land.sh wiring pending.

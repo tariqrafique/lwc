@@ -1,5 +1,5 @@
 # state/js.md
-Updated: 2026-11-09 04:19 PST by js (LWC JS Rust). Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 12:48 PST by js (LWC JS Style). PARKED per D-0276; owner is now LWC Worker (28881e7c). See FINAL HANDOFF at the bottom.
 
 ## Current item
 - D-0239/D-0241: delete napi's own line/column/name. Harness a93494b already reads location only (unblocked now that AB-L0075 landed). Then D-0243 (deferred until Template's AB-D0004 settles) and D-0265 phase 2.
@@ -109,3 +109,37 @@ Updated: 2026-11-09 04:19 PST by js (LWC JS Rust). Read PLAN.md first; this file
 - 11-09 04:10 AB-L0075 LANDED main **5e2d886** (pid 7123e0cd, Arch APPROVE notes d1a86c8; D-0265 step 1). Rebased 8235ac5 -> b89e44a onto obscope 6a905a4, then -> 5e2d886 onto 4a31e50 (Template AB-L0058-FU); pid unchanged, no re-stamp. Board check rc=0 in 85s, 22 rows equal. napi f4611fa26690 installed via install-napi.sh (log /workspace/scratch/js/land-ab-l0075-1.log). Deleted bot/js-sourcemap (fff6018; no worktree). Deleted the re-land routine. CURRENT: D-0239/D-0241 (delete napi's own line/column/name; Harness a93494b reads location only).
 - 11-09 04:18 AB-L0075 landed at main 5e2d886. D-0239/D-0241: bot/js-d0239 ba6c125 over 5e2d886, pid 48802d11, proposal js-D0239.md (7d170bc), sent to Arch. Told Harness its style test fallbacks to e.line/e.column are dead.
 - 11-09 04:20 AB-L0080 REWORK (small, notes aa391aa) on js-d0239: drop the From<CompileError> line/column fold and the redundant tests; rework in progress. Follow-up to queue with Migrate: CompileError's raw producer position should be one typed variant instead of bare line/column fields next to diagnostics[].location.
+
+## FINAL HANDOFF (2026-11-09 12:48 PST, D-0276) -> LWC Worker owns lwc-js, lwc-style, lwc-shared
+- **Parked.** No land is in flight and no routines or executors are running. Nothing is uncommitted in /workspace/wt/js.
+- **Last landed by js:** AB-L0080 (D-0239/D-0241) landed at main **828d7f9** at 04:26 PST, before the park. Pid 834b1116, Arch APPROVE in notes 41621de. Board check rc=0, 22 rows equal. napi 94f148cad449 was installed via install-napi.sh. Log: /workspace/scratch/js/land-ab-l0080.log.
+  - What it changed: JsCompileError no longer has its own name/line/column, and the Aggregate no longer has its own name. UnnormalizedError no longer has line/column. From<CompileError> takes its location only from the first diagnostic. The guard is exact equality with the shipped ownKeys.
+  - main is now f679437, and 828d7f9 is an ancestor of it.
+- **Branches.** All three point at commits already on main, so they can be deleted. Remove the worktree per D-0268 except the base.
+  - bot/js-d0239 828d7f9, checked out in /workspace/wt/js.
+  - bot/js-d0265 5e2d886.
+  - bot/js-slice2 c08fbf6.
+  - Old backups: backup/js-* (check with `git branch --list 'backup/js*'`).
+- **D-0265 (= D-0262 phase 2) residuals.** These are the SHIM rows in harness/shim-registry.tsv with expiry D-0265. Removing a row needs Cross-Lane: harness.
+  1. lib.rs `pass_with`: the fn pass re-parses span-edited source (private-fields/class-props/reverse). It should become an AST pass.
+  2. `unforgeables::run` parses the printed JS. It should become an AST pass.
+  3. lower.rs `async_functions` parses the printed JS. It should become an AST pass. The single cheap-exit is `lower.rs::source_has_async` (gate test `async_predicate_lives_in_one_fn_called_from_one_place`).
+  - Exit criteria (Arch AB-L0074):
+    - PARSE_SITES shrinks to parse.rs plus the one print parse.
+    - Every contains() prefilter is removed, including source_has_async.
+    - The fn-pointer R8 gap in the parse-site gate is closed.
+    - Each component takes 2 parses (it takes 4–6 today).
+- **CompileError typed-position follow-up** (Arch, from AB-L0080; not yet proposed to Migrate). CompileError has two position sources: diagnostics[].location, and the bare line/column used for the raw CssSyntaxError normalize path. The raw producer's position should be one typed variant, not loose fields next to diagnostics. Owner: lwc-shared errors/mod.rs.
+- **D-0243** (deferred per D-0267). Add `lwc_shared::js::string_literal` (JSON.stringify plus astring escaping), and delete lwc-style's copy. It is one 5-caller wave, timed after Template's AB-D0004 settles.
+- **Style GAPs (13).** These belong to Harness per D-0267 (harness corpus stages, queued after D-0246). The crate owner only does crate-side fixes once Harness surfaces failures. Also flagged to Harness: harness/test/style.behavior.test.ts and style-api.behavior.test.ts still fall back to e.line/e.column. That code is dead since AB-L0080, so delete it.
+- **Other open items:**
+  - 10 js coverage gaps.
+  - AB-0011(d): repoint lwc-js decorators.rs to lwc_shared::html_attributes, then delete the local sets and tag_name.rs.
+  - customRendererConfig 1150/1151 pass-through in lwc-compiler.
+  - Arch AB-R003-S2 follow-up (a): fold the triplicated oracle-root/b9e8007 pin check into one test helper.
+  - Owed to Arch AB-L0025: route the lwc-style serialize.rs inline version comment through `lwc_shared::meta::version_comment()`, and cap the version-comment gate at 0 (verify whether this is already done).
+- **Rules carried forward:**
+  - Install napi only via scripts/install-napi.sh.
+  - Land via land.sh with an Arch-Review trailer whose pid matches the APPROVE row.
+  - Case removal needs a Case-Set D-row minted by Migrate.
+  - Logs go in scratch/<owner>/ (D-0275).

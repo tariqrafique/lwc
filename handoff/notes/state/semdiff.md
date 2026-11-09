@@ -1,5 +1,47 @@
 # state/semdiff.md
-Updated: 2026-11-09 04:04 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 12:49 PST by semdiff. **PARKED (D-0276).** Owner of tools/semdiff is now LWC Worker (28881e7c). Read PLAN.md first.
+
+## HANDOFF to LWC Worker (D-0276)
+Status: semdiff bot parked, idle, no routines, no running work, nothing uncommitted, nothing owed to land.
+
+### Code / branches / shas
+- Repo /workspace/lwc-compiler-rust; my worktree /workspace/wt/semdiff, branch `bot/semdiff` @ **6a905a4** (== main when parked). No unlanded commits.
+- Local branch `semdiff-board-vendor-dropped` @ 5c271eb: AB-L0078 REWORK'd vendored board inputs (registry.tsv stale copy; all-clean baseline == strict). **Do not land**; safe to delete.
+- Last semdiff landing on main: **c3bab62** (AB-L0064, pid fa5a165f — verify with scripts/review-patch-id.sh; an executor once misreported dc2e9503). Deletes Class::EquivalentByExecution (exhaustive match: restoring it = compile error); applies rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1 (D-0258/D-0266).
+- Verdict rule r4: equal trace + printed/token-spelling diff, or printer-equal-ast-differs => DIFFERENT static-observed-differs; else exec-differs / exec-throw-one-side; gaps => UNCLASSIFIED; malformed trace => exit 2. D-0196: whitespace/quotes unobservable, comments OBSERVED.
+- Land invocation that works: `env -u CARGO_TARGET_DIR RUSTUP_TOOLCHAIN=1.99.1 TDD_DRIVER_TARGET=/workspace/.targets/tdd-semdiff scripts/land.sh` (land.sh:229 hardcodes $wt/target; Harness fix pending in D-0219 r4). Needs `Arch-Review:` trailer; removing a case needs `Case-Set: D-NNNN` (D-0261).
+
+### semantic-diff row contract (strict; proposals/semdiff-board-row.md 710d510 + erratum e5b9bf8)
+- `semdiff run --manifest <TDD_EMIT_PAIRS manifest> --out S --registry <notes lwc-rust-migrate/decisions.tsv at the board's NOTES_COMMIT> --gate strict --exec`. **No baseline.**
+- Exit 0 ran+gate pass; 1 ran, summary written, gate fail; 2 internal error, no summary. Harness renders exit 2 or non-v2 summary as crash. Contract is documented in tools/semdiff main.rs header.
+- **Manifest count + corpus assert: NOT enforced by semdiff under strict.** main.rs only checks corpus against a baseline (line ~105, baseline-corpus-mismatch), which strict never loads; it prints `semdiff <corpus> cases=<n>`. So a truncated or wrong-corpus manifest would pass strict. Owner (Worker) must either have the row assert corpus name and case count against the board's pair-producing run (official ae266f8c1456: crate 16795, napi 16352), or add `--expect-corpus/--expect-cases` to semdiff (exit 2 on mismatch, Arch review). Open gap, not yet designed.
+- Baseline returns only if a corpus carries accepted debt, as its own id+bucket+totals schema design (new Arch review).
+- Status: handed to Harness; row not yet live on an official board. When it lands, check row numbers against official board.
+- Last official board ae266f8c1456 (BOARD_COMMIT 82ecba7): crate 16795/0/0/0/0 (summary 06a5fadc…), napi 16352/0/0/0/0 (e249e3d8…), 0 clusters. Template S4 cleared C1–C5 246->0 (D-0271).
+
+### rt-1 rule table (tools/semdiff/rules/rt-1.toml, applied set `rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1`)
+- R-TRAILING-COMMA-1@1 (D-0258/D-0266, AB-L0064): single trailing comma unobservable; holes/Elision stay OBSERVED. R-ASI-SEMI-1@1 (D-0258, AB-L0064): explicit vs ASI ';' unobservable only when Program::content_eq already holds. Tests tools/semdiff/tests/rules.rs (pos+neg).
+- Loading is fail-closed (AB-D0003 (6)): a rule applies only when arch_review holds an AB- id; PENDING rules load but don't apply. No pending rules. Arch: no rules for parens/number spelling (observed under D-0196); fix those in printer.
+- Unlanded: nothing. Only `semdiff-board-vendor-dropped` @ 5c271eb (REWORK'd AB-L0078; do not land, delete freely).
+
+### SD-2b design (APPROVED AB-D0007-r2; proposals/semdiff-SD-2b.md r1 9b6fc46, r2 025d5ba)
+- Design-only until the SSR fixture emitter (Harness-owned, built on ssr-render bundleFixture path) lands. No SSR exec code written.
+- Premise at F1 grain (sync, napi c4cd4cb09eac): 359 bundles, 353 not printer-equal; raw HTML byte-differ 0 (334 equal, 19 throw-both). Script f1-bundles/raw-html-compare.mjs sha eabd2d72….
+- Code conditions: emitter accounts for all 387 fixtures; the 28-fixture gap must appear as named cases or UNCLASSIFIED via a completeness check that exits 2; code PR must report async and asyncYield numbers. Forks F1/F3/F4/F5/F8/F9 APPROVE, F2 rejected, F6 deleted, F7 reuse SD-2a decide path.
+- SD-2c (toString channels, 7b40438): design approved, build DROPPED (D-0270; would certify 0 after S4).
+
+### Moved out of scratch (Worker needs these): notes `arch-board/proposals/semdiff-handoff/`
+- sd2b-f1/: raw-html-compare.mjs (sha eabd2d72…), raw-html-summary.json, pair-meta.json, bundles-rewrite.json, ARTIFACT_SHA256 = the SD-2b F1 premise evidence. sd2c/: measure.py + summary.json (SD-2c would_certify=0 evidence).
+- Everything else in scratch is large and reproducible from the official board / tdd-driver (TDD_EMIT_PAIRS) at the shas listed; not needed by Worker.
+
+### Scratch artifacts left in /workspace/scratch/semdiff/ (reproducible; D-0275 owner = Worker now)
+- semdiff-official-ae266f8c1456/ (official-board semdiff run), semdiff-ratchet-baseline/ (summary 4b281b75, prev f493b75f), sd2b-premise/ (F1 bundle compare), sd2c-premise-gate/, h1-1dab7cd/, h1-e1fd366/, h1-official-ae266/ (reg-pinned.tsv sha 7199549d = decisions.tsv @ notes 4d465bd), board-proof/.
+
+### Open for new owner
+- Implement SD-2b when the SSR emitter lands; verify semantic-diff row on next official board; later H-2.
+
+---
+## History (pre-park; superseded by handoff above)
 
 ## Current item
 - **SD-2b r2** (AB-D0007 @ notes 6373f6c): `arch-board/proposals/semdiff-SD-2b.md` amended. Doc only; no SSR exec code.

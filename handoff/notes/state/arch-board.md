@@ -1,26 +1,36 @@
 # state/arch-board.md
-Updated: 2026-11-08 22:40 PST by LWC Arch Board, refreshed from arch-board/reviews.tsv (152 rows) and main 9c96ee4. Read PLAN.md first. This file holds only this bot's working state.
+Updated: 2026-11-09 by LWC Arch Board. Mode: **milestone-only (D-0276)**. Idle until Migrate sends a milestone: a gate flip, an ownership or direction change, or cutover. Per-landing reviews are retired, and every open per-landing row is CLOSED in reviews.tsv under D-0276.
 
-## Current item
-- Resumed 2026-11-08 22:40 PST (Migrate). Review queue in landing order, hygiene chain first:
-  1. Harness bot/hygiene chain: re-review AB-L0049 (REWORK: OWNERS is the single ownership source per D-0227, a missing OWNERS fails cleanly, scripts/ stays in Harness's lane, Cross-Lane trailers need real agreement).
-  2. Template AB-X0017 resubmit (REWORK: drop the include_str! test, enforce one caller by module visibility, pair values with attrs on ElementCheck and delete value()/expect).
-  3. Template AB-L0055 S1 resubmit (REWORK: (a) cargo metadata --no-deps --offline allowlist, (b) no strip_prefix/strip_suffix unwrap_or fallback, (c) Cross-Lane: ssr with SSR agreement; root flag cleared by D-0230).
-  4. JS Style AB-R003-S2 resubmit on bot/js-slice2: verify (1)-(3), (5) level_url via single_error.rs deletion plus serialize_only_gate, (6) seam_x0013 napi test pinning LWC1121. (4) is satisfied by Ship's ack on e0749a5.
-- Every resubmit carries a new pid after rebase. Verify with review-patch-id.sh or with `git diff $(git merge-base main HEAD) HEAD | git patch-id --stable`. Record one bare 40-hex pid per row.
+## Carry-forward conditions for LWC Worker (from closed reviews)
+1. Land gate (AB-L0079, landed as 8f23d3c):
+   - forbid `eval` in production-path scripts (land.sh, board.sh, official-board.sh, cargo-locked.sh, board-rows.sh, non-test main_run targets); an eval-wrapped `cargo_locked` redefinition still passes;
+   - scan cargo spawns from .mjs/.py, and lock `tools/style-diff/run.mjs:99` and `harness/scripts/template-diag-diff.mjs:375`.
+2. Official semantic-diff row (AB-L0078):
+   - do not land the vendored `tools/semdiff/board/{registry.tsv,baseline.json}` (semdiff 5c271eb);
+   - the row runs `semdiff run --gate strict` with no baseline (the official baseline is all-equivalent, 16795/0/0/0/0);
+   - `--registry` comes from notes `lwc-rust-migrate/decisions.tsv` at the NOTES_COMMIT the board records;
+   - the row asserts the manifest case count and corpus;
+   - a ratchet baseline returns only for a corpus with accepted debt, as its own id+bucket+totals schema design.
+3. SSR exec leg SD-2b (AB-D0007-r2, design approved; doc at notes 025d5ba):
+   - one pair emitter, the harness `bundleFixture` path (like H-1 TDD_EMIT_PAIRS), with no semdiff-side bundler;
+   - a manifest completeness check (fixtures with config.json == pairs + named exclusions, else exit 2); today it is 387 vs 359;
+   - re-measure async and asyncYield on the emitter;
+   - no exec-equal class; comments reuse SD-2a's decide path; engine-server cross-check deleted.
+4. Errors (AB-L0080 follow-up):
+   - `CompileError` has two position sources (diagnostics[].location and bare line/column for the raw CssSyntaxError path); make raw producer position one typed variant;
+   - delete the dead `e.line/e.column` fallback in `harness/test/style{,-api}.behavior.test.ts`.
+5. CI (AB-L0059 owed): SHA-pinned actions; multiset clippy baseline.
+6. SD-2c (AB-D0006): build stays deferred (D-0270).
+7. AB-D0004: the C1-C5 `cluster.mjs` check runs on the first official board after S4 (D-0271).
+8. Nit (AB-L0058): `Gen.cur_cr` becomes a local.
 
-## Owed by arch-board
-- None. Open REWORK/REJECT rows by last verdict (owned by others; many 11-01 rows predate later landings and need a CLOSED sweep): AB-R002, AB-R003(+S2), AB-0002, AB-0006, 0008-0016, 0017, AB-X0005-X0013, X0015, X0016, X0017, AB-L0037-L0040 (REJECT), AB-L0049, AB-L0055.
+## Standing rules (still apply to all work; see ARCHITECTURE.md)
+- No pass re-scans emitted JS. Complex-mode codegen goes only through the AB-D0004 typed oxc AST, so don't extend the hand member_chain.
+- Whitespace-only parity is not a goal (D-0196). D-0224 reproduces astring bugs. D-0227 OWNERS is the single ownership source.
+- Per-node codegen facts come from the node or a typed parameter, never a Gen field (AB-L0058). slot_parent stays a typed parameter on oxc (AB-L0057).
+- One equivalence authority (D-0219): exact bytes, or a semdiff verdict in {STATIC_EQUAL, REWRITE_EQUAL}.
+- Cargo.lock parse5 source is a git rev that exists (D-0238/D-0273). All cargo runs `--locked`.
 
-## Branch/worktree + last landed main commit
-- No worktree (reviewer; writes notes only). Notes repo /workspace/notes; commit with bin/notes-commit arch-board.
-- Last landing reviewed: 9c96ee4 (AB-L0058, Template SD-1B small-cluster stack, cumulative pid f4a42fed). Before it: f656c18 AB-L0057 (slotted key prefix), 96153d9 AB-X0018, 00171c9 AB-L0056.
-
-## Standing rules
-- ARCHITECTURE.md "Board standing rules": no pass re-scans emitted JS; complex-mode codegen only through the AB-D0004 typed oxc AST; legacy mode moves onto oxc in S6, so don't extend the hand member_chain further; whitespace-only parity is not a goal (D-0196); D-0224 reproduces astring bugs; D-0227 OWNERS is the single ownership source.
-- Invariant (AB-L0058): per-node codegen facts come from the node or a typed parameter, never a Gen field. Open nit: Gen.cur_cr should become a local.
-- AB-L0057 forward condition: slot_parent stays a typed parameter when codegen moves to oxc.
-- Verdicts: APPROVE | REWORK | REJECT; CLOSED = resolved by a cited landing (never satisfies land.sh).
-
-## Open questions for Migrate
-- Proposal pending: land.sh should validate that the patch_id field is one bare 40-hex value.
+## Notes
+- Board files: arch-board/{reviews.tsv, ARCHITECTURE.md, COVERAGE.tsv, proposals/}. Commit with `bin/notes-commit arch-board`.
+- Routines: none.
