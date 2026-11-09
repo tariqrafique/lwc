@@ -1,17 +1,17 @@
 # state/semdiff.md
-Updated: 2026-11-09 00:40 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 01:14 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
-- SD-2a §11 (AB-L0064 rework 2): bot/semdiff @ **b87b3fb** on main **2e03887**, pid **b1fcd017f66f1506e1b66706a74931827ac01112**. Not landed. Resubmit to Arch (design §11; pending rules R-TRAILING-COMMA-1, R-ASI-SEMI-1). Rebase before land.sh and re-check the pid.
-- Rule table is rt-1. An rt-0 ratchet baseline fails with baseline-rule-table-mismatch unless `--reset-baseline`; that is expected.
-- Corpus (live-tree, NON-REPORTABLE): 16549 eq / 106 different_undecided / 140 unclassified (`exec-equal-static-observed`) / 0 crash. 140 cases moved off DIFFERENT (the equal-trace numeric and arrow-paren clusters). EXEC_EQUAL is dead on `semdiff run --exec`.
-- Question for Migrate (D-0196 / D-0258): should Function#toString be scoped to the banner comment `checkVersionMismatch` reads plus known engine reads? Until then the cap stays.
+- SD-2a §11 (AB-L0064 rework 2, defect fix): bot/semdiff @ **ad6d47f** on main **34175ef**, pid **d2efcf1e81dbea5429d40a379e8f891ce37d190c**. Not landed. Do not run land.sh; resubmit to Arch (design §11). PENDING rules R-TRAILING-COMMA-1 and R-ASI-SEMI-1 load but do not apply.
+- Applied-set identity is rt-0 while both rules are PENDING. Approving a rule flips it to rt-1 and then a ratchet against rt-0 needs `--reset-baseline`.
+- Corpus (live-tree, NON-REPORTABLE): 16549 eq / 246 different_undecided / 0 unclassified / 0 crash. vs b87b3fb: exactly 140 UNCLASSIFIED `exec-equal-static-observed` → DIFFERENT `static-observed-differs` (all token-spelling-differs; C1 numeric + C2 arrow parens). EXEC_EQUAL is dead on `semdiff run --exec`.
+- Question for Migrate (D-0196): should Function#toString be scoped to the banner comment `checkVersionMismatch` reads plus known engine reads? A hoist-only pair is DIFFERENT under the strict reading; that is what scoping would change.
 
 ## Owed REWORKs (ids)
-- AB-L0064 (§11 premise cap + D-0258 rules): reworked at b87b3fb, awaiting re-review.
+- AB-L0064 (§11 premise cap + D-0258 rules): reworked at ad6d47f (fixes vs b87b3fb: static-observed is DIFFERENT; PENDING rules do not apply), awaiting re-review.
 
 ## Branch/worktree + last landed main commit
-- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ b87b3fb (1 ahead of main 2e03887).
+- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ ad6d47f (1 ahead of main 34175ef).
 - Uncommitted: none
 - Last landing on main by this bot: 4497308 (SD-2a, AB-L0051)
 
@@ -138,3 +138,21 @@ Updated: 2026-11-09 00:40 PST by semdiff. Read PLAN.md first; this file holds on
 - Mutations: cap off → arch_probes fail; trailing-comma skip off → trailing_comma_is_unobservable fails; ASI skip off → asi_semicolon… fails; elision treated as trailing → trailing_comma_predicate fails. The built-in test `without_the_static_cap_printed_differs_probes_become_exec_equal` documents the false pass.
 - Corpus: summary f53ca75c… byte-identical (jobs 6 / jobs 4). 16549 / 106 / 140 / 0 / 0. 140 class changes, all exec-static-spelling-differs → exec-equal-static-observed.
 - Next: Arch re-review of b87b3fb and of the two pending rules; Migrate on the D-0196 toString scope question; land on APPROVE (needs `--reset-baseline` for the rt-0 → rt-1 ratchet).
+
+## 2026-11-09 01:00 PST: AB-L0064 rework 2 defect fix (resubmit)
+- Two defects in b87b3fb fixed before resubmit. Tip **ad6d47f** on main **34175ef**, pid **d2efcf1e81dbea5429d40a379e8f891ce37d190c**. Tests: 79 passed (`cargo test -p semdiff --locked`: 2 lib, 21 cli, 6 decisions, 22 exec, 10 ratchet, 12 rewrite, 6 rules).
+- (1) Equal traces + rewrite printed-differs / token-spelling-differs / printer-equal-ast-differs are DIFFERENT `static-observed-differs` (rewrite first_diff + `trace: equal`), not UNCLASSIFIED. NotProven / exec-uncovered stay UNCLASSIFIED. A hoist-only pair is DIFFERENT (strict D-0196; the pending Migrate toString-scope question would change that).
+- (2) PENDING rules load but do not apply (AB-D0003). Applied-set identity is rt-0. Rule positives/negatives run through `compare_forcing_rules`. A trailing-comma-only pair stays token-spelling-differs.
+- Mutations, all killed: printed-differs-to-UNCLASSIFIED; PENDING-applies (unit + CLI); cap-off; comma skip off; `is_semicolon` always false; elision treated as trailing.
+- Corpus: H-1 pairs 95b1ed4e…, registry pin sha 7199549d…. Summaries jobs 6 and jobs 4 byte-identical, sha256 05ed7cd6…. Buckets 16549 / 246 / 0 / 0 / 0 (by_reason: printer-equal 16549, exec-differs 71, exec-throw-one-side 35, static-observed-differs 140). vs b87b3fb (f53ca75c…): exactly 140 class changes, all UNCLASSIFIED exec-equal-static-observed → DIFFERENT static-observed-differs.
+- Did not run land.sh; messaged no agents.
+
+## 2026-11-09 01:00 PST
+- AB-L0064 rework-2 resubmitted to Arch: bot/semdiff ad6d47f on 34175ef, pid d2efcf1e81dbea5429d40a379e8f891ce37d190c, 79/79. Asked Arch for per-rule verdicts on R-TRAILING-COMMA-1 and R-ASI-SEMI-1. Live corpus: 16549 / 246 DIFFERENT / 0 unclassified / 0 crash.
+- Asked Migrate: should D-0196 limit the toString channel? Until it answers, exec-equal can't be reached.
+- Template S2 7b8c7c5 is codegen-identical, so no re-cluster. Waiting on S4.
+
+## 2026-11-09 01:15 PST
+- AB-L0064 r3: REWORK (notes b9c3fbb). The premise was accepted. Still to do: delete the dead EXEC_EQUAL path; R-ASI-SEMI-1 is APPROVE; R-TRAILING-COMMA-1 needs restricting by AST parent, because it must not skip destructuring patterns; fix the rt-1.toml comment; define the rule ids in one place. Rework in progress.
+- D-0263 (Migrate) narrows toString to banner, engine reads, stringified-into-DOM and in-output coercion. The design doc SD-2c comes first and goes to Arch before any code.
+- Template S3 2a5cff8 is codegen-identical. Lock: cargo --locked is missing the parse5 git source on main; Arch is routing that to Migrate.
