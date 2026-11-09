@@ -556,3 +556,136 @@ UNCLASSIFIED `exec-equal-static-observed` → DIFFERENT `static-observed-differs
 `token-spelling-differs` (the C1 numeric and C2 arrow-paren clusters whose traces agreed). The 71+35 trace divergences
 are unchanged. No other class moved. No case became rewrite-equivalent (PENDING rules did not apply; this corpus had
 no trailing-comma-only or ASI-only pair that would have been rewritten even if they had).
+
+
+## 11.8 AB-L0064 r4 (D-0266 trailing-comma AST structure; EXEC_EQUAL deleted; ASI approved)
+
+Tree: /workspace/wt/semdiff @ **1dab7cd** on main **2a5cff8**, pid **1e88047f65012dbcbe92e613f9c83179d66e1985**.
+Oracle b9e8007, clean. Design for D-0263 is SD-2c (notes only):
+`arch-board/proposals/semdiff-SD-2c-toString-channels.md`. No D-0263 code in this tip.
+
+### Verdict
+`Reason::ExecEqual` and the `Class::EquivalentByExecution` construction are deleted.
+`Class::EquivalentByExecution` remains in the schema as reserved. When traces are
+equal: comments → `exec-static-comments-differ`; rewrite `printed-differs` /
+`token-spelling-differs` / `printer-equal-ast-differs` → DIFFERENT
+`static-observed-differs`; otherwise UNCLASSIFIED `exec-uncovered`
+(`branch_coverage: not-proven` if coverage is empty). The AB-L0051 rust-vs-rust
+control asserts byte-equal traces, not a verdict. EXEC_EQUAL is gone from the
+CLI path and from `decide`.
+
+A hoist-only pair stays DIFFERENT under D-0196 until SD-2c is approved and
+implemented. That is the D-0263 opening, not this tip.
+
+### Rules (file rt-1; applied-set rt-1)
+A rule is enabled when `arch_review` holds an `AB-` id (a reviewed code change).
+There is no `reviews.tsv` check and no `with_pending_applied`. Ids are read from
+`rules/rt-1.toml`; Rust does not duplicate the tagged strings.
+
+| id | arch_review | what it skips | required negatives |
+|---|---|---|---|
+| R-TRAILING-COMMA-1 | PENDING | a comma whose start sits in the trailing region of an allowlisted list | a last-slot hole is not a trailing comma |
+| R-ASI-SEMI-1 | AB-L0064 | a `;` token on exactly one side | an ASI difference that changes the AST |
+
+Allowlist = D-0258 ∪ D-0266: ArrayExpression, ObjectExpression, FormalParameters,
+CallExpression, NewExpression, ImportDeclaration, ExportNamedDeclaration,
+ObjectPattern, ArrayPattern, ObjectAssignmentTarget, ArrayAssignmentTarget.
+The visitor does not walk any other list type as allowed. Under `SourceType::mjs()`
+oxc has no other JS production that yields a trailing comma (a sequence expression
+cannot end in a comma; `(a,)` is FormalParameters only as an arrow; type-position
+commas require TypeScript, which this parse does not use).
+
+A trailing comma is distinguished from an elision by AST element structure, not
+token text. For `ArrayExpression`, if the last element is `Elision` there is no
+trailing region; otherwise the region is `(last.span.end, node.span.end)`. For
+`ArrayPattern` / `ArrayAssignmentTarget`, the elements array is `Vec<Option<_>>`;
+a last-slot `None` is a hole and there is no trailing region; a last-slot
+`Some(el)` yields the region after `el.span.end`. Object lists have no holes.
+A `Kind::Comma` is skipped iff its `start` lies in the innermost allowlisted
+node's trailing region.
+
+D-0266: `[a,]=o` == `[a]=o` (assignment, declarator, and param). Holes stay
+OBSERVED: `[a,,]=o` != `[a,]=o`; `[,a]=o` stays observed; `[,]=o` != `[]=o`;
+`[a,,]` nested in a param is observed; two trailing commas are a hole.
+
+The rule stays PENDING, so a trailing-comma-only pair in `semdiff run` remains
+`token-spelling-differs`. Positives and negatives run through
+`compare_forcing_rules` and through `trailing_comma_in_d0258_or_d0266_context`
+(the AST-element predicate). Because ASI applies, the applied identity is **rt-1**.
+A ratchet against an rt-0 baseline reports `baseline-rule-table-mismatch` unless
+`--reset-baseline`.
+
+### Tests (`cargo test -p semdiff --locked`: 81 passed)
+3 lib, 21 cli, 6 decisions, 21 exec, 10 ratchet, 12 rewrite, 8 rules.
+`--locked` succeeds on this box because `/workspace/.cargo/config.toml` patches
+parse5 to `/workspace/parse5-rust/crates/parse5`. The committed `Cargo.lock`
+still has a `parse5` 0.1.0 entry with no git `source` line (predates this tip;
+do not fix it from tools/semdiff).
+
+### Mutations (each change applied alone; all killed)
+| mutation | killed by |
+|---|---|
+| printed-differs-to-UNCLASSIFIED | `static_hoisting_pair_is_different_static_observed` |
+| PENDING-applies (`is_applied` always true) | `pending_rule_does_not_apply`, `pending_trailing_comma_stays_token_spelling_differs` |
+| drop-pattern-contexts (D-0266 parents record no trailing region) | `trailing_comma_is_unobservable` (`let {a,}=o` vs `let {a}=o`), `ast_elements_distinguish_trailing_comma_from_elision` |
+| treat-pattern-elision-as-trailing (`Some(None)` yields a trailing region) | `rules::tests::ast_elements_distinguish_trailing_comma_from_elision` (`[a,,]=o` and `[,a]=o`). The compare-level `pattern_elision_is_observed` still passes because print/ContentEq already differ for holes |
+| ASI-enabled-vs-pending (`arch_review` of R-ASI-SEMI-1 set back to PENDING) | `asi_rule_applies_when_approved`, `table_lists_asi_applied_and_comma_pending` |
+| comma skip forced off | `trailing_comma_is_unobservable` |
+| `is_semicolon` always false | `asi_semicolon_with_identical_ast_is_unobservable` |
+
+### Corpus (live-tree, NON-REPORTABLE)
+- Tree: /workspace/wt/semdiff @ **1dab7cd** on main **2a5cff8**, pid **1e88047f65012dbcbe92e613f9c83179d66e1985**.
+  Oracle b9e8007, clean.
+- H-1 pairs content **95b1ed4e…** (identical to 6016fa4 / 9c96ee4 / d46d6de / b87b3fb / ad6d47f). Manifest ids/paths **de43daea…**.
+- `semdiff run --exec`, seed 1, registry pinned to the same file as b87b3fb / ad6d47f (sha **7199549d…**): jobs 6 and jobs 4 give
+  **byte-identical** summaries, sha256 **008f7583e7ec56aa471f0079bd33ef75272e4391a977cdeb4bc116c7f9363081**.
+  `rule_table_version` **rt-1**, exec.cases_run 246.
+
+| Bucket | n | notes |
+|---|---|---|
+| equivalent | 16549 | all printer-equal; 0 exec-equal (deleted) |
+| different_undecided | 246 | exec-differs 71 + exec-throw-one-side 35 + static-observed-differs 140 |
+| unclassified | 0 | |
+| different_decided | 0 | |
+| crash | 0 | |
+
+Class/reason changes vs ad6d47f (summary 05ed7cd6…, `rule_table_version` rt-0): **0**.
+The summary bytes differ only because the applied-set identity is now rt-1 (ASI
+approved). vs e6637ba (the pre-D-0266 r3 squash): summaries are byte-identical
+(008f7583…); D-0266 does not apply while R-TRAILING-COMMA-1 is PENDING, and this
+corpus has no trailing-comma-only or ASI-only pair. vs b87b3fb (f53ca75c…): the
+same 140 UNCLASSIFIED `exec-equal-static-observed` → DIFFERENT `static-observed-differs`
+already reported for ad6d47f.
+
+
+## 11.9 AB-L0064 merge conditions (both rules applied; Class::EquivalentByExecution deleted)
+
+Tree: /workspace/wt/semdiff @ **e1fd366** on main **0b903dd**, pid **dc2e9503162ab5c0510aa4961c23feba6c570a72**.
+Approved r4 was 681aba0 (pid bc8e8661, notes 868a1de). This tip is that tree plus the two merge conditions, squashed.
+
+### What was deleted
+`Class::EquivalentByExecution`: the variant, its `as_str` mapping (`"EQUIVALENT-BY-EXECUTION"`), the `bucket()` arm in `lib.rs` that mapped it onto totals bucket `equivalent`, and the `assert_ne!(…, Class::EquivalentByExecution)` in `tests/exec.rs` (and the same guard in `tests/rules.rs`). Comments that named the reserved class as a live path were rewritten. `tools/semdiff/scripts/cluster.mjs` has no reference. README/doc tables in the crate do not list the class. `by_class` is not a summary key; totals use the five buckets.
+
+Historical v1/v2 summaries still read. `read_totals` and the ratchet (`buckets_of`) parse `totals.{equivalent,different_decided,different_undecided,unclassified,crash}` and each case's `bucket` string. They never parse a verdict `class` of `EQUIVALENT-BY-EXECUTION`. A baseline whose `bucket` is not in `TOTALS_KEYS` fails closed (`unknown bucket`). Removing the variant therefore does not break reading a historical baseline, including 681aba0's summary 008f7583… (0 exec-equal cases; its `equivalent` bucket is all EQUIVALENT-BY-REWRITE).
+
+An exhaustive match in `tests/rules.rs::class_has_no_equivalent_by_execution` fails to compile if the variant is restored.
+
+### Trailing comma approved
+`R-TRAILING-COMMA-1.arch_review = "AB-L0064"`. Both rules applied. The any-applied name `rt-1` was the ASI-only identity on 681aba0; it must not be reused. `applied_table_version` is now `rt-0` while nothing is applied, otherwise `rt-1:` plus the sorted tagged ids: **`rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1`**. A ratchet against 681aba0 is `baseline-rule-table-mismatch` unless `--reset-baseline`.
+
+### Tests (`cargo test -p semdiff --locked --offline`: 82 passed)
+3 lib, 21 cli, 6 decisions, 21 exec, 10 ratchet, 12 rewrite, 9 rules.
+
+### Mutations
+| mutation | killed by |
+|---|---|
+| restore `Class::EquivalentByExecution` (variant + `as_str` + `bucket` arm) | compile fail: `class_has_no_equivalent_by_execution` is non-exhaustive |
+| comma pending vs applied (`arch_review` of R-TRAILING-COMMA-1 set back to PENDING) | `approved_trailing_comma_applies`, `table_lists_both_rules_applied` |
+
+### Corpus (live-tree, NON-REPORTABLE)
+- H-1 pairs **95b1ed4e…**, manifest **de43daea…**, registry pin **7199549d…**, seed 1, oracle b9e8007.
+- jobs 6 and jobs 4 summaries **byte-identical**, sha256 **64f46d36e28706f18228c3da1d7177717cf1b0c08266c8970aed705da86c19ca**.
+- `rule_table_version` **rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1**, exec.cases_run 246.
+- Buckets unchanged: 16549 equivalent / 246 different_undecided / 0 unclassified / 0 crash
+  (printer-equal 16549, exec-differs 71, exec-throw-one-side 35, static-observed-differs 140).
+- Class/reason deltas vs 681aba0 summary **008f7583…**: **none**. No case left DIFFERENT. No case moved to EQUIVALENT-BY-REWRITE. The 246 remain C1 numeric (105, token-spelling, equal traces), C2 arrow parens (35 equal-trace + 1 exec-differs), C3 throw (35), C4–C5 exec-differs (70). None of them has a trailing comma as its sole observed difference, so D-0258/D-0266 applying does not rewrite any pair. The summary hash changed only because the applied-set identity is no longer `rt-1`.

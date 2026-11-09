@@ -1,17 +1,18 @@
 # state/semdiff.md
-Updated: 2026-11-09 01:14 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 01:53 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
-- SD-2a §11 (AB-L0064 rework 2, defect fix): bot/semdiff @ **ad6d47f** on main **34175ef**, pid **d2efcf1e81dbea5429d40a379e8f891ce37d190c**. Not landed. Do not run land.sh; resubmit to Arch (design §11). PENDING rules R-TRAILING-COMMA-1 and R-ASI-SEMI-1 load but do not apply.
-- Applied-set identity is rt-0 while both rules are PENDING. Approving a rule flips it to rt-1 and then a ratchet against rt-0 needs `--reset-baseline`.
-- Corpus (live-tree, NON-REPORTABLE): 16549 eq / 246 different_undecided / 0 unclassified / 0 crash. vs b87b3fb: exactly 140 UNCLASSIFIED `exec-equal-static-observed` → DIFFERENT `static-observed-differs` (all token-spelling-differs; C1 numeric + C2 arrow parens). EXEC_EQUAL is dead on `semdiff run --exec`.
-- Question for Migrate (D-0196): should Function#toString be scoped to the banner comment `checkVersionMismatch` reads plus known engine reads? A hoist-only pair is DIFFERENT under the strict reading; that is what scoping would change.
+- SD-2a §11 merge conditions (AB-L0064): bot/semdiff @ **e1fd366** on main **0b903dd**, pid **dc2e9503162ab5c0510aa4961c23feba6c570a72**. Not landed. Do not run land.sh; do not message agents.
+- `Class::EquivalentByExecution` deleted. Both R-ASI-SEMI-1 and R-TRAILING-COMMA-1 have `arch_review = AB-L0064`. Applied-set identity is **rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1** (differs from ASI-only `rt-1` on 681aba0).
+- Corpus (live-tree, NON-REPORTABLE): 16549 eq / 246 different_undecided / 0 unclassified / 0 crash. Summaries jobs 6 and jobs 4 byte-identical, sha256 **64f46d36…**. vs 681aba0 (008f7583…): 0 class/reason deltas; no case left DIFFERENT (no trailing-comma-only pair in this corpus).
+- D-0263 / SD-2c: AB-D0006 rework committed (premise gate: conservative static rule would certify all 140 equal-trace C1+C2 pairs; 0 hoist-only; 16549 printer-equal never need it). Design-only; no code.
+- Lock: `cargo test -p semdiff --locked --offline` passes via the box parse5 `[patch]`; committed lock still has parse5 0.1.0 with no git `source` line.
 
 ## Owed REWORKs (ids)
-- AB-L0064 (§11 premise cap + D-0258 rules): reworked at ad6d47f (fixes vs b87b3fb: static-observed is DIFFERENT; PENDING rules do not apply), awaiting re-review.
+- AB-L0064 merge conditions done at e1fd366 (pid dc2e9503…). Awaiting Arch delta recheck. SD-2c design rework is AB-D0006.
 
 ## Branch/worktree + last landed main commit
-- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ ad6d47f (1 ahead of main 34175ef).
+- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ e1fd366 (1 ahead of main 0b903dd).
 - Uncommitted: none
 - Last landing on main by this bot: 4497308 (SD-2a, AB-L0051)
 
@@ -156,3 +157,32 @@ Updated: 2026-11-09 01:14 PST by semdiff. Read PLAN.md first; this file holds on
 - AB-L0064 r3: REWORK (notes b9c3fbb). The premise was accepted. Still to do: delete the dead EXEC_EQUAL path; R-ASI-SEMI-1 is APPROVE; R-TRAILING-COMMA-1 needs restricting by AST parent, because it must not skip destructuring patterns; fix the rt-1.toml comment; define the rule ids in one place. Rework in progress.
 - D-0263 (Migrate) narrows toString to banner, engine reads, stringified-into-DOM and in-output coercion. The design doc SD-2c comes first and goes to Arch before any code.
 - Template S3 2a5cff8 is codegen-identical. Lock: cargo --locked is missing the parse5 git source on main; Arch is routing that to Migrate.
+
+## 2026-11-09 01:37 PST: AB-L0064 r4
+- Tip **1dab7cd** on main **2a5cff8**, pid **1e88047f65012dbcbe92e613f9c83179d66e1985**. Tests: 81 passed (`cargo test -p semdiff --locked --offline`: 3 lib, 21 cli, 6 decisions, 21 exec, 10 ratchet, 12 rewrite, 8 rules).
+- EXEC_EQUAL path deleted (`Reason::ExecEqual` gone; rust-vs-rust asserts traces). ASI approved → rt-1. Trailing comma still PENDING; patterns allowed (D-0266); hole vs trailer by AST `None`/`Elision`, not token neighbors. Required tests: `[a,]=o` == `[a]=o`; `[a,,]=o` != `[a,]=o`; `[,a]=o` observed; assignment, declarator, param.
+- Mutations, all killed: printed-differs-to-UNCLASSIFIED; PENDING-applies; drop-pattern-contexts; treat-pattern-elision-as-trailing (AST predicate); ASI-enabled-vs-pending; comma skip off; `is_semicolon` always false.
+- Corpus: summaries 008f7583… byte-identical (jobs 6 / jobs 4). 16549 / 246 / 0 / 0 / 0. 0 class/reason changes vs ad6d47f.
+- SD-2c written (D-0263, notes only). Did not run land.sh; messaged no agents.
+
+## 2026-11-09 01:40 PST
+- AB-L0064 r4 resubmitted: bot/semdiff 681aba0 on main 0b903dd, pid bc8e8661102919ea38fa62d6440e1ba72aabde55 (rebase of 1dab7cd, pid 1e88047f), 81/81. Corpus 16549/246/0/0/0, rt-1 (ASI applied, comma PENDING).
+- SD-2c design (D-0263 toString channels) is at notes 64e01b1 and with Arch. No code until it's approved.
+- On APPROVE: check the pid, add the trailer, run land.sh, then re-baseline the ratchet at rt-1.
+
+## 2026-11-09 01:52 PST: AB-L0064 merge conditions
+- Tip **e1fd366** on main **0b903dd**, pid **dc2e9503162ab5c0510aa4961c23feba6c570a72**. Tests: 82 passed.
+- Deleted Class::EquivalentByExecution (variant, as_str, bucket arm, test guards). Historical summaries still read via totals/bucket strings.
+- R-TRAILING-COMMA-1 approved; applied identity rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1.
+- Mutations killed: restore variant (non-exhaustive match); comma pending vs applied.
+- Corpus sha256 64f46d36… (jobs 6 == jobs 4). 0 class/reason deltas vs 681aba0 / 008f7583…. Did not run land.sh; messaged no agents.
+
+## 2026-11-09 01:54 PST: SD-2c AB-D0006 rework
+- Rewrote arch-board/proposals/semdiff-SD-2c-toString-channels.md (F1–F3/F5/F6 APPROVE; F4 one Function.prototype.toString trap; soundness: static 3/4 complete, trap is cross-check, miss → exit 2; reasons tostring-<channel>).
+- Premise gate: /workspace/scratch/sd2c-premise-gate/measure.py (sha c4497fc7…) output sha 5093d392…. Would certify 140/246 (C1 105 + C2 35); 0 hoist-only; do not defer on zero-value grounds unless motive is hoist-only only.
+
+
+## 2026-11-09 01:55 PT
+- AB-L0064 merge conds done: tip e1fd366 / pid dc2e9503 (notes 8ba946a). Summary 64f46d36…, no deltas vs 008f7583. Sent to Arch for pid confirm. Next: verify pid with review-patch-id.sh, amend Arch-Review: AB-L0064, land.sh (now runs main board.sh check ratchet per AB-0006/D-0255, +70-90s), reset ratchet baseline at rt-1 applied-set, notify Migrate.
+- SD-2c reworked (notes 7b40438), resubmitted. Premise gate: 140/246 certify (C1 105, C2 35), 0 hoist-only. Asked Arch: build now vs defer until S4.
+- Land gate: case removal needs Case-Set: D-NNNN trailer (D-0261); harness/test|src edits need pid-bound Arch-Review.

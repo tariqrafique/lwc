@@ -1,16 +1,16 @@
-# LWC → Rust migration: handoff (refreshed 2026-11-09 01:23 PST)
+# LWC → Rust migration: handoff (refreshed 2026-11-09 01:56 PST)
 
 Fleet resumed 2026-11-08 22:40 PST; branches below are in flight and move often. Every bot's work is either on main or on a committed bot/* branch, and all of it is in the bundle below.
 
 ## What's here
-- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ 2a5cff8 plus every bot/* branch. Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
-- `notes.bundle`: full notes repo @ 0ceb50e (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/notes-commit, bin/d-id).
+- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ ebfad54 plus every bot/* branch. Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
+- `notes.bundle`: full notes repo @ b22a8a4 (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/notes-commit, bin/d-id).
 - `notes/`: plain copies of the notes, for reading on GitHub.
 - `semdiff-uncommitted.patch`: Semdiff's uncommitted WIP from wt/semdiff (exec.rs, lib.rs, tests/exec.rs, new spelling.rs). Apply it on bot/semdiff.
 
 ## Ground truth
 - Oracle: salesforce/lwc 9.5.3 @ b9e8007 (clean). This branch's base is upstream-b9e8007.
-- `compiler-rust/` on this branch = the last **official** board's source: board ac1b61fb239a @ c731fb601f40 (2026-11-01 21:58 PST). Main (2a5cff8) is newer and unmeasured. Boards are provisional until AB-0006 lands.
+- `compiler-rust/` on this branch = the last **official** board's source: board ac1b61fb239a @ c731fb601f40 (2026-11-01 21:58 PST). Main (ebfad54) is newer and unmeasured. Boards are provisional until AB-0006 lands.
 - Plan of record: notes/lwc-rust-migrate/PLAN.md. Decisions: notes/lwc-rust-migrate/decisions.tsv (D-0001..D-0265).
 
 ## Unlanded branches (rebase onto main and re-gate before landing)
@@ -33,20 +33,17 @@ csr-render 355/390, csr-render-template 545/570, ssr-render 384/389 with 5 skips
 
 
 ## Refresh note
-Main @ 2a5cff8 is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/ stays there). Notes @ 0ceb50e. The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
+Main @ ebfad54 is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/ stays there). Notes @ b22a8a4. The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
 - bot/diagnostics-directives 3bc4435
 - bot/harness 5739df7
 - bot/harness-d0219 df5ae6c
-- bot/harness-gate 2bc6188
+- bot/harness-loc d383f64
 - bot/harness-obfix a051a35
-- bot/harness-shimreg cdfbc0b
 - bot/hygiene a28dd50
-- bot/js-d0262 00a1f53
-- bot/js-div2 34175ef
-- bot/js-j3 c471bb3
+- bot/js-d0265 f79ea1b
 - bot/js-slice2 c08fbf6
 - bot/js-sourcemap fff6018
-- bot/semdiff e6637ba
+- bot/semdiff 6814721
 - bot/semdiff-sd1b 9c96ee4
 - bot/ship 8327f60
 - bot/ssr 4e1a48a
@@ -55,4 +52,4 @@ Main @ 2a5cff8 is UNMEASURED: no official board matches it; the latest official 
 - bot/template-expr d46d6de
 - bot/template-s2 7b8c7c5
 - bot/template-s3 2a5cff8
-- bot/template-s4 2a5cff8
+- bot/template-s4 7957794
