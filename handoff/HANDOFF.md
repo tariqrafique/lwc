@@ -33,10 +33,10 @@ csr-render 355/390, csr-render-template 545/570, ssr-render 384/389 with 5 skips
 
 
 ## Refresh note
-Main @ e75ce42 is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/ stays there). Notes @ a411ddb (refreshed 2026-11-09 02:56 PST). The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
+Main @ e75ce42 is UNMEASURED: no official board matches it; the latest official board is still ac1b61fb239a @ c731fb601f40 (compiler-rust/ stays there). Notes @ af16d79 (refreshed 2026-11-09 03:21 PST). The 'Unlanded branches' list above is stale; see state/*.md and these current bot/* tips in the bundle:
 - bot/diagnostics-directives 3bc4435
 - bot/harness 5739df7
-- bot/harness-d0219 9f87cbd
+- bot/harness-d0219 82ecba7
 - bot/harness-obfix a051a35
 - bot/hygiene a28dd50
 - bot/js-d0265 2c0fc83
