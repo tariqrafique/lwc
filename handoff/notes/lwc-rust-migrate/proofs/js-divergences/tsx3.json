@@ -1,1 +1,0 @@
-[{"name":"empty-paren","src":"const f = ();","filename":"foo.ts","opts":{}},{"name":"empty-paren2","src":"foo(());","filename":"foo.ts","opts":{}},{"name":"as-arr2","src":"const a = [1, x as any];","filename":"foo.ts","opts":{}}]

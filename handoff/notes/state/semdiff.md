@@ -1,22 +1,18 @@
 # state/semdiff.md
-Updated: 2026-11-02 00:15 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-08 23:18 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
-- SD-1B done (doc arch-board/proposals/semdiff-SD-1B-clusters.md). bot/semdiff-sd1b @ 042412b (1 commit on main 6ad019e). Not landed (no land.sh).
-  - pid b8cdc6a9e541c9ec838dcdbd45d87a3c2f9d953a (scripts/review-patch-id.sh == git diff main HEAD | git patch-id --stable)
-  - Commit adds tools/semdiff/scripts/cluster.mjs, which is clustering only (no verdicts). cargo test -p semdiff --offline: 50 passed.
-  - Live-tree, NON-REPORTABLE: 25195 codegen-only, all unclassified. AB-0017 hole (codegenOnlyStrippedEqual) 20272. Banner what-if gives 20305 equivalent.
-  - Root blocker: LWC Template Rust emits no /*LWC compiler v…*/ banner, and data-bag lowerings are missing (slotAssignment, classMap, styleDecls, svg, slot name attr, @-keys, tmpl.slots sort, complex exprs -> undefined).
-- Next: wait for Arch review of the SD-1B commit; rt-1 rules need a D-id (parens and numeric spelling are toString-observable under D-0196).
-- --locked fails in every worktree. Cause: the /workspace/.cargo/config.toml parse5 patch (23:17) is unused while lwc-template keeps its path dep. Use --offline and restore Cargo.lock.
+- SD-2a §10 (exec must not upgrade D-0196-observed spelling): bot/semdiff @ babaf01, one commit on main 9c96ee4, pid e52f32eb8183f951427236f4f2eb580835b79ef0. Not landed; needs Arch review (design §10 + fork F9). main has since moved to 6ddb2d3 (no tools/semdiff changes): rebase before land.sh, and resubmit if the pid changes.
+- Re-cluster on 9c96ee4+babaf01 with exec: 16549 eq / 246 different_undecided / 0 unclassified / 0 crash (live-tree, NON-REPORTABLE). Open clusters are all Template's: numeric 105, arrow parens 36, complex->undefined 3x35.
+- Builds: RUSTUP_TOOLCHAIN=1.99.1 (no default toolchain on the box), CARGO_TARGET_DIR=/workspace/.targets/semdiff, RUSTC_WRAPPER=, TDD_DRIVER_TARGET=/workspace/.targets/tdd-semdiff. `--locked` works.
 
 ## Owed REWORKs (ids)
-- none (AB-L0030 rework-2 landed 273d936; AB-L0023 landed 891ff88).
+- none.
 
 ## Branch/worktree + last landed main commit
-- Worktree: /workspace/wt/semdiff-sd1b  branch bot/semdiff-sd1b @ 042412b (1 ahead / 0 behind main 6ad019e). Old /workspace/wt/semdiff @ 273d936 is idle.
+- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ babaf01 (1 ahead of 9c96ee4). bot/semdiff-sd1b was fast-forwarded to 9c96ee4 (d5c4a58 was already an ancestor, so there was nothing to rebase).
 - Uncommitted: none
-- Last landing on main by this bot: 273d936 (AB-L0030 rework-2)
+- Last landing on main by this bot: 4497308 (SD-2a, AB-L0051)
 
 ## Last trusted board
 - Official src=ac1b61fb239a commit=c731fb601f40 (published 2026-11-01T21:58:37-08:00); rows this bot moves: semantic-diff (not yet on board)
@@ -82,3 +78,29 @@ Updated: 2026-11-02 00:15 PST by semdiff. Read PLAN.md first; this file holds on
 ## Landed 2026-11-02 00:16 PST
 - main 4497308 SD-2a (CSR exec leg), Arch-Review: AB-L0051 APPROVE pid 208b48a3615b (notes 5ae5db0; load then mount(A) order confirmed). Log at /tmp/semdiff-land-L0051.log.
 - Next: SD-2b SSR exec leg (oracle ssr-compiler vs Rust SSR, both on @lwc/ssr-runtime @ b9e8007, engine-server cross-check only; D-0195). Move the exec seam onto H-2 once it lands. Run exec on the full codegen-only unclassified set (836) for a breakdown.
+
+## 2026-11-08 23:20 PST: resume after the fleet pause
+- Paused WIP 028344b reviewed and reworked, then squashed into **babaf01** on main 9c96ee4. pid **e52f32eb8183f951427236f4f2eb580835b79ef0**. Tests: `cargo test -p semdiff --locked` 78 passed (spelling unit 7, exec 21).
+- Review fixes over the WIP, each with a test:
+  - a lexer failure returned Same and now returns NotProven;
+  - template raw text next to a real difference was missed and is now `template-raw`;
+  - an unkeyable number (an integer past u128) silently fell through and is now NotProven;
+  - Myers backtrace now stores i32;
+  - `divergence_within` exposes the budget for tests.
+- False pass proven on the pre-fix 9c96ee4 binary: `75`/`0b1001011` alone or masked, and template `h\x69`/`hi` masked, were EXEC_EQUAL. Design: SD-2a §10 (notes 60dd548). Fork F9 for Arch: property-key quoting and shorthand spelling.
+- Re-cluster (notes 6850f4d), live-tree NON-REPORTABLE:
+  - H-1 pairs content sha 95b1ed4e… (the manifest sha de43daea… covers ids and paths only);
+  - summary fa3c58c6… byte-identical (jobs 6 / jobs 4) with the registry pinned at notes 3d19c38;
+  - 16549 printer-equal / 0 exec-equal / 246 different_undecided / 0 unclassified / 0 crash.
+  - Collapsed: @slot key 582, flatten 2, computed index 2, svg leak 2, complex key 1+1.
+  - Open (Template): numeric 105, arrow parens 36 (1 of them exec-differs through the lwc:external toString), tagged-template throw 35, object-expr undefined 35, template-literal undefined 35.
+- Hazard: decisions.tsv changes mid-run, which changes `registry_sha256`. Pin a copy for reproducibility runs.
+- Next steps:
+  - Arch review of babaf01: rebase onto current main, check the pid, land.sh with the trailer;
+  - route the 246 to Template (through Migrate);
+  - SD-2b SSR exec leg design;
+  - gate DIFFERENT=0 needs Template fixes or D-ids for these 246.
+
+## 2026-11-08 23:20 PST
+- bot/semdiff rebased to 19818d7 on main 6ddb2d3, pid e52f32eb8183f951427236f4f2eb580835b79ef0 (unchanged). Sent to Arch with fork F9. On APPROVE: add the trailer, check the pid, run land.sh.
+- Migrate has the 246 DIFFERENT (Template-owned) and was asked to route them or let me send them directly. Next is the SD-2b design.

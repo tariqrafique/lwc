@@ -1,0 +1,20 @@
+# Who may commit what in /workspace/notes. Enforced by bin/notes-commit and .githooks/commit-msg.
+# path-glob<TAB>owners. First match wins; * in a glob spans directories. Owners: bot names, * = any bot,
+# {stem} = the bot named by the file name (state/<bot>.md), @d-id = appended through bin/d-id by any bot.
+@bots	migrate,harness,template,ssr,js,semdiff,arch-board,ship
+lwc-rust-migrate/decisions.tsv	migrate,@d-id
+lwc-rust-migrate/CUTOVER.md	ship,migrate
+lwc-rust-migrate/ship-*	ship
+lwc-rust-migrate/error-callsite-form.md	js
+lwc-rust-migrate/proofs/js-divergences/*	js
+lwc-rust-migrate/*	migrate
+arch-board/proposals/*	*
+arch-board/*	arch-board
+lwc-ssr-rust/*	ssr
+template-rust/*	template
+postcss-rust/*	js
+state/postcss.md	js
+state/diagnostics.md	template
+state/TEMPLATE.md	migrate
+state/*.md	{stem}
+*	migrate

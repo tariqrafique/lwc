@@ -264,3 +264,9 @@ Invariant: a gate never passes on an error it swallowed. See AB-0003, AB-0005, A
 
 ### Invariant: codegen per-node facts live on the node (AB-L0058, 2026-11-02)
 Template codegen reads per-element facts (namespace, renderer need, slot parent, key) from the IR node, through ElementView or a typed parameter. `Gen` holds only template-wide state, such as counters, registries and config. A `Gen` field that one element writes and a later element reads is the svg:true leak class of bug (SD-1B #9) and gets rejected in review.
+
+### Logged divergence: attribute normalization is a child of element_check (AB-X0017, 2026-11-08)
+Upstream `parser/attribute.ts` is a sibling module whose `normalizeAttributeValue` is called from `parser/index.ts` (getTemplateAttribute). In Rust the file stays at `parser/attribute.rs`, but it is mounted as `parser::element_check::attribute` with `#[path]`, and `normalize_attribute_value` is `pub(super)`. That makes element_check's attribute pre-pass the only caller the compiler allows (E0603 anywhere else). The `pub(in …)` alternative does not compile on a sibling module (E0742). Invariant: attribute values are normalized exactly once, and lowering reads `CheckedAttr { attr, value }` pairs. Never re-normalize or look up attributes by pointer.
+
+### Invariant: dependency allowlist is cargo metadata (AB-L0055, 2026-11-08)
+`lwc-shared/tests/dependency_allowlist.rs` reads `cargo metadata`, covering normal, build, target-cfg and renamed dependencies. No TOML text scanners.
