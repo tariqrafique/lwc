@@ -1,5 +1,5 @@
 # state/template.md
-Updated: 2026-11-09 02:27 PST by LWC Template Rust. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 02:35 PST by LWC Template Rust. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Ownership change (2026-11-01 23:10 PST)
 - Template Diagnostics retired; Template Rust owns all of crates/lwc-template incl. diagnostics. Handoff: state/diagnostics.md 'HANDED OFF' (notes c00402d). Diagnostics worktrees removed (all 7 merged into main, clean; branches kept).
@@ -202,3 +202,5 @@ Backlog: cur_cr Gen field → local (L0058 nit); 1144 parent-tag message mismatc
 - `attr_literal_js` now takes `LiteralView` (exhaustive). `compute_attr` matches `attr_value_kind` { StringLiteral, OtherLiteral, Expression } so a non-literal cannot reach attr_literal_js. `concat_text` uses `if let Some(s) = text_literal(t)`.
 - S4-added production `unreachable!`/`panic!`/`expect`/`unwrap` outside `#[cfg(test)]` modules: none. Remaining panic!/unwrap in S4 diffs are inside `#[cfg(test)]` (printer table helpers, lib.rs 1189 tests, classify_* assertions).
 - cargo check --workspace --all-targets: 0 warnings. cargo test -p lwc-template: lib 154; integration 2+11+2+1+1+2+2+9. cargo build --locked workspace and driver ok. shim-gate tags=6 rows=6 untracked=0 stale=0; lint-shared-tables 23/23. `harness/board.sh check --root=wt` (main's board.sh) rc 0; csr-render-template 570/570. Corpus skipped: parser Internal-arm fix plus behavior-preserving codegen type refactor (LiteralView / if-let); tests green, no printer/output change intended.
+
+- 2026-11-09 02:35 PST: AB-D0004 S4 LANDED main e75ce42 (AB-D0004-S4, pid 16994b10, napi 893e9b67da4d; Cross-Lane harness: registry row, driver lock +2, baseline csr-render-template 570/0/0). wt/template-s4 removed (D-0268). C1-C5=0 checked via cluster.mjs on first post-S4 official board (D-0271), else reopens. Next: S5 is SSR (D-0221); S6 mine (expr_check lexer, acorn-text shim, static hoist on AST, grouping_wrap SHIM, member_chain).

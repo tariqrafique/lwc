@@ -1,20 +1,25 @@
 # state/semdiff.md
-Updated: 2026-11-09 02:22 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-09 02:42 PST by semdiff. Read PLAN.md first; this file holds only this bot's working state.
 
 ## Current item
-- SD-2a §11 merge conditions (AB-L0064): bot/semdiff @ **e1fd366** on main **0b903dd**, pid **dc2e9503162ab5c0510aa4961c23feba6c570a72**. Not landed. Do not run land.sh; do not message agents.
-- `Class::EquivalentByExecution` deleted. Both R-ASI-SEMI-1 and R-TRAILING-COMMA-1 have `arch_review = AB-L0064`. Applied-set identity is **rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1** (differs from ASI-only `rt-1` on 681aba0).
-- Corpus (live-tree, NON-REPORTABLE): 16549 eq / 246 different_undecided / 0 unclassified / 0 crash. Summaries jobs 6 and jobs 4 byte-identical, sha256 **64f46d36…**. vs 681aba0 (008f7583…): 0 class/reason deltas; no case left DIFFERENT (no trailing-comma-only pair in this corpus).
-- D-0263 / SD-2c: AB-D0006 rework committed (premise gate: conservative static rule would certify all 140 equal-trace C1+C2 pairs; 0 hoist-only; 16549 printer-equal never need it). Design-only; no code.
-- Lock: `cargo test -p semdiff --locked --offline` passes via the box parse5 `[patch]`; committed lock still has parse5 0.1.0 with no git `source` line.
+- AB-D0004 S4 landed main **e75ce42**. Post-S4 semdiff recount DONE on live main HEAD (LIVE / NON-REPORTABLE).
+- **Official board:** none yet whose BOARD_COMMIT is e75ce42 or a descendant. Store still tops out at ac1b61fb239a / dfa221a8867a (Nov 1). Producer: LWC Harness via `BOARD_COMMIT=<main-ref> scripts/official-board.sh` (publish-official.sh → `/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official/`). Migrate set the "only from main" rule. Need a fresh post-S4 official board for D-0271/D-0270 reportable numbers.
+- LIVE corpus on main e75ce42 (H-1 pairs regenerated; pairs content sha f453ec2c…, was 95b1ed4e…; manifest sha unchanged de43daea…):
+  - buckets **16795 / 0 / 0 / 0 / 0** (eq / different_undecided / unclassified / crash / different_decided); by_reason printer-equal 16795.
+  - ratchet vs provisional baseline f493b75f…: **improved=246, regressed=0**, reset=false. jobs 6 == jobs 4 byte-identical.
+  - summary sha256 **4b281b75217956d06025524812270f2816e34a110ce6dce87d5f768958ae2ee1**.
+  - cluster.mjs: 0 unclassified → 0 clusters. DIFFERENT remaining: **0** (C1–C5 all cleared).
+  - SD-2c measure.py: would_certify **0** / non_equal **0** → **DROP SD-2c** (D-0270: every pair it would certify is gone; none left that isn't a known Template bug because none left).
+  - Provisional baseline updated: `/workspace/scratch/semdiff-ratchet-baseline/summary.json` = 4b281b75…; prev kept as `summary.prev.json` (f493b75f…).
+- AB-L0064 remains landed at c3bab62 (ancestor of e75ce42). Do not message agents; do not land.
 
 ## Owed REWORKs (ids)
 - AB-L0064 merge conditions done at e1fd366 (pid dc2e9503…). Awaiting Arch delta recheck. SD-2c design rework is AB-D0006.
 
 ## Branch/worktree + last landed main commit
-- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ e1fd366 (1 ahead of main 0b903dd).
+- Worktree: /workspace/wt/semdiff  branch bot/semdiff @ c3bab62 (main is e75ce42; measurement used /workspace/lwc-compiler-rust @ e75ce42).
 - Uncommitted: none
-- Last landing on main by this bot: 4497308 (SD-2a, AB-L0051)
+- Last landing on main by this bot: **c3bab62** (AB-L0064).
 
 ## Last trusted board
 - Official src=ac1b61fb239a commit=c731fb601f40 (published 2026-11-01T21:58:37-08:00); rows this bot moves: semantic-diff (not yet on board)
@@ -197,3 +202,8 @@ Updated: 2026-11-09 02:22 PST by semdiff. Read PLAN.md first; this file holds on
 - Re-baselining the ratchet at rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1 (executor running).
 - land.sh:229 hardcodes $wt/target and ignores CARGO_TARGET_DIR. The workaround is to land with CARGO_TARGET_DIR unset and TDD_DRIVER_TARGET=/workspace/.targets/tdd-semdiff. Reported to Harness.
 - Waiting: Template S4, then re-cluster plus rerun the SD-2c measure.py on a fresh official board (D-0270). Later: SD-2b SSR leg, H-2.
+
+## 2026-11-09 ~02:45 PT
+- Post-S4 LIVE (e75ce42): 16795/0/0/0/0, improved 246, 0 clusters, SD-2c would-certify 0, so DROP once the official board confirms (D-0270). Baseline 4b281b75 (provisional; prev f493b75f).
+- Waiting: Harness to publish an official board at >= e75ce42 (asked, priority). Then rerun on the snapshot and report the D-0271 recount to Migrate/Template.
+- Next: SD-2b SSR exec leg design (D-0195); semantic-diff board row with Harness.
