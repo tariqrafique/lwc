@@ -23,8 +23,11 @@ use std::collections::HashMap;
 pub const MARKER: &str = "__lwc_private_field__";
 const BASE: &str = "babelHelpers.classPrivateFieldLooseBase";
 
-pub fn run(program: &Program<'_>, src: &str) -> Vec<Edit> {
-    let mut v = Pf { src, uids: Uids::new(program), scopes: Scopes::default(), edits: vec![], classes: vec![], stmt: HashMap::new(), names: HashMap::new(), any: false };
+/// `wrapped_as_expr` holds class starts that an earlier edit turns into expressions
+/// (`registerComponent(class …)`). The AST still calls those declarations; the re-parse used to
+/// see the call argument and take the expression path (sequence wrap, `var` hoisted at scope start).
+pub fn run(program: &Program<'_>, src: &str, wrapped_as_expr: &std::collections::HashSet<u32>) -> Vec<Edit> {
+    let mut v = Pf { src, wrapped: wrapped_as_expr, uids: Uids::new(program), scopes: Scopes::default(), edits: vec![], classes: vec![], stmt: HashMap::new(), names: HashMap::new(), any: false };
     v.visit_program(program);
     if v.any { v.edits } else { vec![] }
 }
@@ -39,6 +42,8 @@ struct Pf<'s> {
     stmt: HashMap<u32, u32>,
     /// anonymous declarator-init class span start -> binding name (babel names transformed classes)
     names: HashMap<u32, String>,
+    /// class span starts that LWC wraps as `registerComponent(class …)`
+    wrapped: &'s std::collections::HashSet<u32>,
     any: bool,
 }
 
@@ -236,16 +241,26 @@ impl<'a> Visit<'a> for Pf<'_> {
                 map.insert(id.name.to_string(), k);
             }
         }
-        if has_fields && it.id.is_none() && self.src[it.span.start as usize..].starts_with("class") {
-            if let Some(n) = self.names.get(&it.span.start) {
-                self.edits.push(Edit::insert(it.span.start + 5, format!(" {n}")));
-                self.any = true;
-            }
+        // A decorated class expression is wrapped by `registerDecorators(...)` before this text
+        // exists. Naming it from `const C = class` would bake `class C` into a call argument;
+        // the re-parse used to see the call, not the declarator, and left the class anonymous.
+        let decorated = !it.decorators.is_empty() || it.body.body.iter().any(|el| match el {
+            ClassElement::PropertyDefinition(p) => !p.decorators.is_empty(),
+            ClassElement::MethodDefinition(m) => !m.decorators.is_empty(),
+            ClassElement::AccessorProperty(a) => !a.decorators.is_empty(),
+            _ => false,
+        });
+        if has_fields && it.id.is_none() && !decorated && self.src[it.span.start as usize..].starts_with("class")
+            && let Some(n) = self.names.get(&it.span.start)
+        {
+            self.edits.push(Edit::insert(it.span.start + 5, format!(" {n}")));
+            self.any = true;
         }
         if !keys.is_empty() {
             self.any = true;
+            let stays_decl = it.is_declaration() && !self.wrapped.contains(&it.span.start);
             match self.stmt.get(&it.span.start) {
-                Some(&s) if it.is_declaration() => {
+                Some(&s) if stays_decl => {
                     let decls: String = keys.iter().map(|k| format!("var {k};\n")).collect();
                     self.edits.push(Edit::insert(s, decls));
                 }

@@ -22,11 +22,11 @@
 //! - R7 `with_check_syntax_error` (the user-source early-error check) is named only inside `parse_source`.
 //!   Intermediate [`parse`] of span-edited source must not run it (D-0259 / Arch). `SemanticBuilder` without that
 //!   flag remains allowed in parse.rs helpers that build a scope/node table of an already-parsed program.
-//! - R8 parse / parse_with / parse_source / Parser::new call sites (including `use … as` aliases) are
-//!   allowed only inside the closed D-0264 function list ([`PARSE_SITES`]): parse.rs entries,
-//!   `transform_inner` (the one pre-print parse), and the three remaining residuals (`pass_with`,
-//!   `unforgeables::run`, `async_functions`). A new site or an orphaned list row fails (D-0262 / D-0264).
-//!   Official expiry tracking is Harness's D-0260 registry file (not edited here).
+//! - R8 parse / parse_with / parse_source / Parser::new call sites (including `use … as` aliases and
+//!   function-pointer uses of those names) are allowed only inside the closed list ([`PARSE_SITES`]):
+//!   parse.rs entries and `transform_inner` (the one pre-print parse). A value use (passing `parse`
+//!   as a fn pointer) is a violation in every function. A new site or an orphaned list row fails
+//!   (D-0262 / D-0265). Official expiry tracking is Harness's D-0260 registry file.
 //! - R8b find/replace of `babelHelpers.` is allowed only inside [`BABELHELPERS_FIND`]. After D-0265
 //!   step 1 that list is empty: helper members are rewritten on the Program by AST shape, and
 //!   helper-body templates are localized from recorded AST spans. A text find/replace on printed
@@ -44,7 +44,7 @@ const PRODUCERS: [&str; 10] =
 const RETURN_TYPES: [&str; 4] = ["ParserReturn", "SemanticBuilderReturn", "TransformerReturn", "CompilerReturn"];
 const DIAG_ACCESSORS: [&str; 6] = ["errors", "warnings", "into_vec", "has_errors", "has_warnings", "take_errors"];
 /// parse.rs `pub fn` return types (tokens joined without spaces); `None` = `()`.
-const EXPORTS: [&str; 5] = ["SourceType", "Result<Program<'a>,CompileError>", "Scoping", "Semantic<'a>", "Result<(),CompileError>"];
+const EXPORTS: [&str; 6] = ["SourceType", "Result<Program<'a>,CompileError>", "Scoping", "Semantic<'a>", "Result<(),CompileError>", "u32"];
 const BOUNDARY: [&str; 2] = ["first_error", "syntax_error"];
 const BOUNDARY_IDENTS: &[&str] = &[
     "fn", "first_error", "syntax_error", "src", "str", "filename", "diagnostics", "oxc", "Diagnostics", "Option", "CompileError",
@@ -52,20 +52,18 @@ const BOUNDARY_IDENTS: &[&str] = &[
     "offset", "as", "usize", "message", "text", "line", "column", "lwc_shared", "babel_line_col", "u32", "frame", "code_frame",
     "None", "index", "LineIndex", "utf16_offset", "location", "DiagnosticLocation", "start", "length", "vec",
     "CompilerDiagnostic", "clone", "DiagnosticLevel", "Error", "into", "name", "assert", "is_char_boundary",
+    "syntax",
 ];
 const BAD_PUNCT: [&str; 6] = ["==", "!=", "<=", ">=", "&&", "||"];
 
-/// Closed D-0264 list of functions that may call parse / parse_with / parse_source / Parser::new.
+/// Functions that may call parse / parse_with / parse_source / Parser::new.
 /// Keyed by `path::fn` (path relative to lwc-js/src). New sites and orphan rows both fail.
-/// Three remaining residuals expire at D-0265 in the D-0260 registry (owner js).
+/// D-0265: the three re-parse residuals are gone. Two parses per component (user source + print).
 const PARSE_SITES: &[(&str, &str, &str)] = &[
     ("parse.rs::parse_source", "user-source parse (semantic check + abstract guard)", "P1-entry"),
     ("parse.rs::parse", "callee of parse_source and the intermediate parse entry; no semantic check", "P1-entry"),
     ("parse.rs::parse_with", "the single Parser::new site", "P1-entry"),
     ("lib.rs::transform_inner", "one parse of span-edited source immediately before print", "P1-print"),
-    ("lib.rs::pass_with", "re-parse of span-edited source between class-features edit passes", "R-span-edit"),
-    ("transforms/unforgeables.rs::run", "parse_with of printed JS (preserve_parens: false) under LWS", "R-unforgeables-lws"),
-    ("transforms/lower.rs::async_functions", "parse of printed JS to reprint after unforgeables", "R-async-reprint"),
 ];
 
 /// Functions that may search/replace the text `babelHelpers.` (enclosing fn, not a variable name).
@@ -348,6 +346,42 @@ fn parse_callee(toks: &[(Tok, usize)], i: usize, aliases: &HashMap<String, Strin
     Some(name.into())
 }
 
+/// `true` when `toks[i]` names a parse entry as a value (fn pointer), not a direct call,
+/// not a `fn` definition, not the `parse` module path (`parse::scoping`), and not a `use` import
+/// (calls through a `use … as` alias are still caught by [`parse_callee`]).
+fn parse_value_use(toks: &[(Tok, usize)], i: usize, aliases: &HashMap<String, String>) -> bool {
+    let Tok::Ident(id) = &toks[i].0 else { return false };
+    if in_use_item(toks, i) { return false; }
+    let name = aliases.get(id).map(String::as_str).unwrap_or(id.as_str());
+    if i > 0 && is_ident(&toks[i - 1].0, "fn") { return false; }
+    if name == "Parser" {
+        let is_new = toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "::"))
+            && toks.get(i + 2).is_some_and(|t| is_ident(&t.0, "new"));
+        return !is_new;
+    }
+    if !PARSE_CALLEES.contains(&name) { return false; }
+    // `mod parse`, `foo.parse(` (method), `parse::item` (module path).
+    if i > 0 && (is_ident(&toks[i - 1].0, "mod") || is_punct(&toks[i - 1].0, ".")) { return false; }
+    if toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "::")) { return false; }
+    if toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "(")) && !(i > 0 && is_punct(&toks[i - 1].0, ".")) {
+        return false;
+    }
+    true
+}
+
+fn in_use_item(toks: &[(Tok, usize)], i: usize) -> bool {
+    let mut depth = 0i32;
+    let mut j = i;
+    while j > 0 {
+        j -= 1;
+        if is_punct(&toks[j].0, "}") { depth += 1; }
+        else if is_punct(&toks[j].0, "{") { depth -= 1; }
+        else if depth <= 0 && is_punct(&toks[j].0, ";") { return false; }
+        else if depth <= 0 && is_ident(&toks[j].0, "use") { return true; }
+    }
+    false
+}
+
 fn parse_site_violations(files: &BTreeMap<String, String>, allowed: &[(&str, &str, &str)]) -> Vec<String> {
     let allowed_keys: BTreeSet<&str> = allowed.iter().map(|a| a.0).collect();
     let mut found: BTreeSet<String> = BTreeSet::new();
@@ -366,7 +400,16 @@ fn parse_site_violations(files: &BTreeMap<String, String>, allowed: &[(&str, &st
             let key = format!("{path}::{fname}");
             found.insert(key.clone());
             if !allowed_keys.contains(key.as_str()) {
-                bad.push(format!("{path}:{line}: R8: `{callee}` in `{key}` is not on the D-0264 PARSE_SITES list"));
+                bad.push(format!("{path}:{line}: R8: `{callee}` in `{key}` is not on the PARSE_SITES list"));
+            }
+        }
+        // Function-pointer gap: naming parse / parse_with / parse_source / Parser other than as a
+        // direct call (or a `parse::` module path, or `fn` definition). `use … as` aliases are
+        // resolved, so `let f = crate::parse::parse` fails here even though the call is `f(`.
+        for i in 0..toks.len() {
+            if parse_value_use(&toks, i, &aliases) {
+                let line = toks[i].1;
+                bad.push(format!("{path}:{line}: R8: function-pointer use of a parse entry (D-0265)"));
             }
         }
     }
@@ -474,7 +517,7 @@ fn every_planted_message_match_fails_the_gate() {
         // elsewhere in parse.rs, reading the producer's diagnostics directly
         ("parse.rs", "let ret = Parser::new(alloc, src, source_type()).with_options(options).parse();", "let d = ret.diagnostics.errors().next().unwrap();\n    "),
         // another module, running its own producer without naming any diagnostic type
-        ("transforms/lower.rs", "let alloc = Allocator::default();", "let ret = oxc::parser::Parser::new(&alloc, code, crate::parse::source_type()).parse();\n    let d = ret.diagnostics.errors().next().unwrap();\n    "),
+        ("transforms/lower.rs", "use lwc_shared::CompileError;", "let ret = oxc::parser::Parser::new(&alloc, code, crate::parse::source_type()).parse();\n    let d = ret.diagnostics.errors().next().unwrap();\n    "),
         // another module, SemanticBuilder errors (no Parser, no type named)
         ("transforms/decorators.rs", "use oxc::semantic::NodeId;", "let d = oxc::semantic::SemanticBuilder::new().with_check_syntax_error(true).build(program).diagnostics.errors().next().unwrap();\n    "),
     ];
@@ -512,7 +555,7 @@ fn bypasses_that_never_name_oxc_diagnostic_fail_the_gate() {
         ("filter the converted text in parse.rs", "parse.rs", "let program = parse(alloc, src, filename)?;",
             "if first_error(src, filename, &SemanticBuilder::new().build(&program).diagnostics).is_some_and(|e| e.message.contains(\"x\")) { }"),
         ("module alias", "lib.rs", "pub mod parse;", "use oxc::diagnostics as dx;"),
-        ("glob import + Transformer", "transforms/lower.rs", "use oxc_sourcemap::SourceMap;", "use oxc::transformer::*; fn t() { let _ = Transformer::new; }"),
+        ("glob import + Transformer", "transforms/lower.rs", "use lwc_shared::CompileError;", "use oxc::transformer::*; fn t() { let _ = Transformer::new; }"),
         ("include!", "lib.rs", "pub mod parse;", "include!(\"../../lwc-shared/src/x.rs\");"),
         ("#[path]", "lib.rs", "pub mod parse;", "#[path = \"../../elsewhere.rs\"] mod elsewhere;"),
         ("boundary fn branches on the text", "parse.rs", "let d = diagnostics.errors().next()?;", "let n = d.message.len(); assert!(n > 0);"),
@@ -544,7 +587,7 @@ fn planted_parse_outside_closed_list_fails_the_gate() {
         (
             "renamed variable in a non-listed helper",
             "transforms/lower.rs",
-            "if !src.contains(\"...\") { return Ok(()); }",
+            "pub fn apply_object_rest_spread<'a>(",
             "let codegen_js = src; let _ = crate::parse::parse(&oxc::allocator::Allocator::default(), codegen_js, filename);",
         ),
         (
@@ -570,6 +613,12 @@ fn planted_parse_outside_closed_list_fails_the_gate() {
             "lib.rs",
             "pub mod parse;",
             "use oxc::parser::Parser as Px; fn raw() { let _ = Px::new(&alloc, src, Default::default()); }",
+        ),
+        (
+            "function pointer to parse",
+            "lib.rs",
+            "pub mod parse;",
+            "fn via_ptr() { let f = crate::parse::parse; let _ = f; }",
         ),
     ] {
         let bad = planted(&files, path, anchor, code);
@@ -600,7 +649,7 @@ fn planted_babelhelpers_text_replace_on_printed_output_fails_the_gate() {
         (
             "find on printed output in transform_inner",
             "lib.rs",
-            "let first = helpers::localize(&alloc, &mut program);",
+            "let mut helper_sets = vec![helpers::localize(&alloc, &mut program)];",
             "let _ = printed.find(\"babelHelpers.\");",
         ),
         (
@@ -625,25 +674,23 @@ fn planted_babelhelpers_text_replace_on_printed_output_fails_the_gate() {
 
 #[test]
 fn async_predicate_lives_in_one_fn_called_from_one_place() {
+    // D-0265: the text prefilter is gone. Async lowering is an AST fact
+    // (`program_has_async`), so a comment that contains the word cannot select a
+    // different pipeline (AB-L0075). Reintroducing `.contains("async")` or
+    // `source_has_async` fails this gate — the guarantee is the absence, not a
+    // single surviving copy.
     let files = real_files();
     let mut defs = Vec::new();
-    let mut callers = Vec::new();
     for (path, src) in &files {
         let toks = tokens(src);
         let fns = all_fn_ranges(&toks);
         for (name, a, b) in &fns {
             let raw = fn_raw_src(src, &toks, *a, *b);
             let key = format!("{path}::{name}");
-            if raw.contains(".contains(\"async\")") {
-                defs.push(key.clone());
-            }
-            if name != "source_has_async" && raw.contains("source_has_async(") {
-                callers.push(key);
+            if raw.contains(".contains(\"async\")") || raw.contains("source_has_async") {
+                defs.push(key);
             }
         }
     }
-    assert_eq!(defs, vec!["transforms/lower.rs::source_has_async".to_string()],
-        "async cheap-exit predicate must live in exactly one fn, got {defs:?}");
-    assert_eq!(callers, vec!["transforms/lower.rs::async_functions".to_string()],
-        "source_has_async must be called from exactly one place, got {callers:?}");
+    assert!(defs.is_empty(), "source-text async prefilter reintroduced: {defs:?}");
 }

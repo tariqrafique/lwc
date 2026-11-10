@@ -1,5 +1,3 @@
 # path(repo-relative)	tag(exact text inside SHIM(...))	owner	expiry	reason
 # Expiry is NOT machine-evaluated by shim-gate; it is enforced at the named stage's review (S<n>, AB-..., or D-NNNN).
-crates/lwc-js/src/lib.rs	D-0262 P1 pass_with, expires D-0265	harness	D-0265	pass_with re-parses span-edited source between class-features edit passes
-crates/lwc-js/src/transforms/unforgeables.rs	D-0262 P1 unforgeables, expires D-0265	harness	D-0265	unforgeables::run parse_with of printed JS under LWS
-crates/lwc-js/src/transforms/lower.rs	D-0262 P1 async_functions, expires D-0265	harness	D-0265	async_functions parses printed JS to reprint after unforgeables
+# D-0265 removed the three lwc-js rows (pass_with, unforgeables, async_functions).

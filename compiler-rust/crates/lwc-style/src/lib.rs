@@ -56,7 +56,13 @@ impl StyleError {
             Ok(file) => self.postcss_message(&file),
             Err(cwd) => cwd.postcss_message(filename),
         };
-        CompileError { message, filename: None, diagnostics: vec![], name: Some(name.into()), line, column }
+        CompileError {
+            message,
+            filename: None,
+            diagnostics: vec![],
+            name: Some(name.into()),
+            position: lwc_shared::ProducerPosition::Raw { line, column },
+        }
     }
 }
 

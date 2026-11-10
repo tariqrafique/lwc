@@ -96,8 +96,7 @@ fn transform_html(
         filename: Some(filename.into()),
         diagnostics: vec![],
         name: None,
-        line: None,
-        column: None,
+        position: lwc_shared::ProducerPosition::Diagnostics,
     })?;
 
     // template-compiler parser/index.ts parse(): any Error-level diagnostic from parseHTML (parse5 errors →
@@ -109,8 +108,7 @@ fn transform_html(
             filename: Some(filename.into()),
             diagnostics: parsing.warnings,
             name: None,
-            line: None,
-            column: None,
+            position: lwc_shared::ProducerPosition::Diagnostics,
         });
     };
 
@@ -203,7 +201,7 @@ mod transform_tests {
             let e = err(src);
             assert_eq!(e.message, msg, "{src}");
             // Plain `Error`: no filename, location, code, or diagnostics.
-            assert_eq!((e.filename.as_deref(), e.line, e.column, e.diagnostics.len()), (None, None, None, 0), "{src}");
+            assert_eq!((e.filename.as_deref(), e.line(), e.column(), e.diagnostics.len()), (None, None, None, 0), "{src}");
         }
         // A light-DOM `<slot inner-h-t-m-l>` never reaches the transformer: the parser drops it with LWC1134
         // (template-compiler parser/index.ts:1494), a warning SSR only console.errors.
@@ -268,7 +266,7 @@ mod transform_tests {
             <template lwc:slot-data=\"data\"><span>{data.id}</span></template></template></x-child></template>";
         let e = transform(src, "x/c/c.html", &opts).expect_err("nested lwc:slot-data");
         assert_eq!(e.message, "Unimplemented IR node: { type: 'ScopedSlotFragment' }");
-        assert_eq!((e.filename.as_deref(), e.line, e.column, e.diagnostics.len()), (None, None, None, 0));
+        assert_eq!((e.filename.as_deref(), e.line(), e.column(), e.diagnostics.len()), (None, None, None, 0));
         let ok = "<template><x-child><template lwc:slot-data=\"data\"><span>{data.id}</span></template></x-child></template>";
         let c = transform(ok, "x/c/c.html", &opts).expect("direct lwc:slot-data").code;
         assert!(c.contains("scopedSlottedContentMap = Object.create(null)"), "{c}");

@@ -15,7 +15,7 @@ pub mod location;
 pub mod meta;
 pub mod namespaces;
 pub mod void_elements;
-pub use errors::{normalize_to_compiler_error, CompilerAggregateError, CompilerError, TransformError, UnnormalizedError};
+pub use errors::{normalize_to_compiler_error, CompilerAggregateError, CompilerError, ProducerPosition, TransformError, UnnormalizedError};
 pub use instrumentation::{CompilerMetric, DeprecationId, Instrumentation, InstrumentationEvent, InstrumentationHandle, InstrumentationRecorder};
 pub use location::{DiagnosticLocation, LineIndex};
 pub mod js;
@@ -301,8 +301,9 @@ pub struct CompileError {
     pub diagnostics: Vec<CompilerDiagnostic>,
     /// JS `Error.name` of the thrown error (Babel `SyntaxError`, PostCSS `CssSyntaxError`); `None` = `Error`.
     pub name: Option<String>,
-    pub line: Option<u32>,
-    pub column: Option<u32>,
+    /// [`ProducerPosition::Diagnostics`] reads `diagnostics[].location`.
+    /// [`ProducerPosition::Raw`] is the CssSyntaxError line/column (no diagnostic).
+    pub position: crate::errors::ProducerPosition,
 }
 
 impl CompileError {
@@ -312,21 +313,47 @@ impl CompileError {
             filename: Some(filename.into()),
             diagnostics: vec![],
             name: None,
-            line: None,
-            column: None,
+            position: crate::errors::ProducerPosition::Diagnostics,
         }
     }
 }
 
 impl CompileError {
+    /// Babel parser `SyntaxError` after [`crate`] has already built the diagnostic.
+    /// Position is the diagnostic's location ([`crate::errors::ProducerPosition::Diagnostics`]).
+    pub fn syntax(message: String, filename: &str, diagnostics: Vec<CompilerDiagnostic>) -> Self {
+        Self {
+            message,
+            filename: Some(filename.into()),
+            diagnostics,
+            name: Some("SyntaxError".into()),
+            position: crate::errors::ProducerPosition::Diagnostics,
+        }
+    }
+
     pub fn new(message: impl Into<String>, filename: &str) -> Self {
         Self {
             message: message.into(),
             filename: Some(filename.into()),
             diagnostics: vec![],
             name: None,
-            line: None,
-            column: None,
+            position: crate::errors::ProducerPosition::Diagnostics,
+        }
+    }
+
+    /// Line of [`Self::position`]: the raw producer's line, or the first diagnostic's.
+    pub fn line(&self) -> Option<u32> {
+        match self.position {
+            crate::errors::ProducerPosition::Raw { line, .. } => line,
+            crate::errors::ProducerPosition::Diagnostics => self.diagnostics.first().and_then(|d| d.location).map(|l| l.line),
+        }
+    }
+
+    /// Column of [`Self::position`]: the raw producer's column, or the first diagnostic's.
+    pub fn column(&self) -> Option<u32> {
+        match self.position {
+            crate::errors::ProducerPosition::Raw { column, .. } => column,
+            crate::errors::ProducerPosition::Diagnostics => self.diagnostics.first().and_then(|d| d.location).map(|l| l.column),
         }
     }
 }
@@ -340,8 +367,10 @@ impl CompileError {
             message,
             filename: Some(filename.into()),
             name: None,
-            line,
-            column,
+            position: match (line, column) {
+                (None, None) => crate::errors::ProducerPosition::Diagnostics,
+                (line, column) => crate::errors::ProducerPosition::Raw { line, column },
+            },
         }
     }
 }
@@ -359,8 +388,10 @@ impl CompileError {
             message,
             filename: Some(filename.into()),
             name: Some(kind.into()),
-            line,
-            column,
+            position: match (line, column) {
+                (None, None) => crate::errors::ProducerPosition::Diagnostics,
+                (line, column) => crate::errors::ProducerPosition::Raw { line, column },
+            },
         }
     }
 

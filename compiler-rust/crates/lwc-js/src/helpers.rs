@@ -289,6 +289,53 @@ pub fn helper_ast_templates() -> Vec<HelperAstTemplate> {
 /// Version-stamp edits in `input` coordinates, remapped onto `output` via oxc's codegen map
 /// (D-0262 / D-0265 / AB-L0075: no re-parse and no find+replace of printed JS; the helper
 /// prelude is inserted once by the caller via [`prelude`]).
+/// Remap span edits from `input` (the codegen source) onto `output` via oxc's token map.
+/// An offset with no token is an internal error (no extrapolation; AB-L0074).
+pub fn remap_through_codegen(
+    map: &oxc_sourcemap::SourceMap<'_>,
+    input: &str,
+    output: &str,
+    edits: Vec<lwc_shared::edits::Edit>,
+    filename: &str,
+) -> Result<Vec<lwc_shared::edits::Edit>, lwc_shared::CompileError> {
+    if edits.is_empty() || input == output {
+        return Ok(edits);
+    }
+    let pts = codegen_points(map, input, output);
+    let miss = |off| {
+        lwc_shared::CompileError::new(
+            format!("internal: codegen map has no token at source offset {off}"),
+            filename,
+        )
+    };
+    edits
+        .into_iter()
+        .map(|e| {
+            // A `var` injected at the program start stays at the start of the print.
+            if e.start == 0 && e.end == 0 {
+                return Ok(e);
+            }
+            let start = map_gen(&pts, e.start).map_err(miss)?;
+            let end = if e.start == e.end {
+                start
+            } else if let Ok(end) = map_gen(&pts, e.end) {
+                end
+            } else {
+                // Span ends are often not their own token. Accept the end only when the
+                // print copied the source slice verbatim from the mapped start.
+                let src = input.get(e.start as usize..e.end as usize).unwrap_or("");
+                let dst = output.get(start as usize..).unwrap_or("");
+                if !src.is_empty() && dst.starts_with(src) {
+                    start + (e.end - e.start)
+                } else {
+                    return Err(miss(e.end));
+                }
+            };
+            Ok(lwc_shared::edits::Edit { start, end, text: e.text })
+        })
+        .collect()
+}
+
 pub fn post_codegen_edits(
     program: &oxc::ast::ast::Program<'_>,
     input: &str,

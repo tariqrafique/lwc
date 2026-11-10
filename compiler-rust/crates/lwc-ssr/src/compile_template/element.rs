@@ -151,7 +151,7 @@ pub(crate) fn reject_inner_outer_html(tag: &str, name: &str) -> Emit {
     if name == "inner-h-t-m-l" || name == "outer-h-t-m-l" {
         return Err(lwc_shared::CompileError {
             message: format!("Cannot set attribute \"{name}\" on <{tag}>."),
-            filename: None, diagnostics: vec![], name: None, line: None, column: None,
+            filename: None, diagnostics: vec![], name: None, position: lwc_shared::ProducerPosition::Diagnostics,
         });
     }
     Ok(())

@@ -2,10 +2,10 @@
 //!   1. LwcPrivateMethodTransform      (private_methods::forward; lib.rs pass)
 //!   2. LwcClassTransform              (`run` below: scoped_css, dynamic_imports, decorators, component;
 //!                                      version_stamp runs post-print in lib.rs via the codegen map)
-//!   3. class-properties (loose)       (class_properties; lib.rs fixpoint pass)
-//!   4. LwcReversePrivateMethodTransform (private_methods::reverse; lib.rs pass)
+//!   3. class-properties (loose)       (class_properties on the same Program as private fields)
+//!   4. LwcReversePrivateMethodTransform (text undo of the forward rename; not applied — `#m` is kept)
 //!   5. object-rest-spread             (lower::apply_object_rest_spread on the pre-print AST)
-//!   6. LWS: unforgeables, lower::async_functions (lib.rs, enableLightningWebSecurityTransforms)
+//!   6. LWS: unforgeables and async on that AST (lib.rs, enableLightningWebSecurityTransforms)
 use lwc_shared::edits::Edit;
 use crate::Origin;
 use lwc_shared::{CompileError, CompileOptions};

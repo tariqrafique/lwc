@@ -10,7 +10,17 @@ use oxc::parser::{ParseOptions, Parser};
 use oxc::semantic::{Scoping, Semantic, SemanticBuilder};
 use oxc::span::SourceType;
 use oxc::transformer::{TransformOptions, Transformer};
+use std::cell::Cell;
 use std::path::Path;
+
+thread_local! {
+    static PARSE_COUNT: Cell<u32> = const { Cell::new(0) };
+}
+
+/// Test hook: oxc `Parser::new` invocations since the last [`reset_parse_count`].
+pub fn reset_parse_count() { PARSE_COUNT.set(0); }
+/// See [`reset_parse_count`].
+pub fn parse_count() -> u32 { PARSE_COUNT.get() }
 
 /// Shipped `scriptTransform` runs `babel.transformSync` with no TypeScript/JSX plugin (the LWC plugin adds
 /// only `classProperties` + `decorators`), and Babel never infers syntax from the filename. So every script
@@ -56,6 +66,7 @@ pub fn parse<'a>(alloc: &'a Allocator, src: &'a str, filename: &str) -> Result<P
 
 /// [`parse`] with explicit oxc parser options.
 pub fn parse_with<'a>(alloc: &'a Allocator, src: &'a str, filename: &str, options: ParseOptions) -> Result<Program<'a>, CompileError> {
+    PARSE_COUNT.with(|n| n.set(n.get() + 1));
     let ret = Parser::new(alloc, src, source_type()).with_options(options).parse();
     match first_error(src, filename, &ret.diagnostics) {
         Some(e) => Err(e),
@@ -103,14 +114,7 @@ fn syntax_error(src: &str, filename: &str, at: usize, text: &str) -> CompileErro
     let message = format!("{filename}: {text} ({line}:{column})\n\n{frame}");
     let index = LineIndex::new(src).utf16_offset(at as u32);
     let location = DiagnosticLocation { line, column, start: None, length: None, index: Some(index) };
-    CompileError {
-        diagnostics: vec![CompilerDiagnostic::new(None, message.clone(), DiagnosticLevel::Error, Some(filename.into()), Some(location))],
-        message,
-        filename: Some(filename.into()),
-        name: Some("SyntaxError".into()),
-        line: Some(line),
-        column: Some(column),
-    }
+    CompileError::syntax(message.clone(), filename, vec![CompilerDiagnostic::new(None, message, DiagnosticLevel::Error, Some(filename.into()), Some(location))])
 }
 
 /// Start of `export default abstract class ..` (the class span starts at `abstract`).

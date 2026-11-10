@@ -825,7 +825,7 @@ mod tests {
         for (src, message, at) in cases {
             let err = compile_decorated(&src).unwrap_err();
             assert_eq!(err.message, message, "{src}");
-            assert_eq!(err.line.zip(err.column), at, "{src}");
+            assert_eq!(err.line().zip(err.column()), at, "{src}");
         }
     }
 

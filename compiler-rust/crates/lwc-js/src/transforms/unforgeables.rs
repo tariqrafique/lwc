@@ -20,36 +20,36 @@
 //! Matched as shipped (valid output, access left native): `X.location++` / `X.top--` (update expressions).
 use lwc_shared::edits::Edit;
 use lwc_shared::CompileError;
-use oxc::allocator::Allocator;
 use oxc::ast::ast::*;
 use oxc::ast_visit::{Visit, walk};
 use oxc::codegen::{Codegen, CodegenOptions};
-use oxc::parser::ParseOptions;
 use oxc::semantic::Scoping;
 use oxc::span::{GetSpan, Span};
 use std::collections::{HashMap, HashSet};
 
 const GLOBALS: [&str; 4] = ["location", "document", "globalThis", "top"];
 
-/// SHIM(D-0262 P1 unforgeables, expires D-0265): parse_with of printed JS (preserve_parens: false) under LWS (D-0264 residual 3).
-pub fn run(code: &str, filename: &str) -> Result<Vec<Edit>, CompileError> {
-    // Cheap exit: nothing to rewrite.
-    if !code.contains("location") && !code.contains("top") { return Ok(vec![]); }
-    let alloc = Allocator::default();
-    // Babel (createParenthesizedExpressions: false) has no paren nodes; validators compare parents directly.
-    let program = crate::parse::parse_with(&alloc, code, filename, ParseOptions { preserve_parens: false, ..Default::default() })
-        .map_err(|e| CompileError::new(format!("internal: LWS input failed to parse: {}", e.message), filename))?;
-    let scoping = crate::parse::scoping(&program);
-    let mut v = Unforgeables::new(code, &program, &scoping);
+/// AST pass on an already-parsed program. `find` pairs are (printed form of the node, replacement)
+/// so the caller splices the print without parsing it. `edits` are span edits in `code` coordinates
+/// (assignment targets) plus a `var` injected at 0.
+pub struct Rewrites {
+    pub edits: Vec<Edit>,
+    pub find: Vec<(String, String)>,
+}
+
+/// AST pass on an already-parsed program (`code` is that program's source). No re-parse.
+pub fn run(program: &Program<'_>, code: &str, filename: &str) -> Result<Rewrites, CompileError> {
+    let scoping = crate::parse::scoping(program);
+    let mut v = Unforgeables::new(code, program, &scoping);
     v.filename = filename.to_string();
-    v.visit_program(&program);
+    v.visit_program(program);
     if let Some(e) = v.error.take() { return Err(e); }
     let mut edits = std::mem::take(&mut v.edits);
     if !v.injected.is_empty() {
         let decls: Vec<String> = v.injected.iter().map(|g| format!("{} = {g}", v.repl[g])).collect();
         edits.push(Edit::insert(0, format!("var {};\n", decls.join(", "))));
     }
-    Ok(edits)
+    Ok(Rewrites { edits, find: v.find })
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
@@ -67,6 +67,8 @@ struct Unforgeables<'s> {
     in_update: u32,
     transformed: HashSet<(u32, u32, Kind)>,
     edits: Vec<Edit>,
+    /// (codegen of the replaced expression, replacement text).
+    find: Vec<(String, String)>,
     filename: String,
     /// First fail-closed diagnostic; the walk stops descending once set.
     error: Option<CompileError>,
@@ -107,7 +109,7 @@ impl<'s> Unforgeables<'s> {
                 if id.span.start < shadow { ids.get_mut(g).unwrap().push(id.name.to_string()); }
             }
         }
-        Self { src, scoping, repl, ids, injected: vec![], in_update: 0, transformed: HashSet::new(), edits: vec![], filename: String::new(), error: None }
+        Self { src, scoping, repl, ids, injected: vec![], in_update: 0, transformed: HashSet::new(), edits: vec![], find: vec![], filename: String::new(), error: None }
     }
 
     fn get(&mut self, g: &'static str) -> String {
@@ -120,9 +122,20 @@ impl<'s> Unforgeables<'s> {
 
     fn text(&self, span: oxc::span::Span) -> &'s str { &self.src[span.start as usize..span.end as usize] }
 
-    /// Source text of `e`, parenthesized unless it can stand as a member object / binary operand as-is.
+    /// How the full-file codegen prints `e` (source text when the span still matches, AST otherwise).
+    fn gen_expr(&self, e: &Expression<'_>) -> String {
+        let mut c = Codegen::new().with_source_text(self.src);
+        c.print_expression(e);
+        c.into_source_text()
+    }
+
+    fn rewrite(&mut self, e: &Expression<'_>, text: String) {
+        self.find.push((self.gen_expr(e), text));
+    }
+
+    /// Printed text of `e`, parenthesized unless it can stand as a member object / binary operand as-is.
     fn wrapped(&self, e: &Expression<'_>) -> String {
-        let t = self.text(e.span());
+        let t = self.gen_expr(e);
         match e {
             Expression::Identifier(_) | Expression::ThisExpression(_) | Expression::StaticMemberExpression(_)
             | Expression::ComputedMemberExpression(_) | Expression::PrivateFieldExpression(_) | Expression::CallExpression(_)
@@ -159,7 +172,7 @@ impl<'s> Unforgeables<'s> {
         if prop_name(object) == Some("top") && member_object(object).is_some() {
             let base = top_base(object);
             let b = self.wrapped(base);
-            let e = self.text(object.span()).to_string();
+            let e = self.gen_expr(object);
             (self.build_top(&b, &e), true)
         } else {
             (self.wrapped(object), false)
@@ -429,7 +442,7 @@ impl<'a> Visit<'a> for Unforgeables<'_> {
                 let (node, is_top_obj) = self.location_object(object);
                 if self.in_update == 0 && !self.is_marked(span, Kind::Member) {
                     let t = self.build_member(&node);
-                    self.edits.push(Edit::replace(span.start, span.end, t));
+                    self.rewrite(it, t);
                     return;
                 }
                 if !is_top_obj { self.walk_member_children(it); }
@@ -439,9 +452,9 @@ impl<'a> Visit<'a> for Unforgeables<'_> {
             if self.in_update == 0 {
                 if !self.is_marked(span, Kind::Top) {
                     let base = self.wrapped(top_base(it));
-                    let e = self.text(span).to_string();
+                    let e = self.gen_expr(it);
                     let t = self.build_top(&base, &e);
-                    self.edits.push(Edit::replace(span.start, span.end, t));
+                    self.rewrite(it, t);
                 }
                 return; // whole top chain skipped
             }
@@ -486,7 +499,7 @@ impl Unforgeables<'_> {
 
     /// A call argument: only a sequence expression needs parentheses.
     fn arg_text(&self, e: &Expression<'_>) -> String {
-        let t = self.text(e.span());
-        if matches!(e, Expression::SequenceExpression(_)) { format!("({t})") } else { t.to_string() }
+        let t = self.gen_expr(e);
+        if matches!(e, Expression::SequenceExpression(_)) { format!("({t})") } else { t }
     }
 }

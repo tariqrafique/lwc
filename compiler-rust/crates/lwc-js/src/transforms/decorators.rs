@@ -132,6 +132,8 @@ struct Classes<'s, 'o> {
     /// Babel class-features throw (`Decorators are not enabled.`) at the first class that still has decorators
     /// after the LWC visitor ran; a real throw, so it ends traversal even in recovery mode.
     fatal: Option<(u32, CompileError)>, imported: &'o HashSet<String>, consts: &'o HashSet<String>,
+    /// Flag on: forward already renamed `#m` methods, so they are not private methods here.
+    private_methods: bool,
 }
 
 fn sname(k: &PropertyKey<'_>) -> Option<String> { k.static_name().and_then(|n| n.as_str().map(String::from)) }
@@ -367,7 +369,7 @@ impl<'a> Visit<'a> for Classes<'_, '_> {
             });
             if !it.decorators.is_empty() || (member_decorated && !removed) {
                 let start = it.decorators.iter().map(|d| d.span.start).fold(it.span.start, u32::min);
-                self.fatal = Some((start, class_features_error(it, self.origin, self.filename, start)));
+                self.fatal = Some((start, class_features_error(it, self.origin, self.filename, start, self.private_methods)));
                 return;
             }
         }
@@ -382,11 +384,13 @@ const DECORATORS_NOT_ENABLED: &str = "Decorators are not enabled.\nIf you are us
 /// first at that member, else `Decorators are not enabled.` at the class (start includes class decorators).
 /// @lwc/compiler then wraps it: LWC1198 when the Babel message (incl. its filename and code frame) mentions
 /// `track`/`api`/`wire` as a word, else LWC1007 (normalizeToCompilerError; no location, Babel set none).
-fn class_features_error(class: &Class<'_>, origin: Origin<'_>, filename: &str, class_start: u32) -> CompileError {
-    // shipped checks a private field before a private method, each at the first such member
+fn class_features_error(class: &Class<'_>, origin: Origin<'_>, filename: &str, class_start: u32, private_methods: bool) -> CompileError {
+    // shipped checks a private field before a private method, each at the first such member.
+    // With the flag on, forward renamed `#m` methods to public identifiers before this visitor;
+    // they are not private methods anymore (the rename is not re-parsed; the AST still says `#m`).
     let find = |field: bool| class.body.body.iter().find_map(|el| match el {
         ClassElement::PropertyDefinition(p) if field && matches!(p.key, PropertyKey::PrivateIdentifier(_)) => Some(("Private fields in decorated classes are not supported yet.", p.span)),
-        ClassElement::MethodDefinition(m) if !field && matches!(m.key, PropertyKey::PrivateIdentifier(_)) => Some(("Private methods in decorated classes are not supported yet.", m.span)),
+        ClassElement::MethodDefinition(m) if !field && !private_methods && matches!(m.key, PropertyKey::PrivateIdentifier(_)) => Some(("Private methods in decorated classes are not supported yet.", m.span)),
         _ => None,
     });
     let private = find(true).or_else(|| find(false));
@@ -535,7 +539,7 @@ pub fn run(program: &Program<'_>, src: &str, filename: &str, o: &CompileOptions,
         Statement::VariableDeclaration(d) if d.kind == VariableDeclarationKind::Const => Some(d),
         _ => None,
     }).flat_map(|d| d.declarations.iter()).flat_map(|v| v.id.get_binding_identifiers()).map(|b| b.name.to_string()).collect();
-    let mut c = Classes { consts: &consts, imported: &imported, src, origin, filename, fatal: None, imports: &imports, skip_no_super: skip, reg_ids: Vec::new(), edits: Vec::new(), used: false, first_expr: None, errs: Vec::new(), recover: o.experimental_error_recovery_mode };
+    let mut c = Classes { consts: &consts, imported: &imported, src, origin, filename, fatal: None, imports: &imports, skip_no_super: skip, reg_ids: Vec::new(), edits: Vec::new(), used: false, first_expr: None, errs: Vec::new(), recover: o.experimental_error_recovery_mode, private_methods: o.enable_private_methods };
     c.visit_program(program);
     let mut all: Vec<(u32, DErr)> = usage.into_iter().map(|d| (0, d)).collect();
     all.extend(c.errs);

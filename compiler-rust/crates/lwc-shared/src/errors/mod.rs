@@ -10,6 +10,20 @@ pub use error_info::*;
 
 use crate::{generate_error_message, template_string, CompileError, CompilerDiagnostic, DiagnosticLevel, DiagnosticLocation, DiagnosticOrigin, LwcErrorInfo, SourceLocation};
 
+/// Where a [`CompileError`]'s position comes from.
+///
+/// Every Rust producer that has a span puts it on `diagnostics[].location`. The raw
+/// PostCSS `CssSyntaxError` (`lwc-style`'s `StyleError::thrown`) carries no diagnostic:
+/// its line/column are the producer's own (`None` is JS `undefined`). That position is
+/// [`ProducerPosition::Raw`], not loose fields beside `diagnostics` (AB-L0080 follow-up).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ProducerPosition {
+    /// Read position from `diagnostics[].location` only.
+    Diagnostics,
+    /// Raw producer (`CssSyntaxError`). Not copied onto a diagnostic.
+    Raw { line: Option<u32>, column: Option<u32> },
+}
+
 /// The info for `code`, if `code` is a shipped `@lwc/errors` code.
 pub fn lookup(code: u32) -> Option<&'static LwcErrorInfo> {
     ALL.binary_search_by_key(&code, |i| i.code).ok().map(|i| &ALL[i])
@@ -48,7 +62,7 @@ impl CompileError {
     pub fn generate(info: &LwcErrorInfo, args: &[&str], filename: &str, location: Option<DiagnosticLocation>) -> Self {
         let message = generate_error_message(info, Some(args));
         let d = CompilerDiagnostic::new(Some(info.code), message.clone(), info.level, Some(filename.into()), location);
-        Self { message, filename: Some(filename.into()), diagnostics: vec![d], name: None, line: location.map(|l| l.line), column: location.map(|l| l.column) }
+        Self { message, filename: Some(filename.into()), diagnostics: vec![d], name: None, position: ProducerPosition::Diagnostics }
     }
 
     /// [`CompileError::generate`] at the source range `start..end` (byte offsets into `src`, e.g. an oxc
@@ -113,8 +127,8 @@ pub struct CompilerAggregateError {
 
 /// An error thrown by a compiler step no `@lwc/compiler` facade normalizes (the SSR compiler; an
 /// unsupported file extension): the producer's error, carried through unchanged.
-/// `location` is only the first diagnostic's, when present (D-0239 / D-0241 / AB-L0080); bare
-/// `CompileError.line`/`column` are not folded in — upstream producers on this path have no location.
+/// `location` is only the first diagnostic's, when present (D-0239 / D-0241 / AB-L0080).
+/// A [`ProducerPosition::Raw`] error has no diagnostic; this path does not invent one.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnnormalizedError {
     pub message: String,
@@ -147,7 +161,8 @@ pub enum TransformError {
 /// `normalizeToCompilerError(fallback, e, { filename })` for a non-`CompilerError` `e` (a typed
 /// `CompilerError` never reaches a facade's `catch` in Rust). `e` is the thrown JS error as `catch (e)` sees
 /// it: `e.name` = `name` (`None` = `"Error"`), `e.message` = `message`, `e.lwcCode` = the first diagnostic's
-/// code, `e.location` / `e.loc` = its location (the diagnostic's `location`), else `e.line` / `e.column`.
+/// code, `e.location` / `e.loc` = its location (the diagnostic's `location`). A raw
+/// `CssSyntaxError` ([`ProducerPosition::Raw`]) has no diagnostic; its line/column are that variant.
 /// - code: `e.lwcCode || fallback.code`; message: `${e.name}: ` + (`e.message` when it has an lwcCode, else
 ///   `generateErrorMessage(fallback, [e.message])`);
 /// - level: `fallback.level` (a raw JS error has no `level`); url: `fallback.url`;
@@ -159,9 +174,12 @@ pub fn normalize_to_compiler_error(fallback: &LwcErrorInfo, e: CompileError, fil
         Some(_) => e.message.clone(),
         None => generate_error_message(fallback, Some(&[e.message.as_str()])),
     };
-    let location = first.and_then(|d| d.location).or_else(|| {
-        e.line.zip(e.column).map(|(line, column)| DiagnosticLocation { line, column, ..Default::default() })
-    });
+    let location = match e.position {
+        ProducerPosition::Raw { line, column } => {
+            line.zip(column).map(|(line, column)| DiagnosticLocation { line, column, ..Default::default() })
+        }
+        ProducerPosition::Diagnostics => first.and_then(|d| d.location),
+    };
     CompilerError {
         code: Some(lwc_code.unwrap_or(fallback.code)),
         message: format!("{}: {body}", e.name.as_deref().unwrap_or("Error")),
@@ -230,7 +248,11 @@ console.log([...s].sort((a,b)=>a-b).join(","));"#;
 
     #[test]
     fn normalize_mirrors_upstream() {
-        let raw = CompileError { name: Some("CssSyntaxError".into()), line: Some(2), column: Some(5), ..CompileError::new("x.css:2:5: Unknown word", "ignored") };
+        let raw = CompileError {
+            name: Some("CssSyntaxError".into()),
+            position: ProducerPosition::Raw { line: Some(2), column: Some(5) },
+            ..CompileError::new("x.css:2:5: Unknown word", "ignored")
+        };
         let e = normalize_to_compiler_error(&TransformerErrors::CSS_TRANSFORMER_ERROR, raw, Some("x.css"));
         assert_eq!(e.message, "CssSyntaxError: LWC1009: x.css:2:5: Unknown word");
         assert_eq!((e.code, e.filename.as_deref(), e.level), (Some(1009), Some("x.css"), DiagnosticLevel::Error));

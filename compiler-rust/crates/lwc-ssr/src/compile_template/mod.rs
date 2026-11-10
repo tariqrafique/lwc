@@ -129,15 +129,14 @@ fn bind_err(e: lwc_template::expr::BindError) -> CompileError {
         filename: None,
         diagnostics: vec![lwc_shared::CompilerDiagnostic::new(ce.code, ce.message, ce.level, None, ce.location)],
         name: None,
-        line: ce.location.map(|l| l.line),
-        column: ce.location.map(|l| l.column),
+        position: lwc_shared::ProducerPosition::Diagnostics,
     }
 }
 
 fn print_err(e: lwc_template::printer::PrintError) -> CompileError {
     CompileError {
         message: format!("internal error printing template expression: {}", e.0),
-        filename: None, diagnostics: vec![], name: None, line: None, column: None,
+        filename: None, diagnostics: vec![], name: None, position: lwc_shared::ProducerPosition::Diagnostics,
     }
 }
 
@@ -236,7 +235,7 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
 fn unimplemented_ir_node(kind: &str) -> lwc_shared::CompileError {
     lwc_shared::CompileError {
         message: format!("Unimplemented IR node: {{ type: '{kind}' }}"),
-        filename: None, diagnostics: vec![], name: None, line: None, column: None,
+        filename: None, diagnostics: vec![], name: None, position: lwc_shared::ProducerPosition::Diagnostics,
     }
 }
 
