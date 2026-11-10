@@ -1,10 +1,10 @@
-# LWC → Rust migration: handoff (refreshed 2026-11-09 22:30 PST)
+# LWC → Rust migration: handoff (refreshed 2026-11-09 23:00 PST)
 
 Fleet resumed 2026-11-08 22:40 PST. Work is on main or on committed bot/* branches, and all of it is in the bundle below.
 
 ## What's here
-- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ 3ecff19 plus all current refs (bot/harness-d0280 a4c27d8). Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
-- `notes.bundle`: notes repo main @ a41265f (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/ helpers).
+- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ 3ecff19 plus all current refs (bot/harness-d0280 19cb0cf). Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
+- `notes.bundle`: notes repo main @ 0cb5b0d (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/ helpers).
 - `notes/`: plain copies of the notes (OWNERS.tsv, arch-board/, lwc-rust-migrate/, state/), for reading on GitHub.
 - `semdiff-uncommitted.patch`: older Semdiff WIP from 2026-11-02 (not refreshed). Check whether bot/semdiff already supersedes it before applying.
 
@@ -24,5 +24,5 @@ Unlanded tips that were not in main (bot/diagnostics-directives 3bc4435, bot/hyg
 3. Follow the landing order in the state files, then publish a fresh official board from main.
 
 ## 2026-11-09 22:30 PST refresh
-Main 3ecff19 now matches official board 78a3500dd541 (valid, published 2026-11-09 22:03 PST) and compiler-rust/ holds that board. bot/harness-d0280 (a4c27d8) is unmeasured.
+Main 3ecff19 now matches official board 78a3500dd541 (valid, published 2026-11-09 22:03 PST) and compiler-rust/ holds that board. bot/harness-d0280 (19cb0cf) is unmeasured.
 
