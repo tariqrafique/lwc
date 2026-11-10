@@ -7,7 +7,7 @@
 //
 // usage: node tools/gen-shared-tables/gen.mjs [--check] [--root <rust repo root>]
 //   --root   defaults to the repo containing this script; works from any cwd.
-//   LWC_ROOT upstream checkout (default /workspace/lwc); its HEAD must equal ./PIN.
+//   LWC_ORACLE upstream checkout (via harness/scripts/oracle-root.mjs); its HEAD must equal ./PIN.
 //   --check  regenerate in memory and byte-compare; writes nothing.
 // exit: 0 ok | 1 stale output (--check) | 2 extraction or self-check failure | 3 LWC_ROOT HEAD != PIN
 // Fails closed: any literal it cannot read, any non-ASCII entry, a duplicate key, or a table whose
@@ -19,6 +19,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { oracleRoot } from '../../harness/scripts/oracle-root.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -26,7 +27,7 @@ const check = args.includes('--check');
 const ri = args.indexOf('--root');
 if (ri >= 0 && !args[ri + 1]) die(2, '--root needs a directory');
 const ROOT = path.resolve(ri >= 0 ? args[ri + 1] : path.join(HERE, '../..'));
-const LWC = path.resolve(process.env.LWC_ROOT || '/workspace/lwc');
+const LWC = oracleRoot();
 const S = 'packages/@lwc/shared/src/';
 const TC = 'packages/@lwc/template-compiler/src/';
 

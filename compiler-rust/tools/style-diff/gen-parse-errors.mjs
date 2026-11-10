@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Generates crates/lwc-style/tests/parse-errors/<name>/ from the JS oracle (/workspace/lwc @ b9e8007):
+// Generates crates/lwc-style/tests/parse-errors/<name>/ from the JS oracle (pinned @ b9e8007):
 //   actual.css            input
 //   config.json           style-compiler Config (only when non-default)
 //   error.json            style-compiler `transform` throw, normalized like the upstream fixture spec
@@ -12,9 +12,10 @@ import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { oracleRoot } from '../../harness/scripts/oracle-root.mjs';
 
 const require = createRequire(import.meta.url);
-const LWC = process.env.LWC_ROOT || '/workspace/lwc';
+const LWC = oracleRoot();
 const { transform } = require(`${LWC}/packages/@lwc/style-compiler/dist/index.cjs`);
 const { transformSync } = require(`${LWC}/packages/@lwc/compiler/dist/index.cjs`);
 const LWC_VERSION = require(`${LWC}/packages/@lwc/style-compiler/package.json`).version;

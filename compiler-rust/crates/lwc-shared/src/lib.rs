@@ -23,6 +23,34 @@ pub mod style;
 pub mod template_ir;
 pub use template_ir::*;
 
+/// Fail-closed path to the pinned LWC oracle checkout (`LWC_ORACLE`).
+/// run-board, c8-checks, and land export this via `harness/scripts/oracle-root.mjs`.
+/// There is no box-path fallback here (D-0280(b)).
+pub fn oracle_root() -> std::path::PathBuf {
+    let raw = match std::env::var("LWC_ORACLE") {
+        Ok(v) if !v.is_empty() => v,
+        _ => panic!("LWC_ORACLE is unset; export it via harness/scripts/oracle-root.mjs"),
+    };
+    let p = std::path::PathBuf::from(raw);
+    if !p.join("package.json").is_file() {
+        panic!("LWC_ORACLE={} is not an lwc checkout (missing package.json)", p.display());
+    }
+    p
+}
+
+/// Fail-closed path to the style corpus (`STYLE_CORPUS`).
+pub fn style_corpus_root() -> std::path::PathBuf {
+    let raw = match std::env::var("STYLE_CORPUS") {
+        Ok(v) if !v.is_empty() => v,
+        _ => panic!("STYLE_CORPUS is unset; export it via harness/scripts/oracle-root.mjs"),
+    };
+    let p = std::path::PathBuf::from(raw);
+    if !p.is_dir() {
+        panic!("STYLE_CORPUS={} does not exist", p.display());
+    }
+    p
+}
+
 /// Value for `key` in a generated key-sorted pair table.
 pub(crate) fn lookup<V: Copy>(table: &[(&'static str, V)], key: &str) -> Option<V> {
     table.binary_search_by(|e| e.0.cmp(key)).ok().map(|i| table[i].1)

@@ -870,7 +870,7 @@ mod tests {
     }
 
     fn fixture(rel: &str) -> String {
-        std::fs::read_to_string(format!("/workspace/lwc/packages/@lwc/{rel}")).unwrap_or_else(|e| panic!("{rel}: {e}"))
+        std::fs::read_to_string(lwc_shared::oracle_root().join("packages/@lwc").join(rel)).unwrap_or_else(|e| panic!("{rel}: {e}"))
     }
     fn cv(src: &str, api: u32, sco: bool, complex: bool) -> String {
         compile(src, "x.html", Config {

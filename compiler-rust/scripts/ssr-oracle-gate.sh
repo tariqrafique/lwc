@@ -12,7 +12,7 @@ tgz="$(ls "$tgz_dir"/lwc-compiler-rs-"$triple"-*.tgz)"
 x="$(mktemp -d)"; trap 'rm -rf "$x"' EXIT
 tar -xzf "$tgz" -C "$x"
 napi="$x/package/lwc-compiler.$triple.node"
-LWC_ROOT="${LWC_ROOT:-${LWC_ORACLE:-/workspace/lwc}}"
+LWC_ROOT="${LWC_ORACLE:?ssr-oracle-gate: LWC_ORACLE must be set (export it via harness/scripts/oracle-root.mjs)}"
 export LWC_ROOT LWC_ORACLE="${LWC_ORACLE:-$LWC_ROOT}"
 echo "ssr-oracle-gate: $(sha256sum "$napi" | cut -c1-12) from $(basename "$tgz"), LWC_ROOT=$LWC_ROOT"
 args=(--napi="$napi")

@@ -230,7 +230,7 @@ mod tests {
     /// `Log` are dropped ("currently unused", :87-88). No 9.5.3 input reaches a Fatal/Log template diagnostic:
     /// every @lwc/errors info has `level: Error|Warning` and template-compiler never passes
     /// `useStrictErrorOverride`. So the oracle injects them: shipped 9.5.3 `transformSync` run live in node
-    /// (`$LWC_ORACLE`, default /workspace/lwc, pinned at b9e8007), with `@lwc/template-compiler` wrapped (as
+    /// (`$LWC_ORACLE`, pinned at b9e8007), with `@lwc/template-compiler` wrapped (as
     /// dist/index.cjs requires it) to append `{ code: 9999, level }` diagnostics to `warnings`. Each line of
     /// the oracle's output is compared with `template_diagnostics` on the same injection. Missing node or a
     /// moved oracle is a failure, not a skip.
@@ -240,7 +240,7 @@ mod tests {
         const SETS: &[&[DiagnosticLevel]] = &[&[Fatal], &[Log], &[Warning], &[Error], &[Fatal, Error], &[Fatal, Warning], &[Log, Warning, Fatal]];
         const ORACLE: &str = r#"
 const Module = require('module');
-const root = process.env.LWC_ORACLE || '/workspace/lwc';
+const root = process.env.LWC_ORACLE; if (!root) { console.error('LWC_ORACLE is unset'); process.exit(2); }
 let inject = [];
 const load = Module._load;
 const wrap = (f) => f && function (...a) {
@@ -266,7 +266,7 @@ for (const recovery of [false, true]) for (const set of JSON.parse(process.argv[
     console.log(set.join('+') + ' recovery=' + recovery + ' ' + out);
 }
 "#;
-        let root = std::env::var("LWC_ORACLE").unwrap_or_else(|_| "/workspace/lwc".into());
+        let root = lwc_shared::oracle_root().to_str().expect("LWC_ORACLE must be UTF-8").to_string();
         let head = std::process::Command::new("git").args(["-C", &root, "rev-parse", "HEAD"]).output().expect("git is required");
         let head = String::from_utf8(head.stdout).unwrap();
         assert!(head.starts_with("b9e8007"), "oracle {root} is at {head:?}, want b9e8007");

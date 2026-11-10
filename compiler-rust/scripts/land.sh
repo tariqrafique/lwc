@@ -88,6 +88,11 @@ DEC_SHA="$(git -C "$DEC_REPO" rev-parse --verify HEAD 2>/dev/null)" || die2 "not
 PARSE5_DIR=/workspace/parse5-rust main_run scripts/parse5-pin-check.sh "$wt" || die "parse5 pin check failed: Cargo.lock parse5 source rev must match crates/lwc-template/Cargo.toml and the rev must exist in /workspace/parse5-rust (D-0238)"
 source "$(main_data scripts/cargo-locked.sh)"
 log_box_configs
+LWC_ORACLE="$(node "$wt/harness/scripts/oracle-root.mjs" oracle_root)" || die "oracle-root failed"
+export LWC_ORACLE
+export LWC_ROOT="$LWC_ORACLE"
+STYLE_CORPUS="$(node "$wt/harness/scripts/oracle-root.mjs" style_corpus_root)" || die "style-corpus-root failed"
+export STYLE_CORPUS
 cargo_locked check --workspace --all-targets || die "workspace check failed"
 cargo_locked test --workspace || die "workspace test failed"   # all crates: dependents of a changed crate too
 crates_changed=; if grep -q '^crates/\|^Cargo\.' <<< "$changed"; then crates_changed=1; fi
@@ -117,6 +122,7 @@ if grep -qE '^harness/scripts/shim-gate\.mjs$' <<< "$changed"; then node harness
 if grep -qE '^scripts/(official-board|publish-official|notes-precheck|test-notes-precheck|run-board|run-portable-board|test-board-footers)\.sh$' <<< "$changed"; then scripts/test-notes-precheck.sh && scripts/test-board-footers.sh || die "notes-precheck / board-footers guard test failed (AB-0016 / AB-M0002)"; fi
 # Unconditional (AB-X0008): no pipe into a quiet grep in the branch's shell scripts (SIGPIPE fail-open under pipefail).
 main_run scripts/lint-shell-pipes.sh "$wt" || die "lint-shell-pipes failed (rc=$?)"
+main_run scripts/workspace-path-scan.sh "$wt" || die "workspace-path-scan failed (rc=$?)"
 # Unconditional (D-0219, D-0256): no whitespace-stripped or otherwise normalized compare of compiler output.
 # Allowlist is the closed path+rule+D-id list next to the script; the lint reads only MAIN's copy.
 main_run scripts/lint-no-stripped-compare.sh "$wt" || die "lint-no-stripped-compare failed (rc=$?)"

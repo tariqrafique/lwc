@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// template-diag-diff: differential diagnostics corpus for LWC templates, JS oracle (/workspace/lwc b9e8007, read-only)
+// template-diag-diff: differential diagnostics corpus for LWC templates, JS oracle ($LWC_ORACLE b9e8007, read-only)
 // vs Rust. Same pattern as tools/style-diff (notes/postcss-rust/05-06): deterministic seedless corpus, sha256 dedup,
 // per-fixture caps, crash/hang-isolated child workers, exact compare, bucketed JSON report + text summary.
 //
@@ -24,7 +24,7 @@
 //      TDD_EMIT_PAIRS (directory: keep every codegen-only case's exact oracle/Rust code for semdiff, see below),
 //      TDD_SEMDIFF (prebuilt semdiff binary; `none` = exact-byte compare only, every codegen-only case stays unclean),
 //      TDD_SEMDIFF_TARGET (cargo target dir for the on-demand semdiff build), TDD_SEMDIFF_REGISTRY (decisions.tsv
-//      semdiff validates against; default /workspace/notes/lwc-rust-migrate/decisions.tsv), TDD_SEMDIFF_EXEC=1 (also
+//      semdiff validates against; default via notesDecisionsPath()), TDD_SEMDIFF_EXEC=1 (also
 //      run semdiff's execution leg, `--exec`).
 //      Self-test hooks: TDD_ORACLE_DIST (oracle module path: template-compiler dist for crate, @lwc/compiler for napi),
 //      TDD_ORACLE_INJECT=throw (oracle call throws a TypeError). `--self-test` runs both on both engines
@@ -57,7 +57,7 @@ import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { oracleRoot, styleCorpusRoot } from './oracle-root.mjs';
+import { oracleRoot, styleCorpusRoot, notesDecisionsPath } from './oracle-root.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const HARNESS = path.resolve(HERE, '..');
@@ -625,10 +625,9 @@ function semdiffJudge(dir, n) {
     if (process.env.TDD_SEMDIFF === 'none') return { meta: { mode: 'exact-bytes', semdiff: null }, verdicts: null };
     if (n === 0) return { meta: { mode: 'exact-bytes+semdiff', semdiff: null, note: 'no codegen-only cases' }, verdicts: new Map() };
     const bin = semdiffBin();
-    const _boxReg = '/workspace/notes/lwc-rust-migrate/decisions.tsv';
-    const _reg = process.env.TDD_SEMDIFF_REGISTRY ?? process.env.SEMDIFF_REGISTRY ?? (fs.existsSync(_boxReg) ? _boxReg : '');
-    if (!_reg) throw new Error('TDD_SEMDIFF_REGISTRY/SEMDIFF_REGISTRY unset and /workspace/notes/.../decisions.tsv is absent');
-    const registry = path.resolve(_reg);
+    const registry = process.env.TDD_SEMDIFF_REGISTRY
+      ? path.resolve(process.env.TDD_SEMDIFF_REGISTRY)
+      : notesDecisionsPath();
     const exec = process.env.TDD_SEMDIFF_EXEC === '1';
     const out = path.join(dir, 'semdiff-summary.json');
     const argv = ['run', '--manifest', path.join(dir, 'manifest.json'), '--out', out, '--registry', registry, '--gate', 'none', ...(exec ? ['--exec'] : [])];

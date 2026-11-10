@@ -107,7 +107,7 @@ fn run_dir(root: &PathBuf, filter: &Option<String>, diff: bool, pass: &mut usize
 }
 
 fn main() {
-    let root = PathBuf::from(std::env::var("LWC_FIXTURES").unwrap_or_else(|_| "/workspace/lwc/packages/@lwc/style-compiler/src/__tests__/fixtures".into()));
+    let root = std::env::var("LWC_FIXTURES").map(PathBuf::from).unwrap_or_else(|_| lwc_shared::oracle_root().join("packages/@lwc/style-compiler/src/__tests__/fixtures"));
     let parse_errors = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/parse-errors");
     let filter = std::env::var("LWC_FIXTURE").ok();
     let diff = std::env::var("LWC_STYLE_DIFF").is_ok();

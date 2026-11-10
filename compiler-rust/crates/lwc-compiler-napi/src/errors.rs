@@ -2,7 +2,7 @@
 //! The lwc-compiler facades already surface the error `@lwc/compiler` 9.5.3 throws (`TransformError`);
 //! this file only converts it to the JS object. No level, url, code or shape is derived here.
 //!
-//! What upstream throws (packages/@lwc/compiler/src/transformers, /workspace/lwc @ b9e8007):
+//! What upstream throws (packages/@lwc/compiler/src/transformers, pinned oracle @ b9e8007):
 //! - one `CompilerError` (`normalizeToCompilerError` / `CompilerError.from`): javascript.ts:121,
 //!   template.ts:73 and :85, style.ts:60 -> `TransformError::Compiler`, own keys
 //!   `message, code, filename, location, level, url` (`location` own even when `undefined`);
@@ -211,11 +211,11 @@ mod tests {
     }
 
     /// AB-L0056: LWC1121 through the napi seam, SSR and CSR, against shipped 9.5.3 run live in node
-    /// (`$LWC_ORACLE`, default /workspace/lwc, pinned at b9e8007). No node or a moved oracle fails.
+    /// (`$LWC_ORACLE`, pinned at b9e8007). No node or a moved oracle fails.
     #[test]
     fn lwc1121_seam_matches_live_oracle() {
         let src = "const s = 'é😀'; import(foo)";
-        let root = std::env::var("LWC_ORACLE").unwrap_or_else(|_| "/workspace/lwc".into());
+        let root = lwc_shared::oracle_root().to_str().expect("LWC_ORACLE must be UTF-8").to_string();
         let head = std::process::Command::new("git").args(["-C", &root, "rev-parse", "HEAD"]).output().expect("git is required");
         let head = String::from_utf8(head.stdout).unwrap();
         assert!(head.starts_with("b9e8007"), "oracle {root} is at {head:?}, want b9e8007");

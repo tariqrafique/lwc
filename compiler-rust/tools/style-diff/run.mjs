@@ -5,8 +5,9 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
+import { oracleRoot, styleCorpusRoot } from '../../harness/scripts/oracle-root.mjs';
 
-const LWC = process.env.LWC_ROOT || '/workspace/lwc';
+const LWC = oracleRoot();
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
 const CAP = Number(process.env.STYLE_DIFF_CAP || 200);
 const OUT = process.env.STYLE_DIFF_OUT || path.join(ROOT, 'target/style-diff');
@@ -33,7 +34,7 @@ const add = (p, kind) => {
   seen.add(h); corpus.push({ path: path.relative(LWC, p), abs: p, src, kind }); return true;
 };
 const MODE = process.env.STYLE_DIFF_CORPUS || 'all'; // integration | slds | all
-const SLDS_ROOT = process.env.STYLE_CORPUS_ROOT || '/workspace/style-corpus';
+const SLDS_ROOT = styleCorpusRoot();
 const SLDS_CAP = Number(process.env.STYLE_DIFF_SLDS_CAP || 300);
 let real = 0;
 if (MODE !== 'slds') for (const pkg of ['integration-wtr', 'integration-wdio', 'integration-types']) {

@@ -2,7 +2,7 @@
 //! exec runner reaches engine-dom and @lwc/compiler through (prepare.mjs imports it). AB-L0051 (2): derive, do not copy.
 //! Shapes: `export const LWC = '<abs dir>/packages/@lwc';` (legacy literal) or
 //! `export const LWC = `${oracleRoot()}/packages/@lwc`;` (D-0280; SEMDIFF_ORACLE_DIR from LWC_ORACLE,
-//! else /workspace/lwc if that checkout exists). Any other shape fails the build; there is no other default.
+//! or fail if LWC_ORACLE is unset). Any other shape fails the build; there is no other default.
 use std::fs;
 use std::path::Path;
 
@@ -11,16 +11,11 @@ const DECL: &str = "export const LWC = '";
 const SUFFIX: &str = "/packages/@lwc';";
 const PORTABLE: &str = "export const LWC = `${oracleRoot()}/packages/@lwc`;";
 
-fn oracle_from_env_or_box() -> String {
-    if let Ok(v) = std::env::var("LWC_ORACLE") {
-        if !v.is_empty() {
-            return v;
-        }
+fn oracle_from_env() -> String {
+    match std::env::var("LWC_ORACLE") {
+        Ok(v) if !v.is_empty() => v,
+        _ => panic!("semdiff build: LWC uses oracleRoot(); set LWC_ORACLE via harness/scripts/oracle-root.mjs (D-0280(b))"),
     }
-    if Path::new("/workspace/lwc").is_dir() {
-        return "/workspace/lwc".to_string();
-    }
-    panic!("semdiff build: LWC uses oracleRoot(); set LWC_ORACLE (D-0280)");
 }
 
 fn main() {
@@ -33,7 +28,7 @@ fn main() {
         panic!("semdiff build: want exactly one `const LWC` in {}, found {decls:?}", path.display());
     };
     let root = if line.trim() == PORTABLE {
-        oracle_from_env_or_box()
+        oracle_from_env()
     } else {
         line
             .strip_prefix(DECL)

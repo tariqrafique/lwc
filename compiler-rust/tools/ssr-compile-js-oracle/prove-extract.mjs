@@ -1,7 +1,8 @@
 import { createRequire } from 'node:module';
 import { makeCompare } from './compare.mjs';
+import { oracleRoot } from '../../harness/scripts/oracle-root.mjs';
 
-const LWC = process.env.LWC_ROOT || '/workspace/lwc';
+const LWC = oracleRoot();
 const acorn = createRequire(import.meta.url)(`${LWC}/node_modules/acorn`);
 const { extractors } = makeCompare(acorn);
 const mode = process.argv[2] || 'nested';

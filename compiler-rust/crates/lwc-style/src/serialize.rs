@@ -241,7 +241,7 @@ mod lossless {
 
     #[test]
     fn corpus_stringifies_losslessly() {
-        let upstream = std::env::var("LWC_FIXTURES").unwrap_or_else(|_| "/workspace/lwc/packages/@lwc/style-compiler/src/__tests__/fixtures".into());
+        let upstream = std::env::var("LWC_FIXTURES").unwrap_or_else(|_| lwc_shared::oracle_root().join("packages/@lwc/style-compiler/src/__tests__/fixtures").to_string_lossy().into_owned());
         let mut files = Vec::new();
         inputs(Path::new(&upstream), &mut files);
         inputs(&Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/parse-errors"), &mut files);

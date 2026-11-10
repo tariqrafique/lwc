@@ -7,6 +7,7 @@ import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { oracleRoot } from '../../harness/scripts/oracle-root.mjs';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import os from 'node:os';
@@ -15,7 +16,7 @@ import { makeCompare } from './compare.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(HERE, '../..');
 const TOOL = path.relative(REPO, HERE);
-const LWC = process.env.LWC_ROOT || '/workspace/lwc';
+const LWC = oracleRoot();
 // Exit codes: 0 = every diff is listed and every listed case still differs; 1 = a new or stale diff, or the list or
 // case set fails the $MAIN shrink check; 2 = no verdict (no napi or upstream build, SSR_ORACLE_NAPI set, $MAIN or
 // known-diffs.txt unreadable, a bad argument, or an extractor could not find an expected node).

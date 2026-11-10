@@ -98,7 +98,7 @@ fn decorated_private_method_without_epm_is_lwc1103() {
 }
 
 /// enablePrivateMethods: decorator errors on a line with a renamed `#m` report original-source positions
-/// (shipped oracle: /workspace/notes/lwc-rust-migrate/proofs/epm-columns/shipped.json).
+/// (shipped oracle: notes/lwc-rust-migrate/proofs/epm-columns/shipped.json).
 #[test]
 fn epm_error_locations_use_original_source() {
     let cases: [(&str, &str, u32, u32, u32, u32, u32); 5] = [

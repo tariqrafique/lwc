@@ -1,5 +1,5 @@
 //! TS parser/expression-complex/validate.ts (+ index.ts `parseComplexExpression`) on the oxc AST
-//! (AB-D0004 S2). Citations are `/workspace/lwc/packages/@lwc/template-compiler/src/parser/` paths.
+//! (AB-D0004 S2). Citations are `packages/@lwc/template-compiler/src/parser/` paths in the pinned oracle.
 //!
 //! acorn `parseExpressionAt(source, start + 1)` (index.ts:45) is oxc `parse_expression` over the text
 //! between the braces. acorn stops at the first token that cannot continue the expression; oxc reports

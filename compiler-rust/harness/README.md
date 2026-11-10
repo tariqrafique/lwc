@@ -17,9 +17,9 @@ Here we evaluate the emitted ESM and compare *behavior*:
 
 ## Run
 ```
-# prerequisites: /workspace/lwc has node_modules and @lwc/compiler built
-cd /workspace/lwc && npx nx run @lwc/compiler:build
-cd /workspace/lwc-compiler-rust/harness
+# prerequisites: $LWC_ORACLE has node_modules and @lwc/compiler built
+cd $LWC_ORACLE && npx nx run @lwc/compiler:build
+cd $REPO/harness
 npm run link:lwc            # symlinks @lwc/compiler + vitest (equivalent of the file: dep; yarn not on box)
 npx vitest run              # or: yarn test
 UPDATE_GOLDENS=1 npx vitest run   # re-record baseline — JS backend ONLY
@@ -36,7 +36,7 @@ UPDATE_GOLDENS=1 npx vitest run   # re-record baseline — JS backend ONLY
 **Rust (napi-rs facade):** crate `crates/lwc-compiler-napi` → `lwc_compiler::dispatch`.
 ```
 source "$HOME/.cargo/env"
-cd /workspace/lwc-compiler-rust && cargo build -p lwc-compiler-napi --release
+cd $REPO && cargo build -p lwc-compiler-napi --release
 cp target/release/liblwc_compiler_napi.so harness/lwc-compiler-napi.node
 cd harness && LWC_COMPILER_BACKEND=rust npx vitest run test/style.behavior.test.ts
 ```

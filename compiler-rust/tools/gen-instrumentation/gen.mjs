@@ -10,7 +10,7 @@
 //   --oracle  print what the upstream RUNTIME does (not the AST), one TSV row per fact, for lwc-shared's oracle test:
 //               metric<TAB><upstream key><TAB><value>
 //               deprecation<TAB><option path><TAB><warnings over two validateTransformOptions calls><TAB><text>
-//   LWC_ROOT  upstream checkout (default /workspace/lwc); its HEAD must equal tools/gen-shared-tables/PIN.
+//   LWC_ORACLE upstream checkout (via harness/scripts/oracle-root.mjs); its HEAD must equal tools/gen-shared-tables/PIN.
 // exit: 0 ok | 1 stale output (--check) | 2 extraction or self-check failure | 3 LWC_ROOT HEAD != PIN
 // Fails closed: a non-literal value or warning, an unrecognised latch, or an AST table that disagrees with the
 // upstream runtime (self-check) aborts before anything is written.
@@ -19,7 +19,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath } from 'node:url'; import { oracleRoot } from '../../harness/scripts/oracle-root.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -27,7 +27,7 @@ const mode = args.includes('--check') ? 'check' : args.includes('--stdout') ? 's
 const ri = args.indexOf('--root');
 if (ri >= 0 && !args[ri + 1]) die(2, '--root needs a directory');
 const ROOT = path.resolve(ri >= 0 ? args[ri + 1] : path.join(HERE, '../..'));
-const LWC = path.resolve(process.env.LWC_ROOT || '/workspace/lwc');
+const LWC = oracleRoot();
 const METRICS_TS = 'packages/@lwc/errors/src/compiler/instrumentation.ts';
 const OPTIONS_TS = 'packages/@lwc/compiler/src/options.ts';
 const OUT = 'crates/lwc-shared/src/instrumentation/generated.rs';

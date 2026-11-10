@@ -26,6 +26,21 @@ tout="${args[1]:-${root}/.oracle/tarballs}"
 # shellcheck source=cargo-locked.sh
 source "$runner/cargo-locked.sh"
 
+# Single oracle-root source (D-0280(b)). Do not fall back to a hardcoded box path here.
+if [ -z "${LWC_ORACLE:-}" ]; then
+  LWC_ORACLE="$(node "$root/harness/scripts/oracle-root.mjs" oracle_root)" \
+    || { echo "!! C8 FAILED: oracle-root" >&2; exit 2; }
+  export LWC_ORACLE
+fi
+export LWC_ROOT="$LWC_ORACLE"
+if [ -z "${STYLE_CORPUS:-}" ]; then
+  STYLE_CORPUS="$(node "$root/harness/scripts/oracle-root.mjs" style_corpus_root)" \
+    || { echo "!! C8 FAILED: style-corpus-root" >&2; exit 2; }
+  export STYLE_CORPUS
+fi
+"$runner/workspace-path-scan.sh" "$root" \
+  || { echo "!! C8 FAILED: workspace-path-scan" >&2; exit 3; }
+
 fmt_rc=0
 if [ "$skip_fmt" -eq 0 ]; then
   (cd "$root" && cargo_locked fmt --all --check) || fmt_rc=$?
@@ -53,7 +68,7 @@ if [ "$skip_pack" -eq 0 ]; then
   "$runner/napi-pack.sh" "$tout" linux-x64-gnu "$root" || { echo "!! C8 FAILED: napi-pack" >&2; exit 3; }
   unset SSR_ORACLE_NAPI
   [ -x "$runner/ssr-oracle-gate.sh" ] || { echo "!! C8 FAILED: ssr-oracle-gate.sh missing next to c8-checks.sh" >&2; exit 3; }
-  LWC_ROOT="${LWC_ROOT:-${LWC_ORACLE:-/workspace/lwc}}" SSR_ORACLE_ROOT="${SSR_ORACLE_ROOT:-$root}" \
+  LWC_ROOT="$LWC_ORACLE" SSR_ORACLE_ROOT="${SSR_ORACLE_ROOT:-$root}" \
     "$runner/ssr-oracle-gate.sh" "$tout" linux-x64-gnu \
     || { echo "!! C8 FAILED: ssr-compile-js-oracle gate" >&2; exit 3; }
   echo "c8: napi tarballs + ssr-oracle-gate ok ($tout)"

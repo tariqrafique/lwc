@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Cloud / fresh-clone board (D-0280). Advisory when run off the box.
-# Does not publish. Does not touch /workspace/lwc.
+# Does not publish. Does not touch the box oracle checkout.
 # Fetches nothing itself: caller runs fetch-oracle.sh / fetch-style-corpus.sh,
 # then this script resolves inputs and calls the shared driver.
 # Usage (from a clone of this repo):
@@ -18,7 +18,7 @@ source "$root/harness/scripts/oracle-root.sh"
 export LWC_ORACLE="$(oracle_root)"
 export LWC_ROOT="$LWC_ORACLE"
 export STYLE_CORPUS="$(style_corpus_root)"
-# Snapshot only when notes are absent: the resolver prefers /workspace/notes.
+# Snapshot only when notes are absent: the resolver prefers the box notes checkout when present.
 reg="$(notes_decisions_path)"
 export SEMDIFF_REGISTRY="$reg" OPTGATE_DECISIONS="$reg"
 # Explicit remote: unset PARSE5_DIR now means the box clone (parse5-pin-check.sh).

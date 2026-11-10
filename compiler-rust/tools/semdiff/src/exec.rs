@@ -723,12 +723,16 @@ fn node(dir: &Path, script: &str, template: Option<&Path>, out_name: &str) -> Pr
     let err = dir.join(format!("{out_name}.stderr"));
     let (Ok(fo), Ok(fe)) = (fs::File::create(&out), fs::File::create(&err)) else { return Proc::Fail("create output".into()) };
     let mut cmd = Command::new("node");
+    let oracle = std::env::var_os("LWC_ORACLE")
+        .unwrap_or_else(|| std::ffi::OsString::from(env!("SEMDIFF_ORACLE_DIR")));
     cmd.env_clear()
         .env("PATH", std::env::var_os("PATH").unwrap_or_default())
         .env("HOME", std::env::var_os("HOME").unwrap_or_default())
         .env("NODE_ENV", "test")
         .env("TZ", "UTC")
         .env("LANG", "C")
+        .env("LWC_ORACLE", &oracle)
+        .env("LWC_ROOT", &oracle)
         .env("SD_EXEC_CASE", dir)
         .arg("--import")
         .arg(exec.join("register.mjs"))

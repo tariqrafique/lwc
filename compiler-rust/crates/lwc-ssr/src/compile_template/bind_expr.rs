@@ -100,7 +100,7 @@ mod tests {
     }
 
     /// Differential test against JS `bindExpression` (complex-expression mode). Regenerate the corpus with
-    /// `node harness/scripts/gen-bind-corpus.mjs` (needs /workspace/lwc built), then `cargo test -p lwc-ssr js_bind_corpus`.
+    /// `node harness/scripts/gen-bind-corpus.mjs` (needs the pinned oracle built), then `cargo test -p lwc-ssr js_bind_corpus`.
     #[test]
     fn js_bind_corpus() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/bind_corpus.json");

@@ -604,7 +604,7 @@ mod tests {
         print_expr(c.ast, &plan, "$cmp", 0).unwrap_or_else(|e| panic!("{raw}: {e:?}")).code
     }
 
-    /// Each expected string is astring 1.9.0's output for the same ESTree (node, /workspace/lwc).
+    /// Each expected string is astring 1.9.0's output for the same ESTree (node, the pinned oracle).
     #[test]
     fn matches_astring() {
         let m = Js::member;

@@ -9,7 +9,7 @@ child `<template shadowrootmode="open|closed"[ shadowrootdelegatesfocus]>`; `<st
 `document.head` (light-DOM / global styles) are recorded separately as `head`. The result is compared to goldens
 recorded from the JS backend.
 
-Run from harness/ with `PATH=/workspace/lwc/node_modules/.bin:$PATH`:
+Run from harness/ with `PATH=$LWC_ORACLE/node_modules/.bin:$PATH`:
 
     CORPUS=ssr|template|all npx vitest run test/csr.render.test.ts --pool=threads --testTimeout=5000 --reporter=dot
     # record goldens (JS backend only; refuses under rust)

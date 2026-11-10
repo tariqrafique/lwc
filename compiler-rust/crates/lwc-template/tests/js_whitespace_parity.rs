@@ -1,6 +1,6 @@
 //! AB-L0022 / AB-X0011 parity: JS whitespace (acorn `isWhiteSpace`, `/\\s/`, `String.prototype.trim`)
 //! includes U+FEFF and excludes U+0085 (NEL), unlike `char::is_whitespace`. Rows recorded from upstream
-//! @lwc/template-compiler compile() at /workspace/lwc b9e8007 (file `x.html`, default options):
+//! @lwc/template-compiler compile() at the pinned oracle b9e8007 (file `x.html`, default options):
 //! `(source, "code:message" of each diagnostic joined by `|`, code with ASCII whitespace and the version
 //! banner stripped from after the `lwc` import)`. NEL never reaches an expression or attribute check:
 //! parse5 rejects it first (LWC1058 control-character-in-input-stream), so those rows pin that.

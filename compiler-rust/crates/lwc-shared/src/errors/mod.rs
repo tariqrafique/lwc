@@ -212,13 +212,15 @@ mod tests {
     /// `@lwc/errors` exports (walked from its `*Errors` / `*Diagnostics` / GENERIC_COMPILER_ERROR exports).
     #[test]
     fn count_and_codes_match_upstream() {
-        let js = r#"const m=require("/workspace/lwc/packages/@lwc/errors");const s=new Set();
+        let pkg = crate::oracle_root().join("packages/@lwc/errors");
+        let js = format!("const m=require({:?});", pkg.to_str().expect("LWC_ORACLE must be UTF-8"))
+            + r#"const s=new Set();
 const walk=o=>{if(!o||typeof o!=="object")return;if(typeof o.code==="number"&&typeof o.message==="string"){s.add(o.code);return;}for(const v of Object.values(o))walk(v);};
 for(const[k,v]of Object.entries(m))if(/Errors$|Diagnostics$|^GENERIC_COMPILER_ERROR$/.test(k))walk(v);
 console.log([...s].sort((a,b)=>a-b).join(","));"#;
         let out = match std::process::Command::new("node").arg("-e").arg(js).output() {
             Ok(o) if o.status.success() => String::from_utf8(o.stdout).unwrap(),
-            r => panic!("cannot read @lwc/errors from the pinned oracle /workspace/lwc: {r:?}"),
+            r => panic!("cannot read @lwc/errors from LWC_ORACLE {}: {r:?}", pkg.display()),
         };
         let upstream: Vec<u32> = out.trim().split(',').map(|c| c.parse().unwrap()).collect();
         let ours: Vec<u32> = ALL.iter().map(|i| i.code).collect();

@@ -42,8 +42,8 @@ type Golden = Record<string, Observed>;
 const loadGolden = (f: string): Golden => (UPDATE ? {} : readGolden(f));   // missing golden file = failure, never {}
 // Scratch paths, and engine-dom's global VM counter in dev messages (`[object:vm Ctor (1211)]`), which depends on how
 // many components rendered earlier in the run (CORPUS=all vs a single corpus), are not compiler output.
-// Rollup prints module ids relative to process.cwd() (`../../lwc/...` from the live harness, `../../../workspace/lwc/...`
-// from a /tmp snapshot): resolve them and anchor the oracle at `<lwc>` so goldens don't depend on where the harness runs.
+// Rollup prints module ids relative to process.cwd() (`../../lwc/...` from the live harness, a deeper relative
+// path from a tmp snapshot): resolve them and anchor the oracle at `<lwc>` so goldens don't depend on where the harness runs.
 const ORACLE_ROOT = oracleRoot();
 const cwdIds = (s: string) => s.replace(/(?:\.\.\/)+[\w@.\-\/]+/g, (m) => {
     const abs = path.resolve(process.cwd(), m);

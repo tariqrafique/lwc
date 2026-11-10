@@ -5,7 +5,7 @@
 //! - `defined_only_in_lwc_shared`: no code file anywhere in the repo spells a metric value or a deprecation text,
 //!   except the named, existence-asserted `ALLOWED` entries (AB-L0065).
 //!
-//! All fail closed: a missing node, tsx or /workspace/lwc is a failure, not a skip.
+//! All fail closed: a missing node, tsx or LWC_ORACLE checkout is a failure, not a skip.
 use lwc_shared::{CompilerMetric, DeprecationId};
 use std::path::{Path, PathBuf};
 use std::process::Command;

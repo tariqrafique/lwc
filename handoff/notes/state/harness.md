@@ -242,3 +242,26 @@
 - IN-REPO.md carry-forward folded in this slice: example commit `f7cc643`, cloud-run comparison `official/7ae940796f7b`.
 - PLAN §3 item 4 is parked (further item-4 follow-up paused). Landed sha **1017bcef1f88**; branch was `bot/harness-semdiff-row` (deleted after land). Next work is D-0280(b): cloud `cargo test --workspace --locked` failed on a fresh VM because three lwc-shared tests and `tools/gen-error-info/gen.mjs` still read the literal path `/workspace/lwc` (board exited 3, no board.txt).
 - PLAN §3 item 3 remains waiting on Migrate's cloud `run-portable-board.sh` run, now unblocked only after D-0280(b).
+
+## 2026-11-10 04:45 PST (America/Los_Angeles)
+- D-0280(b) fix landed (cloud run failed at f7cc643: lwc-shared tests + tools/gen-error-info/gen.mjs hardcoded /workspace/lwc). main cde1e63 (workspace-path scanner table row), then c956be7 (resolve oracle paths through LWC_ORACLE / oracle-root across crates, tools, harness), fdb913e (semdiff exec env_clear passes LWC_ORACLE), f97d0ec, 8499ebd (keep Vite alias specifier). Land logs /tmp/land-d0280b*.log, final rc=0.
+- New gate: scripts/workspace-path-scan.sh + scripts/workspace-path-allowlist.tsv (path-exact allowlist), run in C8 (c8-checks.sh), run-board.sh and land.sh. Official log: `workspace-path-scan: clean`.
+- Proof: fresh-clone cargo test --workspace --locked rc 0 (/tmp/d0280b-cargo-test2.log); portable board rc 0 (/tmp/d0280b-portable.log), board.txt (/tmp/d0280b-proof/board.txt) equals official 1d4f57d335fa except id lines/option-gate path.
+- Official board VALID published: commit 8499ebd7277ed7d474589590b454a65fb0145c28 src 1d4f57d335fa napi 9361540cf62c notes d67669b; log /tmp/official-8499ebd.log; store official/1d4f57d335fa/. Rows identical to 2ead84925858 (incl. semantic-diff eq=16795 gate=ok).
+- Note: the executor run was interrupted after publishing; this entry recorded by the worker from box state.
+- Next: Migrate reruns cloud check vs official/1d4f57d335fa; item 4 follow-up resumes.
+
+## 2026-11-10 04:39 PST (America/Los_Angeles)
+- PLAN §3 item 4 CLOSED. Audited the landed row (8cf3c64 + 1017bce, still on main 8499ebd) against Arch 03112c1 / AB-L0078 erratum (reviews.tsv, proposals/semdiff-board-row.md:98-100, state/semdiff.md, state/arch-board.md). Nothing missing; no code change, no land, no new official board.
+- Audit (each required item present; plants ran rc 0 via scripts/test-semantic-diff-row.sh):
+  - (1) gate strict: harness/scripts/semantic-diff-row.sh:60 always invokes `semdiff run … --gate strict`; :23 rejects `--gate`/`--baseline` overrides (exit 2). board.sh:322 calls the helper with no gate/baseline flags.
+  - (2) no baseline file or path: `tools/semdiff/board/` is absent (vendored baseline.json was never landed). The row helper never accepts or forwards `--baseline`. No SEMDIFF_BASELINE path in board/official/portable drivers.
+  - (3) registry = decisions.tsv at NOTES_COMMIT on the box; snapshot only when notes are absent: official-board.sh:162/190 archives notes HEAD (the recorded notescommit) and :241 sets SEMDIFF_REGISTRY=$snap/notes/decisions.tsv (also OFFICIAL_NOTES_COMMIT at :289). board.sh:50-52 falls back to notes_decisions_path when unset. oracle-root.mjs:41-47 notesDecisionsPath prefers OPTGATE_DECISIONS / SEMDIFF_REGISTRY, then /workspace/notes/lwc-rust-migrate/decisions.tsv, then harness/decisions.snapshot.tsv. run-portable-board.sh:21-23 documents and uses that order.
+  - (4) manifest case count fail-closed: semantic-diff-row.sh:53-56 exit 2 on mismatch. board.sh:313-322 reads this run's template-diag-crate.json totals.codegenOnly as --expect-cases (unreadable report → BOARD FAILED).
+  - (5) corpus identity fail-closed: semantic-diff-row.sh:49-51 exit 2 on mismatch. board.sh:322 passes --expect-corpus template-diag-codegen-only.
+  - (6) plants: scripts/test-semantic-diff-row.sh:77-81 wrong case count, :83-87 wrong corpus, :89-92 missing registry (plus :94-98 baseline flag refused). Wired from scripts/test-land-classify.sh:12.
+- Official board already published on current main: official/1d4f57d335fa (commit 8499ebd, store /cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official/1d4f57d335fa/). board.txt:25 `semantic-diff  eq=16795 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1`. No new board; nothing to diff against itself. Exec leg stays off per D-0256 (board.sh:20, :120, :123); that was not an 03112c1 checklist item.
+- Carry-forwards still open (not folded: they would be their own slice, and the scanner/eval/plant-file work would bloat it). c956be7 did not lock the two cargo builds:
+  - AB-M0001: unlocked `cargo build` at tools/style-diff/run.mjs:100 and harness/scripts/template-diag-diff.mjs:376 (semdiff spawn at :621 already `--locked`); no .mjs/.py cargo-spawn scan in check-land-main-refs.sh; no eval ban in production-path scripts.
+  - Arch #9 (notes 039a74c): unlocked scan still must match napi/npx/npm the way it matches cargo (`$(…)`, env/exec/command prefixes, echo-wrapped forms); move plant bodies into data files with a path-exact exemption; log_box_configs (land.sh:40) still reads MAIN's working-tree table via main_data, not `git show ${base}`.
+- Next: those carry-forwards as their own slice (must not change any board row); Migrate's cloud rerun vs official/1d4f57d335fa.

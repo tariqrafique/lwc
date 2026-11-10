@@ -7,7 +7,7 @@
 //! `\r` is not), column = offset in line + 1. Node `Loc.offset` is the byte index into the
 //! caller's `src` (BOM included) for slicing.
 //!
-//! Function map (postcss 8.5.9, /workspace/lwc/node_modules/postcss/lib/parser.js):
+//! Function map (postcss 8.5.9, node_modules/postcss/lib/parser.js in the pinned oracle):
 //! `parse`, `other`, `rule`, `emptyRule`, `decl`, `atrule`, `comment`, `end`, `endFile`,
 //! `freeSemicolon`, `init`, `raw`, `spacesAndCommentsFrom{Start,End}`, `spacesFromEnd`,
 //! `stringFrom`, `checkMissedSemicolon`, `colon`, and the error helpers `unclosedBlock`,

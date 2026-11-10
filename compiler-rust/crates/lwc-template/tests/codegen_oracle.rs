@@ -1,6 +1,6 @@
 //! Codegen parity rows for the codegen-only corpus clusters (bot/template C). Each row is
 //! (source, enableStaticContentOptimization, expected) where `expected` was recorded from
-//! @lwc/template-compiler compile() at /workspace/lwc b9e8007 (file `x.html`), whitespace-stripped
+//! @lwc/template-compiler compile() at the pinned oracle b9e8007 (file `x.html`), whitespace-stripped
 //! like the corpus compare, from after the `lwc` import to the end.
 
 fn body(src: &str, static_opt: bool) -> String {

@@ -23,7 +23,7 @@ if (!['sync', 'async', 'asyncYield'].includes(SSR_MODE)) throw new Error(`bad SS
 const BACKEND_ID = process.env.LWC_COMPILER_BACKEND ?? 'js';
 
 if (!fs.existsSync(SSR_RUNTIME_ESM)) {
-    throw new Error(`${SSR_RUNTIME_ESM} missing: build it with \`cd /workspace/lwc && npx nx run @lwc/ssr-runtime:build\``);
+    throw new Error(`${SSR_RUNTIME_ESM} missing: build it with \`cd "$LWC_ORACLE" && npx nx run @lwc/ssr-runtime:build\``);
 }
 
 const here = path.dirname(fileURLToPath(import.meta.url));

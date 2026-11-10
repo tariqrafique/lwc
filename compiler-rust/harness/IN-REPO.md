@@ -56,11 +56,11 @@ notes-commit `lwc-rust-migrate/CUTOVER.md`; OWNERS are ship,migrate):
 - `board.sh` requires a clean tree at that exact sha (`git status --porcelain
   --untracked-files=all`) and exports `LWC_ORACLE` / `LWC_ROOT`.
 
-Static test imports still use the `/workspace/lwc` Vite alias (remapped to
+Static test imports use the `/workspace/lwc` Vite alias (remapped to
 `$LWC_ORACLE`). `canonOraclePath` rewrites the real oracle prefix to the
-`<ORACLE_ROOT>` token so a hardcoded `/workspace/lwc` in compiler output is
-not masked off-box. On the box, if `LWC_ORACLE` is unset and `/workspace/lwc`
-exists, that checkout is used.
+`<ORACLE_ROOT>` token so a hardcoded box oracle path in compiler output is
+not masked off-box. On the box, if `LWC_ORACLE` is unset and the box oracle
+checkout exists, `oracle-root.mjs` uses that checkout.
 
 ## Box-only dependencies
 

@@ -2,7 +2,7 @@
 
 macro_rules! lwc_version { () => { "9.5.3" } }
 
-/// `LWC_VERSION`: the shipped compiler version this port targets (the pinned oracle /workspace/lwc's). The workspace's
+/// `LWC_VERSION`: the shipped compiler version this port targets (the pinned oracle's). The workspace's
 /// only definition (gate: `exactly_one_lwc_version_const`).
 pub const LWC_VERSION: &str = lwc_version!();
 /// `LWC_VERSION_COMMENT` (`LWC compiler v${LWC_VERSION}`); emitted as `/*LWC compiler v9.5.3*/`.
@@ -19,8 +19,8 @@ mod tests {
         assert_eq!(super::LWC_VERSION_COMMENT, format!("LWC compiler v{}", super::LWC_VERSION));
         assert_eq!(super::version_comment(), format!("/*LWC compiler v{}*/", super::LWC_VERSION));
         assert_eq!(super::LWC_VERSION, crate::errors::SOURCE_VERSION, "meta and the generated error table disagree on the LWC version");
-        let pkg = "/workspace/lwc/packages/@lwc/shared/package.json"; // the pinned oracle
-        let s = std::fs::read_to_string(pkg).unwrap_or_else(|e| panic!("{pkg}: {e}"));
-        assert!(s.contains(&format!("\"version\": \"{}\"", super::LWC_VERSION)), "{pkg} is not v{}", super::LWC_VERSION);
+        let pkg = crate::oracle_root().join("packages/@lwc/shared/package.json");
+        let s = std::fs::read_to_string(&pkg).unwrap_or_else(|e| panic!("{}: {e}", pkg.display()));
+        assert!(s.contains(&format!("\"version\": \"{}\"", super::LWC_VERSION)), "{} is not v{}", pkg.display(), super::LWC_VERSION);
     }
 }

@@ -6,7 +6,7 @@ the CompilerBackend, links it with rollup, renders it with @lwc/ssr-runtime
 `serverSideRenderComponent(..., SSR_MODE)` plus `formatHTML`, and compares the output
 byte-for-byte with `expected.html` / `error.txt`.
 
-Run from harness/ with `PATH=/workspace/lwc/node_modules/.bin:$PATH`:
+Run from harness/ with `PATH=$LWC_ORACLE/node_modules/.bin:$PATH`:
 
     SSR_MODE=sync|async|asyncYield npx vitest run test/ssr.render.test.ts --pool=threads --testTimeout=5000 --reporter=dot
     # rust: pin the binary first (never overwrite lwc-compiler-napi.node)

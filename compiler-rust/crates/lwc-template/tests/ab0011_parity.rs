@@ -1,4 +1,4 @@
-//! AB-0011 a1 oracle parity (design §1 rows + 40 fuzz rows from /workspace/scratch/ab0011/fz where
+//! AB-0011 a1 oracle parity (design §1 rows + 40 fuzz rows from scratch/ab0011/fz where
 //! the pre-a1 Rust diverged). Expected values were recorded from upstream @lwc (PIN) with tsx:
 //! `_` + toPropertyName, kebabcaseToCamelcase (template-compiler shared/), and @lwc/shared
 //! kebabCaseToCamelCase, generateCustomElementTagName('x', s), isVoidElement(s, HTML_NAMESPACE).

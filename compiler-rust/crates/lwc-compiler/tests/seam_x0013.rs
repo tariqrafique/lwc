@@ -2,7 +2,7 @@
 //! `import(...)` node, in UTF-16 units, with non-BMP text before it, plus the code, level and url 9.5.3 gives it.
 //!
 //! Expected values are not typed here: each test runs shipped @lwc/compiler 9.5.3 live in node
-//! (`$LWC_ORACLE`, default /workspace/lwc, which must be at b9e8007) and compares. Missing node or a
+//! (`$LWC_ORACLE`, which must be at b9e8007) and compares. Missing node or a
 //! moved oracle is a failure, not a skip.
 use lwc_shared::{CompileOptions, SsrMode, TransformError};
 use std::process::Command;
@@ -23,7 +23,7 @@ fn opts(target_ssr: bool) -> CompileOptions {
 
 /// `[code, level, url, line, column, start, length]` of what 9.5.3 `transformSync` throws for SRC.
 fn oracle(target_ssr: bool) -> String {
-    let root = std::env::var("LWC_ORACLE").unwrap_or_else(|_| "/workspace/lwc".into());
+    let root = lwc_shared::oracle_root().to_str().expect("LWC_ORACLE must be UTF-8").to_string();
     let head = Command::new("git").args(["-C", &root, "rev-parse", "HEAD"]).output().expect("git is required");
     let head = String::from_utf8(head.stdout).unwrap();
     assert!(head.starts_with(ORACLE_SHA), "oracle {root} is at {head:?}, want {ORACLE_SHA}");

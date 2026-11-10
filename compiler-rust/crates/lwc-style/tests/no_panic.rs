@@ -1,7 +1,7 @@
 //! No input panics. A JS throw must surface as `Err(CompileError)`: a Rust panic across napi is a
 //! process abort. Sweeps `transform` (the facade napi calls; it wraps `transform_with_config`) under
 //! all six style-diff configs over: upstream fixtures, `tests/parse-errors`, the JS-vs-Rust edge
-//! probes, the style-diff corpus sources (LWC integration packages + `/workspace/style-corpus`, when
+//! probes, the style-diff corpus sources (LWC integration packages + `$STYLE_CORPUS`, when
 //! present), every prefix of the small inputs (truncation = unclosed everything), and a
 //! deterministic fragment fuzz.
 use lwc_style::{transform, CompileOptions};
@@ -61,13 +61,13 @@ fn sweep(inputs: &[String]) -> (usize, Vec<String>) {
 #[test]
 fn nothing_panics() {
     panic::set_hook(Box::new(|_| {}));
-    let lwc = std::env::var("LWC_ROOT").unwrap_or_else(|_| "/workspace/lwc".into());
+    let lwc = lwc_shared::oracle_root();
     let mut small: Vec<String> = PROBES.iter().map(|s| s.to_string()).collect();
     css_files(&Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/parse-errors"), &mut small);
     let mut corpus = Vec::new();
     css_files(&Path::new(&lwc).join("packages/@lwc/style-compiler/src/__tests__/fixtures"), &mut corpus);
     for pkg in ["integration-wtr", "integration-wdio", "integration-types"] { css_files(&Path::new(&lwc).join("packages/@lwc").join(pkg), &mut corpus); }
-    let slds = std::env::var("STYLE_CORPUS_ROOT").unwrap_or_else(|_| "/workspace/style-corpus".into());
+    let slds = lwc_shared::style_corpus_root();
     for sub in ["lbc", "slds", "lbc-recipes"] { css_files(&Path::new(&slds).join(sub), &mut corpus); }
 
     let mut prefixes = Vec::new();

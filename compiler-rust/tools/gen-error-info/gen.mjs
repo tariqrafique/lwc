@@ -1,9 +1,10 @@
 // Generates crates/lwc-shared/src/errors/error_info.rs: the ONE port of the @lwc/errors error-info tables
-// (AB-R003 / AB-0001), from the pinned oracle /workspace/lwc (b9e8007): packages/@lwc/errors, dist built.
+// (AB-R003 / AB-0001), from the pinned oracle (b9e8007): packages/@lwc/errors, dist built.
 //   node tools/gen-error-info/gen.mjs            write the file
 //   node tools/gen-error-info/gen.mjs --stdout   print it (lwc-shared's freshness test compares)
 import fs from 'fs'; import path from 'path'; import { createRequire } from 'module'; import { fileURLToPath } from 'url';
-const errorsPkg = '/workspace/lwc/packages/@lwc/errors';
+import { oracleRoot } from '../../harness/scripts/oracle-root.mjs';
+const errorsPkg = path.join(oracleRoot(), 'packages/@lwc/errors');
 const req = createRequire(path.join(errorsPkg, '/'));
 const E = req(errorsPkg);
 const version = JSON.parse(fs.readFileSync(path.join(errorsPkg, 'package.json'), 'utf8')).version;

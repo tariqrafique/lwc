@@ -20,6 +20,13 @@ hs="$ws/harness"
 [ -n "${PARSE5_DIR:-}" ] || { echo "!! run-board: PARSE5_DIR must be set" >&2; exit 2; }
 export NO_COLOR="${NO_COLOR:-1}"
 export PARSE5_DIR
+# shellcheck source=../harness/scripts/oracle-root.sh
+source "$hs/scripts/oracle-root.sh"
+LWC_ORACLE="$(oracle_root)" || { echo "!! run-board: oracle-root failed" >&2; exit 2; }
+export LWC_ORACLE
+export LWC_ROOT="$LWC_ORACLE"
+STYLE_CORPUS="$(style_corpus_root)" || { echo "!! run-board: style-corpus-root failed" >&2; exit 2; }
+export STYLE_CORPUS
 
 PARSE5_DIR="$PARSE5_DIR" "$runner/parse5-pin-check.sh" "$ws" \
   || { echo "!! run-board: parse5 pin check failed" >&2; exit 2; }

@@ -16,7 +16,7 @@
 #   Anything else, including EQUIVALENT-BY-EXECUTION or an unknown value, is unclean.
 #   Semdiff binary + its crate are built from THIS script's tree (MAIN when land.sh runs MAIN's board.sh; the official
 #   snapshot when official-board.sh runs the snapshot's board.sh), never the tree under test. Registry =
-#   ${SEMDIFF_REGISTRY} or /workspace/notes/lwc-rust-migrate/decisions.tsv (official-board points it at the hashed notes
+#   ${SEMDIFF_REGISTRY} or notesDecisionsPath() (official-board points it at the hashed notes
 #   snapshot). Fail-closed if neither is set/present. Exec leg stays off (D-0256): do not set TDD_SEMDIFF_EXEC.
 #   Driver is built into ${TDD_DRIVER_TARGET:-${CARGO_TARGET_DIR:-<repo>/target}/template-diag-driver} from the tree under test.
 #   Report JSON: ${TEMPLATE_DIAG_OUT_DIR:-<row log dir>}/template-diag-<engine>.json, never modified after the run; soundness

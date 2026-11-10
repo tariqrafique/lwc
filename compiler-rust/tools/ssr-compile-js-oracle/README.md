@@ -1,7 +1,7 @@
 # ssr-compile-js-oracle — `@lwc/ssr-compiler` vs Rust compile_js, per case
 
 Compiles each case in `cases-props.mjs` (public properties, `@api`/`@track`) and `cases-wire.mjs` (`@wire`) with
-upstream `compileComponentForSSR` (`$LWC_ROOT/packages/@lwc/ssr-compiler/dist`, default `/workspace/lwc`) and with
+upstream `compileComponentForSSR` (`$LWC_ROOT/packages/@lwc/ssr-compiler/dist`, default `$LWC_ORACLE`) and with
 the Rust napi this tree built: `${CARGO_TARGET_DIR:-<repo>/target}/release/liblwc_compiler_napi.so`, the output of
 `cargo build -p lwc-compiler-napi --release` (land.sh and `scripts/install-napi.sh` both run it). `--napi=<path>`
 names another build output (dev use). The old `SSR_ORACLE_NAPI` env override is retired: if it is set at all, even

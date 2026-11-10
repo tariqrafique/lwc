@@ -26,6 +26,7 @@ scripts/parse5-pin-check.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/check-land-main-refs.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/lint-shell-pipes.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/lint-no-stripped-compare.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
+scripts/workspace-path-scan.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/ratchet-ceiling.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/baseline-ceiling.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 harness/scripts/shim-gate.mjs	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
