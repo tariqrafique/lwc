@@ -94,12 +94,28 @@ export LWC_ORACLE
 export LWC_ROOT="$LWC_ORACLE"
 STYLE_CORPUS="$(node "$wt/harness/scripts/oracle-root.mjs" style_corpus_root)" || die "style-corpus-root failed"
 export STYLE_CORPUS
+# D-0282: same Cargo.lock+toolchain-keyed rustc cache as official-board.sh.
+# A fresh worktree target/ recompiles oxc from scratch; this directory is shared
+# across worktrees and official snaps so a crate-change land stays incremental.
+_lk="$(git show HEAD:Cargo.lock | sha256sum | awk '{print $1}')"
+_tk="$(git show HEAD:rust-toolchain.toml | sha256sum | awk '{print $1}')"
+_ck="$(printf '%s%s' "$_lk" "$_tk" | sha256sum | cut -c1-16)"
+export CARGO_TARGET_DIR="/workspace/cache/lwc-target/$_ck"
+mkdir -p "$CARGO_TARGET_DIR"
+echo "land: CARGO_TARGET_DIR=$CARGO_TARGET_DIR (lock+toolchain $_ck)"
 cargo_locked check --workspace --all-targets || die "workspace check failed"
 cargo_locked test --workspace || die "workspace test failed"   # all crates: dependents of a changed crate too
 crates_changed=; if grep -q '^crates/\|^Cargo\.' <<< "$changed"; then crates_changed=1; fi
 # napi release build gates the landing (before the fast-forward). The official board
 # (built from the landed sha) is the land's board (D-0282). The live install from main stays post-merge.
 cargo_locked build -p lwc-compiler-napi --release || die "napi release build failed"
+# CARGO_TARGET_DIR above writes the .so outside the worktree. test-board-ratchet
+# (and anything else that looks at target/release) still expects the worktree path.
+_napi_so="$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so"
+[ -f "$_napi_so" ] || die "napi release build produced no $_napi_so"
+mkdir -p "$wt/target/release"
+ln -f "$_napi_so" "$wt/target/release/liblwc_compiler_napi.so" 2>/dev/null   || cp -f "$_napi_so" "$wt/target/release/liblwc_compiler_napi.so"
+echo "land: napi so $_napi_so -> $wt/target/release/liblwc_compiler_napi.so"
 if grep -qE '^(scripts/(land|land-agent-branch|test-land-agent-branch|test-land-classify|parse5-pin-check|test-parse5-pin|test-shim-registry|lint-shell-pipes|lint-no-stripped-compare|check-land-main-refs|cargo-locked|ratchet-ceiling|baseline-ceiling|test-board-ratchet|land-path-checks|test-land-path-checks)\.sh|scripts/land-main-refs\.tsv|scripts/land-path-checks\.tsv|harness/(scripts/shim-gate\.mjs|scripts/board-baseline\.mjs|shim-registry\.tsv|board\.sh|board-rows\.sh|vitest\.config\.ts|vitest\.board\.config\.ts)|harness/test/.*([Ss]etup|globalSetup).*)$' <<< "$changed"; then
   scripts/test-land-classify.sh || die "test-land-classify / parse5-pin / lint-shell-pipes / ratchet-ceiling / shim-registry / main-refs self-test failed"
   # test-board-ratchet is an e2e board proof and needs the napi binary land just built

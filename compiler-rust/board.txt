@@ -1,5 +1,5 @@
-official board  commit=bb64d8d3509f  src=0d4392d66b82  napi=2e263559f0f0  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-10T10:58:43-08:00
-napi sha256:2e263559f0f0  pinned=/tmp/lwc-board-snap.vEuwVP/repo/harness/.pins/lwc-compiler-napi.2e263559f0f0.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-10T10:57:03-08:00
+official board  commit=7a64c20bd95d  src=4c3ed0a43fd3  napi=2e263559f0f0  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-10T12:08:40-08:00
+napi sha256:2e263559f0f0  pinned=/tmp/lwc-board-snap.cnLuiQ/repo/harness/.pins/lwc-compiler-napi.2e263559f0f0.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-10T12:07:04-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -27,7 +27,7 @@ semantic-diff  eq=16795 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ASI-
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.vEuwVP/notes/decisions.tsv]
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.cnLuiQ/notes/decisions.tsv]
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
 style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)
 csr-clusters[ssr]: pass 387 fail 0

@@ -1,13 +1,13 @@
 {
  "schema": "template-diag-diff/v2",
  "meta": {
-  "generated": "2026-11-10T18:58:30.990Z",
-  "elapsedMs": 6869,
+  "generated": "2026-11-10T20:08:28.253Z",
+  "elapsedMs": 6768,
   "engine": "crate",
   "rust": {
    "driver": "/workspace/cache/lwc-target/3ccfc112e5a6337a/template-diag-driver/release/template-diag-driver",
    "driverSource": "TDD_DRIVER",
-   "sha256": "6a54132ae364",
+   "sha256": "2344f8a81826",
    "lwcTemplate": "lwc_template::compile"
   },
   "oracle": {
@@ -24,10 +24,10 @@
    "semdiff": {
     "bin": {
      "path": "/workspace/cache/lwc-target/3ccfc112e5a6337a/release/semdiff",
-     "sha256": "f7a71449e274"
+     "sha256": "4a49c428a7a2"
     },
     "registry": {
-     "path": "/tmp/lwc-board-snap.vEuwVP/notes/decisions.tsv",
+     "path": "/tmp/lwc-board-snap.cnLuiQ/notes/decisions.tsv",
      "sha256": "07bd000e2e8e61502cfc7cb690e474db86210278b6d022e2bed73823c77eceb1"
     },
     "observationModel": "D-0196",

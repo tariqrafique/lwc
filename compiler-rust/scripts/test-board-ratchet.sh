@@ -36,8 +36,14 @@ cp "$R/scripts/cargo-locked.sh" "$T/scripts/cargo-locked.sh"
 # matched, so this sandbox hole was not run until D-0282 fixed the extra ')'.
 cp "$R/scripts/tracked-files.sh" "$R/scripts/tracked-files.mjs" "$T/scripts/"
 if [ ! -f "$H/lwc-compiler-napi.node" ]; then
-  if [ -f "$R/target/release/liblwc_compiler_napi.so" ]; then cp "$R/target/release/liblwc_compiler_napi.so" "$H/lwc-compiler-napi.node"
-  else echo "!! test-board-ratchet: no napi binary ($R/harness/lwc-compiler-napi.node or $R/target/release)" >&2; exit 2; fi
+  _napi_src=""
+  if [ -n "${CARGO_TARGET_DIR:-}" ] && [ -f "$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so" ]; then
+    _napi_src="$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so"
+  elif [ -f "$R/target/release/liblwc_compiler_napi.so" ]; then
+    _napi_src="$R/target/release/liblwc_compiler_napi.so"
+  fi
+  if [ -n "$_napi_src" ]; then cp "$_napi_src" "$H/lwc-compiler-napi.node"
+  else echo "!! test-board-ratchet: no napi binary ($R/harness/lwc-compiler-napi.node or $R/target/release or \${CARGO_TARGET_DIR}/release)" >&2; exit 2; fi
 fi
 TEST="$H/test/js-eval.behavior.test.ts"; cp "$TEST" "$T/js-eval.orig"; BL0="$H/board-baseline.tsv"; cp "$BL0" "$T/baseline.orig"
 INJ='board-ratchet injected failure'
