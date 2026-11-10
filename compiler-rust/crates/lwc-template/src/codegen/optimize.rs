@@ -3,243 +3,241 @@
 //!
 //! TS walks the `tmpl` ESTree pre-order (estree-walker `enter`); the outermost node for which
 //! `isStaticObjectOrArray` holds is replaced by an identifier and not descended into. Nodes are
-//! deduped by their `astring` print, and `stcN` is numbered by first encounter. This crate emits
-//! JS text, so the same walk runs over the tokens of the emitted function body.
+//! deduped by their `astring` print, and `stcN` is numbered by first encounter.
 //!
 //! Static (optimize.ts isStaticObjectOrArray): an ObjectExpression whose properties are all plain
 //! `key: value` (not computed, method, shorthand or spread) and an ArrayExpression with no holes,
 //! where every value is a `Literal` (string, number, boolean, null) or itself static. `{}` and `[]`
 //! are static. `-1` is a UnaryExpression and template literals are not Literals, so neither is static.
+//!
+//! The walk is over the oxc AST of the emitted function body (one parse). Grouping parentheses are
+//! not nodes (`preserve_parens: false`), so replacing an object drops the parens astring had added
+//! around it; call parentheses stay because they belong to the `CallExpression`.
 
-#[derive(Debug, Clone, Copy, PartialEq)]
-enum Tok<'a> {
-    /// String, numeric, `true`/`false`/`null` literal (ESTree `Literal`).
-    Lit(&'a str),
-    Ident(&'a str),
-    /// Template literal, opaque (never a Literal).
-    Tmpl(&'a str),
-    Punct(&'a str),
+use oxc_allocator::Allocator;
+use oxc_ast::ast::{ArrayExpressionElement, Expression, ObjectPropertyKind, PropertyKind};
+use oxc_ast_visit::{Visit, walk};
+use oxc_parser::{ParseOptions, Parser};
+use oxc_span::{GetSpan, SourceType, Span};
+use std::collections::HashSet;
+
+fn is_literal(e: &Expression) -> bool {
+    matches!(
+        e,
+        Expression::StringLiteral(_)
+            | Expression::NumericLiteral(_)
+            | Expression::BooleanLiteral(_)
+            | Expression::NullLiteral(_)
+    )
 }
 
-impl<'a> Tok<'a> {
-    fn text(&self) -> &'a str { match *self { Tok::Lit(s) | Tok::Ident(s) | Tok::Tmpl(s) | Tok::Punct(s) => s } }
+fn is_static_value(e: &Expression) -> bool {
+    is_literal(e)
+        || matches!(
+            e,
+            Expression::ObjectExpression(_) | Expression::ArrayExpression(_)
+        ) && is_static(e)
 }
 
-/// Byte-range tokens of `src`. Regex literals are not produced by the template codegen's
-/// expression printer for anything that reaches here except via complex expressions, where a
-/// mis-lexed `/` only makes a span non-static or skips it (both leave the text unchanged).
-fn tokenize(src: &str) -> Vec<(usize, usize, Tok<'_>)> {
-    let b = src.as_bytes();
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < b.len() {
-        let c = b[i];
-        if c.is_ascii_whitespace() { i += 1; continue; }
-        let s = i;
-        if c == b'"' || c == b'\'' {
-            i += 1;
-            while i < b.len() && b[i] != c { if b[i] == b'\\' { i += 1; } i += 1; }
-            i = (i + 1).min(b.len());
-            out.push((s, i, Tok::Lit(&src[s..i])));
-        } else if c == b'`' {
-            i = skip_template(b, i);
-            out.push((s, i, Tok::Tmpl(&src[s..i])));
-        } else if c.is_ascii_digit() || (c == b'.' && b.get(i + 1).is_some_and(u8::is_ascii_digit)) {
-            while i < b.len() && (b[i].is_ascii_alphanumeric() || b[i] == b'.' || b[i] == b'_') { i += 1; }
-            out.push((s, i, Tok::Lit(&src[s..i])));
-        } else if c.is_ascii_alphabetic() || c == b'_' || c == b'$' || c >= 0x80 {
-            while i < b.len() && (b[i].is_ascii_alphanumeric() || b[i] == b'_' || b[i] == b'$' || b[i] >= 0x80) { i += 1; }
-            let w = &src[s..i];
-            out.push((s, i, if matches!(w, "true" | "false" | "null") { Tok::Lit(w) } else { Tok::Ident(w) }));
-        } else {
-            let rest = &src[i..];
-            let n = ["...", "=>", "?.", "??", "||", "&&"].iter().find(|p| rest.starts_with(**p)).map_or(1, |p| p.len());
-            i += n;
-            out.push((s, i, Tok::Punct(&src[s..i])));
-        }
-    }
-    out
-}
-
-/// End (exclusive) of the template literal starting at `i`, skipping `${ ... }` substitutions.
-fn skip_template(b: &[u8], mut i: usize) -> usize {
-    i += 1;
-    while i < b.len() {
-        match b[i] {
-            b'\\' => i += 2,
-            b'`' => return i + 1,
-            b'$' if b.get(i + 1) == Some(&b'{') => {
-                i += 2;
-                let mut depth = 1;
-                while i < b.len() && depth > 0 {
-                    match b[i] {
-                        b'{' => depth += 1,
-                        b'}' => depth -= 1,
-                        b'`' => { i = skip_template(b, i); continue; }
-                        q @ (b'"' | b'\'') => { i += 1; while i < b.len() && b[i] != q { if b[i] == b'\\' { i += 1; } i += 1; } }
-                        _ => {}
-                    }
-                    i += 1;
-                }
+/// optimize.ts `isStaticObjectOrArray`.
+fn is_static(e: &Expression) -> bool {
+    match e {
+        Expression::ObjectExpression(o) => o.properties.iter().all(|p| match p {
+            ObjectPropertyKind::ObjectProperty(prop) => {
+                !prop.computed
+                    && !prop.method
+                    && !prop.shorthand
+                    && prop.kind == PropertyKind::Init
+                    && is_static_value(&prop.value)
             }
-            _ => i += 1,
-        }
-    }
-    b.len()
-}
-
-/// Index of the bracket closing the one at `open`, if balanced.
-fn closing(toks: &[(usize, usize, Tok)], open: usize) -> Option<usize> {
-    let mut depth = 0i32;
-    for (j, t) in toks.iter().enumerate().skip(open) {
-        match t.2 {
-            Tok::Punct("{" | "[" | "(") => depth += 1,
-            Tok::Punct("}" | "]" | ")") => { depth -= 1; if depth == 0 { return Some(j); } }
-            _ => {}
-        }
-    }
-    None
-}
-
-/// `{` here starts an ObjectExpression (not a block / pattern), judged by the previous token.
-fn opens_object(prev: Option<&Tok>) -> bool {
-    match prev {
-        None => true,
-        Some(Tok::Punct(p)) => !matches!(*p, ")" | "=>" | ";" | "{" | "}"),
-        Some(Tok::Ident(w)) => matches!(*w, "return" | "typeof" | "void" | "in" | "of" | "case"),
-        _ => false,
-    }
-}
-
-/// `[` here starts an ArrayExpression (not a computed member access).
-fn opens_array(prev: Option<&Tok>) -> bool {
-    match prev {
-        None => true,
-        Some(Tok::Punct(p)) => !matches!(*p, ")" | "]" | "}"),
-        Some(Tok::Ident(w)) => matches!(*w, "return" | "typeof" | "void" | "in" | "of" | "case"),
-        _ => false,
-    }
-}
-
-/// Top-level comma-separated segments of `toks[from..to]`.
-fn segments(toks: &[(usize, usize, Tok)], from: usize, to: usize) -> Vec<(usize, usize)> {
-    let mut out = Vec::new();
-    let (mut s, mut depth) = (from, 0i32);
-    for j in from..to {
-        match toks[j].2 {
-            Tok::Punct("{" | "[" | "(") => depth += 1,
-            Tok::Punct("}" | "]" | ")") => depth -= 1,
-            Tok::Punct(",") if depth == 0 => { out.push((s, j)); s = j + 1; }
-            _ => {}
-        }
-    }
-    // A trailing comma is not a hole.
-    if s < to || out.is_empty() && from < to { out.push((s, to)); }
-    out
-}
-
-/// optimize.ts isStaticObjectOrArray for the literal spanning `toks[open..=close]`.
-fn is_static(toks: &[(usize, usize, Tok)], open: usize, close: usize) -> bool {
-    let value = |s: usize, e: usize| -> bool {
-        match e - s {
-            1 => matches!(toks[s].2, Tok::Lit(_)),
-            0 => false,
-            _ => matches!(toks[s].2, Tok::Punct("{" | "[")) && closing(toks, s) == Some(e - 1) && is_static(toks, s, e - 1),
-        }
-    };
-    let segs = segments(toks, open + 1, close);
-    match toks[open].2 {
-        Tok::Punct("{") => segs.iter().all(|&(s, e)| {
-            e >= s + 3 && matches!(toks[s].2, Tok::Ident(_) | Tok::Lit(_)) && toks[s + 1].2 == Tok::Punct(":") && value(s + 2, e)
+            ObjectPropertyKind::SpreadProperty(_) => false,
         }),
-        Tok::Punct("[") => segs.iter().all(|&(s, e)| value(s, e)),
+        Expression::ArrayExpression(a) => a
+            .elements
+            .iter()
+            .all(|el| el.as_expression().is_some_and(is_static_value)),
         _ => false,
     }
 }
 
-/// astring print of the static literal `toks[open..=close]` (2-space indent at `depth`).
-fn print(toks: &[(usize, usize, Tok)], open: usize, close: usize, depth: usize) -> String {
-    let segs = segments(toks, open + 1, close);
-    let val = |s: usize, e: usize, d: usize| if e - s == 1 { toks[s].2.text().to_string() } else { print(toks, s, e - 1, d) };
-    if segs.is_empty() { return toks[open].2.text().to_string() + toks[close].2.text(); }
-    if toks[open].2 == Tok::Punct("[") {
-        return format!("[{}]", segs.iter().map(|&(s, e)| val(s, e, depth)).collect::<Vec<_>>().join(", "));
-    }
-    let pad = "  ".repeat(depth + 1);
-    let props: Vec<String> = segs.iter().map(|&(s, e)| format!("{pad}{}: {}", toks[s].2.text(), val(s + 2, e, depth + 1))).collect();
-    format!("{{\n{}\n{}}}", props.join(",\n"), "  ".repeat(depth))
+fn slice(src: &str, span: Span) -> &str {
+    src.get(span.start as usize..span.end as usize)
+        .unwrap_or("")
 }
 
-/// Whether the `(` at `paren` is a call (or similar) rather than grouping.
-fn is_call_open(toks: &[(usize, usize, Tok<'_>)], paren: usize) -> bool {
-    if paren == 0 { return false; }
-    match toks[paren - 1].2 {
-        // Unary/binary keyword operators are Ident tokens but not callees (`typeof (`, `in (`).
-        Tok::Ident(s) => !matches!(s, "typeof" | "void" | "delete" | "in" | "instanceof" | "new" | "await" | "yield"),
-        Tok::Punct(")") | Tok::Punct("]") | Tok::Punct(".") => true,
-        _ => false,
+/// astring print of a static literal (2-space indent at `depth`). Literal spellings are the source
+/// text, so `'literal'` and `"a"` keep their quotes.
+fn print_static(e: &Expression, src: &str, depth: usize) -> String {
+    match e {
+        Expression::ArrayExpression(a) => {
+            if a.elements.is_empty() {
+                return "[]".into();
+            }
+            let parts: Vec<String> = a
+                .elements
+                .iter()
+                .filter_map(ArrayExpressionElement::as_expression)
+                .map(|el| {
+                    if is_literal(el) {
+                        slice(src, el.span()).to_string()
+                    } else {
+                        print_static(el, src, depth)
+                    }
+                })
+                .collect();
+            format!("[{}]", parts.join(", "))
+        }
+        Expression::ObjectExpression(o) => {
+            if o.properties.is_empty() {
+                return "{}".into();
+            }
+            let pad = "  ".repeat(depth + 1);
+            let props: Vec<String> = o
+                .properties
+                .iter()
+                .filter_map(|p| match p {
+                    ObjectPropertyKind::ObjectProperty(prop) => {
+                        let val = if is_literal(&prop.value) {
+                            slice(src, prop.value.span()).to_string()
+                        } else {
+                            print_static(&prop.value, src, depth + 1)
+                        };
+                        Some(format!("{pad}{}: {val}", slice(src, prop.key.span())))
+                    }
+                    ObjectPropertyKind::SpreadProperty(_) => None,
+                })
+                .collect();
+            format!("{{\n{}\n{}}}", props.join(",\n"), "  ".repeat(depth))
+        }
+        _ => slice(src, e.span()).to_string(),
     }
 }
 
-/// SHIM(AB-D0004 S4 grouping_wrap, expires S6): grouping vs call paren heuristic in the text
-/// hoist pass (AB-D0004 S4 cond 3). Consumes nested grouping pairs so `(( {a:1} ))` becomes `stcN`,
-/// but leaves call parens (`foo({a:1})` → `foo(stcN)`). S6 moves static hoist onto the AST
-/// (isStaticObjectOrArray + pre-order replace) and deletes this tokenizer.
-fn grouping_wrap(toks: &[(usize, usize, Tok<'_>)], open: usize, close: usize) -> Option<(usize, usize, usize)> {
-    let mut lo = open;
-    let mut hi = close;
-    let mut found = false;
-    while lo > 0 && hi + 1 < toks.len()
-        && toks[lo - 1].2 == Tok::Punct("(")
-        && toks[hi + 1].2 == Tok::Punct(")")
-        && !is_call_open(toks, lo - 1)
-    {
-        lo -= 1;
-        hi += 1;
-        found = true;
-    }
-    if !found { return None; }
-    Some((toks[lo].0, toks[hi].1, hi + 1))
+/// Byte offset of each `(` that opens a call or `new` argument list.
+struct CallParens<'a> {
+    src: &'a str,
+    at: HashSet<usize>,
 }
 
-/// Hoist static literals out of `body` (the tmpl function body). `decls` holds the
-/// `(dedupe key, astring print)` of each `stcN` in order; returns the rewritten body.
+impl<'a> Visit<'a> for CallParens<'a> {
+    fn visit_call_expression(&mut self, it: &oxc_ast::ast::CallExpression<'a>) {
+        self.mark(it.callee.span().end, it.span().end);
+        walk::walk_call_expression(self, it);
+    }
+    fn visit_new_expression(&mut self, it: &oxc_ast::ast::NewExpression<'a>) {
+        if !it.arguments.is_empty() {
+            self.mark(it.callee.span().end, it.span().end);
+        }
+        walk::walk_new_expression(self, it);
+    }
+}
+
+impl<'a> CallParens<'a> {
+    fn mark(&mut self, from: u32, to: u32) {
+        let (from, to) = (from as usize, to as usize);
+        if let Some(i) = self.src.get(from..to).and_then(|s| s.find('(')) {
+            self.at.insert(from + i);
+        }
+    }
+}
+
+/// Extend `start..end` over grouping parentheses. A `(` that opens a call is left in place.
+fn expand_grouping(
+    src: &str,
+    mut start: usize,
+    mut end: usize,
+    calls: &HashSet<usize>,
+) -> (usize, usize) {
+    loop {
+        let before = src[..start].trim_end();
+        if !before.ends_with('(') {
+            break;
+        }
+        let paren = before.len() - 1;
+        if calls.contains(&paren) {
+            break;
+        }
+        let after = src[end..].trim_start();
+        if !after.starts_with(')') {
+            break;
+        }
+        let ws = src[end..].len() - after.len();
+        start = paren;
+        end += ws + 1;
+    }
+    (start, end)
+}
+
+struct Hoist<'a> {
+    src: &'a str,
+    calls: &'a HashSet<usize>,
+    repl: Vec<(usize, usize, usize)>,
+    decls: &'a mut Vec<(String, String)>,
+}
+
+impl<'a> Visit<'a> for Hoist<'a> {
+    fn visit_expression(&mut self, it: &Expression<'a>) {
+        if is_static(it) {
+            let text = print_static(it, self.src, 0);
+            let n = match self.decls.iter().position(|(k, _)| *k == text) {
+                Some(n) => n,
+                None => {
+                    self.decls.push((text.clone(), text));
+                    self.decls.len() - 1
+                }
+            };
+            let span = it.span();
+            let (from, to) =
+                expand_grouping(self.src, span.start as usize, span.end as usize, self.calls);
+            self.repl.push((from, to, n));
+            return;
+        }
+        walk::walk_expression(self, it);
+    }
+}
+
+/// Hoist static literals out of `body` (the tmpl function's return expression, or a statement in tests).
+/// `decls` holds the `(dedupe key, astring print)` of each `stcN` in order; returns the rewritten body.
+///
+/// `return` is only legal inside a function, and the unit inputs include one, so the body is parsed
+/// as the body of `function tmpl()`. Spans are shifted back onto `body`.
 pub(super) fn hoist_static_expressions(body: &str, decls: &mut Vec<(String, String)>) -> String {
-    let toks = tokenize(body);
+    let prefix = "function tmpl(){\n";
+    let wrapped = format!("{prefix}{body}\n}}");
+    let base = prefix.len();
+    let alloc = Allocator::default();
+    let ret = Parser::new(&alloc, &wrapped, SourceType::script())
+        .with_options(ParseOptions {
+            preserve_parens: false,
+            ..ParseOptions::default()
+        })
+        .parse();
+    if !ret.diagnostics.is_empty() {
+        return body.to_string();
+    }
+    let mut calls = CallParens {
+        src: &wrapped,
+        at: HashSet::new(),
+    };
+    calls.visit_program(&ret.program);
+    let mut hoist = Hoist {
+        src: &wrapped,
+        calls: &calls.at,
+        repl: Vec::new(),
+        decls,
+    };
+    hoist.visit_program(&ret.program);
+    hoist.repl.sort_by_key(|r| r.0);
     let mut out = String::with_capacity(body.len());
     let mut last = 0;
-    let mut i = 0;
-    while i < toks.len() {
-        let prev = i.checked_sub(1).map(|p| &toks[p].2);
-        let candidate = match toks[i].2 {
-            Tok::Punct("{") => opens_object(prev),
-            Tok::Punct("[") => opens_array(prev),
-            _ => false,
-        };
-        if candidate {
-            if let Some(close) = closing(&toks, i).filter(|&c| is_static(&toks, i, c)) {
-                let key: String = segments(&toks, i + 1, close).iter()
-                    .map(|&(s, e)| toks[s..e].iter().map(|t| t.2.text()).collect::<String>())
-                    .collect::<Vec<_>>().join(",");
-                let key = format!("{}{key}{}", toks[i].2.text(), toks[close].2.text());
-                let n = match decls.iter().position(|(k, _)| *k == key) {
-                    Some(n) => n,
-                    None => { decls.push((key, print(&toks, i, close, 0))); decls.len() - 1 }
-                };
-                // astring parenthesizes Object/Array (NEEDS_PARENTHESES) as a member object, then
-                // TS AST-hoist replaces the node so the identifier prints without those parens
-                // (`stcN.toString()`, not `(stcN).toString()`). Consume grouping parens only;
-                // never call parens (`foo({a:1})` must become `foo(stcN)`, not `foostcN`).
-                let (from, to, next) = grouping_wrap(&toks, i, close)
-                    .unwrap_or((toks[i].0, toks[close].1, close + 1));
-                out.push_str(&body[last..from]);
-                out.push_str(&format!("stc{n}"));
-                last = to;
-                i = next;
-                continue;
-            }
+    for (from, to, n) in hoist.repl {
+        let (from, to) = (from.saturating_sub(base), to.saturating_sub(base));
+        if from < last || to > body.len() || from > to {
+            continue;
         }
-        i += 1;
+        out.push_str(&body[last..from]);
+        out.push_str(&format!("stc{n}"));
+        last = to;
     }
     out.push_str(&body[last..]);
     out
@@ -257,9 +255,21 @@ mod tests {
 
     #[test]
     fn hoists_outermost_static_and_dedupes() {
-        let (out, d) = run(r#"return [api_element("div", { classMap: { "a": true }, key: 0 }), api_element("p", { key: 1 }, [api_text("x")]), api_element("i", { key: 0, classMap: { "a": true } })];"#);
-        assert_eq!(out, r#"return [api_element("div", stc0), api_element("p", stc1, [api_text("x")]), api_element("i", stc2)];"#);
-        assert_eq!(d, vec!["{\n  classMap: {\n    \"a\": true\n  },\n  key: 0\n}", "{\n  key: 1\n}", "{\n  key: 0,\n  classMap: {\n    \"a\": true\n  }\n}"]);
+        let (out, d) = run(
+            r#"return [api_element("div", { classMap: { "a": true }, key: 0 }), api_element("p", { key: 1 }, [api_text("x")]), api_element("i", { key: 0, classMap: { "a": true } })];"#,
+        );
+        assert_eq!(
+            out,
+            r#"return [api_element("div", stc0), api_element("p", stc1, [api_text("x")]), api_element("i", stc2)];"#
+        );
+        assert_eq!(
+            d,
+            vec![
+                "{\n  classMap: {\n    \"a\": true\n  },\n  key: 0\n}",
+                "{\n  key: 1\n}",
+                "{\n  key: 0,\n  classMap: {\n    \"a\": true\n  }\n}"
+            ]
+        );
         let (out, d) = run(r#"f({ key: 1 }, { key: 1, }, [], {})"#);
         assert_eq!(out, "f(stc0, stc0, stc1, stc2)");
         assert_eq!(d, vec!["{\n  key: 1\n}", "[]", "{}"]);
@@ -268,8 +278,17 @@ mod tests {
     #[test]
     fn non_static_shapes_are_kept_and_descended() {
         for src in [
-            "f({ a: $cmp.x })", "f({ a: -1 })", "f({ a })", "f({ [k]: 1 })", "f({ ...x })",
-            "f({ __proto__: null, ...x })", "f([1, , 2])", "f({ a: `t` })", "f([g()])", "a[0]", "x.y[\"z\"]",
+            "f({ a: $cmp.x })",
+            "f({ a: -1 })",
+            "f({ a })",
+            "f({ [k]: 1 })",
+            "f({ ...x })",
+            "f({ __proto__: null, ...x })",
+            "f([1, , 2])",
+            "f({ a: `t` })",
+            "f([g()])",
+            "a[0]",
+            "x.y[\"z\"]",
             "function (a) { const {b: c} = a; }",
         ] {
             assert_eq!(run(src), (src.to_string(), vec![]), "{src}");
@@ -281,8 +300,12 @@ mod tests {
 
     #[test]
     fn grouping_parens_around_hoisted_object_are_dropped() {
-        let (out, d) = run(r#"return [api_text(api_dynamic_text(({ obj: 'literal' }).toString()))];"#);
-        assert_eq!(out, r#"return [api_text(api_dynamic_text(stc0.toString()))];"#);
+        let (out, d) =
+            run(r#"return [api_text(api_dynamic_text(({ obj: 'literal' }).toString()))];"#);
+        assert_eq!(
+            out,
+            r#"return [api_text(api_dynamic_text(stc0.toString()))];"#
+        );
         assert_eq!(d, vec!["{\n  obj: 'literal'\n}"]);
         let (out, d) = run(r#"f({ a: 1 })"#);
         assert_eq!(out, "f(stc0)", "{out}");
@@ -294,10 +317,12 @@ mod tests {
         assert_eq!(run("foo({ a: 1 })").0, "foo(stc0)");
     }
 
+    /// A string is opaque. An object inside a template substitution is a real expression, so the
+    /// pre-order walk hoists it (oracle `` `t${stc0}` ``).
     #[test]
-    fn strings_and_templates_are_opaque() {
+    fn strings_are_opaque_and_template_substitutions_hoist() {
         let (out, d) = run(r#"f("{ a: 1 }", `${ {a: 1} }`, { "k}": "v]" })"#);
-        assert_eq!(out, r#"f("{ a: 1 }", `${ {a: 1} }`, stc0)"#);
-        assert_eq!(d, vec!["{\n  \"k}\": \"v]\"\n}"]);
+        assert_eq!(out, r#"f("{ a: 1 }", `${ stc0 }`, stc1)"#);
+        assert_eq!(d, vec!["{\n  a: 1\n}", "{\n  \"k}\": \"v]\"\n}"]);
     }
 }

@@ -1,13 +1,13 @@
 {
  "schema": "template-diag-diff/v2",
  "meta": {
-  "generated": "2026-11-10T14:37:00.059Z",
-  "elapsedMs": 6383,
+  "generated": "2026-11-10T15:49:09.542Z",
+  "elapsedMs": 7403,
   "engine": "crate",
   "rust": {
-   "driver": "/tmp/lwc-board-snap.DjO6ZS/target/template-diag-driver/release/template-diag-driver",
+   "driver": "/tmp/lwc-board-snap.9OHWvr/target/template-diag-driver/release/template-diag-driver",
    "driverSource": "TDD_DRIVER",
-   "sha256": "c0a706461152",
+   "sha256": "21077de14184",
    "lwcTemplate": "lwc_template::compile"
   },
   "oracle": {
@@ -23,11 +23,11 @@
    "mode": "exact-bytes+semdiff",
    "semdiff": {
     "bin": {
-     "path": "/tmp/lwc-board-snap.DjO6ZS/target/release/semdiff",
-     "sha256": "253297483192"
+     "path": "/tmp/lwc-board-snap.9OHWvr/target/release/semdiff",
+     "sha256": "14872b5c0a70"
     },
     "registry": {
-     "path": "/tmp/lwc-board-snap.DjO6ZS/notes/decisions.tsv",
+     "path": "/tmp/lwc-board-snap.9OHWvr/notes/decisions.tsv",
      "sha256": "0066e2b8ba547ac120a4e1617ae9529b30c00f350ae2f32cba7bd03fec0a6125"
     },
     "observationModel": "D-0196",
@@ -50,13 +50,13 @@
  },
  "totals": {
   "cases": 63224,
-  "clean": 63115,
-  "staticEqual": 46320,
+  "clean": 63116,
+  "staticEqual": 46321,
   "rewriteEqual": 16795,
-  "pass": 46320,
+  "pass": 46321,
   "codegenEquivalent": 16795,
-  "diagPass": 63115,
-  "diagMismatch": 109,
+  "diagPass": 63116,
+  "diagMismatch": 108,
   "codegenOnly": 16795,
   "codegenUnclean": 0,
   "oracleError": 0
@@ -174,8 +174,8 @@
   },
   "mutation:options": {
    "cases": 11402,
-   "pass": 6651,
-   "diagMismatch": 1,
+   "pass": 6652,
+   "diagMismatch": 0,
    "codegenOnly": 4750,
    "codegenEquivalent": 4750
   },
@@ -223,7 +223,7 @@
   "extra-diag": 32,
   "code": 5,
   "level": 0,
-  "message": 26,
+  "message": 25,
   "location": 9,
   "order": 4,
   "codegen-only": 16795
@@ -236,7 +236,7 @@
   "extra-diag": 31,
   "code": 2,
   "level": 0,
-  "message": 22,
+  "message": 21,
   "location": 0,
   "order": 4,
   "codegen-only": 16795
@@ -246,7 +246,7 @@
  },
  "resultCounts": {
   "REWRITE_EQUAL": 16795,
-  "STATIC_EQUAL": 46320
+  "STATIC_EQUAL": 46321
  },
  "clusters": [
   {
@@ -3254,55 +3254,6 @@
    ]
   },
   {
-   "key": "message:1083",
-   "count": 1,
-   "examples": [
-    {
-     "id": 34515,
-     "source": "mutation",
-     "family": "options",
-     "file": "expression-complex/invalid/html-decoding/experimental-complex-expressions-true-attr",
-     "label": "experimentalComplexExpressions=false",
-     "opts": {
-      "experimentalComplexExpressions": false
-     },
-     "src": "<template>\n    <!-- This should fail as html characters are not decoded in complex or non-complex expressions -->\n    <x-foo>{foo &#60; bar}</x-foo>\n</template>",
-     "js": {
-      "ok": false,
-      "diags": [
-       {
-        "code": 1083,
-        "level": 1,
-        "message": "LWC1083: Error parsing template expression: Invalid expression {foo &#60; bar} - Unexpected character '#' (1:6)",
-        "location": {
-         "line": 3,
-         "column": 12,
-         "start": 125,
-         "length": 15
-        }
-       }
-      ]
-     },
-     "rust": {
-      "diags": [
-       {
-        "code": 1083,
-        "level": 1,
-        "message": "LWC1083: Error parsing template expression: Invalid expression {foo &#60; bar} - Unexpected character '6' (1:7)",
-        "location": {
-         "line": 3,
-         "column": 12,
-         "start": 125,
-         "length": 15
-        }
-       }
-      ],
-      "ok": false
-     }
-    }
-   ]
-  },
-  {
    "key": "missing-diag:1045",
    "count": 1,
    "examples": [
@@ -4280,54 +4231,6 @@
    "rust": {
     "diags": [],
     "ok": true
-   }
-  },
-  {
-   "id": 34515,
-   "source": "mutation",
-   "family": "options",
-   "file": "expression-complex/invalid/html-decoding/experimental-complex-expressions-true-attr",
-   "label": "experimentalComplexExpressions=false",
-   "opts": {
-    "experimentalComplexExpressions": false
-   },
-   "buckets": [
-    "message"
-   ],
-   "keys": [
-    "message:1083"
-   ],
-   "js": {
-    "ok": false,
-    "diags": [
-     {
-      "code": 1083,
-      "level": 1,
-      "message": "LWC1083: Error parsing template expression: Invalid expression {foo &#60; bar} - Unexpected character '#' (1:6)",
-      "location": {
-       "line": 3,
-       "column": 12,
-       "start": 125,
-       "length": 15
-      }
-     }
-    ]
-   },
-   "rust": {
-    "diags": [
-     {
-      "code": 1083,
-      "level": 1,
-      "message": "LWC1083: Error parsing template expression: Invalid expression {foo &#60; bar} - Unexpected character '6' (1:7)",
-      "location": {
-       "line": 3,
-       "column": 12,
-       "start": 125,
-       "length": 15
-      }
-     }
-    ],
-    "ok": false
    }
   },
   {

@@ -5,6 +5,7 @@ use lwc_shared::template_ir::*;
 use lwc_shared::errors::ParserDiagnostics;
 use lwc_shared::js::{js_trim, js_ws};
 use lwc_shared::{CompilerDiagnostic, DiagnosticLevel};
+use oxc_span::GetSpan;
 use parse5::{Location, NodeData, NodeRef, ParserOptions};
 use std::collections::HashSet;
 
@@ -16,6 +17,7 @@ mod tables;
 mod constants;
 #[allow(dead_code)]
 mod utils;
+mod acorn_msg;
 mod expr_check;
 pub(crate) mod expression_complex;
 mod validate;
@@ -49,6 +51,8 @@ pub(crate) struct Ctx<'a> {
     /// experimentalComputedMemberExpression without experimentalComplexExpressions: computed member
     /// chains are typed IR ([`non_binding_expr`]).
     legacy_computed: bool,
+    /// Complex expressions parsed while validating, keyed by the `{…}` token, so lowering does not parse them again.
+    exprs: expression_complex::ExprCache<'a>,
     /// TS `ctx.instrumentation`.
     instrumentation: Option<lwc_shared::InstrumentationHandle>,
     /// Template source as UTF-16 code units (parse5 offsets index this); see [`raw_attr`] / [`raw_source`].
@@ -112,6 +116,11 @@ pub(super) enum Chain { If, Elseif, Else }
 impl<'a> Ctx<'a> {
     /// A `{…}` value as an [`Expression::Complex`] in this parse's arena, located at its owner.
     fn complex(&self, raw: &str, location: SourceLocation) -> Located<Expression<'a>> {
+        if let Some(slot) = self.exprs.get(raw) {
+            return Ok(Expression::Complex(ComplexExpression {
+                ast: slot.ast, source: slot.source, raw: self.alloc.alloc_str(raw), location,
+            }));
+        }
         expression_complex::build(self.alloc, raw, location).map(Expression::Complex)
     }
     fn count(&self, m: lwc_shared::CompilerMetric) { if let Some(i) = &self.instrumentation { i.increment_counter(m); } }
@@ -269,46 +278,57 @@ fn is_ident(s: &str) -> bool {
 /// `{a}` / `{a.b.c}` → Identifier / nested MemberExpression. No brackets/calls yet.
 pub(crate) fn parse_binding<'a>(v: &str) -> Option<Expression<'a>> { braced_chain(v, false) }
 
-/// `{chain}` where `chain` is a [`member_chain`] (with `[chain]` steps when `computed`).
+/// `{chain}` as a typed identifier or member, read off the oxc AST (`preserve_parens: false`).
+/// Grouping parentheses are not nodes, so `((foo).bar)` is the member `foo.bar`. Computed steps are
+/// accepted only when `computed` (legacy computed members); anything else is not a chain.
 fn braced_chain<'a>(v: &str, computed: bool) -> Option<Expression<'a>> {
     let inner = js_trim(v.strip_prefix('{')?.strip_suffix('}')?);
-    let (e, rest) = member_chain(inner, computed)?;
-    js_trim(rest).is_empty().then_some(e)
+    if inner.is_empty() { return None; }
+    let alloc = oxc_allocator::Allocator::default();
+    let expression_complex::ParseOutcome::Ok(p) = expression_complex::parse_source(&alloc, inner) else { return None };
+    let span = p.expr.span();
+    if !grouping_only(inner, span.start as usize, span.end as usize) { return None; }
+    chain_from_ast(&p.expr, computed)
 }
 
-/// `primary ('.' ident)*` with `primary := ident | '(' member_chain ')'`, plus `'[' member_chain ']'` steps
-/// when `computed`. Parentheses are transparent, as in the TS (acorn/ESTree) AST: `((foo).bar)` is the
-/// member expression `foo.bar`.
-fn member_chain<'a>(s: &str, computed: bool) -> Option<(Expression<'a>, &str)> {
-    let s = s.trim_start_matches(js_ws);
-    let (mut e, mut rest) = if let Some(r) = s.strip_prefix('(') {
-        let (e, r) = member_chain(r, computed)?;
-        (e, r.trim_start_matches(js_ws).strip_prefix(')')?)
-    } else {
-        let end = s.find(|c: char| !(c.is_alphanumeric() || c == '_' || c == '$')).unwrap_or(s.len());
-        let first = &s[..end];
-        if !is_ident(first) || expr_check::is_reserved(first) { return None; }
-        (Expression::Identifier(Identifier { name: first.to_string() }), &s[end..])
-    };
-    loop {
-        let t = rest.trim_start_matches(js_ws);
-        if let Some(r) = t.strip_prefix('[').filter(|_| computed) {
-            let (p, r) = member_chain(r, true)?;
-            rest = r.trim_start_matches(js_ws).strip_prefix(']')?;
-            e = Expression::Member(MemberExpression { object: Box::new(e), property: Box::new(p), computed: true });
-            continue;
+/// Characters outside the expression span are whitespace and balanced grouping parentheses.
+fn grouping_only(src: &str, start: usize, end: usize) -> bool {
+    let (Some(before), Some(after)) = (src.get(..start), src.get(end..)) else { return false };
+    let opens = before.chars().filter(|&c| c == '(').count();
+    let closes = after.chars().filter(|&c| c == ')').count();
+    before.chars().all(|c| c == '(' || js_ws(c)) && after.chars().all(|c| c == ')' || js_ws(c)) && opens == closes
+}
+
+/// Identifier / static member / (when `computed`) computed member whose property is itself a chain.
+/// Optional chaining is not a legacy member. Reserved words are not identifiers (1211).
+fn chain_from_ast<'a>(e: &oxc_ast::ast::Expression<'_>, computed: bool) -> Option<Expression<'a>> {
+    use oxc_ast::ast::Expression as J;
+    match e {
+        J::Identifier(id) => {
+            let name = id.name.as_str();
+            if !is_ident(name) || expr_check::is_reserved(name) { return None; }
+            Some(Expression::Identifier(Identifier { name: name.to_string() }))
         }
-        let Some(r) = t.strip_prefix('.') else { return Some((e, rest)) };
-        let r = r.trim_start_matches(js_ws);
-        let end = r.find(|c: char| !(c.is_alphanumeric() || c == '_' || c == '$')).unwrap_or(r.len());
-        let p = &r[..end];
-        if !is_ident(p) { return None; }
-        e = Expression::Member(MemberExpression {
-            object: Box::new(e),
-            property: Box::new(Expression::Identifier(Identifier { name: p.to_string() })),
-            computed: false,
-        });
-        rest = &r[end..];
+        J::StaticMemberExpression(m) if !m.optional => {
+            let object = chain_from_ast(&m.object, computed)?;
+            let p = m.property.name.as_str();
+            if !is_ident(p) { return None; }
+            Some(Expression::Member(MemberExpression {
+                object: Box::new(object),
+                property: Box::new(Expression::Identifier(Identifier { name: p.to_string() })),
+                computed: false,
+            }))
+        }
+        J::ComputedMemberExpression(m) if computed && !m.optional => {
+            let object = chain_from_ast(&m.object, true)?;
+            let property = chain_from_ast(&m.expression, true)?;
+            Some(Expression::Member(MemberExpression {
+                object: Box::new(object),
+                property: Box::new(property),
+                computed: true,
+            }))
+        }
+        _ => None,
     }
 }
 
@@ -516,9 +536,8 @@ fn non_binding_expr<'a>(v: &str, location: impl FnOnce() -> Located<SourceLocati
     match legacy_computed_chain(v, d) { Some(e) => Ok(e), None => d.complex(v, location()?) }
 }
 
-/// Legacy mode under experimentalComputedMemberExpression: `{a[b].c}` as a typed computed member chain
-/// (`computed: true`) that codegen binds like TS bindExpression. Frozen legacy (AB-L0058); deleted with
-/// legacy mode in AB-D0004 S6.
+/// Legacy mode under experimentalComputedMemberExpression: `{a[b].c}` as a typed computed member
+/// (`computed: true`) read from the oxc AST, which codegen binds like TS bindExpression.
 fn legacy_computed_chain<'a>(v: &str, d: &Ctx<'a>) -> Option<Expression<'a>> {
     if d.legacy_computed { braced_chain(v, true) } else { None }
 }
@@ -975,6 +994,7 @@ pub fn parse_template<'a>(alloc: &'a oxc_allocator::Allocator, source: &str, con
         alloc, diags: Diags::new(warnings), seen_slots: HashSet::new(), in_loop: false, slot_ancestor: None, slot_data_parent_ok: false,
         seen_scoped_slots: HashSet::new(), light, in_slot_fragment: false,
         legacy_computed: config.experimental_computed_member_expression && !config.experimental_complex_expressions,
+        exprs: expression_complex::ExprCache::new(),
         instrumentation: config.instrumentation.clone(),
         src16: source.encode_utf16().collect(), seen_ids: HashSet::new(), scopes: Vec::new(), chain: None,
         parent_loc: root_loc.clone(),

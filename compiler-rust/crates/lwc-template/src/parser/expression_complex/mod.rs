@@ -10,6 +10,40 @@ use oxc_ast::ast::{Expression, Program, Statement};
 use oxc_ast_visit::VisitMut;
 use oxc_parser::{ParseOptions, Parser};
 use oxc_span::{GetSpan, SourceType, Span};
+use std::collections::HashMap;
+
+/// One complex expression parsed during validation and reused when the same `{…}` token is lowered.
+pub(crate) struct ExprSlot<'a> {
+    pub ast: &'a Expression<'a>,
+    pub source: &'a str,
+}
+
+/// `body` is the text between the braces. Spans on `expr` index `body`; the slot's spans index `body.trim()`,
+/// which is what [`build`] stores as `ComplexExpression.source`.
+pub(crate) fn slot_of<'a>(
+    alloc: &'a Allocator,
+    body: &str,
+    expr: &Expression<'a>,
+) -> Option<ExprSlot<'a>> {
+    let lead = body.len() - body.trim_start().len();
+    if expr.span().start < lead as u32 {
+        return None;
+    }
+    let mut cloned = expr.clone_in(alloc);
+    if lead > 0 {
+        Shift(lead as u32).visit_expression(&mut cloned);
+    }
+    let trimmed = body.trim();
+    if cloned.span().end as usize > trimmed.len() {
+        return None;
+    }
+    Some(ExprSlot {
+        ast: alloc.alloc(cloned),
+        source: alloc.alloc_str(trimmed),
+    })
+}
+
+pub(crate) type ExprCache<'a> = HashMap<String, ExprSlot<'a>>;
 
 /// [`validate`] accepted an expression this parse rejects. Both parse the text between the braces with
 /// the same oxc options, so this is a caller bug (validation and lowering read different tokens).
@@ -93,11 +127,17 @@ impl std::fmt::Debug for ParseOutcome<'_> {
 /// expression that starts at byte 0; [`classify`] then recovers via `parse_expression` so
 /// prefix-stop (AB-D0004 Q3) still sees the same stop token.
 pub(crate) fn parse_source<'a>(alloc: &'a Allocator, text: &str) -> ParseOutcome<'a> {
+    parse_goal(alloc, text, SourceType::mjs())
+}
+
+/// Same parse as [`parse_source`] under a different goal. Legacy template expressions are scripts
+/// (`allowAwaitOutsideFunction: false`); complex expressions are modules.
+pub(crate) fn parse_goal<'a>(alloc: &'a Allocator, text: &str, goal: SourceType) -> ParseOutcome<'a> {
     let wrapped = alloc.alloc_str(&format!("({text}\n)"));
-    let ret = Parser::new(alloc, wrapped, SourceType::mjs())
+    let ret = Parser::new(alloc, wrapped, goal)
         .with_options(parse_options())
         .parse();
-    classify(alloc, &ret.program, &ret.diagnostics, text)
+    classify(alloc, &ret.program, &ret.diagnostics, text, goal)
 }
 
 /// Classify an already-parsed Program. Every [`ParseOutcome::Internal`] return lives here.
@@ -108,6 +148,7 @@ pub(crate) fn classify<'a, D>(
     program: &Program<'a>,
     diagnostics: &[D],
     recovery_text: &str,
+    goal: SourceType,
 ) -> ParseOutcome<'a> {
     let recover = !diagnostics.is_empty()
         || matches!(
@@ -119,7 +160,7 @@ pub(crate) fn classify<'a, D>(
         // and a dishonest wrap starts at byte 0. Recover so prefix-stop and 1083 columns stay
         // body-relative. parse_expression accepting that source is an invariant violation.
         let text = alloc.alloc_str(recovery_text);
-        return match Parser::new(alloc, text, SourceType::mjs())
+        return match Parser::new(alloc, text, goal)
             .with_options(parse_options())
             .parse_expression()
         {
@@ -349,7 +390,7 @@ mod tests {
             "expected a non-ExpressionStatement body, got {:?}",
             ret.program.body.first(),
         );
-        match classify(&alloc, &ret.program, &ret.diagnostics, "let x = 1") {
+        match classify(&alloc, &ret.program, &ret.diagnostics, "let x = 1", SourceType::mjs()) {
             ParseOutcome::Internal(NOT_EXPRESSION_STATEMENT) => {}
             other => panic!("expected Internal(NOT_EXPRESSION_STATEMENT), got {other:?}"),
         }
@@ -373,7 +414,7 @@ mod tests {
             "expected a non-ExpressionStatement body, got {:?}",
             ret.program.body.first(),
         );
-        match classify(&alloc, &ret.program, &ret.diagnostics, "function f(){}") {
+        match classify(&alloc, &ret.program, &ret.diagnostics, "function f(){}", SourceType::mjs()) {
             ParseOutcome::Internal(NOT_EXPRESSION_STATEMENT) => {}
             other => panic!("expected Internal(NOT_EXPRESSION_STATEMENT), got {other:?}"),
         }
@@ -401,7 +442,7 @@ mod tests {
             0,
             "unwrapped expression should start at byte 0"
         );
-        match classify(&alloc, &ret.program, &ret.diagnostics, "a") {
+        match classify(&alloc, &ret.program, &ret.diagnostics, "a", SourceType::mjs()) {
             ParseOutcome::Internal(EXPRESSION_ACCEPTED) => {}
             other => panic!("expected Internal(EXPRESSION_ACCEPTED), got {other:?}"),
         }
@@ -428,7 +469,7 @@ mod tests {
             0,
             "unwrapped expression should start at byte 0"
         );
-        match classify(&alloc, &ret.program, &ret.diagnostics, "1+1") {
+        match classify(&alloc, &ret.program, &ret.diagnostics, "1+1", SourceType::mjs()) {
             ParseOutcome::Internal(EXPRESSION_ACCEPTED) => {}
             other => panic!("expected Internal(EXPRESSION_ACCEPTED), got {other:?}"),
         }

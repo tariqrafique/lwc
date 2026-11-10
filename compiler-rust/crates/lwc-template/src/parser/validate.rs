@@ -27,7 +27,7 @@ pub(super) fn text_expressions(segments: &[(String, bool)], l: &SourceLocation, 
         for (seg, is_expr) in segments {
             let n = seg.chars().count();
             if *is_expr && !is_binding(seg) {
-                if let Some(e) = expression_complex::validate::validate_text(&full, at, at + n)? {
+                if let Some(e) = expression_complex::validate::validate_text_cached(&full, at, at + n, d.alloc, seg, &mut d.exprs)? {
                     if report(d, e.into_diagnostic(l.clone())) { return Ok(true); }
                 }
             }
@@ -48,7 +48,7 @@ pub(super) fn text_expressions(segments: &[(String, bool)], l: &SourceLocation, 
 /// The attribute's value, unless a simple binding or escaped, goes through the expression checker (TS
 /// getTemplateAttribute after normalizeAttributeValue); its diagnostics go to `out` (the caller decides
 /// which one TS throws).
-pub(super) fn attribute_expressions(nz: &element_check::Normalized, cfg: &NormalizedConfig, out: &mut Vec<CompilerDiagnostic>) -> Located<()> {
+pub(super) fn attribute_expressions(nz: &element_check::Normalized, cfg: &NormalizedConfig, out: &mut Vec<CompilerDiagnostic>, d: &mut Ctx) -> Located<()> {
     let (ra, na) = (&nz.ra, &nz.na);
     let v = na.value.as_str();
     if na.escaped_expression { return Ok(()); }
@@ -59,7 +59,7 @@ pub(super) fn attribute_expressions(nz: &element_check::Normalized, cfg: &Normal
         // The second acorn pass (validate.ts:296) reads the raw template source of the value.
         let rv = ra.raw_value.as_deref().unwrap_or_default();
         let rv = &rv[1..rv.len() - 1];
-        if let Some(e) = expression_complex::validate::validate_attribute(v, rv)? { out.push(e.into_diagnostic(ra.location.clone())); }
+        if let Some(e) = expression_complex::validate::validate_attribute_cached(v, rv, d.alloc, &mut d.exprs)? { out.push(e.into_diagnostic(ra.location.clone())); }
     } else if expr_check::is_expression(v) && !is_binding(v) {
         if let Some(e) = expr_check::check_opts(v, &o) { out.push(e.into_diagnostic(ra.location.clone())); }
     }

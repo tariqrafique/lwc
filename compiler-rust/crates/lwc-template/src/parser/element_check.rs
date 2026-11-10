@@ -190,7 +190,7 @@ fn check<'n>(tag: &str, ns: &str, attrs: &'n [parse5::Attribute], n: &NodeRef, c
     for a in attrs {
         let nz = match normalize(tag, a, n, cfg, d)? { Ok(nz) => nz, Err(e) => return Ok(Err(e)) };
         let mut found = Vec::new();
-        validate::attribute_expressions(&nz, cfg, &mut found)?;
+        validate::attribute_expressions(&nz, cfg, &mut found, d)?;
         checked.push(CheckedAttr { attr: a, value: nz.v(), loc: nz.ra.location.clone() });
         for x in found {
             if x.level == DiagnosticLevel::Error { return Ok(Err(x)); }
@@ -459,7 +459,7 @@ pub(super) fn root_errors(attrs: &[parse5::Attribute], n: &NodeRef, el: &parse5:
     for a in attrs {
         let nz = match normalize("template", a, n, cfg, d)? { Ok(nz) => nz, Err(e) => { d.push(e); return Ok(None); } };
         let mut found = Vec::new();
-        validate::attribute_expressions(&nz, cfg, &mut found)?;
+        validate::attribute_expressions(&nz, cfg, &mut found, d)?;
         pas.push(CheckedAttr { attr: a, value: nz.v(), loc: nz.ra.location.clone() });
         for x in found {
             let threw = x.level == DiagnosticLevel::Error;
