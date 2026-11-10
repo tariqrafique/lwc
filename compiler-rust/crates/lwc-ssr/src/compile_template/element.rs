@@ -132,16 +132,16 @@ fn literal_value(name: &str, v: &LiteralValue, o: TemplateOptions) -> Vec<String
 }
 
 /// yieldAttrOrPropDynamicValue.
-fn dynamic_value(el: &str, name: &str, e: &lwc_shared::template_ir::Expression, o: TemplateOptions, cx: &mut Cx, sc: &[String]) -> String {
+fn dynamic_value(el: &str, name: &str, e: &lwc_shared::template_ir::Expression, o: TemplateOptions, cx: &mut Cx, sc: &[String]) -> Result<String, lwc_shared::CompileError> {
     add(&mut cx.imports, abi::HTML_ESCAPE);
-    let v = expr(e, sc);
+    let v = expr(e, sc)?;
     if name == "class" {
         add(&mut cx.imports, abi::NORMALIZE_CLASS);
-        return format!("{{ const attrValue = normalizeClass({v}); const shouldRenderScopeToken = {SCOPE_TEST}; let combinedValue = shouldRenderScopeToken ? stylesheetScopeToken : ''; if (attrValue) {{ if (combinedValue) {{ combinedValue += ' '; }} combinedValue += htmlEscape(String(attrValue), true); }} if (combinedValue) {{ {} }} }}",
-            o.y("` class=\"${combinedValue}\"`"));
+        return Ok(format!("{{ const attrValue = normalizeClass({v}); const shouldRenderScopeToken = {SCOPE_TEST}; let combinedValue = shouldRenderScopeToken ? stylesheetScopeToken : ''; if (attrValue) {{ if (combinedValue) {{ combinedValue += ' '; }} combinedValue += htmlEscape(String(attrValue), true); }} if (combinedValue) {{ {} }} }}",
+            o.y("` class=\"${combinedValue}\"`")));
     }
-    format!("{{ const attrName = {}; let attrValue = {v}; const isHtmlBooleanAttr = {}; if (isHtmlBooleanAttr) {{ attrValue = attrValue ? '' : undefined; }} if (attrName === 'tabindex') {{ const shouldNormalize = attrValue > 0 && typeof attrValue !== 'boolean'; attrValue = shouldNormalize ? 0 : attrValue; }} if (attrName === 'style' && (typeof attrValue !== 'string' || attrValue === '')) {{ attrValue = undefined; }} if (attrValue !== undefined && attrValue !== null) {{ {} if (attrValue !== '') {{ {} }} }} }}",
-        js_str(name), is_boolean_attribute(name, el), o.y("' ' + attrName"), o.y("`=\"${htmlEscape(String(attrValue), true)}\"`"))
+    Ok(format!("{{ const attrName = {}; let attrValue = {v}; const isHtmlBooleanAttr = {}; if (isHtmlBooleanAttr) {{ attrValue = attrValue ? '' : undefined; }} if (attrName === 'tabindex') {{ const shouldNormalize = attrValue > 0 && typeof attrValue !== 'boolean'; attrValue = shouldNormalize ? 0 : attrValue; }} if (attrName === 'style' && (typeof attrValue !== 'string' || attrValue === '')) {{ attrValue = undefined; }} if (attrValue !== undefined && attrValue !== null) {{ {} if (attrValue !== '') {{ {} }} }} }}",
+        js_str(name), is_boolean_attribute(name, el), o.y("' ' + attrName"), o.y("`=\"${htmlEscape(String(attrValue), true)}\"`")))
 }
 
 /// element.ts:234-235: `if (type === 'Attribute' && (name === 'inner-h-t-m-l' || name === 'outer-h-t-m-l'))
@@ -168,7 +168,7 @@ pub(crate) fn emit_element(n: &ElView, o: TemplateOptions, out: &mut Vec<String>
         if let AttrOrProp::Attr(_) = a { reject_inner_outer_html(n.name, name)?; }
         let r = match a.value() {
             AttributeValue::Literal(l) => literal_value(name, &l.value, o),
-            AttributeValue::Expression(e) => vec![dynamic_value(n.name, name, e, o, cx, sc)],
+            AttributeValue::Expression(e) => vec![dynamic_value(n.name, name, e, o, cx, sc)?],
         };
         if !r.is_empty() && name == "class" { has_class = true; }
         attr_stmts.extend(r);
@@ -179,7 +179,7 @@ pub(crate) fn emit_element(n: &ElView, o: TemplateOptions, out: &mut Vec<String>
     } else if let Some(v) = inner_html {
         let e = match v {
             AttributeValue::Literal(l) => match &l.value { LiteralValue::String(s) => js_str(s), LiteralValue::Bool(b) => b.to_string() },
-            AttributeValue::Expression(e) => expr(e, sc),
+            AttributeValue::Expression(e) => expr(e, sc)?,
         };
         child.push(o.y(&format!("sanitizeHtmlContent({e})")));
         add(&mut cx.imports, abi::SANITIZE_HTML_CONTENT);

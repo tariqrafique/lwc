@@ -5,12 +5,12 @@ use lwc_shared::template_ir::{Attribute, AttributeValue, ElementDirective, Expre
 /// shared.ts bAttributeValue: absent -> `null`, literal string -> string, bool literal -> `''`,
 /// expression -> `b.memberExpression(b.literal('instance'), expr)`, which astring prints as
 /// `("instance").<raw expr>` (a property read on the string "instance"; ported verbatim).
-pub(crate) fn attr_value(attrs: &[Attribute], name: &str, sc: &[String]) -> String {
-    match attrs.iter().find(|a| a.name == name).map(|a| &a.value) {
+pub(crate) fn attr_value(attrs: &[Attribute], name: &str, sc: &[String]) -> Result<String, lwc_shared::CompileError> {
+    Ok(match attrs.iter().find(|a| a.name == name).map(|a| &a.value) {
         None => "null".into(),
         Some(AttributeValue::Literal(l)) => match &l.value { LiteralValue::String(s) => js_str(s), _ => "''".into() },
-        Some(AttributeValue::Expression(e)) => match raw_expr(e) { Some(r) => format!("(\"instance\").{r}"), None => expr(e, sc) },
-    }
+        Some(AttributeValue::Expression(e)) => match raw_expr(e) { Some(r) => format!("(\"instance\").{r}"), None => expr(e, sc)? },
+    })
 }
 
 fn raw_expr(e: &Expression) -> Option<String> {
@@ -29,18 +29,21 @@ pub(crate) fn emit_slot(s: &Slot, o: TemplateOptions, out: &mut Vec<String>, cx:
     // `irChildrenToEs(node.children)`; this emitter renders the light-DOM children first, so the
     // `<slot>`'s own attributes are checked up front to keep the same first throw.
     for a in &s.attributes { element::reject_inner_outer_html(&s.name, &a.name)?; }
-    let bound = s.directives.iter().find_map(|d| if let ElementDirective::SlotBind(e) = d { Some(expr(e, sc)) } else { None });
+    let bound = match s.directives.iter().find_map(|d| if let ElementDirective::SlotBind(e) = d { Some(e) } else { None }) {
+        Some(e) => Some(expr(e, sc)?),
+        None => None,
+    };
     let scoped = bound.is_some();
     out.push("if (isLightDom) {".into());
     out.push(format!("const isScopedSlot = {scoped};"));
     out.push(format!("const isSlotted = {};", cx.slotted));
-    let slot_name = attr_value(&s.attributes, "name", sc);
+    let slot_name = attr_value(&s.attributes, "name", sc)?;
     out.push(format!("const slotName = {slot_name} ?? \"\";"));
     out.push("const lightGenerators = lightSlottedContent?.[slotName];".into());
     out.push("const scopedGenerators = scopedSlottedContent?.[slotName];".into());
     out.push("const mismatchedSlots = isScopedSlot ? lightGenerators : scopedGenerators;".into());
     out.push("const generators = isScopedSlot ? scopedGenerators : lightGenerators;".into());
-    out.push(format!("const danglingSlotName = !isScopedSlot ? {} || slotAttributeValue : null;", attr_value(&s.attributes, "slot", sc)));
+    out.push(format!("const danglingSlotName = !isScopedSlot ? {} || slotAttributeValue : null;", attr_value(&s.attributes, "slot", sc)?));
     let m = o.y("'<!---->'");
     let bk = format!("if (!isSlotted) {{ {m} if (isScopedSlot && generators) {{ {m} }} }}");
     out.push(bk.clone());

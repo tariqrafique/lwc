@@ -1,7 +1,6 @@
 //! Port of ssr-compiler compile-template: sync text-static cut.
 pub mod slot;
 pub mod component;
-mod bind_expr;
 pub(crate) mod element;
 use element::ElView;
 use lwc_shared::template_ir::{ChildNode, ElementDirective, ElseBranch, Expression, LiteralValue, Root, RootDirective, TextValue};
@@ -100,19 +99,50 @@ pub(crate) fn js_str(s: &str) -> String {
 }
 
 /// Identifiers resolve to `instance.<name>` unless the root identifier is a for:each/for:of local in `sc` (expression.ts getScopedExpression).
-pub(crate) fn expr(e: &Expression, sc: &[String]) -> String { expr_in(e, true, sc) }
-fn expr_in(e: &Expression, top: bool, sc: &[String]) -> String {
-    match e {
+/// Complex expressions (AB-D0004 S5) bind and print the parsed `.ast`; they are not re-parsed from `.source`.
+pub(crate) fn expr(e: &Expression, sc: &[String]) -> Result<String, CompileError> { expr_in(e, true, sc) }
+fn expr_in(e: &Expression, top: bool, sc: &[String]) -> Result<String, CompileError> {
+    Ok(match e {
         Expression::Literal(l) => match &l.value { LiteralValue::String(s) => js_str(s), LiteralValue::Bool(b) => b.to_string() },
         Expression::Identifier(i) => if top && !sc.contains(&i.name) { format!("instance.{}", i.name) } else { i.name.clone() },
-        Expression::Member(m) => if m.computed { format!("{}[{}]", expr(&m.object, sc), expr(&m.property, sc)) }
-            else { format!("{}.{}", expr(&m.object, sc), expr_in(&m.property, false, sc)) },
-        Expression::Complex(c) => bind_expr::bind(c.source, sc),
+        Expression::Member(m) => if m.computed { format!("{}[{}]", expr(&m.object, sc)?, expr(&m.property, sc)?) }
+            else { format!("{}.{}", expr(&m.object, sc)?, expr_in(&m.property, false, sc)?) },
+        Expression::Complex(c) => print_complex(c, sc)?,
+    })
+}
+
+/// astring `NEEDS_PARENTHESES` (17): Object/Arrow/Function/Class need parens in insertion sites.
+fn wrap_printed(js: lwc_template::printer::Js) -> String {
+    if js.precedence() <= 17 { format!("({})", js.code) } else { js.code }
+}
+
+fn print_complex(c: &lwc_shared::template_ir::ComplexExpression, sc: &[String]) -> Result<String, CompileError> {
+    let plan = lwc_template::expr::bind(c, &|n| sc.iter().any(|s| s == n)).map_err(bind_err)?;
+    let js = lwc_template::printer::print_expr(c.ast, &plan, "instance", 0).map_err(print_err)?;
+    Ok(wrap_printed(js))
+}
+
+fn bind_err(e: lwc_template::expr::BindError) -> CompileError {
+    let ce = e.compiler_error();
+    CompileError {
+        message: ce.message.clone(),
+        filename: None,
+        diagnostics: vec![lwc_shared::CompilerDiagnostic::new(ce.code, ce.message, ce.level, None, ce.location)],
+        name: None,
+        line: ce.location.map(|l| l.line),
+        column: ce.location.map(|l| l.column),
     }
 }
 
-fn text_value(v: &TextValue, sc: &[String]) -> String {
-    match v { TextValue::Literal(s) => js_str(s), TextValue::Expression(e) => expr(e, sc) }
+fn print_err(e: lwc_template::printer::PrintError) -> CompileError {
+    CompileError {
+        message: format!("internal error printing template expression: {}", e.0),
+        filename: None, diagnostics: vec![], name: None, line: None, column: None,
+    }
+}
+
+fn text_value(v: &TextValue, sc: &[String]) -> Result<String, CompileError> {
+    match v { TextValue::Literal(s) => Ok(js_str(s)), TextValue::Expression(e) => expr(e, sc) }
 }
 
 pub(crate) fn emit_children(sib: &[ChildNode], o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
@@ -142,7 +172,7 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
             let mut parts = Vec::new();
             for s in sib[..=i].iter().rev() {
                 if !is_concat(s, o) { break; }
-                if let ChildNode::Text(t) = s { parts.insert(0, format!("normalizeTextContent({})", text_value(&t.value, sc))); }
+                if let ChildNode::Text(t) = s { parts.insert(0, format!("normalizeTextContent({})", text_value(&t.value, sc)?)); }
             }
             if !parts.is_empty() {
                 for im in ["normalizeTextContent", "renderTextContent"] { add(&mut cx.imports, im); }
@@ -158,7 +188,7 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
             ChildNode::Comment(c) if o.preserve_comments => out.push(o.y(&js_str(&format!("<!--{}-->", c.value)))),
             // legacyIf.ts
             ChildNode::If(f) => {
-                let c = expr(&f.condition, sc);
+                let c = expr(&f.condition, sc)?;
                 out.push(if f.modifier == "true" { format!("if ({c}) {{") } else { format!("if (!{c}) {{") });
                 emit_children(&f.children, o, out, cx, sc)?;
                 out.push("}".into());
@@ -173,7 +203,7 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
             ChildNode::ScopedSlotFragment(_) => return Err(unimplemented_ir_node("ScopedSlotFragment")),
             // for-each.ts: `for (let [index, item] of Object.entries(expr ?? {}))`; index defaults to `__unused__`.
             ChildNode::ForEach(f) => {
-                let it = expr(&f.expression, sc);
+                let it = expr(&f.expression, sc)?;
                 let idx = f.index.as_ref().map_or("__unused__".to_string(), |i| i.name.clone());
                 out.push(format!("for (let [{idx}, {}] of Object.entries({it} ?? {{}})) {{", f.item.name));
                 let n = sc.len(); sc.push(f.item.name.clone()); sc.push(idx);
@@ -185,7 +215,7 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
             // `instance.<id>` (only a MemberExpression rooted at a local stays unprefixed).
             ChildNode::ForOf(f) => {
                 add(&mut cx.imports, crate::runtime_abi::TO_ITERATOR_DIRECTIVE);
-                let it = match &f.expression { Expression::Identifier(i) => format!("instance.{}", i.name), e => expr(e, sc) };
+                let it = match &f.expression { Expression::Identifier(i) => format!("instance.{}", i.name), e => expr(e, sc)? };
                 out.push(format!("for (let {} of toIteratorDirective({it} ?? [])) {{", f.iterator.name));
                 sc.push(f.iterator.name.clone());
                 emit_children(&f.children, o, out, cx, sc)?;
@@ -220,7 +250,7 @@ fn emit_bookended(children: &[ChildNode], o: TemplateOptions, out: &mut Vec<Stri
 }
 
 fn emit_if_chain(cond: &Expression, children: &[ChildNode], else_: Option<&ElseBranch>, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
-    out.push(format!("if ({}) {{", expr(cond, sc)));
+    out.push(format!("if ({}) {{", expr(cond, sc)?));
     emit_bookended(children, o, out, cx, sc)?;
     match else_ {
         None => out.push("}".into()),
@@ -443,5 +473,55 @@ mod tests {
             "for (let [__unused__, cell] of Object.entries(row.cells ?? {})) {".into(),
             "__lwcYield += renderTextContent(normalizeTextContent(cell.v) + normalizeTextContent(row.k));".into(),
             "}".into(), rt("instance.cell"), "}".into()]);
+    }
+
+    fn cte_parse(src: &str) -> (&'static lwc_template::Allocator, lwc_template::TemplateParseResult<'static>) {
+        let alloc: &'static lwc_template::Allocator = Box::leak(Box::default());
+        let cfg = lwc_template::Config {
+            name: Some("x".into()), namespace: Some("c".into()),
+            experimental_complex_expressions: Some(true),
+            ..Default::default()
+        };
+        let parsed = lwc_template::parse(alloc, src, cfg).unwrap();
+        (alloc, parsed)
+    }
+    fn cte_body(src: &str) -> Vec<String> {
+        let (_alloc, parsed) = cte_parse(src);
+        compile_body(parsed.root.as_ref().unwrap(), TemplateOptions::default()).unwrap().0
+    }
+    #[test]
+    fn complex_expr_uses_bound_ast_not_source_splice() {
+        let body = cte_body("<template>{isTrue()}</template>");
+        let joined = body.join("\n");
+        assert!(joined.contains("normalizeTextContent(instance.isTrue())"), "{body:?}");
+        assert!(!joined.contains("normalizeTextContent((instance.isTrue()))"), "unconditional wrap should be gone: {body:?}");
+
+        let body = cte_body("<template>{a + b.c}</template>");
+        let joined = body.join("\n");
+        assert!(joined.contains("instance.a + instance.b.c"), "{body:?}");
+
+        let body = cte_body("<template>{xs.map(x => x + y)}</template>");
+        let joined = body.join("\n");
+        assert!(joined.contains("instance.xs.map(x => x + instance.y)"), "{body:?}");
+
+        let body = cte_body("<template>{a === undefined}</template>");
+        let joined = body.join("\n");
+        assert!(joined.contains("instance.a === undefined"), "{body:?}");
+    }
+    #[test]
+    fn complex_shorthand_matches_astring() {
+        // Upstream astring prints only the bound value of a shorthand (invalid `{instance.a}`), not `{a: instance.a}`.
+        let body = cte_body("<template>{({a, b: c})}</template>");
+        let joined = body.join("\n");
+        assert!(joined.contains("instance.a"), "{body:?}");
+        assert!(joined.contains("b: instance.c") || joined.contains("b:instance.c"), "{body:?}");
+        assert!(!joined.contains("a: instance.a"), "SSR no longer expands shorthand: {body:?}");
+    }
+    #[test]
+    fn complex_default_arrow_param_is_1189() {
+        let (_alloc, parsed) = cte_parse("<template>{(x = 1) => x}</template>");
+        let err = compile_body(parsed.root.as_ref().unwrap(), TemplateOptions::default()).unwrap_err();
+        assert!(err.message.contains("LWC1189"), "{err:?}");
+        assert!(err.message.contains("AssignmentPattern"), "{err:?}");
     }
 }

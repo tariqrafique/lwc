@@ -28,13 +28,13 @@ pub(crate) fn to_property_name(name: &str) -> String {
 
 /// shared.ts getChildAttrsOrProps value: class/style normalized, spellcheck -> bool, tabindex -> normalizeTabIndex;
 /// bool -> `''` for attrs, the literal for props; class with empty/bool value is omitted (`None`).
-fn child_value(name: &str, v: &AttributeValue, is_prop: bool, cx: &mut Cx, sc: &[String]) -> Option<String> {
+fn child_value(name: &str, v: &AttributeValue, is_prop: bool, cx: &mut Cx, sc: &[String]) -> Result<Option<String>, lwc_shared::CompileError> {
     let lower = name.to_lowercase();
-    match v {
+    Ok(match v {
         AttributeValue::Literal(l) => match &l.value {
             LiteralValue::String(s) => Some(match name {
                 "style" => js_str(&element::normalize_style_attribute_value(s)),
-                "class" => { let c = element::normalize_class_attribute_value(s); if c.is_empty() { return None; } js_str(&c) }
+                "class" => { let c = element::normalize_class_attribute_value(s); if c.is_empty() { return Ok(None); } js_str(&c) }
                 "spellcheck" => (s.to_lowercase() != "false").to_string(),
                 _ if lower == "tabindex" => element::normalize_tab_index_literal(s),
                 _ => js_str(s),
@@ -42,26 +42,32 @@ fn child_value(name: &str, v: &AttributeValue, is_prop: bool, cx: &mut Cx, sc: &
             LiteralValue::Bool(b) => if name == "class" { None } else if is_prop { Some(b.to_string()) } else { Some("''".into()) },
         },
         AttributeValue::Expression(e) => {
-            let x = expr(e, sc);
+            let x = expr(e, sc)?;
             Some(if name == "class" { add(&mut cx.imports, NORMALIZE_CLASS); format!("normalizeClass({x})") }
                  else if lower == "tabindex" { add(&mut cx.imports, NORMALIZE_TAB_INDEX); format!("normalizeTabIndex({x})") }
                  else { x })
         }
-    }
+    })
 }
 
-fn child_obj(entries: Vec<(&str, &AttributeValue)>, is_prop: bool, cx: &mut Cx, sc: &[String]) -> String {
-    let parts: Vec<String> = entries.into_iter().filter_map(|(k, v)| child_value(k, v, is_prop, cx, sc).map(|v| format!("{}: {v}", js_str(k)))).collect();
-    if parts.is_empty() { "{}".into() } else { format!("{{ {} }}", parts.join(", ")) }
+fn child_obj(entries: Vec<(&str, &AttributeValue)>, is_prop: bool, cx: &mut Cx, sc: &[String]) -> Result<String, lwc_shared::CompileError> {
+    let mut parts = Vec::new();
+    for (k, v) in entries {
+        if let Some(v) = child_value(k, v, is_prop, cx, sc)? {
+            parts.push(format!("{}: {v}", js_str(k)));
+        }
+    }
+    Ok(if parts.is_empty() { "{}".into() } else { format!("{{ {} }}", parts.join(", ")) })
 }
 
 /// The `childProps` / `childAttrs` / dangling-slot lines shared by component.ts and lwc-component.ts.
-fn child_attrs_lines(attributes: &[Attribute], properties: &[Property], out: &mut Vec<String>, cx: &mut Cx, sc: &[String]) {
-    let p = child_obj(properties.iter().map(|p| (p.name.as_str(), &p.value)).collect(), true, cx, sc);
+fn child_attrs_lines(attributes: &[Attribute], properties: &[Property], out: &mut Vec<String>, cx: &mut Cx, sc: &[String]) -> Result<(), lwc_shared::CompileError> {
+    let p = child_obj(properties.iter().map(|p| (p.name.as_str(), &p.value)).collect(), true, cx, sc)?;
     out.push(format!("const childProps = {p};"));
-    let a = child_obj(attributes.iter().map(|a| (a.name.as_str(), &a.value)).collect(), false, cx, sc);
+    let a = child_obj(attributes.iter().map(|a| (a.name.as_str(), &a.value)).collect(), false, cx, sc)?;
     out.push(format!("const childAttrs = {a};"));
     out.push("if (slotAttributeValue) { childAttrs.slot = slotAttributeValue; }".into());
+    Ok(())
 }
 
 /// `/-([a-z])/g` camel-casing (shared kebabCaseToCamelCase).
@@ -164,10 +170,10 @@ fn light_slotted_content(roots: &[ChildNode], o: TemplateOptions, cx: &mut Cx, s
                     } else { vec![n.clone()] };
                     let slot_name = match n {
                         ChildNode::Text(_) => "''".to_string(),
-                        ChildNode::Element(e) => super::slot::attr_value(&e.attributes, "slot", sc),
-                        ChildNode::Component(e) => super::slot::attr_value(&e.attributes, "slot", sc),
-                        ChildNode::ExternalComponent(e) => super::slot::attr_value(&e.attributes, "slot", sc),
-                        ChildNode::Slot(e) => super::slot::attr_value(&e.attributes, "slot", sc),
+                        ChildNode::Element(e) => super::slot::attr_value(&e.attributes, "slot", sc)?,
+                        ChildNode::Component(e) => super::slot::attr_value(&e.attributes, "slot", sc)?,
+                        ChildNode::ExternalComponent(e) => super::slot::attr_value(&e.attributes, "slot", sc)?,
+                        ChildNode::Slot(e) => super::slot::attr_value(&e.attributes, "slot", sc)?,
                         _ => unreachable!(),
                     };
                     // Light DOM slots do not render the `slot` attribute.
@@ -206,11 +212,11 @@ fn kids_ref<'n, 'a>(n: &'n ChildNode<'a>) -> &'n [ChildNode<'a>] {
 /// Scoped slots: `<template lwc:slot-data="d">` -> addSlottedContent(name, fn(contextfulParent, d, slotAttributeValue), scopedSlottedContentMap).
 fn scoped_slotted_content(frags: &[&ScopedSlotFragment], o: TemplateOptions, cx: &mut Cx, sc: &mut Vec<String>) -> Result<Vec<String>, lwc_shared::CompileError> {
     frags.iter().map(|f| {
-        let var = match &f.slot_data { Expression::Identifier(i) => i.name.clone(), e => expr(e, &[]) };
+        let var = match &f.slot_data { Expression::Identifier(i) => i.name.clone(), e => expr(e, &[])? };
         sc.push(var.clone());
         let name = match &f.slot_name {
             AttributeValue::Literal(l) => match &l.value { LiteralValue::String(s) => js_str(s), LiteralValue::Bool(b) => b.to_string() },
-            AttributeValue::Expression(e) => expr(e, sc),
+            AttributeValue::Expression(e) => expr(e, sc)?,
         };
         let prev = cx.slotted; cx.slotted = true;
         let mut body = Vec::new();
@@ -226,7 +232,7 @@ pub(crate) fn emit_component(c: &Component, o: TemplateOptions, out: &mut Vec<St
     add(&mut cx.imports, SYMBOL__GENERATE_MARKUP);
     add(&mut cx.imports, o.fallback_tmpl());
     out.push("{".into());
-    child_attrs_lines(&c.attributes, &c.properties, out, cx, sc);
+    child_attrs_lines(&c.attributes, &c.properties, out, cx, sc)?;
     let slotted = slotted_content(&c.name, &c.location.location, &c.children, o, cx, sc)?;
     out.extend(slotted);
     out.push("const scopeToken = hasScopedStylesheets ? stylesheetScopeToken : undefined;".into());
@@ -245,13 +251,14 @@ pub(crate) fn emit_component(c: &Component, o: TemplateOptions, out: &mut Vec<St
 
 /// lwc-component.ts: only `lwc:is` renders (no wrapping block, as in JS); without it, nothing.
 pub(crate) fn emit_lwc_component(c: &LwcComponent, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
-    let Some(is) = c.directives.iter().find_map(|d| if let ElementDirective::Is(e) = d { Some(expr(e, sc)) } else { None }) else { return Ok(()) };
+    let Some(is_e) = c.directives.iter().find_map(|d| if let ElementDirective::Is(e) = d { Some(e) } else { None }) else { return Ok(()) };
+    let is = expr(is_e, sc)?;
     add(&mut cx.imports, LIGHTNING_ELEMENT);
     add(&mut cx.imports, SYMBOL__GENERATE_MARKUP);
     out.push(format!("const Ctor = {is};"));
     out.push("if (Ctor) {".into());
     out.push("if (typeof Ctor !== 'function' || !(Ctor.prototype instanceof LightningElement)) { throw new Error(`Invalid constructor: \"${String(Ctor)}\" is not a LightningElement constructor.`); }".into());
-    child_attrs_lines(&c.attributes, &c.properties, out, cx, sc);
+    child_attrs_lines(&c.attributes, &c.properties, out, cx, sc)?;
     let slotted = slotted_content(&c.name, &c.location.location, &c.children, o, cx, sc)?;
     out.extend(slotted);
     out.push("const scopeToken = hasScopedStylesheets ? stylesheetScopeToken : undefined;".into());

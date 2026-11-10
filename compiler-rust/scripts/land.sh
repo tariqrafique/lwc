@@ -99,7 +99,7 @@ crates_changed=; if grep -q '^crates/\|^Cargo\.' <<< "$changed"; then crates_cha
 # napi release build gates the landing (before the fast-forward) and feeds the board check below (always: the board must
 # measure THIS tree's compiler); the live install from main stays post-merge.
 cargo_locked build -p lwc-compiler-napi --release || die "napi release build failed"
-if grep -qE '^(scripts/(land|test-land-classify|parse5-pin-check|test-parse5-pin|test-shim-registry|lint-shell-pipes|lint-no-stripped-compare|check-land-main-refs|cargo-locked|ratchet-ceiling|baseline-ceiling|test-board-ratchet)\.sh|scripts/land-main-refs\.tsv|harness/(scripts/shim-gate\.mjs|scripts/board-baseline\.mjs|shim-registry\.tsv|board\.sh|board-rows\.sh|vitest\.config\.ts|vitest\.board\.config\.ts)|harness/test/.*([Ss]etup|globalSetup).*))$' <<< "$changed"; then
+if grep -qE '^(scripts/(land|land-agent-branch|test-land-agent-branch|test-land-classify|parse5-pin-check|test-parse5-pin|test-shim-registry|lint-shell-pipes|lint-no-stripped-compare|check-land-main-refs|cargo-locked|ratchet-ceiling|baseline-ceiling|test-board-ratchet)\.sh|scripts/land-main-refs\.tsv|harness/(scripts/shim-gate\.mjs|scripts/board-baseline\.mjs|shim-registry\.tsv|board\.sh|board-rows\.sh|vitest\.config\.ts|vitest\.board\.config\.ts)|harness/test/.*([Ss]etup|globalSetup).*))$' <<< "$changed"; then
   scripts/test-land-classify.sh || die "test-land-classify / parse5-pin / lint-shell-pipes / ratchet-ceiling / shim-registry / main-refs self-test failed"
   # test-board-ratchet is an e2e board proof and needs the napi binary land just built
   # (harness/lwc-compiler-napi.node or target/release/liblwc_compiler_napi.so). It is

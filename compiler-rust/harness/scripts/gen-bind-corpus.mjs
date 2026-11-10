@@ -1,9 +1,9 @@
-// Differential oracle for crates/lwc-ssr/src/compile_template/bind_expr.rs.
+// Differential oracle for lwc-template::expr::bind (AB-D0004 S5; was lwc-ssr bind_expr.rs).
 // Builds a corpus of template expressions (SSR fixtures + template-compiler fixtures + adversarial set), runs the JS
 // `bindExpression(expr, isLocal, 'instance', /*experimentalComplexExpressions*/ true)` from the built
 // @lwc/template-compiler dist on each, and records WHICH identifiers got `instance.` (by UTF-16 offset + name).
-// Output: crates/lwc-ssr/tests/fixtures/bind_corpus.json, consumed by the `js_bind_corpus` cargo test.
-// Usage: node harness/scripts/gen-bind-corpus.mjs   (then: cargo test -p lwc-ssr js_bind_corpus)
+// Output: crates/lwc-template/tests/fixtures/bind_corpus.json, consumed by lwc-template `js_bind_corpus`.
+// Usage: node harness/scripts/gen-bind-corpus.mjs   (then: cargo test -p lwc-template js_bind_corpus)
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -16,7 +16,7 @@ const { parseExpressionAt } = require('acorn');
 const { walk } = require('estree-walker');
 const { bindExpression } = require(path.join(LWC, 'packages/@lwc/template-compiler/dist/index.cjs'));
 const here = path.dirname(fileURLToPath(import.meta.url));
-const OUT = path.resolve(here, '../../crates/lwc-ssr/tests/fixtures/bind_corpus.json');
+const OUT = path.resolve(here, '../../crates/lwc-template/tests/fixtures/bind_corpus.json');
 
 // Pull `{...}` expressions (brace-balanced, string/template aware) plus the loop locals declared in the same file.
 function extract(html) {
