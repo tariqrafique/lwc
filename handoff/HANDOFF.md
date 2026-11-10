@@ -1,17 +1,17 @@
-# LWC → Rust migration: handoff (refreshed 2026-11-10 02:26 PST)
+# LWC → Rust migration: handoff (refreshed 2026-11-10 02:57 PST)
 
 Fleet resumed 2026-11-08 22:40 PST. Work is on main or on committed bot/* branches, and all of it is in the bundle below.
 
 ## What's here
-- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ 3ecff19 plus all current refs (bot/harness-d0280 05aee74 and bot/harness-d0280-table 6628018). Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
-- `notes.bundle`: notes repo main @ 10625ba (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/ helpers).
+- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ 6628018 plus all current refs (bot/harness-d0280 78a27e1 and bot/harness-d0280-shimex c14cf06). Restore it with `git clone lwc-compiler-rust.bundle lwc-compiler-rust && cd lwc-compiler-rust && git branch -r`.
+- `notes.bundle`: notes repo main @ 039a74c (PLAN.md, decisions.tsv, state/*.md, arch-board reviews, bin/ helpers).
 - `notes/`: plain copies of the notes (OWNERS.tsv, arch-board/, lwc-rust-migrate/, state/), for reading on GitHub.
 - `semdiff-uncommitted.patch`: older Semdiff WIP from 2026-11-02 (not refreshed). Check whether bot/semdiff already supersedes it before applying.
 
 ## Ground truth
 - Oracle: salesforce/lwc 9.5.3 @ b9e8007 (clean). This branch's base is upstream-b9e8007.
 - `compiler-rust/` on this branch = the latest **official** board 78a3500dd541 @ 3ecff19 (published 2026-11-09 22:03 PST). See compiler-rust/board.txt.
-- Main @ 3ecff19 matches official board 78a3500dd541, so main is measured. bot/harness-d0280 is UNMEASURED.
+- Main @ 6628018 is **UNMEASURED**: the latest official board 78a3500dd541 was built from 3ecff19 (now an ancestor of main). Only compiler-rust/ is measured. bot/harness-d0280 and bot/harness-d0280-shimex are also unmeasured.
 - Plan of record: notes/lwc-rust-migrate/PLAN.md. Decisions: notes/lwc-rust-migrate/decisions.tsv (D-0001..D-0276).
 
 ## Branches
@@ -23,6 +23,5 @@ Unlanded tips that were not in main (bot/diagnostics-directives 3bc4435, bot/hyg
 2. Read PLAN.md §3 (ownership) and §5 (rules), then each state/<bot>.md.
 3. Follow the landing order in the state files, then publish a fresh official board from main.
 
-## 2026-11-09 22:30 PST refresh
-Main 3ecff19 now matches official board 78a3500dd541 (valid, published 2026-11-09 22:03 PST) and compiler-rust/ holds that board. bot/harness-d0280 (8b31548 and bot/harness-d0280-table 6628018) is unmeasured.
-
+## 2026-11-09 22:30 PST note
+Official board 78a3500dd541 was built from main 3ecff19 (published 2026-11-09 22:03 PST) and compiler-rust/ holds it. Main has since advanced to 6628018 and is unmeasured.

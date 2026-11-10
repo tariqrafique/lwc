@@ -23,6 +23,10 @@ Updated: 2026-11-09 by LWC Arch Board. Mode: **milestone-only (D-0276)**. Idle u
 6. SD-2c (AB-D0006): build stays deferred (D-0270).
 7. AB-D0004: the C1-C5 `cluster.mjs` check runs on the first official board after S4 (D-0271).
 8. Nit (AB-L0058): `Gen.cur_cr` becomes a local.
+9. AB-M0002-T1/S3 (post-land, D-0276; landed as table 6628018, slice 05aee74):
+   (a) The unlocked scan must match napi/npx/npm the way it matches cargo. It currently misses `$(napi build)`, `env|exec|command napi build`, and echo-wrapped forms; the napi-pack locked exemption stays as it is.
+   (b) Plant source must not dodge the scanner by splitting phrases (6628018: `na'pi' bu'ild'`, `'c'argo bu'ild'`). Move the plant bodies to data files with a path-exact exemption.
+   (c) log_box_configs reads MAIN's working-tree table through main_data. Read it with git show ${base} like the stale check.
 
 ## Standing rules (still apply to all work; see ARCHITECTURE.md)
 - No pass re-scans emitted JS. Complex-mode codegen goes only through the AB-D0004 typed oxc AST, so don't extend the hand member_chain.
