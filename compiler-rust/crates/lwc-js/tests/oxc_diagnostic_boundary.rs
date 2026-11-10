@@ -24,11 +24,13 @@
 //!   flag remains allowed in parse.rs helpers that build a scope/node table of an already-parsed program.
 //! - R8 parse / parse_with / parse_source / Parser::new call sites (including `use … as` aliases) are
 //!   allowed only inside the closed D-0264 function list ([`PARSE_SITES`]): parse.rs entries,
-//!   `transform_inner` (the one pre-print parse), and the three residuals (`pass_with`,
+//!   `transform_inner` (the one pre-print parse), and the three remaining residuals (`pass_with`,
 //!   `unforgeables::run`, `async_functions`). A new site or an orphaned list row fails (D-0262 / D-0264).
 //!   Official expiry tracking is Harness's D-0260 registry file (not edited here).
-//! - R8b find/replace of `babelHelpers.` is allowed only inside [`BABELHELPERS_FIND`] (printed-output
-//!   rename is `helpers.rs::post_codegen_edits`; `subst`/`refs` rewrite helper-body templates).
+//! - R8b find/replace of `babelHelpers.` is allowed only inside [`BABELHELPERS_FIND`]. After D-0265
+//!   step 1 that list is empty: helper members are rewritten on the Program by AST shape, and
+//!   helper-body templates are localized from recorded AST spans. A text find/replace on printed
+//!   output fails the gate.
 //!
 //! Residual, by construction outside this gate: after the boundary the text lives inside the `CompileError`'s
 //! `String` message, alongside LWC's own text; a comparison on `CompileError::message` elsewhere is not a
@@ -55,7 +57,7 @@ const BAD_PUNCT: [&str; 6] = ["==", "!=", "<=", ">=", "&&", "||"];
 
 /// Closed D-0264 list of functions that may call parse / parse_with / parse_source / Parser::new.
 /// Keyed by `path::fn` (path relative to lwc-js/src). New sites and orphan rows both fail.
-/// Residuals expire at D-0265 in the D-0260 registry (four rows, owner js).
+/// Three remaining residuals expire at D-0265 in the D-0260 registry (owner js).
 const PARSE_SITES: &[(&str, &str, &str)] = &[
     ("parse.rs::parse_source", "user-source parse (semantic check + abstract guard)", "P1-entry"),
     ("parse.rs::parse", "callee of parse_source and the intermediate parse entry; no semantic check", "P1-entry"),
@@ -67,11 +69,7 @@ const PARSE_SITES: &[(&str, &str, &str)] = &[
 ];
 
 /// Functions that may search/replace the text `babelHelpers.` (enclosing fn, not a variable name).
-const BABELHELPERS_FIND: &[(&str, &str, &str)] = &[
-    ("helpers.rs::post_codegen_edits", "find+replace babelHelpers.* on printed codegen output", "R-babelhelpers-print"),
-    ("helpers.rs::subst", "rewrite babelHelpers.* inside helper body templates, not printed JS", "helper-body"),
-    ("helpers.rs::refs", "scan helper body templates for babelHelpers.* dependencies", "helper-body"),
-];
+const BABELHELPERS_FIND: &[(&str, &str, &str)] = &[];
 
 #[derive(Debug, Clone, PartialEq)]
 enum Tok { Ident(String), Punct(String), Lit }
@@ -589,4 +587,66 @@ fn planted_parse_outside_closed_list_fails_the_gate() {
     assert!(orphan.iter().any(|b| b.contains("orphan") && b.contains("no/such.rs::ghost")),
         "orphaned allowlist row must fail, got {}", orphan.join(" | "));
     eprintln!("orphan row: {}", orphan.iter().filter(|b| b.contains("orphan")).cloned().collect::<Vec<_>>().join(" | "));
+}
+
+#[test]
+fn planted_babelhelpers_text_replace_on_printed_output_fails_the_gate() {
+    let files = real_files();
+    assert!(gate(&files).is_empty(), "baseline must be clean: {}", gate(&files).join("\n"));
+    for (name, path, anchor, code) in [
+        (
+            "replace on printed output in post_codegen_edits",
+            "helpers.rs",
+            "crate::transforms::version_stamp::run(program, &mut stamps);",
+            "let _ = output.replace(\"babelHelpers.defineProperty\", \"_defineProperty\");",
+        ),
+        (
+            "find on printed output in transform_inner",
+            "lib.rs",
+            "let first = helpers::localize(&alloc, &mut program);",
+            "let _ = printed.find(\"babelHelpers.\");",
+        ),
+        (
+            "match_indices scan of printed JS in a new helper",
+            "helpers.rs",
+            "pub fn remap_edits",
+            "fn scan(output: &str) { let _ = output.match_indices(\"babelHelpers.\"); }",
+        ),
+    ] {
+        let bad = planted(&files, path, anchor, code);
+        assert!(!bad.is_empty(), "{name}: passed the gate");
+        assert!(bad.iter().any(|b| b.contains("R8b")), "{name}: expected R8b, got {}", bad.join(" | "));
+        eprintln!("{name}: {}", bad.join(" | "));
+    }
+
+    let extra: &[(&str, &str, &str)] = &[("helpers.rs::post_codegen_edits", "stale printed-output rename", "R-babelhelpers-print")];
+    let orphan = babelhelpers_find_violations(&files, extra);
+    assert!(orphan.iter().any(|b| b.contains("orphan") && b.contains("helpers.rs::post_codegen_edits")),
+        "orphaned BABELHELPERS_FIND row must fail, got {}", orphan.join(" | "));
+    eprintln!("orphan row: {}", orphan.iter().filter(|b| b.contains("orphan")).cloned().collect::<Vec<_>>().join(" | "));
+}
+
+#[test]
+fn async_predicate_lives_in_one_fn_called_from_one_place() {
+    let files = real_files();
+    let mut defs = Vec::new();
+    let mut callers = Vec::new();
+    for (path, src) in &files {
+        let toks = tokens(src);
+        let fns = all_fn_ranges(&toks);
+        for (name, a, b) in &fns {
+            let raw = fn_raw_src(src, &toks, *a, *b);
+            let key = format!("{path}::{name}");
+            if raw.contains(".contains(\"async\")") {
+                defs.push(key.clone());
+            }
+            if name != "source_has_async" && raw.contains("source_has_async(") {
+                callers.push(key);
+            }
+        }
+    }
+    assert_eq!(defs, vec!["transforms/lower.rs::source_has_async".to_string()],
+        "async cheap-exit predicate must live in exactly one fn, got {defs:?}");
+    assert_eq!(callers, vec!["transforms/lower.rs::async_functions".to_string()],
+        "source_has_async must be called from exactly one place, got {callers:?}");
 }

@@ -42,26 +42,22 @@ Non-gating: template-diag crate 62588 clean / 636 mismatch; template-diag-napi (
 Non-gating: template 568/568; ssr, ssr-async, ssr-asyncYield 388/388 (not progress until AB-0002);
 template-diag 61400/63224 clean, 1824 mismatches, 0 crash.
 
-## 3. Ownership
-Path ownership is `OWNERS` at the repo root on main (D-0227), enforced by pre-commit and land.sh. The table below describes roles; where it names paths and disagrees with OWNERS, OWNERS wins. Only Migrate decides OWNERS contents.
-Open = reviews.tsv verdict REWORK with no later APPROVE (last row per id wins). Closed and not owed:
-AB-L0002/L0003/L0005 (→AB-L0006, same branch/files, inferred), AB-L0004 (→AB-L0009, landed b2e23d5),
-AB-X0001 (→L0010), AB-X0002 (→L0008), AB-X0004 + AB-L0012 REWORK (→L0012 APPROVE, landed c731fb6),
-AB-R005 follow-up (→AB-L0013, landed e7c35bf), AB-X0003 (→AB-L0015, landed a9089c0), AB-0004 (notes 8139fdc, CLOSED row written), AB-R004 + use_static + L0009 follow-up (→AB-L0016, landed 4f68532).
+## 3. Ownership and serial queue (D-0276, 2026-11-09)
+One worker, one queue, one item at a time. **LWC Worker (28881e7c, formerly LWC Harness)** owns the whole workspace: every crate, `harness/**`, `scripts/**`, `tools/semdiff`, napi packaging, CI, the official board, and `CUTOVER.md`. Migrate (only contact with Tariq) owns this file, decisions.tsv rulings and OWNERS contents. Arch Board (af0d1105) reviews **milestones only**: a gate flipping, an ownership or direction change, and cutover. No per-landing Arch-Review trailer.
+Parked (no work, routines deleted; their state/<bot>.md is the handoff): Template Rust 766f1a0b, SSR Rust 37aea75f, JS Style e79e5456, Semantic Diff 45d9257f, Ship 2d877d6d. Retired earlier: postcss, diagnostics, debugger-view.
+Rules that still stand: land.sh is the only path to main; numbers only from official boards; D-0268 disk hygiene (remove slice worktrees on landing, one worktree, >=15G free before a board); D-0275 store-first audit logs; no build unlocked.
 
-Fleet per D-0198 (restructure) and D-0199 (table-copy deletes, napi split). Retired: postcss, diagnostics, debugger-view (handoffs in their state files; no work to them).
-
-| bot | owns | current item | owes, in order |
-|---|---|---|---|
-| harness (28881e7c) | `harness/**` (incl. template-diag scripts), `scripts/*.sh`, board/official/publish, coverage-gate, perf + source-map rows, `crates/lwc-compiler` options + dispatch | AB-0006 (+X0007, X0008, AB-0016, AB-X0010, template-diag UNSOUND label) | order per D-0218: fresh official board; coverage-gate report-only; AB-0008 (+d.ts schema input, api_version f64, undefined-per-field row D-0208, unknown-option row); AB-D0005 .pins snapshot + parse5 rev fail-closed; semdiff H-2/H-3; lbc row (Arch design first); AB-0004; AB-0009; `-p lwc-style` gates + 67 parse-errors with the fresh board |
-| template (766f1a0b) | all of `crates/lwc-template` (parser, IR, codegen, validation/diagnostics), `lwc-shared/src/template_ir.rs` | CSR render parity, slot-name cluster first; LWC version banner comment (D-0196 observable) | renderer skips; AB-0011 a1 + generator (AB-D0002); AB-0013 after design review; inherited from diagnostics: ElementKind::LwcComponent, AB-X0009 + AB-0012, 1052 decision/test, 3 template_diagnostics coverage GAPs; 11 template_codegen GAPs |
-| js-style (e79e5456) | `crates/lwc-js`, `crates/lwc-style`, shared error model in lwc-shared, napi lib.rs error surfacing | AB-R001 rebase onto main, Arch, land (notify template + ssr first) | slice 2 (delete napi reshaping, facades, lwc-js migration); AB-0010; own copies deleted on repoint (AB-0011 d, D-0199); 10 js + 13 style GAPs |
-| ssr (37aea75f) | `crates/lwc-ssr` | AB-0002: AB-L0024 land; AB-L0025 rework (non-null class name by type; LWC_VERSION_COMMENT via one lwc_shared def); AB-L0026 rebase | S2..S5 on the shared error table; own copies deleted on repoint; 6 ssr_render GAPs |
-| semdiff (45d9257f) | `tools/semdiff`, `semantic-diff` row, verdict schema (D-0195 reference, D-0196 observation model) | SD-1B classify codegen-only from H-1 pairs + cluster | rt-1 rules (each reviewed); SD-2 exec leg; 24 semantic_diff GAPs |
-| ship (2d877d6d) | napi packaging files, platform binaries, publish, CI, consumer moves, JS-package deletes + no-duplicate-table lint at cutover, `CUTOVER.md`, section-4 preconditions | SHIP-0 read-only survey -> `lwc-rust-migrate/ship-survey.md` | CUTOVER.md draft from survey; packaging plan to Arch |
-| arch-board (af0d1105) | `notes/arch-board/**`; sole reviewer | reviews, drift checks, COVERAGE.tsv | proposes ownership/scope changes to Migrate, never makes them |
-
-Live worktree: `/workspace/wt/harness-gate` (branch `bot/harness-gate`, Harness's AB-0006 work). Not stale.
+Serial queue (Worker pulls the top item; Migrate reorders; finish or park an item with a state note before starting the next):
+1. OWNERS = single owner; land.sh drops the per-land Arch-Review requirement (milestone reviews only). Collapse parked bots' worktrees and branches: land approved-but-unlanded work (Template AB-L0058-FU f3f5fe5), archive the rest as tags, remove the worktrees.
+2. Fresh official board on current main (first board with eac1ae9 CI, D-0239/D-0241, AB-L0079 gate).
+3. **D-0277/D-0279/D-0280: harness into the repo, no GitHub Actions, then cloud-agent porting on agent/\* branches.** Done when: (a) board.sh, the land gate (no pass becomes a fail), the semdiff row, and fetching the pinned oracle b9e8007 (never by editing /workspace/lwc) all live in the repo and run on any machine; (b) a board run from the in-repo harness on a fresh clone, on a cloud agent's machine, matches the latest official board row for row on the same commit; (c) after that, each queue item is a Cursor cloud agent task on its own `agent/*` branch of tariqrafique/lwc. The agent's own board run is advisory only. The final gate before any fast-forward onto `rust-compiler` is the official board on the box, run against the local oracle, and only its numbers go to Tariq. There are no PRs, no other new branch names and no force-push, and each `agent/*` branch is deleted after it lands. Migrate dispatches, and tells Tariq when (c) starts. LWC Worker holds the local harness until then, then parks. C8 (D-0280) means the same checks run on the box by the in-repo harness as part of the official board. No GitHub Actions.
+4. semantic-diff board row: `--gate strict`, no baseline, `--registry` = decisions.tsv at NOTES_COMMIT, assert manifest case count and corpus (Arch 03112c1).
+5. Template S5 (SSR consumes .ast), then S6.
+6. ssr-render: clear the 5 skips (x3 modes).
+7. SSR pair emitter on ssr-render's bundleFixture path, then SD-2b exec leg (AB-D0007-r2 approved).
+8. JS: D-0265 phase 2 residuals (3 shim rows); CompileError raw position as one typed variant; then D-0243 as one wave after AB-D0004.
+9. Style: 13 GAPs after D-0246; unlocked cargo in tools/style-diff/run.mjs and template-diag-diff.mjs.
+10. Ship: D-0235 fmt green, napi packaging, CUTOVER.md, consumer moves, JS-package deletes.
 
 ## 4. Remaining exit criteria (full cutover)
 - [ ] Golden-gate hole closed (AB-0003, AB-0007); fresh official board published; all earlier boards stay provisional.

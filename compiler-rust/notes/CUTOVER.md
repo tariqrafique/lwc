@@ -52,7 +52,7 @@ Legend: [x] met on that board · [ ] open · (—) no board row yet.
 | C5 | Errors thrown as JS Error/AggregateError with code/filename/location/level/url (no `{error}` field) | shape = upstream CompilerError/CompilerAggregateError; js-style supplies `napi/src/errors.rs`, ship wires (D-0200); seam test | [ ] returned today |
 | C6 | `instrumentation` supported or dropped by D-id | D-0205: kept; Rust returns events, loader replays | [ ] missing (S3) |
 | C7 | parse5 out-of-repo path dep → git dep pinned by rev = external-inputs `parse5_rust_commit`; local override via `[patch]` in /workspace/wt/.cargo/config.toml | D-0201 (template edits crates/lwc-template/Cargo.toml); clean-checkout CI build | [ ] |
-| C8 | CI: fmt, clippy (shrink-only ratchet), `cargo check --workspace --locked` (D-0225/D-0223), test, napi matrix build, ssr-compile-js-oracle gate against the built napi, never SSR_ORACLE_NAPI (D-0226), tarball artifacts (no npm publish) | D-0202: GitHub Actions on tariqrafique/lwc branch `rust-compiler`; green workflow run | [ ] |
+| C8 | CI: fmt, clippy (shrink-only ratchet), `cargo check --workspace --locked` (D-0225/D-0223), test, napi matrix build, ssr-compile-js-oracle gate against the built napi, never SSR_ORACLE_NAPI (D-0226), tarball artifacts (no npm publish) | D-0202: GitHub Actions on tariqrafique/lwc branch `rust-compiler`; green workflow run. S5 LANDED main eac1ae9 (AB-L0059) as compiler-rust/.github/workflows/rust-ci.yml; fmt --check red until D-0235; flips on first green run after an official board incl. S5 | [ ] |
 
 ## C2. Consumer-visible breaking changes vs @lwc/compiler 9.5.3 (all locked rows in decisions.tsv)
 | diff | D-id |

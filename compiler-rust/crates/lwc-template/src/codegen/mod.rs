@@ -90,7 +90,7 @@ impl ApiHelper {
 }
 
 #[derive(Default)]
-struct Gen { key: u32, locals: Vec<String>, slots: Vec<String>, imports: Vec<(String, String)>, has_refs: bool, static_opt: bool, comments: bool, frags: Vec<(String, bool)>, sanitize: bool, cr: Option<lwc_shared::CustomRendererConfig>, cur_cr: bool, renderer: bool, api_version: u32, light: bool, inner_html: u32, synthetic: bool, scope_frag: bool, apis: Vec<ApiHelper>, memo: u32}
+struct Gen { key: u32, locals: Vec<String>, slots: Vec<String>, imports: Vec<(String, String)>, has_refs: bool, static_opt: bool, comments: bool, frags: Vec<(String, bool)>, sanitize: bool, cr: Option<lwc_shared::CustomRendererConfig>, renderer: bool, api_version: u32, light: bool, inner_html: u32, synthetic: bool, scope_frag: bool, apis: Vec<ApiHelper>, memo: u32}
 
 
 /// TS `isExpression` (shared/ast.ts:525): `node.type !== 'Literal'`. A complex expression whose AST
@@ -322,7 +322,9 @@ impl Gen {
         self.key += 1;
         let pad = "  ".repeat(ind);
         let needs_renderer = self.needs_renderer(name, ns, attrs, directives, kind);
-        let outer_cr = std::mem::replace(&mut self.cur_cr, needs_renderer);
+        // AB-L0058: per-node facts are locals, never Gen fields. `cur_cr` was only written/read inside
+        // this function; pass it to compute_attr as `hook = !cur_cr`.
+        let cur_cr = needs_renderer;
         // astring ObjectExpression: one property per line, no trailing comma.
         let obj = |props: Vec<String>, pad: &str| format!("{{\n{}\n{pad}}}", props.iter().map(|p| format!("{pad}  {p}")).collect::<Vec<_>>().join(",\n"));
         let mut data: Vec<String> = Vec::new();
@@ -358,7 +360,7 @@ impl Gen {
                 "slot" => data.push(format!("slotAssignment: {}", js_string(lit.unwrap_or("")))),
                 _ => {
                     let used = is_attribute(kind, name, &a.name);
-                    let v = self.compute_attr(name, ns, &a.name, &a.value, used, !self.cur_cr, nest_indent)?;
+                    let v = self.compute_attr(name, ns, &a.name, &a.value, used, !cur_cr, nest_indent)?;
                     attr_vs.push((js_string(&a.name), v));
                 }
             }
@@ -378,7 +380,7 @@ impl Gen {
         let mut entries: Vec<String> = Vec::new();
         for p in props {
             // TS computeAttrValue on a property: keyed by the attribute name.
-            let v = self.compute_attr(name, ns, &p.attribute_name, &p.value, is_attribute(kind, name, &p.attribute_name), !self.cur_cr, nest_indent)?;
+            let v = self.compute_attr(name, ns, &p.attribute_name, &p.value, is_attribute(kind, name, &p.attribute_name), !cur_cr, nest_indent)?;
             entries.push(format!("{}: {v}", js_string(&p.name)));
         }
         if let Some(v) = inner {
@@ -415,7 +417,6 @@ impl Gen {
         if let Some(e) = directives.iter().find_map(|d| match d { ElementDirective::SlotBind(e) => Some(e), _ => None }) {
             data.push(format!("slotData: {}", self.expr(e)?));
         }
-        self.cur_cr = outer_cr;
         // TS CSR ExternalComponent: plain api_element + `external: true` at the end of the databag.
         if kind == CrKind::External { data.push("external: true".into()); }
         Ok(obj(data, &pad))

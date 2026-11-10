@@ -2,7 +2,8 @@
 //! object rest/spread (`@babel/plugin-transform-object-rest-spread`, apiVersion < 60) and, for
 //! `enableLightningWebSecurityTransforms`, `@babel/plugin-transform-async-to-generator` +
 //! `@babel/plugin-transform-async-generator-functions`. Helpers load in External mode
-//! (`babelHelpers.x`); `crate::helpers` localizes their bodies once after the single print (D-0262).
+//! (`babelHelpers.x`); `crate::helpers::localize` rewrites those members on the Program
+//! and builds helper bodies from AST templates before the single print (D-0262 / D-0265).
 use lwc_shared::CompileError;
 use oxc::allocator::Allocator;
 use oxc::ast::ast::Program;
@@ -23,14 +24,19 @@ pub fn apply_object_rest_spread<'a>(
     apply_env(alloc, src, filename, env, program)
 }
 
-/// async functions -> generators on an already-parsed program. No-op when `src` has no `async`.
+/// The sole copy of async_functions' cheap-exit predicate (AB-L0075). Called only from
+/// [`async_functions`]; [`apply_async_functions`] does not repeat it.
+fn source_has_async(src: &str) -> bool {
+    src.contains("async")
+}
+
+/// async functions -> generators on an already-parsed program.
 pub fn apply_async_functions<'a>(
     alloc: &'a Allocator,
     src: &str,
     filename: &str,
     program: &mut Program<'a>,
 ) -> Result<(), CompileError> {
-    if !src.contains("async") { return Ok(()); }
     let mut env = EnvOptions::default();
     env.es2017 = ES2017Options { async_to_generator: true };
     env.es2018 = ES2018Options { object_rest_spread: None, async_generator_functions: true };
@@ -45,19 +51,22 @@ pub fn async_functions(
     code: &str,
     filename: &str,
     with_map: bool,
-) -> Result<Option<(String, Option<SourceMap<'static>>, Vec<lwc_shared::edits::Edit>)>, CompileError> {
-    if !code.contains("async") { return Ok(None); }
+) -> Result<Option<(String, Option<SourceMap<'static>>, Vec<lwc_shared::edits::Edit>, crate::helpers::LocalizedHelpers)>, CompileError> {
+    if !source_has_async(code) { return Ok(None); }
     let alloc = Allocator::default();
     let mut program = crate::parse::parse(&alloc, code, filename)
         .map_err(|e| CompileError::new(format!("internal: lowering input failed to parse: {}", e.message), filename))?;
     apply_async_functions(&alloc, code, filename, &mut program)?;
+    // Only members this pass introduced are still `babelHelpers.*`; earlier localize
+    // already rewrote the rest to local idents (AB-L0075).
+    let extra = crate::helpers::localize(&alloc, &mut program);
     let (out, map) = crate::codegen::print_mapped(&program, code, true);
     let stamps = match &map {
         Some(m) => crate::helpers::post_codegen_edits(&program, code, &out, m, filename)?,
         None => panic!("codegen with_map always produces a map"),
     };
     let map = if with_map { map } else { None };
-    Ok(Some((out, map, stamps)))
+    Ok(Some((out, map, stamps, extra)))
 }
 
 fn apply_env<'a>(

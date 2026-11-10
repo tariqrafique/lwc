@@ -659,17 +659,23 @@ fn lower_one<'a>(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx<'a>, in_loop: 
             validate::html_recovery(n, d);
             let pre = element_check::element_errors(tag_name, namespace_uri, &qualified, n, cfg, d)?;
             // TS parseAttributes: the one ParsedAttribute every directive parser picks from, over the
-            // pre-pass (attribute, normalized value) pairs.
-            let mut parsed = ParsedAttribute::new(match &pre { Ok(chk) => &chk.attrs, Err(e) => e.lwc_parsed.as_deref().unwrap_or_default() });
+            // pre-pass (attribute, normalized value) pairs. Built only when there are pairs to pick from
+            // (AB-X0017 follow-up: no dead unwrap_or_default over a missing lwc_parsed).
             let chk = match &pre {
                 Ok(chk) => chk,
                 // TS parseIfBlock/parseElseifBlock/parseElseBlock push the (empty) block into the parent and
                 // update the sibling if-chain before a later throw drops the element.
                 Err(e) => {
-                    let kept = if e.lwc_parsed.is_some() { Some(Lowered { content: Vec::new(), lwc: lwc_directive(&mut parsed, n, d)?, location: span }) } else { None };
+                    let kept = if let Some(attrs) = e.lwc_parsed.as_deref() {
+                        let mut parsed = ParsedAttribute::new(attrs);
+                        Some(Lowered { content: Vec::new(), lwc: lwc_directive(&mut parsed, n, d)?, location: span })
+                    } else {
+                        None
+                    };
                     return Err(Thrown { diag: e.diag.clone(), kept }.into());
                 }
             };
+            let mut parsed = ParsedAttribute::new(&chk.attrs);
             // A childless (post-creation throw) element: TS runs no further checks on it.
             let threw = chk.thrown.is_some();
             // A bare (post-creation throw) element still sits in the IfBlock / Elseif / Else its directive
@@ -725,24 +731,27 @@ fn lower_one<'a>(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx<'a>, in_loop: 
             let mut listeners = Vec::new();
             let mut attrs = Vec::new();
             for c in parsed.get_attributes().iter().copied() {
-                let a = c.attr;
+                let a = c.attr();
                 let is_on = a.name.len() > 2 && a.name.starts_with("on") && a.name.as_bytes()[2].is_ascii_alphabetic();
                 // TS applyHandlers: any expression value is a listener; under complex expressions that includes
                 // non-member sources (arrows, calls, computed members). Only `on*` values are lowered: a
                 // non-handler `{…}` is lowered as an attribute below (AB-D0004 S0: `data-foo={}` built and
-                // discarded a handler oxc cannot parse).
+                // discarded a handler oxc cannot parse). Read the pre-pass value (AB-X0017 follow-up).
                 if !is_on { attrs.push(c); continue; }
-                let handler = match parse_binding(&a.value) {
-                    Some(e) => Some(e),
-                    None if complex_enabled(cfg) && a.value.starts_with('{') && a.value.ends_with('}') => Some(d.complex(&a.value, attr_loc(n, &a.name, d)?)?),
-                    None => None,
+                let handler = match c.value() {
+                    element_check::Av::Expr(v) => match parse_binding(v) {
+                        Some(e) => Some(e),
+                        None if complex_enabled(cfg) => Some(d.complex(v, attr_loc(n, &a.name, d)?)?),
+                        None => None,
+                    },
+                    _ => None,
                 };
                 match handler {
                     Some(handler) => listeners.push(EventListener { name: a.name[2..].to_string(), handler, location: attr_loc(n, &a.name, d)? }),
                     None => attrs.push(c),
                 }
             }
-            let attributes = attrs.iter().map(|c| lower_attr(c.attr, &c.value, n, d)).collect::<Located<Vec<_>>>()?;
+            let attributes = attrs.iter().map(|c| lower_attr(c.attr(), c.value(), n, d)).collect::<Located<Vec<_>>>()?;
             let is_comp = is_custom_element_tag(tag_name);
             // `<lwc:component>` is transparent for the slot-ancestor lookup (its children are slotted into the dynamic component).
             let anc = if tag_name == "lwc:component" { d.slot_ancestor.clone() } else if is_comp { None } else { Some(tag_name.clone()) };
@@ -762,8 +771,12 @@ fn lower_one<'a>(n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx<'a>, in_loop: 
                 else if directives.iter().any(|x| matches!(x, ElementDirective::InnerHtml(_))) { thrown = Some(ParserDiagnostics::LWC_INNER_HTML_INVALID_CONTENTS.generate(&[&format!("<{tag_name}>")], location.location.clone())); }
             }
             let node = if tag_name == "slot" {
-                // `name` stays in attributes too; slot_name is the TS `slotName`.
-                let slot_name = attrs.iter().find(|c| c.attr.name == "name").map(|c| c.attr.value.clone()).unwrap_or_default();
+                // `name` stays in attributes too; slot_name is the TS `slotName`. Read the pre-pass
+                // value (AB-X0017 follow-up), not raw parse5 attr.value.
+                let slot_name = attrs.iter().find(|c| c.attr().name == "name").and_then(|c| match c.value() {
+                    element_check::Av::Str(s) => Some(s.clone()),
+                    _ => None,
+                }).unwrap_or_default();
                 ChildNode::Slot(Slot { name: tag_name.clone(), namespace: namespace_uri.clone(), attributes, directives: directives.clone(), listeners, children, location: location.clone(), slot_name, properties: Vec::new() })
             } else if is_custom_element_tag(tag_name) && external {
                 // TS: `isCustomElementTag && parsedAttr.get(External)` → ExternalComponent; attrs stay
@@ -813,7 +826,7 @@ fn scoped_slot_fragment<'a>(
     };
     d.add_scope_node(ScopeNode::ScopedSlotFragment);
     // TS parseScopedSlotFragment picks `slot`; parseElement then runs validateTemplate on the leftovers.
-    let slot_name = parsed.pick_checked("slot").map(|c| lower_attr(c.attr, &c.value, n, d)).transpose()?.map(|a| a.value)
+    let slot_name = parsed.pick_checked("slot").map(|c| lower_attr(c.attr(), c.value(), n, d)).transpose()?.map(|a| a.value)
         .unwrap_or(AttributeValue::Literal(Literal { value: LiteralValue::String(String::new()) }));
     validate::template(parsed.get_attributes(), true, &span, d);
     let kids = match template_content { Some(c) => c.borrow().child_nodes().cloned().unwrap_or_default(), None => child_nodes.to_vec() };

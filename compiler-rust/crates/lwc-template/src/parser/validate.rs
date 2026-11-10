@@ -139,7 +139,7 @@ pub(super) fn key_in_iteration(tag: &str, has_key: bool, has_loop: bool, _in_loo
 pub(super) fn template(attrs: &[&element_check::CheckedAttr], has_directive: bool, l: &SourceLocation, d: &mut Ctx) -> bool {
     // `attrs`: whatever the directive parsers did not pick (`ParsedAttribute.getAttributes()`).
     if !attrs.is_empty() {
-        let bad: Vec<&str> = attrs.iter().map(|c| c.attr.name.as_str()).collect();
+        let bad: Vec<&str> = attrs.iter().map(|c| c.attr().name.as_str()).collect();
         d.push(ParserDiagnostics::INVALID_TEMPLATE_ATTRIBUTE.generate(&[&bad.join(", ")], l.clone()));
     }
     if !has_directive {

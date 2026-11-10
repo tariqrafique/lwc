@@ -7,7 +7,7 @@
 - Loop: edit in your worktree -> `cargo check` / tests / `scripts/install-napi.sh` (installs into YOUR worktree's
   `harness/lwc-compiler-napi.node`) -> `harness/board.sh <rows>` from your worktree -> `git commit` on `bot/<bot>` ->
   `scripts/land.sh`.
-- `scripts/land.sh` (always runs main's copy; global flock): rebase onto main -> Arch-Review gate (non-trivial landings need a commit trailer `Arch-Review: <id>` with an APPROVE row in `/workspace/notes/arch-board/reviews.tsv` whose `patch_id` equals `scripts/review-patch-id.sh` of the landing diff (any diff change after review fails closed); LWC Arch Board defines trivial in `trivial-paths.txt`) -> `cargo check --workspace --all-targets` -> `cargo test` for every
+- `scripts/land.sh` (always runs main's copy; global flock): rebase onto main -> `cargo check --workspace --all-targets` -> `cargo test` for every
   crate you changed -> shim gate -> golden-gate if `harness/{goldens,test,src,fixtures}` changed -> fast-forward main ->
   rebuild + install the live napi in main's harness if crates changed. Any failure: nothing lands.
   Rebase conflicts come back to you: `git rebase main`, resolve, commit, re-run.

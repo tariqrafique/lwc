@@ -41,6 +41,7 @@
 #     'Baseline-Raise: <AB-id>' (its own APPROVE review; land.sh's baseline ceiling checks it).
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"   # THIS script's harness: runner, rows, obs writer, comparator
+source "$here/../scripts/cargo-locked.sh"
 ORACLE=/workspace/lwc ORACLE_SHA=b9e8007
 do_check=0; root=""; suites=()
 for a in "$@"; do
@@ -113,7 +114,7 @@ template_diag_row() {
   local sdtgt="${CARGO_TARGET_DIR:-$sdroot/target}"
   unset TDD_SEMDIFF_EXEC
   # D-0238: committed lock records parse5 as a git source; no per-call --config and no snapshot .cargo copy.
-  if ! (cd "$sdroot" && cargo build --release --locked -q -p semdiff --target-dir "$sdtgt") >"$out" 2>&1; then why="semdiff build failed"
+  if ! (cd "$sdroot" && cargo_locked build --release -q -p semdiff --target-dir "$sdtgt") >"$out" 2>&1; then why="semdiff build failed"
   else tenv+=(TDD_SEMDIFF="$sdtgt/release/semdiff" TDD_SEMDIFF_REGISTRY="${SEMDIFF_REGISTRY:-/workspace/notes/lwc-rust-migrate/decisions.tsv}"); fi
   case "$engine" in
     crate)
@@ -121,7 +122,7 @@ template_diag_row() {
       local tgt="${TDD_DRIVER_TARGET:-${CARGO_TARGET_DIR:-$repo/target}/template-diag-driver}"
       if [ -n "$why" ]; then :
       elif [ ! -f "$manifest" ]; then why="driver manifest missing: $manifest"
-      elif ! cargo build --release --locked -q --manifest-path "$manifest" --target-dir "$tgt" >>"$out" 2>&1; then why="driver build failed"
+      elif ! cargo_locked build --release -q --manifest-path "$manifest" --target-dir "$tgt" >>"$out" 2>&1; then why="driver build failed"
       else tenv+=(TDD_DRIVER="$tgt/release/template-diag-driver"); fi;;
     # napi = the transformSync seam through this board's pinned binary. NON-AUTHORITATIVE (Migrate 2026-11-01): ~1120
     #   seam-rejects ("invalid compile options") under root-cause by Template Diagnostics; only crash/oracle-error gate it.

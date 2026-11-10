@@ -2,8 +2,9 @@
 //! `@lwc/babel-plugin-component`), built on oxc.
 //!
 //! Pipeline: parse_source once (oxc) -> span-edit LWC/class-features passes -> parse the
-//! edited source, run rest/spread on that AST, print once -> version stamp and helper
-//! localize via the codegen map (no re-parse of printed JS; D-0262 / AB-L0037).
+//! edited source, run rest/spread on that AST, rewrite helper members, print once ->
+//! version stamp via the codegen map and helper prelude insert at 0 (no re-parse or
+//! scan of printed JS; D-0262 / D-0265 / AB-L0037).
 //! See `transforms/mod.rs` for order.
 
 pub mod codegen;
@@ -143,30 +144,34 @@ fn transform_inner(src: &str, filename: &str, options: &CompileOptions) -> Resul
     if options.enable_private_methods {
         edited = pass(&edited, filename, &mut chain, |p, _| transforms::private_methods::reverse(p, filename, &renamed))?;
     }
-    // Parse the span-edited source once, lower rest/spread on that AST, print once. Version stamp
-    // and helper localize walk this Program and remap through the codegen map (D-0262: never parse
-    // the printed string).
+    // Parse the span-edited source once, lower rest/spread on that AST, rewrite helper members
+    // on the Program, print once. Version stamp remaps through the codegen map; the helper
+    // prelude inserts at 0 (D-0262 / D-0265: never parse or scan the printed string).
     let do_rest = !api_version::is_api_feature_enabled(
         ApiFeature::DisableObjectRestSpreadTransformation,
         api_version::get_api_version_from_number(options.api_version),
     );
-    let mut printed;
-    let mut stamps;
-    {
+    let (mut printed, mut stamps, first) = {
         let alloc = oxc::allocator::Allocator::default();
         let mut program = parse::parse(&alloc, &edited, filename)
             .map_err(|e| CompileError::new(format!("internal: transformed output failed to re-parse: {}", e.message), filename))?;
         if do_rest { transforms::lower::apply_object_rest_spread(&alloc, &edited, filename, &mut program)?; }
+        // Always rewrite helper members on this Program (AB-L0075). The prelude is emitted
+        // once after any LWS async reprint, from the union of localize sets, so private-field
+        // helpers that sit after async helpers in the HELPERS table keep their order.
+        let first = helpers::localize(&alloc, &mut program);
         let (out, map) = codegen::print_mapped(&program, &edited, true);
         let map = map.expect("codegen with_map always produces a map");
         if chain.enabled() { chain.push_codegen(&map, &edited, &out); }
-        stamps = helpers::post_codegen_edits(&program, &edited, &out, &map, filename)?;
-        printed = out;
-    }
+        let stamps = helpers::post_codegen_edits(&program, &edited, &out, &map, filename)?;
+        (out, stamps, first)
+    };
+    let mut helper_sets = vec![first];
     // LWS (javascript.ts appends these after rest/spread): unforgeables, then async-to-generator.
     // Unforgeables still parse their input themselves (preserve_parens: false); that input is printed
     // JS, so their edits are remapped onto the pending stamp list. If async reprints, it returns a
-    // fresh stamp list computed from its own pre-print Program (no parse of the reprint).
+    // fresh stamp list computed from its own pre-print Program (no parse of the reprint) plus the
+    // helpers it introduced (already-localized members stay local idents).
     if options.enable_lightning_web_security_transforms {
         let e = transforms::unforgeables::run(&printed, filename)?;
         if !e.is_empty() {
@@ -175,11 +180,15 @@ fn transform_inner(src: &str, filename: &str, options: &CompileOptions) -> Resul
             stamps = helpers::remap_edits(stamps, &pieces);
             printed = out;
         }
-        if let Some((out, map, async_stamps)) = transforms::lower::async_functions(&printed, filename, chain.enabled())? {
+        if let Some((out, map, async_stamps, extra)) = transforms::lower::async_functions(&printed, filename, chain.enabled())? {
             if let Some(m) = map { chain.push_codegen(&m, &printed, &out); }
             printed = out;
             stamps = async_stamps;
+            helper_sets.push(extra);
         }
+    }
+    if let Some(pre) = helpers::prelude(&helper_sets) {
+        stamps.push(edits::Edit::insert(0, pre));
     }
     let (code, pieces) = edits::apply_mapped(&printed, stamps).expect("lwc-js edits never partially overlap");
     chain.push_edit(pieces);

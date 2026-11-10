@@ -1,6 +1,7 @@
 //! napi-rs binding: facade over `lwc_compiler::dispatch` only (no napi in lwc-style).
 //! Compile errors are returned as `{ error: {...} }` so the harness can throw a JS Error
-//! carrying `name` / `code` / `line` / `column` (napi v2 `Error` cannot carry extra props).
+//! carrying the upstream CompilerError / AggregateError own keys (napi v2 `Error` cannot).
+//! Position lives only under `location` (D-0239 / D-0241); no own `line` / `column` / Aggregate `name`.
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
 use serde::Deserialize;
@@ -152,14 +153,12 @@ impl From<lwc_shared::DiagnosticLocation> for JsDiagnosticLocation {
 #[napi(object)]
 pub struct JsCompileError {
     pub message: String,
-    pub name: Option<String>,
     pub code: Option<u32>,
-    pub line: Option<u32>,
-    pub column: Option<u32>,
     /// Same own-but-`undefined` shape as `location` (`Either::B`): shipped `generateCompilerError` with no origin.
     pub filename: Option<Either<String, Undefined>>,
     /// `{ line, column, start, length }` of the (first) diagnostic. Absent on an aggregate (shipped);
     /// on a single error shipped always has the own key, `undefined` when there is no location (`Either::B`).
+    /// The only source of position (D-0239 / D-0241); no mirrored own `line` / `column`.
     pub location: Option<Either<JsDiagnosticLocation, Undefined>>,
     /// Recovery-mode `CompilerAggregateError.errors`: one entry per sub-error, in shipped order.
     pub errors: Option<Vec<JsAggregateEntry>>,
@@ -176,10 +175,7 @@ impl JsCompileError {
     pub(crate) fn own_keys(&self) -> Vec<&'static str> {
         let mut k = vec!["message"];
         for (key, set) in [
-            ("name", self.name.is_some()),
             ("code", self.code.is_some()),
-            ("line", self.line.is_some()),
-            ("column", self.column.is_some()),
             ("filename", self.filename.is_some()),
             ("location", self.location.is_some()),
             ("errors", self.errors.is_some()),

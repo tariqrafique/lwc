@@ -5,6 +5,8 @@
 #        (fetch and push);
 #   (ii) cargo --locked resolves parse5 e3520ba from the local clone (file:// rewrite, no GitHub fetch).
 set -euo pipefail
+# shellcheck source=cargo-locked.sh
+source "$(cd "$(dirname "$0")" && pwd)/cargo-locked.sh"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BOX="$ROOT/scripts/box-parse5-git"
 T="$(mktemp -d /tmp/p5rewrite-test.XXXXXX)"; trap 'rm -rf "$T"' EXIT
@@ -46,7 +48,7 @@ if ! grep -q 'git+https://github.com/tariqrafique/parse5-rust?rev=' "$T/tree/Car
   fail=1
 else
   meta_err="$T/meta.err"
-  if (cd "$T/tree" && cargo metadata --locked --format-version 1 >"$T/meta.json" 2>"$meta_err"); then
+  if (cd "$T/tree" && cargo_locked metadata --format-version 1 >"$T/meta.json" 2>"$meta_err"); then
     node -e '
       const j=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));
       const p=j.packages.filter(p=>p.name==="parse5");
@@ -56,10 +58,10 @@ else
       if(!src.includes(want) && !id.includes(want)){
         console.error("parse5 id="+id+" source="+src+" missing "+want); process.exit(1)
       }
-      console.log("ok   (ii) cargo resolved parse5 "+id+" source="+src);
+      console.log("ok   (ii) resolved parse5 "+id+" source="+src);
     ' "$T/meta.json" || fail=1
   else
-    echo "FAIL (ii) cargo metadata --locked failed: $(tail -5 "$meta_err" | tr "\n" " ")"
+    echo "FAIL (ii) metadata --locked failed: $(tail -5 "$meta_err" | tr "\n" " ")"
     fail=1
   fi
 fi

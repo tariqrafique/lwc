@@ -22,10 +22,6 @@ use attribute::{normalize_attribute_value, NormalizedAttr};
 #[derive(Clone, PartialEq)]
 pub(super) enum Av { Expr(String), Str(String), Bool }
 
-pub(super) struct Pa { pub(super) name: String, pub(super) v: Av, pub(super) loc: SourceLocation }
-
-impl Pa { fn expr(&self) -> bool { matches!(self.v, Av::Expr(_)) } }
-
 #[derive(Clone, Copy, PartialEq)]
 enum Kind { Slot, Component, External, LwcComponent, Element }
 
@@ -77,7 +73,6 @@ impl Normalized {
         else { Av::Str(na.value.clone()) }
     }
 
-    fn pa(&self, a: &parse5::Attribute) -> Pa { Pa { name: a.name.clone(), v: self.v(), loc: self.ra.location.clone() } }
 }
 
 /// TS getTemplateAttribute up to the value parse: the attribute's location (read first, TS
@@ -90,16 +85,28 @@ fn normalize(tag: &str, a: &parse5::Attribute, n: &NodeRef, cfg: &NormalizedConf
     Ok(normalize_attribute_value(cfg.experimental_complex_expressions, &ra.raw, tag, a, &ra.location).map(|na| Normalized { ra, na }))
 }
 
-fn pick(pas: &mut Vec<Pa>, f: impl Fn(&str) -> bool) -> Option<Pa> {
-    let i = pas.iter().position(|p| f(&p.name))?;
+fn pick<'n>(pas: &mut Vec<CheckedAttr<'n>>, f: impl Fn(&str) -> bool) -> Option<CheckedAttr<'n>> {
+    let i = pas.iter().position(|p| f(p.attr().name.as_str()))?;
     Some(pas.remove(i))
 }
 
-/// One attribute of the checked element with TS getTemplateAttribute's normalized value, paired in the
-/// pre-pass so lowering never looks a value up or normalizes again.
+/// One attribute of the checked element with TS getTemplateAttribute's normalized value and location,
+/// paired in the pre-pass so lowering never looks a value up or normalizes again. Also the working
+/// list for directive picks in [`check_parsed`] (one vector, not a parallel `Pa`).
+/// Fields are private to this module (AB-L0058-FU): only the two construction sites below build it;
+/// other parser modules read through [`Self::attr`] / [`Self::value`] / [`Self::loc`].
+#[derive(Clone)]
 pub(super) struct CheckedAttr<'n> {
-    pub(super) attr: &'n parse5::Attribute,
-    pub(super) value: Av,
+    attr: &'n parse5::Attribute,
+    value: Av,
+    loc: SourceLocation,
+}
+
+impl<'n> CheckedAttr<'n> {
+    pub(super) fn attr(&self) -> &'n parse5::Attribute { self.attr }
+    pub(super) fn value(&self) -> &Av { &self.value }
+    pub(super) fn loc(&self) -> &SourceLocation { &self.loc }
+    fn expr(&self) -> bool { matches!(self.value, Av::Expr(_)) }
 }
 
 /// Outcome of the pre-pass for an element TS created (parseBaseElement ran, or a `<template>`).
@@ -179,35 +186,33 @@ type R = Result<(), CompilerDiagnostic>;
 fn check<'n>(tag: &str, ns: &str, attrs: &'n [parse5::Attribute], n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, out: &mut ElementCheck<'n>) -> Located<R> {
     // TS parseAttributes → getTemplateAttribute, per attribute: its location, normalizeAttributeValue, then
     // the expression parse. The first error is the throw; later attributes are never read.
-    let (mut pas, mut checked) = (Vec::new(), Vec::new());
+    let mut checked = Vec::new();
     for a in attrs {
         let nz = match normalize(tag, a, n, cfg, d)? { Ok(nz) => nz, Err(e) => return Ok(Err(e)) };
         let mut found = Vec::new();
         validate::attribute_expressions(&nz, cfg, &mut found)?;
-        let pa = nz.pa(a);
-        checked.push(CheckedAttr { attr: a, value: pa.v.clone() });
-        pas.push(pa);
+        checked.push(CheckedAttr { attr: a, value: nz.v(), loc: nz.ra.location.clone() });
         for x in found {
             if x.level == DiagnosticLevel::Error { return Ok(Err(x)); }
             d.push(x);
         }
     }
-    out.attrs = checked;
-    Ok(check_parsed(tag, ns, attrs, pas, n, cfg, d, out))
+    out.attrs = checked.clone();
+    Ok(check_parsed(tag, ns, attrs, checked, n, cfg, d, out))
 }
 
 #[allow(clippy::too_many_arguments)]
-fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<Pa>, n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, out: &mut ElementCheck<'_>) -> R {
+fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<CheckedAttr<'_>>, n: &NodeRef, cfg: &NormalizedConfig, d: &mut Ctx, out: &mut ElementCheck<'_>) -> R {
     let el = elem_parse5_loc(n, d);
     let l = loc(&el.location);
     let tagb = format!("<{tag}>");
     let e = |info: &LwcErrorInfo, args: &[&str], at: &SourceLocation| Err(info.generate(args, at.clone()));
 
     // parseElementDirectives.
-    let has = |pas: &Vec<Pa>, name: &str| pas.iter().any(|p| p.name == name);
+    let has = |pas: &Vec<CheckedAttr<'_>>, name: &str| pas.iter().any(|p| p.attr().name == name);
     let lwc_if = pick(&mut pas, |x| x == "lwc:if");
     if let Some(p) = &lwc_if {
-        if !p.expr() { return e(&ParserDiagnostics::IF_BLOCK_DIRECTIVE_SHOULD_BE_EXPRESSION, &[], &p.loc); }
+        if !p.expr() { return e(&ParserDiagnostics::IF_BLOCK_DIRECTIVE_SHOULD_BE_EXPRESSION, &[], p.loc()); }
         out.lwc_parsed = true;
         // TS parseIfBlock: endIfChain (if open), addNodeCurrentElementScope, beginIfChain.
         d.add_scope_node(ScopeNode::IfBlock); d.chain = Some(Chain::If);
@@ -215,7 +220,7 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
     let elseif = pick(&mut pas, |x| x == "lwc:elseif");
     if let Some(p) = &elseif {
         if lwc_if.is_some() { return e(&ParserDiagnostics::INVALID_IF_BLOCK_DIRECTIVE_WITH_CONDITIONAL, &["lwc:elseif"], &l); }
-        if !p.expr() { return e(&ParserDiagnostics::ELSEIF_BLOCK_DIRECTIVE_SHOULD_BE_EXPRESSION, &[], &p.loc); }
+        if !p.expr() { return e(&ParserDiagnostics::ELSEIF_BLOCK_DIRECTIVE_SHOULD_BE_EXPRESSION, &[], p.loc()); }
         if !matches!(d.chain, Some(Chain::If | Chain::Elseif)) { return e(&ParserDiagnostics::LWC_IF_SCOPE_NOT_FOUND, &["lwc:elseif"], &l); }
         out.lwc_parsed = true;
         d.add_scope_node(ScopeNode::ElseifBlock); d.chain = Some(Chain::Elseif);
@@ -225,7 +230,7 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
         if lwc_if.is_some() { return e(&ParserDiagnostics::INVALID_IF_BLOCK_DIRECTIVE_WITH_CONDITIONAL, &["lwc:else"], &l); }
         if elseif.is_some() { return e(&ParserDiagnostics::INVALID_ELSEIF_BLOCK_DIRECTIVE_WITH_CONDITIONAL, &["lwc:else"], &l); }
         if !matches!(d.chain, Some(Chain::If | Chain::Elseif)) { return e(&ParserDiagnostics::LWC_IF_SCOPE_NOT_FOUND, &["lwc:else"], &l); }
-        if p.v != Av::Bool { return e(&ParserDiagnostics::ELSE_BLOCK_DIRECTIVE_CANNOT_HAVE_VALUE, &[], &l); }
+        if *p.value() != Av::Bool { return e(&ParserDiagnostics::ELSE_BLOCK_DIRECTIVE_CANNOT_HAVE_VALUE, &[], &l); }
         out.lwc_parsed = true;
         d.add_scope_node(ScopeNode::ElseBlock); d.chain = Some(Chain::Else);
     }
@@ -233,13 +238,13 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
     let (fe, fi, fx) = (pick(&mut pas, |x| x == "for:each"), pick(&mut pas, |x| x == "for:item"), pick(&mut pas, |x| x == "for:index"));
     match (&fe, &fi) {
         (Some(fe), Some(fi)) => {
-            if !fe.expr() { return e(&ParserDiagnostics::FOR_EACH_DIRECTIVE_SHOULD_BE_EXPRESSION, &[], &fe.loc); }
-            let Av::Str(item) = &fi.v else { return e(&ParserDiagnostics::FOR_ITEM_DIRECTIVE_SHOULD_BE_STRING, &[], &fi.loc); };
-            identifier(item, &fi.loc)?;
+            if !fe.expr() { return e(&ParserDiagnostics::FOR_EACH_DIRECTIVE_SHOULD_BE_EXPRESSION, &[], fe.loc()); }
+            let Av::Str(item) = fi.value() else { return e(&ParserDiagnostics::FOR_ITEM_DIRECTIVE_SHOULD_BE_STRING, &[], fi.loc()); };
+            identifier(item, fi.loc())?;
             let mut index = None;
             if let Some(fx) = &fx {
-                let Av::Str(ix) = &fx.v else { return e(&ParserDiagnostics::FOR_INDEX_DIRECTIVE_SHOULD_BE_STRING, &[], &fx.loc); };
-                identifier(ix, &fx.loc)?;
+                let Av::Str(ix) = fx.value() else { return e(&ParserDiagnostics::FOR_INDEX_DIRECTIVE_SHOULD_BE_STRING, &[], fx.loc()); };
+                identifier(ix, fx.loc())?;
                 index = Some(ix.clone());
             }
             d.add_scope_node(ScopeNode::ForEach(index.clone()));
@@ -249,10 +254,10 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
         _ => return e(&ParserDiagnostics::FOR_EACH_AND_FOR_ITEM_DIRECTIVES_SHOULD_BE_TOGETHER, &[], &l),
     }
     if let Some(it) = pick(&mut pas, |x| x.starts_with("iterator:")) {
-        if out.for_each.is_some() { return e(&ParserDiagnostics::INVALID_FOR_EACH_WITH_ITERATOR, &[&it.name], &l); }
-        if !it.expr() { return e(&ParserDiagnostics::DIRECTIVE_SHOULD_BE_EXPRESSION, &[&it.name], &it.loc); }
-        let name = it.name.split(':').nth(1).unwrap_or("");
-        identifier(name, &it.loc)?;
+        if out.for_each.is_some() { return e(&ParserDiagnostics::INVALID_FOR_EACH_WITH_ITERATOR, &[&it.attr().name], &l); }
+        if !it.expr() { return e(&ParserDiagnostics::DIRECTIVE_SHOULD_BE_EXPRESSION, &[&it.attr().name], it.loc()); }
+        let name = it.attr().name.split(':').nth(1).unwrap_or("");
+        identifier(name, it.loc())?;
         out.for_of = Some(name.to_string());
         d.add_scope_node(ScopeNode::ForOf(name.to_string()));
     }
@@ -260,13 +265,13 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
     while let Some(p) = pick(&mut pas, |x| x.starts_with("if:")) { ifs.push(p); }
     for _ in ifs.iter().skip(1) { out.if_warns.push(ParserDiagnostics::SINGLE_IF_DIRECTIVE_ALLOWED.generate(&[tag], l.clone())); }
     if let Some(p) = ifs.first() {
-        if lwc_cond { return e(&ParserDiagnostics::LWC_IF_CANNOT_BE_USED_WITH_IF_DIRECTIVE, &[&p.name], &l); }
-        if !p.expr() { return e(&ParserDiagnostics::IF_DIRECTIVE_SHOULD_BE_EXPRESSION, &[], &p.loc); }
-        let m = &p.name["if:".len()..];
-        if !VALID_IF_MODIFIERS.contains(&m) { return e(&ParserDiagnostics::UNEXPECTED_IF_MODIFIER, &[m], &p.loc); }
+        if lwc_cond { return e(&ParserDiagnostics::LWC_IF_CANNOT_BE_USED_WITH_IF_DIRECTIVE, &[&p.attr().name], &l); }
+        if !p.expr() { return e(&ParserDiagnostics::IF_DIRECTIVE_SHOULD_BE_EXPRESSION, &[], p.loc()); }
+        let m = &p.attr().name["if:".len()..];
+        if !VALID_IF_MODIFIERS.contains(&m) { return e(&ParserDiagnostics::UNEXPECTED_IF_MODIFIER, &[m], p.loc()); }
         d.add_scope_node(ScopeNode::If);
     }
-    let sd = pas.iter().find(|p| p.name == "lwc:slot-data").map(|p| p.loc.clone());
+    let sd = pas.iter().find(|p| p.attr().name == "lwc:slot-data").map(|p| p.loc().clone());
     if let Some(sl) = &sd { if tag != "template" { return e(&ParserDiagnostics::SCOPED_SLOT_DATA_ON_TEMPLATE_ONLY, &[], sl); } }
     let has_dir = lwc_cond || out.for_each.is_some() || out.for_of.is_some() || !ifs.is_empty();
 
@@ -296,13 +301,13 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
         if has(&pas, "lwc:slot-bind") && !d.light { return e(&ParserDiagnostics::SCOPED_SLOT_BIND_IN_LIGHT_DOM_ONLY, &[], &l); }
         if has_dir { return e(&ParserDiagnostics::SLOT_TAG_CANNOT_HAVE_DIRECTIVES, &["if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data"], &l); }
         if d.light {
-            let bad: Vec<&str> = pas.iter().map(|p| p.name.as_str()).filter(|x| !matches!(*x, "key" | "lwc:slot-bind" | "name" | "slot")).collect();
+            let bad: Vec<&str> = pas.iter().map(|p| p.attr().name.as_str()).filter(|x| !matches!(*x, "key" | "lwc:slot-bind" | "name" | "slot")).collect();
             if let Some(h) = bad.iter().find(|x| is_event_handler_name(x)) { return e(&ParserDiagnostics::LWC_LIGHT_SLOT_INVALID_EVENT_LISTENER, &[h], &l); }
             if !bad.is_empty() { return e(&ParserDiagnostics::LWC_LIGHT_SLOT_INVALID_ATTRIBUTES, &[&bad.join(","), "key, lwc:slot-bind, name, slot"], &l); }
         }
-        if let Some(p) = pas.iter().find(|p| p.name == "name") { if p.expr() { return e(&ParserDiagnostics::NAME_ON_SLOT_CANNOT_BE_EXPRESSION, &[], &p.loc); } }
+        if let Some(p) = pas.iter().find(|p| p.attr().name == "name") { if p.expr() { return e(&ParserDiagnostics::NAME_ON_SLOT_CANNOT_BE_EXPRESSION, &[], p.loc()); } }
         // parseSlot: seen-slot bookkeeping (duplicate / mixed slots), then 1138 inside an iteration.
-        let name = pas.iter().find(|p| p.name == "name").and_then(|p| match &p.v { Av::Str(s) => Some(s.clone()), _ => None }).unwrap_or_default();
+        let name = pas.iter().find(|p| p.attr().name == "name").and_then(|p| match p.value() { Av::Str(s) => Some(s.clone()), _ => None }).unwrap_or_default();
         let scoped = has(&pas, "lwc:slot-bind");
         let label = if name.is_empty() { "default".to_string() } else { format!("name=\"{name}\"") };
         if !d.seen_slots.insert(name.clone()) {
@@ -322,8 +327,8 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
     // applyHandlers.
     let mut handlers = 0;
     while let Some(h) = pick(&mut pas, |x| x.starts_with("on")) {
-        if !h.expr() { return e(&ParserDiagnostics::EVENT_HANDLER_SHOULD_BE_EXPRESSION, &[], &h.loc); }
-        if !is_event_handler_name(&h.name) { return e(&ParserDiagnostics::INVALID_EVENT_NAME, &[&h.name], &h.loc); }
+        if !h.expr() { return e(&ParserDiagnostics::EVENT_HANDLER_SHOULD_BE_EXPRESSION, &[], h.loc()); }
+        if !is_event_handler_name(&h.attr().name) { return e(&ParserDiagnostics::INVALID_EVENT_NAME, &[&h.attr().name], h.loc()); }
         handlers += 1;
     }
 
@@ -331,7 +336,7 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
     let for_of = d.for_of_parent();
     let for_each = d.for_each_parent();
     if let Some(k) = pick(&mut pas, |x| x == "key") {
-        let Av::Expr(src) = &k.v else { return e(&ParserDiagnostics::KEY_ATTRIBUTE_SHOULD_BE_EXPRESSION, &[], &k.loc); };
+        let Av::Expr(src) = k.value() else { return e(&ParserDiagnostics::KEY_ATTRIBUTE_SHOULD_BE_EXPRESSION, &[], k.loc()); };
         // TS checks the parsed key's shape (t.isMemberExpression / t.isIdentifier), computed or not:
         // `it[index]` references the iterator index wherever computed members parse (legacy computed or
         // complex expressions; elsewhere normalize already rejected them).
@@ -339,27 +344,27 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
         if let Some(it) = &for_of {
             if let Some(Expression::Member(m)) = &b {
                 if matches!((&*m.object, &*m.property), (Expression::Identifier(o), Expression::Identifier(p)) if &o.name == it && p.name == "index") {
-                    return e(&ParserDiagnostics::KEY_SHOULDNT_REFERENCE_ITERATOR_INDEX, &[tag], &k.loc);
+                    return e(&ParserDiagnostics::KEY_SHOULDNT_REFERENCE_ITERATOR_INDEX, &[tag], k.loc());
                 }
             }
         } else if let Some(Some(ix)) = &for_each {
-            if matches!(&b, Some(Expression::Identifier(i)) if &i.name == ix) { return e(&ParserDiagnostics::KEY_SHOULDNT_REFERENCE_FOR_EACH_INDEX, &[tag, ix], &k.loc); }
+            if matches!(&b, Some(Expression::Identifier(i)) if &i.name == ix) { return e(&ParserDiagnostics::KEY_SHOULDNT_REFERENCE_FOR_EACH_INDEX, &[tag, ix], k.loc()); }
         }
-        if for_of.is_none() && for_each.is_none() { out.key_warn = Some(ParserDiagnostics::KEY_SHOULD_BE_IN_ITERATION.generate(&[tag], k.loc.clone())); }
+        if for_of.is_none() && for_each.is_none() { out.key_warn = Some(ParserDiagnostics::KEY_SHOULD_BE_IN_ITERATION.generate(&[tag], k.loc().clone())); }
     } else if for_of.is_some() || for_each.is_some() {
         return e(&ParserDiagnostics::MISSING_KEY_IN_ITERATOR, &[tag], &l);
     }
 
     // applyLwcDirectives.
-    if let Some(p) = pas.iter().find(|p| p.name.starts_with("lwc:")) {
-        if !ELEMENT_DIRECTIVES.contains(&p.name.as_str()) { return e(&ParserDiagnostics::UNKNOWN_LWC_DIRECTIVE, &[&p.name, &tagb], &l); }
+    if let Some(p) = pas.iter().find(|p| p.attr().name.starts_with("lwc:")) {
+        if !ELEMENT_DIRECTIVES.contains(&p.attr().name.as_str()) { return e(&ParserDiagnostics::UNKNOWN_LWC_DIRECTIVE, &[&p.attr().name, &tagb], &l); }
     }
     for root_only in ["lwc:render-mode", "lwc:preserve-comments"] {
         if has(&pas, root_only) { return e(&ParserDiagnostics::UNKNOWN_LWC_DIRECTIVE, &[root_only, &tagb], &l); }
     }
     if let Some(p) = pick(&mut pas, |x| x == "lwc:external") {
         if kind != Kind::External { return e(&ParserDiagnostics::INVALID_LWC_EXTERNAL_ON_NON_CUSTOM_ELEMENT, &[&tagb], &l); }
-        if p.v != Av::Bool { return e(&ParserDiagnostics::INVALID_LWC_EXTERNAL_VALUE, &[&tagb], &l); }
+        if *p.value() != Av::Bool { return e(&ParserDiagnostics::INVALID_LWC_EXTERNAL_VALUE, &[&tagb], &l); }
     }
     if let Some(p) = pick(&mut pas, |x| x == "lwc:dynamic") {
         if !cfg.experimental_dynamic_directive { return e(&ParserDiagnostics::INVALID_OPTS_LWC_DYNAMIC, &[], &l); }
@@ -369,23 +374,23 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
     }
     if let Some(p) = pick(&mut pas, |x| x == "lwc:is") {
         if kind != Kind::LwcComponent { return e(&ParserDiagnostics::LWC_IS_INVALID_ELEMENT, &[&tagb], &l); }
-        match &p.v { Av::Expr(_) => {} Av::Str(s) => return e(&ParserDiagnostics::INVALID_LWC_IS_DIRECTIVE_VALUE, &[s], &l), Av::Bool => return e(&ParserDiagnostics::INVALID_LWC_IS_DIRECTIVE_VALUE, &["true"], &l) }
+        match p.value() { Av::Expr(_) => {} Av::Str(s) => return e(&ParserDiagnostics::INVALID_LWC_IS_DIRECTIVE_VALUE, &[s], &l), Av::Bool => return e(&ParserDiagnostics::INVALID_LWC_IS_DIRECTIVE_VALUE, &["true"], &l) }
     }
     if let Some(p) = pick(&mut pas, |x| x == "lwc:dom") {
         if d.light { return e(&ParserDiagnostics::LWC_DOM_INVALID_IN_LIGHT_DOM, &[&tagb], &l); }
         if kind == Kind::Component { return e(&ParserDiagnostics::LWC_DOM_INVALID_CUSTOM_ELEMENT, &[&tagb], &l); }
         if kind == Kind::Slot { return e(&ParserDiagnostics::LWC_DOM_INVALID_SLOT_ELEMENT, &[], &l); }
-        if p.v != Av::Str("manual".into()) { return e(&ParserDiagnostics::LWC_DOM_INVALID_VALUE, &["\"manual\""], &l); }
+        if *p.value() != Av::Str("manual".into()) { return e(&ParserDiagnostics::LWC_DOM_INVALID_VALUE, &["\"manual\""], &l); }
     }
     if let Some(p) = pick(&mut pas, |x| x == "lwc:inner-html") {
         if matches!(kind, Kind::Component | Kind::LwcComponent) { return e(&ParserDiagnostics::LWC_INNER_HTML_INVALID_CUSTOM_ELEMENT, &[&tagb], &l); }
         if kind == Kind::Slot { return e(&ParserDiagnostics::LWC_INNER_HTML_INVALID_ELEMENT, &[&tagb], &l); }
-        if p.v == Av::Bool { return e(&ParserDiagnostics::LWC_INNER_HTML_INVALID_VALUE, &[&tagb], &l); }
+        if *p.value() == Av::Bool { return e(&ParserDiagnostics::LWC_INNER_HTML_INVALID_VALUE, &[&tagb], &l); }
     }
     if let Some(p) = pick(&mut pas, |x| x == "lwc:ref") {
         if kind == Kind::Slot { return e(&ParserDiagnostics::LWC_REF_INVALID_ELEMENT, &[&tagb], &l); }
         if d.in_iteration() { return e(&ParserDiagnostics::LWC_REF_INVALID_LOCATION_INSIDE_ITERATION, &[&tagb], &l); }
-        if !matches!(&p.v, Av::Str(s) if !s.is_empty()) { return e(&ParserDiagnostics::LWC_REF_INVALID_VALUE, &[&tagb], &l); }
+        if !matches!(p.value(), Av::Str(s) if !s.is_empty()) { return e(&ParserDiagnostics::LWC_REF_INVALID_VALUE, &[&tagb], &l); }
     }
     if let Some(p) = pick(&mut pas, |x| x == "lwc:spread") { if !p.expr() { return e(&ParserDiagnostics::INVALID_LWC_SPREAD_LITERAL_PROP, &[&tagb], &l); } }
     if let Some(p) = pick(&mut pas, |x| x == "lwc:on") {
@@ -401,16 +406,16 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
 
     // applyAttributes.
     for p in &pas {
-        if let Some(w) = validate::attr_name_warnings(tag, &p.name, &p.loc, d) { out.attr_warns.push(w); }
-        let last = p.name.chars().last().unwrap_or(' ');
-        if !(last.is_ascii_lowercase() || last.is_ascii_digit()) { return e(&ParserDiagnostics::ATTRIBUTE_NAME_MUST_END_WITH_ALPHA_NUMERIC_CHARACTER, &[&p.name, tag], &p.loc); }
+        if let Some(w) = validate::attr_name_warnings(tag, &p.attr().name, p.loc(), d) { out.attr_warns.push(w); }
+        let last = p.attr().name.chars().last().unwrap_or(' ');
+        if !(last.is_ascii_lowercase() || last.is_ascii_digit()) { return e(&ParserDiagnostics::ATTRIBUTE_NAME_MUST_END_WITH_ALPHA_NUMERIC_CHARACTER, &[&p.attr().name, tag], p.loc()); }
         // `/^-*[a-z]|^[_$]/`
-        let start_ok = p.name.trim_start_matches('-').starts_with(|c: char| c.is_ascii_lowercase()) || p.name.starts_with(['_', '$']);
-        if !start_ok { return e(&ParserDiagnostics::ATTRIBUTE_NAME_STARTS_WITH_INVALID_CHARACTER, &[&p.name, tag], &p.loc); }
-        if p.name == "id" {
-            if let Av::Str(v) = &p.v {
-                if v.chars().any(js_ws) { return e(&ParserDiagnostics::INVALID_ID_ATTRIBUTE, &[v], &p.loc); }
-                if !d.seen_ids.insert(v.clone()) { return e(&ParserDiagnostics::DUPLICATE_ID_FOUND, &[v], &p.loc); }
+        let start_ok = p.attr().name.trim_start_matches('-').starts_with(|c: char| c.is_ascii_lowercase()) || p.attr().name.starts_with(['_', '$']);
+        if !start_ok { return e(&ParserDiagnostics::ATTRIBUTE_NAME_STARTS_WITH_INVALID_CHARACTER, &[&p.attr().name, tag], p.loc()); }
+        if p.attr().name == "id" {
+            if let Av::Str(v) = p.value() {
+                if v.chars().any(js_ws) { return e(&ParserDiagnostics::INVALID_ID_ATTRIBUTE, &[v], p.loc()); }
+                if !d.seen_ids.insert(v.clone()) { return e(&ParserDiagnostics::DUPLICATE_ID_FOUND, &[v], p.loc()); }
             }
         }
     }
@@ -427,9 +432,9 @@ fn check_parsed(tag: &str, ns: &str, attrs: &[parse5::Attribute], mut pas: Vec<P
 
     // validateAttributes / validateProperties.
     for p in &pas {
-        if p.name == "is" { return e(&ParserDiagnostics::IS_ATTRIBUTE_NOT_SUPPORTED, &[], &l); }
-        if p.name == "tabindex" && !p.expr() && !matches!(&p.v, Av::Str(s) if s == "0" || s == "-1") { return e(&ParserDiagnostics::INVALID_TABINDEX_ATTRIBUTE, &[], &l); }
-        if tag == "iframe" && p.name == "srcdoc" { return e(&ParserDiagnostics::FORBIDDEN_IFRAME_SRCDOC_ATTRIBUTE, &[], &l); }
+        if p.attr().name == "is" { return e(&ParserDiagnostics::IS_ATTRIBUTE_NOT_SUPPORTED, &[], &l); }
+        if p.attr().name == "tabindex" && !p.expr() && !matches!(p.value(), Av::Str(s) if s == "0" || s == "-1") { return e(&ParserDiagnostics::INVALID_TABINDEX_ATTRIBUTE, &[], &l); }
+        if tag == "iframe" && p.attr().name == "srcdoc" { return e(&ParserDiagnostics::FORBIDDEN_IFRAME_SRCDOC_ATTRIBUTE, &[], &l); }
     }
     Ok(())
 }
@@ -455,7 +460,7 @@ pub(super) fn root_errors(attrs: &[parse5::Attribute], n: &NodeRef, el: &parse5:
         let nz = match normalize("template", a, n, cfg, d)? { Ok(nz) => nz, Err(e) => { d.push(e); return Ok(None); } };
         let mut found = Vec::new();
         validate::attribute_expressions(&nz, cfg, &mut found)?;
-        pas.push(nz.pa(a));
+        pas.push(CheckedAttr { attr: a, value: nz.v(), loc: nz.ra.location.clone() });
         for x in found {
             let threw = x.level == DiagnosticLevel::Error;
             d.push(x);
@@ -463,12 +468,12 @@ pub(super) fn root_errors(attrs: &[parse5::Attribute], n: &NodeRef, el: &parse5:
         }
     }
     let location = element_location(el)?;
-    if pas.iter().any(|p| p.name.starts_with("lwc:")) {
+    if pas.iter().any(|p| p.attr().name.starts_with("lwc:")) {
         if let Some(p) = pick(&mut pas, |x| x == "lwc:render-mode") {
-            if !matches!(&p.v, Av::Str(s) if s == "shadow" || s == "light") { d.push(ParserDiagnostics::LWC_RENDER_MODE_INVALID_VALUE.generate(&[], l)); return Ok(None); }
+            if !matches!(p.value(), Av::Str(s) if s == "shadow" || s == "light") { d.push(ParserDiagnostics::LWC_RENDER_MODE_INVALID_VALUE.generate(&[], l)); return Ok(None); }
         }
         if let Some(p) = pick(&mut pas, |x| x == "lwc:preserve-comments") {
-            if p.v != Av::Bool { d.push(ParserDiagnostics::PRESERVE_COMMENTS_MUST_BE_BOOLEAN.generate(&[], l)); return Ok(None); }
+            if *p.value() != Av::Bool { d.push(ParserDiagnostics::PRESERVE_COMMENTS_MUST_BE_BOOLEAN.generate(&[], l)); return Ok(None); }
         }
     }
     let mut bad = Vec::new();

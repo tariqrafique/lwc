@@ -1,5 +1,5 @@
 # Pinned hashes of official-board external inputs (paths relative to /workspace). sha256[:12] of sorted per-file sha256sum.
-# Change ONLY via a reviewed landing (Arch-Review). Regenerate: see scripts/official-board.sh inputshash().
+# Change ONLY via a landing. Milestone Arch review applies when a landing flips a gate or changes ownership (D-0276). Regenerate: see scripts/official-board.sh inputshash().
 style-corpus/lbc	0519d3825645
 style-corpus/lbc-recipes	2746b56989b9
 lwc/packages/@lwc/template-compiler/dist	0163d9bc3029

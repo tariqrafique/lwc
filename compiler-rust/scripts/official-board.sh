@@ -25,11 +25,73 @@ set -euo pipefail
 MAIN=/workspace/lwc-compiler-rust; P5=/workspace/parse5-rust; NOTES=/workspace/notes
 root="$MAIN"
 push=/workspace/push
+store="${OFFICIAL_STORE:-/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official}"
+
+# >>> parse5-lock-rev (exercised by scripts/test-parse5-pin.sh)
+# Parse Cargo.lock's parse5 `source = "git+...?rev=<rev>#<rev>"` line. Empty stdout = missing.
+parse5_lock_rev() {
+  local lock="$1" src rev frag
+  [ -f "$lock" ] || return 1
+  src="$(awk '
+    $0 == "[[package]]" { if (in_pkg && !saw) exit; in_pkg=0; saw=0 }
+    /^name = "parse5"$/ { in_pkg=1 }
+    in_pkg && /^source = / { print; saw=1; exit }
+  ' "$lock")"
+  [ -n "$src" ] || return 1
+  rev="$(sed -nE 's/.*[?]rev=([0-9a-f]+)#([0-9a-f]+)".*/\1/p' <<< "$src")"
+  frag="$(sed -nE 's/.*[?]rev=([0-9a-f]+)#([0-9a-f]+)".*/\2/p' <<< "$src")"
+  [ -n "$rev" ] || return 1
+  if [ "$rev" != "$frag" ]; then
+    echo "!! parse5 lock rev mismatch (?rev=$rev #$frag)" >&2
+    return 1
+  fi
+  printf '%s\n' "$rev"
+}
+require_parse5_lock_rev() {
+  local lock="$1" p5dir="$2" rev err
+  err="$(mktemp)"
+  rev="$(parse5_lock_rev "$lock" 2>"$err")" || {
+    if grep -q mismatch "$err"; then
+      cat "$err" >&2
+    else
+      echo "!! parse5 lock rev missing from $lock (want source = git+...?rev=<rev>#<rev>)" >&2
+    fi
+    rm -f "$err"
+    return 2
+  }
+  rm -f "$err"
+  [[ "$rev" =~ ^[0-9a-f]{40}$ ]] || { echo "!! parse5 lock rev '$rev' is not a 40-hex commit" >&2; return 2; }
+  git -C "$p5dir" rev-parse -q --verify "$rev^{commit}" >/dev/null || { echo "!! parse5 lock rev $rev not present in $p5dir" >&2; return 2; }
+  printf '%s\n' "$rev"
+}
+# <<< parse5-lock-rev
+# >>> store-logs (exercised by scripts/test-notes-precheck.sh)
+# Copy run logs into the durable store before this process exits (D-0275). VALID/aborted
+# runs go to official/<src12>/logs/; INVALID (rc 4) goes to official/invalid/<src12>-<timestamp>/logs/.
+copy_official_run_logs() {
+  local rc="$1" src12="$2" snapdir="$3" storedir="$4" dest ts
+  [ -n "$src12" ] || { echo "!! copy_official_run_logs: missing src12" >&2; return 2; }
+  [ -n "$storedir" ] || { echo "!! copy_official_run_logs: missing storedir" >&2; return 2; }
+  [ -n "$snapdir" ] && [ -d "$snapdir" ] || { echo "!! copy_official_run_logs: snapshot dir missing" >&2; return 2; }
+  if [ "$rc" -eq 4 ]; then
+    ts="$(date +%Y%m%dT%H%M%S)"
+    dest="$storedir/invalid/${src12}-${ts}/logs"
+  else
+    dest="$storedir/${src12}/logs"
+  fi
+  mkdir -p "$dest"
+  local f copied=0
+  for f in board.log golden.progress style-fixtures.log; do
+    if [ -f "$snapdir/$f" ]; then cp "$snapdir/$f" "$dest/$f"; copied=1; fi
+  done
+  printf '%s\n' "$rc" > "$dest/run.rc"
+  echo "official-board: stored run logs in $dest (rc=$rc${copied:+, copied})"
+}
+# <<< store-logs
+source "$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/cargo-locked.sh"
 if [ -f "$HOME/.cargo/env" ]; then
   # surface a sourcing error; do not hide it behind || true
   source "$HOME/.cargo/env" || { echo "!! BOARD ABORTED: failed to source $HOME/.cargo/env" >&2; exit 3; }
-elif ! command -v cargo >/dev/null 2>&1; then
-  echo "!! BOARD ABORTED: cargo not on PATH and $HOME/.cargo/env is absent" >&2; exit 3
 fi
 die3() { echo "!! BOARD ABORTED: $*" >&2; exit 3; }
 ref="${BOARD_COMMIT:-main}"
@@ -49,12 +111,30 @@ nrc=0; nhead="$(git -C "$NOTES" rev-parse --verify -q 'HEAD^{commit}')" || nrc=$
 [ $nrc -eq 0 ] && [ "$nhead" = "$notescommit" ] || die3 "$NOTES HEAD moved during the precheck (${notescommit:0:12} -> ${nhead:-?}); re-run"
 # <<< notes
 snap="$(mktemp -d /tmp/lwc-board-snap.XXXXXX)"   # $snap/repo (harness at $snap/repo/harness) + $snap/parse5-rust (../../../parse5-rust resolves)
-trap 'rm -rf "$snap"' EXIT
+h0=""
+logs_copied=0
+on_official_exit() {
+  local rc=$?
+  local copy_rc=0
+  if [ -n "${h0:-}" ] && [ "${logs_copied:-0}" != 1 ]; then
+    copy_official_run_logs "$rc" "$h0" "$snap" "$store" || copy_rc=$?
+  fi
+  rm -rf "$snap"
+  # Keep the first non-zero rc: a copy failure must not overwrite INVALID (4) with 2.
+  if [ "$rc" -ne 0 ]; then
+    exit "$rc"
+  fi
+  if [ "$copy_rc" -ne 0 ]; then
+    exit 2
+  fi
+}
+trap on_official_exit EXIT
 mkdir -p "$snap/repo" "$snap/parse5-rust" "$snap/notes"
 ws="$snap/repo"; hs="$ws/harness"
 git -C "$MAIN" archive "$commit" | tar -x -C "$snap/repo"
 git -C "$P5" archive "$p5commit" | tar -x -C "$snap/parse5-rust"
 git -C "$NOTES" archive "$notescommit" "${NOTES_READ[@]}" | tar -x -C "$snap/notes" --strip-components=1   # NOTES_READ is one dir: strip it
+lockrev="$(require_parse5_lock_rev "$ws/Cargo.lock" "$P5")" || { echo "!! BOARD ABORTED: Cargo.lock parse5 rev missing or not in $P5" >&2; exit 2; }
 "$MAIN/harness/scripts/ensure-deps.sh"
 ln -s "$MAIN/harness/node_modules" "$hs/node_modules"
 # srchash: harness entries first, mapped to harness/..., then notes/parse5-rust/repo (sorted, harness excluded), mapped to
@@ -88,14 +168,14 @@ export SHIM_FILE_LIST="$snap/shim-file-list"
 PARSE5_DIR="$P5" "$ws/scripts/parse5-pin-check.sh" "$ws" || die3 "parse5 pin check failed @ $h0 (lock source rev != Cargo.toml, or rev absent from $P5)"
 GOLDEN_GATE_PROGRESS="$snap/golden.progress" "$hs/scripts/golden-gate.sh" "$hs" \
   || { echo "!! BOARD ABORTED: goldens @ $h0 != fresh JS-oracle recording" >&2; exit 3; }
-(cd "$ws" && cargo check --workspace --all-targets --locked) || { echo "!! BOARD ABORTED: snapshot $h0 does not compile" >&2; exit 3; }
+(cd "$ws" && cargo_locked check --workspace --all-targets) || { echo "!! BOARD ABORTED: snapshot $h0 does not compile" >&2; exit 3; }
 # every crate's tests, as land.sh (AB-R002: brings lwc-style's gates + the parse-errors fixtures in)
-(cd "$ws" && cargo test --workspace --locked) || { echo "!! BOARD ABORTED: cargo test --workspace --locked fails @ $h0" >&2; exit 3; }
+(cd "$ws" && cargo_locked test --workspace) || { echo "!! BOARD ABORTED: workspace test --locked fails @ $h0" >&2; exit 3; }
 # style parse-error set made explicit (manifest style_parse_errors=<passed>/<total>); strict run, exit 3 on any failure
 spe="$("$ws/scripts/style-parse-errors.sh" "$ws" "$snap/style-fixtures.log")" || die3 "style parse-error fixtures @ $h0 (see $snap/style-fixtures.log)"
 [[ "$spe" =~ ^[0-9]+/[0-9]+$ ]] || die3 "style-parse-errors.sh printed '$spe', want <passed>/<total>"
-echo "style-parse-errors     $spe (cargo test -p lwc-style --test fixtures, LWC_STYLE_STRICT=1)"
-(cd "$ws" && cargo build -p lwc-compiler-napi --release --locked)
+echo "style-parse-errors     $spe (lwc-style fixture tests, LWC_STYLE_STRICT=1)"
+(cd "$ws" && cargo_locked build -p lwc-compiler-napi --release)
 so="$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so"
 cp "$so" "$hs/lwc-compiler-napi.node"
 napi="$(sha256sum "$so" | cut -c1-12)"
@@ -118,7 +198,7 @@ if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
   base="$push/official-$h0"
   { echo "official board  commit=${commit:0:12}  src=$h0  napi=$napi  parse5-rust=$p5 (build dep, NOT in tgz)  $(date -Iseconds)"
     sed -n '/^napi sha256:/,$p' "$snap/board.log"
-    echo "style-parse-errors     $spe (cargo test -p lwc-style --test fixtures, LWC_STYLE_STRICT=1)"
+    echo "style-parse-errors     $spe (lwc-style fixture tests, LWC_STYLE_STRICT=1)"
     # CSR failure clusters (Migrate 2026-11-01): counts per cluster for each corpus
     for c in ssr template; do rep="$hs/.csr-render-out/rust-$c/report-$c.json"
       [ -f "$rep" ] || { echo "!! csr clusters: missing $rep"; continue; }
@@ -142,9 +222,15 @@ if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
   [ "$(wc -l <<< "$hdr")" -eq 1 ] || { echo "!! PUBLISH REFUSED: expected 1 board.sh header, got $(wc -l <<< "$hdr")" >&2; exit 5; }
   ocommit="$(sed -nE 's/.* oracle=([0-9a-f]{40})\(clean\) .*/\1/p' <<< "$hdr")"; orepo="$(sed -nE 's/.* oracle_repo=([^ ]+) .*/\1/p' <<< "$hdr")"
   [ -n "$ocommit" ] && [ -n "$orepo" ] || { echo "!! PUBLISH REFUSED: cannot parse verified oracle from header: $hdr" >&2; exit 5; }
-  store="${OFFICIAL_STORE:-/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official}"
-  OFFICIAL_COMMIT="$commit" OFFICIAL_PARSE5_COMMIT="$p5commit" OFFICIAL_NOTES_COMMIT="$notescommit" OFFICIAL_INPUTS_SHA="$in0sha" OFFICIAL_STYLE_PARSE_ERRORS="$spe" OFFICIAL_ORACLE_COMMIT="$ocommit" OFFICIAL_ORACLE_REPO="$orepo" \
-    "$snap/repo/scripts/publish-official.sh" "$h0" "$napi" "$p5" "$store"
+  copy_official_run_logs "$rc" "$h0" "$snap" "$store" || { echo "!! BOARD INVALID: failed to store run logs before publish" >&2; exit 2; }
+  logs_copied=1
+  pub_rc=0
+  OFFICIAL_COMMIT="$commit" OFFICIAL_PARSE5_COMMIT="$lockrev" OFFICIAL_PARSE5_CLONE_HEAD="$p5commit" OFFICIAL_NOTES_COMMIT="$notescommit" OFFICIAL_INPUTS_SHA="$in0sha" OFFICIAL_STYLE_PARSE_ERRORS="$spe" OFFICIAL_ORACLE_COMMIT="$ocommit" OFFICIAL_ORACLE_REPO="$orepo" \
+    "$snap/repo/scripts/publish-official.sh" "$h0" "$napi" "$p5" "$store" || pub_rc=$?
+  if [ "$pub_rc" -ne 0 ]; then
+    printf '%s\n' "$pub_rc" > "$store/${h0}/logs/run.rc"
+    exit "$pub_rc"
+  fi
 else
   echo "no push artifacts (rc=$rc${1:+, partial row set})"
 fi

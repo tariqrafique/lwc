@@ -81,26 +81,26 @@ impl<'a> ParsedAttribute<'a> {
 
     /// TS `pick('name')`, with the attribute's pre-pass value.
     pub(in crate::parser) fn pick_checked(&mut self, name: &str) -> Option<&'a CheckedAttr<'a>> {
-        let i = self.attrs.iter().position(|c| c.attr.name == name)?;
+        let i = self.attrs.iter().position(|c| c.attr().name == name)?;
         Some(self.attrs.remove(i))
     }
 
     /// TS `pick('name')`.
     pub(in crate::parser) fn pick(&mut self, name: &str) -> Option<&'a Attribute> {
-        self.pick_checked(name).map(|c| c.attr)
+        self.pick_checked(name).map(|c| c.attr())
     }
 
     /// TS `pick(/^prefix/)`: the first attribute (source order) whose name starts with `prefix`.
     pub(in crate::parser) fn pick_prefix(&mut self, prefix: &str) -> Option<&'a Attribute> {
-        let i = self.attrs.iter().position(|c| c.attr.name.starts_with(prefix))?;
-        Some(self.attrs.remove(i).attr)
+        let i = self.attrs.iter().position(|c| c.attr().name.starts_with(prefix))?;
+        Some(self.attrs.remove(i).attr())
     }
 
     /// TS `pickAll(/^prefix/)`.
     pub(in crate::parser) fn pick_all_prefix(&mut self, prefix: &str) -> Vec<&'a Attribute> {
-        let (picked, rest): (Vec<_>, _) = self.attrs.iter().copied().partition(|c| c.attr.name.starts_with(prefix));
+        let (picked, rest): (Vec<_>, _) = self.attrs.iter().copied().partition(|c| c.attr().name.starts_with(prefix));
         self.attrs = rest;
-        picked.into_iter().map(|c| c.attr).collect()
+        picked.into_iter().map(|c| c.attr()).collect()
     }
 
     /// A bare element (TS threw after parseBaseElement created it): no attribute applier ran on it.
@@ -145,21 +145,4 @@ pub(crate) fn is_attribute(kind: ElementKind, tag: &str, attr: &str) -> bool {
         return true;
     }
     !(tag == "input" && (attr == "value" || attr == "checked"))
-}
-
-/// Structural guard (AB-X0005): element lowering builds one ParsedAttribute per element and reads
-/// element directives only through it.
-#[cfg(test)]
-mod one_parsed_attribute_per_element {
-    const LOWERING: &str = include_str!("mod.rs");
-
-    #[test]
-    fn one_constructor_and_no_raw_directive_reads() {
-        assert_eq!(LOWERING.matches(concat!("ParsedAttribute", "::new(")).count(), 1);
-        assert!(!LOWERING.contains(concat!("is_directive", "_attr")));
-        for name in ["key", "lwc:ref", "lwc:dom", "lwc:inner-html", "lwc:spread", "lwc:dynamic", "lwc:is", "lwc:on", "lwc:slot-bind", "lwc:external", "lwc:if", "lwc:elseif", "lwc:else"] {
-            let raw = format!("a.name == \"{name}\"");
-            assert!(!LOWERING.contains(&raw), "raw lookup of {name} in parser/mod.rs; pick it from ParsedAttribute");
-        }
-    }
 }

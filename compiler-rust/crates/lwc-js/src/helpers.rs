@@ -1,9 +1,15 @@
 //! Babel runtime helpers. oxc's transformer has no inline-helper mode, so lowering passes run in
 //! External mode (`babelHelpers.x(...)`); [`localize`] then does what babel's inline helpers do in
-//! shipped LWC 9.5.3: every `babelHelpers.x` becomes a module-local `_x` (babel `generateUid`, so
+//! shipped LWC 9.5.3: every helper member becomes a module-local `_x` (babel `generateUid`, so
 //! `objectSpread2` -> `_objectSpread`, collisions -> `_x2`), and module-local declarations with
 //! babel-equivalent bodies are prepended for the dependency-closed set the code uses. No global
 //! `babelHelpers` is read or written.
+//!
+//! Call sites (including oxc transformer nodes with a 0-span) are rewritten on the Program by
+//! AST shape before print (D-0265). Helper bodies are the static templates below; internal
+//! helper members and the `ID` identifier are localized from recorded AST spans (verified by
+//! `tests/helper_templates.rs`) so the prelude text stays byte-identical without scanning
+//! printed JS.
 const HELPERS: &[(&str, &str)] = &[
     ("defineProperty", "function (e, r, t) { return (r = babelHelpers.toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }"),
     ("toPrimitive", "function (t, r) { if (\"object\" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || \"default\"); if (\"object\" != typeof i) return i; throw new TypeError(\"@@toPrimitive must return a primitive value.\"); } return (\"string\" === r ? String : Number)(t); }"),
@@ -25,27 +31,54 @@ const HELPERS: &[(&str, &str)] = &[
     ("asyncIterator", "(function () { function AsyncFromSyncIterator(r) { function AsyncFromSyncIteratorContinuation(r) { if (Object(r) !== r) return Promise.reject(new TypeError(r + \" is not an object.\")); var n = r.done; return Promise.resolve(r.value).then(function (r) { return { value: r, done: n }; }); } return AsyncFromSyncIterator = function (r) { this.s = r, this.n = r.next; }, AsyncFromSyncIterator.prototype = { s: null, n: null, next: function () { return AsyncFromSyncIteratorContinuation(this.n.apply(this.s, arguments)); }, return: function (r) { var n = this.s.return; return void 0 === n ? Promise.resolve({ value: r, done: !0 }) : AsyncFromSyncIteratorContinuation(n.apply(this.s, arguments)); }, throw: function (r) { var n = this.s.return; return void 0 === n ? Promise.reject(r) : AsyncFromSyncIteratorContinuation(n.apply(this.s, arguments)); } }, new AsyncFromSyncIterator(r); } return function (r) { var n, t, o, e = 2; for (\"undefined\" != typeof Symbol && (t = Symbol.asyncIterator, o = Symbol.iterator); e--;) { if (t && null != (n = r[t])) return n.call(r); if (o && null != (n = r[o])) return new AsyncFromSyncIterator(n.call(r)); t = \"@@asyncIterator\", o = \"@@iterator\"; } throw new TypeError(\"Object is not async iterable\"); }; })()"),
 ];
 
-fn refs(text: &str) -> impl Iterator<Item = &'static str> + '_ {
-    HELPERS.iter().map(|(n, _)| *n).filter(move |n| {
-        let pat = format!("babelHelpers.{n}");
-        text.match_indices(&pat).any(|(i, _)| !text[i + pat.len()..].starts_with(|c: char| c.is_ascii_alphanumeric() || c == '_' || c == '$'))
-    })
+/// Source spans of `StaticMemberExpression` nodes whose object is the identifier
+/// `babelHelpers` and whose property is a known helper (AST shape, not text search).
+/// Verified against a parse of each template in `tests/helper_templates.rs`.
+fn helper_members(name: &str) -> &'static [(u32, u32, &'static str)] {
+    match name {
+        "defineProperty" => &[(33, 59, "toPropertyKey")],
+        "toPropertyKey" => &[(23, 47, "toPrimitive")],
+        "objectSpread2" => &[(408, 435, "defineProperty")],
+        "objectWithoutProperties" => &[(58, 99, "objectWithoutPropertiesLoose")],
+        "awaitAsyncGenerator" => &[(26, 52, "OverloadYield")],
+        "wrapAsyncGenerator" => &[(131, 157, "OverloadYield")],
+        "asyncGeneratorDelegate" => &[(142, 168, "OverloadYield")],
+        _ => &[],
+    }
 }
 
-/// Prelude of module-local helper declarations plus the (`babelHelpers` name -> local name) map,
-/// or `None` when the program uses no helper. Call sites in printed output are rewritten by
-/// [`post_codegen_edits`] (oxc transformer nodes often have a 0-span, so we cannot remap them).
-pub fn localize(program: &oxc::ast::ast::Program<'_>) -> Option<(String, Vec<(&'static str, String)>)> {
-    use oxc::ast::ast::{Expression, StaticMemberExpression};
+/// Source spans of the `ID` identifier in `classPrivateFieldLooseKey` (`ID++`).
+fn helper_id_spans(name: &str) -> &'static [(u32, u32)] {
+    match name {
+        "classPrivateFieldLooseKey" => &[(37, 39)],
+        _ => &[],
+    }
+}
+
+fn helper_prop<'a>(it: &oxc::ast::ast::StaticMemberExpression<'a>) -> Option<&'static str> {
+    let oxc::ast::ast::Expression::Identifier(o) = &it.object else {
+        return None;
+    };
+    if o.name != "babelHelpers" {
+        return None;
+    }
+    HELPERS
+        .iter()
+        .find(|(n, _)| *n == it.property.name.as_str())
+        .map(|(n, _)| *n)
+}
+
+fn collect_used(program: &oxc::ast::ast::Program<'_>) -> Vec<&'static str> {
+    use oxc::ast::ast::StaticMemberExpression;
     use oxc::ast_visit::{walk, Visit};
-    struct C { hits: Vec<(u32, u32, &'static str)> }
+    struct C {
+        hits: Vec<&'static str>,
+    }
     impl<'a> Visit<'a> for C {
         fn visit_static_member_expression(&mut self, it: &StaticMemberExpression<'a>) {
-            if let Expression::Identifier(o) = &it.object {
-                if o.name == "babelHelpers" {
-                    if let Some((n, _)) = HELPERS.iter().find(|(n, _)| *n == it.property.name.as_str()) {
-                        self.hits.push((it.span.start, it.span.end, n));
-                    }
+            if let Some(n) = helper_prop(it) {
+                if !self.hits.contains(&n) {
+                    self.hits.push(n);
                 }
             }
             walk::walk_static_member_expression(self, it);
@@ -53,56 +86,207 @@ pub fn localize(program: &oxc::ast::ast::Program<'_>) -> Option<(String, Vec<(&'
     }
     let mut c = C { hits: vec![] };
     c.visit_program(program);
-    if c.hits.is_empty() { return None; }
-    let mut used: Vec<&str> = Vec::new();
-    for (_, _, n) in &c.hits { if !used.contains(n) { used.push(n); } }
+    c.hits
+}
+
+fn rewrite_call_sites<'a>(
+    alloc: &'a oxc::allocator::Allocator,
+    program: &mut oxc::ast::ast::Program<'a>,
+    locals: &[(&'static str, String)],
+) {
+    use oxc::ast::ast::Expression;
+    use oxc::ast::builder::AstBuilder;
+    use oxc::ast_visit::{walk_mut, VisitMut};
+    use oxc::span::GetSpan;
+    use oxc::str::Str;
+    struct R<'a, 'b> {
+        ast: AstBuilder<'a>,
+        locals: &'b [(&'static str, String)],
+    }
+    impl<'a> VisitMut<'a> for R<'a, '_> {
+        fn visit_expression(&mut self, expr: &mut Expression<'a>) {
+            let hit = if let Expression::StaticMemberExpression(m) = &*expr {
+                helper_prop(m).and_then(|n| {
+                    self.locals
+                        .iter()
+                        .find(|(h, _)| *h == n)
+                        .map(|(_, l)| (expr.span(), l.clone()))
+                })
+            } else {
+                None
+            };
+            if let Some((span, local)) = hit {
+                *expr = Expression::new_identifier(
+                    span,
+                    Str::from_str_in(&local, &self.ast),
+                    &self.ast,
+                );
+                return;
+            }
+            walk_mut::walk_expression(self, expr);
+        }
+    }
+    R {
+        ast: AstBuilder::new(alloc),
+        locals,
+    }
+    .visit_program(program);
+}
+
+fn rewrite_template(
+    body: &str,
+    name: &str,
+    locals: &[(&'static str, String)],
+    id: Option<&str>,
+) -> String {
+    let mut edits: Vec<(u32, u32, String)> = helper_members(name)
+        .iter()
+        .filter_map(|(s, e, dep)| {
+            locals
+                .iter()
+                .find(|(h, _)| h == dep)
+                .map(|(_, l)| (*s, *e, l.clone()))
+        })
+        .collect();
+    if let Some(id) = id {
+        for (s, e) in helper_id_spans(name) {
+            edits.push((*s, *e, id.to_string()));
+        }
+    }
+    edits.sort_by_key(|(s, _, _)| std::cmp::Reverse(*s));
+    let mut out = body.to_string();
+    for (s, e, text) in edits {
+        out.replace_range(s as usize..e as usize, &text);
+    }
+    out
+}
+
+/// Helpers rewritten on a Program, with the local names assigned to them.
+/// Does not include the prelude text (AB-L0075 / D-0265): [`prelude`] emits that
+/// once from the union of every localize pass.
+#[derive(Clone, Debug, Default)]
+pub struct LocalizedHelpers {
+    pub locals: Vec<(&'static str, String)>,
+    /// `generateUid`-reserved counter name for `classPrivateFieldLooseKey`, if that helper was used.
+    pub loose_key_id: Option<String>,
+}
+
+fn close_deps(used: &mut Vec<&'static str>) {
     let mut i = 0;
     while i < used.len() {
-        let body = HELPERS.iter().find(|(n, _)| *n == used[i]).unwrap().1;
-        for d in refs(body) { if !used.contains(&d) { used.push(d); } }
+        for (_, _, d) in helper_members(used[i]) {
+            if !used.contains(d) {
+                used.push(d);
+            }
+        }
         i += 1;
     }
+}
+
+/// Rewrite helper members on `program` (shape, including 0-span transformer nodes) and
+/// return the helpers used with their assigned local names. Does not emit a prelude
+/// (AB-L0075 / D-0265): printed JS is never scanned for helper names.
+pub fn localize<'a>(
+    alloc: &'a oxc::allocator::Allocator,
+    program: &mut oxc::ast::ast::Program<'a>,
+) -> LocalizedHelpers {
+    let mut used = collect_used(program);
+    if used.is_empty() {
+        return LocalizedHelpers::default();
+    }
+    close_deps(&mut used);
     let mut uids = crate::transforms::hoist::Uids::new(program);
-    let order: Vec<&str> = HELPERS.iter().map(|(n, _)| *n).filter(|n| used.contains(n)).collect();
+    let order: Vec<&str> = HELPERS
+        .iter()
+        .map(|(n, _)| *n)
+        .filter(|n| used.contains(n))
+        .collect();
     let locals: Vec<(&str, String)> = order.iter().map(|n| (*n, uids.generate(n))).collect();
+    rewrite_call_sites(alloc, program, &locals);
+    let loose_key_id = if locals
+        .iter()
+        .any(|(n, _)| *n == "classPrivateFieldLooseKey")
+    {
+        Some(uids.reserve("id"))
+    } else {
+        None
+    };
+    LocalizedHelpers {
+        locals,
+        loose_key_id,
+    }
+}
+
+/// Emit one prelude from the union of localize sets, in [`HELPERS`] order.
+/// Deps are closed in [`localize`]; this function never mints a name (AB-L0075 r2).
+pub fn prelude(sets: &[LocalizedHelpers]) -> Option<String> {
+    let mut names: Vec<(&str, String)> = Vec::new();
+    let mut loose_key_id = None;
+    for s in sets {
+        for (n, l) in &s.locals {
+            assert!(!l.is_empty(), "internal: helper {n} has no local ident");
+            if !names.iter().any(|(h, _)| h == n) {
+                names.push((*n, l.clone()));
+            }
+        }
+        if s.loose_key_id.is_some() && loose_key_id.is_none() {
+            loose_key_id = s.loose_key_id.clone();
+        }
+    }
+    if names.is_empty() {
+        return None;
+    }
     let mut pre = String::new();
-    for (n, l) in &locals {
-        let mut body = HELPERS.iter().find(|(h, _)| h == n).unwrap().1.to_string();
-        body = subst(&body, &|d| locals.iter().find(|(h, _)| *h == d).map(|(_, l)| l.clone()));
-        if *n == "classPrivateFieldLooseKey" {
-            let id = uids.reserve("id");
-            body = body.replace("ID", &id);
+    for (n, _) in HELPERS {
+        let Some(l) = names
+            .iter()
+            .find(|(h, _)| *h == *n)
+            .map(|(_, l)| l.as_str())
+        else {
+            continue;
+        };
+        let id = if *n == "classPrivateFieldLooseKey" {
+            Some(
+                loose_key_id
+                    .as_deref()
+                    .expect("internal: classPrivateFieldLooseKey has no loose_key_id"),
+            )
+        } else {
+            None
+        };
+        if let Some(id) = id {
             pre += &format!("var {id} = 0;\n");
         }
+        let body = rewrite_template(
+            HELPERS.iter().find(|(h, _)| h == n).unwrap().1,
+            n,
+            &names,
+            id,
+        );
         match body.strip_prefix("function ") {
             Some(rest) => pre += &format!("function {l}{rest}\n"),
             None => pre += &format!("var {l} = {body};\n"),
         }
     }
-    Some((pre, locals))
+    Some(pre)
 }
 
-/// Replace every `babelHelpers.<ident>` in `text` with `f(ident)` (left alone when `f` gives None).
-fn subst(text: &str, f: &dyn Fn(&str) -> Option<String>) -> String {
-    const P: &str = "babelHelpers.";
-    let mut out = String::new();
-    let mut rest = text;
-    while let Some(i) = rest.find(P) {
-        out += &rest[..i];
-        let after = &rest[i + P.len()..];
-        let n = after.find(|c: char| !(c.is_ascii_alphanumeric() || c == '_' || c == '$')).unwrap_or(after.len());
-        match f(&after[..n]) {
-            Some(l) => out += &l,
-            None => { out += P; out += &after[..n]; }
-        }
-        rest = &after[n..];
-    }
-    out + rest
+/// Tables for `tests/helper_templates.rs`: name, body, member spans, `ID` spans.
+pub fn helper_ast_templates() -> Vec<(
+    &'static str,
+    &'static str,
+    &'static [(u32, u32, &'static str)],
+    &'static [(u32, u32)],
+)> {
+    HELPERS
+        .iter()
+        .map(|(n, b)| (*n, *b, helper_members(n), helper_id_spans(n)))
+        .collect()
 }
 
-/// Version-stamp + helper-localize edits in `input` coordinates, remapped onto `output` via oxc's
-/// codegen map (D-0262: no re-parse of printed JS). Prelude inserts stay at 0.
-/// SHIM(D-0262 P1 post_codegen_edits, expires D-0265): find+replace babelHelpers.* on printed codegen output (D-0264 residual 2).
+/// Version-stamp edits in `input` coordinates, remapped onto `output` via oxc's codegen map
+/// (D-0262 / D-0265 / AB-L0075: no re-parse and no find+replace of printed JS; the helper
+/// prelude is inserted once by the caller via [`prelude`]).
 pub fn post_codegen_edits(
     program: &oxc::ast::ast::Program<'_>,
     input: &str,
@@ -114,45 +298,56 @@ pub fn post_codegen_edits(
     crate::transforms::version_stamp::run(program, &mut stamps);
     if input != output && !stamps.is_empty() {
         let pts = codegen_points(map, input, output);
-        stamps = stamps.into_iter().map(|e| remap_via_map(&pts, e, filename)).collect::<Result<Vec<_>, _>>()?;
-    }
-    if let Some((pre, locals)) = localize(program) {
-        for (name, local) in &locals {
-            let pat = format!("babelHelpers.{name}");
-            let mut i = 0;
-            while let Some(rel) = output[i..].find(&pat) {
-                let at = i + rel;
-                let after = at + pat.len();
-                if output[after..].starts_with(|c: char| c.is_ascii_alphanumeric() || c == '_' || c == '$') {
-                    i = after;
-                    continue;
-                }
-                stamps.push(lwc_shared::edits::Edit::replace(at as u32, after as u32, local.clone()));
-                i = after;
-            }
-        }
-        stamps.push(lwc_shared::edits::Edit::insert(0, pre));
+        stamps = stamps
+            .into_iter()
+            .map(|e| remap_via_map(&pts, e, filename))
+            .collect::<Result<Vec<_>, _>>()?;
     }
     Ok(stamps)
 }
 
 /// Remap edits through a subsequent span-edit (kept text shifts; inserts at 0 stay at 0).
-pub fn remap_edits(edits: Vec<lwc_shared::edits::Edit>, pieces: &[lwc_shared::edits::Piece]) -> Vec<lwc_shared::edits::Edit> {
-    edits.into_iter().map(|e| {
-        if e.start == 0 && e.end == 0 { return e; }
-        lwc_shared::edits::Edit {
-            start: forward_piece(pieces, e.start).unwrap_or_else(|| panic!("post-codegen edit start {} left the kept text", e.start)),
-            end: forward_piece(pieces, e.end).unwrap_or_else(|| panic!("post-codegen edit end {} left the kept text", e.end)),
-            text: e.text,
-        }
-    }).collect()
+pub fn remap_edits(
+    edits: Vec<lwc_shared::edits::Edit>,
+    pieces: &[lwc_shared::edits::Piece],
+) -> Vec<lwc_shared::edits::Edit> {
+    edits
+        .into_iter()
+        .map(|e| {
+            if e.start == 0 && e.end == 0 {
+                return e;
+            }
+            lwc_shared::edits::Edit {
+                start: forward_piece(pieces, e.start).unwrap_or_else(|| {
+                    panic!("post-codegen edit start {} left the kept text", e.start)
+                }),
+                end: forward_piece(pieces, e.end).unwrap_or_else(|| {
+                    panic!("post-codegen edit end {} left the kept text", e.end)
+                }),
+                text: e.text,
+            }
+        })
+        .collect()
 }
 
-fn codegen_points(map: &oxc_sourcemap::SourceMap<'_>, input: &str, output: &str) -> Vec<(u32, u32)> {
-    let (li, lo) = (lwc_shared::LineIndex::new(input), lwc_shared::LineIndex::new(output));
-    let mut pts: Vec<(u32, u32)> = map.get_tokens().filter_map(|t| {
-        Some((li.to_offset(t.get_src_line(), t.get_src_col())?, lo.to_offset(t.get_dst_line(), t.get_dst_col())?))
-    }).collect();
+fn codegen_points(
+    map: &oxc_sourcemap::SourceMap<'_>,
+    input: &str,
+    output: &str,
+) -> Vec<(u32, u32)> {
+    let (li, lo) = (
+        lwc_shared::LineIndex::new(input),
+        lwc_shared::LineIndex::new(output),
+    );
+    let mut pts: Vec<(u32, u32)> = map
+        .get_tokens()
+        .filter_map(|t| {
+            Some((
+                li.to_offset(t.get_src_line(), t.get_src_col())?,
+                lo.to_offset(t.get_dst_line(), t.get_dst_col())?,
+            ))
+        })
+        .collect();
     pts.sort_by_key(|p| p.0);
     pts.dedup_by_key(|p| p.0);
     assert!(!pts.is_empty(), "codegen map produced no tokens");
@@ -171,10 +366,12 @@ fn remap_via_map(
     e: lwc_shared::edits::Edit,
     filename: &str,
 ) -> Result<lwc_shared::edits::Edit, lwc_shared::CompileError> {
-    let miss = |off| lwc_shared::CompileError::new(
-        format!("internal: codegen map has no token at source offset {off}"),
-        filename,
-    );
+    let miss = |off| {
+        lwc_shared::CompileError::new(
+            format!("internal: codegen map has no token at source offset {off}"),
+            filename,
+        )
+    };
     Ok(lwc_shared::edits::Edit {
         start: map_gen(pts, e.start).map_err(miss)?,
         end: map_gen(pts, e.end).map_err(miss)?,
@@ -204,9 +401,18 @@ mod map_gen_tests {
     #[test]
     fn unmapped_offset_is_an_internal_error() {
         let pts = [(10, 20), (15, 26)];
-        let e = lwc_shared::edits::Edit { start: 12, end: 12, text: "/*x*/".into() };
-        let err = super::remap_via_map(&pts, e, "t.js").expect_err("unmapped offset must not extrapolate");
-        assert!(err.message.contains("internal: codegen map has no token at source offset 12"), "{err:?}");
+        let e = lwc_shared::edits::Edit {
+            start: 12,
+            end: 12,
+            text: "/*x*/".into(),
+        };
+        let err = super::remap_via_map(&pts, e, "t.js")
+            .expect_err("unmapped offset must not extrapolate");
+        assert!(
+            err.message
+                .contains("internal: codegen map has no token at source offset 12"),
+            "{err:?}"
+        );
         assert_eq!(err.filename.as_deref(), Some("t.js"));
     }
 }

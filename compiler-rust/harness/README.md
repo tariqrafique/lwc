@@ -122,7 +122,7 @@ bad `CRATES_ROOT`, …) exit 2; `UNTRACKED` / `STALE` / `INVALID` exit 1.
   never be accepted via a raise). A row is worse if it gains a failing or skipped id, loses passed, drops its total,
   drops ids from the failing/skipped sets without passed rising by at least as many, shrinks its case universe, or (for
   template-diag*) raises crash or oracle-error. A worse row lands only with `Baseline-Raise: <AB-id>` whose last
-  `reviews.tsv` row is APPROVE with the landing's patch_id, distinct from every `Arch-Review` id.
+  `reviews.tsv` row is APPROVE with the landing's patch_id.
 - A case-set change (an id that disappears from a row's passed+failed+skipped universe, or that becomes newly skipped)
   also needs a `Case-Set: D-NNNN` trailer. land.sh captures the notes HEAD sha once at the start of land and uses that
   sha for every `git show`, `blame` and pickaxe (never a later notes HEAD, never a working tree). Format: a
@@ -151,10 +151,10 @@ bad `CRATES_ROOT`, …) exit 2; `UNTRACKED` / `STALE` / `INVALID` exit 1.
   `obs sha256 mismatch` or the true ratchet result.
   Vitest is invoked with `--config <this-tree>/vitest.board.config.ts` (no plugins; closed `setupFiles` /
   `globalSetup` lists; `envDir` set so a branch `harness/.env` is not loaded). Branch edits to that config or to
-  harness setup / globalSetup files are land-classify gate paths (pid-bound Arch-Review).
+  harness setup / globalSetup files trigger the land.sh self-test runner (`scripts/test-land-classify.sh`).
 - Residual: branch test code is arbitrary code. A writer that starts a *new session* (`detached: true` / `setsid`)
   can escape the vitest process group; the pgid check is kept but cannot see that session. There is no `bwrap` or
-  cgroup sandbox. `harness/test/**` and `harness/src/**` are non-trivial paths and need a pid-bound Arch-Review.
+  cgroup sandbox. `harness/test/**` and `harness/src/**` also trigger that land self-test runner.
 - Case-Set lists: a trailing `|`, an empty or space-only list, or duplicate ids is rc 2 (tokenization does not use
   `IFS='|' read`, which drops a trailing empty field).
 - After the napi release build and before the fast-forward, `land.sh` runs `$MAIN_TREE/harness/board.sh check --root=$wt`
@@ -165,3 +165,25 @@ bad `CRATES_ROOT`, …) exit 2; `UNTRACKED` / `STALE` / `INVALID` exit 1.
   follow-up that deletes the marker, because only a land can change MAIN.
 - `scripts/test-board-ratchet.sh` is the end-to-end proof (real `board.sh` on js-eval, `--root` mutation, F1–F6, the
   land.sh block verbatim, Case-Set subset + migrate authorship, and the ceiling EXIT-trap order).
+
+- Updating `land.sh`'s main-chokepoint (`# >>> main-chokepoint` … `# <<< main-chokepoint`) is circular if you
+  try to land a new body and a new `REGION_SHA256` in one commit: MAIN's checker pins the *current* body, so
+  the new body fails `--check`, but changing only the table first also fails. A table-only land that rewrites
+  `REGION_SHA256` to the not-yet-landed body fails the branch `--self-test` (that compares the *branch* table
+  to the *branch* `land.sh`, which still has the old body). A table-only land that rewrites `REGION_SHA256` to
+  a hash of the old body is a no-op. Use the two-step `NEXT_REGION_SHA256` path instead (or a D-id break-glass
+  if you must land without the pin):
+  1. Land a table-only commit that *adds* one `NEXT_REGION_SHA256` row whose digest is the sha256 of the new
+     chokepoint body (markers excluded). Leave the body and `REGION_SHA256` unchanged. MAIN's checker accepts
+     a body matching `REGION_SHA256` *or* `NEXT_REGION_SHA256`, so this land's body still matches `REGION`.
+     The branch `--self-test` still matches `REGION` too.
+  2. Land the new body together with a table edit that promotes `NEXT_REGION_SHA256` into `REGION_SHA256` and
+     deletes the `NEXT` row. MAIN's table (from step 1) still has `REGION`=old and `NEXT`=new, so the new body
+     matches `NEXT` and the land gate passes. The branch table now has `REGION`=new, so `--self-test` matches
+     the new body.
+  Do not leave a `NEXT_REGION_SHA256` row on main after step 2. The checker rejects more than one `NEXT` row.
+  A body matching neither digest fails closed. A leftover NEXT whose digest equals this tree's body is an
+  unpromoted step 2: `--self-test` and `--check` of the incoming table fail until that NEXT is promoted into
+  `REGION_SHA256` and deleted. Step 1 (NEXT names a future body, so it differs from the current body) still
+  passes. Production `--check` still reads MAIN's table, so a step-2 body may match MAIN's NEXT; the incoming
+  table must not still carry that same NEXT.

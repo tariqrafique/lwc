@@ -38,15 +38,12 @@ fn serialize(e: TransformError) -> JsCompileError {
     }
 }
 
-/// `CompilerError`. `name` is prototype-inherited 'Error' upstream (not own); `line` / `column` mirror
-/// `location` for the harness (`backend.ts`), which reads them.
+/// `CompilerError`. `name` is prototype-inherited 'Error' upstream (not own). Position is only
+/// under `location` (D-0239 / D-0241); no mirrored own `line` / `column`.
 fn compiler_error(e: CompilerError) -> JsCompileError {
     JsCompileError {
         message: e.message,
-        name: None,
         code: e.code,
-        line: e.location.map(|l| l.line),
-        column: e.location.map(|l| l.column),
         // Own even when `undefined` (an options error has no origin), like `location`.
         filename: Some(e.filename.map_or(Either::B(()), Either::A)),
         location: Some(e.location.map_or(Either::B(()), |l| Either::A(l.into()))),
@@ -56,8 +53,8 @@ fn compiler_error(e: CompilerError) -> JsCompileError {
     }
 }
 
-/// `CompilerAggregateError`: own `message` and `errors` (each a `CompilerError`). `name` stays an own key
-/// ('AggregateError', as the prototype's) because the harness reads it.
+/// `CompilerAggregateError`: own `message` and `errors` (each a `CompilerError`). Upstream
+/// `name` is prototype-inherited 'AggregateError' (not own); harness builds AggregateError itself.
 fn aggregate(a: CompilerAggregateError) -> JsCompileError {
     let errors = a
         .errors
@@ -73,7 +70,7 @@ fn aggregate(a: CompilerAggregateError) -> JsCompileError {
         })
         .collect();
     JsCompileError {
-        message: a.message, name: Some("AggregateError".into()), code: None, line: None, column: None, filename: None,
+        message: a.message, code: None, filename: None,
         location: None, errors: Some(errors), level: None, url: None,
     }
 }
@@ -81,7 +78,7 @@ fn aggregate(a: CompilerAggregateError) -> JsCompileError {
 /// The producer's error as it threw it: no `level` / `url`; `location` only when it has one.
 fn unnormalized(e: UnnormalizedError) -> JsCompileError {
     JsCompileError {
-        message: e.message, name: None, code: e.code, line: e.line, column: e.column, filename: e.filename.map(Either::A),
+        message: e.message, code: e.code, filename: e.filename.map(Either::A),
         location: e.location.map(|l| Either::A(l.into())), errors: None, level: None, url: None,
     }
 }
@@ -140,8 +137,7 @@ mod tests {
             let (want, filename) = (&c["error"], c["filename"].as_str().unwrap());
             let j = js_error(c["src"].as_str().unwrap(), filename, c.get("opts"));
             let shipped: Vec<&str> = want["ownKeys"].as_array().unwrap().iter().map(|k| k.as_str().unwrap()).collect();
-            let ours: Vec<&str> = j.own_keys().into_iter().filter(|k| !matches!(*k, "line" | "column")).collect();
-            assert_eq!(ours, shipped, "{id} own keys");
+            assert_eq!(j.own_keys(), shipped, "{id} own keys");
             assert_eq!(j.code, want["code"].as_u64().map(|x| x as u32), "{id} code");
             assert_eq!(j.level, want["level"].as_u64().map(|l| l as u32), "{id} level");
             assert_eq!(j.url.as_deref(), want["url"].as_str(), "{id} url");
@@ -164,17 +160,15 @@ mod tests {
         }
     }
 
-    /// Every shipped recovery-mode aggregate: message, own keys (plus `name`), and each `errors[]` entry.
+    /// Every shipped recovery-mode aggregate: message, own keys (no Aggregate `name`), and each `errors[]` entry.
     #[test]
     fn aggregates_match_shipped() {
         for f in serde_json::from_str::<Vec<Value>>(AGGREGATE).unwrap() {
             let id = &f["fixture"];
             let j = js_error(f["src"].as_str().unwrap(), "foo.js", Some(&json!({"experimentalErrorRecoveryMode": true})));
             assert_eq!(j.message, f["message"].as_str().unwrap(), "{id}");
-            assert_eq!(j.name.as_deref(), f["name"].as_str(), "{id}");
             let shipped: Vec<&str> = f["ownKeys"].as_array().unwrap().iter().map(|k| k.as_str().unwrap()).collect();
-            let ours: Vec<&str> = j.own_keys().into_iter().filter(|k| *k != "name").collect();
-            assert_eq!(ours, shipped, "{id}");
+            assert_eq!(j.own_keys(), shipped, "{id}");
             let cwd = cwd();
             let got: Vec<Value> = j.errors.unwrap().iter().map(|x| json!({
                 "name": x.name, "message": x.message, "code": x.code,

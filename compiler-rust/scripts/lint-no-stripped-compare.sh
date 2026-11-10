@@ -54,6 +54,10 @@ N10	literal space replace	\.replace(All)?\(\s*(['"] [ '"]|/ /[gimsuy]*)\s*,\s*('
 N11	sed literal space delete	s/ //g
 N12	Python re.sub literal space	re\.sub\(\s*r?['"] [ '"]\s*,\s*['"]['"]
 N13	decoded token value compare	JSON\.stringify\(\s*[A-Za-z_]\w*\.value\s*\)
+N14	JS literal-space split+join	\.split\(\s*(' '|" ")\s*\)\s*\.join\(\s*(''|"")\s*\)
+N15	JS replace runs of spaces	\.replace(All)?\(\s*/ \+/g[a-z]*\s*,\s*(''|"")
+N16	Python join of split()	(''|"")\.join\(\s*[^)\n]+\.split\(\s*\)\s*\)
+N17	awk gsub delete spaces	\bgsub\(\s*/ /\s*,\s*(''|"")
 R
 )
 
@@ -103,6 +107,11 @@ if (s.trim() !== '') {}
 const lit1 = s.replaceAll(' ', ''); // HIT N10
 const lit2 = s.replace(/ /g, ''); // HIT N10
 const tok = x.map((t) => `${t.type.label}:${JSON.stringify(t.value)}`).join(' '); // HIT N13
+const sj = s.split(' ').join(''); // HIT N14
+const rj = s.replace(/ +/g,''); // HIT N15
+const sj_ok = s.split(',').join('');
+const rj_ok = s.replace(/ +/g, ' ');
+const sj_idx = s.split(' ')[0];
 F
   cat >"$T/scripts/cmp.sh" <<'F'
 diff -w a b # HIT N4
@@ -117,6 +126,9 @@ diff -u a b
 cmp -s a b
 tr -d '\r' < a # HIT N5
 tr -d 'x' < a
+awk '{gsub(/ /,"")}1' a # HIT N17
+awk '{gsub(/,/,"")}1' a
+awk '{gsub(/ /, "-")}1' a
 F
   cat >"$T/tools/x/src/main.rs" <<'F'
 let w: Vec<_> = s.split_whitespace().collect(); // HIT N9
@@ -128,16 +140,19 @@ import re
 x = s.replace(' ', '')  # HIT N10
 y = re.sub(r' ', '', s)  # HIT N12
 z = re.sub(r'\s+', '', s)
+w = "".join(s.split())  # HIT N16
+w_ok = "".join(s.split(','))
+w_sp = " ".join(s.split())
 F
   printf '%s\n' 'const z = s.replace(/\s+/g, "");' >"$T/tools/semdiff/src/ok.mjs"
   printf '%s\n' 'const z = s.replace(/\s+/g, "");' >"$T/harness/fixtures/a/fx.js"
   got="$(scan "$T" | awk -F'\t' '{print $3":"$4" "$1}' | sort -u)"
   want="$(cd "$T" && grep -rn '# HIT \|// HIT ' harness scripts tools | sed -E 's/^([^:]+):([0-9]+):.*HIT (\w+)$/\1:\2 \3/' | sort -u)"
   n="$(printf '%s\n' "$want" | grep -c .)"
-  if [ "$got" != "$want" ] || [ "$n" -ne 23 ]; then
+  if [ "$got" != "$want" ] || [ "$n" -ne 27 ]; then
     echo "SELF-TEST FAILED ($n planted)"; echo "--- want"; echo "$want"; echo "--- got"; echo "$got"; exit 2
   fi
-  for r in N1 N2 N3 N4 N5 N6 N7 N8 N9 N10 N11 N12 N13; do grep -q " $r\$" <<<"$want" || { echo "SELF-TEST FAILED: rule $r has no planted hit"; exit 2; }; done
+  for r in N1 N2 N3 N4 N5 N6 N7 N8 N9 N10 N11 N12 N13 N14 N15 N16 N17; do grep -q " $r\$" <<<"$want" || { echo "SELF-TEST FAILED: rule $r has no planted hit"; exit 2; }; done
   # Allowlist: full list passes; a missing entry (new hit) or a stale entry fails; MAIN's copy is the one read.
   A="$T/scripts/lint-no-stripped-compare.allowlist"
   scan "$T" | awk -F'\t' '{print $3"\t"$4"\t"$1"\tD-0256"}' | sort -u >"$A"
@@ -160,7 +175,7 @@ F
   miss_rc=0; MAIN="$M" "$0" "$T" >/dev/null 2>"$T/missing.err" || miss_rc=$?
   if [ "$miss_rc" -ne 2 ]; then echo "SELF-TEST FAILED: missing allowlist rc=$miss_rc (want 2)"; sed 's/^/       /' "$T/missing.err"; exit 2; fi
   rm -rf "$M"
-  echo "lint-no-stripped-compare self-test: ok ($n planted hits over 13 rules detected, near-misses and semdiff/fixtures clean, allowlist + MAIN source enforced)"
+  echo "lint-no-stripped-compare self-test: ok ($n planted hits over 17 rules detected, near-misses and semdiff/fixtures clean, allowlist + MAIN source enforced)"
   exit 0
 fi
 

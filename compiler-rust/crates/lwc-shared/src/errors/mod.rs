@@ -113,6 +113,8 @@ pub struct CompilerAggregateError {
 
 /// An error thrown by a compiler step no `@lwc/compiler` facade normalizes (the SSR compiler; an
 /// unsupported file extension): the producer's error, carried through unchanged.
+/// `location` is only the first diagnostic's, when present (D-0239 / D-0241 / AB-L0080); bare
+/// `CompileError.line`/`column` are not folded in — upstream producers on this path have no location.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnnormalizedError {
     pub message: String,
@@ -120,14 +122,17 @@ pub struct UnnormalizedError {
     /// The producer's first diagnostic code / location, when it has one.
     pub code: Option<u32>,
     pub location: Option<DiagnosticLocation>,
-    pub line: Option<u32>,
-    pub column: Option<u32>,
 }
 
 impl From<CompileError> for UnnormalizedError {
     fn from(e: CompileError) -> Self {
         let first = e.diagnostics.first();
-        Self { code: first.and_then(|d| d.code), location: first.and_then(|d| d.location), message: e.message, filename: e.filename, line: e.line, column: e.column }
+        Self {
+            code: first.and_then(|d| d.code),
+            location: first.and_then(|d| d.location),
+            message: e.message,
+            filename: e.filename,
+        }
     }
 }
 

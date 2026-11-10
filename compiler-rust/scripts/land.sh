@@ -4,24 +4,72 @@
 # -> napi release build -> lint-shell-pipes -> lint-no-stripped-compare -> ratchet ceiling -> board-baseline ceiling (git blobs; Baseline-Raise) -> shim gate -> option gate (compiler/napi/shared/option files changed)
 # -> golden-I/O guard (harness test/src changed) -> golden-gate (harness goldens/test/src/fixtures/scripts changed)
 # -> board check (full dev board on the rebased tree; the committed baseline must EQUAL the measured run) -> fast-forward main -> rebuild + install the live napi from main (only when crates changed).
-# Any failure before the fast-forward: nothing lands, main untouched. Gate scripts always run from $MAIN's copies
+# Any failure before the fast-forward: nothing lands, main untouched. Gate scripts always run from MAIN's copies
 # (the base commit), fed the branch's inputs, so a branch cannot weaken the gate that judges it (AB-0005).
 # Conflicts are yours: resolve with `git rebase main` in your worktree and re-run.
 set -euo pipefail
+# >>> main-chokepoint
+# The only place a MAIN token may appear in this file. Every reach into MAIN goes
+# through main_run (execute a MAIN path) or main_data (resolve a MAIN path).
 MAIN=/workspace/lwc-compiler-rust
-# Always run main's copy of this script, so a branch cannot weaken its own landing gates.
-[ "$(readlink -f "$0")" = "$MAIN/scripts/land.sh" ] || exec "$MAIN/scripts/land.sh" "$@"
+main_run() {
+  local _rel="$1"; shift
+  [ -n "$_rel" ] || { echo "main_run: empty path" >&2; return 2; }
+  case "$_rel" in
+    *.mjs|*.js) MAIN="$MAIN" node "$MAIN/$_rel" "$@" ;;
+    *)          MAIN="$MAIN" "$MAIN/$_rel" "$@" ;;
+  esac
+}
+main_data() {
+  local _rel="$1"
+  [ -n "$_rel" ] || { echo "main_data: empty path" >&2; return 2; }
+  printf '%s\n' "$MAIN/$_rel"
+}
+# <<< main-chokepoint
+# Always run MAIN's copy of this script, so a branch cannot weaken its own landing gates.
+[ "$(readlink -f "$0")" = "$(main_data scripts/land.sh)" ] || exec "$(main_data scripts/land.sh)" "$@"
 die() { echo "!! LAND REFUSED: $*" >&2; exit 1; }
+# MAIN checkout directory, derived from the chokepoint (no extra MAIN token).
+main_checkout="$(cd "$(dirname "$(main_data scripts/land.sh)")/.." && pwd)"
+
+# Table-driven box-config logging (AB-L0079). Every BOX_CONFIG_DEPENDENT depends_on
+# is hashed (or reported absent) so a land log records the box files that can change
+# a cargo/git verdict.
+log_box_configs() {
+  local table path class dep policy f sha
+  table="$(main_data scripts/land-main-refs.tsv)"
+  [ -f "$table" ] || { die2 "MAIN land-main-refs.tsv missing at $table"; return $?; }
+  while IFS=$'\t' read -r path class dep policy; do
+    [ -n "${path:-}" ] || continue
+    case "$path" in '#'*) continue ;; esac
+    [ "$class" = BOX_CONFIG_DEPENDENT ] || continue
+    f="$dep"
+    case "$dep" in
+      '~/.gitconfig') f="${HOME}/.gitconfig" ;;
+      CARGO_HOME) f="${CARGO_HOME:-$HOME/.cargo}/config.toml" ;;
+    esac
+    if [ -f "$f" ]; then
+      sha="$(sha256sum "$f" | awk '{print $1}')"
+      echo "box-config: $dep sha256=$sha"
+    else
+      echo "box-config: $dep absent"
+      if [ "${policy:-required}" != absent_ok ]; then
+        die2 "required box-config $dep is absent" || return $?
+      fi
+    fi
+  done < "$table"
+}
+
 if [ -f "$HOME/.cargo/env" ]; then source "$HOME/.cargo/env"; fi
 wt="$(git rev-parse --show-toplevel)"
 cd "$wt"   # every relative path below is worktree-relative
 rc=0; br="$(git symbolic-ref --short -q HEAD)" || rc=$?
 case $rc in 0) ;; 1) br="";; *) die "git symbolic-ref failed (rc=$rc)";; esac
-[ "$wt" != "$MAIN" ] && [ "$br" != main ] && [ -n "$br" ] || die "run from your worktree on bot/<name>, not from $MAIN / main"
+[ "$wt" != "$main_checkout" ] && [ "$br" != main ] && [ -n "$br" ] || die "run from your worktree on bot/<name>, not from $main_checkout / main"
 [ -z "$(git status --porcelain)" ] || die "uncommitted changes in $wt (commit or stash first)"
 exec 9>/workspace/.lwc-land.lock
 flock -n 9 || { echo "land: waiting for another land to finish..."; flock 9; }
-mst="$(git -C "$MAIN" status --porcelain)"; [ -z "$mst" ] || die "$MAIN has uncommitted edits (someone edited main directly): $(head -5 <<< "$mst" | tr '\n' ' ')"
+mst="$(git -C "$main_checkout" status --porcelain)"; [ -z "$mst" ] || die "$main_checkout has uncommitted edits (someone edited main directly): $(head -5 <<< "$mst" | tr '\n' ' ')"
 if ! git rebase main >/dev/null 2>&1; then
   git rebase --abort || die "rebase onto main failed AND 'git rebase --abort' failed; clean up $wt by hand"
   die "rebase onto main conflicts; run 'git rebase main' in $wt, resolve, commit, re-run land.sh"; fi
@@ -29,64 +77,44 @@ base="$(git rev-parse main)"; head="$(git rev-parse HEAD)"
 [ "$base" != "$head" ] || { echo "land: nothing to land ($br == main)"; exit 0; }
 changed="$(git diff --no-renames --name-only "$base" "$head")"
 echo "land: $br $(git rev-list --count "$base..$head") commit(s) onto main@${base:0:12}"
-# Arch review gate (policy owned by LWC Arch Board in /workspace/notes/arch-board/):
-#   trivial-paths.txt : one glob per line ('*' crosses '/'; '+glob' = additions-only); a landing is trivial iff EVERY
-#                       changed path matches. Policy files are read ONLY from /workspace/notes, never from the branch.
-#   reviews.tsv       : header row with columns id, verdict, patch_id (git patch-id --stable of the whole landing diff,
-#                       scripts/review-patch-id.sh); the landing's recomputed patch-id must equal the row's. non-trivial landings need a commit in the range
-#                       carrying trailer 'Arch-Review: <id>' whose row has verdict APPROVE. Fails closed.
+# D-0276: Arch reviews milestones only (gate flips, cutover, ownership changes). land.sh no longer
+# requires a per-land 'Arch-Review: <id>' trailer or a reviews.tsv patch_id match.
 AB=/workspace/notes/arch-board
 # D-0255 case-set decisions: read from the notes repo's COMMITTED HEAD at land time (pre-land notes), never a working tree.
 DEC_REPO=/workspace/notes; DEC_PATH=lwc-rust-migrate/decisions.tsv
 # (D)(E) Notes unavailable is rc 2 (not die/rc 1). Pin HEAD once; every show/blame/pickaxe uses this sha.
 die2() { echo "!! LAND REFUSED: $*" >&2; exit 2; }
 DEC_SHA="$(git -C "$DEC_REPO" rev-parse --verify HEAD 2>/dev/null)" || die2 "notes unavailable: cannot resolve $DEC_REPO HEAD"
-# >>> classify (exercised verbatim by scripts/test-land-classify.sh)
-cls_out="$("$MAIN/scripts/land-classify.sh" "$base" "$head" "$AB/trivial-paths.txt")" || die "trivial classifier failed (rc=$?)"
-nontrivial=(); [ -z "$cls_out" ] || mapfile -t nontrivial <<< "$cls_out"
-# <<< classify
-if [ ${#nontrivial[@]} -gt 0 ]; then
-  ids="$(git log --format='%(trailers:key=Arch-Review,valueonly)' "$base..$head" | awk 'NF' | sort -u)" || die "git log Arch-Review trailers failed"
-  [ -n "$ids" ] || die "non-trivial landing (${nontrivial[*]:0:5}...) needs an 'Arch-Review: <id>' trailer with an APPROVE row in $AB/reviews.tsv (ask LWC Arch Board)"
-  pid="$(git diff "$base" "$head" | git patch-id --stable | cut -d' ' -f1)"
-  [ -f "$AB/reviews.tsv" ] || die "no $AB/reviews.tsv; non-trivial landings cannot be approved yet"
-  ok=; for id in $ids; do
-    row="$(awk -F'\t' -v id="$id" 'NR==1{for(i=1;i<=NF;i++){h=tolower($i); if(h=="id")c=i; if(h=="verdict")d=i; if(h=="patch_id")p=i}; next} c&&d&&p&&$c==id{print toupper($d) "\t" $p}' "$AB/reviews.tsv" | tail -1)"
-    v="${row%%$'\t'*}"; rp="${row#*$'\t'}"
-    echo "land: Arch-Review $id -> ${v:-<not found>} (reviewed patch-id ${rp:0:12}, landing ${pid:0:12})"
-    [ "$v" = APPROVE ] && [ -n "$rp" ] && [ "$rp" = "$pid" ] && ok=1; done   # LAST row per id wins
-  [ -n "$ok" ] || die "no APPROVE row in $AB/reviews.tsv whose patch_id matches this landing ($pid) for Arch-Review id(s): $ids. Diff changed after review (or rebase shifted it): get it re-reviewed. Compute with scripts/review-patch-id.sh"
-else echo "land: trivial landing (all paths match $AB/trivial-paths.txt), no Arch-Review needed"; fi
-"$MAIN/scripts/parse5-pin-check.sh" "$wt" || die "parse5 pin check failed: Cargo.lock parse5 source rev must match crates/lwc-template/Cargo.toml and the rev must exist in /workspace/parse5-rust (D-0238)"
-cargo check --workspace --all-targets || die "cargo check failed"
-cargo test --workspace || die "cargo test --workspace failed"   # all crates: dependents of a changed crate too
+main_run scripts/parse5-pin-check.sh "$wt" || die "parse5 pin check failed: Cargo.lock parse5 source rev must match crates/lwc-template/Cargo.toml and the rev must exist in /workspace/parse5-rust (D-0238)"
+source "$(main_data scripts/cargo-locked.sh)"
+log_box_configs
+cargo_locked check --workspace --all-targets || die "workspace check failed"
+cargo_locked test --workspace || die "workspace test failed"   # all crates: dependents of a changed crate too
 crates_changed=; if grep -q '^crates/\|^Cargo\.' <<< "$changed"; then crates_changed=1; fi
 # napi release build gates the landing (before the fast-forward) and feeds the board check below (always: the board must
 # measure THIS tree's compiler); the live install from main stays post-merge.
-cargo build -p lwc-compiler-napi --release || die "napi release build failed"
-if grep -qE '^(scripts/(land|land-classify|test-land-classify|parse5-pin-check|test-parse5-pin|test-shim-registry|lint-shell-pipes|ratchet-ceiling|baseline-ceiling|test-board-ratchet)\.sh|harness/(scripts/shim-gate\.mjs|scripts/board-baseline\.mjs|shim-registry\.tsv|board\.sh|board-rows\.sh|vitest\.config\.ts|vitest\.board\.config\.ts)|harness/test/.*([Ss]etup|globalSetup).*)$' <<< "$changed"; then scripts/test-land-classify.sh || die "land-classify / parse5-pin / lint-shell-pipes / ratchet-ceiling / board-ratchet / shim-registry self-test failed"; fi
-# >>> follow-up-probes (exercised verbatim by scripts/test-board-ratchet.sh)
-# D-0269: follow-up obligations that only a land can satisfy are judged on the branch ($wt / $head),
-# never by reading $MAIN's file contents. The AB-0006 probe grepped $MAIN/scripts/baseline-ceiling.sh
-# for 'NEW-seed path' and refused every land once the seed blob existed, including the follow-up that
-# would delete that path; it is gone. No other MAIN-content follow-up probe remains here.
-# <<< follow-up-probes
+cargo_locked build -p lwc-compiler-napi --release || die "napi release build failed"
+if grep -qE '^(scripts/(land|test-land-classify|parse5-pin-check|test-parse5-pin|test-shim-registry|lint-shell-pipes|lint-no-stripped-compare|check-land-main-refs|cargo-locked|ratchet-ceiling|baseline-ceiling|test-board-ratchet)\.sh|scripts/land-main-refs\.tsv|harness/(scripts/shim-gate\.mjs|scripts/board-baseline\.mjs|shim-registry\.tsv|board\.sh|board-rows\.sh|vitest\.config\.ts|vitest\.board\.config\.ts)|harness/test/.*([Ss]etup|globalSetup).*)$' <<< "$changed"; then scripts/test-land-classify.sh || die "test-land-classify / parse5-pin / lint-shell-pipes / ratchet-ceiling / board-ratchet / shim-registry / main-refs self-test failed"; fi
+# Unconditional (D-0274(5)/AB-L0079): MAIN's checker + MAIN's table judge the branch land.sh.
+# A branch cannot widen the table in the same landing. Missing MAIN table is rc 2.
+main_run scripts/check-land-main-refs.sh --check "$wt/scripts/land.sh" "$(main_data scripts/land-main-refs.tsv)" "$wt" \
+  || die "land-main-refs check failed (rc=$?)"
 if grep -qE '^harness/scripts/shim-gate\.mjs$' <<< "$changed"; then node harness/scripts/shim-gate.mjs --self-test || die "shim-gate self-test failed (AB-X0010)"; fi
-if grep -qE '^scripts/(official-board|notes-precheck|test-notes-precheck)\.sh$' <<< "$changed"; then scripts/test-notes-precheck.sh || die "notes-precheck guard test failed (AB-0016)"; fi
+if grep -qE '^scripts/(official-board|publish-official|notes-precheck|test-notes-precheck)\.sh$' <<< "$changed"; then scripts/test-notes-precheck.sh || die "notes-precheck guard test failed (AB-0016)"; fi
 # Unconditional (AB-X0008): no pipe into a quiet grep in the branch's shell scripts (SIGPIPE fail-open under pipefail).
-"$MAIN/scripts/lint-shell-pipes.sh" "$wt" || die "lint-shell-pipes failed (rc=$?)"
+main_run scripts/lint-shell-pipes.sh "$wt" || die "lint-shell-pipes failed (rc=$?)"
 # Unconditional (D-0219, D-0256): no whitespace-stripped or otherwise normalized compare of compiler output.
-# Allowlist is the closed path+rule+D-id list next to the script; the lint reads only $MAIN's copy.
-MAIN="$MAIN" "$MAIN/scripts/lint-no-stripped-compare.sh" "$wt" || die "lint-no-stripped-compare failed (rc=$?)"
+# Allowlist is the closed path+rule+D-id list next to the script; the lint reads only MAIN's copy.
+main_run scripts/lint-no-stripped-compare.sh "$wt" || die "lint-no-stripped-compare failed (rc=$?)"
 # Unconditional (AB-X0010): ratchets only go down; every raise is refused here (needs its own reviewed id + dedicated main edit).
 ratchets="$wt/harness/ratchets"   # the ONE baseline dir: ceiling-checked here, then read by the shim gate below
-"$MAIN/scripts/ratchet-ceiling.sh" "$ratchets" "$MAIN/harness/ratchets" || die "ratchet ceiling: a harness/ratchets/*.txt value is above main's, missing, or unparseable (rc=$?)"
+main_run scripts/ratchet-ceiling.sh "$ratchets" "$(main_data harness/ratchets)" || die "ratchet ceiling: a harness/ratchets/*.txt value is above main's, missing, or unparseable (rc=$?)"
 # Unconditional (AB-0006): the board baseline only gets better. Main's baseline-ceiling.sh reads BOTH sides from git
 # (harness/board-baseline.tsv at $base = pre-land main, and at $head): a non-regular blob (symlink) or a missing/renamed
 # branch baseline is rc 2 (die, never raise-acceptable). A worse row (any row: new failing/skipped id, fewer passed, fixed
 # ids without as many new passes, row total drop, row dropped, template-diag crash/oracle-error up) is rc 1, refused unless
 # a commit in the range carries 'Baseline-Raise: <AB-id>' whose LAST reviews.tsv row is APPROVE with patch_id == this
-# landing's, and that id is not one of the landing's Arch-Review ids (same row lookup as the Arch-Review gate).
+# landing's (a raise lowers a gate, which is a milestone).
 # The file is a claim; the board check before the fast-forward proves it equals a measured run and re-ratchets the
 # MEASURED run against the pre-land blob (D-0255). A case-set change (D-0255: an id removed from a row's
 # passed+failed+skipped universe, or newly skipped) additionally needs a 'Case-Set: <D-id>' trailer whose row in the
@@ -102,15 +130,13 @@ if [ -z "${DEC_SHA:-}" ]; then
   DEC_SHA="$(git -C "$DEC_REPO" rev-parse --verify HEAD 2>/dev/null)" || die2 "notes unavailable: cannot resolve $DEC_REPO HEAD"
 fi
 csfile="$(mktemp /tmp/land-caseset.XXXXXX)"
-blrc=0; "$MAIN/scripts/baseline-ceiling.sh" "$wt" "$base" "$head" "$csfile" || blrc=$?
+blrc=0; main_run scripts/baseline-ceiling.sh "$wt" "$base" "$head" "$csfile" || blrc=$?
 case $blrc in
   0) ;;
   1) raise_ids="$(git log --format='%(trailers:key=Baseline-Raise,valueonly)' "$base..$head" | awk 'NF' | sort -u)"
      [ -n "$raise_ids" ] || die "harness/board-baseline.tsv is WORSE than main's (see above); a raise needs its own reviewed id: commit trailer 'Baseline-Raise: <AB-id>' with an APPROVE row in $AB/reviews.tsv"
-     ar_ids="$(git log --format='%(trailers:key=Arch-Review,valueonly)' "$base..$head" | awk 'NF' | sort -u)"
      bl_pid="$(git diff "$base" "$head" | git patch-id --stable | cut -d' ' -f1)"
      bl_ok=; for id in $raise_ids; do
-       if grep -qxF -- "$id" <<< "$ar_ids"; then echo "land: Baseline-Raise $id is also an Arch-Review id of this landing: refused (a raise needs its OWN reviewed id)"; continue; fi
        row="$(awk -F'\t' -v id="$id" 'NR==1{for(i=1;i<=NF;i++){h=tolower($i); if(h=="id")c=i; if(h=="verdict")d=i; if(h=="patch_id")p=i}; next} c&&d&&p&&$c==id{print toupper($d) "\t" $p}' "$AB/reviews.tsv" | tail -1)"
        v="${row%%$'\t'*}"; rp="${row#*$'\t'}"
        echo "land: Baseline-Raise $id -> ${v:-<not found>} (reviewed patch-id ${rp:0:12}, landing ${bl_pid:0:12})"
@@ -211,43 +237,47 @@ if [ ${#cs_rows[@]} -gt 0 ]; then
   done
 fi
 # <<< baseline-ceiling
-# Gates below run $MAIN's scripts against the branch's inputs ($wt). A changed gate script takes effect only once landed.
+# Gates below run MAIN's scripts against the branch's inputs ($wt). A changed gate script takes effect only once landed.
 # Combined AB-L0072 form (SHIM_RATCHET_DIR kept from AB-0006 / AB-X0010).
-CRATES_ROOT="$wt/crates" SHIM_ALLOWLIST="$wt/harness/shim-allowlist.tsv" SHIM_REGISTRY="$wt/harness/shim-registry.tsv" SHIM_RATCHET_DIR="$ratchets" SHIM_OWNERS="$MAIN/OWNERS" SHIM_REPO_ROOT="$wt" node "$MAIN/harness/scripts/shim-gate.mjs" || die "shim gate failed"
+CRATES_ROOT="$wt/crates" SHIM_ALLOWLIST="$wt/harness/shim-allowlist.tsv" SHIM_REGISTRY="$wt/harness/shim-registry.tsv" SHIM_RATCHET_DIR="$ratchets" SHIM_OWNERS="$(main_data OWNERS)" SHIM_REPO_ROOT="$wt" main_run harness/scripts/shim-gate.mjs || die "shim gate failed"
 if grep -qE '^(crates/(lwc-compiler|lwc-compiler-napi|lwc-shared)/|harness/(board\.sh|board-rows\.sh|option-inventory\.json|src/backend\.ts|scripts/option-(gate|fields)\.mjs)$)' <<< "$changed"; then
-  source "$MAIN/harness/board-rows.sh"   # ROWS/DIAG + option_gate: same source of truth as harness/board.sh
+  source "$(main_data harness/board-rows.sh)"   # ROWS/DIAG + option_gate: same source of truth as harness/board.sh
   CRATES_ROOT="$wt/crates" OPTGATE_INVENTORY="$wt/harness/option-inventory.json" option_gate || die "option-inventory gate failed"
 fi
 if grep -qE '^harness/(test|src)/' <<< "$changed"; then
-  "$MAIN/harness/scripts/golden-io-guard.sh" "$wt/harness" || die "golden-I/O guard: only harness/src/optionRows.ts may write goldens or read UPDATE_GOLDENS"
+  main_run harness/scripts/golden-io-guard.sh "$wt/harness" || die "golden-I/O guard: only harness/src/optionRows.ts may write goldens or read UPDATE_GOLDENS"
 fi
 if grep -qE '^harness/(goldens|test|src|fixtures|scripts)/' <<< "$changed"; then
-  "$MAIN/harness/scripts/ensure-deps.sh" "$wt/harness" || die "harness deps missing"
-  "$MAIN/harness/scripts/golden-gate.sh" "$wt/harness" || die "golden-gate: goldens != fresh JS-oracle recording"
+  main_run harness/scripts/ensure-deps.sh "$wt/harness" || die "harness deps missing"
+  main_run harness/scripts/golden-gate.sh "$wt/harness" || die "golden-gate: goldens != fresh JS-oracle recording"
 fi
 # Unconditional (AB-0006 rework 3 / D-0255): the committed baseline must EQUAL a measured run of the rebased tree.
 # MAIN's board.sh is the measurement producer: it runs the branch tree's tests/fixtures/crates/napi via --root=$wt.
 # The branch's board.sh is never executed. MAIN's comparator then re-judges obs (judge-all). Wall time is printed.
-MAIN_TREE="$MAIN"   # pre-land checkout; same tree land.sh already uses for MAIN's ceiling and judge-all
 napi_tmp="$(mktemp "$wt/harness/.lwc-compiler-napi.XXXXXX")"; cp "${CARGO_TARGET_DIR:-$wt/target}/release/liblwc_compiler_napi.so" "$napi_tmp"
 mv -f "$napi_tmp" "$wt/harness/lwc-compiler-napi.node"   # atomic, as scripts/install-napi.sh (gitignored)
 # >>> board-check (exercised verbatim by scripts/test-board-ratchet.sh)
 bdir="$(mktemp -d /tmp/land-board.XXXXXX)"; bt0=$SECONDS
-brc=0; env -u BOARD_RATCHET_UPDATE -u TEMPLATE_DIAG_OUT_DIR -u OPTGATE_DECISIONS BOARD_LOG_DIR="$bdir" CRATES_ROOT="$wt/crates" BOARD_REPO_ROOT="$wt" "$MAIN_TREE/harness/board.sh" check --root="$wt" > "$bdir/board.out" 2>&1 || brc=$?
+log_box_configs
+brc=0; ( unset BOARD_RATCHET_UPDATE TEMPLATE_DIAG_OUT_DIR OPTGATE_DECISIONS
+         export BOARD_LOG_DIR="$bdir" CRATES_ROOT="$wt/crates" BOARD_REPO_ROOT="$wt"
+         main_run harness/board.sh check --root="$wt" > "$bdir/board.out" 2>&1 ) || brc=$?
 echo "land: board check: board.sh rc=$brc in $((SECONDS - bt0))s (log $bdir/board.out)"
 [ $brc -eq 0 ] || { tail -25 "$bdir/board.out" >&2; die "board check: the rebased tree's board run failed or differs from harness/board-baseline.tsv (rc=$brc)"; }
 bst="$(git status --porcelain)"; [ -z "$bst" ] || die "board check: board.sh modified the worktree: $(head -5 <<< "$bst" | tr '\n' ' ')"
 git show "$head:harness/board-baseline.tsv" > "$bdir/baseline.head.tsv"
-node "$MAIN/harness/scripts/board-baseline.mjs" judge-all "$bdir/baseline.head.tsv" "$bdir/obs" "$bdir/measured.tsv" || die "board check: $head:harness/board-baseline.tsv != the measured run (main's judge-all)"
+main_run harness/scripts/board-baseline.mjs judge-all "$bdir/baseline.head.tsv" "$bdir/obs" "$bdir/measured.tsv" || die "board check: $head:harness/board-baseline.tsv != the measured run (main's judge-all)"
 # D-0255: ratchet the MEASURED run against the pre-land blob; its verdict and case-set rows must be the ones already
 # accepted above for the committed claim (so the Baseline-Raise / Case-Set checks covered exactly this measurement).
-mrc=0; "$MAIN/scripts/baseline-ceiling.sh" "$wt" "$base" "$head" "$bdir/case-set.measured" "$bdir/measured.tsv" || mrc=$?
+mrc=0; main_run scripts/baseline-ceiling.sh "$wt" "$base" "$head" "$bdir/case-set.measured" "$bdir/measured.tsv" || mrc=$?
 [ $mrc -eq $blrc ] && cmp -s "$bdir/case-set.measured" "$csfile" || die "board check: measured run vs pre-land baseline gave rc=$mrc case-set [$(echo $(cat "$bdir/case-set.measured"))], the committed claim gave rc=$blrc case-set [$(echo "${cs_rows[@]}")]"
 echo "land: board check ok in $((SECONDS - bt0))s"
 # <<< board-check
 [ "$(git rev-parse main)" = "$base" ] || die "main moved during land (should be impossible under the lock)"
-git -C "$MAIN" merge --ff-only -q "$head" || die "fast-forward of main failed"
+git -C "$main_checkout" merge --ff-only -q "$head" || die "fast-forward of main failed"
 echo "landed: main=${head:0:12} ($br)"
 if [ -n "$crates_changed" ]; then
-  (cd "$MAIN" && scripts/install-napi.sh) || echo "!! landed, but live napi rebuild from main failed (main is still correct)" >&2
+  # Post-ff: main already contains the landing. A failed live napi rebuild cannot roll
+  # back the ff, and die() would print LAND REFUSED for a land that already succeeded.
+  main_run scripts/install-napi.sh || echo "!! landed, but live napi rebuild from main failed (main is still correct)" >&2
 fi

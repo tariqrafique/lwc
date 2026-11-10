@@ -1,35 +1,16 @@
-# Lane ownership: AUTHORITATIVE (PLAN.md §3 links here; content is Migrate's, per D-0198/D-0199/D-0200/D-0219/D-0227/D-0229).
-# path-glob<TAB>owner[,owner]  first match wins; '*' crosses '/'; owner '*' = shared (Arch review decides); '#' starts a comment.
-# =<token><TAB><bot>: branch bot/<token>[-topic] acts as <bot>. Crossing a lane needs the owner's agreement and a
-# 'Cross-Lane: <owner>' trailer (land.sh, reading main's copy); at commit time LWC_CROSS_LANE=<owner> (pre-commit).
+# Lane ownership: AUTHORITATIVE (PLAN.md §3; D-0276: one serial worker owns the workspace).
+# path-glob<TAB>owner[,owner]  first match wins; '*' crosses '/'; '#' starts a comment.
+# =<token><TAB><bot>: branch bot/<token>[-topic] acts as <bot>. Crossing a migrate-owned
+# path needs the owner's agreement and a 'Cross-Lane: <owner>' trailer.
 # Consumers (shim-gate, lane-check): skip comment lines and =token alias lines by explicit rule; every other
 # non-empty line must have ≥2 tab-separated columns (else fail closed).
-=js	js
-crates/lwc-template/*	template
-crates/lwc-shared/src/template_ir.rs	template
-crates/lwc-shared/src/errors/*	js
-crates/lwc-shared/src/location.rs	js
-tools/gen-error-info/*	js
-crates/lwc-js/*	js
-crates/lwc-style/*	js
-crates/lwc-compiler-napi/src/lib.rs	ship	# D-0200: #[napi] exports + signatures
-crates/lwc-compiler-napi/src/errors.rs	js	# D-0200
-crates/lwc-compiler-napi/src/aggregate.rs	js
-crates/lwc-compiler-napi/src/single_error.rs	js
-crates/lwc-compiler-napi/src/error_urls.rs	js
-crates/lwc-compiler-napi/*	ship
-.github/*	ship
-crates/lwc-compiler/*	harness
-crates/lwc-ssr/*	ssr
-tools/semdiff/*	semdiff
-tools/template-diag-diff/*	harness	# D-0198, D-0219
-tools/ssr-compile-js-oracle/*	ssr	# D-0227, D-0229
-tools/style-diff/*	js	# D-0229 item 7
-tools/gen-shared-tables/*	*
-scripts/lint-shared-tables.baseline	*
-scripts/lint-shared-tables.sh	harness
-scripts/git-hooks/*	harness
-scripts/*.sh	harness
-harness/*	harness
-OWNERS	migrate	# D-0198: ownership is Migrate's
-*	*
+# D-0276 supersedes the per-crate one-writer split of D-0198/D-0199. Migrate still owns this file's contents.
+=js	harness
+=template	harness
+=ssr	harness
+=semdiff	harness
+=ship	harness
+=diagnostics	harness
+=worker	harness
+OWNERS	migrate	# D-0198/D-0276: ownership table remains Migrate's
+*	harness

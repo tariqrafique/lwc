@@ -26,6 +26,8 @@ H="$T/harness"
 # board.sh reads SHIM_OWNERS from $here/../OWNERS (the tree board.sh itself lives in). The harness
 # copy's parent is $T, so plant the repo OWNERS there (same as --root using MAIN's board.sh).
 cp "$R/OWNERS" "$T/OWNERS"
+mkdir -p "$T/scripts"
+cp "$R/scripts/cargo-locked.sh" "$T/scripts/cargo-locked.sh"
 if [ ! -f "$H/lwc-compiler-napi.node" ]; then
   if [ -f "$R/target/release/liblwc_compiler_napi.so" ]; then cp "$R/target/release/liblwc_compiler_napi.so" "$H/lwc-compiler-napi.node"
   else echo "!! test-board-ratchet: no napi binary ($R/harness/lwc-compiler-napi.node or $R/target/release)" >&2; exit 2; fi
@@ -234,38 +236,15 @@ cp "$T/baseline.orig" harness/board-baseline.tsv; git add -A; git commit -qm see
 ceil_new=0; "$M/scripts/baseline-ceiling.sh" "$Q" "$qempty" HEAD > "$T/out.ceil.NEW" 2>&1 || ceil_new=$?
 if [ $ceil_new -eq 2 ] && grep -qE 'pre-land .* has no harness/board-baseline.tsv' "$T/out.ceil.NEW"; then ok "ceiling missing pre-land baseline -> rc 2"
 else bad "ceiling missing pre-land baseline -> rc $ceil_new (want 2)"; sed 's/^/       /' "$T/out.ceil.NEW"; fi
-# D-0269: a leftover follow-up marker on MAIN must not refuse a branch that has already cleared it.
-# Fake MAIN's baseline-ceiling.sh still contains 'NEW-seed path' (the state that tripped AB-0006's probe).
-# The branch under test ($R / current land.sh) has removed that probe. Sandbox uses this temp MAIN, not the real one.
-# Structured around the extracted follow-up-probes block (MAIN is not made overridable in production land.sh:
-# an env override would let a caller point MAIN at a weakened tree and exec that copy).
-D0269="$T/d0269"; mkdir -p "$D0269/main/scripts"
-printf '%s\n' '#!/usr/bin/env bash' '# >>> NEW-seed path (leftover on MAIN only; would trip the old probe)' 'exit 0' > "$D0269/main/scripts/baseline-ceiling.sh"
-oldp_rc=0
-( set -euo pipefail
-  die() { echo "DIE: $*"; exit 97; }
-  MAIN="$D0269/main"; wt="$G"; base="$gbase"
-  if git -C "$wt" cat-file -e "$base:harness/board-baseline.tsv" 2>/dev/null; then
-    grep -q 'NEW-seed path' "$MAIN/scripts/baseline-ceiling.sh" && die "seed landed: delete the NEW path in scripts/baseline-ceiling.sh (TODO AB-0006 follow-up)"
-  fi
-) > "$T/out.d0269.oldprobe" 2>&1 || oldp_rc=$?
-if [ "$oldp_rc" -eq 97 ] && grep -q 'DIE: seed landed' "$T/out.d0269.oldprobe"; then
-  ok "D-0269: historical MAIN-content probe would refuse this sandbox"
-else bad "D-0269: historical probe did not refuse as expected (rc $oldp_rc)"; sed 's/^/       /' "$T/out.d0269.oldprobe"; fi
-if grep -qF $'grep -q \'NEW-seed path\' "$MAIN/' "$R/scripts/land.sh"; then
-  bad "D-0269: land.sh still greps MAIN for NEW-seed path"
-else ok "D-0269: land.sh does not grep MAIN for NEW-seed path"; fi
-blk269="$(sed -n '/^# >>> follow-up-probes/,/^# <<< follow-up-probes/p' "$R/scripts/land.sh")"
-[ -n "$blk269" ] || { bad "D-0269: follow-up-probes block not found in scripts/land.sh"; blk269=':'; }
-drc=0
-( set -euo pipefail
-  die() { echo "DIE: $*"; exit 97; }
-  MAIN="$D0269/main"; wt="$G"; base="$gbase"; head="$(git -C "$G" rev-parse HEAD)"
-  eval "$blk269"; exit 0
-) > "$T/out.d0269" 2>&1 || drc=$?
-if [ "$drc" -eq 0 ] && ! grep -q 'seed landed' "$T/out.d0269"; then
-  ok "D-0269: branch that cleared the marker passes the extracted follow-up-probes (MAIN still has NEW-seed path)"
-else bad "D-0269: extracted follow-up-probes refused rc=$drc (MAIN leftover must not block the branch)"; sed 's/^/       /' "$T/out.d0269"; fi
+# D-0269 / AB-0006: land.sh must not judge MAIN file contents for the seed follow-up.
+# Judges the BRANCH copy ($R), not MAIN content. The chokepoint already forbids raw
+# MAIN reads; this keeps an explicit check that the deleted MAIN-content probe
+# (grep NEW-seed path against $MAIN/scripts/baseline-ceiling.sh) has not returned.
+if grep -nE "NEW-seed path" "$R/scripts/land.sh"    || grep -qF $'grep -q \'NEW-seed path\' "$MAIN/' "$R/scripts/land.sh"; then
+  bad "D-0269: land.sh contains a NEW-seed-path MAIN-content probe"
+else
+  ok "D-0269: land.sh does not contain a NEW-seed-path MAIN-content probe"
+fi
 # --- land.sh block, verbatim ---
 blk="$(sed -n '/^# >>> baseline-ceiling/,/^# <<< baseline-ceiling/p' "$R/scripts/land.sh")"
 [ -n "$blk" ] || { bad "baseline-ceiling block not found in scripts/land.sh"; exit 1; }
@@ -286,6 +265,8 @@ landblk() { # name want(accept|refuse) <commit-msg> <how: file|delete|symlink> <
     MAIN="$M"; AB="$T"; wt="$G"; base="$gbase"; head="$(git rev-parse HEAD)"
     DEC_REPO="$N"; DEC_PATH=lwc-rust-migrate/decisions.tsv
     DEC_SHA="$(git -C "$N" rev-parse --verify HEAD)"
+    main_run() { local r="$1"; shift; "$MAIN/$r" "$@"; }
+    main_data() { printf "%s\n" "$MAIN/$1"; }
     eval "$blk"; exit 0
   ) > "$T/out.land" 2>&1 || rc=$?
   local got=refuse; [ $rc -eq 0 ] && got=accept
@@ -293,49 +274,50 @@ landblk() { # name want(accept|refuse) <commit-msg> <how: file|delete|symlink> <
   else bad "land block: $1 -> $got (rc $rc), want $2"; sed 's/^/       /' "$T/out.land"; fi
 }
 # existing raise matrix
-landblk 'equal baseline, no trailer'            accept $'c\n\nArch-Review: AB-F1' "$T/baseline.orig" $'AB-F1\tAPPROVE\t@PID@\n' 'baseline-ceiling: [0-9]+ main row\(s\) checked, ok'
-landblk 'worse, no Baseline-Raise'               refuse $'c\n\nArch-Review: AB-F1' "$T/worse.tsv" $'AB-F1\tAPPROVE\t@PID@\n' 'DIE: harness/board-baseline.tsv is WORSE'
-landblk 'worse, Baseline-Raise = Arch-Review id' refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-F1' "$T/worse.tsv" $'AB-F1\tAPPROVE\t@PID@\n' 'also an Arch-Review id'
-landblk 'worse, Baseline-Raise not reviewed'     refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R9' "$T/worse.tsv" $'AB-F1\tAPPROVE\t@PID@\n' 'Baseline-Raise AB-R9 -> <not found>'
-landblk 'worse, Baseline-Raise REWORK'           refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1' "$T/worse.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tREWORK\t@PID@\n' 'Baseline-Raise AB-R1 -> REWORK'
-landblk 'worse, Baseline-Raise stale pid'        refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1' "$T/worse.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t0000000000000000000000000000000000000000\n' 'reviewed patch-id 000000000000'
-landblk 'worse, last row REWORK after APPROVE'   refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1' "$T/worse.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\nAB-R1\tREWORK\t@PID@\n' 'Baseline-Raise AB-R1 -> REWORK'
-landblk 'worse, own APPROVE Baseline-Raise'      accept $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1' "$T/worse.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'raise accepted under Baseline-Raise'
-landblk 'malformed (v1) baseline'                refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1' "$T/v1.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'DIE: baseline-ceiling refused \(rc=2\)'
+landblk 'equal baseline, no trailer'            accept $'c' "$T/baseline.orig" $'' 'baseline-ceiling: [0-9]+ main row\(s\) checked, ok'
+landblk 'worse, no Baseline-Raise'               refuse $'c' "$T/worse.tsv" $'' 'DIE: harness/board-baseline.tsv is WORSE'
+landblk 'worse, Baseline-Raise not reviewed'     refuse $'c\n\nBaseline-Raise: AB-R9' "$T/worse.tsv" $'' 'Baseline-Raise AB-R9 -> <not found>'
+landblk 'worse, Baseline-Raise REWORK'           refuse $'c\n\nBaseline-Raise: AB-R1' "$T/worse.tsv" $'AB-R1\tREWORK\t@PID@\n' 'Baseline-Raise AB-R1 -> REWORK'
+landblk 'worse, Baseline-Raise stale pid'        refuse $'c\n\nBaseline-Raise: AB-R1' "$T/worse.tsv" $'AB-R1\tAPPROVE\t0000000000000000000000000000000000000000\n' 'reviewed patch-id 000000000000'
+landblk 'worse, last row REWORK after APPROVE'   refuse $'c\n\nBaseline-Raise: AB-R1' "$T/worse.tsv" $'AB-R1\tAPPROVE\t@PID@\nAB-R1\tREWORK\t@PID@\n' 'Baseline-Raise AB-R1 -> REWORK'
+landblk 'worse, own APPROVE Baseline-Raise'      accept $'c\n\nBaseline-Raise: AB-R1' "$T/worse.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'raise accepted under Baseline-Raise'
+landblk 'malformed (v1) baseline'                refuse $'c\n\nBaseline-Raise: AB-R1' "$T/v1.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'DIE: baseline-ceiling refused \(rc=2\)'
 # F1: symlink + approved raise still refused (rc 2)
-landblk 'F1 symlink + approved raise'            refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1' symlink $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'DIE: baseline-ceiling refused \(rc=2\).*non-regular|mode 120000|not a regular file'
+landblk 'F1 symlink + approved raise'            refuse $'c\n\nBaseline-Raise: AB-R1' symlink $'AB-R1\tAPPROVE\t@PID@\n' 'DIE: baseline-ceiling refused \(rc=2\).*non-regular|mode 120000|not a regular file'
 # F2: deleted + approved raise still refused (rc 2)
-landblk 'F2 deleted + approved raise'            refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1' delete $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'DIE: baseline-ceiling refused \(rc=2\)'
+landblk 'F2 deleted + approved raise'            refuse $'c\n\nBaseline-Raise: AB-R1' delete $'AB-R1\tAPPROVE\t@PID@\n' 'DIE: baseline-ceiling refused \(rc=2\)'
 # F3: drop a case + approved raise but NO Case-Set trailer
-landblk 'F3 drop case, raise, no Case-Set'       refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'DIE: case-set change'
+landblk 'F3 drop case, raise, no Case-Set'       refuse $'c\n\nBaseline-Raise: AB-R1' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'DIE: case-set change'
 # F3: drop a case + raise + Case-Set citing a D-id that does NOT list case-set:js-eval
-landblk 'F3 Case-Set D-0001 (no token)'          refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-0001' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'no cited Case-Set D-id'
+landblk 'F3 Case-Set D-0001 (no token)'          refuse $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-0001' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'no cited Case-Set D-id'
 # F3: drop a case + raise + Case-Set D-9999 which lists case-set:js-eval (accepted)
-landblk 'F3 Case-Set D-9999 (listed subset)'     accept $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-9999' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'case-set change in js-eval accepted under D-9999'
-landblk 'Case-Set D-8888 (id not listed)'        refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-8888' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'not a superset|no cited Case-Set D-id'
-landblk 'Case-Set D-7777 (non-migrate author)'   refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-7777' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'added by .harness <harness@lwc-bots>|no cited Case-Set D-id'
-landblk 'Case-Set D-6666 (rewritten by non-migrate)' refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-6666' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'last written by .harness <harness@lwc-bots>|no cited Case-Set D-id'
-landblk 'foocase-set refused' refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-4444' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'not at the start of a tab-separated field|foocase-set'
-landblk 'pickaxe decoy does not count as a mint' accept $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-5555' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'case-set change in js-eval accepted under D-5555'
-landblk 'Case-Set trailing |' refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-3434' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'malformed'
-landblk 'Case-Set space-only list' refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-2323' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'malformed'
-landblk 'Case-Set empty list' refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-1212' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'malformed'
-landblk 'Case-Set duplicate ids' refuse $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-4545' "$T/drop-one.tsv" $'AB-F1\tAPPROVE\t@PID@\nAB-R1\tAPPROVE\t@PID@\n' 'malformed'
+landblk 'F3 Case-Set D-9999 (listed subset)'     accept $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-9999' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'case-set change in js-eval accepted under D-9999'
+landblk 'Case-Set D-8888 (id not listed)'        refuse $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-8888' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'not a superset|no cited Case-Set D-id'
+landblk 'Case-Set D-7777 (non-migrate author)'   refuse $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-7777' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'added by .harness <harness@lwc-bots>|no cited Case-Set D-id'
+landblk 'Case-Set D-6666 (rewritten by non-migrate)' refuse $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-6666' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'last written by .harness <harness@lwc-bots>|no cited Case-Set D-id'
+landblk 'foocase-set refused' refuse $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-4444' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'not at the start of a tab-separated field|foocase-set'
+landblk 'pickaxe decoy does not count as a mint' accept $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-5555' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'case-set change in js-eval accepted under D-5555'
+landblk 'Case-Set trailing |' refuse $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-3434' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'malformed'
+landblk 'Case-Set space-only list' refuse $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-2323' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'malformed'
+landblk 'Case-Set empty list' refuse $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-1212' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'malformed'
+landblk 'Case-Set duplicate ids' refuse $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-4545' "$T/drop-one.tsv" $'AB-R1\tAPPROVE\t@PID@\n' 'malformed'
 # F4: dropped DIAG row + approved raise (rc 1, raise can accept the worse row — that is intended; the point is it is WORSE)
-landblk 'F4 drop template-diag, no raise'        refuse $'c\n\nArch-Review: AB-F1' "$T/nodiag.tsv" $'AB-F1\tAPPROVE\t@PID@\n' 'DIE: harness/board-baseline.tsv is WORSE'
+landblk 'F4 drop template-diag, no raise'        refuse $'c' "$T/nodiag.tsv" $'' 'DIE: harness/board-baseline.tsv is WORSE'
 # F5: TMPDIR unwritable makes baseline-ceiling.sh's mktemp fail (trap -> rc 2); an approved raise cannot accept it.
 # csfile mktemp uses an explicit /tmp path so only the ceiling's mktemp -d (honors TMPDIR) fails.
 landblk_f5() {
   git reset -q --hard "$gbase"; cp "$T/baseline.orig" harness/board-baseline.tsv; echo x >> marker; git add -A
-  git commit -qm $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1'
+  git commit -qm $'c\n\nBaseline-Raise: AB-R1'
   local pid; pid="$(git diff "$gbase" HEAD | git patch-id --stable | cut -d' ' -f1)"
-  printf 'id\tverdict\tpatch_id\nAB-F1\tAPPROVE\t%s\nAB-R1\tAPPROVE\t%s\n' "$pid" "$pid" > "$T/reviews.tsv"
+  printf 'id\tverdict\tpatch_id\nAB-R1\tAPPROVE\t%s\n' "$pid" > "$T/reviews.tsv"
   local rc=0
   ( set -euo pipefail
     die() { echo "DIE: $*"; exit 97; }
     MAIN="$M"; AB="$T"; wt="$G"; base="$gbase"; head="$(git rev-parse HEAD)"
     DEC_REPO="$N"; DEC_PATH=lwc-rust-migrate/decisions.tsv
     DEC_SHA="$(git -C "$N" rev-parse --verify HEAD)"
+    main_run() { local r="$1"; shift; "$MAIN/$r" "$@"; }
+    main_data() { printf "%s\n" "$MAIN/$1"; }
     export TMPDIR=/nonexistent
     eval "$blk"; exit 0
   ) > "$T/out.land" 2>&1 || rc=$?
@@ -405,7 +387,7 @@ rc=0
   unset DEC_SHA
   git -C "$G" reset -q --hard "$gbase"
   cp "$T/drop-one.tsv" "$G/harness/board-baseline.tsv"; echo x >> "$G/marker"; git -C "$G" add -A
-  git -C "$G" commit -qm $'c\n\nArch-Review: AB-F1\nBaseline-Raise: AB-R1\nCase-Set: D-9999'
+  git -C "$G" commit -qm $'c\n\nBaseline-Raise: AB-R1\nCase-Set: D-9999'
   head="$(git -C "$G" rev-parse HEAD)"
   eval "$blk"; exit 0
 ) > "$T/out.notes-missing" 2>&1 || rc=$?
@@ -415,11 +397,17 @@ else bad "mutation missing notes -> rc $rc (want 2)"; sed 's/^/       /' "$T/out
 # --- r5 mutations ---
 MSG_OBS='obs sha256 mismatch for js-eval'
 
+# Both forgers latch only onto a js-eval run whose --outputFile is under the scope dir (that
+# mutation's BOARD_LOG_DIR). Unscoped, they matched any concurrent board's js-eval (another land,
+# the official board), clobbered that run's obs instead of ours (our mutation then FAILs with no
+# mismatch line) and made the foreign board fail with a spurious obs sha256 mismatch.
 start_obs_writer() {
-  local mode="$1" swap="$2"
+  local mode="$1" swap="$2" scope="$3"
+  [ -n "$scope" ] || { echo "start_obs_writer: scope dir required" >&2; exit 2; }
   python3 -c '
 import os, sys, time
 mode, swap = sys.argv[1], sys.argv[2]
+scope = os.path.realpath(sys.argv[3]) + os.sep
 logdir = ""
 while True:
     if not logdir:
@@ -443,7 +431,7 @@ while True:
                     path = args[i + 1]
                 elif "board-js-eval" in a and a.endswith(".json"):
                     path = a
-            if path:
+            if path and os.path.realpath(path).startswith(scope):
                 logdir = os.path.dirname(path)
                 break
     if logdir:
@@ -455,7 +443,7 @@ while True:
             except OSError:
                 pass
     time.sleep(0.05)
-' "$mode" "$swap" &
+' "$mode" "$swap" "$scope" &
   WRITER_PID=$!
 }
 
@@ -472,7 +460,7 @@ inject
 FAKE="$T/fakewt2"; mkdir -p "$FAKE"
 ln -sfn "$R/crates" "$FAKE/crates"
 rm -rf "$FAKE/harness"; cp -a "$H" "$FAKE/harness"
-start_obs_writer garbage ""; wpid=$WRITER_PID
+mkdir -p "$T/log.ow"; start_obs_writer garbage "" "$T/log.ow"; wpid=$WRITER_PID
 rc=0; BOARD_LOG_DIR="$T/log.ow" CRATES_ROOT="$R/crates" BOARD_REPO_ROOT="$R" \
   "$R/harness/board.sh" --root="$FAKE" js-eval > "$T/out.ow" 2>&1 || rc=$?
 kill "$wpid" 2>/dev/null || true; wait "$wpid" 2>/dev/null || true
@@ -493,7 +481,7 @@ print("js-eval\\tcounts\\t2 1 0")
 for i in P: print("js-eval\\tpassed\\t"+i)
 print("js-eval\\tfailed\\t"+jp2)
 ')"
-start_obs_writer idswap "$swap"; wpid=$WRITER_PID
+mkdir -p "$T/log.swap"; start_obs_writer idswap "$swap" "$T/log.swap"; wpid=$WRITER_PID
 rc=0; BOARD_LOG_DIR="$T/log.swap" CRATES_ROOT="$R/crates" BOARD_REPO_ROOT="$R" \
   "$R/harness/board.sh" --root="$FAKE" js-eval > "$T/out.swap" 2>&1 || rc=$?
 kill "$wpid" 2>/dev/null || true; wait "$wpid" 2>/dev/null || true
@@ -505,10 +493,12 @@ restore
 # outcome must be rc 2 + obs sha256 mismatch, or the true RATCHET REGRESSION — never green
 # and never a forged (equal/hidden-regression) verdict.
 start_obs_flipper() {
-  local forged="$1" wlog="$2"
+  local forged="$1" wlog="$2" scope="$3"
+  [ -n "$scope" ] || { echo "start_obs_flipper: scope dir required" >&2; exit 2; }
   python3 -c '
 import os, sys, time
 forged = open(sys.argv[1]).read()
+scope = os.path.realpath(sys.argv[2]) + os.sep
 if not forged.endswith("\n"):
     forged += "\n"
 deadline = time.time() + 180
@@ -536,7 +526,7 @@ while time.time() < deadline:
                     path = args[i + 1]
                 elif "board-js-eval" in a and a.endswith(".json"):
                     path = a
-            if path:
+            if path and os.path.realpath(path).startswith(scope):
                 logdir = os.path.dirname(path)
                 obs = os.path.join(logdir, "obs", "js-eval.tsv")
                 break
@@ -562,7 +552,7 @@ while time.time() < deadline:
     time.sleep(0.01)
 print("flipper: timeout waiting for published obs", flush=True)
 sys.exit(1)
-' "$forged" > "$wlog" 2>&1 &
+' "$forged" "$scope" > "$wlog" 2>&1 &
   WRITER_PID=$!
 }
 FAKE="$T/fakewt-flip"; mkdir -p "$FAKE"
@@ -572,7 +562,7 @@ for i in 1 2 3; do
   restore
   inject
   rm -rf "$FAKE/harness"; cp -a "$H" "$FAKE/harness"
-  start_obs_flipper "$T/flip.forged" "$T/flip.$i.writer.log"; wpid=$WRITER_PID
+  mkdir -p "$T/log.flip.$i"; start_obs_flipper "$T/flip.forged" "$T/flip.$i.writer.log" "$T/log.flip.$i"; wpid=$WRITER_PID
   rc=0; BOARD_LOG_DIR="$T/log.flip.$i" CRATES_ROOT="$R/crates" BOARD_REPO_ROOT="$R" \
     "$R/harness/board.sh" --root="$FAKE" js-eval > "$T/out.flip.$i" 2>&1 || rc=$?
   kill "$wpid" 2>/dev/null || true; wait "$wpid" 2>/dev/null || true

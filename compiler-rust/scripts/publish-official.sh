@@ -2,7 +2,10 @@
 # Publish a VALID official board's artifacts to the durable store: <store>/<src>/{official-<src>.tgz, board.txt, template-diag[-napi].json,
 #   template-diag[-napi].soundness.json, csr-*.tsv, OFFICIAL_BOARD.txt}.
 # The store FS has no rename(2): files are copied in, OFFICIAL_BOARD.txt LAST as the completion marker carrying
-# sha256s of the other two. Consumers must require OFFICIAL_BOARD.txt and verify those sha256s. Refuses to overwrite an existing <src> dir with different bytes.
+# sha256s of the other two. Consumers must require OFFICIAL_BOARD.txt and verify those sha256s. Refuses to
+# overwrite a completed <src> dir (one that already has official-<src>.tgz or OFFICIAL_BOARD.txt) with different
+# bytes. A logs-only dir created first by official-board.sh copy_official_run_logs (D-0275 store-first) is not a
+# publish; artifacts are copied into it.
 # Usage: publish-official.sh <srcsha> <napisha> <parse5sha> <store-official-dir>
 set -euo pipefail
 src="$1" napi="$2" p5="$3" store="$4"
@@ -50,6 +53,7 @@ src_snapshot_sha256_12=$src
 commit=$OFFICIAL_COMMIT
 commit_repo=lwc-compiler-rust@main
 parse5_rust_commit=${OFFICIAL_PARSE5_COMMIT:?}
+parse5_rust_clone_head=${OFFICIAL_PARSE5_CLONE_HEAD:?}
 notes_commit=${OFFICIAL_NOTES_COMMIT:?}
 external_inputs_sha256_12=${OFFICIAL_INPUTS_SHA:?}
 external_inputs_lock=harness/external-inputs.lock
@@ -70,8 +74,12 @@ if bad="$(awk '!/^[a-z0-9_]+=[^ ]+$/ || /^[a-z0-9_]+=(unknown|\?)$/ {print NR": 
   echo "!! PUBLISH FAILED: OFFICIAL_BOARD.txt has non key=value or placeholder (unknown/?) line(s): $bad" >&2; exit 5
 elif [ $? -ne 1 ]; then echo "!! PUBLISH FAILED: manifest check could not run" >&2; exit 5; fi
 if [ -d "$store/$src" ]; then
-  if cmp -s "$store/$src/official-$src.tgz" "$stage/official-$src.tgz"; then echo "store: $store/$src already published (identical)"; exit 0; fi
-  echo "!! PUBLISH REFUSED: $store/$src exists with different bytes" >&2; exit 5
+  if [ -e "$store/$src/official-$src.tgz" ] || [ -e "$store/$src/OFFICIAL_BOARD.txt" ]; then
+    if [ -f "$store/$src/official-$src.tgz" ] && cmp -s "$store/$src/official-$src.tgz" "$stage/official-$src.tgz"; then
+      echo "store: $store/$src already published (identical)"; exit 0
+    fi
+    echo "!! PUBLISH REFUSED: $store/$src exists with different bytes" >&2; exit 5
+  fi
 fi
 mkdir -p "$store/$src"
 cp "$stage/official-$src.tgz" "$stage/board.txt" "$stage/template-diag.json" "$stage/template-diag-napi.json" "$stage/template-diag.soundness.json" "$stage/template-diag-napi.soundness.json" "$store/$src/" \

@@ -12,8 +12,10 @@ die3() { echo "!! style-parse-errors: $*" >&2; exit 3; }
 [ $# -ge 1 ] && [ $# -le 2 ] || die3 "usage: $0 <repo-root> [log-file]"
 repo="$1"; log="${2:-$(mktemp /tmp/style-fixtures.XXXXXX.log)}"
 [ -d "$repo/crates/lwc-style/tests/parse-errors" ] || die3 "no $repo/crates/lwc-style/tests/parse-errors"
-rc=0; (cd "$repo" && env -u LWC_FIXTURE -u LWC_FIXTURES -u LWC_STYLE_DIFF LWC_STYLE_STRICT=1 cargo test --locked -p lwc-style --test fixtures) > "$log" 2>&1 || rc=$?
-[ $rc -eq 0 ] || die3 "cargo test -p lwc-style --test fixtures (LWC_STYLE_STRICT=1) failed rc=$rc; log $log"
+# shellcheck source=cargo-locked.sh
+source "$(cd "$(dirname "$0")" && pwd)/cargo-locked.sh"
+rc=0; (cd "$repo" && unset LWC_FIXTURE LWC_FIXTURES LWC_STYLE_DIFF && export LWC_STYLE_STRICT=1 && cargo_locked test -p lwc-style --test fixtures) > "$log" 2>&1 || rc=$?
+[ $rc -eq 0 ] || die3 "lwc-style fixtures (LWC_STYLE_STRICT=1) failed rc=$rc; log $log"
 re='^upstream fixtures: ([0-9]+)/([0-9]+); parse-errors: ([0-9]+)/([0-9]+)$'
 n=0; out=""
 while IFS= read -r line; do

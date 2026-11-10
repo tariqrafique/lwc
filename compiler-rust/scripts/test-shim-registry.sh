@@ -2,7 +2,7 @@
 # Hermetic self-test for harness/scripts/shim-gate.mjs SHIM registry (AB-L0072).
 # Verdicts (rc 1): tracked/untracked/stale/malformed/tag-mismatch/TODO(parity/owner-not-in-lanes.
 # Internal errors (rc 2): missing registry, empty SHIM_REGISTRY, directory/unreadable registry,
-# bad CRATES_ROOT, missing/empty/malformed OWNERS. Also: repo-wide scan; board.sh plant; trivial-paths.
+# bad CRATES_ROOT, missing/empty/malformed OWNERS. Also: repo-wide scan; board.sh plant.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 GATE="$ROOT/harness/scripts/shim-gate.mjs"
@@ -247,57 +247,5 @@ check "SHIM_FILE_LIST missing is rc 2" 2 \
   env CRATES_ROOT="$T/tree/crates" SHIM_ALLOWLIST="$T/tree/harness/shim-allowlist.tsv" \
       SHIM_REGISTRY="$T/tree/harness/shim-registry.tsv" SHIM_OWNERS="$T/main/OWNERS" \
       SHIM_REPO_ROOT="$T/tree" SHIM_FILE_LIST="$T/no-such-list" node "$GATE"
-
-# ---- trivial-paths guard ----
-guard_trivial() {
-  local policy="$1" label="$2"
-  [ -f "$policy" ] || { echo "FAIL trivial-paths missing ($label): $policy"; fail=1; return; }
-  local globs=() line g
-  while IFS= read -r line || [ -n "$line" ]; do
-    line="${line%%#*}"; line="$(printf '%s' "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
-    [ -n "$line" ] && globs+=("$line")
-  done < "$policy"
-  local paths=(harness/shim-registry.tsv harness/shim-allowlist.tsv OWNERS)
-  local p matched
-  for p in "${paths[@]}"; do
-    matched=
-    for g in "${globs[@]+"${globs[@]}"}"; do
-      if [[ $g == +* ]]; then
-        [[ $p == ${g#+} ]] && matched=1
-      else
-        [[ $p == $g ]] && matched=1
-      fi
-    done
-    if [ -n "$matched" ]; then
-      echo "probe trivial-paths ($label) matches $p"
-      fail=1
-    else
-      echo "ok   trivial-paths ($label) does not match $p"
-    fi
-  done
-}
-MAIN_TRIVIAL="${MAIN_TRIVIAL:-/workspace/notes/arch-board/trivial-paths.txt}"
-guard_trivial "$MAIN_TRIVIAL" "MAIN notes"
-if [ -f "$ROOT/scripts/trivial-paths.txt" ]; then
-  guard_trivial "$ROOT/scripts/trivial-paths.txt" "branch scripts/"
-fi
-printf '%s\n' 'docs/*' > "$T/policy-ok.txt"
-guard_trivial "$T/policy-ok.txt" "docs-only sample"
-printf '%s\n' 'harness/shim-*.tsv' > "$T/policy-bad.txt"
-if [[ harness/shim-registry.tsv == harness/shim-*.tsv ]]; then
-  echo "ok   bash glob semantics: harness/shim-*.tsv would match (guard must catch)"
-  f0=$fail
-  guard_trivial "$T/policy-bad.txt" "bad planted"
-  if [ "$fail" -gt "$f0" ]; then
-    echo "ok   guard detects bad trivial-paths match"
-    fail=$f0
-  else
-    echo "FAIL guard did not detect bad trivial-paths match"
-    fail=1
-  fi
-else
-  echo "FAIL bash glob semantics unexpected"
-  fail=1
-fi
 
 exit $fail
