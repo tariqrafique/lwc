@@ -1518,6 +1518,13 @@
    "expected.html": "<fixture-test>\n  [object Promise]\n</fixture-test>"
   }
  },
+ "scope-token": {
+  "reason": "D-0242 known-limitation: scope-token async renders [object Promise] (upstream .skip W-17972327; async runtime stringifies the template promise)",
+  "outputs": {
+   "error-ssr.txt": "",
+   "expected-ssr.html": "<fixture-test class=\"lwc-6a8uqob2ku4-host\" data-lwc-host-scope-token=\"lwc-6a8uqob2ku4-host\">\n  [object Promise]\n</fixture-test>"
+  }
+ },
  "scoped-slots/advanced": {
   "reason": "upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync",
   "outputs": {

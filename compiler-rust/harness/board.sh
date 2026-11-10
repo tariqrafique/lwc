@@ -291,6 +291,33 @@ for s in "${suites[@]}"; do
   [ $crc -le 1 ] || { rowfail+=("$s: grep crash markers failed (rc=$crc)"); err=0; }
   tag=""; if [[ "$DIAG" == *" $s "* ]]; then tag="  (diagnostic row: not option coverage; case set still ratcheted)"; fi
   printf '%-22s %s%s%s%s\n' "$s" "$(tail -1 <<< "$lines")" "$tag" "$([ "$err" != 0 ] && echo '  !! WORKER CRASH')" "$([ "$vrc" -gt 1 ] && echo "  !! vitest exit $vrc")"
+  # D-0242: scope-token async passes (0 skipped) and is printed here. The file bytes are
+  # SCOPE_TOKEN_ASYNC_LIMITATION.line plus one LF, written by test/ssr.render.test.ts.
+  # That writer emits no CR. Compare the file as stored.
+  if [[ "$s" == ssr-render || "$s" == ssr-render-* ]]; then
+    _rt="${SSR_RUNTIME:-dist}"
+    case "$_rt" in dist|src) ;; *) rowfail+=("$s: SSR_RUNTIME must be dist or src, got '$_rt'"); _rt=dist;; esac
+    klf="$testdir/.ssr-render-out/rust-${mode}-${_rt}/known-limitation.txt"
+    kl_want='known-limitation: ssr-render-async scope-token (D-0242) both backends render [object Promise]'
+    if [ "$mode" = async ]; then
+      if [ ! -f "$klf" ]; then
+        rowfail+=("$s: missing D-0242 known-limitation log ($klf)")
+      else
+        cat -- "$klf"
+        kl_expect="$(mktemp)"
+        printf '%s\n' "$kl_want" > "$kl_expect"
+        kl_cmp=0
+        cmp -s "$kl_expect" "$klf" || kl_cmp=$?
+        rm -f "$kl_expect"
+        if [ "$kl_cmp" -ne 0 ]; then
+          rowfail+=("$s: known-limitation log is not the D-0242 scope-token line")
+        fi
+      fi
+    elif [ -f "$klf" ]; then
+      rowfail+=("$s: unexpected known-limitation log (D-0242 names async scope-token only)")
+      cat -- "$klf"
+    fi
+  fi
   judge_row "$s" "$vrc" "$lines" "$err" "$cap_out" "${cap_json:-}" "$pat"
 done
 # PLAN §3 item 4 / Arch 03112c1: semantic-diff row on this run's crate H-1 pairs.

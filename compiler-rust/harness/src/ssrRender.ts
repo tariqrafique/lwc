@@ -22,7 +22,51 @@ export const CUSTOM_LOADER = `${LWC}/ssr-compiler/src/__tests__/utils/custom-loa
  * (`@lwc/ssr-runtime` → `@lwc/ssr-runtime/src`, vitest.shared.mjs) actually runs against.
  */
 export const SSR_RUNTIME_KIND = (process.env.SSR_RUNTIME ?? 'dist') as 'dist' | 'src';
-export const SSR_RUNTIME_ESM = SSR_RUNTIME_KIND === 'src' ? `${LWC}/ssr-runtime/src/index.ts` : `${LWC}/ssr-runtime/dist/index.js`;
+export const SSR_RUNTIME_SRC = `${LWC}/ssr-runtime/src/index.ts`;
+export const SSR_RUNTIME_DIST = `${LWC}/ssr-runtime/dist/index.js`;
+export const SSR_RUNTIME_ESM = SSR_RUNTIME_KIND === 'src' ? SSR_RUNTIME_SRC : SSR_RUNTIME_DIST;
+
+/**
+ * D-0242 stated rule for ssr-render rows (not a per-test special case).
+ * These fixtures print ssr-runtime export `.name`s. The dist bundle renames the SSR stub
+ * `unwrap` to `unwrap$1` (it collides with observable-membrane's `unwrap`). That rename is a
+ * runtime-build artifact, so these rows always bundle and render against the TypeScript source,
+ * the same entry upstream's vitest alias uses. Every other ssr-render row uses the suite runtime
+ * (`SSR_RUNTIME`, default dist). ssr_render_api is not this rule: it compares the two backends
+ * under the suite runtime.
+ */
+export const SRC_RUNTIME_FIXTURES = [
+    'barrel-lwc-exports/export-all',
+    'barrel-lwc-exports/export-all-alias',
+    'barrel-lwc-exports/export-named',
+] as const;
+
+const SRC_RUNTIME_FIXTURE_SET = new Set<string>(SRC_RUNTIME_FIXTURES);
+
+export function ssrRenderRuntime(rel: string): { kind: 'dist' | 'src'; esm: string } {
+    if (SRC_RUNTIME_FIXTURE_SET.has(rel)) return { kind: 'src', esm: SSR_RUNTIME_SRC };
+    return { kind: SSR_RUNTIME_KIND, esm: SSR_RUNTIME_ESM };
+}
+
+/**
+ * D-0242: upstream `.skip` markers that ssr-render and ssr_render_api still run.
+ * scope-token is W-17972327 (CI flake). wire/errors/throws-when-colliding-prop-then-method
+ * is an engine-core dev/prod difference. Any other `.skip` stays skipped.
+ * scope-token in async mode is not a skip: both backends render `[object Promise]`, and the
+ * board prints `SCOPE_TOKEN_ASYNC_LIMITATION.line`.
+ */
+export const UNSKIPPED_UPSTREAM_SKIPS = [
+    'scope-token',
+    'wire/errors/throws-when-colliding-prop-then-method',
+] as const;
+
+export const SCOPE_TOKEN_ASYNC_LIMITATION = {
+    fixture: 'scope-token',
+    mode: 'async' as const,
+    line: 'known-limitation: ssr-render-async scope-token (D-0242) both backends render [object Promise]',
+};
+
+const UNSKIPPED_UPSTREAM_SKIP_SET = new Set<string>(UNSKIPPED_UPSTREAM_SKIPS);
 
 const req = createRequire(`${LWC}/rollup-plugin/package.json`);
 const { rollup } = req('rollup') as typeof import('rollup');
@@ -247,14 +291,17 @@ export function fixturePluginOptions(opts: { dirname: string; experimentalComple
 /** Mirrors upstream fixtures.spec.ts `compileFixture`; returns the ESM bundle text (externals pinned via `paths`). */
 export async function bundleFixture(backend: CompilerBackend, opts: {
     entry: string; dirname: string; experimentalComplexExpressions?: boolean; ssrMode: SsrMode; apiVersion?: number;
+    /** Absolute ssr-runtime entry. Default is the suite runtime. ssr-render passes `ssrRenderRuntime(rel).esm`. */
+    runtimeEsm?: string;
 }): Promise<string> {
+    const runtimeEsm = opts.runtimeEsm ?? SSR_RUNTIME_ESM;
     return bundleLwc(backend, {
         entrySource: `export { default } from "${opts.entry}";`,
         external: ['lwc', '@lwc/ssr-runtime', 'vitest'],
         pluginOptions: fixturePluginOptions({ ...opts, targetSSR: true }),
         // Upstream lets node resolve these from the fixture dir to the same @lwc/ssr-runtime instance the spec imports;
-        // pin to the same absolute dist file the test imports so hooks (sanitizeHtmlContent) are shared.
-        paths: { lwc: SSR_RUNTIME_ESM, '@lwc/ssr-runtime': SSR_RUNTIME_ESM },
+        // pin to the same absolute file the test imports so hooks (sanitizeHtmlContent) are shared.
+        paths: { lwc: runtimeEsm, '@lwc/ssr-runtime': runtimeEsm },
     });
 }
 
@@ -266,6 +313,11 @@ export function existsUp(dir: string, file: string): boolean {
         const b = path.basename(dir);
         if (b === '__tests__' || b === '') return false;
     }
+}
+
+/** True when an upstream `.skip` still applies. D-0242 rows in `UNSKIPPED_UPSTREAM_SKIPS` return false. */
+export function ssrUpstreamSkip(dirname: string, rel: string): boolean {
+    return existsUp(dirname, '.skip') && !UNSKIPPED_UPSTREAM_SKIP_SET.has(rel);
 }
 
 export function listFixtures(root = FIXTURES_ROOT): string[] {

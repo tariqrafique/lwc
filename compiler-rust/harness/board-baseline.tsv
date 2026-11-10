@@ -1985,7 +1985,7 @@ ssr-asyncYield	passed	ssr behavioral [asyncYield] wire/invocation-sequence/prop
 ssr-asyncYield	passed	ssr behavioral [asyncYield] wire/method
 ssr-asyncYield	passed	ssr behavioral [asyncYield] wire/static-field
 ssr-asyncYield	passed	ssr behavioral [asyncYield] wire/static-method
-ssr-render	counts	384 0 5
+ssr-render	counts	389 0 0
 ssr-render	passed	ssr render [rust/sync/dist] adjacent-text-nodes/preserve-comments-off/comments-at-end
 ssr-render	passed	ssr render [rust/sync/dist] adjacent-text-nodes/preserve-comments-off/comments-then-element
 ssr-render	passed	ssr render [rust/sync/dist] adjacent-text-nodes/preserve-comments-off/deep
@@ -2071,6 +2071,9 @@ ssr-render	passed	ssr render [rust/sync/dist] attribute-static
 ssr-render	passed	ssr render [rust/sync/dist] attribute-style/basic
 ssr-render	passed	ssr render [rust/sync/dist] attribute-style/dynamic
 ssr-render	passed	ssr render [rust/sync/dist] attributes-aria
+ssr-render	passed	ssr render [rust/sync/dist] barrel-lwc-exports/export-all
+ssr-render	passed	ssr render [rust/sync/dist] barrel-lwc-exports/export-all-alias
+ssr-render	passed	ssr render [rust/sync/dist] barrel-lwc-exports/export-named
 ssr-render	passed	ssr render [rust/sync/dist] comments-basic
 ssr-render	passed	ssr render [rust/sync/dist] comments-foreach
 ssr-render	passed	ssr render [rust/sync/dist] comments-if
@@ -2220,6 +2223,7 @@ ssr-render	passed	ssr render [rust/sync/dist] render-with-unused-default-templat
 ssr-render	passed	ssr render [rust/sync/dist] reordered-duplicate-nonexistent-slots/light
 ssr-render	passed	ssr render [rust/sync/dist] reordered-duplicate-nonexistent-slots/shadow
 ssr-render	passed	ssr render [rust/sync/dist] reserved-keywords
+ssr-render	passed	ssr render [rust/sync/dist] scope-token
 ssr-render	passed	ssr render [rust/sync/dist] scoped-slots/advanced
 ssr-render	passed	ssr render [rust/sync/dist] scoped-slots/basic
 ssr-render	passed	ssr render [rust/sync/dist] scoped-slots/complex
@@ -2352,6 +2356,7 @@ ssr-render	passed	ssr render [rust/sync/dist] wire/errors/throws-when-adapter-is
 ssr-render	passed	ssr render [rust/sync/dist] wire/errors/throws-when-adapter-is-nested-member-expression
 ssr-render	passed	ssr render [rust/sync/dist] wire/errors/throws-when-adapter-is-non-module-binding
 ssr-render	passed	ssr render [rust/sync/dist] wire/errors/throws-when-called-with-no-arguments
+ssr-render	passed	ssr render [rust/sync/dist] wire/errors/throws-when-colliding-prop-then-method
 ssr-render	passed	ssr render [rust/sync/dist] wire/errors/throws-when-computed-prop-is-expression
 ssr-render	passed	ssr render [rust/sync/dist] wire/errors/throws-when-computed-prop-is-let-variable
 ssr-render	passed	ssr render [rust/sync/dist] wire/errors/throws-when-computed-prop-is-regexp-literal
@@ -2370,12 +2375,7 @@ ssr-render	passed	ssr render [rust/sync/dist] wire/method
 ssr-render	passed	ssr render [rust/sync/dist] wire/static-field
 ssr-render	passed	ssr render [rust/sync/dist] wire/static-method
 ssr-render	passed	ssr render: stray rejections every unhandled rejection is an error some fixture expects
-ssr-render	skipped	ssr render [rust/sync/dist] barrel-lwc-exports/export-all
-ssr-render	skipped	ssr render [rust/sync/dist] barrel-lwc-exports/export-all-alias
-ssr-render	skipped	ssr render [rust/sync/dist] barrel-lwc-exports/export-named
-ssr-render	skipped	ssr render [rust/sync/dist] scope-token
-ssr-render	skipped	ssr render [rust/sync/dist] wire/errors/throws-when-colliding-prop-then-method
-ssr-render-async	counts	384 0 5
+ssr-render-async	counts	389 0 0
 ssr-render-async	passed	ssr render [rust/async/dist] adjacent-text-nodes/preserve-comments-off/comments-at-end
 ssr-render-async	passed	ssr render [rust/async/dist] adjacent-text-nodes/preserve-comments-off/comments-then-element
 ssr-render-async	passed	ssr render [rust/async/dist] adjacent-text-nodes/preserve-comments-off/deep
@@ -2461,6 +2461,9 @@ ssr-render-async	passed	ssr render [rust/async/dist] attribute-static
 ssr-render-async	passed	ssr render [rust/async/dist] attribute-style/basic
 ssr-render-async	passed	ssr render [rust/async/dist] attribute-style/dynamic
 ssr-render-async	passed	ssr render [rust/async/dist] attributes-aria
+ssr-render-async	passed	ssr render [rust/async/dist] barrel-lwc-exports/export-all
+ssr-render-async	passed	ssr render [rust/async/dist] barrel-lwc-exports/export-all-alias
+ssr-render-async	passed	ssr render [rust/async/dist] barrel-lwc-exports/export-named
 ssr-render-async	passed	ssr render [rust/async/dist] comments-basic
 ssr-render-async	passed	ssr render [rust/async/dist] comments-foreach
 ssr-render-async	passed	ssr render [rust/async/dist] comments-if
@@ -2610,6 +2613,7 @@ ssr-render-async	passed	ssr render [rust/async/dist] render-with-unused-default-
 ssr-render-async	passed	ssr render [rust/async/dist] reordered-duplicate-nonexistent-slots/light
 ssr-render-async	passed	ssr render [rust/async/dist] reordered-duplicate-nonexistent-slots/shadow
 ssr-render-async	passed	ssr render [rust/async/dist] reserved-keywords
+ssr-render-async	passed	ssr render [rust/async/dist] scope-token
 ssr-render-async	passed	ssr render [rust/async/dist] scoped-slots/advanced
 ssr-render-async	passed	ssr render [rust/async/dist] scoped-slots/basic
 ssr-render-async	passed	ssr render [rust/async/dist] scoped-slots/complex
@@ -2742,6 +2746,7 @@ ssr-render-async	passed	ssr render [rust/async/dist] wire/errors/throws-when-ada
 ssr-render-async	passed	ssr render [rust/async/dist] wire/errors/throws-when-adapter-is-nested-member-expression
 ssr-render-async	passed	ssr render [rust/async/dist] wire/errors/throws-when-adapter-is-non-module-binding
 ssr-render-async	passed	ssr render [rust/async/dist] wire/errors/throws-when-called-with-no-arguments
+ssr-render-async	passed	ssr render [rust/async/dist] wire/errors/throws-when-colliding-prop-then-method
 ssr-render-async	passed	ssr render [rust/async/dist] wire/errors/throws-when-computed-prop-is-expression
 ssr-render-async	passed	ssr render [rust/async/dist] wire/errors/throws-when-computed-prop-is-let-variable
 ssr-render-async	passed	ssr render [rust/async/dist] wire/errors/throws-when-computed-prop-is-regexp-literal
@@ -2760,12 +2765,7 @@ ssr-render-async	passed	ssr render [rust/async/dist] wire/method
 ssr-render-async	passed	ssr render [rust/async/dist] wire/static-field
 ssr-render-async	passed	ssr render [rust/async/dist] wire/static-method
 ssr-render-async	passed	ssr render: stray rejections every unhandled rejection is an error some fixture expects
-ssr-render-async	skipped	ssr render [rust/async/dist] barrel-lwc-exports/export-all
-ssr-render-async	skipped	ssr render [rust/async/dist] barrel-lwc-exports/export-all-alias
-ssr-render-async	skipped	ssr render [rust/async/dist] barrel-lwc-exports/export-named
-ssr-render-async	skipped	ssr render [rust/async/dist] scope-token
-ssr-render-async	skipped	ssr render [rust/async/dist] wire/errors/throws-when-colliding-prop-then-method
-ssr-render-asyncYield	counts	384 0 5
+ssr-render-asyncYield	counts	389 0 0
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] adjacent-text-nodes/preserve-comments-off/comments-at-end
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] adjacent-text-nodes/preserve-comments-off/comments-then-element
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] adjacent-text-nodes/preserve-comments-off/deep
@@ -2851,6 +2851,9 @@ ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] attribute-static
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] attribute-style/basic
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] attribute-style/dynamic
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] attributes-aria
+ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] barrel-lwc-exports/export-all
+ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] barrel-lwc-exports/export-all-alias
+ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] barrel-lwc-exports/export-named
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] comments-basic
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] comments-foreach
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] comments-if
@@ -3000,6 +3003,7 @@ ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] render-with-unuse
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] reordered-duplicate-nonexistent-slots/light
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] reordered-duplicate-nonexistent-slots/shadow
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] reserved-keywords
+ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] scope-token
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] scoped-slots/advanced
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] scoped-slots/basic
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] scoped-slots/complex
@@ -3132,6 +3136,7 @@ ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/errors/throw
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/errors/throws-when-adapter-is-nested-member-expression
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/errors/throws-when-adapter-is-non-module-binding
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/errors/throws-when-called-with-no-arguments
+ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/errors/throws-when-colliding-prop-then-method
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/errors/throws-when-computed-prop-is-expression
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/errors/throws-when-computed-prop-is-let-variable
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/errors/throws-when-computed-prop-is-regexp-literal
@@ -3150,11 +3155,6 @@ ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/method
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/static-field
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/static-method
 ssr-render-asyncYield	passed	ssr render: stray rejections every unhandled rejection is an error some fixture expects
-ssr-render-asyncYield	skipped	ssr render [rust/asyncYield/dist] barrel-lwc-exports/export-all
-ssr-render-asyncYield	skipped	ssr render [rust/asyncYield/dist] barrel-lwc-exports/export-all-alias
-ssr-render-asyncYield	skipped	ssr render [rust/asyncYield/dist] barrel-lwc-exports/export-named
-ssr-render-asyncYield	skipped	ssr render [rust/asyncYield/dist] scope-token
-ssr-render-asyncYield	skipped	ssr render [rust/asyncYield/dist] wire/errors/throws-when-colliding-prop-then-method
 csr-render	counts	390 0 0
 csr-render	passed	csr render ssr [rust] adjacent-text-nodes/preserve-comments-off/comments-at-end
 csr-render	passed	csr render ssr [rust] adjacent-text-nodes/preserve-comments-off/comments-then-element
@@ -12816,7 +12816,7 @@ template-api	passed	template-api v67/svg/xlink/static-optimized/boolean-true
 template-api	passed	template-api v67/svg/xlink/static-optimized/expression-value
 template-api	passed	template-api v67/svg/xlink/static-optimized/literal-value
 template-api	passed	template-api v67/svg/xlink/static-optimized/literal-value-starting-with-hash
-ssr_render_api	counts	2710 0 14
+ssr_render_api	counts	2724 0 0
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] finds 387 ssr fixtures
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/adjacent-text-nodes/preserve-comments-off/comments-at-end
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/adjacent-text-nodes/preserve-comments-off/comments-then-element
@@ -13054,6 +13054,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/render-with-unused
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/reordered-duplicate-nonexistent-slots/light
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/reordered-duplicate-nonexistent-slots/shadow
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/reserved-keywords
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/scope-token
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/scoped-slots/advanced
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/scoped-slots/basic
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/scoped-slots/complex
@@ -13186,6 +13187,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/wire/errors/throws
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/wire/errors/throws-when-adapter-is-nested-member-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/wire/errors/throws-when-adapter-is-non-module-binding
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/wire/errors/throws-when-called-with-no-arguments
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/wire/errors/throws-when-colliding-prop-then-method
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/wire/errors/throws-when-computed-prop-is-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/wire/errors/throws-when-computed-prop-is-let-variable
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] omitted/wire/errors/throws-when-computed-prop-is-regexp-literal
@@ -13439,6 +13441,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/render-with-unused-def
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/reordered-duplicate-nonexistent-slots/light
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/reordered-duplicate-nonexistent-slots/shadow
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/reserved-keywords
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/scope-token
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/scoped-slots/advanced
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/scoped-slots/basic
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/scoped-slots/complex
@@ -13571,6 +13574,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/wire/errors/throws-whe
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/wire/errors/throws-when-adapter-is-nested-member-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/wire/errors/throws-when-adapter-is-non-module-binding
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/wire/errors/throws-when-called-with-no-arguments
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/wire/errors/throws-when-colliding-prop-then-method
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/wire/errors/throws-when-computed-prop-is-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/wire/errors/throws-when-computed-prop-is-let-variable
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v57/wire/errors/throws-when-computed-prop-is-regexp-literal
@@ -13824,6 +13828,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/render-with-unused-def
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/reordered-duplicate-nonexistent-slots/light
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/reordered-duplicate-nonexistent-slots/shadow
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/reserved-keywords
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/scope-token
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/scoped-slots/advanced
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/scoped-slots/basic
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/scoped-slots/complex
@@ -13956,6 +13961,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/wire/errors/throws-whe
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/wire/errors/throws-when-adapter-is-nested-member-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/wire/errors/throws-when-adapter-is-non-module-binding
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/wire/errors/throws-when-called-with-no-arguments
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/wire/errors/throws-when-colliding-prop-then-method
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/wire/errors/throws-when-computed-prop-is-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/wire/errors/throws-when-computed-prop-is-let-variable
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v58/wire/errors/throws-when-computed-prop-is-regexp-literal
@@ -14209,6 +14215,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/render-with-unused-def
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/reordered-duplicate-nonexistent-slots/light
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/reordered-duplicate-nonexistent-slots/shadow
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/reserved-keywords
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/scope-token
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/scoped-slots/advanced
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/scoped-slots/basic
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/scoped-slots/complex
@@ -14341,6 +14348,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/wire/errors/throws-whe
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/wire/errors/throws-when-adapter-is-nested-member-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/wire/errors/throws-when-adapter-is-non-module-binding
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/wire/errors/throws-when-called-with-no-arguments
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/wire/errors/throws-when-colliding-prop-then-method
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/wire/errors/throws-when-computed-prop-is-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/wire/errors/throws-when-computed-prop-is-let-variable
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v59/wire/errors/throws-when-computed-prop-is-regexp-literal
@@ -14594,6 +14602,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/render-with-unused-def
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/reordered-duplicate-nonexistent-slots/light
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/reordered-duplicate-nonexistent-slots/shadow
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/reserved-keywords
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/scope-token
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/scoped-slots/advanced
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/scoped-slots/basic
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/scoped-slots/complex
@@ -14726,6 +14735,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/wire/errors/throws-whe
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/wire/errors/throws-when-adapter-is-nested-member-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/wire/errors/throws-when-adapter-is-non-module-binding
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/wire/errors/throws-when-called-with-no-arguments
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/wire/errors/throws-when-colliding-prop-then-method
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/wire/errors/throws-when-computed-prop-is-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/wire/errors/throws-when-computed-prop-is-let-variable
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v65/wire/errors/throws-when-computed-prop-is-regexp-literal
@@ -14979,6 +14989,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/render-with-unused-def
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/reordered-duplicate-nonexistent-slots/light
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/reordered-duplicate-nonexistent-slots/shadow
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/reserved-keywords
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/scope-token
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/scoped-slots/advanced
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/scoped-slots/basic
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/scoped-slots/complex
@@ -15111,6 +15122,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/wire/errors/throws-whe
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/wire/errors/throws-when-adapter-is-nested-member-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/wire/errors/throws-when-adapter-is-non-module-binding
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/wire/errors/throws-when-called-with-no-arguments
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/wire/errors/throws-when-colliding-prop-then-method
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/wire/errors/throws-when-computed-prop-is-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/wire/errors/throws-when-computed-prop-is-let-variable
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v66/wire/errors/throws-when-computed-prop-is-regexp-literal
@@ -15364,6 +15376,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/render-with-unused-def
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/reordered-duplicate-nonexistent-slots/light
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/reordered-duplicate-nonexistent-slots/shadow
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/reserved-keywords
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/scope-token
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/scoped-slots/advanced
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/scoped-slots/basic
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/scoped-slots/complex
@@ -15496,6 +15509,7 @@ ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/wire/errors/throws-whe
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/wire/errors/throws-when-adapter-is-nested-member-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/wire/errors/throws-when-adapter-is-non-module-binding
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/wire/errors/throws-when-called-with-no-arguments
+ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/wire/errors/throws-when-colliding-prop-then-method
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/wire/errors/throws-when-computed-prop-is-expression
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/wire/errors/throws-when-computed-prop-is-let-variable
 ssr_render_api	passed	ssr_render_api [rust/sync/dist] v67/wire/errors/throws-when-computed-prop-is-regexp-literal
@@ -15527,19 +15541,5 @@ ssr_render_api	passed	ssr_render_api: parse5 compile-only v66/parse5/unclosed-di
 ssr_render_api	passed	ssr_render_api: parse5 compile-only v66/parse5/valid-control
 ssr_render_api	passed	ssr_render_api: parse5 compile-only v67/parse5/unclosed-div
 ssr_render_api	passed	ssr_render_api: parse5 compile-only v67/parse5/valid-control
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] omitted/scope-token
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] omitted/wire/errors/throws-when-colliding-prop-then-method
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v57/scope-token
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v57/wire/errors/throws-when-colliding-prop-then-method
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v58/scope-token
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v58/wire/errors/throws-when-colliding-prop-then-method
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v59/scope-token
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v59/wire/errors/throws-when-colliding-prop-then-method
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v65/scope-token
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v65/wire/errors/throws-when-colliding-prop-then-method
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v66/scope-token
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v66/wire/errors/throws-when-colliding-prop-then-method
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v67/scope-token
-ssr_render_api	skipped	ssr_render_api [rust/sync/dist] v67/wire/errors/throws-when-colliding-prop-then-method
 template-diag	counts	0 0
 template-diag-napi	counts	0 0

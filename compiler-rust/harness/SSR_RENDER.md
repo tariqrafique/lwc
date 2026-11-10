@@ -27,6 +27,16 @@ each with a reason:
   The suite collects those rejections and checks each one against the expected error texts.
 - asyncYield: dynamic-imports/basic and rehydration differ in microtask ordering.
 
-Skips: upstream `.skip` files (scope-token, wire/errors/throws-when-colliding-prop-then-method).
-With the dist runtime only, barrel-lwc-exports/{export-all,export-all-alias,export-named}
-are also skipped, because the dist bundle renames `unwrap` to `unwrap$1`.
+Runtime rule (D-0242, `ssrRenderRuntime`): barrel-lwc-exports/{export-all,export-all-alias,export-named}
+always bundle and render against the ssr-runtime TypeScript source. The dist build renames
+`unwrap` to `unwrap$1`, which is a runtime-build artifact. Every other row uses `SSR_RUNTIME`
+(default dist).
+
+Upstream `.skip` markers stay skipped except two rows (`ssrUpstreamSkip`), which run on both
+backends against JS-oracle output:
+- scope-token (W-17972327 CI flake). sync and asyncYield match expected-ssr.html. async renders
+  `[object Promise]` on both backends; that cell passes via the async golden and is logged on
+  the board as `known-limitation: ssr-render-async scope-token (D-0242) both backends render [object Promise]`.
+- wire/errors/throws-when-colliding-prop-then-method (engine-core dev/prod). SSR renders error-ssr.txt.
+
+The same two rows run in ssr_render_api (7 apiVersion cells each).

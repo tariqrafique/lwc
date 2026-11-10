@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { compareError, observeError, type CompareResult, type ErrorObservation } from '../src/compareError';
 import { getBackend, type CompilerBackend } from '../src/backend';
-import { bundleFixture, existsUp, listFixtures, FIXTURES_ROOT, SSR_RUNTIME_ESM, SSR_RUNTIME_KIND, type SsrMode } from '../src/ssrRender';
+import { bundleFixture, existsUp, listFixtures, ssrRenderRuntime, ssrUpstreamSkip, FIXTURES_ROOT, SSR_RUNTIME_ESM, SSR_RUNTIME_KIND, SSR_RUNTIME_SRC, SCOPE_TOKEN_ASYNC_LIMITATION, type SsrMode } from '../src/ssrRender';
 import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import { formatHTML } from '/workspace/lwc/scripts/test-utils/format-html';
 
@@ -22,8 +22,10 @@ const SSR_MODE = (process.env.SSR_MODE ?? 'sync') as SsrMode;
 if (!['sync', 'async', 'asyncYield'].includes(SSR_MODE)) throw new Error(`bad SSR_MODE ${SSR_MODE}`);
 const BACKEND_ID = process.env.LWC_COMPILER_BACKEND ?? 'js';
 
-if (!fs.existsSync(SSR_RUNTIME_ESM)) {
-    throw new Error(`${SSR_RUNTIME_ESM} missing: build it with \`cd "$LWC_ORACLE" && npx nx run @lwc/ssr-runtime:build\``);
+for (const esm of [SSR_RUNTIME_ESM, SSR_RUNTIME_SRC]) {
+    if (!fs.existsSync(esm)) {
+        throw new Error(`${esm} missing: build it with \`cd "$LWC_ORACLE" && npx nx run @lwc/ssr-runtime:build\``);
+    }
 }
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -37,7 +39,7 @@ fs.mkdirSync(OUT, { recursive: true });
 
 const fixtures = listFixtures();
 let backend: CompilerBackend;
-let runtime: any;
+const runtimeByEsm = new Map<string, any>();
 type Row = { fixture: string; pass: boolean; oracle: 'expected' | 'mode-golden'; stage: 'compile' | 'render' | 'ok'; errorCompare?: CompareResult; err: string; wantErr: string; htmlMatch: boolean; html?: string };
 const report: Row[] = [];
 
@@ -52,7 +54,14 @@ const MODE_REASONS: Record<string, (rel: string, html: string) => string | undef
     // @lwc/ssr-runtime setStaticInternals() only builds an asyncYield generator for 'asyncYield'; 'async' falls through to
     // makeGenerateMarkupSync, which does `markup += renderTemplate(...)` on the compiler's `async function __lwcTmpl`,
     // so the shadow content renders as "[object Promise]" and template-time errors become unhandled rejections.
-    async: (_rel, html) => (html.includes('[object Promise]') ? 'upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync' : undefined),
+    async: (rel, html) => {
+        if (!html.includes('[object Promise]')) return undefined;
+        // D-0242: this cell is a logged known-limitation, not one more silent async golden.
+        if (rel === SCOPE_TOKEN_ASYNC_LIMITATION.fixture) {
+            return 'D-0242 known-limitation: scope-token async renders [object Promise] (upstream .skip W-17972327; async runtime stringifies the template promise)';
+        }
+        return 'upstream-async-runtime: async templates stringified as [object Promise] by makeGenerateMarkupSync';
+    },
     // asyncYield awaits between yields, so microtasks queued in constructor/connectedCallback run before the template
     // reads the field; expected.html encodes sync ordering.
     asyncYield: (rel) => ({
@@ -70,12 +79,17 @@ const recorded: ModeGolden = {};
 const strayRejections: string[] = [];
 let savedRejectionListeners: Function[] = [];
 const onStray = (reason: any) => { strayRejections.push(String(reason?.message ?? reason)); };
+let scopeTokenAsyncLimitation = false;
 
 beforeAll(async () => {
     backend = await getBackend();
-    runtime = await import(SSR_RUNTIME_ESM);
-    // Upstream vi.mock('@lwc/ssr-runtime') installs this hook once.
-    try { runtime.setHooks({ sanitizeHtmlContent: (c: unknown) => String(c) }); } catch { /* already overridden */ }
+    const needed = new Set<string>(fixtures.map((d) => ssrRenderRuntime(path.relative(FIXTURES_ROOT, d)).esm));
+    for (const esm of needed) {
+        const runtime = await import(esm);
+        // Upstream vi.mock('@lwc/ssr-runtime') installs this hook once per runtime instance.
+        try { runtime.setHooks({ sanitizeHtmlContent: (c: unknown) => String(c) }); } catch { /* already overridden */ }
+        runtimeByEsm.set(esm, runtime);
+    }
     if (SSR_MODE === 'async') {
         savedRejectionListeners = process.listeners('unhandledRejection');
         process.removeAllListeners('unhandledRejection');
@@ -91,17 +105,16 @@ afterAll(() => {
         const sorted = Object.fromEntries(Object.entries(recorded).sort(([a], [b]) => a.localeCompare(b)));
         writeGolden(GOLDEN, sorted, 1);
     }
+    // D-0242: the file is exactly the limitation line plus one LF. This writer never emits CR.
+    if (scopeTokenAsyncLimitation) {
+        const payload = `${SCOPE_TOKEN_ASYNC_LIMITATION.line}\n`;
+        if (payload.includes('\r')) throw new Error('known-limitation log contains CR');
+        fs.writeFileSync(path.join(OUT, 'known-limitation.txt'), payload);
+    }
     const file = path.join(OUT, 'report.json');
     fs.writeFileSync(file, JSON.stringify({ backend: BACKEND_ID, mode: SSR_MODE, runtime: SSR_RUNTIME_KIND, napi: process.env.LWC_COMPILER_NAPI_PATH ?? null, strayRejections, rows: report.sort((a, b) => a.fixture.localeCompare(b.fixture)) }, null, 1));
 });
 
-// Known oracle divergences, each with its reason. Upstream's vitest aliases @lwc/ssr-runtime to its TS src; the built
-// dist (rollup) renames the SSR stub `unwrap` to `unwrap$1` (it collides with observable-membrane's `unwrap`), and these
-// fixtures render the runtime's exported function `.name`s. They pass with SSR_RUNTIME=src.
-const DIST_RUNTIME_SKIPS: Record<string, string> = SSR_RUNTIME_KIND !== 'dist' ? {} : Object.fromEntries(
-    ['barrel-lwc-exports/export-all', 'barrel-lwc-exports/export-all-alias', 'barrel-lwc-exports/export-named']
-        .map((f) => [f, 'dist bundle renames ssr-runtime `unwrap` → `unwrap$1`; fixture prints export fn names (run SSR_RUNTIME=src)']),
-);
 const read = (p: string) => fs.readFileSync(p, 'utf8');
 const allExpectedErrors = new Set<string>();
 
@@ -109,8 +122,8 @@ describe.concurrent(`ssr render [${BACKEND_ID}/${SSR_MODE}/${SSR_RUNTIME_KIND}]`
     it('finds 387 ssr fixtures', () => expect(fixtures.length).toBe(387));
     for (const dirname of fixtures) {
         const rel = path.relative(FIXTURES_ROOT, dirname);
-        // Upstream skips: `.skip` marker files (testFixtureDir existsUp): scope-token, wire/errors/throws-when-colliding-prop-then-method.
-        const opts = existsUp(dirname, '.only') ? { only: true } : existsUp(dirname, '.skip') || rel in DIST_RUNTIME_SKIPS ? { skip: true } : {};
+        // D-0242: scope-token and the colliding wire fixture run despite upstream `.skip`. Other `.skip` markers stay skipped.
+        const opts = existsUp(dirname, '.only') ? { only: true } : ssrUpstreamSkip(dirname, rel) ? { skip: true } : {};
         it(rel, opts, async () => {
             const config = JSON.parse(read(path.join(dirname, 'config.json')));
             const errorFile = config?.ssrFiles?.error ?? 'error.txt';
@@ -121,8 +134,9 @@ describe.concurrent(`ssr render [${BACKEND_ID}/${SSR_MODE}/${SSR_RUNTIME_KIND}]`
             let stage: Row['stage'] = 'ok';
             let code: string | undefined;
             let compileError: ErrorObservation | undefined;
+            const rt = ssrRenderRuntime(rel);
             try {
-                code = await bundleFixture(backend, { entry: config.entry, dirname, experimentalComplexExpressions: config.experimentalComplexExpressions, ssrMode: SSR_MODE });
+                code = await bundleFixture(backend, { entry: config.entry, dirname, experimentalComplexExpressions: config.experimentalComplexExpressions, ssrMode: SSR_MODE, runtimeEsm: rt.esm });
             } catch (err: any) {
                 stage = 'compile';
                 compileError = observeError(err);
@@ -136,7 +150,7 @@ describe.concurrent(`ssr render [${BACKEND_ID}/${SSR_MODE}/${SSR_RUNTIME_KIND}]`
                 let error: string | undefined;
                 try {
                     const Component = (await import(/* @vite-ignore */ outFile)).default;
-                    result = formatHTML(await runtime.serverSideRenderComponent('fixture-test', Component, config?.props ?? {}, config?.styleDedupe ?? true, SSR_MODE));
+                    result = formatHTML(await runtimeByEsm.get(rt.esm).serverSideRenderComponent('fixture-test', Component, config?.props ?? {}, config?.styleDedupe ?? true, SSR_MODE));
                 } catch (err: any) {
                     stage = 'render';
                     error = err?.message;
@@ -166,6 +180,9 @@ describe.concurrent(`ssr render [${BACKEND_ID}/${SSR_MODE}/${SSR_RUNTIME_KIND}]`
                 oracle = 'mode-golden';
             }
             const pass = same(want);
+            if (pass && SSR_MODE === SCOPE_TOKEN_ASYNC_LIMITATION.mode && rel === SCOPE_TOKEN_ASYNC_LIMITATION.fixture && got![expectedFile].includes('[object Promise]')) {
+                scopeTokenAsyncLimitation = true;
+            }
             report.push({ fixture: rel, pass, oracle, stage, ...(errorCompare ? { errorCompare } : {}), err: got![errorFile], wantErr: want[errorFile], htmlMatch: got![expectedFile] === expected[expectedFile], ...(pass ? {} : { html: got![expectedFile] }) });
             if (pass && got![errorFile] !== want[errorFile]) expect(errorCompare).toMatchObject({ mode: 'parser', pass: true });
             else expect(got!).toEqual(want);

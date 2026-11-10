@@ -1,5 +1,5 @@
-official board  commit=8e338f93407a  src=811ad3f956d2  napi=5329d9cdadca  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-10T07:49:23-08:00
-napi sha256:5329d9cdadca  pinned=/tmp/lwc-board-snap.9OHWvr/repo/harness/.pins/lwc-compiler-napi.5329d9cdadca.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-10T07:47:05-08:00
+official board  commit=1b562b01f71b  src=ecfcb59de9ad  napi=5329d9cdadca  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-10T09:08:22-08:00
+napi sha256:5329d9cdadca  pinned=/tmp/lwc-board-snap.PkjTN9/repo/harness/.pins/lwc-compiler-napi.5329d9cdadca.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-10T09:06:01-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -7,9 +7,10 @@ template               Tests  568 passed (568)  (diagnostic row: not option cove
 ssr                    Tests  388 passed (388)  (diagnostic row: not option coverage; case set still ratcheted)
 ssr-async              Tests  388 passed (388)  (diagnostic row: not option coverage; case set still ratcheted)
 ssr-asyncYield         Tests  388 passed (388)  (diagnostic row: not option coverage; case set still ratcheted)
-ssr-render             Tests  384 passed | 5 skipped (389)
-ssr-render-async       Tests  384 passed | 5 skipped (389)
-ssr-render-asyncYield  Tests  384 passed | 5 skipped (389)
+ssr-render             Tests  389 passed (389)
+ssr-render-async       Tests  389 passed (389)
+known-limitation: ssr-render-async scope-token (D-0242) both backends render [object Promise]
+ssr-render-asyncYield  Tests  389 passed (389)
 csr-render             Tests  390 passed (390)
 csr-render-template    Tests  570 passed (570)
 template-renderer      Tests  568 passed (568)
@@ -19,14 +20,14 @@ template-options       Tests  67 passed (67)
 ssr_dynamic_imports    Tests  16 passed (16)
 style-api              Tests  829 passed (829)
 template-api           Tests  5671 passed (5671)
-ssr_render_api         Tests  2710 passed | 14 skipped (2724)
+ssr_render_api         Tests  2724 passed (2724)
 template-diag          cases 63224  clean 63116  mismatches 108 (code 2, message 21, level 0, location 0, order 4, missing-diag 50, extra-diag 31)  codegen-unclean 0 (STATIC_EQUAL 46321, REWRITE_EQUAL 16795, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
 template-diag-napi     cases 63224  clean 62027  mismatches 1197 (code 2, message 0, level 0, location 0, order 4, missing-diag 42, extra-diag 29, seam-reject 1120)  codegen-unclean 0 (STATIC_EQUAL 45675, REWRITE_EQUAL 16352, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
 semantic-diff  eq=16795 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=3  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=3 rows=3 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.9OHWvr/notes/decisions.tsv]
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.PkjTN9/notes/decisions.tsv]
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
 style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)
 csr-clusters[ssr]: pass 387 fail 0

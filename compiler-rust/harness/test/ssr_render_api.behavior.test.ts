@@ -7,13 +7,14 @@
 // this path). @lwc/ssr-runtime reads none. Boundary set: {58,59,65,66} + clamp edges 57/67 + omitted.
 // apiVersion goes through the rollup-plugin port like upstream (plugin clamps with getAPIVersionFromNumber; omitted →
 // HIGHEST). No ssr fixture config pins apiVersion. Goldens: goldens/ssr_render_api/<fixture>.json keyed by cell, each
-// {stage, error, html}; JS oracle only. Fixtures upstream marks `.skip` are skipped (as in ssr-render).
+// {stage, error, html}; JS oracle only. Upstream `.skip` markers stay skipped except the D-0242 rows
+// (`ssrUpstreamSkip`: scope-token and wire/errors/throws-when-colliding-prop-then-method).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it, beforeAll } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
-import { bundleFixture, existsUp, listFixtures, FIXTURES_ROOT, SSR_RUNTIME_ESM, SSR_RUNTIME_KIND } from '../src/ssrRender';
+import { bundleFixture, listFixtures, ssrUpstreamSkip, FIXTURES_ROOT, SSR_RUNTIME_ESM, SSR_RUNTIME_KIND } from '../src/ssrRender';
 import { checkGoldenCell, resetGoldenDir, apiLabel, BACKEND_ID, type ApiCell } from '../src/optionRows';
 import { formatHTML } from '/workspace/lwc/scripts/test-utils/format-html';
 
@@ -37,7 +38,7 @@ describe.concurrent(`ssr_render_api [${BACKEND_ID}/sync/${SSR_RUNTIME_KIND}]`, (
     it('finds 387 ssr fixtures', () => { if (fixtures.length !== 387) throw new Error(`got ${fixtures.length}`); });
     for (const dirname of fixtures) {
         const rel = path.relative(FIXTURES_ROOT, dirname);
-        const opts = existsUp(dirname, '.skip') ? { skip: true } : {};
+        const opts = ssrUpstreamSkip(dirname, rel) ? { skip: true } : {};
         for (const v of CELLS) {
             it(`${apiLabel(v)}/${rel}`, opts, async () => {
                 const config = JSON.parse(fs.readFileSync(path.join(dirname, 'config.json'), 'utf8'));
