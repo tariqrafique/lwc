@@ -324,3 +324,81 @@
   - harness/board.sh:313 `printf '%s\n' "$(tr -d '\r' < "$klf")"` when a known-limitation file unexpectedly exists for a non-async ssr-render row.
   These two `tr -d '\r'` lines were added in 883369c (the D-0242 unskips). No board rows were judged; land refused before the board check.
 - Cleanup: worktree /workspace/wt/ssr-skips removed without --force. `git branch -d bot/ssr-skips` refused (not merged, land failed); leftover ref deleted with `git branch -D` so the next land is not blocked (`local branch bot/ssr-skips already exists`). main remains 8e338f9, clean. No official board run; no napi id change (still 5329d9cdadca on 811ad3f956d2). Waiting for a fixed agent/ssr-skips tip.
+
+## 2026-11-10 08:33 PST (America/Los_Angeles)
+- Gatekeeper script cleanup LANDED as main **35b4835281570075e25b6714cf905d0952bc48a1** ("Remove land-agent-branch local bot ref and worktree on every exit"). One commit on bot/harness-lab-cleanup via land.sh (log /workspace/scratch/harness/lab-cleanup-land.log). No official board published (not required; see below). Last official remains **811ad3f956d2** on the previous main 8e338f9. Worktree /workspace/wt/harness-lab and branch bot/harness-lab-cleanup removed after land (no --force).
+- land-agent-branch.sh now records whether this run created `bot/<slice>` and `../wt/<slice>`, then cleans both from an EXIT/INT/TERM trap on every exit path (success, land.sh failure, fetch/ancestry failure as a no-op if nothing was created, signals). Cleanup order: `git worktree remove` without `--force` (dirty tree: loud error, exit nonzero, leave the branch); then `git branch -D -- bot/<slice>` only if this run created that exact ref. Never deletes a pre-existing ref, never anything outside `bot/<slice>`, never a remote.
+- Plants in scripts/test-land-agent-branch.sh (still wired from test-land-classify.sh): existing bad-name and non-descendant plants kept; added pre-existing-ref-untouched; failed stub land (rc != 0 and no leftover bot/<slice> or worktree); success stub land (same cleanup asserts). Proof before land: tests rc 0 with the fix; after planting the bug (no created_* flags, traps commented out) rc 1 with leftover `bot/ssr-skips` and `wt/ssr-skips` on the failed-land plant; restored fix rc 0.
+- land.sh board for scripts-only: YES, the internal board check is unconditional (land.sh ~274-294). This land (only scripts/land-agent-branch.sh + scripts/test-land-agent-branch.sh) ran `board.sh check` (rc 0 in 117s) and `judge-all` (22 rows equal to pre-land 8e338f9). land.sh does **not** publish an official board; none was run. The extra `test-land-classify.sh` / `test-board-ratchet.sh` block (land.sh:102-107) is separate and is intended to fire when those script paths change; the current trigger regex ends with `))$` so it did not match these two files and those two extra scripts did not run in this land. Plants were proven separately before land.
+
+### Task B: land.sh gates vs run-portable-board.sh (audit only, no code change)
+run-portable-board.sh:31 `exec`s run-board.sh. run-board.sh then: parse5-pin-check (31), golden-gate (34, always), c8-checks.sh (44), ensure-deps (49), style-parse-errors (53), `$hs/board.sh "$@"` (58; default portable call passes no `check` arg; also `env -u BOARD_RATCHET_UPDATE`), board-footers (67). c8-checks.sh: workspace-path-scan (41), test-source-scan-tracked (43), cargo fmt --all --check (48, advisory unless C8_FMT_GATE=1), cargo check --workspace --all-targets (60), clippy-ratchet (63), cargo test --workspace (65), napi-pack + ssr-oracle-gate (70-75). harness/board.sh always runs shim-gate (331), option_gate (332), golden-io-guard (333).
+
+| land-path check | portable? | evidence / notes |
+|---|---|---|
+| rebase + wt-not-main + clean trees | no | land.sh:66-75. Portable does not rebase or refuse a dirty main. |
+| parse5-pin-check.sh | yes | land.sh:88; run-board.sh:31 |
+| log_box_configs | no | land.sh:38-60, called at 90 and 281 |
+| oracle-root / style_corpus_root | yes | land.sh:91-95; run-portable-board.sh:16-20; run-board.sh:23-29; c8-checks.sh:29-39 |
+| cargo check --workspace --all-targets --locked | yes | land.sh:96; c8-checks.sh:60 |
+| cargo test --workspace --locked | yes | land.sh:97; c8-checks.sh:65 |
+| cargo build -p lwc-compiler-napi --release --locked | partial | land.sh:101. Portable builds via napi-pack.sh (c8-checks.sh:70), not this invocation. |
+| test-land-classify.sh (conditional) | no | land.sh:102-103. Bundles parse5-pin/shim-registry/oracle-root/board-footers/semantic-diff-row plants, lint-shell-pipes --self-test, workspace-path-scan --self-test, test-source-scan-tracked, land-agent-branch plants, baseline-ceiling --self-test, ratchet-ceiling --self-test, lint-no-stripped-compare --self-test + scan, check-land-main-refs --self-test. |
+| test-board-ratchet.sh (same condition) | no | land.sh:107 |
+| check-land-main-refs.sh --check | no | land.sh:117-119 (unconditional) |
+| shim-gate.mjs --self-test (conditional) | no | land.sh:121. Portable board.sh:331 runs the gate, not `--self-test`. |
+| test-notes-precheck.sh + test-board-footers.sh (conditional) | no | land.sh:122. Portable run-board.sh:67 runs board-footers.sh as a producer, not the tests. |
+| lint-shell-pipes.sh | no | land.sh:124 (unconditional) |
+| workspace-path-scan.sh | yes | land.sh:125; c8-checks.sh:41 |
+| lint-no-stripped-compare.sh (N5, D-0219) | no | land.sh:128 (unconditional). This is the gate that refused agent/ssr-skips. |
+| ratchet-ceiling.sh | no | land.sh:131. Distinct from clippy-ratchet. |
+| baseline-ceiling.sh + Case-Set / decisions.tsv mint checks | no | land.sh:147-258. board.sh judges the committed baseline but does not run baseline-ceiling.sh or require Case-Set D-ids minted by migrate. |
+| shim-gate.mjs | yes | land.sh:262; harness/board.sh:331 |
+| option_gate | yes (always on board) | land.sh:263-266 conditional on compiler/napi/shared/option paths; harness/board.sh:332 always |
+| golden-io-guard.sh | yes (always on board) | land.sh:267-269 conditional on harness/{test,src}/; harness/board.sh:333 always |
+| ensure-deps.sh | yes (always) | land.sh:270-273 conditional on harness/{goldens,test,src,fixtures,scripts}/; run-board.sh:49 always |
+| golden-gate.sh | yes (always) | land.sh:270-273 same condition; run-board.sh:34 always |
+| board.sh check --root=$wt + judge-all + measured baseline-ceiling | partial | land.sh:282-294 unconditional (`check` mode, MAIN's board.sh, then board-baseline.mjs judge-all vs `git show $head:harness/board-baseline.tsv`, then baseline-ceiling on the measured TSV). run-board.sh:58 runs `$hs/board.sh "$@"` without `check` in the documented portable invocation; it does not re-run judge-all or baseline-ceiling against the pre-land blob. |
+| clippy-ratchet.sh | n/a (not a land.sh gate) | Portable c8-checks.sh:63 runs it; land.sh never calls it. |
+| test-source-scan-tracked.sh (standalone) | yes in portable | c8-checks.sh:43 always. land.sh only via test-land-classify.sh (conditional). |
+| cargo fmt --all --check | n/a (not a land.sh gate) | c8-checks.sh:48 (advisory unless C8_FMT_GATE=1). |
+| napi-pack + ssr-oracle-gate | n/a (not a land.sh gate) | c8-checks.sh:70-75. |
+| style-parse-errors + board-footers producer | n/a (not a land.sh gate) | run-board.sh:53 and 67. |
+| lint-shared-tables.sh | n/a | Neither land.sh nor run-portable-board.sh calls it. |
+
+Missing from run-portable-board.sh (land-path checks it does not run):
+1. lint-no-stripped-compare.sh (N5 / D-0219)
+2. lint-shell-pipes.sh
+3. check-land-main-refs.sh
+4. ratchet-ceiling.sh
+5. baseline-ceiling.sh (committed claim, Case-Set, and the post-board measured re-check)
+6. test-land-classify.sh
+7. test-board-ratchet.sh
+8. log_box_configs
+9. land.sh `board.sh check` + judge-all vs git-shown committed baseline + measured-vs-pre-land ceiling agreement
+10. shim-gate.mjs --self-test (land conditional)
+11. test-notes-precheck.sh and test-board-footers.sh (land conditional)
+12. rebase / worktree-identity / clean-main gates
+13. the exact `cargo build -p lwc-compiler-napi --release` line (portable uses napi-pack instead)
+
+No official board this run. df was 46G free before the slice. Did not fetch remotes, did not delete any GitHub branch, did not fix agent/ssr-skips.
+
+## 2026-11-10 08:35 PST (America/Los_Angeles)
+- Gatekeep rerun of agent/ssr-skips: DID NOT LAND. Main is still **35b4835281570075e25b6714cf905d0952bc48a1**. Official board not published; last official remains **811ad3f956d2** (napi 5329d9cdadca, from when main was 8e338f9). Did not rebase the agent branch. Did not run land-agent-branch.sh. Did not fix any code. No GitHub writes.
+- Preflight: main clean at 35b4835; no stray compiler-rust worktrees; df 46G free.
+- Fetch (lwc-github): tip **00b5ec33c8178cacc8f466e9182f3b4caf1b1877** matched. It is a descendant of 549427d (fast-forward: one new commit). It is **not** a descendant of main 35b4835. merge-base(main, tip) = 8e338f93407aa2a5e41e6b83808da19afb8fbde2. Commits on tip not in main: 883369c, 549427d, 00b5ec3. Commit on main not in tip: 35b4835 (land-agent-branch cleanup).
+- land-agent-branch.sh still requires `git merge-base --is-ancestor "$main_sha" "$tip"` (lines 65-67) and would die: `tip 00b5ec33c8178cacc8f466e9182f3b4caf1b1877 of agent/ssr-skips is not a descendant of main 35b4835281570075e25b6714cf905d0952bc48a1`. STOP per instructions; did not rebase; did not invoke the script.
+- Rebase would be clean (informational only): `git merge-tree --write-tree 35b4835 00b5ec3` rc 0 (tree dac1660c5e9a3530b9bdcf8f81721965361ccaa6). Disjoint files: 35b4835 only touched scripts/land-agent-branch.sh and scripts/test-land-agent-branch.sh.
+- Commit beyond 549427d: **00b5ec3** "Compare the D-0242 known-limitation file byte for byte." Files: harness/board.sh, harness/test/ssr.render.test.ts. `git grep tr -d 00b5ec3 -- harness/board.sh` has no hits. The old 305/313 `tr -d '\r'` sites now `cat`/`cmp -s` the known-limitation file.
+- Baseline gate (tip vs main board-baseline.tsv): VERDICT PASS. Same as the prior 549427d vs 8e338f9 run (tip baseline identical to 549427d; main baseline identical to 8e338f9). 29 skip→pass, 0 forbidden, 0 unclassified. Log: /workspace/scratch/harness/ssr-skips-baseline-diff-2.log.
+- Waiting for a tip that has current main as an ancestor (cloud rebase of agent/ssr-skips onto 35b4835).
+
+## 2026-11-10 08:53 PST (America/Los_Angeles)
+- Gatekeep of agent/ssr-skips via local mechanical rebase (Migrate: do not wait on a cloud force-push). LANDED main **7c7ae1bee9005f6d65f28efb780aa188d2437d57**. Official board NOT published (notes decisions snapshot drift). Last official remains **811ad3f956d2** (napi 5329d9cdadca). No GitHub writes. No agent code was edited.
+- Preflight: main clean at 35b4835281570075e25b6714cf905d0952bc48a1; no stray compiler-rust worktrees; df 46G free.
+- Worktree /workspace/wt/ssr-skips on bot/ssr-skips at 00b5ec33c8178cacc8f466e9182f3b4caf1b1877. `git rebase 35b4835` rc 0 (3/3, no conflicts). Rebased tip **7c7ae1bee9005f6d65f28efb780aa188d2437d57**. `git diff 00b5ec3 7c7ae1b -- . ':!scripts/land-agent-branch.sh' ':!scripts/test-land-agent-branch.sh'` empty (agent content unchanged). The two script files match `git diff 8e338f9 35b4835`.
+- Baseline gate (rebased tip vs main): VERDICT PASS. 29 skip→pass, 0 forbidden, 0 unclassified. Same four rows as before (ssr-render{,-async,-asyncYield} 384/0/5→389/0/0; ssr_render_api 2710/0/14→2724/0/0). Log: /workspace/scratch/harness/ssr-skips-baseline-diff-3.log.
+- Land: `(cd /workspace/wt/ssr-skips && /workspace/lwc-compiler-rust/scripts/land.sh)` matching land-agent-branch.sh. First attempt rc=1 (log /workspace/scratch/harness/ssr-skips-land-3.log): board check failed on **semantic-diff** (`!! BOARD FAILED: semantic-diff row (rc=2)`) because `/tmp` writes hit ENOSPC. `df -h` still had tens of GB, but `df -i /` was 100% (0 free inodes). Measured SSR rows before the I/O failure were already 389/389/389 and ssr_render_api 2724/2724 (skips 0). Did not change any branch content. Freed only stale `/tmp/land-board.*` leftovers (~372k inodes) and retried the identical land.sh call (appended to the same log). Retry rc=0: board check 22 rows equal in 94s; baseline-ceiling recorded the same 29 skip→pass improvements; `landed: main=7c7ae1bee900 (bot/ssr-skips)`.
+- Cleanup after land: worktree removed without --force; `git branch -d bot/ssr-skips` (merged).
+- Appended one line to /workspace/push/landed-agent-branches.tsv (file created; no prior lines): `agent/ssr-skips	00b5ec33c8178cacc8f466e9182f3b4caf1b1877	7c7ae1bee9005f6d65f28efb780aa188d2437d57`
+- Official board `BOARD_COMMIT=7c7ae1bee9005f6d65f28efb780aa188d2437d57 scripts/official-board.sh` rc=3 (log /workspace/scratch/harness/ssr-skips-board.log): `!! BOARD ABORTED: harness/decisions.snapshot.tsv != notes@f887020fe72a37dabf941cba54ec7a82b75c4475 lwc-rust-migrate/decisions.tsv; run scripts/refresh-decisions-snapshot.sh`. The only decisions.tsv delta is the new D-0282 row (notes f887020). Did not run the refresh or land a snapshot commit (that would be a new main change outside this slice). No row diff vs 811ad3f956d2 is available.
