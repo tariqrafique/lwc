@@ -1,8 +1,0 @@
-[
- {"name":"arch-as-after-string-paren","filename":"foo.ts","src":"foo(\")\", x as T);"},
- {"name":"arch-comment-paren-ret","filename":"foo.ts","src":"function f(/* ( */ a): T"},
- {"name":"arch-comment-paren-ret-body","filename":"foo.ts","src":"function f(/* ( */ a): T {}"},
- {"name":"arch-export-enum","filename":"foo.ts","src":"export enum E;"},
- {"name":"arch-ctor-param-prop","filename":"foo.ts","src":"export default class { constructor(public x) {} }"},
- {"name":"arch-unterminated-string","filename":"foo.js","src":"'x;"}
-]

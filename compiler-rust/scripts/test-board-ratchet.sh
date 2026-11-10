@@ -5,8 +5,10 @@
 #   board.sh: equal / injected / improvement / partial update / false-pass-as-equal
 #   F1-F6: every proven false pass of the previous review is refused
 #   Case-Set (D-0255): a removed or newly skipped id needs a cited D-id whose committed decision lists case-set:<row>
-# Needs the oracle (/workspace/lwc, deps built) and a napi binary (harness/lwc-compiler-napi.node or target/release).
-# Exit 0 iff every case behaves.
+# Needs the oracle (/workspace/lwc, deps built) and a napi binary
+# (harness/lwc-compiler-napi.node or target/release/liblwc_compiler_napi.so).
+# land.sh runs this after the napi release build. test-land-classify does not.
+# Exit 0 iff every case behaves. Missing napi is rc 2 (prerequisite).
 set -euo pipefail
 R="$(cd "$(dirname "$0")/.." && pwd)"
 # (5) ensure MAIN's harness deps first so --root mutations actually run tests.

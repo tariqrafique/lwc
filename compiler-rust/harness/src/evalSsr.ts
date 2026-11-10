@@ -3,8 +3,9 @@
 // - `@lwc/ssr-runtime` / `lwc`: LightningElement base + recording setStaticInternals / registerTemplate; other names → no-op fns
 // - `*.css` imports → `default: undefined` (no stylesheet); other imports → recording stub proxies
 import { createRequire } from 'node:module';
+import { oracleRoot } from './oracleRoot';
 
-const req = createRequire('/workspace/lwc/package.json');
+const req = createRequire(`${oracleRoot()}/package.json`);
 const babel = req('@babel/core');
 const cjsPlugin = req('@babel/plugin-transform-modules-commonjs');
 const nsFromPlugin = req('@babel/plugin-transform-export-namespace-from');

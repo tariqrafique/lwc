@@ -10,9 +10,10 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { URLSearchParams } from 'node:url';
 import type { CompilerBackend } from './backend';
+import { oracleRoot } from './oracleRoot';
 
 export type SsrMode = 'sync' | 'async' | 'asyncYield';
-export const LWC = '/workspace/lwc/packages/@lwc';
+export const LWC = `${oracleRoot()}/packages/@lwc`;
 export const FIXTURES_ROOT = `${LWC}/ssr-compiler/src/__tests__/fixtures`;
 export const CUSTOM_LOADER = `${LWC}/ssr-compiler/src/__tests__/utils/custom-loader.js`;
 /**

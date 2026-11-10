@@ -17,8 +17,9 @@ import { createRequire } from 'node:module';
 import { describe, it, expect, beforeAll } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { formatHTML } from '/workspace/lwc/scripts/test-utils/format-html';
+import { oracleRoot } from '../src/oracleRoot';
 
-const LWC = '/workspace/lwc/packages/@lwc';
+const LWC = `${oracleRoot()}/packages/@lwc`;
 const ROOT = `${LWC}/ssr-compiler/src/__tests__/fixtures`;
 const SSR_MODE = (process.env.SSR_MODE ?? process.env.LWC_SSR_MODE ?? 'sync') as 'sync' | 'async' | 'asyncYield';
 if (!['sync', 'async', 'asyncYield'].includes(SSR_MODE)) throw new Error(`bad SSR_MODE ${SSR_MODE}`);

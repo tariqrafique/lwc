@@ -1,5 +1,7 @@
 # LWC compiler migration harness (Phase 0)
 
+Portable / in-repo runs (D-0280): see [IN-REPO.md](IN-REPO.md).
+
 Behavioral parity harness for the `CompilerBackend` seam
 (`transform(src, filename, options) -> { code, map? }` or throws). JS reference: `@lwc/compiler` `transformSync`.
 Rust mirror: `crates/lwc-compiler` (`CompilerBackend` trait + `dispatch`).

@@ -10,8 +10,9 @@ import { describe, it, beforeAll } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalStylesheetModule } from '../src/evalStyle';
 import { checkGoldenCell, findFiles, resetGoldenDir, apiLabel, apiOpt, type ApiCell } from '../src/optionRows';
+import { oracleRoot } from '../src/oracleRoot';
 
-const ROOT = '/workspace/lwc/packages/@lwc/style-compiler/src/__tests__/fixtures';
+const ROOT = `${oracleRoot()}/packages/@lwc/style-compiler/src/__tests__/fixtures`;
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/style-api');
 const fixtures = findFiles(ROOT, 'actual.css').map((f) => path.relative(ROOT, path.dirname(f)));
 export const STYLE_API_CELLS: ApiCell[] = [57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 'omitted'];

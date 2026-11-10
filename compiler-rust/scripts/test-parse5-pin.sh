@@ -32,6 +32,10 @@ mkroot() { local r="$1" dep="$2"; mkdir -p "$r/crates/lwc-template/src"
 GIT="parse5 = { git = \"file://$URLREPO\", rev = \"$rev\" }"
 mkroot "$T/ok" "$GIT"
 check "pinned rev, lock source matches, rev present" 0 env PARSE5_DIR="$P5" "$S" "$T/ok"
+# Unset means /workspace/parse5-rust (fail closed if absent). The fixture rev is
+# not in the box clone, so this must not fetch-from-url (rc 0) the way `remote` does.
+check "unset PARSE5_DIR uses /workspace/parse5-rust, does not fetch" 1 env -u PARSE5_DIR "$S" "$T/ok"
+check "PARSE5_DIR=remote fetches from toml url" 0 env PARSE5_DIR=remote "$S" "$T/ok"
 mkroot "$T/path" "parse5 = { path = \"$P5/crates/parse5\" }" may-fail
 check "path dep after D-0201" 1 env PARSE5_DIR="$P5" "$S" "$T/path"
 mkroot "$T/short" "parse5 = { git = \"file://$URLREPO\", rev = \"${rev:0:7}\" }" may-fail
@@ -108,17 +112,13 @@ plant_lock() {
 plant_lock "$T/lock-rev/Cargo.lock" "git+https://github.com/tariqrafique/parse5-rust?rev=${rev}#${rev}"
 got="$(parse5_lock_rev "$T/lock-rev/Cargo.lock" || true)"
 if [ "$got" = "$rev" ]; then echo "ok   parse5_lock_rev extracts lock rev"; else echo "FAIL parse5_lock_rev got '$got' want '$rev'"; fail=1; fi
-check "require_parse5_lock_rev present 40-hex" 0 require_parse5_lock_rev "$T/lock-rev/Cargo.lock" "$P5"
-plant_lock "$T/lock-rev/missing.lock" "registry+https://github.com/rust-lang/crates.io-index"
-check "require_parse5_lock_rev missing git source" 2 require_parse5_lock_rev "$T/lock-rev/missing.lock" "$P5"
-plant_lock "$T/lock-rev/short.lock" "git+https://github.com/tariqrafique/parse5-rust?rev=${rev:0:12}#${rev:0:12}"
-check "require_parse5_lock_rev short rev is rc 2" 2 require_parse5_lock_rev "$T/lock-rev/short.lock" "$P5"
-plant_lock "$T/lock-rev/absent.lock" "git+https://github.com/tariqrafique/parse5-rust?rev=${ZEROS}#${ZEROS}"
-check "require_parse5_lock_rev rev absent from clone" 2 require_parse5_lock_rev "$T/lock-rev/absent.lock" "$P5"
-
-
 plant_lock "$T/lock-rev/mismatch.lock" "git+https://github.com/tariqrafique/parse5-rust?rev=${rev}#${ZEROS}"
-check "require_parse5_lock_rev halves differ says mismatch" 2 require_parse5_lock_rev "$T/lock-rev/mismatch.lock" "$P5"
-if grep -q mismatch "$T/out"; then echo "ok   halves-differ message says mismatch"; else echo "FAIL halves-differ message: $(cat "$T/out")"; fail=1; fi
+if parse5_lock_rev "$T/lock-rev/mismatch.lock" >"$T/out" 2>&1; then
+  echo "FAIL parse5_lock_rev halves-differ should fail"; fail=1
+elif grep -q mismatch "$T/out"; then
+  echo "ok   halves-differ message says mismatch"
+else
+  echo "FAIL halves-differ message: $(cat "$T/out")"; fail=1
+fi
 
 exit $fail

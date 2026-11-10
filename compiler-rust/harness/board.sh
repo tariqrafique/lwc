@@ -16,8 +16,8 @@
 #   Anything else, including EQUIVALENT-BY-EXECUTION or an unknown value, is unclean.
 #   Semdiff binary + its crate are built from THIS script's tree (MAIN when land.sh runs MAIN's board.sh; the official
 #   snapshot when official-board.sh runs the snapshot's board.sh), never the tree under test. Registry =
-#   ${SEMDIFF_REGISTRY:-/workspace/notes/lwc-rust-migrate/decisions.tsv} (official-board points it at the hashed notes
-#   snapshot). Exec leg stays off (D-0256): do not set TDD_SEMDIFF_EXEC.
+#   ${SEMDIFF_REGISTRY} or /workspace/notes/lwc-rust-migrate/decisions.tsv (official-board points it at the hashed notes
+#   snapshot). Fail-closed if neither is set/present. Exec leg stays off (D-0256): do not set TDD_SEMDIFF_EXEC.
 #   Driver is built into ${TDD_DRIVER_TARGET:-${CARGO_TARGET_DIR:-<repo>/target}/template-diag-driver} from the tree under test.
 #   Report JSON: ${TEMPLATE_DIAG_OUT_DIR:-<row log dir>}/template-diag-<engine>.json, never modified after the run; soundness
 #   stamp template-diag-<engine>.soundness.json next to it is derived from meta.codegenCompare.mode (no UNSOUND path).
@@ -42,7 +42,15 @@
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"   # THIS script's harness: runner, rows, obs writer, comparator
 source "$here/../scripts/cargo-locked.sh"
-ORACLE=/workspace/lwc ORACLE_SHA=b9e8007
+# shellcheck source=oracle-root.sh
+source "$here/scripts/oracle-root.sh"
+ORACLE="$(oracle_root)" || exit 2
+export LWC_ORACLE="$ORACLE" LWC_ROOT="$ORACLE"
+ORACLE_SHA="$(oracle_pin "$here/oracle.pin")" || exit 2
+if [ -z "${SEMDIFF_REGISTRY:-}" ]; then
+  SEMDIFF_REGISTRY="$(notes_decisions_path)" || exit 2
+  export SEMDIFF_REGISTRY
+fi
 do_check=0; root=""; suites=()
 for a in "$@"; do
   case "$a" in
@@ -79,7 +87,7 @@ fi
 blerr=(); blrc=0; blout="$("${BB[@]}" check "$BASELINE" "${ROWS[@]}" 2>&1)" || blrc=$?
 [ $blrc -eq 0 ] || blerr+=("$blout (rc=$blrc)")
 head_sha="$(git -C "$ORACLE" rev-parse HEAD)"
-[[ "$head_sha" == "$ORACLE_SHA"* ]] || { echo "!! ORACLE NOT PINNED: $ORACLE HEAD=$head_sha, want $ORACLE_SHA" >&2; exit 2; }
+[[ "$head_sha" == "$ORACLE_SHA" ]] || { echo "!! ORACLE NOT PINNED: $ORACLE HEAD=$head_sha, want $ORACLE_SHA" >&2; exit 2; }
 dirty="$(git -C "$ORACLE" status --porcelain --untracked-files=all)"
 [ -z "$dirty" ] || { echo "!! ORACLE DIRTY ($ORACLE @ $ORACLE_SHA):" >&2; head -20 <<< "$dirty" >&2; exit 2; }
 "$here/scripts/ensure-deps.sh" "$testdir" || exit 2
@@ -100,7 +108,7 @@ pinned="$pins/lwc-compiler-napi.$hash.node"
 prc=0; find "$pins" -name 'lwc-compiler-napi.*.node' -mtime +1 -delete || prc=$?
 [ $prc -eq 0 ] || echo "warn: pin prune exit $prc (housekeeping only, non-gating; a concurrent board may have pruned first)"
 export LWC_COMPILER_BACKEND=rust LWC_COMPILER_NAPI_PATH="$pinned"
-export PATH="/workspace/lwc/node_modules/.bin:$PATH"
+export PATH="$ORACLE/node_modules/.bin:$PATH"
 # Template diagnostics corpus row: $1=row $2=engine. Prints one board line; any failure -> rowfail (=> !! BOARD FAILED).
 template_diag_row() {
   local row="$1" engine="$2" t0=$SECONDS why="" line
@@ -115,7 +123,7 @@ template_diag_row() {
   unset TDD_SEMDIFF_EXEC
   # D-0238: committed lock records parse5 as a git source; no per-call --config and no snapshot .cargo copy.
   if ! (cd "$sdroot" && cargo_locked build --release -q -p semdiff --target-dir "$sdtgt") >"$out" 2>&1; then why="semdiff build failed"
-  else tenv+=(TDD_SEMDIFF="$sdtgt/release/semdiff" TDD_SEMDIFF_REGISTRY="${SEMDIFF_REGISTRY:-/workspace/notes/lwc-rust-migrate/decisions.tsv}"); fi
+  else tenv+=(TDD_SEMDIFF="$sdtgt/release/semdiff" TDD_SEMDIFF_REGISTRY="$SEMDIFF_REGISTRY"); SEMDIFF_BIN="$sdtgt/release/semdiff"; fi
   case "$engine" in
     crate)
       local manifest="$repo/tools/template-diag-diff/driver/Cargo.toml"
@@ -123,7 +131,7 @@ template_diag_row() {
       if [ -n "$why" ]; then :
       elif [ ! -f "$manifest" ]; then why="driver manifest missing: $manifest"
       elif ! cargo_locked build --release -q --manifest-path "$manifest" --target-dir "$tgt" >>"$out" 2>&1; then why="driver build failed"
-      else tenv+=(TDD_DRIVER="$tgt/release/template-diag-driver"); fi;;
+      else tenv+=(TDD_DRIVER="$tgt/release/template-diag-driver" TDD_EMIT_PAIRS="$dir/h1-pairs"); fi;;
     # napi = the transformSync seam through this board's pinned binary. NON-AUTHORITATIVE (Migrate 2026-11-01): ~1120
     #   seam-rejects ("invalid compile options") under root-cause by Template Diagnostics; only crash/oracle-error gate it.
     napi) tenv+=(TDD_NAPI="$pinned");;
@@ -256,6 +264,7 @@ judge_row() {
   [ ${#why[@]} -eq 0 ] || for w in "${why[@]}"; do rowfail+=("$row: $w (see $out)"); done
 }
 declare -A measured_counts=() obs_written=() obs_sha=() cap_out_for=()
+SEMDIFF_BIN="${SEMDIFF_BIN:-}"
 [ ${#suites[@]} -eq 0 ] && suites=("${ROWS[@]}")
 echo "napi sha256:$hash  pinned=$pinned  oracle=$head_sha(clean)  oracle_repo=$ORACLE  $(date -Iseconds)"   # official-board.sh parses oracle=/oracle_repo= (verified values)
 for s in "${suites[@]}"; do
@@ -284,6 +293,41 @@ for s in "${suites[@]}"; do
   printf '%-22s %s%s%s%s\n' "$s" "$(tail -1 <<< "$lines")" "$tag" "$([ "$err" != 0 ] && echo '  !! WORKER CRASH')" "$([ "$vrc" -gt 1 ] && echo "  !! vitest exit $vrc")"
   judge_row "$s" "$vrc" "$lines" "$err" "$cap_out" "${cap_json:-}" "$pat"
 done
+# PLAN §3 item 4 / Arch 03112c1: semantic-diff row on this run's crate H-1 pairs.
+# --gate strict, no baseline. Registry is SEMDIFF_REGISTRY (notes on the box;
+# official-board's NOTES_COMMIT archive; portable snapshot only when notes are absent).
+sdrow=0
+_td_ran=0
+for _s in "${suites[@]}"; do [ "$_s" = template-diag ] && _td_ran=1; done
+if [ "$_td_ran" -eq 1 ]; then
+  _tdir="${TEMPLATE_DIAG_OUT_DIR:-$logdir}"
+  _tdjson="$_tdir/template-diag-crate.json"
+  _tdman="$_tdir/h1-pairs/manifest.json"
+  _tdout="$_tdir/semantic-diff.json"
+  if [ -z "${SEMDIFF_BIN:-}" ] || [ ! -x "${SEMDIFF_BIN:-}" ]; then
+    echo "!! BOARD FAILED: semantic-diff: semdiff binary missing"; sdrow=1
+  elif [ ! -s "$_tdjson" ]; then
+    echo "!! BOARD FAILED: semantic-diff: producer report missing ($_tdjson)"; sdrow=1
+  else
+    _exp=""
+    if ! _exp="$(node -e '
+const fs=require("fs");
+const r=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
+if (r.schema!=="template-diag-diff/v2" || typeof r.totals?.codegenOnly!=="number") process.exit(2);
+process.stdout.write(String(r.totals.codegenOnly));
+' "$_tdjson")"; then
+      echo "!! BOARD FAILED: semantic-diff: cannot read totals.codegenOnly from $_tdjson"; sdrow=1
+    else
+      _sdrc=0
+      _sdline="$("$here/scripts/semantic-diff-row.sh"         --manifest "$_tdman"         --registry "$SEMDIFF_REGISTRY"         --expect-corpus template-diag-codegen-only         --expect-cases "$_exp"         --semdiff "$SEMDIFF_BIN"         --out "$_tdout")" || _sdrc=$?
+      printf '%s
+' "$_sdline"
+      if [ "$_sdrc" -ne 0 ]; then
+        echo "!! BOARD FAILED: semantic-diff row (rc=$_sdrc)"; sdrow=1
+      fi
+    fi
+  fi
+fi
 shimgate=0; SHIM_REPO_ROOT="$repo" SHIM_OWNERS="$here/../OWNERS" SHIM_REGISTRY="${SHIM_REGISTRY:-$testdir/shim-registry.tsv}" SHIM_ALLOWLIST="${SHIM_ALLOWLIST:-$testdir/shim-allowlist.tsv}" node "$here/scripts/shim-gate.mjs" || shimgate=1
 gate=0; option_gate || gate=1
 gioguard=0; "$here/scripts/golden-io-guard.sh" "$testdir" || gioguard=1
@@ -297,7 +341,7 @@ verify_obs_bytes "before judge"
 ratchet=0
 if [ ${#blerr[@]} -ne 0 ]; then ratchet=1
 elif [ -n "$update" ]; then
-  if [ $gate -eq 0 ] && [ $shimgate -eq 0 ] && [ $gioguard -eq 0 ] && [ ${#norun[@]} -eq 0 ] && [ ${#rowfail[@]} -eq 0 ]; then
+  if [ $gate -eq 0 ] && [ $shimgate -eq 0 ] && [ $gioguard -eq 0 ] && [ $sdrow -eq 0 ] && [ ${#norun[@]} -eq 0 ] && [ ${#rowfail[@]} -eq 0 ]; then
     tmpb="$(mktemp "$BASELINE.tmp.XXXXXX")"; urc=0
     "${BB[@]}" update "$BASELINE" "$priv_obs" "$tmpb" "${ROWS[@]}" || urc=$?
     if [ $urc -eq 0 ]; then mv -f "$tmpb" "$BASELINE"; echo "RATCHET-UPDATE: wrote $BASELINE (commit it)"
@@ -336,4 +380,4 @@ for _r in "${!measured_counts[@]}"; do
   fi
 done
 verify_obs_bytes "before return"
-[ $gate -eq 0 ] && [ $shimgate -eq 0 ] && [ $gioguard -eq 0 ] && [ $ratchet -eq 0 ] && [ ${#norun[@]} -eq 0 ] && [ ${#rowfail[@]} -eq 0 ] && [ ${#blerr[@]} -eq 0 ] || exit 1
+[ $gate -eq 0 ] && [ $shimgate -eq 0 ] && [ $gioguard -eq 0 ] && [ $ratchet -eq 0 ] && [ $sdrow -eq 0 ] && [ ${#norun[@]} -eq 0 ] && [ ${#rowfail[@]} -eq 0 ] && [ ${#blerr[@]} -eq 0 ] || exit 1

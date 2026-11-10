@@ -272,12 +272,14 @@ pub fn prelude(sets: &[LocalizedHelpers]) -> Option<String> {
 }
 
 /// Tables for `tests/helper_templates.rs`: name, body, member spans, `ID` spans.
-pub fn helper_ast_templates() -> Vec<(
+pub type HelperAstTemplate = (
     &'static str,
     &'static str,
     &'static [(u32, u32, &'static str)],
     &'static [(u32, u32)],
-)> {
+);
+
+pub fn helper_ast_templates() -> Vec<HelperAstTemplate> {
     HELPERS
         .iter()
         .map(|(n, b)| (*n, *b, helper_members(n), helper_id_spans(n)))

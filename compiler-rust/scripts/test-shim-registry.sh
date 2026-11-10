@@ -26,6 +26,7 @@ plant_exclusions() {
   : > "$r/harness/scripts/shim-gate.mjs"
   : > "$r/scripts/test-shim-registry.sh"
   : > "$r/harness/README.md"
+  : > "$r/harness/decisions.snapshot.tsv"
   # board.sh is NOT excluded — leave it empty (no tag-open sequence) unless a test plants one.
   : > "$r/harness/board.sh"
   echo 'fn x() {}' > "$r/crates/lwc-ssr/src/compile_js/mod.rs"

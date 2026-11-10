@@ -129,13 +129,18 @@ try {
 } catch (e) { setupFail(`cannot read the cases under ${BRANCH}: ${e.message}`); }
 const noExtractor = Object.keys(suites).filter((s) => !extractors[s]);
 if (noExtractor.length) setupFail(`no extractor for suite ${noExtractor.join(', ')} (cases-<suite>.mjs under ${BRANCH})`);
-let gitDir = BRANCH;
+// Official-board snapshots are `git archive` trees (no .git). SSR_ORACLE_GIT is the
+// live repo that contains --main (official-board sets it to $MAIN).
+let gitDir = process.env.SSR_ORACLE_GIT || BRANCH;
 const git = (...args) => execFileSync('git', ['-C', gitDir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
 let mainKnown, mainCases;
 try {
   const top = git('rev-parse', '--show-toplevel').trim();
   gitDir = top;
-  const rel = path.relative(top, BRANCH).split(path.sep).join('/');
+  const branchAbs = path.resolve(BRANCH);
+  const rel = branchAbs === top || branchAbs.startsWith(top + path.sep)
+    ? path.relative(top, BRANCH).split(path.sep).join('/')
+    : path.relative(ROOT, BRANCH).split(path.sep).join('/');
   git('rev-parse', '--verify', '--quiet', `${MAIN}^{commit}`);
   mainKnown = new Set(listIds(git('show', `${MAIN}:${rel}/known-diffs.txt`)));
   const files = git('ls-tree', '--name-only', MAIN, '--', `${rel}/`).split('\n').map((f) => path.posix.basename(f)).filter((f) => CASE_FILE.test(f));

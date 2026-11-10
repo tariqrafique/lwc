@@ -6,7 +6,13 @@ import { defineConfig } from 'vitest/config';
 const SETUP_FILES: string[] = [];
 const GLOBAL_SETUP: string[] = [];
 
+const oracle = process.env.LWC_ORACLE || '/workspace/lwc';
+
 export default defineConfig({
+  resolve: {
+    // Static imports use the stable `/workspace/lwc` alias; remap to LWC_ORACLE when set (D-0280).
+    alias: [{ find: '/workspace/lwc', replacement: oracle }],
+  },
   // cwd is the tree-under-test's harness/ (board.sh cds there). Do not pin this
   // file's directory — that would run MAIN's tests when land uses MAIN's --config.
   root: process.cwd(),

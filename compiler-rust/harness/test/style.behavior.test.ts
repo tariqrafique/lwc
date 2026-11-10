@@ -4,8 +4,9 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalStylesheetModule } from '../src/evalStyle';
+import { oracleRoot } from '../src/oracleRoot';
 
-const ROOT = '/workspace/lwc/packages/@lwc/style-compiler/src/__tests__/fixtures';
+const ROOT = `${oracleRoot()}/packages/@lwc/style-compiler/src/__tests__/fixtures`;
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/style');
 
 function findFixtures(dir: string): string[] {

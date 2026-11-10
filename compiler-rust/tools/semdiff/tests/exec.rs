@@ -399,7 +399,9 @@ fn oracle_dir_is_the_harness_lwc_root() {
     // that the derived value is what the runner imports through, and that it is the checkout preflight pins.
     let ssr = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../harness/src/ssrRender.ts");
     let text = fs::read_to_string(&ssr).unwrap();
-    assert!(text.contains(&format!("export const LWC = '{}/packages/@lwc';", exec::ORACLE_DIR)), "{}", exec::ORACLE_DIR);
+    let literal = format!("export const LWC = '{}/packages/@lwc';", exec::ORACLE_DIR);
+    let portable = "export const LWC = `${oracleRoot()}/packages/@lwc`;";
+    assert!(text.contains(&literal) || text.contains(portable), "{}", exec::ORACLE_DIR);
     let head = Command::new("git").args(["-C", exec::ORACLE_DIR, "rev-parse", "HEAD"]).output().unwrap();
     assert_eq!(String::from_utf8_lossy(&head.stdout).trim(), exec::ORACLE_COMMIT);
 }

@@ -9,8 +9,9 @@ import { createRequire } from 'node:module';
 import { describe, it, beforeAll, expect } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { checkGolden, errorObservation } from '../src/optionRows';
+import { oracleRoot } from '../src/oracleRoot';
 
-const lexer = createRequire('/workspace/lwc/package.json')('es-module-lexer');
+const lexer = createRequire(`${oracleRoot()}/package.json`)('es-module-lexer');
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/ssr_dynamic_imports');
 const FILENAME = path.resolve('component.js');
 const src = (body: string) => `

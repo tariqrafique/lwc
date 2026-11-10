@@ -15,7 +15,11 @@ const rows = new Set((process.argv[2] ?? '').split(/\s+/).filter(Boolean));
 const diag = new Set((process.env.OPTGATE_DIAG ?? '').split(/\s+/).filter(Boolean));
 // decisions.tsv: OPTGATE_DECISIONS (official-board.sh passes the ARCHIVED snapshot notes, $snap/notes/decisions.tsv); the
 // default is the live notes, for dev boards and land.sh. A missing/unreadable file throws (exit != 0): fail closed.
-const decisionsPath = process.env.OPTGATE_DECISIONS ?? '/workspace/notes/lwc-rust-migrate/decisions.tsv';
+const boxDecisions = '/workspace/notes/lwc-rust-migrate/decisions.tsv';
+const decisionsPath = process.env.OPTGATE_DECISIONS
+  ?? (process.env.SEMDIFF_REGISTRY)
+  ?? (fs.existsSync(boxDecisions) ? boxDecisions : '');
+if (!decisionsPath) { console.error('!! option-gate: OPTGATE_DECISIONS/SEMDIFF_REGISTRY unset and /workspace/notes/.../decisions.tsv is absent'); process.exit(2); }
 const decisions = fs.readFileSync(decisionsPath, 'utf8');
 const crates = process.env.CRATES_ROOT ?? `${here}../crates`;  // official-board.sh points this at the frozen snapshot
 const bad = [], pending = [];

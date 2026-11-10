@@ -8,25 +8,13 @@
 #      $snap/repo/harness (tools/semdiff/build.rs reads ../../harness, AB-L0062 forward condition); src sha over all.
 #      No parse5 [patch] is written here (D-0238/D-0273): Cargo.lock records the git source; the box resolves it via a
 #      scoped git insteadOf (scripts/box-parse5-git/) outside the snapshot. Cargo invocations are --locked.
-#   1b. golden-gate: snapshot goldens must equal a fresh JS-backend recording (oracle b9e8007) -> abort otherwise
-#   2. fresh target dir (== cargo clean): cargo check/test --workspace --locked + seam crate tests -> abort on failure
-#   3. napi built from the snapshot; installed ONLY into the SNAPSHOT harness (never the live one; no writes outside the snapshot except /workspace/push + store publish)
-#   4. board.sh runs from the snapshot harness (tests+goldens frozen too); shim-gate + option-gate read snapshot crates (CRATES_ROOT);
-#      the scanner ratchet baseline is the snapshot harness copy (SHIM_RATCHET_DIR=$ws/harness/ratchets); option-gate reads the
-#      ARCHIVED notes ($snap/notes/decisions.tsv via OPTGATE_DECISIONS), never live /workspace/notes
-#   5. re-hash; mutation => INVALID (exit 4)
-#   6. VALID run (snapshot unchanged, board rc 0) => /workspace/push/official-<srcsha>.tgz + official-<srcsha>.board.txt
-#   6b. template-diag row (diagnostic): driver built into $snap/target/template-diag-driver from the snapshot repo; its
-#       report JSON ($snap/template-diag, outside the hashed tree) -> official-<srcsha>.template-diag.json (store: template-diag.json),
-#       plus its soundness stamp template-diag-<engine>.soundness.json -> official-<srcsha>.template-diag[-napi].soundness.json
-#   7. VALID run also published to the official store (scripts/publish-official.sh), recording the commit SHAs
+#   1b. Pins MAIN, NOTES, LWC_ORACLE, PARSE5_DIR, EXT_INPUTS_ROOT to the box defaults. Any override is refused
+#      unless OFFICIAL_NO_PUBLISH=1 (AB-M0002).
+#   2. After archive + src-hash + external-input lock verify, calls scripts/run-board.sh (the single driver:
+#      golden-gate, C8, board.sh, footers). Then re-hashes; mutation => INVALID (exit 4).
+#   3. VALID run => /workspace/push/official-<srcsha>.tgz + official-<srcsha>.board.txt and publish-official.sh
 # Usage: BOARD_COMMIT=<ref on main> scripts/official-board.sh [rows...]
 set -euo pipefail
-MAIN=/workspace/lwc-compiler-rust; P5=/workspace/parse5-rust; NOTES=/workspace/notes
-root="$MAIN"
-push=/workspace/push
-store="${OFFICIAL_STORE:-/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official}"
-
 # >>> parse5-lock-rev (exercised by scripts/test-parse5-pin.sh)
 # Parse Cargo.lock's parse5 `source = "git+...?rev=<rev>#<rev>"` line. Empty stdout = missing.
 parse5_lock_rev() {
@@ -45,23 +33,6 @@ parse5_lock_rev() {
     echo "!! parse5 lock rev mismatch (?rev=$rev #$frag)" >&2
     return 1
   fi
-  printf '%s\n' "$rev"
-}
-require_parse5_lock_rev() {
-  local lock="$1" p5dir="$2" rev err
-  err="$(mktemp)"
-  rev="$(parse5_lock_rev "$lock" 2>"$err")" || {
-    if grep -q mismatch "$err"; then
-      cat "$err" >&2
-    else
-      echo "!! parse5 lock rev missing from $lock (want source = git+...?rev=<rev>#<rev>)" >&2
-    fi
-    rm -f "$err"
-    return 2
-  }
-  rm -f "$err"
-  [[ "$rev" =~ ^[0-9a-f]{40}$ ]] || { echo "!! parse5 lock rev '$rev' is not a 40-hex commit" >&2; return 2; }
-  git -C "$p5dir" rev-parse -q --verify "$rev^{commit}" >/dev/null || { echo "!! parse5 lock rev $rev not present in $p5dir" >&2; return 2; }
   printf '%s\n' "$rev"
 }
 # <<< parse5-lock-rev
@@ -88,9 +59,93 @@ copy_official_run_logs() {
   echo "official-board: stored run logs in $dest (rc=$rc${copied:+, copied})"
 }
 # <<< store-logs
-source "$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/cargo-locked.sh"
+# >>> official-input-pins (exercised by scripts/test-notes-precheck.sh)
+OFFICIAL_DEFAULT_MAIN=/workspace/lwc-compiler-rust
+OFFICIAL_DEFAULT_NOTES=/workspace/notes
+OFFICIAL_DEFAULT_ORACLE=/workspace/lwc
+OFFICIAL_DEFAULT_PARSE5=/workspace/parse5-rust
+OFFICIAL_DEFAULT_EXT_INPUTS=/workspace
+official_override_names() {
+  [ -n "${LWC_RUST_MAIN:-}" ] && [ "$LWC_RUST_MAIN" != "$OFFICIAL_DEFAULT_MAIN" ] && printf '%s\n' LWC_RUST_MAIN
+  [ -n "${NOTES_DIR:-}" ] && [ "$NOTES_DIR" != "$OFFICIAL_DEFAULT_NOTES" ] && printf '%s\n' NOTES_DIR
+  [ -n "${LWC_ORACLE:-}" ] && [ "$LWC_ORACLE" != "$OFFICIAL_DEFAULT_ORACLE" ] && printf '%s\n' LWC_ORACLE
+  [ -n "${PARSE5_DIR:-}" ] && [ "$PARSE5_DIR" != "$OFFICIAL_DEFAULT_PARSE5" ] && printf '%s\n' PARSE5_DIR
+  [ -n "${EXT_INPUTS_ROOT:-}" ] && [ "$EXT_INPUTS_ROOT" != "$OFFICIAL_DEFAULT_EXT_INPUTS" ] && printf '%s\n' EXT_INPUTS_ROOT
+  # STYLE_CORPUS is derived from the effective EXT_INPUTS_ROOT so lock paths
+  # (style-corpus/...) and the tests ($STYLE_CORPUS/...) read the same tree.
+  _ext="${EXT_INPUTS_ROOT:-$OFFICIAL_DEFAULT_EXT_INPUTS}"
+  _style_default="$_ext/style-corpus"
+  [ -n "${STYLE_CORPUS:-}" ] && [ "$STYLE_CORPUS" != "$_style_default" ] && printf '%s\n' STYLE_CORPUS
+  return 0
+}
+official_refuse_overrides_unless_no_publish() {
+  local names
+  names="$(official_override_names | paste -sd' ' -)"
+  if [ -n "$names" ] && [ "${OFFICIAL_NO_PUBLISH:-}" != 1 ]; then
+    echo "!! PUBLISH REFUSED: overridden official inputs ($names) require OFFICIAL_NO_PUBLISH=1" >&2
+    return 5
+  fi
+  return 0
+}
+official_resolve_inputs() {
+  official_refuse_overrides_unless_no_publish || return $?
+  MAIN="${LWC_RUST_MAIN:-$OFFICIAL_DEFAULT_MAIN}"
+  NOTES="${NOTES_DIR:-$OFFICIAL_DEFAULT_NOTES}"
+  P5="${PARSE5_DIR:-$OFFICIAL_DEFAULT_PARSE5}"
+  EXT_INPUTS_ROOT="${EXT_INPUTS_ROOT:-$OFFICIAL_DEFAULT_EXT_INPUTS}"
+  LWC_ORACLE="${LWC_ORACLE:-$OFFICIAL_DEFAULT_ORACLE}"
+  STYLE_CORPUS="${STYLE_CORPUS:-$EXT_INPUTS_ROOT/style-corpus}"
+  export MAIN NOTES P5 EXT_INPUTS_ROOT LWC_ORACLE LWC_ROOT="$LWC_ORACLE" PARSE5_DIR="$P5" STYLE_CORPUS
+}
+# <<< official-input-pins
+# >>> lock-format (exercised by scripts/test-notes-precheck.sh)
+inputhash1() { (cd "$EXT_INPUTS_ROOT" && find -H "$1" -type f ! -path '*/.git/*' -print0 | LC_ALL=C sort -z | xargs -0 sha256sum) | sha256sum | cut -c1-12; }
+inputhash1_all() { (cd "$EXT_INPUTS_ROOT" && find "$1" -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum) | sha256sum | cut -c1-12; }
+lock_hash_format() {
+  local lock="$1"
+  [ -f "$lock" ] || { echo "!! BOARD INVALID: missing $lock" >&2; return 4; }
+  local n
+  n="$(grep -cE '^# hash-format:' "$lock" || true)"
+  if [ "$n" -gt 1 ]; then
+    echo "!! BOARD INVALID: multiple hash-format markers in $lock" >&2
+    return 4
+  fi
+  if grep -qE '^# hash-format: content-only[[:space:]]*$' "$lock"; then
+    printf '%s\n' content-only
+  elif grep -qE '^# hash-format: with-git[[:space:]]*$' "$lock"; then
+    printf '%s\n' with-git
+  elif grep -qE '^# hash-format:' "$lock"; then
+    echo "!! BOARD INVALID: unknown hash-format marker in $lock" >&2
+    return 4
+  else
+    printf '%s\n' with-git
+  fi
+}
+verify_external_inputs_lock() {
+  local lock="$1" fmt hashfn ipath iwant igot ok=1
+  fmt="$(lock_hash_format "$lock")" || return 4
+  case "$fmt" in
+    content-only) hashfn=inputhash1 ;;
+    with-git) hashfn=inputhash1_all ;;
+    *) echo "!! BOARD INVALID: unknown lock hash format '$fmt'" >&2; return 4 ;;
+  esac
+  while IFS=$'\t' read -r ipath iwant; do
+    [ -n "${ipath:-}" ] || continue
+    igot="$($hashfn "$ipath")"
+    if [ "$igot" != "$iwant" ]; then
+      echo "!! BOARD INVALID: $ipath hash got=$igot want=$iwant (format=$fmt)" >&2
+      ok=0
+    fi
+  done < <(grep -v '^#' "$lock" | sed '/^$/d')
+  [ "$ok" -eq 1 ] || return 4
+  return 0
+}
+# <<< lock-format
+official_resolve_inputs || exit $?
+root="$MAIN"
+push="${OFFICIAL_PUSH:-/workspace/push}"
+store="${OFFICIAL_STORE:-/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official}"
 if [ -f "$HOME/.cargo/env" ]; then
-  # surface a sourcing error; do not hide it behind || true
   source "$HOME/.cargo/env" || { echo "!! BOARD ABORTED: failed to source $HOME/.cargo/env" >&2; exit 3; }
 fi
 die3() { echo "!! BOARD ABORTED: $*" >&2; exit 3; }
@@ -120,7 +175,6 @@ on_official_exit() {
     copy_official_run_logs "$rc" "$h0" "$snap" "$store" || copy_rc=$?
   fi
   rm -rf "$snap"
-  # Keep the first non-zero rc: a copy failure must not overwrite INVALID (4) with 2.
   if [ "$rc" -ne 0 ]; then
     exit "$rc"
   fi
@@ -134,63 +188,76 @@ ws="$snap/repo"; hs="$ws/harness"
 git -C "$MAIN" archive "$commit" | tar -x -C "$snap/repo"
 git -C "$P5" archive "$p5commit" | tar -x -C "$snap/parse5-rust"
 git -C "$NOTES" archive "$notescommit" "${NOTES_READ[@]}" | tar -x -C "$snap/notes" --strip-components=1   # NOTES_READ is one dir: strip it
-lockrev="$(require_parse5_lock_rev "$ws/Cargo.lock" "$P5")" || { echo "!! BOARD ABORTED: Cargo.lock parse5 rev missing or not in $P5" >&2; exit 2; }
-"$MAIN/harness/scripts/ensure-deps.sh"
-ln -s "$MAIN/harness/node_modules" "$hs/node_modules"
+# D-0280: boarded commit's decisions snapshot must match archived notes HEAD
+# (skip if the boarded tree predates the snapshot). Fail closed on drift.
+# The notes-commit sidecar, when present, must name a commit that exists in
+# NOTES whose lwc-rust-migrate/decisions.tsv equals the snapshot. It does not
+# have to be notes HEAD; the cmp against the archived HEAD covers HEAD drift.
+if [ -f "$ws/harness/decisions.snapshot.tsv" ]; then
+  cmp -s "$snap/notes/decisions.tsv" "$ws/harness/decisions.snapshot.tsv"     || die3 "harness/decisions.snapshot.tsv != notes@$notescommit lwc-rust-migrate/decisions.tsv; run scripts/refresh-decisions-snapshot.sh"
+fi
+if [ -f "$ws/harness/decisions.snapshot.notes-commit" ]; then
+  snapc="$(head -1 "$ws/harness/decisions.snapshot.notes-commit")"
+  [[ "$snapc" =~ ^[0-9a-f]{40}$ ]] || die3 "harness/decisions.snapshot.notes-commit is not a 40-hex sha: '$snapc'"
+  git -C "$NOTES" cat-file -e "$snapc^{commit}" || die3 "harness/decisions.snapshot.notes-commit $snapc is not in $NOTES"
+  git -C "$NOTES" show "$snapc:lwc-rust-migrate/decisions.tsv" | cmp -s - "$ws/harness/decisions.snapshot.tsv"     || die3 "harness/decisions.snapshot.tsv != notes@$snapc:lwc-rust-migrate/decisions.tsv; run scripts/refresh-decisions-snapshot.sh"
+fi
+# parse5 presence is enforced in run-board.sh (parse5-pin-check). This extracts
+# the lock rev for OFFICIAL_PARSE5_COMMIT only — do not re-verify against $P5.
+lockrev="$(parse5_lock_rev "$ws/Cargo.lock")" || die3 "Cargo.lock parse5 rev missing (want source = git+...?rev=<rev>#<rev>)"
+# ensure-deps runs once, in run-board.sh, against the snapshot harness.
 # srchash: harness entries first, mapped to harness/..., then notes/parse5-rust/repo (sorted, harness excluded), mapped to
 # <dir>/...: the same file list, names and order as the former separate-harness-dir layout, so src hashes stay comparable.
-srchash() { ( { find "$hs" -type f ! -path "$hs/.pins/*" ! -path "$hs/.vitest/*" ! -path "$hs/.csr-render-out/*" \
-      ! -path "$hs/.ssr-render-out/*" ! -name '*.node' -print0 | sort -z | xargs -0 sha256sum | sed -e "s#$hs/#harness/#"
-    find "$snap/repo" "$snap/parse5-rust" "$snap/notes" -type f ! -path "$snap/target/*" ! -path "$hs/*" ! -name '*.node' -print0 \
-      | sort -z | xargs -0 sha256sum | sed -e "s#$snap/##"; } | sha256sum | cut -c1-12); }
-h0="$(srchash)"
-# External inputs not in the source tree (template-diag corpus + oracle's git-ignored template-compiler dist).
-# Expected hashes are pinned in harness/external-inputs.lock (committed; changing a pin is a reviewed landing).
-# Mismatch vs pin, or any change during the run => BOARD INVALID.
-inputhash1() { (cd /workspace && find "$1" -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum) | sha256sum | cut -c1-12; }
-inputshash() { for i in "${EXT_INPUTS[@]}"; do printf '%s\t%s\n' "$i" "$(inputhash1 "$i")"; done; }
+# srcfiles/srchash skip build outputs that C8 napi-pack may emit inside the archive
+# (napi.gen.d.ts is gitignored; *.node already skipped; $ws/target if cargo misses CARGO_TARGET_DIR).
+srcfiles() { ( { find "$hs" -type f ! -path "$hs/.pins/*" ! -path "$hs/.vitest/*" ! -path "$hs/.csr-render-out/*" \
+      ! -path "$hs/.ssr-render-out/*" ! -path "$hs/node_modules/*" ! -name '*.node' -print0 | sort -z | xargs -0 sha256sum | sed -e "s#$hs/#harness/#"
+    find "$snap/repo" "$snap/parse5-rust" "$snap/notes" -type f ! -path "$snap/target/*" ! -path "$ws/target/*" \
+      ! -path "$hs/*" ! -name '*.node' ! -name 'napi.gen.d.ts' -print0 \
+      | sort -z | xargs -0 sha256sum | sed -e "s#$snap/##"; } ); }
+srchash() { srcfiles | sha256sum | cut -c1-12; }
+h0="$(srcfiles | tee "$snap/srcfiles.before" | sha256sum | cut -c1-12)"
 lock="$hs/external-inputs.lock"
 [ -f "$lock" ] || { echo "!! BOARD INVALID: missing harness/external-inputs.lock at $commit" >&2; exit 4; }
-mapfile -t EXT_INPUTS < <(grep -v '^#' "$lock" | sed '/^$/d' | cut -f1)   # input list = the lock's paths (single source)
+mapfile -t EXT_INPUTS < <(grep -v '^#' "$lock" | sed '/^$/d' | cut -f1)
 [ ${#EXT_INPUTS[@]} -gt 0 ] || { echo "!! BOARD INVALID: external-inputs.lock lists no inputs" >&2; exit 4; }
+verify_external_inputs_lock "$lock" || exit 4
+_fmt="$(lock_hash_format "$lock")" || exit 4
+if [ "$_fmt" = content-only ]; then
+  inputshash() { for i in "${EXT_INPUTS[@]}"; do printf '%s\t%s\n' "$i" "$(inputhash1 "$i")"; done; }
+else
+  inputshash() { for i in "${EXT_INPUTS[@]}"; do printf '%s\t%s\n' "$i" "$(inputhash1_all "$i")"; done; }
+fi
 in0="$(inputshash)"
-if [ "$(grep -v '^#' "$lock" | sed '/^$/d')" != "$in0" ]; then
-  echo "!! BOARD INVALID: external inputs differ from harness/external-inputs.lock (drift since pin):" >&2
-  diff <(grep -v '^#' "$lock" | sed '/^$/d') <(echo "$in0") >&2 || true; exit 4; fi
 in0sha="$(echo "$in0" | sha256sum | cut -c1-12)"
 p5="$(cd "$snap/parse5-rust" && find . -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | cut -c1-12)"
 echo "commit $commit  src snapshot sha256:$h0  parse5-rust ${p5commit:0:12} sha256:$p5  notes ${notescommit:0:12}  ($snap)"
 export CARGO_TARGET_DIR="$snap/target"
-# SHIM_FILE_LIST lives next to the snapshot (not inside hashed trees). Official archives have no .git, so
-# shim-gate cannot git-ls-files; official-board supplies the boarded commit's ls-tree (D-0273).
 git -C "$MAIN" ls-tree -r -z --name-only "$commit" > "$snap/shim-file-list"
 export SHIM_FILE_LIST="$snap/shim-file-list"
-PARSE5_DIR="$P5" "$ws/scripts/parse5-pin-check.sh" "$ws" || die3 "parse5 pin check failed @ $h0 (lock source rev != Cargo.toml, or rev absent from $P5)"
-GOLDEN_GATE_PROGRESS="$snap/golden.progress" "$hs/scripts/golden-gate.sh" "$hs" \
-  || { echo "!! BOARD ABORTED: goldens @ $h0 != fresh JS-oracle recording" >&2; exit 3; }
-(cd "$ws" && cargo_locked check --workspace --all-targets) || { echo "!! BOARD ABORTED: snapshot $h0 does not compile" >&2; exit 3; }
-# every crate's tests, as land.sh (AB-R002: brings lwc-style's gates + the parse-errors fixtures in)
-(cd "$ws" && cargo_locked test --workspace) || { echo "!! BOARD ABORTED: workspace test --locked fails @ $h0" >&2; exit 3; }
-# style parse-error set made explicit (manifest style_parse_errors=<passed>/<total>); strict run, exit 3 on any failure
-spe="$("$ws/scripts/style-parse-errors.sh" "$ws" "$snap/style-fixtures.log")" || die3 "style parse-error fixtures @ $h0 (see $snap/style-fixtures.log)"
-[[ "$spe" =~ ^[0-9]+/[0-9]+$ ]] || die3 "style-parse-errors.sh printed '$spe', want <passed>/<total>"
-echo "style-parse-errors     $spe (lwc-style fixture tests, LWC_STYLE_STRICT=1)"
-(cd "$ws" && cargo_locked build -p lwc-compiler-napi --release)
-so="$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so"
-cp "$so" "$hs/lwc-compiler-napi.node"
-napi="$(sha256sum "$so" | cut -c1-12)"
-echo "built napi $napi from src $h0"
-tdiag="$snap/template-diag"   # board.sh writes template-diag-<engine>.json here (not hashed, not in the tgz)
-# official boards compare against BOARD_COMMIT's committed harness/board-baseline.tsv exactly: never rewrite it here.
-# D-0219: template-diag codegen asks the snapshot's semdiff (board.sh builds -p semdiff from $hs/..), validated against
-# the hashed notes snapshot (not live notes). Exec leg stays off (D-0256): TDD_SEMDIFF_EXEC is unset.
-set +e; env -u BOARD_RATCHET_UPDATE -u TDD_SEMDIFF_EXEC CRATES_ROOT="$ws/crates" SHIM_RATCHET_DIR="$hs/ratchets" OPTGATE_DECISIONS="$snap/notes/decisions.tsv" BOARD_REPO_ROOT="$ws" TEMPLATE_DIAG_OUT_DIR="$tdiag" SEMDIFF_REGISTRY="$snap/notes/decisions.tsv" "$hs/board.sh" "$@" 2>&1 | tee "$snap/board.log"; rc=${PIPESTATUS[0]}; set -e
-# belt and braces: any gate failure line voids the run regardless of rc plumbing
-grep -q '^!! ' "$snap/board.log" && [ "$rc" -eq 0 ] && { echo "!! rc=0 but board printed a failure; forcing rc=1" >&2; rc=1; }
-[ "$(srchash)" == "$h0" ] || { echo "!! BOARD INVALID: snapshot mutated during run" >&2; exit 4; }
+export SSR_ORACLE_GIT="$MAIN" SSR_ORACLE_MAIN="$commit"
+tdiag="$snap/template-diag"
+export CRATES_ROOT="$ws/crates" SHIM_RATCHET_DIR="$hs/ratchets" OPTGATE_DECISIONS="$snap/notes/decisions.tsv"
+export BOARD_REPO_ROOT="$ws" TEMPLATE_DIAG_OUT_DIR="$tdiag" SEMDIFF_REGISTRY="$snap/notes/decisions.tsv"
+export C8_TARBALLS="$snap/tarballs" SPE_LOG="$snap/style-fixtures.log"
+_run="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/run-board.sh"
+[ -x "$_run" ] || die3 "run-board.sh missing next to official-board.sh"
+set +e
+"$_run" "$ws" "$snap/board.log" "$@"
+rc=$?
+set -e
+if [ "$(srchash)" != "$h0" ]; then
+  echo "!! BOARD INVALID: snapshot mutated during run" >&2
+  srcfiles > "$snap/srcfiles.after" || true
+  srcdiff="$(diff -u "$snap/srcfiles.before" "$snap/srcfiles.after" || true)"
+  head -n 80 <<< "$srcdiff" >&2 || true
+  exit 4
+fi
 [ "$(inputshash)" == "$in0" ] || { echo "!! BOARD INVALID: external inputs (style-corpus/lbc*, oracle template-compiler dist) changed during run" >&2; exit 4; }
+so="$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so"
+napi="$(sha256sum "$so" | cut -c1-12)"
+spe="$(sed -nE 's/^style-parse-errors[[:space:]]+([0-9]+\/[0-9]+).*/\1/p' "$snap/board.log" | tail -1)"
 echo "official: src=$h0 napi=$napi rc=$rc"
-# a full official run must carry the template-diag report (board.sh already fails the row if it is missing/invalid)
 for e in crate napi; do for f in "$tdiag/template-diag-$e.json" "$tdiag/template-diag-$e.soundness.json"; do
   if [ "$rc" -eq 0 ] && [ $# -eq 0 ] && [ ! -s "$f" ]; then echo "!! BOARD FAILED: template-diag artifact missing ($f); forcing rc=1" >&2; rc=1; fi; done; done
 if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
@@ -198,38 +265,33 @@ if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
   base="$push/official-$h0"
   { echo "official board  commit=${commit:0:12}  src=$h0  napi=$napi  parse5-rust=$p5 (build dep, NOT in tgz)  $(date -Iseconds)"
     sed -n '/^napi sha256:/,$p' "$snap/board.log"
-    echo "style-parse-errors     $spe (lwc-style fixture tests, LWC_STYLE_STRICT=1)"
-    # CSR failure clusters (Migrate 2026-11-01): counts per cluster for each corpus
-    for c in ssr template; do rep="$hs/.csr-render-out/rust-$c/report-$c.json"
-      [ -f "$rep" ] || { echo "!! csr clusters: missing $rep"; continue; }
-      echo "csr-clusters[$c]: $(node "$hs/scripts/csr-render-clusters.mjs" "$rep" | grep -E '^(pass |\[)' | sed -E 's/^\[([0-9]+)\] ([a-z-]+):.*/\2=\1/' | paste -sd' ')"
-    done; } > "$base.board.txt.tmp"
-  # per-fixture pass/fail (fixture<TAB>pass<TAB>status<TAB>goldenStatus) so any two official runs can be diffed
+  } > "$base.board.txt.tmp"
   for c in ssr template; do rep="$hs/.csr-render-out/rust-$c/report-$c.json"; [ -f "$rep" ] || continue
     node -e 'const r=require(process.argv[1]);for(const x of r.rows)console.log([x.fixture,x.pass,x.status,x.goldenStatus].join("\t"))' "$rep" > "$base.csr-$c.tsv"; done
   cp "$tdiag/template-diag-crate.json" "$base.template-diag.json"; cp "$tdiag/template-diag-napi.json" "$base.template-diag-napi.json"
-  # soundness stamps (separate artifacts; the reports are never rewritten): publish-official.sh verifies them against the reports
   cp "$tdiag/template-diag-crate.soundness.json" "$base.template-diag.soundness.json"; cp "$tdiag/template-diag-napi.soundness.json" "$base.template-diag-napi.soundness.json"
-  # tgz layout = repo root (harness under harness/) + notes/ (CUTOVER, DIAG_HELPER, decisions as of run start)
-  rm -f "$ws/harness/node_modules" "$ws/harness/lwc-compiler-napi.node"
+  rm -rf "$ws/harness/node_modules"
+  rm -f "$ws/harness/lwc-compiler-napi.node"
   rm -rf "$ws/harness/.pins" "$ws/harness/.vitest" "$ws/harness/.csr-render-out" "$ws/harness/.ssr-render-out"
   tar -C "$snap" --exclude=./repo/target -czf "$base.tgz.tmp" --transform 's#^repo/##;s#^repo$#.#' repo notes
   mv -f "$base.tgz.tmp" "$base.tgz"; mv -f "$base.board.txt.tmp" "$base.board.txt"
   echo "push artifacts: $base.tgz  $base.board.txt  $base.template-diag.json  $base.template-diag-napi.json"
-  # Durable publish (Migrate standing rule): survives box restores; Migrate pushes ONLY from here.
-  # Oracle provenance = what board.sh actually verified (pinned + clean), parsed from its single header line.
   hdr="$(grep -E '^napi sha256:' "$snap/board.log")" || { echo "!! PUBLISH REFUSED: no board.sh header in board.log" >&2; exit 5; }
   [ "$(wc -l <<< "$hdr")" -eq 1 ] || { echo "!! PUBLISH REFUSED: expected 1 board.sh header, got $(wc -l <<< "$hdr")" >&2; exit 5; }
   ocommit="$(sed -nE 's/.* oracle=([0-9a-f]{40})\(clean\) .*/\1/p' <<< "$hdr")"; orepo="$(sed -nE 's/.* oracle_repo=([^ ]+) .*/\1/p' <<< "$hdr")"
   [ -n "$ocommit" ] && [ -n "$orepo" ] || { echo "!! PUBLISH REFUSED: cannot parse verified oracle from header: $hdr" >&2; exit 5; }
   copy_official_run_logs "$rc" "$h0" "$snap" "$store" || { echo "!! BOARD INVALID: failed to store run logs before publish" >&2; exit 2; }
   logs_copied=1
+  if [ "${OFFICIAL_NO_PUBLISH:-}" = 1 ]; then
+    echo "official-board: OFFICIAL_NO_PUBLISH=1; wrote $base.board.txt, skipping publish"
+  else
   pub_rc=0
   OFFICIAL_COMMIT="$commit" OFFICIAL_PARSE5_COMMIT="$lockrev" OFFICIAL_PARSE5_CLONE_HEAD="$p5commit" OFFICIAL_NOTES_COMMIT="$notescommit" OFFICIAL_INPUTS_SHA="$in0sha" OFFICIAL_STYLE_PARSE_ERRORS="$spe" OFFICIAL_ORACLE_COMMIT="$ocommit" OFFICIAL_ORACLE_REPO="$orepo" \
     "$snap/repo/scripts/publish-official.sh" "$h0" "$napi" "$p5" "$store" || pub_rc=$?
   if [ "$pub_rc" -ne 0 ]; then
     printf '%s\n' "$pub_rc" > "$store/${h0}/logs/run.rc"
     exit "$pub_rc"
+  fi
   fi
 else
   echo "no push artifacts (rc=$rc${1:+, partial row set})"

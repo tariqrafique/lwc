@@ -5,8 +5,9 @@
 // - everything else (templates, css, @salesforce/*, other modules): recording stub proxies
 // Engine event smoke (actually rendering via @lwc/engine-dom) is the 0d.2 follow-up.
 import { createRequire } from 'node:module';
+import { oracleRoot } from './oracleRoot';
 
-const req = createRequire('/workspace/lwc/package.json');
+const req = createRequire(`${oracleRoot()}/package.json`);
 const babel = req('@babel/core');
 const cjsPlugin = req('@babel/plugin-transform-modules-commonjs');
 const nsFromPlugin = req('@babel/plugin-transform-export-namespace-from');

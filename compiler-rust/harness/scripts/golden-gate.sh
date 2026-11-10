@@ -7,6 +7,10 @@
 # never copied into the scratch tree, so they can never be compared against themselves (AB-0003). Never touches <harness>/goldens.
 # Usage: scripts/golden-gate.sh [harness-dir]   (default: this harness). Slow (JS backend, all rows): run in background.
 set -euo pipefail
+# shellcheck source=oracle-root.sh
+source "$(cd "$(dirname "$0")" && pwd)/oracle-root.sh"
+ORACLE="$(oracle_root)" || exit 2
+export LWC_ORACLE="$ORACLE" LWC_ROOT="$ORACLE" PATH="$ORACLE/node_modules/.bin:$PATH"
 "$(dirname "$0")/ensure-deps.sh"
 h="$(cd "${1:-$(dirname "$0")/..}" && pwd)"
 tmp="$(mktemp -d /tmp/lwc-golden-gate.XXXXXX)"; trap 'rm -rf "$tmp"' EXIT
@@ -18,11 +22,11 @@ mkdir -p "$tmp/harness"
 [ -z "$(find "$tmp/harness/goldens" -type f -print -quit)" ] || { echo "!! GOLDEN GATE FAILED: scratch goldens/ not empty before recording"; exit 1; }
 ln -s "$(readlink -f "$h/node_modules")" "$tmp/harness/node_modules"
 cd "$tmp/harness"
-export LWC_COMPILER_BACKEND=js UPDATE_GOLDENS=1 PATH="/workspace/lwc/node_modules/.bin:$PATH"
+export LWC_COMPILER_BACKEND=js UPDATE_GOLDENS=1 PATH="$ORACLE/node_modules/.bin:$PATH"
 unset LWC_COMPILER_NAPI_PATH
 recfail=()
 run() { local mode="$1" rc=0; shift; echo "== $(date +%T) $mode $*" >> "$prog"
-  SSR_MODE="$mode" /workspace/lwc/node_modules/.bin/vitest run "$@" --pool=threads --testTimeout=30000 --reporter=dot >>"$tmp/rec.log" 2>&1 || rc=$?
+  SSR_MODE="$mode" "$ORACLE/node_modules/.bin/vitest" run "$@" --pool=threads --testTimeout=30000 --reporter=dot >>"$tmp/rec.log" 2>&1 || rc=$?
   [ "$rc" -eq 0 ] || recfail+=("${CORPUS:+CORPUS=$CORPUS }${SSR_RUNTIME:+SSR_RUNTIME=$SSR_RUNTIME }SSR_MODE=$mode $* (rc=$rc)"); }
 for t in style js js-eval template js-options template-options ssr_dynamic_imports style-api template-api ssr_render_api; do
   run sync "test/$t.behavior.test.ts"; done

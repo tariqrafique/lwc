@@ -1,11 +1,12 @@
 // Dump compiled SSR output for every module file under the ssr-compiler fixtures.
 // usage: node scripts/dump-ssr.mjs <rust|js> <sync|async|asyncYield> <outdir> [napiPath]
 import fs from 'node:fs'; import path from 'node:path'; import { createRequire } from 'node:module';
+import { oracleRoot } from './oracle-root.mjs';
 const [which, mode, out, napi] = process.argv.slice(2);
-const ROOT = '/workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures';
+const ROOT = `${oracleRoot()}/packages/@lwc/ssr-compiler/src/__tests__/fixtures`;
 const req = createRequire(import.meta.url);
 const rust = which === 'rust' ? req(napi ?? path.resolve('lwc-compiler-napi.node')) : null;
-const js = which === 'js' ? req('/workspace/lwc/packages/@lwc/compiler/dist/index.cjs') : null;
+const js = which === 'js' ? req(`${oracleRoot()}/packages/@lwc/compiler/dist/index.cjs`) : null;
 const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => { const p = path.join(d, e.name); return e.isDirectory() ? walk(p) : [p]; });
 let n = 0, errs = 0;
 for (const f of walk(ROOT).filter((p) => /\/modules\/.*\.(html|js|ts)$/.test(p)).sort()) {

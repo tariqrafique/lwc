@@ -1,0 +1,2 @@
+# Pinned salesforce/lwc commit (full sha). board.sh and scripts/fetch-oracle.sh require this exact HEAD.
+b9e8007f9810edb59596536b596f80ca6c0d3fab

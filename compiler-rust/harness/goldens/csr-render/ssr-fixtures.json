@@ -153,7 +153,7 @@
  },
  "api/decorated-setter-getter": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/api/decorated-setter-getter/modules/x/child/child.js: LWC1112: @api get setterGetterApi and @api set setterGetterApi detected in class declaration. Only one of the two needs to be decorated with @api.\n   7 |     }\n   8 |\n>  9 |     @api\n     |     ^\n  10 |     get setterGetterApi() {\n  11 |         return this._someApi;\n  12 |     }"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/api/decorated-setter-getter/modules/x/child/child.js: LWC1112: @api get setterGetterApi and @api set setterGetterApi detected in class declaration. Only one of the two needs to be decorated with @api.\n   7 |     }\n   8 |\n>  9 |     @api\n     |     ^\n  10 |     get setterGetterApi() {\n  11 |         return this._someApi;\n  12 |     }"
  },
  "api/inherited": {
   "status": "ok",
@@ -1938,23 +1938,23 @@
  },
  "wire/errors/throws-when-adapter-is-computed-member-expression": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-adapter-is-computed-member-expression/modules/x/wire/wire.js: LWC1131: @wire identifier cannot contain computed properties\n  2 | import { adapters } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(adapters['getFoo'])\n    |           ^^^^^^^^^^^^^^^^^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-adapter-is-computed-member-expression/modules/x/wire/wire.js: LWC1131: @wire identifier cannot contain computed properties\n  2 | import { adapters } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(adapters['getFoo'])\n    |           ^^^^^^^^^^^^^^^^^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
  },
  "wire/errors/throws-when-adapter-is-literal": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-adapter-is-literal/modules/x/wire/wire.js: LWC1097: @wire expects a function identifier as first parameter.\n  1 | import { wire, LightningElement } from 'lwc';\n  2 | export default class Test extends LightningElement {\n> 3 |     @wire('not-an-identifier')\n    |           ^^^^^^^^^^^^^^^^^^^\n  4 |     wiredFoo;\n  5 | }\n  6 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-adapter-is-literal/modules/x/wire/wire.js: LWC1097: @wire expects a function identifier as first parameter.\n  1 | import { wire, LightningElement } from 'lwc';\n  2 | export default class Test extends LightningElement {\n> 3 |     @wire('not-an-identifier')\n    |           ^^^^^^^^^^^^^^^^^^^\n  4 |     wiredFoo;\n  5 | }\n  6 |"
  },
  "wire/errors/throws-when-adapter-is-nested-member-expression": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-adapter-is-nested-member-expression/modules/x/wire/wire.js: LWC1132: @wire identifier cannot contain nested member expressions\n  2 | import { adapters } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(adapters.getters.getFoo)\n    |           ^^^^^^^^^^^^^^^^^^^^^^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-adapter-is-nested-member-expression/modules/x/wire/wire.js: LWC1132: @wire identifier cannot contain nested member expressions\n  2 | import { adapters } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(adapters.getters.getFoo)\n    |           ^^^^^^^^^^^^^^^^^^^^^^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
  },
  "wire/errors/throws-when-adapter-is-non-module-binding": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-adapter-is-non-module-binding/modules/x/wire/wire.js: LWC1098: @wire expects a function identifier to be imported as first parameter.\n  2 | const getFoo = () => null;\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(getFoo)\n    |           ^^^^^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-adapter-is-non-module-binding/modules/x/wire/wire.js: LWC1098: @wire expects a function identifier to be imported as first parameter.\n  2 | const getFoo = () => null;\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(getFoo)\n    |           ^^^^^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
  },
  "wire/errors/throws-when-called-with-no-arguments": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-called-with-no-arguments/modules/x/wire/wire.js: LWC1092: @wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).\n  1 | import { wire, LightningElement } from 'lwc';\n  2 | export default class Test extends LightningElement {\n> 3 |     @wire()\n    |     ^^^^^^^\n  4 |     wiredFoo;\n  5 | }\n  6 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-called-with-no-arguments/modules/x/wire/wire.js: LWC1092: @wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).\n  1 | import { wire, LightningElement } from 'lwc';\n  2 | export default class Test extends LightningElement {\n> 3 |     @wire()\n    |     ^^^^^^^\n  4 |     wiredFoo;\n  5 | }\n  6 |"
  },
  "wire/errors/throws-when-colliding-prop-then-method": {
   "status": "excluded",
@@ -1962,39 +1962,39 @@
  },
  "wire/errors/throws-when-computed-prop-is-expression": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-computed-prop-is-expression/modules/x/wire/wire.js: LWC1200: Computed property in @wire config must be a constant or primitive literal.\n  4 | export default class Test extends LightningElement {\n  5 |     // accidentally an array expression = oops!\n> 6 |     @wire(Adapter, { [[symbol]]: '$prop1', key2: ['fixed', 'array'] })\n    |                       ^^^^^^^^\n  7 |     wiredFoo;\n  8 | }\n  9 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-computed-prop-is-expression/modules/x/wire/wire.js: LWC1200: Computed property in @wire config must be a constant or primitive literal.\n  4 | export default class Test extends LightningElement {\n  5 |     // accidentally an array expression = oops!\n> 6 |     @wire(Adapter, { [[symbol]]: '$prop1', key2: ['fixed', 'array'] })\n    |                       ^^^^^^^^\n  7 |     wiredFoo;\n  8 | }\n  9 |"
  },
  "wire/errors/throws-when-computed-prop-is-let-variable": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-computed-prop-is-let-variable/modules/x/wire/wire.js: LWC1200: Computed property in @wire config must be a constant or primitive literal.\n  3 | let key1 = 'key1';\n  4 | export default class Test extends LightningElement {\n> 5 |     @wire(Adapter, { [key1]: '$prop1', key2: ['fixed', 'array'] })\n    |                       ^^^^\n  6 |     wiredFoo;\n  7 | }\n  8 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-computed-prop-is-let-variable/modules/x/wire/wire.js: LWC1200: Computed property in @wire config must be a constant or primitive literal.\n  3 | let key1 = 'key1';\n  4 | export default class Test extends LightningElement {\n> 5 |     @wire(Adapter, { [key1]: '$prop1', key2: ['fixed', 'array'] })\n    |                       ^^^^\n  6 |     wiredFoo;\n  7 | }\n  8 |"
  },
  "wire/errors/throws-when-computed-prop-is-regexp-literal": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-computed-prop-is-regexp-literal/modules/x/wire/wire.js: LWC1200: Computed property in @wire config must be a constant or primitive literal.\n  2 | import { Adapter } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(Adapter, { [/key1/]: '$prop1', key2: ['fixed', 'array'] })\n    |                       ^^^^^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-computed-prop-is-regexp-literal/modules/x/wire/wire.js: LWC1200: Computed property in @wire config must be a constant or primitive literal.\n  2 | import { Adapter } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(Adapter, { [/key1/]: '$prop1', key2: ['fixed', 'array'] })\n    |                       ^^^^^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
  },
  "wire/errors/throws-when-computed-prop-is-template-literal": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-computed-prop-is-template-literal/modules/x/wire/wire.js: LWC1199: Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.\n  2 | import { Adapter } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(Adapter, { [`key1`]: '$prop1', key2: ['fixed', 'array'] })\n    |                       ^^^^^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-computed-prop-is-template-literal/modules/x/wire/wire.js: LWC1199: Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.\n  2 | import { Adapter } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(Adapter, { [`key1`]: '$prop1', key2: ['fixed', 'array'] })\n    |                       ^^^^^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
  },
  "wire/errors/throws-when-config-is-not-object-expression": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-config-is-not-object-expression/modules/x/wire/wire.js: LWC1094: @wire expects a configuration object expression as second parameter.\n  2 | import { Adapter } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(Adapter, 42)\n    |                    ^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-config-is-not-object-expression/modules/x/wire/wire.js: LWC1094: @wire expects a configuration object expression as second parameter.\n  2 | import { Adapter } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(Adapter, 42)\n    |                    ^^\n  5 |     wiredFoo;\n  6 | }\n  7 |"
  },
  "wire/errors/throws-when-using-2-wired-decorators": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-using-2-wired-decorators/modules/x/wire/wire.js: LWC1105: Method or property can only have 1 @wire decorator\n  2 | import { Adapter } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(Adapter, { key1: '$prop1', key2: ['fixed', 'array'] })\n    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  5 |     @wire(Adapter, { key1: '$prop1', key2: ['fixed', 'array'] })\n  6 |     multipleWire;\n  7 | }"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-using-2-wired-decorators/modules/x/wire/wire.js: LWC1105: Method or property can only have 1 @wire decorator\n  2 | import { Adapter } from 'x/adapter';\n  3 | export default class Test extends LightningElement {\n> 4 |     @wire(Adapter, { key1: '$prop1', key2: ['fixed', 'array'] })\n    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  5 |     @wire(Adapter, { key1: '$prop1', key2: ['fixed', 'array'] })\n  6 |     multipleWire;\n  7 | }"
  },
  "wire/errors/throws-when-wired-method-is-combined-with-@api": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-wired-method-is-combined-with-@api/modules/x/wire/wire.js: LWC1095: @wire method or property cannot be used with @api\n  3 | export default class Test extends LightningElement {\n  4 |     @api\n> 5 |     @wire(Adapter, { key1: '$prop1', key2: ['fixed'] })\n    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  6 |     wiredWithApi() {}\n  7 | }\n  8 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-wired-method-is-combined-with-@api/modules/x/wire/wire.js: LWC1095: @wire method or property cannot be used with @api\n  3 | export default class Test extends LightningElement {\n  4 |     @api\n> 5 |     @wire(Adapter, { key1: '$prop1', key2: ['fixed'] })\n    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  6 |     wiredWithApi() {}\n  7 | }\n  8 |"
  },
  "wire/errors/throws-when-wired-property-is-combined-with-@api": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-wired-property-is-combined-with-@api/modules/x/wire/wire.js: LWC1095: @wire method or property cannot be used with @api\n  3 | export default class Test extends LightningElement {\n  4 |     @api\n> 5 |     @wire(Adapter, { key1: '$prop1', key2: ['fixed', 'array'] })\n    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  6 |     wiredPropWithApi;\n  7 | }\n  8 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-wired-property-is-combined-with-@api/modules/x/wire/wire.js: LWC1095: @wire method or property cannot be used with @api\n  3 | export default class Test extends LightningElement {\n  4 |     @api\n> 5 |     @wire(Adapter, { key1: '$prop1', key2: ['fixed', 'array'] })\n    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  6 |     wiredPropWithApi;\n  7 | }\n  8 |"
  },
  "wire/errors/throws-when-wired-property-is-combined-with-@track": {
   "status": "compile-error",
-  "error": "SyntaxError: /workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-wired-property-is-combined-with-@track/modules/x/wire/wire.js: LWC1095: @wire method or property cannot be used with @track\n  3 | export default class Test extends LightningElement {\n  4 |     @track\n> 5 |     @wire(Adapter, { key1: '$prop1', key2: ['fixed', 'array'] })\n    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  6 |     wiredWithTrack;\n  7 | }\n  8 |"
+  "error": "SyntaxError: <ORACLE_ROOT>/packages/@lwc/ssr-compiler/src/__tests__/fixtures/wire/errors/throws-when-wired-property-is-combined-with-@track/modules/x/wire/wire.js: LWC1095: @wire method or property cannot be used with @track\n  3 | export default class Test extends LightningElement {\n  4 |     @track\n> 5 |     @wire(Adapter, { key1: '$prop1', key2: ['fixed', 'array'] })\n    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  6 |     wiredWithTrack;\n  7 | }\n  8 |"
  },
  "wire/field": {
   "status": "ok",

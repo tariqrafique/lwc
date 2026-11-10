@@ -148,6 +148,7 @@ const SHIM_SCAN_EXCLUDE = [
   'scripts/test-shim-registry.sh',
   'harness/README.md',
   'harness/shim-registry.tsv',
+  'harness/decisions.snapshot.tsv',
 ];
 for (const ex of SHIM_SCAN_EXCLUDE) {
   const abs = path.join(repoRoot, ex);

@@ -16,6 +16,8 @@
 // - No false pass: if the golden is an error, the actual must be an error too (`actual == null` → fail), and a
 //   parser golden only matches an actual that is itself an uncoded SyntaxError.
 
+import { canonOraclePath } from './oracleRoot';
+
 /** One member of a recovery-mode CompilerAggregateError (`errors[]`): @lwc/errors CompilerError fields. */
 export interface SubDiagnostic {
     code: number | null;
@@ -58,7 +60,7 @@ const subObs = (x: any): SubDiagnostic => {
     return {
         code: num(x?.code),
         // postcss puts the absolute input path in the text; goldens must not depend on the recording dir
-        message: String(x?.message ?? x).split(process.cwd() + '/').join('<cwd>/'),
+        message: canonOraclePath(String(x?.message ?? x).split(process.cwd() + '/').join('<cwd>/')),
         location: l && typeof l === 'object'
             ? { line: num(l.line), column: num(l.column), start: num(l.start), length: num(l.length) }
             : null,
@@ -70,7 +72,7 @@ export function observeAggregate(e: any): AggregateObservation | undefined {
     if (e == null || typeof e !== 'object' || !Array.isArray(e.errors)) return undefined;
     const rawCode = e.code === 'PLUGIN_ERROR' ? e.pluginCode : e.code;
     return {
-        message: String(e.message ?? ''),
+        message: canonOraclePath(String(e.message ?? '')),
         code: typeof rawCode === 'number' || typeof rawCode === 'string' ? rawCode : null,
         errors: e.errors.map(subObs),
     };
@@ -99,9 +101,9 @@ export function observeError(e: any): ErrorObservation {
     const rawCode = e.code === 'PLUGIN_ERROR' ? e.pluginCode : e.code;
     return {
         name: typeof e.name === 'string' ? e.name : null,
-        message: String(e.message ?? e),
+        message: canonOraclePath(String(e.message ?? e)),
         code: typeof rawCode === 'number' || typeof rawCode === 'string' ? rawCode : null,
-        filename: e.filename ?? e.loc?.file ?? e.id ?? null,
+        filename: (() => { const f = e.filename ?? e.loc?.file ?? e.id ?? null; return f == null ? null : canonOraclePath(String(f)); })(),
         line: num(e.loc?.line) ?? num(e.location?.line) ?? num(e.line),
         column: num(e.loc?.column) ?? num(e.location?.column) ?? num(e.column),
         ...(Array.isArray(e.errors) ? { aggregate: observeAggregate(e) } : {}),

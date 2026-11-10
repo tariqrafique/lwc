@@ -3,8 +3,9 @@
 import type { CompilerBackend } from './backend';
 import { evalTemplateModule } from './evalTemplate';
 import { errorObservation, errorMultiset } from './optionRows';
+import { oracleRoot } from './oracleRoot';
 
-export const TEMPLATE_ROOT = '/workspace/lwc/packages/@lwc/template-compiler/src/__tests__/fixtures';
+export const TEMPLATE_ROOT = `${oracleRoot()}/packages/@lwc/template-compiler/src/__tests__/fixtures`;
 const diag = (ws: any[] = []) => ws.map((w) => ({ code: w.code, level: w.level }));
 
 /**

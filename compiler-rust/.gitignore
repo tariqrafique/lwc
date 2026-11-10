@@ -9,3 +9,6 @@ harness/.csr-render-out/
 harness/.ssr-render-out/
 harness/render-out/
 harness/.template-diag-diff/
+
+# D-0280: fetched oracle / style-corpus / notes copies for portable runs
+.oracle/

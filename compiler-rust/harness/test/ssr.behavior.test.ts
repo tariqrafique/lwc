@@ -5,8 +5,9 @@ import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import { compareError, observeError } from '../src/compareError';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalSsrModule } from '../src/evalSsr';
+import { oracleRoot } from '../src/oracleRoot';
 
-const ROOT = '/workspace/lwc/packages/@lwc/ssr-compiler/src/__tests__/fixtures';
+const ROOT = `${oracleRoot()}/packages/@lwc/ssr-compiler/src/__tests__/fixtures`;
 // One board row per JS-shipped CompilationMode (@lwc/shared ssr.ts). sync keeps the original golden dir.
 const SSR_MODE = (process.env.SSR_MODE ?? 'sync') as 'sync' | 'async' | 'asyncYield';
 if (!['sync', 'async', 'asyncYield'].includes(SSR_MODE)) throw new Error(`bad SSR_MODE ${SSR_MODE}`);

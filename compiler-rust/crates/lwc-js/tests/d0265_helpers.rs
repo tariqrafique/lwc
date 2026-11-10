@@ -63,8 +63,8 @@ fn prelude_helper_order(code: &str) -> Vec<&'static str> {
         if let Some(h) = HELPERS_ORDER.iter().copied().find(|h| {
             let base = h.trim_start_matches('_').trim_end_matches(|c: char| c.is_ascii_digit());
             local == format!("_{base}") || local.starts_with(&format!("_{base}"))
-        }) {
-            if !found.contains(&h) { found.push(h); }
+        }) && !found.contains(&h) {
+            found.push(h);
         }
     }
     found

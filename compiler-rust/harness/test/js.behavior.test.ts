@@ -5,8 +5,9 @@ import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import { compareError, compareAggregate, observeAggregate } from '../src/compareError';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalJsModule } from '../src/evalJs';
+import { oracleRoot } from '../src/oracleRoot';
 
-const ROOT = '/workspace/lwc/packages/@lwc/babel-plugin-component/src/__tests__/fixtures';
+const ROOT = `${oracleRoot()}/packages/@lwc/babel-plugin-component/src/__tests__/fixtures`;
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/js');
 
 function findFixtures(dir: string): string[] {

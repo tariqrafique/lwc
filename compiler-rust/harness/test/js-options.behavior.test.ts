@@ -15,8 +15,9 @@ import { describe, it, beforeAll } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalJsModule } from '../src/evalJs';
 import { checkGolden, errorObservation, findFiles, apiLabel, apiOpt, type ApiCell } from '../src/optionRows';
+import { oracleRoot } from '../src/oracleRoot';
 
-const ROOT = '/workspace/lwc/packages/@lwc/babel-plugin-component/src/__tests__/fixtures';
+const ROOT = `${oracleRoot()}/packages/@lwc/babel-plugin-component/src/__tests__/fixtures`;
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/js-options');
 const fixtures = findFiles(ROOT, 'actual.js').map((f) => path.relative(ROOT, path.dirname(f)));
 const readFx = (rel: string, f: string) => { const p = path.join(ROOT, rel, f); return fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : ''; };

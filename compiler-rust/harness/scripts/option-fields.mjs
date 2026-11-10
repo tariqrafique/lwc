@@ -1,9 +1,11 @@
 // Enumerate every option field (recursing into plain object-typed fields) from the shipped JS option types.
 // Source of truth for the option-inventory gate. Uses the oracle's own TypeScript.
 import { createRequire } from 'node:module';
-const req = createRequire('/workspace/lwc/package.json');
+import { oracleRoot } from './oracle-root.mjs';
+const LWC = oracleRoot();
+const req = createRequire(`${LWC}/package.json`);
 const ts = req('typescript');
-const P = '/workspace/lwc/packages/@lwc';
+const P = `${LWC}/packages/@lwc`;
 const ROOTS = [
     ['compiler', `${P}/compiler/src/options.ts`, 'TransformOptions'],
     ['template', `${P}/template-compiler/src/config.ts`, 'Config'],
@@ -11,7 +13,7 @@ const ROOTS = [
     ['ssr.component', `${P}/ssr-compiler/src/shared.ts`, 'ComponentTransformOptions'],
     ['ssr.template', `${P}/ssr-compiler/src/shared.ts`, 'TemplateTransformOptions'],
 ];
-const program = ts.createProgram(ROOTS.map((r) => r[1]), { strict: true, skipLibCheck: true, noEmit: true, baseUrl: '/workspace/lwc', moduleResolution: ts.ModuleResolutionKind.Bundler, target: ts.ScriptTarget.ES2022 });
+const program = ts.createProgram(ROOTS.map((r) => r[1]), { strict: true, skipLibCheck: true, noEmit: true, baseUrl: LWC, moduleResolution: ts.ModuleResolutionKind.Bundler, target: ts.ScriptTarget.ES2022 });
 const checker = program.getTypeChecker();
 const out = [];
 const isPlainObj = (t) => {

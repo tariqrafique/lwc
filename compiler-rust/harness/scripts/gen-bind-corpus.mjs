@@ -8,8 +8,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { oracleRoot } from './oracle-root.mjs';
 
-const LWC = '/workspace/lwc';
+const LWC = oracleRoot();
 const require = createRequire(path.join(LWC, 'package.json'));
 const { parseExpressionAt } = require('acorn');
 const { walk } = require('estree-walker');

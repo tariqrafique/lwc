@@ -23,6 +23,7 @@ import { formatHTML } from '/workspace/lwc/scripts/test-utils/format-html';
 // Must be the same file as csrRender.ts ENGINE_DOM_ESM (the bundles' `lwc` path) so there is ONE engine instance.
 // Static literal: vite's client (jsdom) transform does not resolve a non-literal dynamic import of this path.
 import * as engineDom from '/workspace/lwc/packages/@lwc/engine-dom/dist/index.js';
+import { oracleRoot, canonOraclePath } from '../src/oracleRoot';
 
 const BACKEND_ID = process.env.LWC_COMPILER_BACKEND ?? 'js';
 const CORPUS = process.env.CORPUS ?? 'all';
@@ -43,12 +44,12 @@ const loadGolden = (f: string): Golden => (UPDATE ? {} : readGolden(f));   // mi
 // many components rendered earlier in the run (CORPUS=all vs a single corpus), are not compiler output.
 // Rollup prints module ids relative to process.cwd() (`../../lwc/...` from the live harness, `../../../workspace/lwc/...`
 // from a /tmp snapshot): resolve them and anchor the oracle at `<lwc>` so goldens don't depend on where the harness runs.
-const ORACLE_ROOT = '/workspace/lwc';
+const ORACLE_ROOT = oracleRoot();
 const cwdIds = (s: string) => s.replace(/(?:\.\.\/)+[\w@.\-\/]+/g, (m) => {
     const abs = path.resolve(process.cwd(), m);
     return abs.startsWith(ORACLE_ROOT + '/') ? '<lwc>' + abs.slice(ORACLE_ROOT.length) : abs;
 });
-const norm = (s: string) => cwdIds(s.split(OUT).join('<out>')).replace(/\[object:vm (\S+) \(\d+\)\]/g, '[object:vm $1 (#)]');
+const norm = (s: string) => canonOraclePath(cwdIds(s.split(OUT).join('<out>')).replace(/\[object:vm (\S+) \(\d+\)\]/g, '[object:vm $1 (#)]'));
 
 let backend: CompilerBackend;
 let lwc: any;

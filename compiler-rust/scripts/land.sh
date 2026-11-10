@@ -85,7 +85,7 @@ DEC_REPO=/workspace/notes; DEC_PATH=lwc-rust-migrate/decisions.tsv
 # (D)(E) Notes unavailable is rc 2 (not die/rc 1). Pin HEAD once; every show/blame/pickaxe uses this sha.
 die2() { echo "!! LAND REFUSED: $*" >&2; exit 2; }
 DEC_SHA="$(git -C "$DEC_REPO" rev-parse --verify HEAD 2>/dev/null)" || die2 "notes unavailable: cannot resolve $DEC_REPO HEAD"
-main_run scripts/parse5-pin-check.sh "$wt" || die "parse5 pin check failed: Cargo.lock parse5 source rev must match crates/lwc-template/Cargo.toml and the rev must exist in /workspace/parse5-rust (D-0238)"
+PARSE5_DIR=/workspace/parse5-rust main_run scripts/parse5-pin-check.sh "$wt" || die "parse5 pin check failed: Cargo.lock parse5 source rev must match crates/lwc-template/Cargo.toml and the rev must exist in /workspace/parse5-rust (D-0238)"
 source "$(main_data scripts/cargo-locked.sh)"
 log_box_configs
 cargo_locked check --workspace --all-targets || die "workspace check failed"
@@ -94,13 +94,27 @@ crates_changed=; if grep -q '^crates/\|^Cargo\.' <<< "$changed"; then crates_cha
 # napi release build gates the landing (before the fast-forward) and feeds the board check below (always: the board must
 # measure THIS tree's compiler); the live install from main stays post-merge.
 cargo_locked build -p lwc-compiler-napi --release || die "napi release build failed"
-if grep -qE '^(scripts/(land|test-land-classify|parse5-pin-check|test-parse5-pin|test-shim-registry|lint-shell-pipes|lint-no-stripped-compare|check-land-main-refs|cargo-locked|ratchet-ceiling|baseline-ceiling|test-board-ratchet)\.sh|scripts/land-main-refs\.tsv|harness/(scripts/shim-gate\.mjs|scripts/board-baseline\.mjs|shim-registry\.tsv|board\.sh|board-rows\.sh|vitest\.config\.ts|vitest\.board\.config\.ts)|harness/test/.*([Ss]etup|globalSetup).*)$' <<< "$changed"; then scripts/test-land-classify.sh || die "test-land-classify / parse5-pin / lint-shell-pipes / ratchet-ceiling / board-ratchet / shim-registry / main-refs self-test failed"; fi
+if grep -qE '^(scripts/(land|test-land-classify|parse5-pin-check|test-parse5-pin|test-shim-registry|lint-shell-pipes|lint-no-stripped-compare|check-land-main-refs|cargo-locked|ratchet-ceiling|baseline-ceiling|test-board-ratchet)\.sh|scripts/land-main-refs\.tsv|harness/(scripts/shim-gate\.mjs|scripts/board-baseline\.mjs|shim-registry\.tsv|board\.sh|board-rows\.sh|vitest\.config\.ts|vitest\.board\.config\.ts)|harness/test/.*([Ss]etup|globalSetup).*))$' <<< "$changed"; then
+  scripts/test-land-classify.sh || die "test-land-classify / parse5-pin / lint-shell-pipes / ratchet-ceiling / shim-registry / main-refs self-test failed"
+  # test-board-ratchet is an e2e board proof and needs the napi binary land just built
+  # (harness/lwc-compiler-napi.node or target/release/liblwc_compiler_napi.so). It is
+  # not part of test-land-classify, so a scratch tree without napi can still classify.
+  scripts/test-board-ratchet.sh || die "test-board-ratchet failed: needs napi from the release build above (harness/lwc-compiler-napi.node or target/release/liblwc_compiler_napi.so)"
+fi
 # Unconditional (D-0274(5)/AB-L0079): MAIN's checker + MAIN's table judge the branch land.sh.
 # A branch cannot widen the table in the same landing. Missing MAIN table is rc 2.
-main_run scripts/check-land-main-refs.sh --check "$wt/scripts/land.sh" "$(main_data scripts/land-main-refs.tsv)" "$wt" \
-  || die "land-main-refs check failed (rc=$?)"
+# MAIN table is git show of the sha being landed onto, never MAIN's working tree.
+_main_refs="$(mktemp)"
+if ! git -C "$main_checkout" show "${base}:scripts/land-main-refs.tsv" > "$_main_refs"; then
+  rm -f "$_main_refs"
+  die "cannot materialize MAIN land-main-refs.tsv from git ($base)"
+fi
+main_run scripts/check-land-main-refs.sh --check "$wt/scripts/land.sh" "$wt" \
+  --main-table "$_main_refs" --incoming-table "$wt/scripts/land-main-refs.tsv" \
+  || { _rc=$?; rm -f "$_main_refs"; die "land-main-refs check failed (rc=$_rc)"; }
+rm -f "$_main_refs"
 if grep -qE '^harness/scripts/shim-gate\.mjs$' <<< "$changed"; then node harness/scripts/shim-gate.mjs --self-test || die "shim-gate self-test failed (AB-X0010)"; fi
-if grep -qE '^scripts/(official-board|publish-official|notes-precheck|test-notes-precheck)\.sh$' <<< "$changed"; then scripts/test-notes-precheck.sh || die "notes-precheck guard test failed (AB-0016)"; fi
+if grep -qE '^scripts/(official-board|publish-official|notes-precheck|test-notes-precheck|run-board|run-portable-board|test-board-footers)\.sh$' <<< "$changed"; then scripts/test-notes-precheck.sh && scripts/test-board-footers.sh || die "notes-precheck / board-footers guard test failed (AB-0016 / AB-M0002)"; fi
 # Unconditional (AB-X0008): no pipe into a quiet grep in the branch's shell scripts (SIGPIPE fail-open under pipefail).
 main_run scripts/lint-shell-pipes.sh "$wt" || die "lint-shell-pipes failed (rc=$?)"
 # Unconditional (D-0219, D-0256): no whitespace-stripped or otherwise normalized compare of compiler output.

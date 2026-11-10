@@ -11,14 +11,14 @@ struct Hits {
 
 impl<'a> Visit<'a> for Hits {
     fn visit_static_member_expression(&mut self, it: &StaticMemberExpression<'a>) {
-        if let Expression::Identifier(o) = &it.object {
-            if o.name == "babelHelpers" {
-                self.members.push((
-                    it.span.start - self.prefix,
-                    it.span.end - self.prefix,
-                    it.property.name.to_string(),
-                ));
-            }
+        if let Expression::Identifier(o) = &it.object
+            && o.name == "babelHelpers"
+        {
+            self.members.push((
+                it.span.start - self.prefix,
+                it.span.end - self.prefix,
+                it.property.name.to_string(),
+            ));
         }
         walk::walk_static_member_expression(self, it);
     }

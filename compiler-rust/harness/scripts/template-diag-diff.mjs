@@ -57,10 +57,11 @@ import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { oracleRoot, styleCorpusRoot } from './oracle-root.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const HARNESS = path.resolve(HERE, '..');
-const LWC = '/workspace/lwc';
+const LWC = oracleRoot();
 const TPL_FIX = `${LWC}/packages/@lwc/template-compiler/src/__tests__/fixtures`;
 const API_VERSIONS = [58, 59, 60, 61, 62, 63, 64, 65, 66]; // lwc_shared::api_version::ALL_VERSIONS
 // Clamp / snap-down edges of getAPIVersionFromNumber (shared/src/api-version.ts).
@@ -88,8 +89,8 @@ const REAL_SOURCES = [
     ['lwc-other', [`${LWC}/packages/@lwc/perf-benchmarks`, `${LWC}/packages/@lwc/perf-benchmarks-components`,
         `${LWC}/packages/@lwc/rollup-plugin`, `${LWC}/packages/@lwc/engine-server`, `${LWC}/packages/@lwc/module-resolver`,
         `${LWC}/packages/@lwc/integration-types`, `${LWC}/playground`]],
-    ['lightning-base-components', '/workspace/style-corpus/lbc'],
-    ['lbc-recipes', '/workspace/style-corpus/lbc-recipes'],
+    ['lightning-base-components', `${styleCorpusRoot()}/lbc`],
+    ['lbc-recipes', `${styleCorpusRoot()}/lbc-recipes`],
 ];
 
 function templateFixtures() {
@@ -624,7 +625,10 @@ function semdiffJudge(dir, n) {
     if (process.env.TDD_SEMDIFF === 'none') return { meta: { mode: 'exact-bytes', semdiff: null }, verdicts: null };
     if (n === 0) return { meta: { mode: 'exact-bytes+semdiff', semdiff: null, note: 'no codegen-only cases' }, verdicts: new Map() };
     const bin = semdiffBin();
-    const registry = path.resolve(process.env.TDD_SEMDIFF_REGISTRY ?? '/workspace/notes/lwc-rust-migrate/decisions.tsv');
+    const _boxReg = '/workspace/notes/lwc-rust-migrate/decisions.tsv';
+    const _reg = process.env.TDD_SEMDIFF_REGISTRY ?? process.env.SEMDIFF_REGISTRY ?? (fs.existsSync(_boxReg) ? _boxReg : '');
+    if (!_reg) throw new Error('TDD_SEMDIFF_REGISTRY/SEMDIFF_REGISTRY unset and /workspace/notes/.../decisions.tsv is absent');
+    const registry = path.resolve(_reg);
     const exec = process.env.TDD_SEMDIFF_EXEC === '1';
     const out = path.join(dir, 'semdiff-summary.json');
     const argv = ['run', '--manifest', path.join(dir, 'manifest.json'), '--out', out, '--registry', registry, '--gate', 'none', ...(exec ? ['--exec'] : [])];

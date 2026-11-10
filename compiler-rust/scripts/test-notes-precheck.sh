@@ -189,4 +189,78 @@ else
 fi
 cleanup_pub
 
+
+
+# AB-M0002: publish is refused when any official input is overridden.
+pblk="$(sed -n '/^# >>> official-input-pins/,/^# <<< official-input-pins/p' "$OB")"
+[ -n "$pblk" ] || { echo "FAIL official-input-pins block not found"; fail=1; pblk=':'; }
+eval "$pblk"
+orc=0
+( official_refuse_overrides_unless_no_publish ) >"$P/out.ov" 2>&1 || orc=$?
+if [ "$orc" -eq 0 ]; then ok "no overrides: resolve allowed"; else bad "no overrides rc=$orc: $(cat "$P/out.ov")"; fi
+orc=0
+( LWC_ORACLE=/tmp/not-the-box-oracle official_refuse_overrides_unless_no_publish ) >"$P/out.ov2" 2>&1 || orc=$?
+if [ "$orc" -eq 5 ] && grep -q 'LWC_ORACLE' "$P/out.ov2" && grep -q 'OFFICIAL_NO_PUBLISH=1' "$P/out.ov2"; then
+  ok "override without OFFICIAL_NO_PUBLISH=1 is refused (rc 5)"
+else
+  bad "override refuse rc=$orc (want 5): $(cat "$P/out.ov2")"
+fi
+orc=0
+( LWC_ORACLE=/tmp/not-the-box-oracle OFFICIAL_NO_PUBLISH=1 official_refuse_overrides_unless_no_publish ) >"$P/out.ov3" 2>&1 || orc=$?
+if [ "$orc" -eq 0 ]; then ok "override with OFFICIAL_NO_PUBLISH=1 is allowed"; else bad "no-publish override rc=$orc: $(cat "$P/out.ov3")"; fi
+orc=0
+( STYLE_CORPUS=/tmp/not-the-box-corpus official_refuse_overrides_unless_no_publish ) >"$P/out.ov4" 2>&1 || orc=$?
+if [ "$orc" -eq 5 ] && grep -q 'STYLE_CORPUS' "$P/out.ov4" && grep -q 'OFFICIAL_NO_PUBLISH=1' "$P/out.ov4"; then
+  ok "STYLE_CORPUS override without OFFICIAL_NO_PUBLISH=1 is refused (rc 5)"
+else
+  bad "STYLE_CORPUS override refuse rc=$orc (want 5): $(cat "$P/out.ov4")"
+fi
+orc=0
+( STYLE_CORPUS=/tmp/not-the-box-corpus OFFICIAL_NO_PUBLISH=1 official_refuse_overrides_unless_no_publish ) >"$P/out.ov5" 2>&1 || orc=$?
+if [ "$orc" -eq 0 ]; then ok "STYLE_CORPUS override with OFFICIAL_NO_PUBLISH=1 is allowed"; else bad "STYLE_CORPUS no-publish override rc=$orc: $(cat "$P/out.ov5")"; fi
+# Derived default: STYLE_CORPUS=$EXT_INPUTS_ROOT/style-corpus (lock and tests share it).
+orc=0
+( official_resolve_inputs && [ "$STYLE_CORPUS" = "$EXT_INPUTS_ROOT/style-corpus" ] ) >"$P/out.ov6" 2>&1 || orc=$?
+if [ "$orc" -eq 0 ]; then ok "STYLE_CORPUS defaults to EXT_INPUTS_ROOT/style-corpus"; else bad "derived STYLE_CORPUS rc=$orc: $(cat "$P/out.ov6")"; fi
+
+# AB-M0002: lock-format plants. content-only marker must not accept a with-git hash, and
+# a lock with no marker (legacy with-git) must not accept a content-only hash.
+lblk="$(sed -n '/^# >>> lock-format/,/^# <<< lock-format/p' "$OB")"
+[ -n "$lblk" ] || { echo "FAIL lock-format block not found"; fail=1; lblk=':'; }
+eval "$lblk"
+LF="$P/lockfmt"; mkdir -p "$LF/content" "$LF/gitdir/.git"
+echo body > "$LF/content/a.txt"
+echo body > "$LF/gitdir/a.txt"
+echo gitobj > "$LF/gitdir/.git/obj"
+EXT_INPUTS_ROOT="$LF"
+h_content="$(inputhash1 content)"
+h_all="$(inputhash1_all gitdir)"
+# sanity: with-.git hash of gitdir differs from content-only
+h_gitdir_content="$(inputhash1 gitdir)"
+[ "$h_all" != "$h_gitdir_content" ] || bad "plant gitdir content-only hash unexpectedly equals with-git hash"
+
+printf '# hash-format: content-only\ngitdir\t%s\n' "$h_all" > "$LF/lock.wrong-new"
+lrc=0
+( verify_external_inputs_lock "$LF/lock.wrong-new" ) >"$P/out.lock1" 2>&1 || lrc=$?
+if [ "$lrc" -eq 4 ] && grep -q 'format=content-only' "$P/out.lock1"; then
+  ok "old (with-git) hash under content-only marker fails"
+else
+  bad "old-hash-under-new-marker rc=$lrc: $(cat "$P/out.lock1")"
+fi
+
+printf 'gitdir\t%s\n' "$h_gitdir_content" > "$LF/lock.wrong-legacy"
+lrc=0
+( verify_external_inputs_lock "$LF/lock.wrong-legacy" ) >"$P/out.lock2" 2>&1 || lrc=$?
+if [ "$lrc" -eq 4 ] && grep -q 'format=with-git' "$P/out.lock2"; then
+  ok "new (content-only) hash under no marker (legacy with-git) fails"
+else
+  bad "new-hash-under-no-marker rc=$lrc: $(cat "$P/out.lock2")"
+fi
+
+printf '# hash-format: content-only\ngitdir\t%s\n' "$h_gitdir_content" > "$LF/lock.ok"
+lrc=0
+( verify_external_inputs_lock "$LF/lock.ok" ) >"$P/out.lock3" 2>&1 || lrc=$?
+if [ "$lrc" -eq 0 ]; then ok "content-only marker accepts content-only hash"; else bad "good content-only lock rc=$lrc: $(cat "$P/out.lock3")"; fi
+
+
 exit $fail

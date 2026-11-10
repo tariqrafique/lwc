@@ -8,9 +8,9 @@
 # harness/scripts/*.sh must go through cargo_locked.
 #
 # Usage:
-#   check-land-main-refs.sh [--self-test] [<repo-root>]
-#   check-land-main-refs.sh --check <land.sh> <allowlist> <incoming-tree> [overlay-dir]
-# Missing allowlist is rc 2. Unlisted/stale/forbidden token is rc 1.
+#   --self-test <root> --main-table FILE --incoming-table FILE
+#   --check <land.sh> <incoming-tree> --main-table FILE --incoming-table FILE
+# Missing table is rc 2. Unlisted/stale/forbidden token is rc 1.
 set -euo pipefail
 
 SELF="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -242,9 +242,13 @@ forbidden_cargo_lines() {
       echo "$n: $trimmed"
     elif [[ "$trimmed" =~ (^|[^A-Za-z0-9_])\$CARGO([^A-Za-z0-9_]|$) ]]; then
       echo "$n: $trimmed"
-    elif [[ "$trimmed" =~ napi[[:space:]]+build ]] || [[ "$trimmed" =~ npx[[:space:]]+napi ]] \
-        || [[ "$trimmed" =~ npm[[:space:]]+run[[:space:]]+build ]] \
-        || [[ "$trimmed" =~ npm[[:space:]]+test([[:space:]]|$) ]]; then
+    elif [ "$rel" = "scripts/napi-pack.sh" ] \
+        && [[ "$trimmed" =~ ^npm[[:space:]]+run[[:space:]]+build[[:space:]]+--[[:space:]]+--[[:space:]]*cargo-flags=--locked ]]; then
+      continue
+    elif [[ "$trimmed" =~ (^|[;|&][[:space:]]*)napi[[:space:]]+build([[:space:]]|$) ]] \
+        || [[ "$trimmed" =~ (^|[;|&][[:space:]]*)npx[[:space:]]+napi([[:space:]]|$) ]] \
+        || [[ "$trimmed" =~ (^|[;|&][[:space:]]*)npm[[:space:]]+run[[:space:]]+build([[:space:]]|$) ]] \
+        || [[ "$trimmed" =~ (^|[;|&][[:space:]]*)npm[[:space:]]+test([[:space:]]|$) ]]; then
       echo "$n: $trimmed"
     fi
   done < "$file"
@@ -343,12 +347,59 @@ assert_box_log_call_sites() {
   return 0
 }
 
+
+# AB-M0001: stale = (incoming ∩ MAIN) − found; miss = found − MAIN.
+# Callers pass both tables explicitly (--main-table / --incoming-table).
+
+# Plants copy $allow as the synthetic MAIN table. A tree that pre-lists unused
+# incoming-only rows (table-only land) would then show those rows on both sides
+# and fail as stale. Drop unused MAIN_* / BOX_CONFIG_DEPENDENT rows so the
+# plant baseline matches found for this tree. REGION / NEXT rows are kept.
+write_self_test_plant_allow() {
+  local src="$1" root="$2" dest="$3"
+  local land="$root/scripts/land.sh"
+  local found_classes box_found="" rel f deps d
+  found_classes="$(extract_helpers "$land" | helpers_to_listed)"
+  while IFS= read -r rel; do
+    [ -n "$rel" ] || continue
+    case "$rel" in
+      scripts/check-land-main-refs.sh|scripts/test-*.sh) continue ;;
+    esac
+    if [ "$rel" = "scripts/land.sh" ]; then
+      f="$land"
+    else
+      f="$root/$rel"
+    fi
+    [ -f "$f" ] || continue
+    deps="$(extract_box_deps_for "$f")" || return 2
+    [ -n "$deps" ] || continue
+    while IFS= read -r d; do
+      [ -n "$d" ] || continue
+      box_found+="$rel"$'	'"$d"$'
+'
+    done <<< "$deps"
+  done < <(collect_sh_rels "$root")
+  box_found="$(printf '%s' "$box_found" | sort -u)"
+  awk -F'	' -v okm="$VALID_MAIN" -v okb="$VALID_BOX" \
+      -v foundm="$found_classes" -v foundb="$box_found" '
+    BEGIN {
+      n=split(foundm, a, "\n"); for (i=1;i<=n;i++) if (a[i] != "") mm[a[i]]=1
+      n=split(foundb, a, "\n"); for (i=1;i<=n;i++) if (a[i] != "") bb[a[i]]=1
+    }
+    /^#/ || NF==0 { print; next }
+    $2 ~ "^("okm")$" { if (($1 "\t" $2) in mm) print; next }
+    $2 == okb { if (($1 "\t" $3) in bb) print; next }
+    { print }
+  ' "$src" > "$dest"
+}
+
 check() {
-  local land="$1" allow="$2" root="$3" overlay="${4:-}"
+  local land="$1" main_table="$2" root="$3" incoming_table="$4" overlay="${5:-}"
   local fail=0
   [ -f "$land" ] || { echo "check-land-main-refs: no land.sh at $land" >&2; return 2; }
   local rows
-  rows="$(load_allowlist "$allow")" || return 2
+  [ -n "${main_table:-}" ] && [ -f "$main_table" ] || { echo "check-land-main-refs: no MAIN allowlist at ${main_table:-<empty>}" >&2; return 2; }
+  rows="$(load_allowlist "$main_table")" || return 2
 
   local markers
   markers="$(region_marker_report "$land")"
@@ -444,10 +495,9 @@ check() {
   # Stale MAIN_* (path+class) and BOX_CONFIG_DEPENDENT (path+dep) rows are
   # (incoming ∩ MAIN) minus found uses: a MAIN-only drop and an incoming-only
   # pending addition are accepted; a row in both that is unused fails.
-  local incoming_table inext igot
-  incoming_table="$(resolve_file "scripts/land-main-refs.tsv" "$overlay" "$root")"
+  local inext igot
   if [ -z "${incoming_table:-}" ] || [ ! -f "$incoming_table" ]; then
-    echo "check-land-main-refs: no incoming allowlist at scripts/land-main-refs.tsv" >&2
+    echo "check-land-main-refs: no incoming allowlist at ${incoming_table:-<empty>}" >&2
     return 2
   fi
   inext="$(awk -F'\t' '$2=="NEXT_REGION_SHA256"{print $3; exit}' "$incoming_table")"
@@ -523,17 +573,37 @@ check() {
 }
 
 self_test() {
-  local root="$1"
-  local land="$root/scripts/land.sh" allow="$root/scripts/land-main-refs.tsv"
+  local root="$1" main_table="$2" incoming_table="$3"
+  local land="$root/scripts/land.sh" tree_allow="$root/scripts/land-main-refs.tsv"
+  local allow="$tree_allow"
   local T fail=0
   T="$(mktemp -d /tmp/main-refs.XXXXXX)"
   trap 'rm -rf "$T"' RETURN
 
-  if check "$land" "$allow" "$root"; then
+  [ -n "${main_table:-}" ] && [ -f "$main_table" ] || { echo "usage: --self-test <root> --main-table FILE --incoming-table FILE" >&2; return 2; }
+  [ -n "${incoming_table:-}" ] && [ -f "$incoming_table" ] || { echo "usage: --self-test <root> --main-table FILE --incoming-table FILE" >&2; return 2; }
+
+  if check "$land" "$main_table" "$root" "$incoming_table"; then
     echo "ok   live land.sh matches allowlist"
   else
     echo "FAIL live land.sh does not match allowlist"; fail=1
   fi
+
+  write_self_test_plant_allow "$tree_allow" "$root" "$T/plant.allow" || return 2
+  allow="$T/plant.allow"
+
+  incoming_table_for() {
+    local overlay="${1:-}" r="${2:-$root}"
+    if [ -n "$overlay" ] && [ -f "$overlay/scripts/land-main-refs.tsv" ]; then
+      printf '%s\n' "$overlay/scripts/land-main-refs.tsv"
+    else
+      printf '%s\n' "$r/scripts/land-main-refs.tsv"
+    fi
+  }
+  chk() {
+    local _land="$1" _mt="$2" _r="$3" _ov="${4:-}"
+    check "$_land" "$_mt" "$_r" "$(incoming_table_for "$_ov" "$_r")" "$_ov"
+  }
 
   local plant name
   declare -A plants=(
@@ -549,7 +619,7 @@ self_test() {
     plant="${plants[$name]}"
     cp "$land" "$T/land.sh"
     printf '\n%s\n' "$plant" >> "$T/land.sh"
-    if check "$T/land.sh" "$allow" "$root" >"$T/out.plant" 2>&1; then
+    if chk "$T/land.sh" "$allow" "$root" >"$T/out.plant" 2>&1; then
       echo "FAIL planted MAIN spelling $name was accepted"; sed 's/^/       /' "$T/out.plant"; fail=1
     elif grep -q 'forbidden MAIN token' "$T/out.plant"; then
       echo "ok   planted MAIN spelling $name fails"
@@ -560,7 +630,7 @@ self_test() {
 
   cp "$land" "$T/land.sh"
   printf '\n# >>> main-chokepoint\n"$MAIN/scripts/planted-second.sh"\n# <<< main-chokepoint\n' >> "$T/land.sh"
-  if check "$T/land.sh" "$allow" "$root" >"$T/out.second" 2>&1; then
+  if chk "$T/land.sh" "$allow" "$root" >"$T/out.second" 2>&1; then
     echo "FAIL second opener was accepted"; sed 's/^/       /' "$T/out.second"; fail=1
   elif grep -q 'main-chokepoint region' "$T/out.second"; then
     echo "ok   planted second opener fails"
@@ -571,7 +641,7 @@ self_test() {
   cp "$land" "$T/land.sh"
   awk '$0=="# <<< main-chokepoint"{next} {print}' "$land" > "$T/land.sh"
   printf '\n"$MAIN/scripts/planted-expanded.sh"\n# <<< main-chokepoint\n' >> "$T/land.sh"
-  if check "$T/land.sh" "$allow" "$root" >"$T/out.moved" 2>&1; then
+  if chk "$T/land.sh" "$allow" "$root" >"$T/out.moved" 2>&1; then
     echo "FAIL closer moved to EOF was accepted"; sed 's/^/       /' "$T/out.moved"; fail=1
   elif grep -q 'REGION_SHA256 mismatch' "$T/out.moved"; then
     echo "ok   planted closer moved to EOF fails"
@@ -581,7 +651,7 @@ self_test() {
 
   awk '$0=="# <<< main-chokepoint"{print "X=\"$MAIN\""} {print}' "$land" > "$T/land.sh"
   printf '\n"$X/scripts/planted-alias.sh"\n' >> "$T/land.sh"
-  if check "$T/land.sh" "$allow" "$root" >"$T/out.alias" 2>&1; then
+  if chk "$T/land.sh" "$allow" "$root" >"$T/out.alias" 2>&1; then
     echo "FAIL region alias X=\"\$MAIN\" was accepted"; sed 's/^/       /' "$T/out.alias"; fail=1
   elif grep -qE 'REGION_SHA256 mismatch|leaks MAIN' "$T/out.alias"; then
     echo "ok   planted region alias X=\"\$MAIN\" fails"
@@ -591,7 +661,7 @@ self_test() {
 
   cp "$land" "$T/land.sh"
   printf '\nv=MAIN; echo "${!v}/scripts/planted-indirect.sh"\n' >> "$T/land.sh"
-  if check "$T/land.sh" "$allow" "$root" >"$T/out.ind" 2>&1; then
+  if chk "$T/land.sh" "$allow" "$root" >"$T/out.ind" 2>&1; then
     echo "FAIL indirect \${!v} was accepted"; sed 's/^/       /' "$T/out.ind"; fail=1
   elif grep -q 'indirect expansion' "$T/out.ind"; then
     echo "ok   planted indirect \${!v} fails"
@@ -600,7 +670,7 @@ self_test() {
   fi
 
   awk '$0=="# <<< main-chokepoint"{print "# planted region-body edit"} {print}' "$land" > "$T/land.sh"
-  if check "$T/land.sh" "$allow" "$root" >"$T/out.edit" 2>&1; then
+  if chk "$T/land.sh" "$allow" "$root" >"$T/out.edit" 2>&1; then
     echo "FAIL edited region body with unchanged table was accepted"; sed 's/^/       /' "$T/out.edit"; fail=1
   elif grep -q 'REGION_SHA256 mismatch' "$T/out.edit"; then
     echo "ok   planted edited region body with unchanged table fails"
@@ -610,7 +680,7 @@ self_test() {
 
   cp "$land" "$T/land.sh"
   printf '\n%s() { command %s \"$@\"; }\n' cargo_locked c'argo' >> "$T/land.sh"
-  if check "$T/land.sh" "$allow" "$root" >"$T/out.redef" 2>&1; then
+  if chk "$T/land.sh" "$allow" "$root" >"$T/out.redef" 2>&1; then
     echo "FAIL cargo_locked one-line redefine was accepted"; sed 's/^/       /' "$T/out.redef"; fail=1
   elif grep -q 'bare unlocked-build token' "$T/out.redef"; then
     echo "ok   planted cargo_locked one-line redefine fails"
@@ -621,7 +691,7 @@ self_test() {
   mkdir -p "$T/overlay/scripts"
   cp "$root/scripts/lint-shell-pipes.sh" "$T/overlay/scripts/lint-shell-pipes.sh"
   printf '\n%s %s\n' n'pm' te'st' >> "$T/overlay/scripts/lint-shell-pipes.sh"
-  if check "$land" "$allow" "$root" "$T/overlay" >"$T/out.npm" 2>&1; then
+  if chk "$land" "$allow" "$root" "$T/overlay" >"$T/out.npm" 2>&1; then
     echo "FAIL planted n"'pm'" te"'st'" was accepted"; sed 's/^/       /' "$T/out.npm"; fail=1
   elif grep -q 'bare unlocked-build token' "$T/out.npm" && grep -q 'lint-shell-pipes.sh' "$T/out.npm"; then
     echo "ok   planted n"'pm'" te"'st'" fails"
@@ -629,9 +699,29 @@ self_test() {
     echo "FAIL npm test: want bare unlocked-build token"; sed 's/^/       /' "$T/out.npm"; fail=1
   fi
 
+  mkdir -p "$T/overlay/scripts"
+  cp "$root/scripts/lint-shell-pipes.sh" "$T/overlay/scripts/lint-shell-pipes.sh"
+  printf '\necho "napi-pack: Cargo.lock changed during %s %s (not --locked-clean)"\n' na'pi' bu'ild' >> "$T/overlay/scripts/lint-shell-pipes.sh"
+  if chk "$land" "$allow" "$root" "$T/overlay" >"$T/out.napiprose" 2>&1; then
+    echo "ok   error string mentioning "napi" "build" is not an unlocked invocation"
+  else
+    echo "FAIL prose "napi" "build" should be accepted"; sed 's/^/       /' "$T/out.napiprose"; fail=1
+  fi
+
+  mkdir -p "$T/overlay/scripts"
+  cp "$root/scripts/lint-shell-pipes.sh" "$T/overlay/scripts/lint-shell-pipes.sh"
+  printf '\n%s %s\n' 'c'argo bu'ild' >> "$T/overlay/scripts/lint-shell-pipes.sh"
+  if chk "$land" "$allow" "$root" "$T/overlay" >"$T/out.cargobuild" 2>&1; then
+    echo "FAIL planted "'c'argo" "bu'ild'" invocation was accepted"; sed 's/^/       /' "$T/out.cargobuild"; fail=1
+  elif grep -q 'bare unlocked-build token' "$T/out.cargobuild" && grep -q 'lint-shell-pipes.sh' "$T/out.cargobuild"; then
+    echo "ok   planted "'c'argo" "bu'ild'" invocation fails"
+  else
+    echo "FAIL "'c'argo" "bu'ild'": want bare unlocked-build token"; sed 's/^/       /' "$T/out.cargobuild"; fail=1
+  fi
+
   cp "$land" "$T/land.sh"
   printf '\nmain_run scripts/not-listed.sh || true\n' >> "$T/land.sh"
-  if check "$T/land.sh" "$allow" "$root" >"$T/out.unlisted" 2>&1; then
+  if chk "$T/land.sh" "$allow" "$root" >"$T/out.unlisted" 2>&1; then
     echo "FAIL added unlisted helper arg was accepted"; sed 's/^/       /' "$T/out.unlisted"; fail=1
   elif grep -q 'unlisted helper arg' "$T/out.unlisted" && grep -q 'scripts/not-listed.sh' "$T/out.unlisted"; then
     echo "ok   added unlisted helper arg fails"
@@ -642,7 +732,7 @@ self_test() {
   mkdir -p "$T/in.stale/scripts"
   cp "$allow" "$T/in.stale/scripts/land-main-refs.tsv"
   printf 'scripts/gone.sh\tMAIN_SCRIPT_ON_BRANCH_INPUT\t-\t-\n' >> "$T/in.stale/scripts/land-main-refs.tsv"
-  if check "$land" "$allow" "$root" "$T/in.stale" >"$T/out.stale" 2>&1; then
+  if chk "$land" "$allow" "$root" "$T/in.stale" >"$T/out.stale" 2>&1; then
     echo "ok   incoming-only unused MAIN_* row is accepted"
   else
     echo "FAIL incoming-only unused MAIN_* row should be accepted"; sed 's/^/       /' "$T/out.stale"; fail=1
@@ -652,7 +742,7 @@ self_test() {
   cp "$allow" "$T/allow.bothstale"
   printf 'scripts/gone.sh\tMAIN_SCRIPT_ON_BRANCH_INPUT\t-\t-\n' >> "$T/allow.bothstale"
   cp "$T/allow.bothstale" "$T/in.bothstale/scripts/land-main-refs.tsv"
-  if check "$land" "$T/allow.bothstale" "$root" "$T/in.bothstale" >"$T/out.bothstale" 2>&1; then
+  if chk "$land" "$T/allow.bothstale" "$root" "$T/in.bothstale" >"$T/out.bothstale" 2>&1; then
     echo "FAIL unused MAIN_* row in both tables was accepted"; sed 's/^/       /' "$T/out.bothstale"; fail=1
   elif grep -q 'stale allowlist MAIN_' "$T/out.bothstale" && grep -q 'scripts/gone.sh' "$T/out.bothstale"; then
     echo "ok   unused MAIN_* row in both tables fails"
@@ -662,7 +752,7 @@ self_test() {
 
   cp "$allow" "$T/allow.mainextra"
   printf 'scripts/gone.sh\tMAIN_SCRIPT_ON_BRANCH_INPUT\t-\t-\n' >> "$T/allow.mainextra"
-  if check "$land" "$T/allow.mainextra" "$root" >"$T/out.mainextra" 2>&1; then
+  if chk "$land" "$T/allow.mainextra" "$root" >"$T/out.mainextra" 2>&1; then
     echo "ok   MAIN table extra row dropped from incoming is accepted"
   else
     echo "FAIL MAIN extra / incoming dropped should be accepted"; sed 's/^/       /' "$T/out.mainextra"; fail=1
@@ -670,7 +760,7 @@ self_test() {
 
   cp "$root/scripts/lint-shell-pipes.sh" "$T/overlay/scripts/lint-shell-pipes.sh"
   printf '\n: "${CARGO_HOME:=/tmp}"\n' >> "$T/overlay/scripts/lint-shell-pipes.sh"
-  if check "$land" "$allow" "$root" "$T/overlay" >"$T/out.box" 2>&1; then
+  if chk "$land" "$allow" "$root" "$T/overlay" >"$T/out.box" 2>&1; then
     echo "FAIL unlisted box-config dependency was accepted"; sed 's/^/       /' "$T/out.box"; fail=1
   elif grep -q 'unlisted box-config' "$T/out.box" && grep -q 'lint-shell-pipes.sh' "$T/out.box" && grep -q 'CARGO_HOME' "$T/out.box"; then
     echo "ok   added unlisted box-config dependency fails"
@@ -680,7 +770,7 @@ self_test() {
 
   cp "$root/scripts/lint-shell-pipes.sh" "$T/overlay/scripts/lint-shell-pipes.sh"
   printf '\ncat ~/.gitconfig >/dev/null\n' >> "$T/overlay/scripts/lint-shell-pipes.sh"
-  if check "$land" "$allow" "$root" "$T/overlay" >"$T/out.gitconfig" 2>&1; then
+  if chk "$land" "$allow" "$root" "$T/overlay" >"$T/out.gitconfig" 2>&1; then
     echo "FAIL ~/.gitconfig mention without a wrapper call was accepted"; sed 's/^/       /' "$T/out.gitconfig"; fail=1
   elif grep -q 'unlisted box-config' "$T/out.gitconfig" && grep -q 'lint-shell-pipes.sh' "$T/out.gitconfig" && grep -q '~/.gitconfig' "$T/out.gitconfig"; then
     echo "ok   ~/.gitconfig mention without a wrapper call is detected"
@@ -691,7 +781,7 @@ self_test() {
   mkdir -p "$T/in.boxstale/scripts"
   cp "$allow" "$T/in.boxstale/scripts/land-main-refs.tsv"
   printf 'scripts/lint-shell-pipes.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/in.boxstale/scripts/land-main-refs.tsv"
-  if check "$land" "$allow" "$root" "$T/in.boxstale" >"$T/out.boxstale" 2>&1; then
+  if chk "$land" "$allow" "$root" "$T/in.boxstale" >"$T/out.boxstale" 2>&1; then
     echo "ok   incoming-only unused BOX_CONFIG_DEPENDENT row is accepted"
   else
     echo "FAIL incoming-only unused BOX_CONFIG_DEPENDENT row should be accepted"; sed 's/^/       /' "$T/out.boxstale"; fail=1
@@ -701,7 +791,7 @@ self_test() {
   cp "$allow" "$T/allow.boxboth"
   printf 'scripts/lint-shell-pipes.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/allow.boxboth"
   cp "$T/allow.boxboth" "$T/in.boxboth/scripts/land-main-refs.tsv"
-  if check "$land" "$T/allow.boxboth" "$root" "$T/in.boxboth" >"$T/out.boxboth" 2>&1; then
+  if chk "$land" "$T/allow.boxboth" "$root" "$T/in.boxboth" >"$T/out.boxboth" 2>&1; then
     echo "FAIL unused BOX_CONFIG_DEPENDENT row in both tables was accepted"; sed 's/^/       /' "$T/out.boxboth"; fail=1
   elif grep -q 'stale allowlist BOX_CONFIG' "$T/out.boxboth" && grep -q 'lint-shell-pipes.sh' "$T/out.boxboth"; then
     echo "ok   unused BOX_CONFIG_DEPENDENT row in both tables fails"
@@ -711,14 +801,71 @@ self_test() {
 
   cp "$allow" "$T/allow.boxmainextra"
   printf 'scripts/lint-shell-pipes.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/allow.boxmainextra"
-  if check "$land" "$T/allow.boxmainextra" "$root" >"$T/out.boxmainextra" 2>&1; then
+  if chk "$land" "$T/allow.boxmainextra" "$root" >"$T/out.boxmainextra" 2>&1; then
     echo "ok   MAIN table extra BOX_CONFIG_DEPENDENT row dropped from incoming is accepted"
   else
     echo "FAIL MAIN extra BOX / incoming dropped should be accepted"; sed 's/^/       /' "$T/out.boxmainextra"; fail=1
   fi
 
+  mkdir -p "$T/in.boxabsent/scripts"
+  cp "$allow" "$T/in.boxabsent/scripts/land-main-refs.tsv"
+  printf 'scripts/not-yet-on-main.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/in.boxabsent/scripts/land-main-refs.tsv"
+  if chk "$land" "$allow" "$root" "$T/in.boxabsent" >"$T/out.boxabsent" 2>&1; then
+    echo "ok   incoming-only BOX_CONFIG_DEPENDENT row for an absent file is accepted"
+  else
+    echo "FAIL incoming-only absent-file BOX_CONFIG row should be accepted"; sed 's/^/       /' "$T/out.boxabsent"; fail=1
+  fi
+
+  mkdir -p "$T/in.boxbothabsent/scripts"
+  cp "$allow" "$T/allow.boxbothabsent"
+  printf 'scripts/not-yet-on-main.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/allow.boxbothabsent"
+  cp "$T/allow.boxbothabsent" "$T/in.boxbothabsent/scripts/land-main-refs.tsv"
+  if chk "$land" "$T/allow.boxbothabsent" "$root" "$T/in.boxbothabsent" >"$T/out.boxbothabsent" 2>&1; then
+    echo "FAIL unused BOX_CONFIG_DEPENDENT row for an absent file in both tables was accepted"; sed 's/^/       /' "$T/out.boxbothabsent"; fail=1
+  elif grep -q 'stale allowlist BOX_CONFIG' "$T/out.boxbothabsent" && grep -q 'not-yet-on-main.sh' "$T/out.boxbothabsent"; then
+    echo "ok   unused BOX_CONFIG_DEPENDENT row for an absent file in both tables fails"
+  else
+    echo "FAIL unused absent-file BOX in both: want not-yet-on-main.sh"; sed 's/^/       /' "$T/out.boxbothabsent"; fail=1
+  fi
+
+  # Same file as $allow and incoming (how --self-test's live check calls check).
+  cp "$incoming_table" "$T/incoming.copy.tsv"
+  hard="$T/incoming.hard.tsv"
+  if ! ln "$incoming_table" "$hard" 2>/dev/null; then
+    hard="$(mktemp "$(dirname "$incoming_table")/.incoming-hard.XXXXXX")"
+    ln "$incoming_table" "$hard"
+    trap 'rm -rf "$T"; rm -f "'"$hard"'"' RETURN
+  fi
+  check "$land" "$main_table" "$root" "$incoming_table" >"$T/out.origrc" 2>&1; orig_rc=$?
+  check "$land" "$main_table" "$root" "$T/incoming.copy.tsv" >"$T/out.copyrc" 2>&1; copy_rc=$?
+  check "$land" "$main_table" "$root" "$hard" >"$T/out.hardrc" 2>&1; hard_rc=$?
+  if [ "$copy_rc" -eq "$orig_rc" ] && [ "$hard_rc" -eq "$orig_rc" ]; then
+    echo "ok   copied and hardlinked incoming tables match original rc ($orig_rc)"
+  else
+    echo "FAIL copy/hardlink rc copy=$copy_rc hard=$hard_rc orig=$orig_rc"; fail=1
+    sed 's/^/       /' "$T/out.copyrc"; sed 's/^/       /' "$T/out.hardrc"
+  fi
+
+  mkdir -p "$T/dirtymain/scripts"
+  git init -q "$T/dirtymain"
+  git -C "$T/dirtymain" config user.email plant@test
+  git -C "$T/dirtymain" config user.name plant
+  cp "$allow" "$T/dirtymain/scripts/land-main-refs.tsv"
+  git -C "$T/dirtymain" add scripts/land-main-refs.tsv
+  git -C "$T/dirtymain" commit -q -m plant-main-table
+  printf 'scripts/not-yet-on-main.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/dirtymain/scripts/land-main-refs.tsv"
+  git -C "$T/dirtymain" show HEAD:scripts/land-main-refs.tsv > "$T/from-git.tsv"
+  mkdir -p "$T/in.dirtywt/scripts"
+  cp "$allow" "$T/in.dirtywt/scripts/land-main-refs.tsv"
+  printf 'scripts/not-yet-on-main.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/in.dirtywt/scripts/land-main-refs.tsv"
+  if check "$land" "$T/from-git.tsv" "$root" "$T/in.dirtywt/scripts/land-main-refs.tsv" "$T/in.dirtywt" >"$T/out.dirtywt" 2>&1; then
+    echo "ok   dirty MAIN working-tree table is ignored (git show HEAD used)"
+  else
+    echo "FAIL dirty MAIN working tree should be ignored"; sed 's/^/       /' "$T/out.dirtywt"; fail=1
+  fi
+
   miss_rc=0
-  check "$land" "$T/no-such-table.tsv" "$root" >"$T/out.miss" 2>&1 || miss_rc=$?
+  chk "$land" "$T/no-such-table.tsv" "$root" >"$T/out.miss" 2>&1 || miss_rc=$?
   if [ "$miss_rc" -eq 2 ]; then
     echo "ok   missing table is rc 2"
   else
@@ -727,7 +874,7 @@ self_test() {
 
   mkdir -p "$T/nointable/scripts" "$T/nointable/harness/scripts"
   inmiss_rc=0
-  check "$land" "$allow" "$T/nointable" >"$T/out.inmiss" 2>&1 || inmiss_rc=$?
+  chk "$land" "$allow" "$T/nointable" >"$T/out.inmiss" 2>&1 || inmiss_rc=$?
   if [ "$inmiss_rc" -eq 2 ]; then
     echo "ok   missing incoming table is rc 2"
   else
@@ -778,7 +925,7 @@ self_test() {
   _gen="cargo_"'generate_lockfile'
   cp "$land" "$T/land.sh"
   printf '\n%s\n' "$_gen" >> "$T/land.sh"
-  if check "$T/land.sh" "$allow" "$root" >"$T/out.genland" 2>&1; then
+  if chk "$T/land.sh" "$allow" "$root" >"$T/out.genland" 2>&1; then
     echo "FAIL planted $_gen in land.sh was accepted"; sed 's/^/       /' "$T/out.genland"; fail=1
   elif grep -q 'bare unlocked-build token' "$T/out.genland"; then
     echo "ok   planted ${_gen} in land.sh fails"
@@ -788,7 +935,7 @@ self_test() {
 
   cp "$root/scripts/lint-shell-pipes.sh" "$T/overlay/scripts/lint-shell-pipes.sh"
   printf '\n%s\n' "$_gen" >> "$T/overlay/scripts/lint-shell-pipes.sh"
-  if check "$land" "$allow" "$root" "$T/overlay" >"$T/out.genother" 2>&1; then
+  if chk "$land" "$allow" "$root" "$T/overlay" >"$T/out.genother" 2>&1; then
     echo "FAIL planted $_gen in lint-shell-pipes.sh was accepted"; sed 's/^/       /' "$T/out.genother"; fail=1
   elif grep -q 'bare unlocked-build token' "$T/out.genother" && grep -q 'lint-shell-pipes.sh' "$T/out.genother"; then
     echo "ok   planted ${_gen} in lint-shell-pipes.sh fails"
@@ -798,7 +945,7 @@ self_test() {
 
   cp "$land" "$T/land.sh"
   printf '\n%s\n' "cargo_"'unlocked' >> "$T/land.sh"
-  if check "$T/land.sh" "$allow" "$root" >"$T/out.star" 2>&1; then
+  if chk "$T/land.sh" "$allow" "$root" >"$T/out.star" 2>&1; then
     echo "FAIL planted cargo_"'unlocked'" in land.sh was accepted"; sed 's/^/       /' "$T/out.star"; fail=1
   elif grep -q 'bare unlocked-build token' "$T/out.star"; then
     echo "ok   planted cargo_* token other than the two allowed names fails"
@@ -810,7 +957,7 @@ self_test() {
   mkdir -p "$T/overlay/scripts"
   cp "$root/scripts/check-land-main-refs.sh" "$T/overlay/scripts/check-land-main-refs.sh"
   printf '\n%s %s %s\n' 'command' 'c'argo 'test' >> "$T/overlay/scripts/check-land-main-refs.sh"
-  if check "$land" "$allow" "$root" "$T/overlay" >"$T/out.ckex" 2>&1; then
+  if chk "$land" "$allow" "$root" "$T/overlay" >"$T/out.ckex" 2>&1; then
     echo "FAIL planted command c"'argo'" test in the checker was accepted"; sed 's/^/       /' "$T/out.ckex"; fail=1
   elif grep -q 'bare unlocked-build token' "$T/out.ckex" && grep -q 'check-land-main-refs.sh' "$T/out.ckex"; then
     echo "ok   planted command c"'argo'" test in the checker fails"
@@ -821,7 +968,7 @@ self_test() {
   # Incoming-tree scan: bare token only on the $wt copy of style-parse-errors.sh.
   cp "$root/scripts/style-parse-errors.sh" "$T/overlay/scripts/style-parse-errors.sh"
   printf '\n%s %s\n' 'c'argo 'test' >> "$T/overlay/scripts/style-parse-errors.sh"
-  if check "$land" "$allow" "$root" "$T/overlay" >"$T/out.wtcal" 2>&1; then
+  if chk "$land" "$allow" "$root" "$T/overlay" >"$T/out.wtcal" 2>&1; then
     echo "FAIL planted bare token in incoming style-parse-errors.sh was accepted"; sed 's/^/       /' "$T/out.wtcal"; fail=1
   elif grep -q 'bare unlocked-build token' "$T/out.wtcal" && grep -q 'style-parse-errors.sh' "$T/out.wtcal"; then
     echo "ok   planted branch-only bare token in style-parse-errors.sh fails"
@@ -834,12 +981,12 @@ self_test() {
   nexth="$(awk '$0=="# >>> main-chokepoint"{o++;next} $0=="# <<< main-chokepoint"{c++;next} o==1&&c==0{print}' "$T/land.next.sh" | sha256sum | awk '{print $1}')"
   cp "$allow" "$T/allow.next"
   printf 'scripts/land.sh\tNEXT_REGION_SHA256\t%s\t-\n' "$nexth" >> "$T/allow.next"
-  if check "$T/land.next.sh" "$T/allow.next" "$root" >"$T/out.nextok" 2>&1; then
+  if chk "$T/land.next.sh" "$T/allow.next" "$root" >"$T/out.nextok" 2>&1; then
     echo "ok   edited region body matching NEXT_REGION_SHA256 is accepted"
   else
     echo "FAIL NEXT_REGION_SHA256 should accept the new body"; sed 's/^/       /' "$T/out.nextok"; fail=1
   fi
-  if check "$T/land.next.sh" "$allow" "$root" >"$T/out.nextno" 2>&1; then
+  if chk "$T/land.next.sh" "$allow" "$root" >"$T/out.nextno" 2>&1; then
     echo "FAIL edited region body with no NEXT pin was accepted"; sed 's/^/       /' "$T/out.nextno"; fail=1
   elif grep -q 'REGION_SHA256 mismatch' "$T/out.nextno"; then
     echo "ok   edited region body matching neither REGION nor NEXT fails"
@@ -849,7 +996,7 @@ self_test() {
 
   # Top-level-only: wrapping the first log_box_configs in `if false` must fail ordering.
   awk 'BEGIN{done=0} !done && $0=="log_box_configs"{print "if false; then"; print "  log_box_configs"; print "fi"; done=1; next} {print}' "$land" > "$T/land.iffalse.sh"
-  if check "$T/land.iffalse.sh" "$allow" "$root" >"$T/out.iffalse" 2>&1; then
+  if chk "$T/land.iffalse.sh" "$allow" "$root" >"$T/out.iffalse" 2>&1; then
     echo "FAIL log_box_configs inside if false was accepted"; sed 's/^/       /' "$T/out.iffalse"; fail=1
   elif grep -q 'log_box_configs before the first' "$T/out.iffalse"; then
     echo "ok   planted log_box_configs inside if false fails ordering"
@@ -858,7 +1005,7 @@ self_test() {
   fi
 
   awk 'BEGIN{done=0} !done && $0=="log_box_configs"{print "f() {"; print "log_box_configs"; print "}"; done=1; next} {print}' "$land" > "$T/land.fnlog.sh"
-  if check "$T/land.fnlog.sh" "$allow" "$root" >"$T/out.fnlog" 2>&1; then
+  if chk "$T/land.fnlog.sh" "$allow" "$root" >"$T/out.fnlog" 2>&1; then
     echo "FAIL log_box_configs inside a function body was accepted"; sed 's/^/       /' "$T/out.fnlog"; fail=1
   elif grep -q 'log_box_configs before the first' "$T/out.fnlog"; then
     echo "ok   planted log_box_configs inside a function body fails ordering"
@@ -888,7 +1035,7 @@ self_test() {
   for _text in "${_forms[@]}"; do
     cp "$land" "$T/land.sh"
     printf '\n%s\n' "$_text" >> "$T/land.sh"
-    if check "$T/land.sh" "$allow" "$root" >"$T/out.defland" 2>&1; then
+    if chk "$T/land.sh" "$allow" "$root" >"$T/out.defland" 2>&1; then
       echo "FAIL planted '${_text}' in land.sh was accepted"; sed 's/^/       /' "$T/out.defland"; fail=1
     elif grep -q 'bare unlocked-build token' "$T/out.defland"; then
       echo "ok   planted '${_text}' in land.sh fails"
@@ -897,7 +1044,7 @@ self_test() {
     fi
     cp "$root/scripts/style-parse-errors.sh" "$T/overlay/scripts/style-parse-errors.sh"
     printf '\n%s\n' "$_text" >> "$T/overlay/scripts/style-parse-errors.sh"
-    if check "$land" "$allow" "$root" "$T/overlay" >"$T/out.defsty" 2>&1; then
+    if chk "$land" "$allow" "$root" "$T/overlay" >"$T/out.defsty" 2>&1; then
       echo "FAIL planted '${_text}' in style-parse-errors.sh was accepted"; sed 's/^/       /' "$T/out.defsty"; fail=1
     elif grep -q 'bare unlocked-build token' "$T/out.defsty" && grep -q 'style-parse-errors.sh' "$T/out.defsty"; then
       echo "ok   planted '${_text}' in style-parse-errors.sh fails"
@@ -913,7 +1060,7 @@ self_test() {
   printf 'scripts/land.sh\tNEXT_REGION_SHA256\t%s\t-\n' "$unpromh" >> "$T/allow.unprom"
   mkdir -p "$T/ovnext/scripts"
   cp "$T/allow.unprom" "$T/ovnext/scripts/land-main-refs.tsv"
-  if check "$T/land.unprom.sh" "$T/allow.unprom" "$root" "$T/ovnext" >"$T/out.unprom" 2>&1; then
+  if chk "$T/land.unprom.sh" "$T/allow.unprom" "$root" "$T/ovnext" >"$T/out.unprom" 2>&1; then
     echo "FAIL incoming NEXT equal to this tree's body was accepted"; sed 's/^/       /' "$T/out.unprom"; fail=1
   elif grep -q 'unpromoted step 2' "$T/out.unprom"; then
     echo "ok   planted incoming NEXT_REGION_SHA256 equal to the body fails (unpromoted step 2)"
@@ -926,7 +1073,7 @@ self_test() {
   cp "$allow" "$T/allow.step1"
   printf 'scripts/land.sh\tNEXT_REGION_SHA256\t%s\t-\n' "$unpromh" >> "$T/allow.step1"
   cp "$T/allow.step1" "$T/ovstep1/scripts/land-main-refs.tsv"
-  if check "$land" "$T/allow.step1" "$root" "$T/ovstep1" >"$T/out.step1" 2>&1; then
+  if chk "$land" "$T/allow.step1" "$root" "$T/ovstep1" >"$T/out.step1" 2>&1; then
     echo "ok   planted NEXT_REGION_SHA256 different from the current body (step 1) is accepted"
   else
     echo "FAIL step-1 NEXT (different from body) should pass"; sed 's/^/       /' "$T/out.step1"; fail=1
@@ -935,29 +1082,50 @@ self_test() {
   return "$fail"
 }
 
-MODE=check_live
-LAND="" ALLOW="" ROOT="" OVERLAY=""
+MODE=""
+LAND="" ROOT="" OVERLAY="" MAIN_TABLE="" INCOMING_TABLE=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --self-test) MODE=self_test; shift ;;
-    --check) MODE=check; shift
-      LAND="${1:-}"; [ $# -gt 0 ] && shift
-      ALLOW="${1:-}"; [ $# -gt 0 ] && shift
-      ROOT="${1:-}"; [ $# -gt 0 ] && shift
-      OVERLAY="${1:-}"; [ $# -gt 0 ] && shift
-      set -- ;;
+    --check) MODE=check; shift ;;
+    --main-table)
+      [ $# -ge 2 ] || { echo "usage: --main-table FILE" >&2; exit 2; }
+      MAIN_TABLE="$2"; shift 2 ;;
+    --incoming-table)
+      [ $# -ge 2 ] || { echo "usage: --incoming-table FILE" >&2; exit 2; }
+      INCOMING_TABLE="$2"; shift 2 ;;
+    --overlay)
+      [ $# -ge 2 ] || { echo "usage: --overlay DIR" >&2; exit 2; }
+      OVERLAY="$2"; shift 2 ;;
     -h|--help) sed -n '2,16p' "$0"; exit 0 ;;
     -*) echo "unknown option: $1" >&2; exit 2 ;;
-    *) ROOT="$1"; shift ;;
+    *)
+      if [ "$MODE" = check ] && [ -z "$LAND" ]; then
+        LAND="$1"
+      elif [ -z "$ROOT" ]; then
+        ROOT="$1"
+      elif [ "$MODE" = check ] && [ -z "$OVERLAY" ]; then
+        OVERLAY="$1"
+      else
+        echo "unexpected argument: $1" >&2; exit 2
+      fi
+      shift ;;
   esac
 done
 [ -n "$ROOT" ] || ROOT="$(cd "$SELF/.." && pwd)"
 
 case "$MODE" in
-  self_test) self_test "$ROOT" ;;
-  check)
-    [ -n "$LAND" ] && [ -n "$ALLOW" ] && [ -n "$ROOT" ] || { echo "usage: --check <land.sh> <allowlist> <incoming-tree> [overlay]" >&2; exit 2; }
-    check "$LAND" "$ALLOW" "$ROOT" "$OVERLAY"
+  self_test)
+    [ -n "$MAIN_TABLE" ] && [ -n "$INCOMING_TABLE" ] || { echo "usage: --self-test <root> --main-table FILE --incoming-table FILE" >&2; exit 2; }
+    self_test "$ROOT" "$MAIN_TABLE" "$INCOMING_TABLE"
     ;;
-  check_live) check "$ROOT/scripts/land.sh" "$ROOT/scripts/land-main-refs.tsv" "$ROOT" ;;
+  check)
+    [ -n "$LAND" ] && [ -n "$ROOT" ] && [ -n "$MAIN_TABLE" ] && [ -n "$INCOMING_TABLE" ] \
+      || { echo "usage: --check <land.sh> <incoming-tree> --main-table FILE --incoming-table FILE" >&2; exit 2; }
+    check "$LAND" "$MAIN_TABLE" "$ROOT" "$INCOMING_TABLE" "$OVERLAY"
+    ;;
+  *)
+    echo "usage: --check <land.sh> <incoming-tree> --main-table FILE --incoming-table FILE" >&2
+    exit 2
+    ;;
 esac
