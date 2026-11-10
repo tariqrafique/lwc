@@ -307,3 +307,20 @@
   - shim-check: TODO(parity 5->3 (template-gap=0, untagged=0 unchanged).
   - shim-registry: tags/rows 5/5 -> 3/3 (untracked=0 stale=0 unchanged).
 - S6 is landed and boarded. Waiting for the next named agent/* branch.
+
+## 2026-11-10 08:22 PST (America/Los_Angeles)
+- Gatekeep of agent/ssr-skips: DID NOT LAND. No code was fixed. GitHub agent/ssr-skips was not deleted. Official board was not published; last official remains **811ad3f956d2** on main **8e338f93407aa2a5e41e6b83808da19afb8fbde2**.
+- Preflight: main clean at 8e338f9; no stray compiler-rust worktrees under /workspace/wt; df 46G free.
+- Fetch (lwc-github): tip **549427d2c42d49bb698db6326a2ec139df58d6f0** matched; main is ancestor; exactly 2 commits (883369c Clear the five ssr-render skips (D-0242); 549427d Reseed the board baseline for the D-0242 ssr-render unskips).
+- Extra baseline gate (mechanical parse of harness/board-baseline.tsv via board-baseline.mjs): VERDICT PASS. 29 skip→pass, 0 added, 0 removed, 0 forbidden, 0 unclassified. 18/22 rows unchanged. Changed rows:
+  - ssr-render: 384 0 5 → 389 0 0 (5 skip→pass; totals 389=389). Cases: barrel-lwc-exports/export-all, export-all-alias, export-named, scope-token, wire/errors/throws-when-colliding-prop-then-method (rust/sync/dist).
+  - ssr-render-async: same 5 cases (rust/async/dist).
+  - ssr-render-asyncYield: same 5 cases (rust/asyncYield/dist).
+  - ssr_render_api: 2710 0 14 → 2724 0 0 (14 skip→pass; totals 2724=2724). Cases: omitted/v57/v58/v59/v65/v66/v67 × {scope-token, wire/errors/throws-when-colliding-prop-then-method}.
+  Official worse() empty on every row; no case-set removals or new skips. Log: /workspace/scratch/harness/ssr-skips-baseline-diff.log.
+- Non-baseline files (883369c): harness/SSR_RENDER.md, harness/board.sh, harness/goldens/ssr-render/async.json, harness/goldens/ssr-render/async.src.json, harness/goldens/ssr_render_api/scope-token.json, harness/goldens/ssr_render_api/wire__errors__throws-when-colliding-prop-then-method.json, harness/src/ssrRender.ts, harness/test/ssr.render.test.ts, harness/test/ssr_render_api.behavior.test.ts. 549427d touched only harness/board-baseline.tsv.
+- Land: `scripts/land-agent-branch.sh agent/ssr-skips` rc=1 (log /workspace/scratch/harness/ssr-skips-land.log). Failing gate: **lint-no-stripped-compare** (land.sh after check-land-main-refs, lint-shell-pipes, workspace-path-scan). Exact hits (rule N5, D-0219: `tr -d` whitespace before a compare is banned; `tr -d '\r'` is planted as an N5 hit):
+  - harness/board.sh:305 `kl_got="$(tr -d '\r' < "$klf")"` then compared to `kl_want` (D-0242 known-limitation line for ssr-render-async scope-token).
+  - harness/board.sh:313 `printf '%s\n' "$(tr -d '\r' < "$klf")"` when a known-limitation file unexpectedly exists for a non-async ssr-render row.
+  These two `tr -d '\r'` lines were added in 883369c (the D-0242 unskips). No board rows were judged; land refused before the board check.
+- Cleanup: worktree /workspace/wt/ssr-skips removed without --force. `git branch -d bot/ssr-skips` refused (not merged, land failed); leftover ref deleted with `git branch -D` so the next land is not blocked (`local branch bot/ssr-skips already exists`). main remains 8e338f9, clean. No official board run; no napi id change (still 5329d9cdadca on 811ad3f956d2). Waiting for a fixed agent/ssr-skips tip.
