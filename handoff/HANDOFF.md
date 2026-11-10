@@ -1,10 +1,10 @@
-# LWC → Rust migration: handoff (refreshed 2026-11-10 15:00 PST)
+# LWC → Rust migration: handoff (refreshed 2026-11-10 15:30 PST)
 
 Work is on main or committed branches; all of it is in the bundles.
 
 ## What's here
-- `lwc-compiler-rust.bundle`: full history of the Rust workspace, main @ a9ee6d9 (all refs, including bot/* branches).
-- `notes.bundle`: notes repo HEAD @ 2ead970.
+- `lwc-compiler-rust.bundle`: full history of the Rust workspace, main @ a9ee6d9 (all refs, including bot/ssr-pair).
+- `notes.bundle`: notes repo HEAD @ 58b42e6.
 - `notes/`: plain copies of OWNERS.tsv, arch-board/, lwc-rust-migrate/ (PLAN.md, decisions.tsv), state/.
 
 ## Ground truth
