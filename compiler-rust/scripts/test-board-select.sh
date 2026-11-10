@@ -109,6 +109,20 @@ else
   bad "planted hasher still changed ssr hash (plant did not take); h1b=$h1b h2b=$h2b"
 fi
 
+# --- old (--legacy per-file git show) and new (cat-file --batch) hashes are equal ---
+# Semantics: sha256 of file contents (plus oracle and crate-closure lines), not git
+# blob ids. --legacy is the previous algorithm with a large git-show maxBuffer so
+# files >1MiB are hashed instead of dropped (ENOBUFS on board-baseline.tsv).
+legacy="$(node "$SEL" hash-all "$REPO" --oracle-sha testoracle --git-ref HEAD --legacy)"
+fresh="$(node "$SEL" hash-all "$REPO" --oracle-sha testoracle --git-ref HEAD)"
+if [ -n "$fresh" ] && [ "$legacy" = "$fresh" ]; then
+  ok "hash-all --git-ref HEAD matches --legacy (old and new hashes equal)"
+else
+  bad "hash-all --git-ref HEAD !== --legacy"
+  printf '%s\n' "$legacy" | sed 's/^/       legacy /'
+  printf '%s\n' "$fresh" | sed 's/^/       new    /'
+fi
+
 # crates-for-row ssr includes lwc-template and lwc-shared
 crates="$(node "$SEL" crates-for-row "$REPO" ssr)"
 if grep -qx lwc-ssr <<< "$crates" && grep -qx lwc-template <<< "$crates" && grep -qx lwc-shared <<< "$crates"; then

@@ -6,9 +6,7 @@
 //! camelCased per `rename_all`, honouring `#[serde(rename)]` and `tag`), plus the instrumentation
 //! callback keys that never cross serde. In S2 this switches to the generated AB-0008 option schema.
 use std::collections::BTreeSet;
-use std::path::Path;
 
-const CRATE: &str = env!("CARGO_MANIFEST_DIR");
 /// Option keys that are JS-only (callbacks), so not in the serde structs (D-0205).
 const NON_SERDE_KEYS: [&str; 3] = ["instrumentation", "log", "incrementCounter"];
 
@@ -92,7 +90,7 @@ fn serde_option_keys(lib_rs: &str) -> BTreeSet<String> {
 }
 
 fn option_keys() -> BTreeSet<String> {
-    let lib = std::fs::read_to_string(Path::new(CRATE).join("src/lib.rs")).unwrap();
+    let lib = std::fs::read_to_string(lwc_shared::cargo_manifest_dir!().join("src/lib.rs")).unwrap();
     let mut k = serde_option_keys(&lib);
     k.extend(NON_SERDE_KEYS.iter().map(|s| s.to_string()));
     k
@@ -150,7 +148,7 @@ fn guard_detects_planted_violations() {
 
 #[test]
 fn index_js_has_no_env_access_and_no_option_keys() {
-    let js = std::fs::read_to_string(Path::new(CRATE).join("index.js")).unwrap();
+    let js = std::fs::read_to_string(lwc_shared::cargo_manifest_dir!().join("index.js")).unwrap();
     let v = violations(&js, &option_keys());
     assert!(v.is_empty(), "index.js must not inspect options or the environment (AB-D0005 #5): {v:?}");
 }

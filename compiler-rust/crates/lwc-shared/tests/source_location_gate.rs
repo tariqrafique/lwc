@@ -70,7 +70,7 @@ fn violations(rel: &str, text: &str) -> Vec<String> {
 
 #[test]
 fn no_defaulted_source_location_outside_tests() {
-    let root = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let root = workspace_root(&lwc_shared::cargo_manifest_dir!());
     let files = production_src_rs(&root);
     assert!(files.iter().any(|f| f.ends_with("lwc-shared/src/template_ir.rs")), "gate scans nothing: {} files", files.len());
     let mut hits = vec![];

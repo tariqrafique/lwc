@@ -397,7 +397,10 @@ fn trace_off_script_or_with_unknown_fields_is_a_crash() {
 fn oracle_dir_is_the_harness_lwc_root() {
     // AB-L0051 (2): build.rs derives ORACLE_DIR from harness/src/ssrRender.ts `LWC`; this is the end-to-end check
     // that the derived value is what the runner imports through, and that it is the checkout preflight pins.
-    let ssr = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../harness/src/ssrRender.ts");
+    let ssr = std::env::var_os("CARGO_MANIFEST_DIR")
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|| std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")))
+        .join("../../harness/src/ssrRender.ts");
     let text = fs::read_to_string(&ssr).unwrap();
     let literal = format!("export const LWC = '{}/packages/@lwc';", exec::ORACLE_DIR);
     let portable = "export const LWC = `${oracleRoot()}/packages/@lwc`;";

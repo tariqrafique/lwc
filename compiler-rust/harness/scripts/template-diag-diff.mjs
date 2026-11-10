@@ -373,7 +373,7 @@ async function worker(side, casesFile, from, to, outFile, napiPath) {
 const DRIVER_DIR = path.resolve(HERE, '../../tools/template-diag-diff/driver');
 function buildDriver() {
     const target = process.env.TDD_DRIVER_TARGET ?? path.join(os.tmpdir(), 'template-diag-diff-target');
-    execFileSync('cargo', ['build', '--release', '-q', '--manifest-path', path.join(DRIVER_DIR, 'Cargo.toml')], {
+    execFileSync('cargo', ['build', '--release', '--locked', '-q', '--manifest-path', path.join(DRIVER_DIR, 'Cargo.toml')], {
         stdio: 'inherit', env: { ...process.env, CARGO_TARGET_DIR: target },
     });
     return path.join(target, 'release/template-diag-driver');

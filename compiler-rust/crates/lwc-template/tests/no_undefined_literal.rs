@@ -2,7 +2,6 @@
 //! (AB-D0004 / AB-X0012). Identifiers named undefined are printed from the AST;
 //! the binder may compare a name to that identifier (expression.ts:134).
 use repo_tracked::{tracked_files_filtered, workspace_root};
-use std::path::Path;
 
 fn production_src(src: &str) -> String {
     // Drop `#[cfg(test)]` modules and line comments so test tables can mention the identifier.
@@ -52,7 +51,7 @@ fn stripped(src: &str) -> String {
 
 #[test]
 fn codegen_has_no_undefined_string_literal() {
-    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
     let files = tracked_files_filtered(&repo, &["crates/lwc-template/src/codegen"], &["rs"]);
     let mut hits = Vec::new();
     for p in &files {

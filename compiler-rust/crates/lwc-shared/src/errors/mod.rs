@@ -216,11 +216,10 @@ mod tests {
     /// AB-0001 guard: the committed table equals a fresh extraction from the oracle's @lwc/errors.
     #[test]
     fn table_equals_fresh_extraction_from_oracle() {
-        let root = concat!(env!("CARGO_MANIFEST_DIR"), "/../..");
-        let script = format!("{root}/tools/gen-error-info/gen.mjs");
+        let script = crate::cargo_manifest_dir!().join("../../tools/gen-error-info/gen.mjs");
         let out = match std::process::Command::new("node").arg(&script).arg("--stdout").output() {
             Ok(o) if o.status.success() => o.stdout,
-            Ok(o) => panic!("{script} failed: {}", String::from_utf8_lossy(&o.stderr)),
+            Ok(o) => panic!("{} failed: {}", script.display(), String::from_utf8_lossy(&o.stderr)),
             Err(e) => panic!("node is required for this gate: {e}"),
         };
         assert!(String::from_utf8(out).unwrap() == include_str!("error_info.rs"), "error_info.rs is stale: run node tools/gen-error-info/gen.mjs");

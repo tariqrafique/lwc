@@ -4,16 +4,15 @@
 //! for any change under crates/lwc-style.
 use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 use std::fs;
-use std::path::Path;
 
 fn src_lines() -> Vec<(String, usize, String)> {
-    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
-    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
+    let root = lwc_shared::cargo_manifest_dir!();
     let mut files = tracked_files_filtered(&repo, &["crates/lwc-style/src"], &["rs"]);
     files.sort();
     let mut out = Vec::new();
     for f in files {
-        let rel = rel_slash(root, &f);
+        let rel = rel_slash(&root, &f);
         for (i, l) in fs::read_to_string(&f).unwrap().lines().enumerate() {
             if l.trim() == "#[cfg(test)]" { break }
             out.push((rel.clone(), i + 1, l.to_string()));
@@ -42,7 +41,7 @@ fn no_fallback_reasons() {
 #[test]
 fn no_second_parser() {
     assert_none("cssparser is referenced again", hits(|_, l| l.contains("cssparser")));
-    let manifest = fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml")).unwrap();
+    let manifest = fs::read_to_string(lwc_shared::cargo_manifest_dir!().join("Cargo.toml")).unwrap();
     assert!(!manifest.contains("cssparser"), "AB-R002 single-parser gate: cssparser is a dependency again");
     assert_none("a syntax_check pre-pass is back", hits(|_, l| l.contains("syntax_check")));
     // The tree type is produced in exactly one place: `pub fn parse(src: &str) -> Result<Root, StyleError>`.

@@ -36,7 +36,6 @@
 //! `String` message, alongside LWC's own text; a comparison on `CompileError::message` elsewhere is not a
 //! diagnostic value and is not caught here.
 use std::collections::{BTreeMap, BTreeSet, HashMap};
-use std::path::Path;
 
 const TYPE_TOKENS: [&str; 5] = ["OxcDiagnostic", "Diagnostics", "LabeledSpan", "oxc_diagnostics", "miette"];
 const PRODUCERS: [&str; 10] =
@@ -461,10 +460,10 @@ fn babelhelpers_find_violations(files: &BTreeMap<String, String>, allowed: &[(&s
 
 use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 
-fn src_dir() -> std::path::PathBuf { Path::new(env!("CARGO_MANIFEST_DIR")).join("src") }
+fn src_dir() -> std::path::PathBuf { lwc_shared::cargo_manifest_dir!().join("src") }
 
 fn real_files() -> BTreeMap<String, String> {
-    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
     let root = src_dir();
     let mut out = BTreeMap::new();
     for p in tracked_files_filtered(&repo, &["crates/lwc-js/src"], &["rs"]) {

@@ -244,7 +244,7 @@ mod lossless {
         let upstream = std::env::var("LWC_FIXTURES").unwrap_or_else(|_| lwc_shared::oracle_root().join("packages/@lwc/style-compiler/src/__tests__/fixtures").to_string_lossy().into_owned());
         let mut files = Vec::new();
         inputs(Path::new(&upstream), &mut files);
-        inputs(&Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/parse-errors"), &mut files);
+        inputs(&lwc_shared::cargo_manifest_dir!().join("tests/parse-errors"), &mut files);
         let (mut parsed, mut bad) = (0, Vec::new());
         for f in &files {
             let css = fs::read_to_string(f).unwrap();

@@ -23,6 +23,23 @@ pub mod style;
 pub mod template_ir;
 pub use template_ir::*;
 
+
+/// Directory of the crate currently being built or tested.
+///
+/// `env!("CARGO_MANIFEST_DIR")` is baked into the binary at rustc time. Shared
+/// `CARGO_TARGET_DIR` reuses that binary in a later checkout whose path differs
+/// (official snaps are fresh `/tmp/lwc-board-snap.*`), so tests and cfg(test)
+/// lib code must read the runtime value cargo sets. Fall back to `env!` only
+/// when the process was not launched by cargo.
+#[macro_export]
+macro_rules! cargo_manifest_dir {
+    () => {{
+        std::env::var_os("CARGO_MANIFEST_DIR")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")))
+    }};
+}
+
 /// Fail-closed path to the pinned LWC oracle checkout (`LWC_ORACLE`).
 /// run-board, c8-checks, and land export this via `harness/scripts/oracle-root.mjs`.
 /// There is no box-path fallback here (D-0280(b)).

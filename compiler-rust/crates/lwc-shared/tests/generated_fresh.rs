@@ -1,11 +1,10 @@
 //! `generated.rs` and the lwc-template parser tables must equal what
 //! `tools/gen-shared-tables/gen.mjs` produces from the pinned @lwc checkout (`LWC_ORACLE`). Fails closed: a missing node or checkout is a failure, not a skip.
-use std::path::Path;
 use std::process::Command;
 
 #[test]
 fn generated_fresh() {
-    let repo = Path::new(env!("CARGO_MANIFEST_DIR"))
+    let repo = lwc_shared::cargo_manifest_dir!()
         .join("../..")
         .canonicalize()
         .unwrap();

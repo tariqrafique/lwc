@@ -56,8 +56,8 @@ fn parser_violations_files(root: &Path, files: &[PathBuf]) -> Vec<String> {
 
 #[test]
 fn no_panicking_parse5_location_read_in_parser() {
-    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
-    let parser = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/parser");
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
+    let parser = lwc_shared::cargo_manifest_dir!().join("src/parser");
     let files = tracked_files_filtered(&repo, &["crates/lwc-template/src/parser"], &["rs"]);
     let hits = parser_violations_files(&parser, &files);
     assert!(hits.is_empty(), "parse5 location reads return `Located<T>`; propagate with `?` instead of panicking:\n{}", hits.join("\n"));

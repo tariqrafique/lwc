@@ -4,10 +4,10 @@
 //! pending copy, so any new literal, version const, or version comment outside lwc-shared fails here.
 use regex::Regex;
 use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 fn crate_src_rs() -> (PathBuf, Vec<PathBuf>) {
-    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
     let crates = repo.join("crates");
     let files = tracked_files_filtered(&repo, &["crates"], &["rs"])
         .into_iter()

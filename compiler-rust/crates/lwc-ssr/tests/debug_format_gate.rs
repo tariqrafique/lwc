@@ -5,7 +5,7 @@
 //! `panic!(`, `unreachable!(`, `assert!(`, `assert_eq!(`, `assert_ne!(`, `debug_assert` or `.expect(`.
 
 use repo_tracked::{tracked_files_filtered, workspace_root};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 /// lwc-template codegen's existing hits. It only shrinks; lower it when hits are removed.
 const LWC_TEMPLATE_CODEGEN_ALLOWANCE: usize = 0;
@@ -107,7 +107,7 @@ fn hits_under_files(files: &[PathBuf]) -> (usize, Vec<String>) {
 
 #[test]
 fn no_debug_formatting_in_emit_code() {
-    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
     let ssr_list = tracked_files_filtered(&repo, &["crates/lwc-ssr/src"], &["rs"]);
     let tpl_list = tracked_files_filtered(&repo, &["crates/lwc-template/src/codegen"], &["rs"]);
     let (ssr_files, ssr) = hits_under_files(&ssr_list);

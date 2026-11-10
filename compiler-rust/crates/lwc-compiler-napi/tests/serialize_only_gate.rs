@@ -58,8 +58,8 @@ fn scan_files(root: &Path, files: &[PathBuf]) -> Vec<String> {
 
 #[test]
 fn napi_src_derives_no_error_shape() {
-    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
-    let src = Path::new(env!("CARGO_MANIFEST_DIR")).join("src");
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
+    let src = lwc_shared::cargo_manifest_dir!().join("src");
     let files = tracked_files_filtered(&repo, &["crates/lwc-compiler-napi/src"], &["rs"]);
     let found = scan_files(&src, &files);
     assert!(found.is_empty(), "error built or shaped in napi (belongs in the lwc-compiler facades):\n{}", found.join("\n"));

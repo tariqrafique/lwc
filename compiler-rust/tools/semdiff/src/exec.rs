@@ -51,7 +51,17 @@ pub const ORACLE_COMMIT: &str = "b9e8007f9810edb59596536b596f80ca6c0d3fab";
 /// The oracle checkout: derived at build time (build.rs) from `LWC` in harness/src/ssrRender.ts, the path the JS side
 /// imports engine-dom and @lwc/compiler through (AB-L0051 (2): one source). Preflight verifies HEAD and cleanliness here.
 pub const ORACLE_DIR: &str = env!("SEMDIFF_ORACLE_DIR");
-pub const EXEC_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/exec");
+fn cargo_manifest_dir() -> PathBuf {
+    std::env::var_os("CARGO_MANIFEST_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR")))
+}
+
+/// JS observer sources next to this crate. Read at runtime so a binary reused
+/// from a shared CARGO_TARGET_DIR still finds `exec/` in the current checkout.
+pub fn exec_dir() -> PathBuf {
+    cargo_manifest_dir().join("exec")
+}
 /// Runner sources, hashed into `runner_sha256` so a summary names the observer it was produced with.
 pub const RUNNER_FILES: [&str; 6] = ["hooks.mjs", "observer.mjs", "prepare.mjs", "register.mjs", "rt.mjs", "run.mjs"];
 pub const STEP_CAP: usize = 48;
@@ -700,7 +710,7 @@ pub fn preflight(cfg: &ExecCfg) -> Result<Value, InternalError> {
     let node = String::from_utf8_lossy(&node.stdout).trim().to_string();
     let mut runner = String::new();
     for f in RUNNER_FILES {
-        let t = fs::read_to_string(Path::new(EXEC_DIR).join(f)).map_err(|e| InternalError(format!("exec: read {f}: {e}")))?;
+        let t = fs::read_to_string(exec_dir().join(f)).map_err(|e| InternalError(format!("exec: read {f}: {e}")))?;
         runner.push_str(&format!("{f}\0{}\0", sha256_hex(t.as_bytes())));
     }
     Ok(json!({
@@ -718,7 +728,7 @@ enum Proc {
 }
 
 fn node(dir: &Path, script: &str, template: Option<&Path>, out_name: &str) -> Proc {
-    let exec = Path::new(EXEC_DIR);
+    let exec = exec_dir();
     let out = dir.join(out_name);
     let err = dir.join(format!("{out_name}.stderr"));
     let (Ok(fo), Ok(fe)) = (fs::File::create(&out), fs::File::create(&err)) else { return Proc::Fail("create output".into()) };

@@ -97,7 +97,7 @@ for (const j of jobs) {
 
 // ---- Rust side
 const bin = path.join(ROOT, 'target/release/examples/style_diff');
-if (!process.env.STYLE_DIFF_NO_BUILD) execFileSync('cargo', ['build', '-q', '--release', '-p', 'lwc-style', '--example', 'style_diff'], { cwd: ROOT, stdio: 'inherit' });
+if (!process.env.STYLE_DIFF_NO_BUILD) execFileSync('cargo', ['build', '-q', '--locked', '--release', '-p', 'lwc-style', '--example', 'style_diff'], { cwd: ROOT, stdio: 'inherit' });
 const input = jobs.map((j) => JSON.stringify({ id: j.id, src: j.file.src, filename: j.file.abs, ...j.cfg })).join('\n') + '\n';
 const rsOut = execFileSync(bin, { input, maxBuffer: 1 << 30 }).toString().trim().split('\n').map((l) => JSON.parse(l));
 for (const r of rsOut) jobs[r.id].rs = r;

@@ -12,7 +12,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 fn run_gen(flag: &str) -> String {
-    let repo = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
+    let repo = lwc_shared::cargo_manifest_dir!().join("../..").canonicalize().unwrap();
     let out = Command::new("node")
         .arg(repo.join("tools/gen-instrumentation/gen.mjs"))
         .args([flag, "--root"])
@@ -73,7 +73,7 @@ const ALLOWED: &[&str] = &["crates/lwc-shared/src/instrumentation/generated.rs",
 
 const SCANNED: &[&str] = &["rs", "js", "mjs", "cjs", "ts", "mts", "cts"];
 
-fn repo_root() -> PathBuf { workspace_root(Path::new(env!("CARGO_MANIFEST_DIR"))) }
+fn repo_root() -> PathBuf { workspace_root(&lwc_shared::cargo_manifest_dir!()) }
 
 fn listed_source(root: &Path) -> Vec<PathBuf> {
     tracked_files_filtered(root, &[], SCANNED)

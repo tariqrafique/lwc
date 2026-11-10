@@ -17,8 +17,8 @@ fn violations_in(files: &[PathBuf], allowed: &Path) -> Vec<String> {
 }
 
 fn crate_rs_files() -> (PathBuf, Vec<PathBuf>) {
-    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf();
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
+    let root = lwc_shared::cargo_manifest_dir!();
     let files = tracked_files_filtered(&repo, &["crates/lwc-template"], &["rs"]);
     (root, files)
 }

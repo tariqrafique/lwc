@@ -1,14 +1,13 @@
 //! Normalized goldens: compare oxc-printed output with whitespace collapsed (NOT Babel bytes).
 //! Regenerate: `UPDATE_GOLDENS=1 cargo test -p lwc-js --test goldens`.
 use lwc_shared::CompileOptions;
-use std::path::PathBuf;
 
 fn normalize(s: &str) -> String { s.split_whitespace().collect::<Vec<_>>().join(" ") }
 
 fn golden(name: &str) { golden_with(name, |_| {}) }
 
 fn golden_with(name: &str, tweak: impl FnOnce(&mut CompileOptions)) {
-    let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/goldens").join(name);
+    let dir = lwc_shared::cargo_manifest_dir!().join("tests/goldens").join(name);
     let src = std::fs::read_to_string(dir.join("input.js")).unwrap();
     let mut o = CompileOptions { name: "test".into(), namespace: "lwc".into(), ..Default::default() };
     tweak(&mut o);

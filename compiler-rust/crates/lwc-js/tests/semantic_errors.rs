@@ -353,7 +353,7 @@ fn recovery_export_default_abstract_class_never_hits_internal_reparse() {
 #[test]
 fn lwc_js_contains_no_d_pending_token() {
     use repo_tracked::{tracked_files, workspace_root};
-    let repo = workspace_root(std::path::Path::new(env!("CARGO_MANIFEST_DIR")));
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
     let files = tracked_files(&repo)
         .into_iter()
         .filter(|p| {

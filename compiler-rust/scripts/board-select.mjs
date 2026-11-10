@@ -3,8 +3,8 @@
 // Usage:
 //   board-select.mjs select <repo> [<file> ...]
 //   board-select.mjs crates-for-row <repo> <row>
-//   board-select.mjs hash <repo> <row> [--oracle-sha SHA] [--pretend-edit PATH] [--git-ref REF]
-//   board-select.mjs hash-all <repo> [--oracle-sha SHA] [--git-ref REF]
+//   board-select.mjs hash <repo> <row> [--oracle-sha SHA] [--pretend-edit PATH] [--git-ref REF] [--legacy]
+//   board-select.mjs hash-all <repo> [--oracle-sha SHA] [--git-ref REF] [--legacy]
 //   board-select.mjs check-map <repo>
 //   board-select.mjs parse <repo>          (dump parsed map, for tests)
 // Env: BOARD_SELECT_MAP overrides the TSV path (default: <repo>/harness/board-select.tsv).
@@ -139,7 +139,17 @@ function closure(byName, root) {
   return [...seen].sort();
 }
 
-function gitLsFiles(repo, dir, ref) {
+function gitLsAll(repo, ref) {
+  const args = ref
+    ? ["-C", repo, "ls-tree", "-r", "--name-only", "-z", ref]
+    : ["-C", repo, "ls-files", "-z"];
+  const r = spawnSync("git", args, { encoding: "buffer" });
+  if (r.status !== 0) die(`git ls-tree/ls-files (ref=${ref || "worktree"}) failed`, 2);
+  return r.stdout.toString("utf8").split("\0").filter(Boolean);
+}
+
+function gitLsFiles(repo, dir, ref, cache) {
+  if (cache) return cache.list(dir);
   const args = ref
     ? ["-C", repo, "ls-tree", "-r", "--name-only", "-z", ref, "--", dir]
     : ["-C", repo, "ls-files", "-z", "--", dir];
@@ -150,7 +160,13 @@ function gitLsFiles(repo, dir, ref) {
 
 function fileBytes(repo, file, ref) {
   if (ref) {
-    const r = spawnSync("git", ["-C", repo, "show", `${ref}:${file}`], { encoding: "buffer" });
+    // Default maxBuffer is 1MiB; harness/board-baseline.tsv is larger and used to
+    // ENOBUFS, which made --git-ref silently drop the file and disagree with
+    // worktree content hashes. Read the full blob.
+    const r = spawnSync("git", ["-C", repo, "show", `${ref}:${file}`], {
+      encoding: "buffer",
+      maxBuffer: 512 * 1024 * 1024,
+    });
     if (r.status !== 0) return null;
     return r.stdout;
   }
@@ -167,33 +183,108 @@ function sha256File(path) {
   return sha256Bytes(readFileSync(path));
 }
 
+function parseCatFileBatch(buf, files) {
+  const out = new Map();
+  let off = 0;
+  for (const file of files) {
+    const nl = buf.indexOf(0x0a, off);
+    if (nl < 0) die(`git cat-file --batch: truncated header at ${file}`);
+    const header = buf.slice(off, nl).toString("utf8");
+    off = nl + 1;
+    if (/\smissing$/.test(header)) {
+      out.set(file, null);
+      continue;
+    }
+    const parts = header.split(" ");
+    const size = parseInt(parts[parts.length - 1], 10);
+    if (!Number.isFinite(size) || size < 0) die(`git cat-file --batch: bad header '${header}'`);
+    if (off + size > buf.length) die(`git cat-file --batch: truncated body at ${file}`);
+    const content = buf.slice(off, off + size);
+    off += size;
+    if (off < buf.length && buf[off] === 0x0a) off += 1;
+    out.set(file, sha256Bytes(content));
+  }
+  return out;
+}
+
+class FileHashCache {
+  constructor(repo, ref, legacy) {
+    this.repo = repo;
+    this.ref = ref || null;
+    this.legacy = !!legacy;
+    this.digests = new Map();
+    this.listing = null;
+  }
+  list(dir) {
+    if (!this.listing) this.listing = gitLsAll(this.repo, this.ref);
+    const prefix = dir.endsWith("/") ? dir : `${dir}/`;
+    return this.listing.filter((f) => f === dir || f.startsWith(prefix));
+  }
+  has(file) {
+    if (!this.listing) this.listing = gitLsAll(this.repo, this.ref);
+    return this.listing.includes(file);
+  }
+  ensure(files) {
+    const need = files.filter((f) => !this.digests.has(f));
+    if (!need.length) return;
+    if (!this.ref) {
+      for (const f of need) {
+        const abs = join(this.repo, f);
+        this.digests.set(f, existsSync(abs) ? sha256File(abs) : null);
+      }
+      return;
+    }
+    if (this.legacy) {
+      for (const f of need) {
+        const buf = fileBytes(this.repo, f, this.ref);
+        this.digests.set(f, buf ? sha256Bytes(buf) : null);
+      }
+      return;
+    }
+    const input = need.map((f) => `${this.ref}:${f}`).join("\n") + "\n";
+    const r = spawnSync("git", ["-C", this.repo, "cat-file", "--batch"], {
+      input,
+      maxBuffer: 512 * 1024 * 1024,
+    });
+    if (r.status !== 0) die(`git cat-file --batch failed: ${r.stderr || ""}`);
+    for (const [f, digest] of parseCatFileBatch(r.stdout, need)) this.digests.set(f, digest);
+  }
+  digest(file) {
+    this.ensure([file]);
+    return this.digests.get(file);
+  }
+}
+
 function rowHash(repo, map, metaPkgs, row, opts) {
   const root = map.rows.get(row);
   if (!root) die(`no row→crate mapping for ${row}`, 1);
   const ref = opts.gitRef || null;
+  const cache = opts.cache || new FileHashCache(repo, ref, opts.legacy);
   const crates = closure(metaPkgs, root);
   const files = new Set();
   for (const c of crates) {
     const pkg = metaPkgs.get(c);
     if (!pkg) continue;
-    for (const f of gitLsFiles(repo, pkg.rel, ref)) files.add(f);
+    for (const f of cache.list(pkg.rel)) files.add(f);
   }
   for (const extra of ["Cargo.lock", "rust-toolchain.toml"]) {
-    const b = fileBytes(repo, extra, ref);
-    if (b) files.add(extra);
+    if (cache.has(extra)) files.add(extra);
   }
   const napi = metaPkgs.get("lwc-compiler-napi");
-  if (napi) for (const f of gitLsFiles(repo, napi.rel, ref)) files.add(f);
-  for (const f of gitLsFiles(repo, "harness", ref)) files.add(f);
+  if (napi) for (const f of cache.list(napi.rel)) files.add(f);
+  for (const f of cache.list("harness")) files.add(f);
   const pretend = opts.pretendEdit || null;
+  cache.ensure([...files]);
   const lines = [];
   for (const f of [...files].sort()) {
-    let buf = fileBytes(repo, f, ref);
-    if (!buf) continue;
+    let digest = cache.digest(f);
+    if (!digest) continue;
     if (pretend && pretend === f) {
+      let buf = fileBytes(repo, f, ref);
+      if (!buf) continue;
       buf = Buffer.concat([buf, Buffer.from("\n# board-select pretend-edit\n")]);
+      digest = sha256Bytes(buf);
     }
-    const digest = sha256Bytes(buf);
     lines.push(`${f}\t${digest}`);
   }
   const oracle = opts.oracleSha || process.env.BOARD_SELECT_ORACLE_SHA || "oracle-unset";
@@ -267,21 +358,24 @@ if (cmd === "hash" || cmd === "hash-all") {
   let oracleSha = process.env.BOARD_SELECT_ORACLE_SHA || "";
   let pretendEdit = "";
   let gitRef = "";
+  let legacy = false;
   while (args.length) {
     const a = args.shift();
     if (a === "--oracle-sha") oracleSha = args.shift() || die("missing --oracle-sha value");
     else if (a === "--pretend-edit") pretendEdit = args.shift() || die("missing --pretend-edit value");
     else if (a === "--git-ref") gitRef = args.shift() || die("missing --git-ref value");
+    else if (a === "--legacy") legacy = true;
     else die(`unknown hash flag ${a}`);
   }
   const meta = runCargoMetadata(repo);
   const pkgs = workspacePackages(meta, repo);
+  const cache = new FileHashCache(repo, gitRef, legacy);
   if (cmd === "hash") {
-    const res = rowHash(repo, map, pkgs, row, { oracleSha, pretendEdit, gitRef });
+    const res = rowHash(repo, map, pkgs, row, { oracleSha, pretendEdit, gitRef, legacy, cache });
     console.log(res.hash);
   } else {
     for (const r of [...map.rows.keys()]) {
-      const res = rowHash(repo, map, pkgs, r, { oracleSha, pretendEdit, gitRef });
+      const res = rowHash(repo, map, pkgs, r, { oracleSha, pretendEdit, gitRef, legacy, cache });
       console.log(`${r}\t${res.hash}`);
     }
   }

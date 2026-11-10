@@ -50,7 +50,7 @@ fn scan_files(root: &Path, files: &[PathBuf], hits: &mut Vec<String>) {
 
 #[test]
 fn style_text_and_js_whitespace_defined_only_in_lwc_shared() {
-    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
     let crates = repo.join("crates");
     let files: Vec<PathBuf> = tracked_files_filtered(&repo, &["crates"], &["rs"])
         .into_iter()

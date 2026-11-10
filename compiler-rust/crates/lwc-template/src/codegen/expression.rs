@@ -228,8 +228,8 @@ mod tests {
     /// `BindPlan` does not store the instance name; both `$cmp` and `instance` prefix the same spans.
     #[test]
     fn js_bind_corpus() {
-        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/bind_corpus.json");
-        let corpus: Vec<serde_json::Value> = serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
+        let path = lwc_shared::cargo_manifest_dir!().join("tests/fixtures/bind_corpus.json");
+        let corpus: Vec<serde_json::Value> = serde_json::from_str(&std::fs::read_to_string(&path).unwrap()).unwrap();
         let (mut n, mut skipped, mut bad) = (0usize, 0usize, vec![]);
         let alloc = Allocator::default();
         for c in &corpus {

@@ -4,7 +4,7 @@
 //! upstream file by a wide margin. Runs under `cargo test -p lwc-style` (land.sh, changed crates).
 use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 /// (module file under src/, upstream file or dir its `//!` header must name)
 const MODULES: &[(&str, &str)] = &[
@@ -40,10 +40,10 @@ const OWNERS: &[(&str, &str)] = &[
     ("fn rule_error", "utils.rs"),
 ];
 
-fn src() -> PathBuf { Path::new(env!("CARGO_MANIFEST_DIR")).join("src") }
+fn src() -> PathBuf { lwc_shared::cargo_manifest_dir!().join("src") }
 
 fn style_src_rs() -> (PathBuf, Vec<PathBuf>) {
-    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
     let root = src();
     (root, tracked_files_filtered(&repo, &["crates/lwc-style/src"], &["rs"]))
 }

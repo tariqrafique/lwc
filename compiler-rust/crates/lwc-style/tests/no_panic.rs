@@ -64,7 +64,7 @@ fn nothing_panics() {
     panic::set_hook(Box::new(|_| {}));
     let lwc = lwc_shared::oracle_root();
     let mut small: Vec<String> = PROBES.iter().map(|s| s.to_string()).collect();
-    css_files(&Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/parse-errors"), &mut small);
+    css_files(&lwc_shared::cargo_manifest_dir!().join("tests/parse-errors"), &mut small);
     let mut corpus = Vec::new();
     css_files(&Path::new(&lwc).join("packages/@lwc/style-compiler/src/__tests__/fixtures"), &mut corpus);
     for pkg in ["integration-wtr", "integration-wdio", "integration-types"] { css_files(&Path::new(&lwc).join("packages/@lwc").join(pkg), &mut corpus); }
@@ -115,15 +115,15 @@ const AUDITED_PANIC_SITES: &[(&str, &str, &str)] = &[
 
 #[test]
 fn panic_sites_are_audited() {
-    let repo = workspace_root(std::path::Path::new(env!("CARGO_MANIFEST_DIR")));
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
+    let root = lwc_shared::cargo_manifest_dir!();
     let mut files = tracked_files_filtered(&repo, &["crates/lwc-style/src"], &["rs"]);
     files.sort();
     let pat = [".unwrap()", ".expect(", "panic!", "unreachable!", "todo!", "unimplemented!", "unwrap_unchecked"];
     let mut unaudited = Vec::new();
     let mut used = vec![0usize; AUDITED_PANIC_SITES.len()];
     for f in files {
-        let rel = rel_slash(root, &f);
+        let rel = rel_slash(&root, &f);
         for (i, l) in std::fs::read_to_string(&f).unwrap().lines().enumerate() {
             if l.trim() == "#[cfg(test)]" { break }
             if l.trim_start().starts_with("//") || !pat.iter().any(|p| l.contains(p)) { continue }

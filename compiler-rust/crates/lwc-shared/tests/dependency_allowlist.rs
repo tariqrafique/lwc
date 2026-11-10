@@ -3,20 +3,23 @@
 //! Cargo is the only model of its manifest: the dependency list comes from `cargo metadata`, whose
 //! `name` is the real package (renames are in `rename`) and whose `kind` is null (normal), "build" or "dev".
 
+use std::path::Path;
+
 const ALLOWED: &[&str] = &["oxc_allocator", "oxc_ast", "oxc_span"];
 
 #[test]
 fn lwc_shared_dependencies_are_allowlisted() {
     let cargo = std::env::var("CARGO").unwrap_or_else(|_| "cargo".into());
+    let manifest = lwc_shared::cargo_manifest_dir!().join("Cargo.toml");
     let out = std::process::Command::new(cargo)
         .args(["metadata", "--format-version", "1", "--no-deps", "--offline", "--manifest-path"])
-        .arg(concat!(env!("CARGO_MANIFEST_DIR"), "/Cargo.toml"))
+        .arg(&manifest)
         .output()
         .expect("run cargo metadata");
     assert!(out.status.success(), "cargo metadata failed: {}", String::from_utf8_lossy(&out.stderr));
     let meta: serde_json::Value = serde_json::from_slice(&out.stdout).expect("cargo metadata JSON");
     let pkg = meta["packages"].as_array().expect("packages").iter()
-        .find(|p| p["manifest_path"].as_str() == Some(concat!(env!("CARGO_MANIFEST_DIR"), "/Cargo.toml")))
+        .find(|p| p["manifest_path"].as_str().map(Path::new) == Some(manifest.as_path()))
         .expect("lwc-shared in cargo metadata");
     let deps = pkg["dependencies"].as_array().expect("dependencies");
     let runtime: Vec<&str> = deps.iter()

@@ -281,6 +281,46 @@ collect_sh_rels() {
   } | sort -u
 }
 
+collect_js_rels() {
+  local root="$1" helper rel
+  helper="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/tracked-files.sh"
+  {
+    if [ -x "$helper" ]; then
+      while IFS= read -r -d '' rel; do
+        case "$rel" in
+          *.mjs|*.js) printf '%s\n' "$rel" ;;
+        esac
+      done < <("$helper" "$root" scripts harness/scripts tools)
+    else
+      echo "check-land-main-refs: missing $helper" >&2
+      return 2
+    fi
+  } | sort -u
+}
+
+# JS that spawns cargo (execFileSync/spawnSync/execFile/spawn) must pass --locked
+# in the same-line argument list. Split the binary name so this file's own
+# detector text is not a bare unlocked-build token.
+forbidden_js_cargo_lines() {
+  local file="$1"
+  [ -f "$file" ] || return 0
+  local line trimmed n=0 bin
+  bin='c'argo
+  while IFS= read -r line || [ -n "$line" ]; do
+    n=$((n + 1))
+    trimmed="${line#"${line%%[![:space:]]*}"}"
+    case "$trimmed" in
+      ''|'//'*) continue ;;
+    esac
+    if [[ "$trimmed" =~ (execFileSync|spawnSync|execFile|spawn)\([[:space:]]*[\'\"]"$bin"[\'\"] ]]; then
+      if [[ "$trimmed" != *'--locked'* ]]; then
+        echo "$n: $trimmed"
+      fi
+    fi
+  done < "$file"
+}
+
+
 load_allowlist() {
   local file="$1"
   [ -f "$file" ] || { echo "check-land-main-refs: no allowlist at $file" >&2; return 2; }
@@ -562,6 +602,18 @@ check() {
       box_found+="$rel"$'\t'"$d"$'\n'
     done <<< "$deps"
   done < <(collect_sh_rels "$root")
+
+  while IFS= read -r rel; do
+    [ -n "$rel" ] || continue
+    f="$(resolve_file "$rel" "$overlay" "$root")"
+    [ -n "${f:-}" ] && [ -f "$f" ] || continue
+    token_hits="$(forbidden_js_cargo_lines "$f")"
+    if [ -n "$token_hits" ]; then
+      echo "FAIL unlocked JS c"'argo'" spawn(s) in $rel (must pass --locked):"
+      printf '%s\n' "$token_hits" | sed 's/^/  /'
+      fail=1
+    fi
+  done < <(collect_js_rels "$root")
 
   box_found="$(printf '%s' "$box_found" | sort -u)"
   local box_listed box_listed_in box_listed_both
@@ -974,6 +1026,18 @@ self_test() {
     echo "ok   planted command c"'argo'" test in the checker fails"
   else
     echo "FAIL checker unlocked-build plant: want unlocked-build token"; sed 's/^/       /' "$T/out.ckex"; fail=1
+  fi
+
+  # JS cargo spawn without --locked (overlay of style-diff/run.mjs).
+  mkdir -p "$T/overlay/tools/style-diff"
+  cp "$root/tools/style-diff/run.mjs" "$T/overlay/tools/style-diff/run.mjs"
+  printf '\nexecFileSync('\''%s'\'', ['\''build'\'', '\''-q'\'']);\n' 'c'argo >> "$T/overlay/tools/style-diff/run.mjs"
+  if chk "$land" "$allow" "$root" "$T/overlay" >"$T/out.jscargo" 2>&1; then
+    echo "FAIL planted unlocked JS c"'argo'" spawn was accepted"; sed 's/^/       /' "$T/out.jscargo"; fail=1
+  elif grep -q 'unlocked JS c'argo' spawn' "$T/out.jscargo" && grep -q 'tools/style-diff/run.mjs' "$T/out.jscargo"; then
+    echo "ok   planted unlocked JS c"'argo'" spawn fails"
+  else
+    echo "FAIL JS c"'argo'" spawn plant: want unlocked JS c"'argo'" spawn"; sed 's/^/       /' "$T/out.jscargo"; fail=1
   fi
 
   # Incoming-tree scan: bare token only on the $wt copy of style-parse-errors.sh.
