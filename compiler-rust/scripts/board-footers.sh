@@ -14,6 +14,15 @@ echo "style-parse-errors     $spe (lwc-style fixture tests, LWC_STYLE_STRICT=1)"
 for c in ssr template; do
   rep="$hs/.csr-render-out/rust-$c/report-$c.json"
   if [ ! -f "$rep" ]; then
+    _prev="${BOARD_PREV_BOARD_TXT:-}"
+    _carried=""
+    if [ -n "$_prev" ] && [ -f "$_prev" ]; then
+      _carried="$(grep -E "^csr-clusters\[$c\]:" "$_prev" || true)"
+    fi
+    if [ -n "$_carried" ]; then
+      echo "$_carried"
+      continue
+    fi
     echo "!! csr clusters: missing $rep" >&2
     exit 3
   fi

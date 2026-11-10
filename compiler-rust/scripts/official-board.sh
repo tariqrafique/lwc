@@ -52,7 +52,7 @@ copy_official_run_logs() {
   fi
   mkdir -p "$dest"
   local f copied=0
-  for f in board.log golden.progress style-fixtures.log; do
+  for f in board.log golden.progress style-fixtures.log row-provenance.tsv; do
     if [ -f "$snapdir/$f" ]; then cp "$snapdir/$f" "$dest/$f"; copied=1; fi
   done
   printf '%s\n' "$rc" > "$dest/run.rc"
@@ -232,7 +232,12 @@ in0="$(inputshash)"
 in0sha="$(echo "$in0" | sha256sum | cut -c1-12)"
 p5="$(cd "$snap/parse5-rust" && find . -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | cut -c1-12)"
 echo "commit $commit  src snapshot sha256:$h0  parse5-rust ${p5commit:0:12} sha256:$p5  notes ${notescommit:0:12}  ($snap)"
-export CARGO_TARGET_DIR="$snap/target"
+# D-0282: share rustc incremental output across official boards with the same lock+toolchain.
+_lk="$(git -C "$MAIN" show "$commit:Cargo.lock" | sha256sum | awk '{print $1}')"
+_tk="$(git -C "$MAIN" show "$commit:rust-toolchain.toml" | sha256sum | awk '{print $1}')"
+_ck="$(printf '%s%s' "$_lk" "$_tk" | sha256sum | cut -c1-16)"
+export CARGO_TARGET_DIR="/workspace/cache/lwc-target/$_ck"
+mkdir -p "$CARGO_TARGET_DIR"
 git -C "$MAIN" ls-tree -r -z --name-only "$commit" > "$snap/shim-file-list"
 export SHIM_FILE_LIST="$snap/shim-file-list"
 export SSR_ORACLE_GIT="$MAIN" SSR_ORACLE_MAIN="$commit"
@@ -242,8 +247,38 @@ export BOARD_REPO_ROOT="$ws" TEMPLATE_DIAG_OUT_DIR="$tdiag" SEMDIFF_REGISTRY="$s
 export C8_TARBALLS="$snap/tarballs" SPE_LOG="$snap/style-fixtures.log"
 _run="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/run-board.sh"
 [ -x "$_run" ] || die3 "run-board.sh missing next to official-board.sh"
+_rt="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/board-runtime.mjs"
+if [ -z "${BOARD_SELECT_ORACLE_SHA:-}" ] && [ -n "${LWC_ORACLE:-}" ]; then
+  BOARD_SELECT_ORACLE_SHA="$(git -C "$LWC_ORACLE" rev-parse HEAD 2>/dev/null || true)"
+  export BOARD_SELECT_ORACLE_SHA
+fi
+if [ -x "$_rt" ] && [ $# -eq 0 ]; then
+  eval "$(node "$_rt" decide "$MAIN" "$commit" "$store")"
+  export BOARD_SCOPE BOARD_COLD BOARD_GOLDEN_GATE BOARD_ROWS BOARD_CARRY_ROWS
+  export BOARD_PREV_SRC BOARD_PREV_COMMIT BOARD_CARRY_DISABLED BOARD_LANDS_SINCE_COLD
+  if [ -n "${BOARD_PREV_SRC:-}" ] && [ -f "$store/$BOARD_PREV_SRC/board.txt" ]; then
+    export BOARD_PREV_BOARD_TXT="$store/$BOARD_PREV_SRC/board.txt"
+  fi
+  echo "official-board: D-0282 scope=${BOARD_SCOPE:-FULL} cold=${BOARD_COLD:-1} golden=${BOARD_GOLDEN_GATE:-1} rows=${BOARD_ROWS:-<all>} carry=${BOARD_CARRY_ROWS:-<none>} prev=${BOARD_PREV_SRC:-<none>}"
+else
+  BOARD_SCOPE="${BOARD_SCOPE:-FULL}"
+  BOARD_COLD="${BOARD_COLD:-1}"
+  BOARD_GOLDEN_GATE="${BOARD_GOLDEN_GATE:-1}"
+  export BOARD_SCOPE BOARD_COLD BOARD_GOLDEN_GATE
+fi
 set +e
-"$_run" "$ws" "$snap/board.log" "$@"
+if [ $# -eq 0 ] && [ "${BOARD_SCOPE:-FULL}" = scoped ]; then
+  export BOARD_SUITES_EXPLICIT=1
+  # shellcheck disable=SC2206
+  _sel=( ${BOARD_ROWS:-} )
+  if [ "${#_sel[@]}" -gt 0 ]; then
+    "$_run" "$ws" "$snap/board.log" "${_sel[@]}"
+  else
+    "$_run" "$ws" "$snap/board.log"
+  fi
+else
+  "$_run" "$ws" "$snap/board.log" "$@"
+fi
 rc=$?
 set -e
 if [ "$(srchash)" != "$h0" ]; then
@@ -258,6 +293,50 @@ so="$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so"
 napi="$(sha256sum "$so" | cut -c1-12)"
 spe="$(sed -nE 's/^style-parse-errors[[:space:]]+([0-9]+\/[0-9]+).*/\1/p' "$snap/board.log" | tail -1)"
 echo "official: src=$h0 napi=$napi rc=$rc"
+_rt="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/board-runtime.mjs"
+if [ "$rc" -eq 0 ] && [ $# -eq 0 ] && [ "${BOARD_SCOPE:-FULL}" = scoped ] && [ -n "${BOARD_PREV_BOARD_TXT:-}" ] && [ -x "$_rt" ]; then
+  node "$_rt" compose "$snap/board.log" "$BOARD_PREV_BOARD_TXT" "$snap/board.log" "$MAIN" --ran "${BOARD_ROWS:-}"
+fi
+if [ $# -eq 0 ] && [ -n "${BOARD_PREV_SRC:-}" ]; then
+  mkdir -p "$tdiag"
+  _prev="$store/$BOARD_PREV_SRC"
+  _ran_td=0 _ran_tdn=0
+  for _r in ${BOARD_ROWS:-}; do
+    [ "$_r" = template-diag ] && _ran_td=1
+    [ "$_r" = template-diag-napi ] && _ran_tdn=1
+  done
+  if [ "$_ran_td" -eq 0 ]; then
+    [ -s "$tdiag/template-diag-crate.json" ] || cp "$_prev/template-diag.json" "$tdiag/template-diag-crate.json" 2>/dev/null || true
+    [ -s "$tdiag/template-diag-crate.soundness.json" ] || cp "$_prev/template-diag.soundness.json" "$tdiag/template-diag-crate.soundness.json" 2>/dev/null || true
+  fi
+  if [ "$_ran_tdn" -eq 0 ]; then
+    [ -s "$tdiag/template-diag-napi.json" ] || cp "$_prev/template-diag-napi.json" "$tdiag/template-diag-napi.json" 2>/dev/null || true
+    [ -s "$tdiag/template-diag-napi.soundness.json" ] || cp "$_prev/template-diag-napi.soundness.json" "$tdiag/template-diag-napi.soundness.json" 2>/dev/null || true
+  fi
+fi
+if [ $# -eq 0 ]; then
+  {
+    printf 'row\tstatus\tsource_board_id\n'
+    # shellcheck disable=SC2086
+    for _r in style js js-eval template ssr ssr-async ssr-asyncYield ssr-render ssr-render-async ssr-render-asyncYield csr-render csr-render-template template-renderer js-options js-api template-options ssr_dynamic_imports style-api template-api ssr_render_api template-diag template-diag-napi; do
+      _st=carried
+      for _x in ${BOARD_ROWS:-}; do
+        if [ "$_x" = "$_r" ]; then _st=rerun; break; fi
+      done
+      if [ "${BOARD_SCOPE:-FULL}" = FULL ] || [ "${BOARD_COLD:-1}" = 1 ]; then _st=rerun; fi
+      if [ "$_st" = carried ]; then printf '%s\t%s\t%s\n' "$_r" carried "${BOARD_PREV_SRC:-}"
+      else printf '%s\trerun\t\n' "$_r"
+      fi
+    done
+  } > "$snap/row-provenance.tsv"
+fi
+if [ "$rc" -eq 0 ] && [ $# -eq 0 ] && [ "${BOARD_COLD:-0}" = 1 ] && [ -n "${BOARD_PREV_COMMIT:-}" ] && [ -n "${BOARD_PREV_BOARD_TXT:-}" ] && [ -x "$_rt" ]; then
+  if ! node "$_rt" check-carry-agreement "$snap/board.log" "$BOARD_PREV_BOARD_TXT" "$MAIN" "$commit" "$BOARD_PREV_COMMIT"; then
+    node "$_rt" set-carry-disabled "$store" --reason "cold run disagreed with a would-be-carried row"
+    echo "!! BOARD FAILED: cold carry disagreement; carrying disabled until fixed" >&2
+    rc=1
+  fi
+fi
 for e in crate napi; do for f in "$tdiag/template-diag-$e.json" "$tdiag/template-diag-$e.soundness.json"; do
   if [ "$rc" -eq 0 ] && [ $# -eq 0 ] && [ ! -s "$f" ]; then echo "!! BOARD FAILED: template-diag artifact missing ($f); forcing rc=1" >&2; rc=1; fi; done; done
 if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
@@ -268,6 +347,13 @@ if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
   } > "$base.board.txt.tmp"
   for c in ssr template; do rep="$hs/.csr-render-out/rust-$c/report-$c.json"; [ -f "$rep" ] || continue
     node -e 'const r=require(process.argv[1]);for(const x of r.rows)console.log([x.fixture,x.pass,x.status,x.goldenStatus].join("\t"))' "$rep" > "$base.csr-$c.tsv"; done
+  if [ -n "${BOARD_PREV_SRC:-}" ]; then
+    for c in ssr template; do
+      if [ ! -f "$base.csr-$c.tsv" ] && [ -f "$store/$BOARD_PREV_SRC/csr-$c.tsv" ]; then
+        cp "$store/$BOARD_PREV_SRC/csr-$c.tsv" "$base.csr-$c.tsv"
+      fi
+    done
+  fi
   cp "$tdiag/template-diag-crate.json" "$base.template-diag.json"; cp "$tdiag/template-diag-napi.json" "$base.template-diag-napi.json"
   cp "$tdiag/template-diag-crate.soundness.json" "$base.template-diag.soundness.json"; cp "$tdiag/template-diag-napi.soundness.json" "$base.template-diag-napi.soundness.json"
   rm -rf "$ws/harness/node_modules"
@@ -291,6 +377,9 @@ if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
   if [ "$pub_rc" -ne 0 ]; then
     printf '%s\n' "$pub_rc" > "$store/${h0}/logs/run.rc"
     exit "$pub_rc"
+  fi
+  if [ -x "$_rt" ]; then
+    node "$_rt" record "$store" --cold "${BOARD_COLD:-1}" --src "$h0" --commit "$commit"
   fi
   fi
 else

@@ -15,6 +15,9 @@ if "$SELF_DIR/lint-shell-pipes.sh" --self-test; then echo "ok   lint-shell-pipes
 if "$SELF_DIR/workspace-path-scan.sh" --self-test; then echo "ok   workspace-path-scan --self-test"; else echo "FAIL workspace-path-scan --self-test"; fail=1; fi
 if "$SELF_DIR/test-source-scan-tracked.sh" "$(cd "$SELF_DIR/.." && pwd)"; then echo "ok   test-source-scan-tracked"; else echo "FAIL test-source-scan-tracked"; fail=1; fi
 "$SELF_DIR/test-land-agent-branch.sh" || fail=1  # D-0281: agent/* land helper plants
+"$SELF_DIR/test-board-select.sh" || fail=1  # D-0282: path→rows map + reuse-hash plants
+"$SELF_DIR/test-board-runtime.sh" || fail=1  # D-0282: cadence/compose/driver plants
+"$SELF_DIR/test-land-path-checks.sh" || fail=1  # D-0282: shared land-path list plants
 # AB-0006 rework: board-baseline/v2 parser + comparator self-test, then the board.sh / land-gate end-to-end test.
 if "$SELF_DIR/baseline-ceiling.sh" --self-test; then echo "ok   baseline-ceiling --self-test"; else echo "FAIL baseline-ceiling --self-test"; fail=1; fi
 # test-board-ratchet needs a napi binary and is invoked from land.sh after the

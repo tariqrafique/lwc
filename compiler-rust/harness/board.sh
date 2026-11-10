@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Official board: pin ONE immutable napi binary for the whole run, log its hash.
 # Usage: ./board.sh [check] [--root=<tree>] [suite ...]   (default: all rows below)
-#        ./board.sh check [--root=<tree>]   full run, set-equality judge only; BOARD_RATCHET_UPDATE refused (land.sh, D-0255)
+#        ./board.sh check [--root=<tree>]   full run, set-equality judge only; BOARD_RATCHET_UPDATE refused
 # --root=<tree>: run the tree's tests/fixtures, crates and napi (the tree under test). The runner
-#   logic, obs writing, row list (board-rows.sh), comparator and pinned vitest.board.config.ts come from THIS script's tree. land.sh runs
-#   $MAIN_TREE/harness/board.sh check --root=$wt so a branch cannot supply the measurement producer (AB-0006 rework 3).
+#   logic, obs writing, row list (board-rows.sh), comparator and pinned vitest.board.config.ts come from THIS script's tree.
+#   official-board.sh runs this on a git-archive of the landed sha (D-0282: that run is the land's board).
 # Guards: (1) oracle must be pristine ORACLE_SHA, clean tree -> else abort before running anything.
 #         (3) shim gate: untagged shim/compat/workaround/hack/mask/rescan line in crates/ (scripts/shim-gate.mjs, allowlist shim-allowlist.tsv w/ reason) OR untracked/stale tagged-shim vs shim-registry.tsv => exit 1.
 #         (2) option-inventory gate (scripts/option-gate.mjs via option_gate in board-rows.sh) -> any unmapped/pending field => exit 1.
@@ -32,8 +32,7 @@
 #     a newly failing/skipped case (REGRESSION) or a fixed one (IMPROVED: reseed in the same commit). No non-fatal state.
 #   DIAG (board-rows.sh) now only means: option-gate does not count the row as coverage for an option field. Their
 #     failing cases are allowed exactly as recorded, like every row.
-#   land.sh runs MAIN's copy of this file as: $MAIN_TREE/harness/board.sh check --root=$wt (the branch tree's tests
-#   and napi, MAIN's runner / obs writer / row list), then re-judges obs with main's comparator (judge-all).
+#   official-board.sh (D-0282) is the land's board: it runs this file from the archived landed sha.
 #   BOARD_RATCHET_UPDATE=1 (full run only, rust backend only; official-board.sh unsets it): rewrites board-baseline.tsv
 #     from the observed sets iff no row got WORSE (board-baseline.mjs worse(): new failing/skipped id, a swap, fewer
 #     passed, fixed ids without as many new passes, row total drop; template-diag*: crash/oracle-error up) and no
@@ -41,6 +40,16 @@
 #     'Baseline-Raise: <AB-id>' (its own APPROVE review; land.sh's baseline ceiling checks it).
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"   # THIS script's harness: runner, rows, obs writer, comparator
+# D-0282: every mktemp dir this script creates is tracked and removed on EXIT/INT/TERM.
+board_tmp_dirs=()
+cleanup_board_tmps() {
+  local d
+  for d in "${board_tmp_dirs[@]+"${board_tmp_dirs[@]}"}"; do
+    [ -n "$d" ] || continue
+    rm -rf "$d"
+  done
+}
+trap cleanup_board_tmps EXIT INT TERM
 source "$here/../scripts/cargo-locked.sh"
 # shellcheck source=oracle-root.sh
 source "$here/scripts/oracle-root.sh"
@@ -180,6 +189,7 @@ run_isolated_vitest() {
   wait "$vpid" || vrc=$?
   # (1) Copy stdout + json into a directory created AFTER exit — a path the child never saw.
   capdir="$(mktemp -d /tmp/board-cap.XXXXXX)"
+  board_tmp_dirs+=("$capdir")
   cp -a -- "$out" "$capdir/out"
   if [ -f "$json" ]; then cp -a -- "$json" "$capdir/json"; fi
   cap_out="$capdir/out"
@@ -205,7 +215,10 @@ run_isolated_vitest() {
 record_derived_obs() {
   local row="$1" src="$2"
   # Hash and keep the private copy first; $obsdir is only a published copy (land/judge-all).
-  if [ -z "${priv_obs:-}" ]; then priv_obs="$(mktemp -d /tmp/board-priv-obs.XXXXXX)"; fi
+  if [ -z "${priv_obs:-}" ]; then
+    priv_obs="$(mktemp -d /tmp/board-priv-obs.XXXXXX)"
+    board_tmp_dirs+=("$priv_obs")
+  fi
   cp -a -- "$src" "$priv_obs/$row.tsv"
   obs_sha["$row"]="$(sha256sum -- "$priv_obs/$row.tsv" | awk '{print $1}')"
   cp -a -- "$priv_obs/$row.tsv" "$obsdir/$row.tsv"
@@ -215,7 +228,10 @@ record_derived_obs() {
 # SHA256SUMS is written from the variables, never by re-hashing the (possibly overwritten) files.
 write_obs_manifest() {
   local row dest
-  [ -n "${priv_obs:-}" ] || priv_obs="$(mktemp -d /tmp/board-priv-obs.XXXXXX)"
+  if [ -z "${priv_obs:-}" ]; then
+    priv_obs="$(mktemp -d /tmp/board-priv-obs.XXXXXX)"
+    board_tmp_dirs+=("$priv_obs")
+  fi
   for dest in "$priv_obs" "$obsdir"; do
     : > "$dest/SHA256SUMS"
     for row in "${!obs_sha[@]}"; do
@@ -265,7 +281,7 @@ judge_row() {
 }
 declare -A measured_counts=() obs_written=() obs_sha=() cap_out_for=()
 SEMDIFF_BIN="${SEMDIFF_BIN:-}"
-[ ${#suites[@]} -eq 0 ] && suites=("${ROWS[@]}")
+if [ ${#suites[@]} -eq 0 ] && [ "${BOARD_SUITES_EXPLICIT:-}" != 1 ]; then suites=("${ROWS[@]}"); fi
 echo "napi sha256:$hash  pinned=$pinned  oracle=$head_sha(clean)  oracle_repo=$ORACLE  $(date -Iseconds)"   # official-board.sh parses oracle=/oracle_repo= (verified values)
 for s in "${suites[@]}"; do
   case "$s" in template-diag|template-diag-*) template_diag_row "$s" "$( [ "$s" = template-diag ] && echo crate || echo "${s#template-diag-}")"; continue;; esac

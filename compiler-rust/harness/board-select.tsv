@@ -1,0 +1,54 @@
+# D-0282 path→rows map and row→root-crate table.
+# Columns: kind<TAB>key<TAB>value
+# kind=path: key is a repo-relative prefix (or exact file). value is FULL or
+#   comma-separated board row names. A changed file matches the longest? No:
+#   a file matches if it equals key or starts with key. Matching values are
+#   unioned. Any file that matches no path key is FULL (fail closed).
+# kind=row: key is a board row name; value is the workspace crate that row
+#   links. The reuse hash walks that crate's normal (non-dev) workspace
+#   dependency closure via cargo metadata --locked.
+# kind	key	value
+path	crates/lwc-ssr/	ssr,ssr-async,ssr-asyncYield,ssr-render,ssr-render-async,ssr-render-asyncYield,ssr_dynamic_imports,ssr_render_api,csr-render
+path	crates/lwc-template/	template,template-renderer,template-options,template-api,csr-render-template,template-diag,template-diag-napi,ssr,ssr-async,ssr-asyncYield,ssr-render,ssr-render-async,ssr-render-asyncYield,ssr_dynamic_imports,ssr_render_api,csr-render
+path	crates/lwc-js/	js,js-eval,js-options,js-api
+path	crates/lwc-style/	style,style-api
+path	crates/lwc-compiler/	FULL
+path	crates/lwc-compiler-napi/	FULL
+path	crates/lwc-shared/	FULL
+path	crates/repo-tracked/	FULL
+path	tools/semdiff/	template-diag,template-diag-napi
+path	Cargo.lock	FULL
+path	Cargo.toml	FULL
+path	rust-toolchain.toml	FULL
+path	harness/	FULL
+path	scripts/board	FULL
+path	scripts/run-board.sh	FULL
+path	scripts/run-portable-board.sh	FULL
+path	scripts/official-board.sh	FULL
+path	scripts/c8-checks.sh	FULL
+path	scripts/board-footers.sh	FULL
+path	scripts/board-select.mjs	FULL
+path	scripts/test-board-select.sh	FULL
+row	style	lwc-style
+row	style-api	lwc-style
+row	js	lwc-js
+row	js-eval	lwc-js
+row	js-options	lwc-js
+row	js-api	lwc-js
+row	template	lwc-template
+row	template-renderer	lwc-template
+row	template-options	lwc-template
+row	template-api	lwc-template
+row	csr-render-template	lwc-template
+row	template-diag	lwc-template
+row	template-diag-napi	lwc-template
+row	ssr	lwc-ssr
+row	ssr-async	lwc-ssr
+row	ssr-asyncYield	lwc-ssr
+row	ssr-render	lwc-ssr
+row	ssr-render-async	lwc-ssr
+row	ssr-render-asyncYield	lwc-ssr
+row	ssr_dynamic_imports	lwc-ssr
+row	ssr_render_api	lwc-ssr
+row	csr-render	lwc-ssr
+row	semantic-diff	semdiff

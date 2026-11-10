@@ -300,8 +300,10 @@ helpers_to_listed() {
   ' | sort -u
 }
 
-# Two real call sites: log_box_configs before the first cargo_locked call,
-# and another log_box_configs after that and before main_run harness/board.sh.
+# log_box_configs must run before the first cargo_locked call.
+# A second log_box_configs before main_run harness/board.sh is required only
+# when that call site exists (pre-D-0282). After D-0282, land.sh does not run
+# board.sh; the official board is the land's board.
 assert_box_log_call_sites() {
   local file="$1"
   local n=0 line t
@@ -339,16 +341,17 @@ assert_box_log_call_sites() {
     echo "FAIL land.sh has no cargo_locked call site"
     return 1
   fi
-  if [ "$board_line" -eq 0 ]; then
-    echo "FAIL land.sh has no main_run harness/board.sh call site"
-    return 1
-  fi
   local before_cargo=0 before_board=0 logn
   for logn in "${logs[@]+"${logs[@]}"}"; do
     if [ "$logn" -lt "$locked_call_line" ]; then before_cargo=1; fi
-    if [ "$logn" -gt "$locked_call_line" ] && [ "$logn" -lt "$board_line" ]; then before_board=1; fi
+    if [ "$board_line" -gt 0 ] && [ "$logn" -gt "$locked_call_line" ] && [ "$logn" -lt "$board_line" ]; then before_board=1; fi
   done
-  if [ "$before_cargo" -ne 1 ] || [ "$before_board" -ne 1 ]; then
+  if [ "$before_cargo" -ne 1 ]; then
+    echo "FAIL land.sh must call log_box_configs before the first cargo_locked ($locked_call_line); calls: ${logs[*]:-none}"
+    return 1
+  fi
+  # D-0282: board.sh is optional. When present, keep the second box-config log.
+  if [ "$board_line" -gt 0 ] && [ "$before_board" -ne 1 ]; then
     echo "FAIL land.sh must call log_box_configs before the first cargo_locked ($locked_call_line) and again before board.sh ($board_line); calls: ${logs[*]:-none}"
     return 1
   fi

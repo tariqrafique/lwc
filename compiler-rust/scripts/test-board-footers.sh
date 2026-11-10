@@ -73,4 +73,14 @@ else
   fail=1
 fi
 
+# D-0282: carried CSR cluster lines may be reused when the reports were not rerun.
+printf '%s\n' 'csr-clusters[ssr]: pass 387 fail 0' 'csr-clusters[template]: pass 567 fail 0' > "$T/prev.board.txt"
+rc=0; got="$(BOARD_PREV_BOARD_TXT="$T/prev.board.txt" "$S" "$T/hs" "67/67")" || rc=$?
+if [ "$rc" -eq 0 ] && grep -q 'csr-clusters\[ssr\]: pass 387 fail 0' <<< "$got" && grep -q 'csr-clusters\[template\]: pass 567 fail 0' <<< "$got"; then
+  echo "ok   missing CSR report reuses previous board footer lines"
+else
+  echo "FAIL carried CSR footer rc=$rc: $got"
+  fail=1
+fi
+
 exit $fail

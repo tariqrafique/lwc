@@ -30,6 +30,11 @@ H="$T/harness"
 cp "$R/OWNERS" "$T/OWNERS"
 mkdir -p "$T/scripts"
 cp "$R/scripts/cargo-locked.sh" "$T/scripts/cargo-locked.sh"
+# board.sh (from this copy) resolves shim-gate.mjs and golden-io-guard.sh relative
+# to $T/harness/scripts/../.., so those gates need the tracked-files helper here.
+# Copying only cargo-locked.sh left them missing; the land.sh trigger regex never
+# matched, so this sandbox hole was not run until D-0282 fixed the extra ')'.
+cp "$R/scripts/tracked-files.sh" "$R/scripts/tracked-files.mjs" "$T/scripts/"
 if [ ! -f "$H/lwc-compiler-napi.node" ]; then
   if [ -f "$R/target/release/liblwc_compiler_napi.so" ]; then cp "$R/target/release/liblwc_compiler_napi.so" "$H/lwc-compiler-napi.node"
   else echo "!! test-board-ratchet: no napi binary ($R/harness/lwc-compiler-napi.node or $R/target/release)" >&2; exit 2; fi

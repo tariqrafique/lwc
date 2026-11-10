@@ -38,16 +38,50 @@ if [ -z "${STYLE_CORPUS:-}" ]; then
     || { echo "!! C8 FAILED: style-corpus-root" >&2; exit 2; }
   export STYLE_CORPUS
 fi
-"$runner/workspace-path-scan.sh" "$root" \
-  || { echo "!! C8 FAILED: workspace-path-scan" >&2; exit 3; }
+# D-0282: shared land-path checks (lints, ceilings, shim-gate). Golden-gate stays
+# in run-board.sh so BOARD_GOLDEN_GATE=0 can skip it on a scoped official board.
+_lpc_git="${SSR_ORACLE_GIT:-}"
+_lpc_head="${SSR_ORACLE_MAIN:-}"
+_lpc_base=""
+if [ -n "$_lpc_git" ] && [ -n "$_lpc_head" ] && git -C "$_lpc_git" rev-parse --verify "${_lpc_head}^" >/dev/null 2>&1; then
+  _lpc_base="$(git -C "$_lpc_git" rev-parse "${_lpc_head}^")"
+elif git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  _lpc_git="$root"
+  _lpc_head="$(git -C "$root" rev-parse HEAD)"
+  if git -C "$root" rev-parse --verify "${_lpc_head}^" >/dev/null 2>&1; then
+    _lpc_base="$(git -C "$root" rev-parse "${_lpc_head}^")"
+  fi
+fi
+if [ -x "$runner/land-path-checks.sh" ]; then
+  if [ -n "$_lpc_base" ]; then
+    LAND_PATH_SKIP_GOLDEN_GATE=1 "$runner/land-path-checks.sh" --root "$root" --git "$_lpc_git" --base "$_lpc_base" --head "$_lpc_head" --from-c8 \
+      || { echo "!! C8 FAILED: land-path-checks" >&2; exit 3; }
+  else
+    LAND_PATH_SKIP_GOLDEN_GATE=1 "$runner/land-path-checks.sh" --root "$root" --lints-only --from-c8 \
+      || { echo "!! C8 FAILED: land-path-checks" >&2; exit 3; }
+  fi
+else
+  "$runner/workspace-path-scan.sh" "$root" \
+    || { echo "!! C8 FAILED: workspace-path-scan" >&2; exit 3; }
+fi
 "$runner/test-source-scan-tracked.sh" "$root" \
   || { echo "!! C8 FAILED: source-scan-tracked (untracked .oracle plants must be ignored)" >&2; exit 3; }
 
 fmt_rc=0
 if [ "$skip_fmt" -eq 0 ]; then
-  (cd "$root" && cargo_locked fmt --all --check) || fmt_rc=$?
+  if [ "${BOARD_COLD:-0}" = 1 ]; then
+    (cd "$root" && cargo_locked fmt --all --check) || fmt_rc=$?
+  else
+    _fmt_out="$(mktemp)"
+    (cd "$root" && cargo_locked fmt --all --check) >"$_fmt_out" 2>&1 || fmt_rc=$?
+    rm -f "$_fmt_out"
+  fi
   if [ "$fmt_rc" -ne 0 ]; then
-    echo "c8: fmt --all --check exited $fmt_rc (D-0235 not yet gating)"
+    if [ "${BOARD_COLD:-0}" = 1 ]; then
+      echo "c8: fmt --all --check exited $fmt_rc (D-0235 not yet gating)"
+    else
+      echo "c8: fmt --all --check exited $fmt_rc (D-0235 not yet gating; output quiet, not cold)"
+    fi
     if [ "${C8_FMT_GATE:-}" = 1 ]; then
       echo "!! C8 FAILED: fmt --all --check (C8_FMT_GATE=1)" >&2
       exit 3

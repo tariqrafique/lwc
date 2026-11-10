@@ -31,8 +31,12 @@ export STYLE_CORPUS
 PARSE5_DIR="$PARSE5_DIR" "$runner/parse5-pin-check.sh" "$ws" \
   || { echo "!! run-board: parse5 pin check failed" >&2; exit 2; }
 
-"$hs/scripts/golden-gate.sh" "$hs" \
-  || { echo "!! run-board: golden-gate failed" >&2; exit 3; }
+if [ "${BOARD_GOLDEN_GATE:-1}" = 1 ]; then
+  "$hs/scripts/golden-gate.sh" "$hs" \
+    || { echo "!! run-board: golden-gate failed" >&2; exit 3; }
+else
+  echo "run-board: skipping golden-gate (BOARD_GOLDEN_GATE=0; D-0282)"
+fi
 
 # Snapshot archives have no .git: official-board sets SSR_ORACLE_GIT/MAIN.
 # A fresh clone is often detached (no `main` ref); default --main=main then fails.
