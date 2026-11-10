@@ -7,6 +7,8 @@
 //! Phase 0 harness entrypoints: [`compile`] and [`parse`].
 
 mod codegen;
+mod parse_count;
+pub use parse_count::{parse_count, reset_parse_count};
 /// Public binder for complex template expressions (D-0221 / AB-D0004 S3).
 /// The implementation lives at `codegen/expression.rs` (Arch layout: no `expr/` directory).
 pub mod expr {

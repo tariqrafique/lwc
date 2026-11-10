@@ -134,6 +134,7 @@ pub(crate) fn parse_source<'a>(alloc: &'a Allocator, text: &str) -> ParseOutcome
 /// (`allowAwaitOutsideFunction: false`); complex expressions are modules.
 pub(crate) fn parse_goal<'a>(alloc: &'a Allocator, text: &str, goal: SourceType) -> ParseOutcome<'a> {
     let wrapped = alloc.alloc_str(&format!("({text}\n)"));
+    crate::parse_count::bump();
     let ret = Parser::new(alloc, wrapped, goal)
         .with_options(parse_options())
         .parse();
@@ -160,6 +161,7 @@ pub(crate) fn classify<'a, D>(
         // and a dishonest wrap starts at byte 0. Recover so prefix-stop and 1083 columns stay
         // body-relative. parse_expression accepting that source is an invariant violation.
         let text = alloc.alloc_str(recovery_text);
+        crate::parse_count::bump();
         return match Parser::new(alloc, text, goal)
             .with_options(parse_options())
             .parse_expression()

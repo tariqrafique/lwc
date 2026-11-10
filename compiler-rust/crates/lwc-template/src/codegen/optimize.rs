@@ -10,15 +10,13 @@
 //! where every value is a `Literal` (string, number, boolean, null) or itself static. `{}` and `[]`
 //! are static. `-1` is a UnaryExpression and template literals are not Literals, so neither is static.
 //!
-//! The walk is over the oxc AST of the emitted function body (one parse). Grouping parentheses are
-//! not nodes (`preserve_parens: false`), so replacing an object drops the parens astring had added
-//! around it; call parentheses stay because they belong to the `CallExpression`.
+//! The walk is over the oxc AST built while emitting the return expression. Grouping parentheses are
+//! not nodes, so replacing an object drops the parens astring had added around it; call parentheses
+//! stay because they belong to the `CallExpression`.
 
-use oxc_allocator::Allocator;
 use oxc_ast::ast::{ArrayExpressionElement, Expression, ObjectPropertyKind, PropertyKind};
 use oxc_ast_visit::{Visit, walk};
-use oxc_parser::{ParseOptions, Parser};
-use oxc_span::{GetSpan, SourceType, Span};
+use oxc_span::{GetSpan, Span};
 use std::collections::HashSet;
 
 fn is_literal(e: &Expression) -> bool {
@@ -196,42 +194,29 @@ impl<'a> Visit<'a> for Hoist<'a> {
     }
 }
 
-/// Hoist static literals out of `body` (the tmpl function's return expression, or a statement in tests).
+/// Hoist static literals out of `body`. `expr` is the emit-time AST; its spans index `body`.
 /// `decls` holds the `(dedupe key, astring print)` of each `stcN` in order; returns the rewritten body.
-///
-/// `return` is only legal inside a function, and the unit inputs include one, so the body is parsed
-/// as the body of `function tmpl()`. Spans are shifted back onto `body`.
-pub(super) fn hoist_static_expressions(body: &str, decls: &mut Vec<(String, String)>) -> String {
-    let prefix = "function tmpl(){\n";
-    let wrapped = format!("{prefix}{body}\n}}");
-    let base = prefix.len();
-    let alloc = Allocator::default();
-    let ret = Parser::new(&alloc, &wrapped, SourceType::script())
-        .with_options(ParseOptions {
-            preserve_parens: false,
-            ..ParseOptions::default()
-        })
-        .parse();
-    if !ret.diagnostics.is_empty() {
-        return body.to_string();
-    }
+pub(super) fn hoist_static_expressions(
+    body: &str,
+    expr: &Expression<'_>,
+    decls: &mut Vec<(String, String)>,
+) -> String {
     let mut calls = CallParens {
-        src: &wrapped,
+        src: body,
         at: HashSet::new(),
     };
-    calls.visit_program(&ret.program);
+    calls.visit_expression(expr);
     let mut hoist = Hoist {
-        src: &wrapped,
+        src: body,
         calls: &calls.at,
         repl: Vec::new(),
         decls,
     };
-    hoist.visit_program(&ret.program);
+    hoist.visit_expression(expr);
     hoist.repl.sort_by_key(|r| r.0);
     let mut out = String::with_capacity(body.len());
     let mut last = 0;
     for (from, to, n) in hoist.repl {
-        let (from, to) = (from.saturating_sub(base), to.saturating_sub(base));
         if from < last || to > body.len() || from > to {
             continue;
         }
@@ -246,83 +231,141 @@ pub(super) fn hoist_static_expressions(body: &str, decls: &mut Vec<(String, Stri
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::codegen::chunk::{B, Field, group};
+    use oxc_allocator::Allocator;
 
-    fn run(src: &str) -> (String, Vec<String>) {
+    fn run(code: &str, expr: &Expression<'_>) -> (String, Vec<String>) {
         let mut d = Vec::new();
-        let out = hoist_static_expressions(src, &mut d);
+        let out = hoist_static_expressions(code, expr, &mut d);
         (out, d.into_iter().map(|(_, p)| p).collect())
+    }
+
+    fn kv<'a>(key: &str, value: crate::codegen::chunk::Chunk<'a>) -> Field<'a> {
+        Field::Kv(key.to_string(), value)
+    }
+
+    fn obj<'a>(b: &B<'a>, props: Vec<Field<'a>>) -> crate::codegen::chunk::Chunk<'a> {
+        b.object_spaced(props)
     }
 
     #[test]
     fn hoists_outermost_static_and_dedupes() {
-        let (out, d) = run(
-            r#"return [api_element("div", { classMap: { "a": true }, key: 0 }), api_element("p", { key: 1 }, [api_text("x")]), api_element("i", { key: 0, classMap: { "a": true } })];"#,
+        let alloc = Allocator::default();
+        let b = B::new(&alloc);
+        let p = obj(&b, vec![kv("key", b.number_printed("1"))]);
+        let class_map = obj(&b, vec![kv("\"a\"", b.boolean(true))]);
+        let i = obj(
+            &b,
+            vec![kv("key", b.number_printed("0")), kv("classMap", class_map)],
         );
+        let text = b.call_name("api_text", vec![b.string_printed("\"x\"")]);
+        let div_call = b.call_name(
+            "api_element",
+            vec![b.string_printed("\"div\""), {
+                let class_map = obj(&b, vec![kv("\"a\"", b.boolean(true))]);
+                obj(
+                    &b,
+                    vec![kv("classMap", class_map), kv("key", b.number_printed("0"))],
+                )
+            }],
+        );
+        let p_call = b.call_name(
+            "api_element",
+            vec![b.string_printed("\"p\""), p, b.array_inline(vec![text])],
+        );
+        let i_call = b.call_name("api_element", vec![b.string_printed("\"i\""), i]);
+        let ret = b.array_inline(vec![div_call, p_call, i_call]);
+        let (out, d) = run(&ret.code, &ret.expr);
         assert_eq!(
             out,
-            r#"return [api_element("div", stc0), api_element("p", stc1, [api_text("x")]), api_element("i", stc2)];"#
+            r#"[api_element("div", stc0), api_element("p", stc1, [api_text("x")]), api_element("i", stc2)]"#
         );
         assert_eq!(
             d,
             vec![
                 "{\n  classMap: {\n    \"a\": true\n  },\n  key: 0\n}",
                 "{\n  key: 1\n}",
-                "{\n  key: 0,\n  classMap: {\n    \"a\": true\n  }\n}"
+                "{\n  key: 0,\n  classMap: {\n    \"a\": true\n  }\n}",
             ]
         );
-        let (out, d) = run(r#"f({ key: 1 }, { key: 1, }, [], {})"#);
+        let one = obj(&b, vec![kv("key", b.number_printed("1"))]);
+        let two = obj(&b, vec![kv("key", b.number_printed("1"))]);
+        let call = b.call_name(
+            "f",
+            vec![one, two, b.array_inline(vec![]), b.object_spaced(vec![])],
+        );
+        let (out, d) = run(&call.code, &call.expr);
         assert_eq!(out, "f(stc0, stc0, stc1, stc2)");
         assert_eq!(d, vec!["{\n  key: 1\n}", "[]", "{}"]);
     }
 
     #[test]
     fn non_static_shapes_are_kept_and_descended() {
-        for src in [
-            "f({ a: $cmp.x })",
-            "f({ a: -1 })",
-            "f({ a })",
-            "f({ [k]: 1 })",
-            "f({ ...x })",
-            "f({ __proto__: null, ...x })",
-            "f([1, , 2])",
-            "f({ a: `t` })",
-            "f([g()])",
-            "a[0]",
-            "x.y[\"z\"]",
-            "function (a) { const {b: c} = a; }",
-        ] {
-            assert_eq!(run(src), (src.to_string(), vec![]), "{src}");
-        }
-        let (out, d) = run("f({ a: $cmp.x, b: { c: 1 }, d: [\"e\"] })");
+        let alloc = Allocator::default();
+        let b = B::new(&alloc);
+        let member = b.static_member(b.ident("$cmp"), "x");
+        let obj = obj(
+            &b,
+            vec![
+                kv("a", member),
+                kv("b", obj(&b, vec![kv("c", b.number_printed("1"))])),
+                kv("d", b.array_inline(vec![b.string_printed("\"e\"")])),
+            ],
+        );
+        let call = b.call_name("f", vec![obj]);
+        let (out, d) = run(&call.code, &call.expr);
         assert_eq!(out, "f({ a: $cmp.x, b: stc0, d: stc1 })");
         assert_eq!(d, vec!["{\n  c: 1\n}", "[\"e\"]"]);
+        // A spread keeps the object and still hoists a nested static value.
+        let spread = b.object_multiline(
+            vec![
+                Field::Kv("__proto__".into(), b.null()),
+                Field::Spread(b.ident("x")),
+            ],
+            "",
+        );
+        assert_eq!(
+            run(&spread.code, &spread.expr),
+            (spread.code.clone(), vec![])
+        );
     }
 
     #[test]
     fn grouping_parens_around_hoisted_object_are_dropped() {
-        let (out, d) =
-            run(r#"return [api_text(api_dynamic_text(({ obj: 'literal' }).toString()))];"#);
-        assert_eq!(
-            out,
-            r#"return [api_text(api_dynamic_text(stc0.toString()))];"#
-        );
+        let alloc = Allocator::default();
+        let b = B::new(&alloc);
+        let object = obj(&b, vec![kv("obj", b.string_printed("'literal'"))]);
+        let member = b.call(b.static_member(group(object), "toString"), Vec::new());
+        let inner = b.call_name("api_dynamic_text", vec![member]);
+        let call = b.call_name("api_text", vec![inner]);
+        let (out, d) = run(&call.code, &call.expr);
+        assert_eq!(out, r#"api_text(api_dynamic_text(stc0.toString()))"#);
         assert_eq!(d, vec!["{\n  obj: 'literal'\n}"]);
-        let (out, d) = run(r#"f({ a: 1 })"#);
-        assert_eq!(out, "f(stc0)", "{out}");
+        let object = obj(&b, vec![kv("a", b.number_printed("1"))]);
+        let call = b.call_name("f", vec![object]);
+        let (out, d) = run(&call.code, &call.expr);
+        assert_eq!(out, "f(stc0)");
         assert_eq!(d, vec!["{\n  a: 1\n}"]);
-        assert_eq!(run("typeof ({ a: 1 })").0, "typeof stc0");
-        assert_eq!(run("!({ a: 1 })").0, "!stc0");
-        assert_eq!(run("x in ({ a: 1 })").0, "x in stc0");
-        assert_eq!(run("(({ a: 1 }))").0, "stc0");
-        assert_eq!(run("foo({ a: 1 })").0, "foo(stc0)");
+        let object = obj(&b, vec![kv("a", b.number_printed("1"))]);
+        let wrapped = group(group(object));
+        assert_eq!(run(&wrapped.code, &wrapped.expr).0, "stc0");
+        let object = obj(&b, vec![kv("a", b.number_printed("1"))]);
+        let call = b.call_name("foo", vec![object]);
+        assert_eq!(run(&call.code, &call.expr).0, "foo(stc0)");
     }
 
-    /// A string is opaque. An object inside a template substitution is a real expression, so the
-    /// pre-order walk hoists it (oracle `` `t${stc0}` ``).
+    /// A string is opaque. An object inside a template substitution is a real expression.
     #[test]
     fn strings_are_opaque_and_template_substitutions_hoist() {
-        let (out, d) = run(r#"f("{ a: 1 }", `${ {a: 1} }`, { "k}": "v]" })"#);
-        assert_eq!(out, r#"f("{ a: 1 }", `${ stc0 }`, stc1)"#);
+        let alloc = Allocator::default();
+        let b = B::new(&alloc);
+        let object = obj(&b, vec![kv("a", b.number_printed("1"))]);
+        // Spaces around the substitution are quasis; the object itself is the expression.
+        let tmpl = b.template(&["", ""], vec![object]);
+        let other = obj(&b, vec![kv("\"k}\"", b.string_printed("\"v]\""))]);
+        let call = b.call_name("f", vec![b.string_printed("\"{ a: 1 }\""), tmpl, other]);
+        let (out, d) = run(&call.code, &call.expr);
+        assert_eq!(out, r#"f("{ a: 1 }", `${stc0}`, stc1)"#);
         assert_eq!(d, vec!["{\n  a: 1\n}", "{\n  \"k}\": \"v]\"\n}"]);
     }
 }

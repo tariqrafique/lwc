@@ -318,29 +318,63 @@ impl<'s> Lower<'s> {
     }
 
     /// Text of `e` after private-field edits and after lowering any class nested in it.
-    /// Enclosing hoists of those classes land in [`Self::ctor_lets`] (the constructor that receives `e`).
+    /// A class expression that sits directly in `e` hoists into the constructor that receives `e`.
+    /// A class nested in a function or arrow inside `e` hoists into that function: an arrow with an
+    /// expression body becomes a block (`{ var _Class; return ... }`), matching Babel's scope.
     fn render_expr(&mut self, e: &Expression<'_>) -> String {
         let span = e.span();
         let me = self as *mut Lower<'s>;
-        struct V<'s>(*mut Lower<'s>);
+        struct V<'s> {
+            lower: *mut Lower<'s>,
+            /// Function and arrow bodies entered while rendering this initializer.
+            fns: u32,
+        }
         impl<'s, 'a> Visit<'a> for V<'s> {
+            fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
+                let lower = unsafe { &mut *self.lower };
+                let entered = if let Some(b) = &it.body {
+                    lower.scopes.enter_body(b, &mut lower.edits);
+                    true
+                } else {
+                    false
+                };
+                self.fns += 1;
+                walk::walk_function(self, it, flags);
+                self.fns -= 1;
+                if entered {
+                    let lower = unsafe { &mut *self.lower };
+                    lower.scopes.exit(&mut lower.edits);
+                }
+            }
+            fn visit_arrow_function_expression(&mut self, it: &ArrowFunctionExpression<'a>) {
+                let lower = unsafe { &mut *self.lower };
+                lower.scopes.enter_arrow(it, &mut lower.edits);
+                self.fns += 1;
+                walk::walk_arrow_function_expression(self, it);
+                self.fns -= 1;
+                let lower = unsafe { &mut *self.lower };
+                lower.scopes.exit(&mut lower.edits);
+            }
             fn visit_class(&mut self, c: &Class<'a>) {
-                // Re-enter Lower. The visitor does not hold a reference to it.
-                let lower = unsafe { &mut *self.0 };
+                // Re-enter Lower. The visitor does not hold a reference to it across the walk.
+                let lower = unsafe { &mut *self.lower };
                 if class_needs_lower(c, lower.prior) && !lower.seen.contains(&c.span.start) {
                     let saved = lower.placing_in_ctor;
-                    lower.placing_in_ctor = true;
+                    if self.fns == 0 {
+                        lower.placing_in_ctor = true;
+                    }
                     lower.visit_class(c);
+                    let lower = unsafe { &mut *self.lower };
                     lower.placing_in_ctor = saved;
                 } else {
                     walk::walk_class(self, c);
                 }
             }
         }
-        // SAFETY: `me` points at `self`. `V` dereferences it only inside `visit_class`,
-        // which does not use `V` again until that call returns. Nested `render_expr`
-        // calls make their own visitors and re-enter on disjoint class nodes.
-        let mut v = V(me);
+        // SAFETY: `me` points at `self`. `V` dereferences it only inside a visit method, which does
+        // not use `V` again until that call returns. Nested `render_expr` calls make their own
+        // visitors and re-enter on disjoint class nodes.
+        let mut v = V { lower: me, fns: 0 };
         v.visit_expression(e);
         let mut tagged: Vec<(Edit, u8)> = self.prior.iter().cloned().map(|e| (e, 0)).collect();
         tagged.extend(self.edits.iter().cloned().map(|e| (e, 1)));

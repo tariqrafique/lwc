@@ -4,7 +4,6 @@
 //! `export const LWC = `${oracleRoot()}/packages/@lwc`;` (D-0280; SEMDIFF_ORACLE_DIR from LWC_ORACLE,
 //! or fail if LWC_ORACLE is unset). Any other shape fails the build; there is no other default.
 use std::fs;
-use std::path::Path;
 
 const SRC: &str = "../../harness/src/ssrRender.ts";
 const DECL: &str = "export const LWC = '";
@@ -18,8 +17,17 @@ fn oracle_from_env() -> String {
     }
 }
 
+fn manifest_dir() -> std::path::PathBuf {
+    // Runtime, not env!(): a build-script binary reused from a shared
+    // CARGO_TARGET_DIR must read THIS invocation's crate path. env!() bakes
+    // the compile-time worktree/snap path and breaks the next checkout.
+    std::env::var("CARGO_MANIFEST_DIR")
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|e| panic!("semdiff build: CARGO_MANIFEST_DIR: {e}"))
+}
+
 fn main() {
-    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SRC);
+    let path = manifest_dir().join(SRC);
     println!("cargo:rerun-if-changed={}", path.display());
     println!("cargo:rerun-if-env-changed=LWC_ORACLE");
     let text = fs::read_to_string(&path).unwrap_or_else(|e| panic!("semdiff build: read {}: {e}", path.display()));
