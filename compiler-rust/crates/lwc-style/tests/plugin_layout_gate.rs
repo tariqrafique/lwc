@@ -2,6 +2,7 @@
 //! module. Fails if `scoping.rs` (the old monolith) returns, if a module loses its upstream header,
 //! if a plugin's diagnostics or transforms move into another module, or if a module outgrows its
 //! upstream file by a wide margin. Runs under `cargo test -p lwc-style` (land.sh, changed crates).
+use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -41,11 +42,10 @@ const OWNERS: &[(&str, &str)] = &[
 
 fn src() -> PathBuf { Path::new(env!("CARGO_MANIFEST_DIR")).join("src") }
 
-fn rs_files(dir: &Path, out: &mut Vec<PathBuf>) {
-    for e in fs::read_dir(dir).unwrap().flatten() {
-        let p = e.path();
-        if p.is_dir() { rs_files(&p, out) } else if p.extension().is_some_and(|x| x == "rs") { out.push(p) }
-    }
+fn style_src_rs() -> (PathBuf, Vec<PathBuf>) {
+    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let root = src();
+    (root, tracked_files_filtered(&repo, &["crates/lwc-style/src"], &["rs"]))
 }
 
 #[test]
@@ -77,12 +77,10 @@ fn modules_name_their_upstream_file_and_stay_small() {
 
 #[test]
 fn plugin_code_lives_in_its_module() {
-    let root = src();
-    let mut files = Vec::new();
-    rs_files(&root, &mut files);
+    let (root, files) = style_src_rs();
     let mut bad = Vec::new();
     for f in files {
-        let rel = f.strip_prefix(&root).unwrap().to_string_lossy().replace('\\', "/");
+        let rel = rel_slash(&root, &f);
         for (i, l) in fs::read_to_string(&f).unwrap().lines().enumerate() {
             if l.trim() == "#[cfg(test)]" { break }
             if l.trim_start().starts_with("//") { continue }

@@ -10,6 +10,7 @@ lwc-shared = { path = "../lwc-shared" }
 # The style facade (`@lwc/compiler` transformers/style.ts) lives in lwc-compiler; tests pin its errors.
 lwc-compiler = { path = "../lwc-compiler" }
 serde_json = "1"
+repo-tracked = { path = "../repo-tracked" }
 
 [[test]]
 name = "fixtures"

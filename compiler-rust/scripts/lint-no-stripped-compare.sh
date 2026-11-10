@@ -62,16 +62,26 @@ R
 )
 
 # scan <dir> -> lines "rule<TAB>what<TAB>file<TAB>line<TAB>text"
+# File list comes from tracked-files.sh (git ls-files). Fetched inputs are not listed.
 scan() {
   local dir="$1"
+  local helper listed=() f
+  helper="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/tracked-files.sh"
+  [ -x "$helper" ] || { echo "lint-no-stripped-compare: missing $helper" >&2; exit 2; }
+  while IFS= read -r -d '' f; do
+    case "$f" in
+      tools/semdiff/*|harness/fixtures/*|harness/goldens/*|scripts/lint-no-stripped-compare.sh|harness/./*) continue ;;
+    esac
+    case "$f" in
+      *.mjs|*.cjs|*.js|*.ts|*.sh|*.rs|*.py) listed+=("$f") ;;
+    esac
+  done < <("$helper" "$dir" harness tools scripts)
+  [ ${#listed[@]} -gt 0 ] || return 0
   while IFS=$'\t' read -r id what re; do
     [ -n "$id" ] || continue
     local out rc=0
-    out="$(cd "$dir" && rg -n --no-heading --color never --no-ignore-vcs --hidden \
-       -g '*.{mjs,cjs,js,ts,sh,rs,py}' \
-       -g '!tools/semdiff/**' -g '!**/node_modules/**' -g '!harness/fixtures/**' -g '!harness/goldens/**' \
-       -g '!harness/.*/**' -g '!scripts/lint-no-stripped-compare.sh' -g '!**/target/**' \
-       -e "$re" $(for d in harness tools scripts; do [ -d "$dir/$d" ] && echo "$d"; done))" || rc=$?
+    out="$(cd "$dir" && rg -n --no-heading --color never --no-config \
+       -e "$re" -- "${listed[@]}")" || rc=$?
     # rg: 0 hits, 1 none, >=2 error (bad regex, unreadable file): never read an error as "clean"
     [ "$rc" -le 1 ] || { echo "lint-no-stripped-compare: rg failed (rc=$rc) on rule $id" >&2; exit 2; }
     [ -n "$out" ] || continue
@@ -146,6 +156,8 @@ w_sp = " ".join(s.split())
 F
   printf '%s\n' 'const z = s.replace(/\s+/g, "");' >"$T/tools/semdiff/src/ok.mjs"
   printf '%s\n' 'const z = s.replace(/\s+/g, "");' >"$T/harness/fixtures/a/fx.js"
+  git -C "$T" init -q
+  git -C "$T" add harness tools scripts
   got="$(scan "$T" | awk -F'\t' '{print $3":"$4" "$1}' | sort -u)"
   want="$(cd "$T" && grep -rn '# HIT \|// HIT ' harness scripts tools | sed -E 's/^([^:]+):([0-9]+):.*HIT (\w+)$/\1:\2 \3/' | sort -u)"
   n="$(printf '%s\n' "$want" | grep -c .)"

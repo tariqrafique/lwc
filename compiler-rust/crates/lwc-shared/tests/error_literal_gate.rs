@@ -3,18 +3,25 @@
 //! crate's non-test source outside `crates/lwc-shared/src/errors/`. No exemptions: AB-R003 deleted every
 //! pending copy, so any new literal, version const, or version comment outside lwc-shared fails here.
 use regex::Regex;
+use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 use std::path::{Path, PathBuf};
 
-fn rs_files(dir: &Path, out: &mut Vec<PathBuf>) {
-    for e in std::fs::read_dir(dir).unwrap().flatten() {
-        let p = e.path();
-        if p.is_dir() { rs_files(&p, out) } else if p.extension().is_some_and(|x| x == "rs") { out.push(p) }
-    }
+fn crate_src_rs() -> (PathBuf, Vec<PathBuf>) {
+    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let crates = repo.join("crates");
+    let files = tracked_files_filtered(&repo, &["crates"], &["rs"])
+        .into_iter()
+        .filter(|p| {
+            let rel = rel_slash(&crates, p);
+            rel.split('/').nth(1) == Some("src")
+        })
+        .collect();
+    (crates, files)
 }
 
 #[test]
 fn no_error_info_literals_outside_lwc_shared_errors() {
-    let crates = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap();
+    let (crates, files) = crate_src_rs();
     let pats = [
         Regex::new(r#"\b1[0-2]\d\d\b\s*,\s*""#).unwrap(),
         Regex::new(r#""LWC1[0-2]\d\d\b"#).unwrap(),
@@ -22,13 +29,8 @@ fn no_error_info_literals_outside_lwc_shared_errors() {
     ];
     let test_mod = Regex::new(r"(?m)^#\[cfg\(test\)\]").unwrap();
     let mut hits = vec![];
-    let mut files = vec![];
-    for c in std::fs::read_dir(crates).unwrap().flatten() {
-        let src = c.path().join("src");
-        if src.is_dir() { rs_files(&src, &mut files) }
-    }
     for f in files {
-        let rel = f.strip_prefix(crates).unwrap().to_string_lossy().replace('\\', "/");
+        let rel = rel_slash(&crates, &f);
         if rel.starts_with("lwc-shared/src/errors/") { continue }
         let text = std::fs::read_to_string(&f).unwrap();
         let body = &text[..test_mod.find(&text).map_or(text.len(), |m| m.start())];
@@ -44,14 +46,9 @@ fn no_error_info_literals_outside_lwc_shared_errors() {
 
 #[test]
 fn exactly_one_lwc_version_const() {
-    let crates = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap();
-    let mut files = vec![];
-    for c in std::fs::read_dir(crates).unwrap().flatten() {
-        let src = c.path().join("src");
-        if src.is_dir() { rs_files(&src, &mut files) }
-    }
+    let (crates, files) = crate_src_rs();
     let defs: Vec<_> = files.iter().filter(|f| std::fs::read_to_string(f).unwrap_or_default().contains(concat!("const ", "LWC_VERSION"))).collect();
-    let rel: Vec<String> = defs.iter().map(|f| f.strip_prefix(crates).unwrap().to_string_lossy().replace('\\', "/")).collect();
+    let rel: Vec<String> = defs.iter().map(|f| rel_slash(&crates, f)).collect();
     let expected = vec!["lwc-shared/src/meta.rs".to_string()];
     let mut got = rel.clone();
     got.sort();
@@ -61,17 +58,12 @@ fn exactly_one_lwc_version_const() {
 /// `@lwc/shared` owns `LWC_VERSION_COMMENT`: no crate's source outside lwc-shared/src/meta.rs spells it.
 #[test]
 fn exactly_one_lwc_version_comment() {
-    let crates = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap();
-    let mut files = vec![];
-    for c in std::fs::read_dir(crates).unwrap().flatten() {
-        let src = c.path().join("src");
-        if src.is_dir() { rs_files(&src, &mut files) }
-    }
+    let (crates, files) = crate_src_rs();
     let needle = concat!("LWC compiler", " v");
     let mut got: Vec<String> = files
         .iter()
         .filter(|f| std::fs::read_to_string(f).unwrap_or_default().contains(needle))
-        .map(|f| f.strip_prefix(crates).unwrap().to_string_lossy().replace('\\', "/"))
+        .map(|f| rel_slash(&crates, f))
         .collect();
     got.sort();
     let expected = vec!["lwc-shared/src/meta.rs".to_string()];

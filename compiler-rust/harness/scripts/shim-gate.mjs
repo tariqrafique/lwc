@@ -22,6 +22,7 @@
 //    Fails closed on any error.
 import fs from 'node:fs'; import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { trackedFiles } from '../../scripts/tracked-files.mjs';
 const here = path.dirname(new URL(import.meta.url).pathname);
 
 function internal(msg) {
@@ -45,9 +46,10 @@ if (fs.existsSync(allowFile)) for (const l of fs.readFileSync(allowFile, 'utf8')
   if (!reason?.trim()) { console.log(`  ALLOWLIST-INVALID (no reason): ${l}`); process.exitCode = 1; continue; }
   allow.push({ p, w: w.toLowerCase() });
 }
-const files = []; (function walk(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) {
-  if (e.name === 'target' || e.name.startsWith('.')) continue;
-  const f = path.join(d, e.name); e.isDirectory() ? walk(f) : f.endsWith('.rs') && files.push(f); } })(root);
+const repoForCrates = path.resolve(root, '..');
+const files = trackedFiles(repoForCrates, ['crates'])
+  .filter((rel) => rel.endsWith('.rs'))
+  .map((rel) => path.join(repoForCrates, rel));
 let tg = 0, tagged = 0; const untagged = [];
 for (const f of files) {
   const rel = path.relative(root, f);
@@ -221,10 +223,10 @@ function scannerRatchet() {
   const raw = fs.readFileSync(baseFile, 'utf8');
   if (!/^\d+\n?$/.test(raw)) throw new Error(`${baseFile}: must hold exactly one integer line, got ${JSON.stringify(raw)}`);
   const baseline = Number(raw.trim());
-  const rs = []; (function walk(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) {
-    const f = path.join(d, e.name);
-    if (e.isDirectory()) { if (e.name !== 'tests') walk(f); }
-    else if (e.name.endsWith('.rs') && e.name !== 'tests.rs') rs.push(f); } })(dir);
+  const repo = path.resolve(root, '..');
+  const rs = trackedFiles(repo, ['crates/lwc-ssr/src/compile_js'])
+    .filter((rel) => rel.endsWith('.rs') && !rel.endsWith('/tests.rs') && !rel.split('/').includes('tests'))
+    .map((rel) => path.join(repo, rel));
   if (!rs.length) throw new Error(`${dir}: no .rs files`);
   const sites = []; let n = 0;
   for (const f of rs.sort()) {

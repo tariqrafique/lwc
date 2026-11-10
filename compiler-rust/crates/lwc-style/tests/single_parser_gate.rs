@@ -2,26 +2,18 @@
 //! no fallback error paths. Fails if a second parse entry point, a pre-pass checker, cssparser, or
 //! the old catch-all reasons come back. Runs under `cargo test -p lwc-style`, which land.sh invokes
 //! for any change under crates/lwc-style.
+use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
-fn rs_files(dir: &Path, out: &mut Vec<PathBuf>) {
-    for e in fs::read_dir(dir).unwrap().flatten() {
-        let p = e.path();
-        if p.is_dir() { rs_files(&p, out) } else if p.extension().is_some_and(|x| x == "rs") { out.push(p) }
-    }
-}
-
-/// (path relative to crate root, line number, line) for every non-test source line in src/
-/// (a file is read up to its trailing `#[cfg(test)]` module).
 fn src_lines() -> Vec<(String, usize, String)> {
+    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let mut files = Vec::new();
-    rs_files(&root.join("src"), &mut files);
+    let mut files = tracked_files_filtered(&repo, &["crates/lwc-style/src"], &["rs"]);
     files.sort();
     let mut out = Vec::new();
     for f in files {
-        let rel = f.strip_prefix(root).unwrap().to_string_lossy().replace('\\', "/");
+        let rel = rel_slash(root, &f);
         for (i, l) in fs::read_to_string(&f).unwrap().lines().enumerate() {
             if l.trim() == "#[cfg(test)]" { break }
             out.push((rel.clone(), i + 1, l.to_string()));

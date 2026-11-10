@@ -264,13 +264,21 @@ resolve_file() {
 }
 
 collect_sh_rels() {
-  local root="$1"
+  local root="$1" helper rel
+  helper="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/tracked-files.sh"
   {
-    find "$root/scripts" "$root/harness/scripts" -name '*.sh' -print
-    printf '%s\n' "$root/harness/board.sh" "$root/harness/board-rows.sh"
-  } | while IFS= read -r f; do
-    printf '%s\n' "${f#"$root"/}"
-  done | sort -u
+    if [ -x "$helper" ]; then
+      while IFS= read -r -d '' rel; do
+        case "$rel" in
+          *.sh) printf '%s\n' "$rel" ;;
+        esac
+      done < <("$helper" "$root" scripts harness/scripts)
+    else
+      echo "check-land-main-refs: missing $helper" >&2
+      return 2
+    fi
+    printf '%s\n' "harness/board.sh" "harness/board-rows.sh"
+  } | sort -u
 }
 
 load_allowlist() {

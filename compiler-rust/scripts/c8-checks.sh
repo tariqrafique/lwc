@@ -40,6 +40,8 @@ if [ -z "${STYLE_CORPUS:-}" ]; then
 fi
 "$runner/workspace-path-scan.sh" "$root" \
   || { echo "!! C8 FAILED: workspace-path-scan" >&2; exit 3; }
+"$runner/test-source-scan-tracked.sh" "$root" \
+  || { echo "!! C8 FAILED: source-scan-tracked (untracked .oracle plants must be ignored)" >&2; exit 3; }
 
 fmt_rc=0
 if [ "$skip_fmt" -eq 0 ]; then

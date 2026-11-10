@@ -19,3 +19,4 @@ napi-build = "2"
 
 [dev-dependencies]
 regex = "1"
+repo-tracked = { path = "../repo-tracked" }

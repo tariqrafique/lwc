@@ -5,6 +5,7 @@
 //! present), every prefix of the small inputs (truncation = unclosed everything), and a
 //! deterministic fragment fuzz.
 use lwc_style::{transform, CompileOptions};
+use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 use std::{fs, panic, path::Path};
 
 const PROBES: &[&str] = &[
@@ -114,21 +115,15 @@ const AUDITED_PANIC_SITES: &[(&str, &str, &str)] = &[
 
 #[test]
 fn panic_sites_are_audited() {
+    let repo = workspace_root(std::path::Path::new(env!("CARGO_MANIFEST_DIR")));
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
-    let mut files = Vec::new();
-    fn walk(d: &std::path::Path, out: &mut Vec<std::path::PathBuf>) {
-        for e in std::fs::read_dir(d).unwrap().flatten() {
-            let p = e.path();
-            if p.is_dir() { walk(&p, out) } else if p.extension().is_some_and(|x| x == "rs") { out.push(p) }
-        }
-    }
-    walk(&root.join("src"), &mut files);
+    let mut files = tracked_files_filtered(&repo, &["crates/lwc-style/src"], &["rs"]);
     files.sort();
     let pat = [".unwrap()", ".expect(", "panic!", "unreachable!", "todo!", "unimplemented!", "unwrap_unchecked"];
     let mut unaudited = Vec::new();
     let mut used = vec![0usize; AUDITED_PANIC_SITES.len()];
     for f in files {
-        let rel = f.strip_prefix(root).unwrap().to_string_lossy().replace('\\', "/");
+        let rel = rel_slash(root, &f);
         for (i, l) in std::fs::read_to_string(&f).unwrap().lines().enumerate() {
             if l.trim() == "#[cfg(test)]" { break }
             if l.trim_start().starts_with("//") || !pat.iter().any(|p| l.contains(p)) { continue }

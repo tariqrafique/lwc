@@ -4,6 +4,7 @@
 //! `#[cfg(test)]` items and diagnostics that never reach the output: a placeholder on a line holding
 //! `panic!(`, `unreachable!(`, `assert!(`, `assert_eq!(`, `assert_ne!(`, `debug_assert` or `.expect(`.
 
+use repo_tracked::{tracked_files_filtered, workspace_root};
 use std::path::{Path, PathBuf};
 
 /// lwc-template codegen's existing hits. It only shrinks; lower it when hits are removed.
@@ -96,16 +97,7 @@ fn debug_placeholders(src: &str) -> Vec<String> {
     hits
 }
 
-fn rust_files(dir: &Path, out: &mut Vec<PathBuf>) {
-    for entry in std::fs::read_dir(dir).unwrap_or_else(|e| panic!("{}: {e}", dir.display())) {
-        let path = entry.unwrap().path();
-        if path.is_dir() { rust_files(&path, out); } else if path.extension().is_some_and(|e| e == "rs") { out.push(path); }
-    }
-}
-
-fn hits_under(dir: &Path) -> (usize, Vec<String>) {
-    let mut files = Vec::new();
-    rust_files(dir, &mut files);
+fn hits_under_files(files: &[PathBuf]) -> (usize, Vec<String>) {
     let hits = files.iter().flat_map(|f| {
         let src = std::fs::read_to_string(f).unwrap();
         debug_placeholders(&src).into_iter().map(move |h| format!("{}:{h}", f.display()))
@@ -115,9 +107,11 @@ fn hits_under(dir: &Path) -> (usize, Vec<String>) {
 
 #[test]
 fn no_debug_formatting_in_emit_code() {
-    let crates = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap();
-    let (ssr_files, ssr) = hits_under(&crates.join("lwc-ssr/src"));
-    let (tpl_files, tpl) = hits_under(&crates.join("lwc-template/src/codegen"));
+    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let ssr_list = tracked_files_filtered(&repo, &["crates/lwc-ssr/src"], &["rs"]);
+    let tpl_list = tracked_files_filtered(&repo, &["crates/lwc-template/src/codegen"], &["rs"]);
+    let (ssr_files, ssr) = hits_under_files(&ssr_list);
+    let (tpl_files, tpl) = hits_under_files(&tpl_list);
     assert!(ssr_files > 10 && tpl_files > 0, "scanned {ssr_files} lwc-ssr and {tpl_files} lwc-template files");
     assert!(ssr.is_empty(), "Debug formatting in lwc-ssr emit code; use lwc_shared::js_literal::json_string:\n{}", ssr.join("\n"));
     assert_eq!(tpl.len(), LWC_TEMPLATE_CODEGEN_ALLOWANCE, "lwc-template codegen Debug formatting (shrink-only allowance):\n{}", tpl.join("\n"));

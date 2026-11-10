@@ -2,7 +2,8 @@
 //! (code, level, url, aggregate shape, options errors); no origin sniffing, url table, aggregate switch
 //! or error construction may return here.
 use regex::Regex;
-use std::path::Path;
+use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
+use std::path::{Path, PathBuf};
 
 /// Each banned pattern, with what it catches. Naming the types is fine (signatures, `match` arms);
 /// building a value of them is not.
@@ -40,22 +41,15 @@ fn hits(text: &str) -> Vec<(usize, &'static str)> {
     out
 }
 
-/// Every `.rs` file under `dir`, nested modules included, with each banned line as `path:line: what: text`.
-fn scan(dir: &Path) -> Vec<String> {
+/// Scan the given `.rs` files; each banned line is `rel:line: what: text` (`rel` relative to `root`).
+fn scan_files(root: &Path, files: &[PathBuf]) -> Vec<String> {
     let mut found = vec![];
-    let mut stack = vec![dir.to_path_buf()];
-    while let Some(d) = stack.pop() {
-        for e in std::fs::read_dir(&d).unwrap().flatten() {
-            let p = e.path();
-            if p.is_dir() {
-                stack.push(p);
-            } else if p.extension().is_some_and(|x| x == "rs") {
-                let text = std::fs::read_to_string(&p).unwrap();
-                for (n, what) in hits(&text) {
-                    let rel = p.strip_prefix(dir).unwrap().display();
-                    found.push(format!("{rel}:{n}: {what}: {}", text.lines().nth(n - 1).unwrap()));
-                }
-            }
+    for p in files {
+        if !p.extension().is_some_and(|x| x == "rs") { continue }
+        let text = std::fs::read_to_string(p).unwrap();
+        for (n, what) in hits(&text) {
+            let rel = rel_slash(root, p);
+            found.push(format!("{rel}:{n}: {what}: {}", text.lines().nth(n - 1).unwrap()));
         }
     }
     found.sort();
@@ -64,7 +58,10 @@ fn scan(dir: &Path) -> Vec<String> {
 
 #[test]
 fn napi_src_derives_no_error_shape() {
-    let found = scan(&Path::new(env!("CARGO_MANIFEST_DIR")).join("src"));
+    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let src = Path::new(env!("CARGO_MANIFEST_DIR")).join("src");
+    let files = tracked_files_filtered(&repo, &["crates/lwc-compiler-napi/src"], &["rs"]);
+    let found = scan_files(&src, &files);
     assert!(found.is_empty(), "error built or shaped in napi (belongs in the lwc-compiler facades):\n{}", found.join("\n"));
 }
 
@@ -76,7 +73,7 @@ fn nested_module_files_are_scanned() {
     std::fs::create_dir_all(&nested).unwrap();
     std::fs::write(root.join("lib.rs"), "mod errors;\n").unwrap();
     std::fs::write(nested.join("deep.rs"), "fn f() -> TransformError {\n    TransformError::Compiler(CompilerError::from_diagnostic(d, None))\n}\n").unwrap();
-    let found = scan(&root);
+    let found = scan_files(&root, &[root.join("lib.rs"), nested.join("deep.rs")]);
     std::fs::remove_dir_all(&root).unwrap();
     assert_eq!(found.len(), 2, "{found:?}");
     assert!(found.iter().all(|f| f.starts_with(&format!("errors{0}inner{0}deep.rs:2: ", std::path::MAIN_SEPARATOR))), "{found:?}");

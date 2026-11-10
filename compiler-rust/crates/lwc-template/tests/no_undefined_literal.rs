@@ -1,6 +1,7 @@
 //! S4 lint: codegen must never emit a placeholder `"undefined"` string literal
 //! (AB-D0004 / AB-X0012). Identifiers named undefined are printed from the AST;
 //! the binder may compare a name to that identifier (expression.ts:134).
+use repo_tracked::{tracked_files_filtered, workspace_root};
 use std::path::Path;
 
 fn production_src(src: &str) -> String {
@@ -51,21 +52,15 @@ fn stripped(src: &str) -> String {
 
 #[test]
 fn codegen_has_no_undefined_string_literal() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/codegen");
+    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let files = tracked_files_filtered(&repo, &["crates/lwc-template/src/codegen"], &["rs"]);
     let mut hits = Vec::new();
-    fn walk(dir: &Path, hits: &mut Vec<String>) {
-        for e in std::fs::read_dir(dir).unwrap() {
-            let p = e.unwrap().path();
-            if p.is_dir() { walk(&p, hits); continue; }
-            if p.extension().is_some_and(|e| e == "rs") {
-                let src = std::fs::read_to_string(&p).unwrap();
-                if stripped(&src).contains("\"undefined\"") {
-                    hits.push(p.display().to_string());
-                }
-            }
+    for p in &files {
+        let src = std::fs::read_to_string(p).unwrap();
+        if stripped(&src).contains("\"undefined\"") {
+            hits.push(p.display().to_string());
         }
     }
-    walk(&root, &mut hits);
     assert!(hits.is_empty(), "forbidden placeholder string in codegen:\n{}", hits.join("\n"));
 }
 

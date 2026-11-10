@@ -1,13 +1,13 @@
 {
  "schema": "template-diag-diff/v2",
  "meta": {
-  "generated": "2026-11-10T12:35:58.240Z",
-  "elapsedMs": 5708,
+  "generated": "2026-11-10T13:56:14.606Z",
+  "elapsedMs": 6435,
   "engine": "crate",
   "rust": {
-   "driver": "/tmp/lwc-board-snap.1afXfs/target/template-diag-driver/release/template-diag-driver",
+   "driver": "/tmp/lwc-board-snap.y1oHEj/target/template-diag-driver/release/template-diag-driver",
    "driverSource": "TDD_DRIVER",
-   "sha256": "94b5245e7249",
+   "sha256": "edebd3d5250f",
    "lwcTemplate": "lwc_template::compile"
   },
   "oracle": {
@@ -23,11 +23,11 @@
    "mode": "exact-bytes+semdiff",
    "semdiff": {
     "bin": {
-     "path": "/tmp/lwc-board-snap.1afXfs/target/release/semdiff",
-     "sha256": "2cc7858feba2"
+     "path": "/tmp/lwc-board-snap.y1oHEj/target/release/semdiff",
+     "sha256": "210613badcc2"
     },
     "registry": {
-     "path": "/tmp/lwc-board-snap.1afXfs/notes/decisions.tsv",
+     "path": "/tmp/lwc-board-snap.y1oHEj/notes/decisions.tsv",
      "sha256": "253e7f3ea32cdef55218414520ded22dd4a3d08afa26caeb619307f4066f4dab"
     },
     "observationModel": "D-0196",

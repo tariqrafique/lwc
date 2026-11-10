@@ -3,7 +3,8 @@
 //! hand-rolls JS whitespace under another name: a `'\u{feff}'` char literal (ZWNBSP is the char a
 //! `char::is_whitespace` copy has to add by hand) or `is_whitespace() ||` (that add-on).
 
-use std::path::Path;
+use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
+use std::path::{Path, PathBuf};
 
 const FORBIDDEN: &[&str] = &["fn parse_style_text", "fn normalize_style", "fn js_trim", "fn js_ws"];
 
@@ -38,26 +39,25 @@ fn has_feff_char_literal(s: &str) -> bool {
     })
 }
 
-fn scan(root: &Path, dir: &Path, hits: &mut Vec<String>) {
-    for entry in std::fs::read_dir(dir).unwrap().flatten() {
-        let p = entry.path();
-        let name = entry.file_name();
-        if p.is_dir() {
-            if name != "target" && name != "node_modules" { scan(root, &p, hits); }
-        } else if p.extension().is_some_and(|e| e == "rs") {
-            let rel = p.strip_prefix(root).unwrap().to_string_lossy().replace('\\', "/");
-            hits.extend(violations(&rel, &std::fs::read_to_string(&p).unwrap()));
+fn scan_files(root: &Path, files: &[PathBuf], hits: &mut Vec<String>) {
+    for p in files {
+        if p.extension().is_some_and(|e| e == "rs") {
+            let rel = rel_slash(root, p);
+            hits.extend(violations(&rel, &std::fs::read_to_string(p).unwrap()));
         }
     }
 }
 
 #[test]
 fn style_text_and_js_whitespace_defined_only_in_lwc_shared() {
-    let crates = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap();
+    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let crates = repo.join("crates");
+    let files: Vec<PathBuf> = tracked_files_filtered(&repo, &["crates"], &["rs"])
+        .into_iter()
+        .filter(|p| !rel_slash(&crates, p).starts_with("lwc-shared/"))
+        .collect();
     let mut hits = Vec::new();
-    for entry in std::fs::read_dir(crates).unwrap().flatten() {
-        if entry.file_name() != "lwc-shared" && entry.path().is_dir() { scan(crates, &entry.path(), &mut hits); }
-    }
+    scan_files(&crates, &files, &mut hits);
     assert!(hits.is_empty(), "use lwc_shared::style / lwc_shared::js instead of a local copy:\n{}", hits.join("\n"));
 }
 
@@ -79,7 +79,7 @@ fn guard_catches_renamed_copies() {
     // Not caught: JS whitespace through the shared helper, and plain `char::is_whitespace`.
     std::fs::write(src.join("ok.rs"), "use lwc_shared::js::js_ws;\nfn f(c: char) -> bool { js_ws(c) && !c.is_whitespace() }\n").unwrap();
     let mut hits = Vec::new();
-    scan(&root, &root.join("lwc-planted"), &mut hits);
+    scan_files(&root, &[src.join("lib.rs"), src.join("ok.rs")], &mut hits);
     std::fs::remove_dir_all(&root).unwrap();
     assert_eq!(hits.len(), planted.len(), "{hits:#?}");
     for (h, p) in hits.iter().zip(planted) { assert!(h.starts_with("lwc-planted/src/lib.rs:") && h.ends_with(p), "{h}"); }

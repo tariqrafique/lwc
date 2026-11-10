@@ -352,25 +352,22 @@ fn recovery_export_default_abstract_class_never_hits_internal_reparse() {
 /// No placeholder decision id may remain in this crate (src or tests).
 #[test]
 fn lwc_js_contains_no_d_pending_token() {
-    fn walk(dir: &std::path::Path, bad: &mut Vec<String>) {
-        for e in std::fs::read_dir(dir).unwrap() {
-            let p = e.unwrap().path();
-            if p.is_dir() {
-                if p.file_name().is_some_and(|n| n == "target") { continue; }
-                walk(&p, bad);
-                continue;
-            }
-            let Some(ext) = p.extension() else { continue };
-            if !matches!(ext.to_str(), Some("rs" | "json" | "md" | "cjs" | "js" | "txt")) { continue; }
+    use repo_tracked::{tracked_files, workspace_root};
+    let repo = workspace_root(std::path::Path::new(env!("CARGO_MANIFEST_DIR")));
+    let files = tracked_files(&repo)
+        .into_iter()
+        .filter(|p| {
+            let rel = repo_tracked::rel_slash(&repo, p);
+            rel.starts_with("crates/lwc-js/")
+                && p.extension().and_then(|e| e.to_str()).is_some_and(|e| matches!(e, "rs" | "json" | "md" | "cjs" | "js" | "txt"))
+        });
+    let mut bad = vec![];
+    let needle = concat!("D-", "PENDING");
+    for p in files {
             let text = std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("unreadable {}: {e}", p.display()));
-            let needle = concat!("D-", "PENDING");
             for (n, line) in text.lines().enumerate() {
                 if line.contains(needle) { bad.push(format!("{}:{}: {line}", p.display(), n + 1)); }
             }
-        }
     }
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
-    let mut bad = vec![];
-    walk(root, &mut bad);
     assert!(bad.is_empty(), "{} token in lwc-js:\n{}", concat!("D-", "PENDING"), bad.join("\n"));
 }

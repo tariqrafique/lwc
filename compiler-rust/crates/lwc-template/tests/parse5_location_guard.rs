@@ -1,7 +1,8 @@
 //! AB-X0014 guard: a parse5 location read under `src/parser/` returns `Located<T>` and raises TS's internal
 //! parsing error at the read (parser/index.ts parseRoot / parseTextNode / parseComment / parseAttributes /
 //! elementSourceLocation). An `.unwrap()` / `.expect(..)` on one turns that error back into a panic.
-use std::path::Path;
+use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
+use std::path::{Path, PathBuf};
 
 /// Reads of a parse5 location, raw (`source_code_location*`, `start_tag`, `end_tag`, `attrs.get`) or
 /// through the parser's readers.
@@ -37,29 +38,28 @@ fn violations(rel: &str, src: &str) -> Vec<String> {
     hits
 }
 
-fn scan(root: &Path, dir: &Path, hits: &mut Vec<String>) {
-    for entry in std::fs::read_dir(dir).unwrap_or_else(|e| panic!("{}: {e}", dir.display())).flatten() {
-        let p = entry.path();
-        if p.is_dir() {
-            scan(root, &p, hits);
-        } else if p.extension().is_some_and(|e| e == "rs") {
-            let rel = p.strip_prefix(root).unwrap().to_string_lossy().replace('\\', "/");
-            hits.extend(violations(&rel, &std::fs::read_to_string(&p).unwrap()));
+fn scan_files(root: &Path, files: &[PathBuf], hits: &mut Vec<String>) {
+    for p in files {
+        if p.extension().is_some_and(|e| e == "rs") {
+            let rel = rel_slash(root, p);
+            hits.extend(violations(&rel, &std::fs::read_to_string(p).unwrap()));
         }
     }
 }
 
-fn parser_violations(parser: &Path) -> Vec<String> {
+fn parser_violations_files(root: &Path, files: &[PathBuf]) -> Vec<String> {
     let mut hits = Vec::new();
-    scan(parser, parser, &mut hits);
+    scan_files(root, files, &mut hits);
     hits.sort();
     hits
 }
 
 #[test]
 fn no_panicking_parse5_location_read_in_parser() {
+    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
     let parser = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/parser");
-    let hits = parser_violations(&parser);
+    let files = tracked_files_filtered(&repo, &["crates/lwc-template/src/parser"], &["rs"]);
+    let hits = parser_violations_files(&parser, &files);
     assert!(hits.is_empty(), "parse5 location reads return `Located<T>`; propagate with `?` instead of panicking:\n{}", hits.join("\n"));
 }
 
@@ -75,7 +75,7 @@ fn guard_catches_planted_violations() {
         "fn b(v: Option<u8>) -> u8 { v.unwrap() }\n",
         "fn c(l: &parse5::ElementLocation) -> bool { l.end_tag.is_none() }\n",
     )).unwrap();
-    assert_eq!(parser_violations(&root), Vec::<String>::new());
+    assert_eq!(parser_violations_files(&root, &[root.join("ok.rs")]), Vec::<String>::new());
     std::fs::write(root.join("bad.rs"), concat!(
         "fn a(n: &NodeRef) -> SourceLocation { loc(&n.borrow().source_code_location().unwrap().location) }\n",
         "fn b(l: &parse5::ElementLocation) -> SourceLocation {\n",
@@ -85,7 +85,7 @@ fn guard_catches_planted_violations() {
         "}\n",
     )).unwrap();
     std::fs::write(root.join("utils/deep.rs"), "fn c(n: &NodeRef, d: &Ctx) -> RawAttr { raw_attr(n, a, d).unwrap() }\n").unwrap();
-    let hits = parser_violations(&root);
+    let hits = parser_violations_files(&root, &[root.join("ok.rs"), root.join("bad.rs"), root.join("utils/deep.rs")]);
     std::fs::remove_dir_all(&root).unwrap();
     assert_eq!(hits.len(), 3, "{hits:#?}");
     assert!(hits[0].starts_with("bad.rs:1: source_code_location().unwrap()"), "{hits:#?}");

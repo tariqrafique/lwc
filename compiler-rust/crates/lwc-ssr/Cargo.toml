@@ -10,3 +10,4 @@ oxc = { workspace = true, features = ["ast_visit", "semantic"] }
 
 [dev-dependencies]
 serde_json = "1"
+repo-tracked = { path = "../repo-tracked" }

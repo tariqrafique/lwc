@@ -29,9 +29,19 @@ logical() {
     }
     END { flush() }' "$@"
 }
+tracked_list() {
+  local root="$1" helper rel
+  helper="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/tracked-files.sh"
+  [ -x "$helper" ] || { echo "!! lint-shell-pipes: missing $helper" >&2; return 2; }
+  while IFS= read -r -d '' rel; do
+    printf '%s\0' "$root/$rel"
+  done < <("$helper" "$root" 'scripts/*.sh' 'harness/*.sh' 'harness/scripts/*.sh')
+}
 lint() { # root -> rc 0/1/2
-  local root="$1" files=() rc=0 arc=0 hits all
-  shopt -s nullglob; files=("$root"/scripts/*.sh "$root"/harness/*.sh "$root"/harness/scripts/*.sh); shopt -u nullglob
+  local root="$1" files=() rc=0 arc=0 hits all rel
+  while IFS= read -r -d '' rel; do
+    files+=("$rel")
+  done < <(tracked_list "$root") || return 2
   [ ${#files[@]} -gt 0 ] || { echo "!! lint-shell-pipes: no *.sh under $root/{scripts,harness,harness/scripts}" >&2; return 2; }
   all="$(logical "${files[@]}")" || arc=$?
   [ $arc -eq 0 ] || { echo "!! lint-shell-pipes: could not read/join lines (rc=$arc)" >&2; return 2; }
@@ -49,16 +59,22 @@ self_test() {
     rc=0; lint "$3" >/dev/null 2>&1 || rc=$?
     if [ "$rc" -eq "$2" ]; then echo "ok   $1 -> rc $rc"; else echo "FAIL $1 -> rc $rc, want $2"; fail=1; fi; }
   mkdir -p "$t/clean/scripts" "$t/clean/harness/scripts"
+  helper="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+  cp "$helper/tracked-files.sh" "$t/clean/scripts/"
+  cp "$helper/lint-shell-pipes.sh" "$t/clean/scripts/"
   printf '%s\n' '#!/usr/bin/env bash' "if grep $q x <<< \"\$y\"; then :; fi" "a || grep $q b f" "grep -c x f | tail -1" \
     'head -n5 <<< "$x"' "# a comment may say: x $P head -1 or x $P grep $q y" 'a ||' "  grep $q b f" 'x | \' '  tail -1' \
     'x | header-tool' 'x | sort -u |' '  tr a b' > "$t/clean/scripts/ok.sh"
+  git -C "$t/clean" init -q
+  git -C "$t/clean" add scripts harness
   expect "clean file passes" 0 "$t/clean"
   local v; for v in "$q" "${q}E" "-E${q#-}" "-E $q" "--quiet" "-v -c $q"; do
-    rm -rf "$t/bad"; cp -r "$t/clean" "$t/bad"; printf 'if echo "$x" | grep %s y; then :; fi\n' "$v" > "$t/bad/harness/scripts/bad.sh"
+    rm -rf "$t/bad"; cp -a "$t/clean" "$t/bad"; printf 'if echo "$x" | grep %s y; then :; fi\n' "$v" > "$t/bad/harness/scripts/bad.sh"
+    git -C "$t/bad" add harness/scripts/bad.sh
     expect "planted violation 'grep $v' fails" 1 "$t/bad"
   done
-  plant() { rm -rf "$t/bad"; cp -r "$t/clean" "$t/bad"; printf '%s\n' "$@" > "$t/bad/scripts/bad.sh"; }
-  plant "x ${P}grep $q y";                       mv "$t/bad/scripts/bad.sh" "$t/bad/harness/b.sh"; expect "planted violation in harness/*.sh fails" 1 "$t/bad"
+  plant() { rm -rf "$t/bad"; cp -a "$t/clean" "$t/bad"; printf '%s\n' "$@" > "$t/bad/scripts/bad.sh"; git -C "$t/bad" add scripts/bad.sh; }
+  plant "x ${P}grep $q y";                       mv "$t/bad/scripts/bad.sh" "$t/bad/harness/b.sh"; git -C "$t/bad" add harness/b.sh; git -C "$t/bad" rm -q --cached scripts/bad.sh 2>/dev/null || true; expect "planted violation in harness/*.sh fails" 1 "$t/bad"
   plant "echo \"\$x\" $P head -20";              expect "pipe into head fails" 1 "$t/bad"
   plant "git status $P head -n5 $P tr a b";        expect "pipe into head mid-pipeline fails" 1 "$t/bad"
   plant 'echo "$x" \' "  | grep $q y";           expect "backslash-continued '| grep -q' fails" 1 "$t/bad"

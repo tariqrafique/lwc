@@ -12,3 +12,4 @@ oxc_span = { workspace = true }
 [dev-dependencies]
 regex = "1"
 serde_json = "1"
+repo-tracked = { path = "../repo-tracked" }

@@ -12,3 +12,4 @@ oxc_sourcemap = "9.0.0"
 # Error-shape tests pin the JS facade (`@lwc/compiler` transformers/javascript.ts), which lives in lwc-compiler.
 lwc-compiler = { path = "../lwc-compiler" }
 serde_json = "1"
+repo-tracked = { path = "../repo-tracked" }

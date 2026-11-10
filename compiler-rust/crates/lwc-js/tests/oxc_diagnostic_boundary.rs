@@ -416,21 +416,18 @@ fn babelhelpers_find_violations(files: &BTreeMap<String, String>, allowed: &[(&s
     bad
 }
 
+use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
+
 fn src_dir() -> std::path::PathBuf { Path::new(env!("CARGO_MANIFEST_DIR")).join("src") }
 
 fn real_files() -> BTreeMap<String, String> {
-    fn walk(root: &Path, dir: &Path, out: &mut BTreeMap<String, String>) {
-        for e in std::fs::read_dir(dir).unwrap_or_else(|e| panic!("{}: {e}", dir.display())) {
-            let p = e.unwrap().path();
-            if p.is_dir() { walk(root, &p, out); continue; }
-            if p.extension().is_some_and(|x| x == "rs") {
-                let text = std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("unreadable {}: {e}", p.display()));
-                out.insert(p.strip_prefix(root).unwrap().to_string_lossy().into_owned(), text);
-            }
-        }
-    }
+    let repo = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let root = src_dir();
     let mut out = BTreeMap::new();
-    walk(&src_dir(), &src_dir(), &mut out);
+    for p in tracked_files_filtered(&repo, &["crates/lwc-js/src"], &["rs"]) {
+        let text = std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("unreadable {}: {e}", p.display()));
+        out.insert(rel_slash(&root, &p), text);
+    }
     out
 }
 

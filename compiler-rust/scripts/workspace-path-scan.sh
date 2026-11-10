@@ -35,8 +35,15 @@ scan() {
   local root="$1" allowfile="$2"
   load_allow "$allowfile" || return 2
   local hits="" rel f rc=0
-  while IFS= read -r -d '' f; do
-    rel="${f#"$root"/}"
+  local list
+  list="$(mktemp)"
+  if ! "$runner/tracked-files.sh" "$root" crates tools harness scripts >"$list"; then
+    rm -f "$list"
+    echo "!! workspace-path-scan: cannot list tracked files under $root" >&2
+    return 2
+  fi
+  while IFS= read -r -d '' rel; do
+    f="$root/$rel"
     if is_allowed "$rel"; then
       continue
     fi
@@ -44,10 +51,8 @@ scan() {
       hits+="$rel"$'\n'
       hits+="$(grep -n -F '/workspace/' "$f" | sed "s|^|$rel:|")"$'\n'
     fi
-  done < <(find "$root/crates" "$root/tools" "$root/harness" "$root/scripts" \
-    -type f \
-    ! -path '*/target/*' ! -path '*/node_modules/*' ! -path '*/.git/*' \
-    -print0 2>/dev/null)
+  done < "$list"
+  rm -f "$list"
   if [ -n "$hits" ]; then
     echo "!! workspace-path-scan: literal /workspace/ path outside the allowlist (resolve through harness/scripts/oracle-root.mjs / LWC_ORACLE, or add a path-exact allowlist row with a reason if the file is genuinely box-only):" >&2
     printf '%s' "$hits" >&2
@@ -63,19 +68,31 @@ self_test() {
   trap 'rm -rf "$t"' RETURN
   mkdir -p "$t/crates" "$t/tools" "$t/harness" "$t/scripts"
   cp "$runner/workspace-path-scan.sh" "$t/scripts/"
+  cp "$runner/tracked-files.sh" "$t/scripts/"
+  printf '%s\n' '.oracle/' > "$t/.gitignore"
   printf '%s\n' '# path	reason' \
     'scripts/allowed.sh	planted allowlisted box-only path' \
     'scripts/workspace-path-scan.sh	the scanner names the forbidden prefix' \
     > "$t/scripts/workspace-path-allowlist.tsv"
   printf '%s\n' 'const box = "/workspace/allowed";' > "$t/scripts/allowed.sh"
   printf '%s\n' 'fn ok() {}' > "$t/crates/ok.rs"
+  git -C "$t" init -q
+  git -C "$t" add crates tools harness scripts .gitignore
   rc=0
   "$t/scripts/workspace-path-scan.sh" "$t" >/dev/null 2>&1 || rc=$?
   if [ "$rc" -eq 0 ]; then echo "ok   allowlisted path passes"; else echo "FAIL allowlisted path passes -> rc $rc"; fail=1; fi
   printf '%s\n' 'const p = "/workspace/evil";' > "$t/crates/evil.rs"
+  git -C "$t" add crates/evil.rs
   rc=0
   "$t/scripts/workspace-path-scan.sh" "$t" >/dev/null 2>&1 || rc=$?
   if [ "$rc" -eq 1 ]; then echo "ok   new literal in a crate fails"; else echo "FAIL new literal in a crate fails -> rc $rc"; fail=1; fi
+  git -C "$t" rm -q --cached crates/evil.rs
+  rm -f "$t/crates/evil.rs"
+  mkdir -p "$t/.oracle/lwc"
+  printf '%s\n' 'const p = "/workspace/evil";' > "$t/.oracle/lwc/plant.js"
+  rc=0
+  "$t/scripts/workspace-path-scan.sh" "$t" >/dev/null 2>&1 || rc=$?
+  if [ "$rc" -eq 0 ]; then echo "ok   untracked .oracle plant is ignored"; else echo "FAIL untracked .oracle plant is ignored -> rc $rc"; fail=1; fi
   return $fail
 }
 

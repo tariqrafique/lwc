@@ -6,30 +6,22 @@
 //! (`Option<DiagnosticLocation>` = None, or `location::normalize_location(None)` where upstream calls
 //! `normalizeLocation(undefined)`); IR nodes carry the location upstream gives them.
 use regex::Regex;
+use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 use std::path::{Path, PathBuf};
 
-fn rs_files(dir: &Path, out: &mut Vec<PathBuf>) {
-    for e in std::fs::read_dir(dir).unwrap().flatten() {
-        let p = e.path();
-        if p.is_dir() {
-            if p.file_name().is_some_and(|n| n != "target") { rs_files(&p, out) }
-        } else if p.extension().is_some_and(|x| x == "rs") {
-            out.push(p)
-        }
-    }
-}
-
-/// Every `src` dir under `dir` (not `tests/`, `examples/`, `benches/`, `target/`).
-fn src_dirs(dir: &Path, out: &mut Vec<PathBuf>) {
-    for e in std::fs::read_dir(dir).unwrap().flatten() {
-        let p = e.path();
-        if !p.is_dir() { continue }
-        match p.file_name().and_then(|n| n.to_str()) {
-            Some("src") => out.push(p),
-            Some("target" | "tests" | "examples" | "benches" | "node_modules") => {}
-            _ => src_dirs(&p, out),
-        }
-    }
+fn production_src_rs(repo: &Path) -> Vec<PathBuf> {
+    tracked_files_filtered(repo, &["crates", "tools"], &["rs"])
+        .into_iter()
+        .filter(|p| {
+            let rel = rel_slash(repo, p);
+            let parts: Vec<&str> = rel.split('/').collect();
+            match parts.iter().position(|c| *c == "src") {
+                Some(i) => !parts[..i].iter().any(|c| matches!(*c, "target" | "tests" | "examples" | "benches" | "node_modules"))
+                    && !parts.contains(&"target"),
+                None => false,
+            }
+        })
+        .collect()
 }
 
 /// `text` with each top-level `#[cfg(test)]` item blanked out (from the attribute to the item's closing
@@ -78,15 +70,12 @@ fn violations(rel: &str, text: &str) -> Vec<String> {
 
 #[test]
 fn no_defaulted_source_location_outside_tests() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).ancestors().nth(2).unwrap();
-    let mut dirs = vec![];
-    for top in ["crates", "tools"] { src_dirs(&root.join(top), &mut dirs) }
-    let mut files = vec![];
-    for d in &dirs { rs_files(d, &mut files) }
-    assert!(files.iter().any(|f| f.ends_with("lwc-shared/src/template_ir.rs")), "gate scans nothing: {dirs:?}");
+    let root = workspace_root(Path::new(env!("CARGO_MANIFEST_DIR")));
+    let files = production_src_rs(&root);
+    assert!(files.iter().any(|f| f.ends_with("lwc-shared/src/template_ir.rs")), "gate scans nothing: {} files", files.len());
     let mut hits = vec![];
     for f in files {
-        let rel = f.strip_prefix(root).unwrap().to_string_lossy().replace('\\', "/");
+        let rel = rel_slash(&root, &f);
         hits.extend(violations(&rel, &std::fs::read_to_string(&f).unwrap()));
     }
     assert!(hits.is_empty(), "defaulted SourceLocation outside tests (carry the real location, or None / normalize_location(None) on the diagnostic):\n{}", hits.join("\n"));

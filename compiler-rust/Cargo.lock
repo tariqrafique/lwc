@@ -399,6 +399,7 @@ dependencies = [
  "napi-build",
  "napi-derive",
  "regex",
+ "repo-tracked",
  "serde",
  "serde_json",
 ]
@@ -411,6 +412,7 @@ dependencies = [
  "lwc-shared",
  "oxc",
  "oxc_sourcemap",
+ "repo-tracked",
  "serde_json",
 ]
 
@@ -422,6 +424,7 @@ dependencies = [
  "oxc_ast",
  "oxc_span",
  "regex",
+ "repo-tracked",
  "serde_json",
 ]
 
@@ -432,6 +435,7 @@ dependencies = [
  "lwc-shared",
  "lwc-template",
  "oxc",
+ "repo-tracked",
  "serde_json",
 ]
 
@@ -441,6 +445,7 @@ version = "0.1.0"
 dependencies = [
  "lwc-compiler",
  "lwc-shared",
+ "repo-tracked",
  "serde_json",
 ]
 
@@ -457,6 +462,7 @@ dependencies = [
  "oxc_span",
  "oxc_syntax",
  "parse5",
+ "repo-tracked",
  "serde",
  "serde_json",
 ]
@@ -1095,6 +1101,10 @@ name = "regex-syntax"
 version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
+
+[[package]]
+name = "repo-tracked"
+version = "0.1.0"
 
 [[package]]
 name = "ropey"

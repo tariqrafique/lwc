@@ -7,6 +7,7 @@
 //!
 //! All fail closed: a missing node, tsx or LWC_ORACLE checkout is a failure, not a skip.
 use lwc_shared::{CompilerMetric, DeprecationId};
+use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -70,27 +71,21 @@ fn needles() -> Vec<String> {
 /// This file needs no entry: it builds its needles from the enums and spells fragments with `concat!`.
 const ALLOWED: &[&str] = &["crates/lwc-shared/src/instrumentation/generated.rs", "tools/gen-instrumentation/gen.mjs"];
 
-/// Directory names never descended into: build output, installed deps, git metadata. Nothing else.
-const SKIPPED_DIRS: &[&str] = &["target", "node_modules", ".git"];
-
 const SCANNED: &[&str] = &["rs", "js", "mjs", "cjs", "ts", "mts", "cts"];
 
-fn repo_root() -> PathBuf { Path::new(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap() }
+fn repo_root() -> PathBuf { workspace_root(Path::new(env!("CARGO_MANIFEST_DIR"))) }
 
-/// Hits under `dir` (`rel` paths are relative to `root`). An unreadable scanned file panics with its path.
-fn scan(root: &Path, dir: &Path, needles: &[String], hits: &mut Vec<String>) {
-    let entries = std::fs::read_dir(dir).unwrap_or_else(|e| panic!("cannot read dir {}: {e}", dir.display()));
-    for e in entries {
-        let e = e.unwrap_or_else(|err| panic!("cannot read an entry of {}: {err}", dir.display()));
-        let p = e.path();
-        if p.is_dir() {
-            if !e.file_name().to_str().is_some_and(|n| SKIPPED_DIRS.contains(&n)) { scan(root, &p, needles, hits) }
-            continue;
-        }
+fn listed_source(root: &Path) -> Vec<PathBuf> {
+    tracked_files_filtered(root, &[], SCANNED)
+}
+
+/// Hits in `files` (`rel` paths are relative to `root`). An unreadable scanned file panics with its path.
+fn scan_files(root: &Path, files: &[PathBuf], needles: &[String], hits: &mut Vec<String>) {
+    for p in files {
         if !p.extension().and_then(|x| x.to_str()).is_some_and(|x| SCANNED.contains(&x)) { continue }
-        let rel = p.strip_prefix(root).unwrap().to_string_lossy().replace('\\', "/");
+        let rel = rel_slash(root, p);
         if ALLOWED.contains(&rel.as_str()) { continue }
-        let text = std::fs::read_to_string(&p).unwrap_or_else(|err| panic!("cannot read {}: {err}", p.display()));
+        let text = std::fs::read_to_string(p).unwrap_or_else(|err| panic!("cannot read {}: {err}", p.display()));
         for (i, line) in text.lines().enumerate() {
             if let Some(n) = needles.iter().find(|n| line.contains(n.as_str())) { hits.push(format!("{rel}:{}: {n}", i + 1)) }
         }
@@ -107,7 +102,7 @@ fn allow_entries_exist() {
 fn defined_only_in_lwc_shared() {
     let root = repo_root();
     let mut hits = vec![];
-    scan(&root, &root, &needles(), &mut hits);
+    scan_files(&root, &listed_source(&root), &needles(), &mut hits);
     assert!(hits.is_empty(), "use lwc_shared::{{CompilerMetric, DeprecationId}} instead of a literal:\n{}", hits.join("\n"));
 }
 
@@ -130,8 +125,9 @@ impl Drop for Scratch {
     fn drop(&mut self) { let _ = std::fs::remove_dir_all(&self.0); }
 }
 
-/// Plants copies in a scratch repo, including Arch AB-L0065's two escapes (napi `npm/` and `tools/`), and proves
-/// the scan reports each one while skipping only the named allow-entries and the skipped dir names.
+/// Plants copies in a scratch tree, including Arch AB-L0065's two escapes (napi `npm/` and `tools/`), and proves
+/// the content scan reports each planted file while skipping named allow-entries and non-code files.
+/// Directory skipping (`.oracle/`, `target/`, untracked files) is `repo-tracked`'s job.
 #[test]
 fn gate_catches_planted_copies() {
     let t = Scratch::new("plant");
@@ -152,8 +148,12 @@ fn gate_catches_planted_copies() {
     t.put("crates/lwc-compiler-napi/node_modules/dep/index.js", m.as_bytes());
     t.put("target/debug/build/out.rs", m.as_bytes());
     t.put("harness/goldens/a.json", m.as_bytes());
+    let mut scan_list: Vec<PathBuf> = planted.iter().map(|(rel, _)| t.0.join(rel)).collect();
+    scan_list.push(t.0.join("crates/lwc-planted/src/ok.rs"));
+    for a in ALLOWED { scan_list.push(t.0.join(a)); }
+    scan_list.push(t.0.join("harness/goldens/a.json"));
     let mut hits = vec![];
-    scan(&t.0, &t.0, &needles(), &mut hits);
+    scan_files(&t.0, &scan_list, &needles(), &mut hits);
     let mut got: Vec<&str> = hits.iter().map(|h| h.split(':').next().unwrap()).collect();
     got.sort();
     let mut want: Vec<&str> = planted.iter().map(|(r, _)| *r).collect();
@@ -167,5 +167,5 @@ fn gate_catches_planted_copies() {
 fn unreadable_file_panics_with_its_path() {
     let t = Scratch::new("unreadable");
     t.put("crates/x/bad.js", &[0xff, 0xfe, 0x00, 0xc3]);
-    scan(&t.0, &t.0, &needles(), &mut vec![]);
+    scan_files(&t.0, &[t.0.join("crates/x/bad.js")], &needles(), &mut vec![]);
 }

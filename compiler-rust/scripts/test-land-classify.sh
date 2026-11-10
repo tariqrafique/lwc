@@ -13,6 +13,7 @@ fail=0
 # AB-X0008: the shell-pipe lint's own self-test (planted violation fails, clean file passes, grep rc>=2 fails).
 if "$SELF_DIR/lint-shell-pipes.sh" --self-test; then echo "ok   lint-shell-pipes --self-test"; else echo "FAIL lint-shell-pipes --self-test"; fail=1; fi
 if "$SELF_DIR/workspace-path-scan.sh" --self-test; then echo "ok   workspace-path-scan --self-test"; else echo "FAIL workspace-path-scan --self-test"; fail=1; fi
+if "$SELF_DIR/test-source-scan-tracked.sh" "$(cd "$SELF_DIR/.." && pwd)"; then echo "ok   test-source-scan-tracked"; else echo "FAIL test-source-scan-tracked"; fail=1; fi
 # AB-0006 rework: board-baseline/v2 parser + comparator self-test, then the board.sh / land-gate end-to-end test.
 if "$SELF_DIR/baseline-ceiling.sh" --self-test; then echo "ok   baseline-ceiling --self-test"; else echo "FAIL baseline-ceiling --self-test"; fail=1; fi
 # test-board-ratchet needs a napi binary and is invoked from land.sh after the
