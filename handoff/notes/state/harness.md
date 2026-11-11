@@ -577,3 +577,39 @@ FAIL unlisted box-config dependency:
 !! LAND REFUSED: land-main-refs check failed (rc=1)
 ```
 - Did not fix. land-agent-branch.sh removed worktree /workspace/wt/style-gaps and deleted local bot/style-gaps. Did not run the post-land SLDS pin check or footer-gating plants (land never succeeded; no board published).
+
+## 2026-11-10 19:12 PST (America/Los_Angeles) — allowlist napi-css-errors.sh box-config deps
+
+- Allowlist-only land on box main, same pattern as **3aff14be4aa2**. Migrate exception: proceeded while `/workspace/scratch/harness/agent-inflight` existed; left the file in place afterward.
+- Preflight: main was **98313d7442883e8a31878b6e97520c2240fb437d**; 36G free (73%); one slice worktree `/tmp/allowlist-napi` (`bot/allowlist-napi`).
+- Added exactly four `BOX_CONFIG_DEPENDENT` rows for `scripts/napi-css-errors.sh` to `scripts/land-main-refs.tsv`, matching the other cargo_locked board scripts (same columns and per-script order: `~/.gitconfig` required, `/workspace/.cargo/config.toml` required, `CARGO_HOME` absent_ok, `/workspace/.cargo/parse5-url-rewrite.gitconfig` required). Appended after the existing `clippy-ratchet.sh` block (file is chronological, not alpha-sorted). No other changes.
+- Pre-land `--check` (MAIN's old table + incoming new table): `check-land-main-refs: ok (14 helper args, 32 box-config deps)` — incoming-only unused rows for an absent file are accepted.
+- First land.sh (19:07:52–19:08:05, 13s, rc=1): `--self-test` live check used the worktree table as both sides (`MAIN` not in the child env) and reported stale unused `napi-css-errors.sh` rows. Re-ran `--self-test` with `git show HEAD:scripts/land-main-refs.tsv` from MAIN as `--main-table`: rc=0, `ok   live land.sh matches allowlist` (90s). Second land.sh invoked with `MAIN=/workspace/lwc-compiler-rust` so `run-land-self-tests.sh` git-shows MAIN's table.
+- Successful land log `/workspace/scratch/harness/allowlist-napi-land.log`. LAND_START=2026-11-10T19:10:40-08:00 LAND_END=19:12:25 elapsed=**105s**. `rust-test-inputs --decide skip`; check-land-main-refs 91s rc=0; production `--check` `ok (14 helper args, 32 box-config deps)`. Allowlist commit **80a77dfff244**; snapshot follow-on **5f8f04ea04a2** (notes@a80db791818a).
+- Refused tip check (read-only detached worktree at **9083868e63ed**, not `agent/style-gaps`, removed without --force): MAIN's `check-land-main-refs.sh --check` with new MAIN table + 9083868 incoming table: `check-land-main-refs: ok (14 helper args, 36 box-config deps)` (32+4; file present on that tip). No FAIL for napi-css-errors.sh. Did not land or modify agent/style-gaps. Did not touch c97526e.
+- D-0268: `/tmp/allowlist-napi` and `bot/allowlist-napi` removed after ff without --force. No `git add -A`/`-am`. agent-inflight left in place.
+
+## 2026-11-10 19:17 PST (America/Los_Angeles)
+- Gatekeep of restored agent/style-gaps tip f8c6a15 DID NOT LAND. Main remains **5f8f04ea04a2b201ea084bab7640822493c28c09**. No official board. No TSV line. No GitHub writes (did not delete agent/style-gaps). No agent code was edited. Did not land c97526e.
+- Preflight: main clean at 5f8f04e; 36G free (73%); `df -i /` 86%; no stray compiler-rust worktrees; no official-board.sh or land.sh running. agent-inflight present (correct for this agent gate).
+- Fetch: tip **f8c6a15a0027c36e1ab0b4de7e36c5fcb39f8922** (prefix f8c6a15) matched; descendant of 98313d744288. Three commits on 98313d7..tip: 9083868e63ed Close the live style coverage GAPs on the board; c97526e5598c Drop napi-css-errors box-config dependencies; f8c6a15a0027 Restore cargo_locked as one word in napi-css-errors. Tree of f8c6a15 vs 9083868: no file diffs (`napi-css-errors.sh IDENTICAL to 9083868`). land-main-refs.tsv untouched vs 98313d7 (28 files, same set as 9083868).
+- Paths: harness/IN-REPO.md, harness/board-baseline.tsv, harness/board-rows.sh, harness/external-inputs.lock, 11 goldens under harness/goldens/style-upstream/, harness/scripts/golden-gate.sh, harness/test/style-upstream.behavior.test.ts, scripts/board-footers.sh, scripts/board-runtime.mjs, scripts/fetch-style-corpus.sh, scripts/napi-css-errors.sh, scripts/official-board.sh, scripts/run-board.sh, scripts/style-corpus-line.mjs, scripts/style-corpus.sh, scripts/test-board-footers.sh, tools/style-diff/README.md, tools/style-diff/run.mjs.
+- Rebase: worktree /workspace/wt/style-gaps on bot/style-gaps at f8c6a15 onto 5f8f04ea04a2; clean; identical range-diff: `1: 9083868 = 1: d44a967 Close the live style coverage GAPs on the board`; `2: c97526e = 2: e705e84 Drop napi-css-errors box-config dependencies`; `3: f8c6a15 = 3: 49f55ed Restore cargo_locked as one word in napi-css-errors`. Rebased tip 49f55edbfd407b26250642c705e081a39b5b2134. Invoked land.sh the same way land-agent-branch.sh does (remote tip is not a descendant of main).
+- Land: rc=1 (log /workspace/scratch/harness/style-gaps-land3.log). LAND_START=2026-11-10T19:13:56-08:00 LAND_END=2026-11-10T19:17:16-08:00 elapsed=200s. Cargo decide: `land: rust-test-inputs --decide skip`. Self-tests: test-board-footers test-board-runtime test-board-ratchet (all rc=0). check-land-main-refs: ok (14 helper args, 36 box-config deps). Then:
+```
+!! GOLDEN GATE FAILED: golden FILE SET differs (11 committed-only, 0 fresh-only; /tmp/golden-gate-fail.sR5ah5/set.diff)
+3356,3366d3355
+< ./style-upstream/playground__src__modules__x__app__app.css.json
+< ./style-upstream/rollup-plugin__scoped-styles__src__x__app__app.scoped.css.json
+< ./style-upstream/rollup-plugin__test__test.css.json
+< ./style-upstream/rollup-plugin__typescript__typescript.css.json
+< ./style-upstream/transformers-specs__backslash.json
+< ./style-upstream/transformers-specs__erm-lt.json
+< ./style-upstream/transformers-specs__grave-accent.json
+< ./style-upstream/transformers-specs__host-div.json
+< ./style-upstream/transformers-specs__invalid-lt.json
+< ./style-upstream/transformers-specs__var-bg-color.json
+< ./style-upstream/unported-inline__examples.json
+!! LAND REFUSED: golden-gate: goldens != fresh JS-oracle recording
+```
+- Did not fix. Removed /workspace/wt/style-gaps and local bot/style-gaps without --force. Did not run the post-land SLDS pin check, footer-gating plants, or official board (land never succeeded).
