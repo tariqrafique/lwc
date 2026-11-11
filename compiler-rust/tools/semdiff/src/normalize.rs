@@ -490,21 +490,29 @@ pub(crate) fn slide_literal_vars<'a>(alloc: &'a Allocator, program: &mut Program
     }
     let region: Vec<Statement<'a>> = stmts.drain(..end).collect();
     let before: Vec<u32> = region.iter().map(|s| s.span().start).collect();
-    let mut funcs = Vec::new();
+    // A function declaration may sit in the region (R-HOIST-DECL puts them first) but keeps its
+    // slot: moving it across an import is R-HOIST-DECL's equivalence, not this rule's. Only the
+    // other slots are refilled, imports first, then the literal vars, each in source order.
+    let mut slots: Vec<Option<Statement<'a>>> = Vec::new();
     let mut imports = Vec::new();
     let mut lits = Vec::new();
     for s in region {
         if matches!(s, Statement::FunctionDeclaration(_)) {
-            funcs.push(s);
-        } else if is_import(&s) {
-            imports.push(s);
+            slots.push(Some(s));
         } else {
-            lits.push(s);
+            slots.push(None);
+            if is_import(&s) {
+                imports.push(s);
+            } else {
+                lits.push(s);
+            }
         }
     }
-    let mut rebuilt = funcs;
-    rebuilt.extend(imports);
-    rebuilt.extend(lits);
+    let mut moved = imports.into_iter().chain(lits);
+    let mut rebuilt: Vec<Statement<'a>> = slots
+        .into_iter()
+        .map(|slot| slot.unwrap_or_else(|| moved.next().expect("one moved stmt per empty slot")))
+        .collect();
     let after: Vec<u32> = rebuilt.iter().map(|s| s.span().start).collect();
     let changed = before != after;
     rebuilt.extend(stmts);
@@ -622,6 +630,46 @@ fn shorthand_name_binding(
         _ => false,
     };
     name_matches.then(|| key.name.to_string())
+}
+
+#[cfg(test)]
+mod shorthand_probe {
+    use super::*;
+    use oxc::parser::Parser;
+    use oxc::span::SourceType;
+
+    fn marks(src: &str) -> Vec<String> {
+        let alloc = Allocator::default();
+        let ret = Parser::new(&alloc, src, SourceType::mjs()).parse();
+        assert_eq!(ret.diagnostics.errors().count(), 0, "{src}");
+        let mut program = ret.program;
+        canon_object_shorthand(&mut program)
+            .into_iter()
+            .map(|m| m.name)
+            .collect()
+    }
+
+    // R-OBJECT-SHORTHAND-1 negative at the rule itself: the printer-text precondition also keeps
+    // `{__proto__: __proto__}` apart from `{__proto__}`, so the end-to-end negatives cannot see a
+    // missing `__proto__` guard here. `__proto__: x` sets the prototype; the shorthand defines an
+    // own property. No spelling may be canonicalized.
+    #[test]
+    fn proto_and_computed_keys_are_never_canonicalized() {
+        for src in [
+            "const o = { __proto__: __proto__ };",
+            "const o = { \"__proto__\": __proto__ };",
+            "const o = { '__proto__': __proto__ };",
+            "const o = { [\"__proto__\"]: __proto__ };",
+            "const o = { ['__proto__']: __proto__ };",
+            "const o = { [a]: a };",
+            "const o = { a: b };",
+            "const { [a]: a } = o;",
+            "const { a: b } = o;",
+        ] {
+            assert_eq!(marks(src), Vec::<String>::new(), "{src}");
+        }
+        assert_eq!(marks("const o = { a: a, b };"), vec!["a".to_string()]);
+    }
 }
 
 #[cfg(test)]

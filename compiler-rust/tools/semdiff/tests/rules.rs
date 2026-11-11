@@ -453,6 +453,75 @@ fn literal_var_does_not_cross_a_call() {
 }
 
 #[test]
+fn a_non_literal_var_initializer_does_not_slide_across_an_import() {
+    let id = tag("R-VAR-LITERAL-IMPORT");
+    let force = [id.as_str()];
+    for init in ["g()", "y", "(f(), 0)", "`${y}`", "[0]", "-x", "void g()"] {
+        not_equiv(
+            &format!("var x = {init};\nimport \"m\";\n"),
+            &format!("import \"m\";\nvar x = {init};\n"),
+            &force,
+        );
+    }
+    // A destructuring var is not a simple literal binding.
+    not_equiv(
+        "var { a } = 0;\nimport \"m\";\n",
+        "import \"m\";\nvar { a } = 0;\n",
+        &force,
+    );
+}
+
+#[test]
+fn a_let_or_const_does_not_slide_across_an_import() {
+    let id = tag("R-VAR-LITERAL-IMPORT");
+    let force = [id.as_str()];
+    for kw in ["let", "const"] {
+        not_equiv(
+            &format!("{kw} x = 0;\nimport \"m\";\nexport {{ x }};\n"),
+            &format!("import \"m\";\n{kw} x = 0;\nexport {{ x }};\n"),
+            &force,
+        );
+    }
+}
+
+#[test]
+fn only_import_versus_literal_var_order_is_rewritten() {
+    let id = tag("R-VAR-LITERAL-IMPORT");
+    let force = [id.as_str()];
+    // Two literal vars keep their relative order.
+    not_equiv(
+        "var a = 0;\nvar b = 1;\n",
+        "var b = 1;\nvar a = 0;\n",
+        &force,
+    );
+    not_equiv(
+        "import \"m\";\nvar a = 0;\nvar b = 1;\n",
+        "import \"m\";\nvar b = 1;\nvar a = 0;\n",
+        &force,
+    );
+    // Two imports keep their order (evaluation order of the modules).
+    not_equiv(
+        "import \"a\";\nimport \"b\";\n",
+        "import \"b\";\nimport \"a\";\n",
+        &force,
+    );
+    // A statement that is not a literal var does not cross an import.
+    not_equiv("f();\nimport \"m\";\n", "import \"m\";\nf();\n", &force);
+    // A function declaration is R-HOIST-DECL's business, not this rule's.
+    not_equiv(
+        "function f() {}\nimport \"m\";\n",
+        "import \"m\";\nfunction f() {}\n",
+        &force,
+    );
+    // A literal var separated from the imports by another statement stays put.
+    not_equiv(
+        "import \"m\";\nf();\nvar x = 0;\n",
+        "var x = 0;\nimport \"m\";\nf();\n",
+        &force,
+    );
+}
+
+#[test]
 fn duplicate_data_key_keeps_the_last_value() {
     let id = tag("R-OBJECT-LAST-KEY");
     let force = [id.as_str()];
@@ -531,6 +600,47 @@ fn a_different_property_value_is_observed() {
         &force,
     );
     not_equiv("const { a: b } = o;\n", "const { a } = o;\n", &force);
+}
+
+#[test]
+fn a_computed_key_is_not_shorthand() {
+    let id = tag("R-OBJECT-SHORTHAND");
+    let force = [id.as_str()];
+    not_equiv("const o = { [a]: a };\n", "const o = { a };\n", &force);
+    not_equiv("const o = { [\"a\"]: a };\n", "const o = { a };\n", &force);
+    not_equiv("const { [a]: a } = o;\n", "const { a } = o;\n", &force);
+    not_equiv("const o = { a: a.b };\n", "const o = { a };\n", &force);
+}
+
+#[test]
+fn proto_in_every_spelling_is_observed() {
+    let id = tag("R-OBJECT-SHORTHAND");
+    let force = [id.as_str()];
+    // `{__proto__: x}` sets the prototype; `{__proto__}` (shorthand) and a computed key define an
+    // own property. None of the spellings may be equated with the shorthand.
+    for colon in [
+        "__proto__: __proto__",
+        "\"__proto__\": __proto__",
+        "'__proto__': __proto__",
+        "[\"__proto__\"]: __proto__",
+        "['__proto__']: __proto__",
+    ] {
+        not_equiv(
+            &format!("const o = {{ {colon} }};\n"),
+            "const o = { __proto__ };\n",
+            &force,
+        );
+    }
+    not_equiv(
+        "const o = { __proto__: x };\n",
+        "const o = { [\"__proto__\"]: x };\n",
+        &force,
+    );
+    not_equiv(
+        "const o = { __proto__: x };\n",
+        "const o = { \"__proto__\": y };\n",
+        &force,
+    );
 }
 
 #[test]

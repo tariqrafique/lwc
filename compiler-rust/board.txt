@@ -1,5 +1,5 @@
-official board  commit=505777693b50  src=f3cd89e5c936  napi=2960afb98645  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-11T04:37:01-08:00
-napi sha256:2960afb98645  pinned=/tmp/lwc-board-snap.k6938B/repo/harness/.pins/lwc-compiler-napi.2960afb98645.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-11T04:31:39-08:00
+official board  commit=3bca78988c75  src=b4b4637149dc  napi=2960afb98645  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-11T05:07:44-08:00
+napi sha256:2960afb98645  pinned=/tmp/lwc-board-snap.HLiMku/repo/harness/.pins/lwc-compiler-napi.2960afb98645.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-11T05:01:52-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -43,8 +43,8 @@ unported-specs         Tests  24 passed (24)
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.k6938B/notes/decisions.tsv]
-coverage-gate: notes d83d1fac508d matrix 75dc5613a667 report-only: 24 sources x 8 stages = 192 cells, 96 covered (declared gating), 0 diagnostic-only, 2 gap, 76 na, 18 dec, 0 invalid
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.HLiMku/notes/decisions.tsv]
+coverage-gate: notes a64c6ceec81b matrix 75dc5613a667 report-only: 24 sources x 8 stages = 192 cells, 96 covered (declared gating), 0 diagnostic-only, 2 gap, 76 na, 18 dec, 0 invalid
   GAP corpus:template-diag-mutations x template_codegen owner=item 12, 108 diag-mismatch mutations have no codegen verdict
   GAP corpus:template-diag-mutations x template_diagnostics owner=item 12, 108 mismatches stay non-gating until fixed
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
