@@ -562,3 +562,18 @@ No official board this run. df was 46G free before the slice. Did not fetch remo
 - Allowlist-only land: `crates/lwc-shared/src/lib.rs` row (“Rust twin of oracle-root.mjs styleCorpusRoot”). Log /workspace/scratch/harness/style-corpus-allowlist-land.log. LAND_START=2026-11-10T17:20:50-08:00 LAND_END=17:21:04 elapsed=**14s**. `rust-test-inputs --decide skip`. Landed allowlist **3aff14b** + snapshot **d4ebf120e149** (notes@07d808b).
 - Feature land: log /workspace/scratch/harness/style-corpus-land.log. LAND_START=2026-11-10T17:21:20-08:00 LAND_END=17:23:27 elapsed=**127s**. `rust-test-inputs --decide workspace`; workspace-check/test + napi; path-scan clean. Fix sha **98313d744288**. No official board (lwc-style/lwc-shared + the prior allowlist; next agent land publishes one).
 - D-0268: worktree /tmp/d0284-style-corpus and branch bot/d0284-style-corpus removed after ff without --force. No `git add -A`/`-am`. agent-inflight absent before each land.sh. Did not run `cargo fmt -p` (it had rewritten the whole crates).
+
+## 2026-11-10 18:52 PST (America/Los_Angeles)
+- Gatekeep of agent/style-gaps (item 9) DID NOT LAND. Main remains **98313d7442883e8a31878b6e97520c2240fb437d**. No official board. No TSV line. No GitHub writes (did not delete agent/style-gaps). No agent code was edited.
+- Preflight: main clean at 98313d744288; 36G free (73%); `df -i /` 86%; no stray compiler-rust worktrees; no official-board.sh or land.sh running. agent-inflight was already present.
+- Fetch: tip **9083868e63ed3b44a01f11da83b82572323e382c** (prefix 9083868) matched; descendant of base 98313d744288; main is an ancestor (no local rebase). One commit: 9083868e63ed3b44a01f11da83b82572323e382c Close the live style coverage GAPs on the board. File count 28 (all listed): harness/IN-REPO.md, harness/board-baseline.tsv, harness/board-rows.sh, harness/external-inputs.lock, 11 goldens under harness/goldens/style-upstream/, harness/scripts/golden-gate.sh, harness/test/style-upstream.behavior.test.ts, scripts/board-footers.sh, scripts/board-runtime.mjs, scripts/fetch-style-corpus.sh, scripts/napi-css-errors.sh, scripts/official-board.sh, scripts/run-board.sh, scripts/style-corpus-line.mjs, scripts/style-corpus.sh, scripts/test-board-footers.sh, tools/style-diff/README.md, tools/style-diff/run.mjs.
+- Land: `scripts/land-agent-branch.sh agent/style-gaps` rc=1 (log /workspace/scratch/harness/style-gaps-land.log). LAND_START=2026-11-10T18:51:25-08:00 LAND_END=2026-11-10T18:52:01-08:00 elapsed=36s. Cargo decide: `land: rust-test-inputs --decide skip`. Self-tests selected: test-board-footers test-board-runtime test-board-ratchet (all rc=0). Then:
+```
+FAIL unlisted box-config dependency:
+  scripts/napi-css-errors.sh	/workspace/.cargo/config.toml
+  scripts/napi-css-errors.sh	/workspace/.cargo/parse5-url-rewrite.gitconfig
+  scripts/napi-css-errors.sh	CARGO_HOME
+  scripts/napi-css-errors.sh	~/.gitconfig
+!! LAND REFUSED: land-main-refs check failed (rc=1)
+```
+- Did not fix. land-agent-branch.sh removed worktree /workspace/wt/style-gaps and deleted local bot/style-gaps. Did not run the post-land SLDS pin check or footer-gating plants (land never succeeded; no board published).
