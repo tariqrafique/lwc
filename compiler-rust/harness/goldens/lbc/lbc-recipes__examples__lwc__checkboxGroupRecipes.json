@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Checkbox Group\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-checkbox-group><template shadowrootmode=\"open\"></template></c-checkbox-group><p>Selected Values are: option1</p><c-checkbox-group><template shadowrootmode=\"open\"></template></c-checkbox-group><c-checkbox-group><template shadowrootmode=\"open\"></template></c-checkbox-group><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A checkbox group enables selection of single or multiple options, defined in the JavaScript.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Checkbox Group\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-checkbox-group><template shadowrootmode=\"open\"></template></c-checkbox-group><p>Selected Values are: option1</p><c-checkbox-group><template shadowrootmode=\"open\"></template></c-checkbox-group><c-checkbox-group><template shadowrootmode=\"open\"></template></c-checkbox-group><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A checkbox group enables selection of single or multiple options, defined in the JavaScript.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

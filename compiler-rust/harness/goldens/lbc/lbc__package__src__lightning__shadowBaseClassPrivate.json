@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc data-render-mode=\"shadow\" data-lwc-host-mutated=\"data-render-mode\"><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc data-render-mode=\"shadow\"><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ }
+}

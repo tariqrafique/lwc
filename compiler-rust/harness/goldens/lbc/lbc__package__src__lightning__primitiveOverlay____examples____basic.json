@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">.example {margin: 0.5rem;border-radius: 0.5rem;background: #fff;box-shadow: 0 1px 0.25rem rgb(0 0 0 / 20%);padding: 1rem;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><div class=\"example\"><button>Open a Confirm Modal</button><p>Result: <code>unset</code></p></div><div class=\"example\"><button>Open a Confirm Modal Alt</button><p>Result: <code>unset</code></p></div><div class=\"example\"><button>Open a Demo Modal</button><p>Result: <code>unset</code></p></div><div class=\"example\"><button>Open a Panel</button><p>Result: <code>unset</code></p></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.example {margin: 0.5rem;border-radius: 0.5rem;background: #fff;box-shadow: 0 1px 0.25rem rgb(0 0 0 / 20%);padding: 1rem;}</style><div class=\"example\"><button>Open a Confirm Modal</button><p>Result: <code>unset</code></p></div><div class=\"example\"><button>Open a Confirm Modal Alt</button><p>Result: <code>unset</code></p></div><div class=\"example\"><button>Open a Demo Modal</button><p>Result: <code>unset</code></p></div><div class=\"example\"><button>Open a Panel</button><p>Result: <code>unset</code></p></div></template></lwc-lbc>"
+ }
+}

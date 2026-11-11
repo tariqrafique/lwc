@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-dual-listbox><template shadowrootmode=\"open\"></template></lightning-dual-listbox><div class=\"slds-box\"><p>Selected values are: none</p></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-dual-listbox><template shadowrootmode=\"open\"></template></lightning-dual-listbox><div class=\"slds-box\"><p>Selected values are: none</p></div></template></lwc-lbc>"
+ }
+}

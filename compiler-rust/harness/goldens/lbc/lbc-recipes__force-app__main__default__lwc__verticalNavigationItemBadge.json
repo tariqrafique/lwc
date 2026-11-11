@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "\"dispatchEvent\" is not supported in this environment"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc role=\"listitem\" class=\"slds-nav-vertical__item\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {display: list-item;}</style><a class=\"slds-nav-vertical__action\" href=\"javascript:void(0);\" aria-current=\"false\"></a></template></lwc-lbc>"
+ }
+}

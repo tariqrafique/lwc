@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot destructure property 'horizontal' of 'this._alignment' as it is undefined."
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "Cannot destructure property 'horizontal' of 'this._alignment' as it is undefined."
+ ]
+}

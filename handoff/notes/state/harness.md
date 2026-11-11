@@ -692,3 +692,85 @@ napi-css-errors     2/2 (lwc-compiler-napi single_errors_match_shipped, css-1009
 - Design: gate code from main; registries judged main ∪ incoming (scripts/registry-union.sh); removal/loosen needs `# D-NNNN: remove|loosen <key>`; golden set from board-rows.sh (22 recordings / 23 rows); stale/orphan on union (WARN stopgap removed; official board keeps orphan scan line); run-portable-board.sh uses snapshot path (temp CARGO_TARGET_DIR, logs outside snap, hash before/after, exit 4).
 - Proof: test-one-pass-land.sh rc=0, test-board-footers rc=0 (portable mutation plant). Gap: no end-to-end land.sh of a fixture branch; next agent branch adding a row is the live proof.
 - Standing rule: never message Tariq; message Migrate only for decisions/blockers; record lands/boards here.
+
+## 2026-11-10 22:25 PST (America/Los_Angeles) — agent/coverage-lbc DID NOT LAND
+
+- Gate of agent/coverage-lbc (item 10: coverage gate + LBC whole-component row). Tip **3c0a40a95417d9a3f8ca272d3026f9a9855d544c** matched; descendant of main ee92647a2767 (no rebase). Four commits: 0e7f23ce8 coverage gate + gating lbc row; fae97c3ec drop box paths from coverage notes; 8b2fb0a6f portable board SSR oracle gate; 3c0a40a95 portable board shim file list. 664 files. Main unchanged at **ee92647a2767e0936c1ef2d6a01896125d2ba6e1**. No TSV line, no official board, no GitHub writes, agent code not edited.
+- `scripts/land-agent-branch.sh agent/coverage-lbc` rc=1 (log /workspace/scratch/harness/coverage-lbc-land.log). LAND_START=2026-11-10T22:23:27-08:00 LAND_END=22:24:58 elapsed=**91s**. `rust-test-inputs --decide packages -p repo-tracked -p semdiff` (passed). Self-tests selected: test-board-footers (rc=0), test-board-runtime (rc=0), test-board-ratchet (rc=1), test-one-pass-land (rc=1). `!! LAND REFUSED: land self-tests failed`.
+- test-one-pass-land (D-0286 union check): `FAIL fixture vitest row missing from plan`. The golden-gate plan listed 23 recordings from 24 board-rows (`golden-gate: plan 23 unique recording(s) from 24 board-rows`), and the fixture row was not among them. The other one-pass cases passed: uncited board-rows, allowlist, and board-baseline removal fail; cited removals are accepted; fixture footer plus allowlist rows pass check-land-main-refs in one pass. On main ee92647 the same test is rc=0 (`ok   fixture vitest row is in the golden-gate plan`), so this failure comes from the branch.
+- test-board-ratchet: 26 FAILs, all `.../main/scripts/baseline-ceiling.sh: line 27: .../main/scripts/registry-union.sh: No such file or directory`. This is pre-existing on main: `scripts/test-board-ratchet.sh` run on ee92647 itself is also rc=1 with the same 26 FAILs (the test fixture copy of main lacks registry-union.sh). Not caused by the branch, but it blocks every land that selects test-board-ratchet.
+- land-agent-branch removed /workspace/wt/coverage-lbc and bot/coverage-lbc without --force. Unrelated worktree /workspace/lwc-perf/rust-wt (detached at ee92647) was left alone. agent-inflight removed.
+
+### 2026-11-10 22:3x PST: D-0286 self-test fixes (main e91d0da74f9f) and agent/coverage-lbc re-gate, refused again
+- Correction to the entry above: the test-one-pass-land failure was **our test**, not the branch. The fixture added its row with `replace("style-upstream)", ...)`. The branch's ROWS now ends `style-upstream lbc)`, so the replace did nothing and the plan had no fixture row. 24→23 is the normal js-api/template-renderer dedupe, not a collision with lbc. With the branch's board-rows plus the fixture row, the plan is 24 from 25 and includes both `test/lbc.behavior.test.ts` and `test/d0286-plant.behavior.test.ts`.
+- Main commit e91d0da74f9f5eebbdfae526ff704dbedc120482 (plain, --no-verify, explicit paths: scripts/baseline-ceiling.sh, scripts/test-board-ratchet.sh, scripts/test-one-pass-land.sh):
+  - test-board-ratchet's fake main now copies every sibling that baseline-ceiling.sh `source`s, read from its source lines (fixes 26 FAILs).
+  - Fixing that exposed a D-0286 regression: a v1 (malformed) baseline hit the removal check (rc 1, which a Baseline-Raise can accept) instead of rc 2. baseline-ceiling now checks the board-baseline/v2 header first. The F4-drop-diag expectation also accepts the uncited-removal message.
+  - test-one-pass-land now appends to whatever `ROWS=(...)` ends with, and asserts the edit applied.
+  - The path set overlaps the branch only at scripts/test-board-ratchet.sh, in different hunks. `git merge-tree` against 3c0a40a was clean and the rebase applied without conflicts.
+  - Self-tests on main: test-board-ratchet ok (54 ok), baseline-ceiling self-test ok, test-one-pass-land all ok, lint-shell-pipes clean, workspace-path-scan clean.
+- Re-gate: 3c0a40a was rebased onto e91d0da as af79f6f1a, then land.sh ran (22:30:39–22:32:17, **98s**). All land self-tests passed (board-footers, board-runtime, board-ratchet, one-pass-land). It was **refused** in land-path-checks with `!! workspace-path-scan: literal /workspace/ path outside the allowlist`: harness/test/lbc.behavior.test.ts:21–22 import `/workspace/lwc/packages/@lwc/{engine-dom,ssr-runtime}/dist/index.js`. This is the branch's fault: those imports should resolve through oracle-root.mjs / LWC_ORACLE. Main is unchanged at e91d0da. No official board was run. Worktree and bot/coverage-lbc were removed without --force, and agent-inflight was removed.
+
+### 2026-11-10 23:1x PST: agent/coverage-lbc c3c2bd986cbf: NOT landed (pre-land check failed: swallows real errors)
+- The tip is a fast-forward of 3c0a40a: cc3403a (engines via oracleRoot()) and c3c2bd9 (lbc callback throws).
+- Verdict: **swallows real errors.** harness/vitest.config.ts:20 and harness/vitest.board.config.ts:34 set `dangerouslyIgnoreUnhandledErrors: lbcRow || LWC_VITEST_IGNORE_UNHANDLED==='1'`, where `lbcRow` is any argv containing `lbc.behavior.test.ts`. That is a process-wide ignore of *every* unhandled error, not just component callback throws. The narrow handler (lbc.behavior.test.ts:77–79, window error/unhandledrejection preventDefault + record) already exists; the blanket flag is what hides unexpected errors.
+- Plant: temporary detached worktree at c3c2bd9. Added `it('PLANT harness bug')` with `setTimeout(() => { throw new Error('PLANT-UNEXPECTED-HARNESS-ERROR') }, 0)` (a harness bug, not a component callback). Ran `vitest run --config vitest.board.config.ts test/lbc.behavior.test.ts -t PLANT` with LWC_VITEST_IGNORE_UNHANDLED unset.
+  - Tip config: rc=0, "Unhandled Errors … PLANT-UNEXPECTED-HARNESS-ERROR … Errors 1 error" was printed but the run passed.
+  - Same plant with only the `lbcRow ||` removed: rc=1.
+  - The env-gated form already in 3c0a40a has the same flaw on the board, because board.sh:302 exports LWC_VITEST_IGNORE_UNHANDLED=1 for the lbc row.
+- Cleanup: plant worktree removed without --force. Main unchanged at e91d0da. agent-inflight removed. No land, no board.
+
+### 2026-11-10 23:34 PST: item 1 landed via land.sh: allowlists are MAIN ∪ incoming (D-0286(2)); main 8585774e135a
+- Root cause (rootcause/report.md §1, class B): workspace-path-scan.sh read only MAIN's workspace-path-allowlist.tsv (`scan "$root" "$runner/$ALLOW_NAME"`), and lint-no-stripped-compare.sh read only `$MAIN/scripts/lint-no-stripped-compare.allowlist`. D-0286 named registries one by one and missed these two. item 10's second refusal (22:32) was this, not the branch.
+- Fix: new `union_keyed_registry <main> <incoming> <nkey>` in scripts/registry-union.sh. It prints MAIN's rows plus the incoming file's added rows. A MAIN row missing from incoming needs `# D-NNNN: remove <key>`, else rc 1. The key is `path` for workspace-path-allowlist and `path line rule` for the lint allowlist. Both scanners now judge against the union.
+- Sweep of other gate code for MAIN-only registry reads:
+  - land.sh option gate: ROWS = union_board_rows(MAIN, branch). DIAG stays MAIN's, because a union there would loosen.
+  - land.sh log_box_configs: logs MAIN's land-main-refs rows plus the branch's added rows. check-land-main-refs judges removals.
+  - Deliberately left as is:
+    - ratchet ceilings and board-baseline: these compare against main's state.
+    - OWNERS (shim lanes): main-only by design.
+    - shim-allowlist/registry: read from the tree only, which is stricter than a union.
+    - land-path-checks.tsv: a list of gate code, not a registry.
+- Also in this land:
+  - scripts/rust-test-inputs.tsv gains `scripts/fetch-style-corpus.sh	lwc-shared`. test-rust-test-inputs had been red on main since the style_corpus_root land; path-mapped selection never ran it, and --all exposed it.
+  - land-self-tests.tsv maps scripts/registry-union.sh to every self-test that sources it.
+- Plants (self-tests):
+  - workspace-path-scan: incoming row for its own new path passes; uncited removal fails; cited removal passes.
+  - lint-no-stripped-compare: same three cases.
+  - option ROWS: branch lbc row → union 24 rows; uncited style-upstream removal → refused.
+- Item-10 replay: tree 3c0a40a scanned with the new scanner → `workspace-path-scan: clean` (old: lbc.behavior.test.ts:21-22 refused). Tree cc3403a → clean (old: also clean).
+- `run-land-self-tests.sh --all`: ok (116–118s) before the land. land.sh 123s (23:32:35–23:34:38). Follow-on decisions snapshot refresh commit 8585774e1. Commits: ffee0c270, 462deb925, 38301d92d, 8585774e1.
+
+### 2026-11-10 23:4x PST: HOLD (Migrate: re-gate agent/coverage-lbc 179a794 first). Item 2 prepared, NOT landed
+- The HOLD arrived at 23:35. Item 1 had already landed at 23:34:38 (main 8585774e135a). Main has not moved since.
+- Item 2 is ready on bot/error-mute-lint at 04198c1c4 (worktree /workspace/wt/error-mute-lint, based on 8585774e1):
+  - New scripts/lint-no-error-mute.sh, no allowlist. Bans M1 `dangerouslyIgnoreUnhandledErrors`, M2 `LWC_VITEST_IGNORE_UNHANDLED`, and M3 `onUnhandledError` returning false (arrow, method and function forms) across every tracked file. Only the script itself is exempt.
+  - Wired into land-path-checks.tsv (`always`, so land and C8). land-self-tests.tsv rows were added for it.
+- Plants:
+  - --self-test: M1, M2, M3a/b/c each fail; a narrow rethrowing handler passes.
+  - Main: clean.
+  - c3c2bd9 tree: rc 1 (10 hits, including vitest.config.ts:20, vitest.board.config.ts:34, board.sh:302, golden-gate.sh:58), and land-path-checks --from-land fails on it.
+  - 179a794 tree: clean.
+- `run-land-self-tests.sh --all` ok (116s). No path overlap with 179a794, and merge-tree is clean both ways.
+- 179a794 is based on e91d0da, not 8585774. It needs a rebase onto main; merge-tree is clean.
+
+## 2026-11-10 23:54 PST (America/Los_Angeles) — agent/coverage-lbc re-gate at 179a794: LANDED; official board 66479d02aafa VALID
+
+- Pre-land checks on temporary detached worktree /tmp/cov-plant at **179a7949eb50b50015c01589ee4a067b851a53aa** (removed without --force):
+  - (a) `git grep -E 'dangerouslyIgnoreUnhandledErrors|LWC_VITEST_IGNORE_UNHANDLED'` and `git grep onUnhandledError`: no matches (rc=1 each).
+  - (b) PLANT-UNEXPECTED-HARNESS-ERROR. Appended `it('PLANT harness bug')` with `setTimeout(() => { throw new Error('PLANT-UNEXPECTED-HARNESS-ERROR') }, 0)` to test/lbc.behavior.test.ts, LWC_VITEST_IGNORE_UNHANDLED unset, `-t PLANT`. vitest.config.ts: rc=1. vitest.board.config.ts: rc=1. Both printed "Unhandled Errors … PLANT-UNEXPECTED-HARNESS-ERROR … Errors  1 error". Plant reverted.
+  - (c) Unplanted lbc.behavior.test.ts: 523 passed (523), rc=0 under both configs.
+- Rebase of 179a794 onto main 8585774e135a in /workspace/wt/coverage-lbc: clean. range-diff all `=` (7 commits). Rebased tip d7495976292c. Invoked land.sh the way land-agent-branch.sh does (remote tip is not a descendant of main).
+- Land rc=0 (appended to /workspace/scratch/harness/coverage-lbc-land.log). LAND_START=2026-11-10T23:39:08-08:00 LAND_END=23:43:48 elapsed=**280s**.
+  - `rust-test-inputs --decide packages -p repo-tracked -p semdiff` passed.
+  - Self-tests all rc=0: test-board-footers, test-board-runtime, test-board-ratchet (the registry-union fixture is fixed on main), test-one-pass-land (`ok   fixture vitest row is in the golden-gate plan`).
+  - D-0286 one-pass: `fixture footer + allowlist rows pass check-land-main-refs in one pass`. check-land-main-refs: ok (15 helper args, 36 box-config deps). `baseline lbc NEW on branch (no ceiling on main)`. baseline-ceiling 23 rows ok. golden-gate: 5157 goldens.
+  - Snapshot follow-on b2bb4be (notes@06afd5e9c148). landed main=**b2bb4be10388c530a5b77069de8116c024be0b04**.
+- TSV: `agent/coverage-lbc	179a7949eb50b50015c01589ee4a067b851a53aa	b2bb4be10388c530a5b77069de8116c024be0b04`. Worktree and bot branch removed without --force. 34G free.
+- FULL official board BOARD_COLD=1 on b2bb4be (log /workspace/scratch/harness/coverage-lbc-board.log). 23:44:04–23:53:49, **585s**. `official: src=66479d02aafa napi=4f2941c0e296 rc=0`. Published. **VALID**. No orphan-WARN.
+- Diff vs 37036c11d866 (ee92647, same napi 4f2941c0e296): header and snap paths changed. New rows:
+  - `lbc                    Tests  523 passed (523)`
+  - `lbc: discovered=522 included=522 excluded=0 compile-error-both=0`
+  - `coverage-gate: notes 06afd5e9c148 matrix 121647686387 report-only: 24 sources x 8 stages = 192 cells, 26 covered (declared gating), 11 diagnostic-only, 77 gap, 76 na, 2 dec, 0 invalid` plus its GAP/DIAG-ONLY detail lines.
+  - All other rows identical.
+- Unrelated worktrees left alone: /workspace/lwc-perf/rust-wt, /workspace/wt/error-mute-lint. agent-inflight removed.

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "this.template.addEventListener is not a function"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-tree_container\"><h4 class=\"slds-tree__group-header\" id=\"treeheading\"></h4></div></template></lwc-lbc>"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-vertical_medium\"><h1 class=\"slds-text-heading_small\">Slider Sizes</h1><p class=\"slds-text-body_regular\">The slider comes in many sizes: x-small, small, medium, and large. The default slider size takes up the width of the view port.</p></div><lightning-slider><template shadowrootmode=\"open\"></template></lightning-slider><lightning-slider><template shadowrootmode=\"open\"></template></lightning-slider><lightning-slider><template shadowrootmode=\"open\"></template></lightning-slider><lightning-slider><template shadowrootmode=\"open\"></template></lightning-slider><lightning-slider><template shadowrootmode=\"open\"></template></lightning-slider></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-vertical_medium\"><h1 class=\"slds-text-heading_small\">Slider Sizes</h1><p class=\"slds-text-body_regular\">The slider comes in many sizes: x-small, small, medium, and large. The default slider size takes up the width of the view port.</p></div><lightning-slider><template shadowrootmode=\"open\"></template></lightning-slider><lightning-slider><template shadowrootmode=\"open\"></template></lightning-slider><lightning-slider><template shadowrootmode=\"open\"></template></lightning-slider><lightning-slider><template shadowrootmode=\"open\"></template></lightning-slider><lightning-slider><template shadowrootmode=\"open\"></template></lightning-slider></template></lwc-lbc>"
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "_missingExportShim is not a function"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "\"getBoundingClientRect\" is not supported in this environment",
+  "_missingExportShim is not a function"
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div style=\"height: 100vh;\"><lightning-datatable data-render-mode=\"role-based\"><template shadowrootmode=\"open\"></template></lightning-datatable></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div style=\"height: 100vh;\"><lightning-datatable data-render-mode=\"role-based\"><template shadowrootmode=\"open\"></template></lightning-datatable></div></template></lwc-lbc>"
+ }
+}

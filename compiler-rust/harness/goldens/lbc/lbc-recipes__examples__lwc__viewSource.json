@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">:host {text-align: left;}.description {color: #706e6b;margin-top: 1rem;padding-top: 0.5rem;border-top: 1px solid #706e6b;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><div class=\"description\"><slot></slot></div><p><a class=\"slds-text-link\" href=\"https://github.com/salesforce/base-components-recipes/tree/master/examples/lwc/undefined\" target=\"source\">View Source</a></p></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {text-align: left;}.description {color: #706e6b;margin-top: 1rem;padding-top: 0.5rem;border-top: 1px solid #706e6b;}</style><div class=\"description\"><slot></slot></div><p><a class=\"slds-text-link\" target=\"source\" href=\"https://github.com/salesforce/base-components-recipes/tree/master/examples/lwc/undefined\">View Source</a></p></template></lwc-lbc>"
+ }
+}

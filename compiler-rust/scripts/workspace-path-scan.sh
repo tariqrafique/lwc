@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 # D-0280(b): fail on a literal `/workspace/` path in crates/, tools/, harness/, and
-# scripts/, outside the path-exact allowlist next to this file.
+# scripts/, outside the path-exact allowlist.
+# Allowlist (D-0286(2)): MAIN's list next to this file UNION the tree's own
+# scripts/workspace-path-allowlist.tsv additions (scripts/registry-union.sh). A MAIN row
+# missing from the tree's list needs `# D-NNNN: remove <path>` there, else rc 1.
 # Exit 0 = clean; 1 = violation(s); 2 = scanner could not run.
 # Usage: scripts/workspace-path-scan.sh [repo-root]   |   scripts/workspace-path-scan.sh --self-test
 set -euo pipefail
 runner="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
 ALLOW_NAME="workspace-path-allowlist.tsv"
+# shellcheck source=registry-union.sh
+source "$runner/registry-union.sh"
 
 load_allow() {
   local f="$1" line path
@@ -102,7 +107,7 @@ self_test() {
   trap 'rm -rf "$t"' RETURN
   mkdir -p "$t/crates" "$t/tools" "$t/harness" "$t/scripts"
   cp "$runner/workspace-path-scan.sh" "$t/scripts/"
-  cp "$runner/tracked-files.sh" "$t/scripts/"
+  cp "$runner/tracked-files.sh" "$runner/registry-union.sh" "$t/scripts/"
   printf '%s\n' '.oracle/' > "$t/.gitignore"
   printf '%s\n' '# path	reason' \
     'scripts/allowed.sh	planted allowlisted box-only path' \
@@ -139,6 +144,24 @@ self_test() {
   rc=0
   "$t/scripts/workspace-path-scan.sh" "$t" >/dev/null 2>&1 || rc=$?
   if [ "$rc" -eq 1 ]; then echo "ok   bare @lwc import fails"; else echo "FAIL bare @lwc import fails -> rc $rc"; fail=1; fi
+  git -C "$t" rm -q --cached harness/scripts/bad.ts; rm -f "$t/harness/scripts/bad.ts"
+  # D-0286(2): $t is MAIN (its scanner + allowlist); $i is the incoming tree.
+  local i="$t/incoming"
+  mkdir -p "$i/crates" "$i/tools" "$i/harness/test" "$i/scripts"
+  cp "$t/scripts/workspace-path-scan.sh" "$t/scripts/allowed.sh" "$i/scripts/"
+  cp "$t/scripts/workspace-path-allowlist.tsv" "$i/scripts/"
+  printf '%s\n' "import x from '/workspace/lwc/x.js';" > "$i/harness/test/new.test.ts"
+  printf '%s\n' 'harness/test/new.test.ts	incoming row for its own new path' >> "$i/scripts/workspace-path-allowlist.tsv"
+  git -C "$i" init -q; git -C "$i" add crates tools harness scripts
+  rc=0; "$t/scripts/workspace-path-scan.sh" "$i" >/dev/null 2>&1 || rc=$?
+  if [ "$rc" -eq 0 ]; then echo "ok   incoming allowlist row for its own new path passes (MAIN UNION incoming)"; else echo "FAIL incoming allowlist addition -> rc $rc (want 0)"; fail=1; fi
+  grep -v '^scripts/allowed.sh' "$i/scripts/workspace-path-allowlist.tsv" > "$i/a.tmp"; mv "$i/a.tmp" "$i/scripts/workspace-path-allowlist.tsv"
+  git -C "$i" rm -q -f scripts/allowed.sh; git -C "$i" add scripts/workspace-path-allowlist.tsv
+  rc=0; "$t/scripts/workspace-path-scan.sh" "$i" > "$t/rm.out" 2>&1 || rc=$?
+  if [ "$rc" -eq 1 ] && grep -q 'removal without D-id cite (# D-NNNN: remove scripts/allowed.sh)' "$t/rm.out"; then echo "ok   uncited allowlist removal fails"; else echo "FAIL uncited allowlist removal -> rc $rc (want 1 + cite message)"; sed 's/^/       /' "$t/rm.out"; fail=1; fi
+  printf '%s\n' '# D-0286: remove scripts/allowed.sh' >> "$i/scripts/workspace-path-allowlist.tsv"; git -C "$i" add scripts
+  rc=0; "$t/scripts/workspace-path-scan.sh" "$i" >/dev/null 2>&1 || rc=$?
+  if [ "$rc" -eq 0 ]; then echo "ok   cited allowlist removal passes"; else echo "FAIL cited allowlist removal -> rc $rc (want 0)"; fail=1; fi
   return $fail
 }
 
@@ -149,6 +172,10 @@ case "${1:-}" in
     for d in crates tools harness scripts; do
       [ -d "$root/$d" ] || { echo "!! workspace-path-scan: missing $root/$d" >&2; exit 2; }
     done
-    scan "$root" "$runner/$ALLOW_NAME"
+    allow_u="$(mktemp /tmp/workspace-path-allow.XXXXXX)"
+    trap 'rm -f "$allow_u"' EXIT
+    urc=0; union_keyed_registry "$runner/$ALLOW_NAME" "$root/scripts/$ALLOW_NAME" 1 > "$allow_u" || urc=$?
+    case "$urc" in 0) ;; 1) exit 1 ;; *) exit 2 ;; esac
+    scan "$root" "$allow_u"
     ;;
 esac

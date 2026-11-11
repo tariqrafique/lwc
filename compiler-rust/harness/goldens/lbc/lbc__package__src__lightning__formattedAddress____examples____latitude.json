@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-vertical_medium\"><h1 class=\"slds-text-heading_small\">Formatted Address with Coordinates</h1><p class=\"slds-text-body_regular\">This component formats an address, and automatically links it to Google Maps using latitude and longitude coordinates for faster map rendering.</p></div><lightning-formatted-address><template shadowrootmode=\"open\"></template></lightning-formatted-address></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-vertical_medium\"><h1 class=\"slds-text-heading_small\">Formatted Address with Coordinates</h1><p class=\"slds-text-body_regular\">This component formats an address, and automatically links it to Google Maps using latitude and longitude coordinates for faster map rendering.</p></div><lightning-formatted-address><template shadowrootmode=\"open\"></template></lightning-formatted-address></template></lwc-lbc>"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><h1>Record View Holder</h1><c-record-view-form><template shadowrootmode=\"open\"></template><c-output-field><template shadowrootmode=\"open\"></template></c-output-field></c-record-view-form></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><h1>Record View Holder</h1><c-record-view-form><template shadowrootmode=\"open\"></template><c-output-field><template shadowrootmode=\"open\"></template></c-output-field></c-record-view-form></template></lwc-lbc>"
+ }
+}

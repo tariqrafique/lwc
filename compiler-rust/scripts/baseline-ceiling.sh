@@ -56,6 +56,11 @@ blob branch "$head" "$T/branch.tsv"; hb=$have
 cand="$T/branch.tsv"; [ -z "$measured" ] || { cand="$measured"; echo "baseline-ceiling: judging the MEASURED run $measured against pre-land ${base:0:12}"; }
 # D-0286: a cited removal (# D-NNNN: remove <row>) drops that row from the
 # pre-land side so ceiling does not require it on the branch.
+# Format first: a malformed (e.g. v1) baseline is rc 2 and must never reach the
+# removal check, whose rc 1 a Baseline-Raise could accept.
+for _f in "$T/main.tsv" "$cand"; do
+  [ "$(awk '/^# D-[0-9]{4}: / { next } { print; exit }' "$_f")" = board-baseline/v2 ] || { echo "!! baseline-ceiling: $_f line 1 is not board-baseline/v2: refused (rc 2, never raise-acceptable)" >&2; fin 2; }
+done
 _main_rows="$(baseline_row_names "$T/main.tsv")"
 _branch_rows="$(baseline_row_names "$cand")"
 _cited=""

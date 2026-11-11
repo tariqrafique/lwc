@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>EQ Icon - The eq icon displays an animated graph with three bars that rise and fall randomly.</p><lightning-dynamic-icon><template shadowrootmode=\"open\"></template></lightning-dynamic-icon></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>EQ Icon - The eq icon displays an animated graph with three bars that rise and fall randomly.</p><lightning-dynamic-icon><template shadowrootmode=\"open\"></template></lightning-dynamic-icon></template></lwc-lbc>"
+ }
+}

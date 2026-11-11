@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-badge\" data-lwc-host-mutated=\"class\"><template shadowrootmode=\"open\">  </template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-badge\"><template shadowrootmode=\"open\">  </template></lwc-lbc>"
+ }
+}

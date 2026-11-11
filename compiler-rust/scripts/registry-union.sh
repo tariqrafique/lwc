@@ -141,3 +141,42 @@ union_board_rows() {
 baseline_row_names() {
   awk -F'\t' 'NF && $1 !~ /^#/ && $1 != "board-baseline/v2" { print $1 }' "$1" | sort -u
 }
+
+# D-0286(2) for keyed allowlists: union_keyed_registry <main> <incoming> <nkey>
+# Prints MAIN's entry lines, then the incoming file's added entries. Comment and
+# blank lines are skipped. The key is the first <nkey> tab fields joined by one
+# space (e.g. `path` or `path line rule`). A MAIN key missing from the incoming
+# file needs `# D-NNNN: remove <key>` in the incoming file, else FAIL on stderr
+# and return 1. A missing incoming file counts as empty. A missing MAIN file is
+# return 2.
+union_keyed_registry() {
+  local main_file="$1" incoming_file="$2" nkey="$3" line key fail=0 inc
+  local -A in_inc=() seen=()
+  [ -f "$main_file" ] || { echo "registry-union: no MAIN registry at $main_file" >&2; return 2; }
+  [[ "$nkey" =~ ^[1-9]$ ]] || { echo "registry-union: bad key width '$nkey'" >&2; return 2; }
+  inc="$incoming_file"; [ -f "$inc" ] || inc=/dev/null
+  _registry_key() { awk -F'\t' -v n="$nkey" '{ k=$1; for (i = 2; i <= n; i++) k = k " " $i; print k }' <<< "$1"; }
+  while IFS= read -r line || [ -n "$line" ]; do
+    [[ "$line" =~ ^[[:space:]]*(#|$) ]] && continue
+    in_inc["$(_registry_key "$line")"]=1
+  done < "$inc"
+  while IFS= read -r line || [ -n "$line" ]; do
+    [[ "$line" =~ ^[[:space:]]*(#|$) ]] && continue
+    key="$(_registry_key "$line")"
+    if [ -z "${in_inc[$key]:-}" ]; then
+      if registry_cited "$incoming_file" remove "$key"; then continue; fi
+      echo "FAIL $(basename "$main_file") removal without D-id cite (# D-NNNN: remove $key): $key" >&2
+      fail=1
+      continue
+    fi
+    [ -n "${seen[$key]:-}" ] && continue
+    seen["$key"]=1; printf '%s\n' "$line"
+  done < "$main_file"
+  while IFS= read -r line || [ -n "$line" ]; do
+    [[ "$line" =~ ^[[:space:]]*(#|$) ]] && continue
+    key="$(_registry_key "$line")"
+    [ -n "${seen[$key]:-}" ] && continue
+    seen["$key"]=1; printf '%s\n' "$line"
+  done < "$inc"
+  return "$fail"
+}

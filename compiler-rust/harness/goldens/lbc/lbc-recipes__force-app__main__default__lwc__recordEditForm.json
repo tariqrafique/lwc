@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'AUTO')"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'adapter')"
+ }
+}

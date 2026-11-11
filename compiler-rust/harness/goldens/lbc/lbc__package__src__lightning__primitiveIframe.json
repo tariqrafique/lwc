@@ -1,0 +1,14 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "(intermediate value).connectedCallback is not a function"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "(intermediate value).connectedCallback is not a function",
+  "_missingExportShim is not a function"
+ ]
+}

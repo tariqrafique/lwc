@@ -220,7 +220,7 @@ lockrev="$(parse5_lock_rev "$ws/Cargo.lock")" || die3 "Cargo.lock parse5 rev mis
 # srcfiles/srchash skip build outputs that C8 napi-pack may emit inside the archive
 # (napi.gen.d.ts is gitignored; *.node already skipped; $ws/target if cargo misses CARGO_TARGET_DIR).
 srcfiles() { ( { find "$hs" -type f ! -path "$hs/.pins/*" ! -path "$hs/.vitest/*" ! -path "$hs/.csr-render-out/*" \
-      ! -path "$hs/.ssr-render-out/*" ! -path "$hs/node_modules/*" ! -name '*.node' -print0 | sort -z | xargs -0 sha256sum | sed -e "s#$hs/#harness/#"
+      ! -path "$hs/.ssr-render-out/*" ! -path "$hs/.lbc-out/*" ! -path "$hs/node_modules/*" ! -name '*.node' -print0 | sort -z | xargs -0 sha256sum | sed -e "s#$hs/#harness/#"
     find "$snap/repo" "$snap/parse5-rust" "$snap/notes" -type f ! -path "$snap/target/*" ! -path "$ws/target/*" \
       ! -path "$hs/*" ! -name '*.node' ! -name 'napi.gen.d.ts' -print0 \
       | sort -z | xargs -0 sha256sum | sed -e "s#$snap/##"; } ); }
@@ -376,7 +376,7 @@ if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
   cp "$tdiag/template-diag-crate.soundness.json" "$base.template-diag.soundness.json"; cp "$tdiag/template-diag-napi.soundness.json" "$base.template-diag-napi.soundness.json"
   rm -rf "$ws/harness/node_modules"
   rm -f "$ws/harness/lwc-compiler-napi.node"
-  rm -rf "$ws/harness/.pins" "$ws/harness/.vitest" "$ws/harness/.csr-render-out" "$ws/harness/.ssr-render-out"
+  rm -rf "$ws/harness/.pins" "$ws/harness/.vitest" "$ws/harness/.csr-render-out" "$ws/harness/.ssr-render-out" "$ws/harness/.lbc-out"
   tar -C "$snap" --exclude=./repo/target -czf "$base.tgz.tmp" --transform 's#^repo/##;s#^repo$#.#' repo notes
   mv -f "$base.tgz.tmp" "$base.tgz"; mv -f "$base.board.txt.tmp" "$base.board.txt"
   echo "push artifacts: $base.tgz  $base.board.txt  $base.template-diag.json  $base.template-diag-napi.json"

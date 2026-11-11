@@ -43,6 +43,7 @@ harness/scripts/ts-register.mjs	semdiff
 harness/src/backend.ts	semdiff
 harness/src/oracleRoot.ts	semdiff
 harness/src/ssrRender.ts	semdiff
+scripts/fetch-style-corpus.sh	lwc-shared
 tools/gen-error-info/gen.mjs	lwc-shared
 tools/gen-instrumentation/gen.mjs	lwc-shared
 tools/gen-shared-tables/gen.mjs	lwc-shared

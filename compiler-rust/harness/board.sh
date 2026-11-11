@@ -9,6 +9,7 @@
 # Guards: (1) oracle must be pristine ORACLE_SHA, clean tree -> else abort before running anything.
 #         (3) shim gate: untagged shim/compat/workaround/hack/mask/rescan line in crates/ (scripts/shim-gate.mjs, allowlist shim-allowlist.tsv w/ reason) OR untracked/stale tagged-shim vs shim-registry.tsv => exit 1.
 #         (2) option-inventory gate (scripts/option-gate.mjs via option_gate in board-rows.sh) -> any unmapped/pending field => exit 1.
+#         (2b) coverage gate (scripts/coverage-gate.mjs) immediately after option-gate. Report-only unless COVGATE_STRICT=1.
 #         (4) golden-I/O guard (scripts/golden-io-guard.sh): golden writes / UPDATE_GOLDENS outside src/optionRows.ts => exit 1.
 # template-diag row (diagnostic): template-diag-diff corpus (scripts/template-diag-diff.mjs). Mismatches never gate
 #   (clean/mismatch are not recorded in the baseline: only crash and oracle-error, D-0219). crash/panic > 0 or a
@@ -184,7 +185,7 @@ run_isolated_vitest() {
   local out="$1" json="$2"; shift 2
   local vrc=0 vpid leftover
   setsid env -u BOARD_LOG_DIR -u TEMPLATE_DIAG_OUT_DIR -u BOARD_REPO_ROOT -- \
-    "$VITEST" run "$@" --config "$here/vitest.board.config.ts" --root "$testdir" --pool=threads --testTimeout=5000 \
+    "$VITEST" run "$@" --config "$here/vitest.board.config.ts" --root "$testdir" --pool=threads --testTimeout="${row_timeout:-5000}" \
     --reporter=dot --reporter=json --outputFile.json="$json" >"$out" 2>&1 &
   vpid=$!
   wait "$vpid" || vrc=$?
@@ -287,7 +288,8 @@ echo "napi sha256:$hash  pinned=$pinned  oracle=$head_sha(clean)  oracle_repo=$O
 for s in "${suites[@]}"; do
   case "$s" in template-diag|template-diag-*) template_diag_row "$s" "$( [ "$s" = template-diag ] && echo crate || echo "${s#template-diag-}")"; continue;; esac
   out="$logdir/board-$s-$hash.out"
-  test="test/$s.behavior.test.ts"; mode=sync; extra=()
+  test="test/$s.behavior.test.ts"; mode=sync; extra=(); row_timeout=5000
+  unset LBC_SUMMARY
   case "$s" in
     js-api) test=test/js-options.behavior.test.ts; extra=(-t '^js-options: api ');;
     js-options) extra=(-t '^js-options: (lws|explicit|sourcemap|epm|dyn) ');;
@@ -297,6 +299,7 @@ for s in "${suites[@]}"; do
     ssr-render) test=test/ssr.render.test.ts;;
     ssr-render-*) test=test/ssr.render.test.ts; mode="${s#ssr-render-}";;
     ssr-*) test=test/ssr.behavior.test.ts; mode="${s#ssr-}";;
+    lbc) row_timeout=20000; LBC_SUMMARY="$logdir/lbc-summary.txt"; export LBC_SUMMARY; rm -f "$LBC_SUMMARY";;
   esac
   json="$logdir/board-$s-$hash.json"; rm -f "$json"; pat=""; [ ${#extra[@]} -eq 0 ] || pat="${extra[1]}"   # extra is (-t <pattern>) or empty
   vrc=0; SSR_MODE="$mode" run_isolated_vitest "$out" "$json" "$test" "${extra[@]}" || vrc=$?
@@ -308,6 +311,13 @@ for s in "${suites[@]}"; do
   [ $crc -le 1 ] || { rowfail+=("$s: grep crash markers failed (rc=$crc)"); err=0; }
   tag=""; if [[ "$DIAG" == *" $s "* ]]; then tag="  (diagnostic row: not option coverage; case set still ratcheted)"; fi
   printf '%-22s %s%s%s%s\n' "$s" "$(tail -1 <<< "$lines")" "$tag" "$([ "$err" != 0 ] && echo '  !! WORKER CRASH')" "$([ "$vrc" -gt 1 ] && echo "  !! vitest exit $vrc")"
+  if [ "$s" = lbc ]; then
+    if [ ! -s "${LBC_SUMMARY:-}" ]; then
+      rowfail+=("lbc: missing exclusion summary (${LBC_SUMMARY:-unset})")
+    else
+      cat -- "$LBC_SUMMARY"
+    fi
+  fi
   # D-0242: scope-token async passes (0 skipped) and is printed here. The file bytes are
   # SCOPE_TOKEN_ASYNC_LIMITATION.line plus one LF, written by test/ssr.render.test.ts.
   # That writer emits no CR. Compare the file as stored.
@@ -420,6 +430,10 @@ if [ ${#suites[@]} -eq ${#ROWS[@]} ]; then
 fi
 shimgate=0; SHIM_REPO_ROOT="$repo" SHIM_OWNERS="$here/../OWNERS" SHIM_REGISTRY="${SHIM_REGISTRY:-$testdir/shim-registry.tsv}" SHIM_ALLOWLIST="${SHIM_ALLOWLIST:-$testdir/shim-allowlist.tsv}" node "$here/scripts/shim-gate.mjs" || shimgate=1
 gate=0; option_gate || gate=1
+# Coverage gate (v2 spec): report-only unless COVGATE_STRICT=1. Same ROWS the option gate saw.
+covgate=0
+COVGATE_DIAG="$DIAG" COVGATE_RATCHET="${RATCHET_FILE:-}" SEMDIFF_BIN="${SEMDIFF_BIN:-}" \
+  node "$here/scripts/coverage-gate.mjs" ${COVGATE_STRICT:+--strict} "${ROWS[*]}" || covgate=1
 gioguard=0; "$here/scripts/golden-io-guard.sh" "$testdir" || gioguard=1
 # Construct the tag spell from parts so this file has no raw tag-open sequence (registry scanner).
 _shim_tok=SHIM; _shim_lit="${_shim_tok}("
@@ -431,7 +445,7 @@ verify_obs_bytes "before judge"
 ratchet=0
 if [ ${#blerr[@]} -ne 0 ]; then ratchet=1
 elif [ -n "$update" ]; then
-  if [ $gate -eq 0 ] && [ $shimgate -eq 0 ] && [ $gioguard -eq 0 ] && [ $sdrow -eq 0 ] && [ ${#norun[@]} -eq 0 ] && [ ${#rowfail[@]} -eq 0 ]; then
+  if [ $gate -eq 0 ] && [ $covgate -eq 0 ] && [ $shimgate -eq 0 ] && [ $gioguard -eq 0 ] && [ $sdrow -eq 0 ] && [ ${#norun[@]} -eq 0 ] && [ ${#rowfail[@]} -eq 0 ]; then
     tmpb="$(mktemp "$BASELINE.tmp.XXXXXX")"; urc=0
     "${BB[@]}" update "$BASELINE" "$priv_obs" "$tmpb" "${ROWS[@]}" || urc=$?
     if [ $urc -eq 0 ]; then mv -f "$tmpb" "$BASELINE"; echo "RATCHET-UPDATE: wrote $BASELINE (commit it)"
@@ -443,6 +457,7 @@ else
 fi
 if [ $shimgate -ne 0 ]; then echo "!! BOARD FAILED: shim gate — untagged word, or ${_shim_lit} untracked/stale vs harness/shim-registry.tsv"; fi
 if [ $gate -ne 0 ]; then echo "!! BOARD FAILED: option-inventory gate"; fi
+if [ $covgate -ne 0 ]; then echo "!! BOARD FAILED: coverage gate"; fi
 if [ $gioguard -ne 0 ]; then echo "!! BOARD FAILED: golden-I/O guard (only src/optionRows.ts may write goldens or read UPDATE_GOLDENS)"; fi
 if [ ${#norun[@]} -ne 0 ]; then echo "!! BOARD FAILED: row(s) produced no test summary: ${norun[*]} (see $logdir/board-<row>-$hash.out)"; fi
 for f in "${rowfail[@]}"; do echo "!! BOARD FAILED: $f"; done
@@ -470,4 +485,4 @@ for _r in "${!measured_counts[@]}"; do
   fi
 done
 verify_obs_bytes "before return"
-[ $gate -eq 0 ] && [ $shimgate -eq 0 ] && [ $gioguard -eq 0 ] && [ $ratchet -eq 0 ] && [ $sdrow -eq 0 ] && [ ${#norun[@]} -eq 0 ] && [ ${#rowfail[@]} -eq 0 ] && [ ${#blerr[@]} -eq 0 ] || exit 1
+[ $gate -eq 0 ] && [ $covgate -eq 0 ] && [ $shimgate -eq 0 ] && [ $gioguard -eq 0 ] && [ $ratchet -eq 0 ] && [ $sdrow -eq 0 ] && [ ${#norun[@]} -eq 0 ] && [ ${#rowfail[@]} -eq 0 ] && [ ${#blerr[@]} -eq 0 ] || exit 1

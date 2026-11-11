@@ -46,7 +46,7 @@ if [ "$rc" -eq 0 ]; then ok "golden-io-guard ignores .oracle plant"; else bad "g
 t="$(mktemp -d /tmp/source-scan-tracked.XXXXXX)"
 trap 'rm -rf "$plant_dir" "$t"' EXIT
 mkdir -p "$t/crates" "$t/tools" "$t/harness" "$t/scripts"
-cp "$runner/workspace-path-scan.sh" "$runner/tracked-files.sh" "$runner/workspace-path-allowlist.tsv" "$t/scripts/"
+cp "$runner/workspace-path-scan.sh" "$runner/tracked-files.sh" "$runner/registry-union.sh" "$runner/workspace-path-allowlist.tsv" "$t/scripts/"
 # allowlist mentions the scanner itself; copy it so the self path matches
 printf '%s\n' '.oracle/' > "$t/.gitignore"
 printf '%s\n' 'fn ok() {}' > "$t/crates/ok.rs"

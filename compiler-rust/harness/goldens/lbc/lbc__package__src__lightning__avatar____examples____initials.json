@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-avatar class=\"slds-m-right_small\"><template shadowrootmode=\"open\"></template></lightning-avatar><lightning-avatar class=\"slds-m-right_small\"><template shadowrootmode=\"open\"></template></lightning-avatar><lightning-avatar class=\"slds-m-right_small\"><template shadowrootmode=\"open\"></template></lightning-avatar></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-avatar class=\"slds-m-right_small\"><template shadowrootmode=\"open\"></template></lightning-avatar><lightning-avatar class=\"slds-m-right_small\"><template shadowrootmode=\"open\"></template></lightning-avatar><lightning-avatar class=\"slds-m-right_small\"><template shadowrootmode=\"open\"></template></lightning-avatar></template></lwc-lbc>"
+ }
+}

@@ -237,7 +237,7 @@ function compose(thisLogPath, prevTxt, outPath, ranList, repo) {
       if (kl) out.push(kl);
     }
   }
-  const extras = ["semantic-diff-ssr", "semantic-diff", "shim-check:", "shim-registry:", "ssr-compile-js-scanners:", "option-gate:", "golden-io-guard:"];
+  const extras = ["semantic-diff-ssr", "semantic-diff", "shim-check:", "shim-registry:", "ssr-compile-js-scanners:", "option-gate:", "coverage-gate:", "golden-io-guard:"];
   const linesOf = (text) => text.split(/\n/);
   const matchExtra = (text, key) => {
     for (const line of linesOf(text)) {

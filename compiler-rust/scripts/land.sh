@@ -37,9 +37,12 @@ main_checkout="$(cd "$(dirname "$(main_data scripts/land.sh)")/.." && pwd)"
 # is hashed (or reported absent) so a land log records the box files that can change
 # a cargo/git verdict.
 log_box_configs() {
-  local table path class dep policy f sha
+  local table inc path class dep policy f sha
   table="$(main_data scripts/land-main-refs.tsv)"
   [ -f "$table" ] || { die2 "MAIN land-main-refs.tsv missing at $table"; return $?; }
+  # D-0286(2): MAIN's rows UNION the branch's added rows (check-land-main-refs judges removals).
+  inc="${wt:+$wt/scripts/land-main-refs.tsv}"
+  [ -n "$inc" ] && [ -f "$inc" ] || inc=/dev/null
   while IFS=$'\t' read -r path class dep policy; do
     [ -n "${path:-}" ] || continue
     case "$path" in '#'*) continue ;; esac
@@ -58,7 +61,7 @@ log_box_configs() {
         die2 "required box-config $dep is absent" || return $?
       fi
     fi
-  done < "$table"
+  done < <(awk -F'\t' '!seen[$1 FS $3]++' "$table" "$inc")
 }
 
 if [ -f "$HOME/.cargo/env" ]; then source "$HOME/.cargo/env"; fi
@@ -303,6 +306,10 @@ fi
 CRATES_ROOT="$wt/crates" SHIM_ALLOWLIST="$wt/harness/shim-allowlist.tsv" SHIM_REGISTRY="$wt/harness/shim-registry.tsv" SHIM_RATCHET_DIR="$ratchets" SHIM_OWNERS="$(main_data OWNERS)" SHIM_REPO_ROOT="$wt" main_run harness/scripts/shim-gate.mjs || die "shim gate failed"
 if grep -qE '^(crates/(lwc-compiler|lwc-compiler-napi|lwc-shared)/|harness/(board\.sh|board-rows\.sh|option-inventory\.json|src/backend\.ts|scripts/option-(gate|fields)\.mjs)$)' <<< "$changed"; then
   source "$(main_data harness/board-rows.sh)"   # ROWS/DIAG + option_gate: same source of truth as harness/board.sh
+  # D-0286(2): option rows are MAIN UNION the branch's added rows (DIAG stays MAIN's).
+  source "$(main_data scripts/registry-union.sh)"
+  _u_rows="$(union_board_rows "$(main_data harness/board-rows.sh)" "$wt/harness/board-rows.sh")" || die "harness/board-rows.sh: removal or DIAG loosening without a D-id cite (see above)"
+  mapfile -t ROWS <<< "$_u_rows"
   CRATES_ROOT="$wt/crates" OPTGATE_INVENTORY="$wt/harness/option-inventory.json" option_gate || die "option-inventory gate failed"
 fi
 if grep -qE '^harness/(test|src)/' <<< "$changed"; then

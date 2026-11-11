@@ -7,6 +7,7 @@ harness/.pins/
 harness/.vitest/
 harness/.csr-render-out/
 harness/.ssr-render-out/
+harness/.lbc-out/
 harness/render-out/
 harness/.template-diag-diff/
 

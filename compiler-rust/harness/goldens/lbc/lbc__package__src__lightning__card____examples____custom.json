@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">:host {min-width: 430px;max-width: 620px;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><lightning-card><template shadowrootmode=\"open\"></template><h3 slot=\"title\"><lightning-icon><template shadowrootmode=\"open\"></template></lightning-icon>Card Title</h3><div slot=\"footer\"><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge></div><p class=\"slds-p-horizontal_small\">Card Body (custom component)</p></lightning-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {min-width: 430px;max-width: 620px;}</style><lightning-card><template shadowrootmode=\"open\"></template><h3 slot=\"title\"><lightning-icon><template shadowrootmode=\"open\"></template></lightning-icon>Card Title</h3><div slot=\"footer\"><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge></div><p class=\"slds-p-horizontal_small\">Card Body (custom component)</p></lightning-card></template></lwc-lbc>"
+ }
+}

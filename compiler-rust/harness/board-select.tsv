@@ -51,4 +51,5 @@ row	ssr-render-asyncYield	lwc-ssr
 row	ssr_dynamic_imports	lwc-ssr
 row	ssr_render_api	lwc-ssr
 row	csr-render	lwc-ssr
+row	lbc	lwc-compiler
 row	semantic-diff	semdiff

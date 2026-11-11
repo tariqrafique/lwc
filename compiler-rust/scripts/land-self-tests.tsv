@@ -20,9 +20,11 @@ test-semantic-diff-row	scripts/test-semantic-diff-row.sh	scripts/test-semantic-d
 test-semantic-diff-row	scripts/test-semantic-diff-row.sh	harness/scripts/semantic-diff-row.sh
 lint-shell-pipes	scripts/lint-shell-pipes.sh --self-test	scripts/lint-shell-pipes.sh
 workspace-path-scan	scripts/workspace-path-scan.sh --self-test	scripts/workspace-path-scan.sh
+workspace-path-scan	scripts/workspace-path-scan.sh --self-test	scripts/registry-union.sh
 test-source-scan-tracked	scripts/test-source-scan-tracked.sh	scripts/test-source-scan-tracked.sh
 test-source-scan-tracked	scripts/test-source-scan-tracked.sh	scripts/tracked-files.sh
 test-source-scan-tracked	scripts/test-source-scan-tracked.sh	scripts/tracked-files.mjs
+test-source-scan-tracked	scripts/test-source-scan-tracked.sh	scripts/registry-union.sh
 test-land-agent-branch	scripts/test-land-agent-branch.sh	scripts/test-land-agent-branch.sh
 test-land-agent-branch	scripts/test-land-agent-branch.sh	scripts/land-agent-branch.sh
 test-board-select	scripts/test-board-select.sh	scripts/test-board-select.sh
@@ -35,8 +37,10 @@ test-land-path-checks	scripts/test-land-path-checks.sh	scripts/land-path-checks.
 test-land-path-checks	scripts/test-land-path-checks.sh	scripts/land.sh
 test-land-path-checks	scripts/test-land-path-checks.sh	scripts/c8-checks.sh
 baseline-ceiling	scripts/baseline-ceiling.sh --self-test	scripts/baseline-ceiling.sh
+baseline-ceiling	scripts/baseline-ceiling.sh --self-test	scripts/registry-union.sh
 ratchet-ceiling	scripts/ratchet-ceiling.sh --self-test	scripts/ratchet-ceiling.sh
 lint-no-stripped-compare	@lint-no-stripped-compare	scripts/lint-no-stripped-compare.sh
+lint-no-stripped-compare	@lint-no-stripped-compare	scripts/registry-union.sh
 check-land-main-refs	@check-land-main-refs	scripts/check-land-main-refs.sh
 check-land-main-refs	@check-land-main-refs	scripts/land-main-refs.tsv
 check-land-main-refs	@check-land-main-refs	scripts/land.sh
@@ -47,6 +51,7 @@ test-board-ratchet	scripts/test-board-ratchet.sh	harness/board-rows.sh
 test-board-ratchet	scripts/test-board-ratchet.sh	harness/scripts/board-baseline.mjs
 test-board-ratchet	scripts/test-board-ratchet.sh	harness/vitest.config.ts
 test-board-ratchet	scripts/test-board-ratchet.sh	harness/vitest.board.config.ts
+test-board-ratchet	scripts/test-board-ratchet.sh	scripts/registry-union.sh
 test-land-self-tests	scripts/test-land-self-tests.sh	scripts/test-land-self-tests.sh
 test-land-self-tests	scripts/test-land-self-tests.sh	scripts/run-land-self-tests.sh
 test-land-self-tests	scripts/test-land-self-tests.sh	scripts/land-self-tests.tsv

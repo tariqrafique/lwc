@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "AdapterCtor is not a constructor"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "adapter is not a constructor"
+ }
+}

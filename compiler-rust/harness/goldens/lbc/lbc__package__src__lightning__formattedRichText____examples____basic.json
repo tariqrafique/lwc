@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div><p><lightning-formatted-rich-text><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p><p><lightning-formatted-rich-text><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p><p><lightning-formatted-rich-text><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p><p><lightning-formatted-rich-text><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p><p><lightning-formatted-rich-text class=\"slds-text-body_small\"><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p><p><lightning-formatted-rich-text class=\"slds-text-body_small\"><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div><p><lightning-formatted-rich-text><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p><p><lightning-formatted-rich-text><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p><p><lightning-formatted-rich-text><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p><p><lightning-formatted-rich-text><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p><p><lightning-formatted-rich-text class=\"slds-text-body_small\"><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p><p><lightning-formatted-rich-text class=\"slds-text-body_small\"><template shadowrootmode=\"open\"></template></lightning-formatted-rich-text></p></div></template></lwc-lbc>"
+ }
+}

@@ -45,6 +45,21 @@ if [ -z "${CARGO_TARGET_DIR:-}" ]; then
   _target_tmp="$(mktemp -d "${TMPDIR:-/tmp}/lwc-portable-target.XXXXXX")"
   export CARGO_TARGET_DIR="$_target_tmp"
 fi
+# The snapshot has no .git. ssr-oracle-gate reads known-diffs at SSR_ORACLE_MAIN
+# from this clone (official-board sets the same pair from its main checkout).
+if [ -z "${SSR_ORACLE_GIT:-}" ]; then
+  export SSR_ORACLE_GIT="$root"
+fi
+if [ -z "${SSR_ORACLE_MAIN:-}" ]; then
+  export SSR_ORACLE_MAIN="$(git -C "$root" rev-parse HEAD)"
+fi
+# shim-gate lists the tree with git ls-files unless SHIM_FILE_LIST is set.
+# The archive has no .git; give it the same commit listing official-board uses.
+if [ -z "${SHIM_FILE_LIST:-}" ]; then
+  SHIM_FILE_LIST="$snap/shim-file-list"
+  git -C "$root" ls-tree -r -z --name-only "$_commit" > "$SHIM_FILE_LIST"
+  export SHIM_FILE_LIST
+fi
 export C8_TARBALLS="${PORTABLE_TARBALLS:-$snap/tarballs}"
 export BOARD_FOOTER_LOG_DIR="${PORTABLE_FOOTER_LOG_DIR:-$snap}"
 export SPE_LOG="${PORTABLE_SPE_LOG:-$BOARD_FOOTER_LOG_DIR/style-fixtures.log}"
@@ -57,7 +72,7 @@ portable_srchash() {
   (cd "$snap/repo" && find . -type f \
     ! -path './harness/node_modules/*' ! -path './harness/.pins/*' \
     ! -path './harness/.vitest/*' ! -path './harness/.csr-render-out/*' \
-    ! -path './harness/.ssr-render-out/*' ! -path './target/*' \
+    ! -path './harness/.ssr-render-out/*' ! -path './harness/.lbc-out/*' ! -path './target/*' \
     ! -name '*.node' ! -name 'napi.gen.d.ts' -print0 \
     | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')
 }

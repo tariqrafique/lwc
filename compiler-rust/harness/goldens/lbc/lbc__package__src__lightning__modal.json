@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Use of <lightning-modal> as an element is not supported. See developer documentation for extending the LightningModal class."
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "Use of <lightning-modal> as an element is not supported. See developer documentation for extending the LightningModal class."
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot destructure property 'sortedBy' of 'this.dtInstance' as it is undefined."
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "LWC1188: Invalid dynamic components usage, lwc:component and lwc:is can only be used when dynamic components have been enabled."
+ }
+}

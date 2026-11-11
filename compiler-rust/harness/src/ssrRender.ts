@@ -247,11 +247,16 @@ export function lwcBackendPlugin(backend: CompilerBackend, pluginOptions: LwcPlu
 export async function bundleLwc(backend: CompilerBackend, opts: {
     entrySource: string; pluginOptions: LwcPluginOptions; external: string[]; paths: Record<string, string>;
     extraPlugins?: any[]; afterPlugins?: any[]; onWarning?: (message: string) => void;
+    /** Rollup fills missing named exports with undefined. Default off (existing rows unchanged). */
+    shimMissingExports?: boolean;
+    /** Keep dynamic imports inside the one entry chunk. Default off so other rows keep their chunking. */
+    inlineDynamicImports?: boolean;
 }): Promise<string> {
     const input = 'virtual/fixture/test.js';
     const bundle = await rollup({
         input,
         external: opts.external,
+        ...(opts.shimMissingExports ? { shimMissingExports: true } : {}),
         plugins: [
             { name: 'virtual', resolveId: (id: string) => (id === input ? id : undefined), load: (id: string) => (id === input ? opts.entrySource : undefined) },
             ...(opts.extraPlugins ?? []),
@@ -265,7 +270,12 @@ export async function bundleLwc(backend: CompilerBackend, opts: {
         },
     });
     try {
-        const { output } = await bundle.generate({ format: 'esm', exports: 'named', paths: opts.paths });
+        const { output } = await bundle.generate({
+            format: 'esm',
+            exports: 'named',
+            paths: opts.paths,
+            ...(opts.inlineDynamicImports ? { inlineDynamicImports: true } : {}),
+        });
         return output[0].code;
     } finally {
         await bundle.close();

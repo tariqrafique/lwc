@@ -22,7 +22,7 @@ assert_observed() {
   fi
   return 0
 }
-tar -C "$R" --exclude=harness/node_modules --exclude=harness/.pins --exclude=harness/.vitest --exclude=harness/.csr-render-out \
+tar -C "$R" --exclude=harness/node_modules --exclude=harness/.pins --exclude=harness/.vitest --exclude=harness/.csr-render-out --exclude=harness/.lbc-out \
   --exclude=harness/.ssr-render-out -cf - harness | tar -C "$T" -xf -
 H="$T/harness"
 # board.sh reads SHIM_OWNERS from $here/../OWNERS (the tree board.sh itself lives in). The harness
@@ -113,6 +113,8 @@ cp "$BL0" "$T/worse.tsv"; restore
 # --- git-backed ceiling fixture (the production API) ---
 M="$T/main"; mkdir -p "$M/scripts" "$M/harness/scripts"
 cp "$R/scripts/baseline-ceiling.sh" "$M/scripts/"; cp "$R/harness/scripts/board-baseline.mjs" "$M/harness/scripts/"; cp "$R/harness/board-rows.sh" "$M/harness/"
+# Gate scripts the fake main runs must carry every sibling they source (D-0286 added registry-union.sh).
+for _src in $(sed -n 's|^source .*/\([A-Za-z0-9_.-]*\.sh\)"$|\1|p' "$R/scripts/baseline-ceiling.sh"); do cp "$R/scripts/$_src" "$M/scripts/"; done
 G="$T/repo"; mkdir -p "$G/harness"; cd "$G"; git init -q -b main; git config user.email t@t; git config user.name t
 cp "$T/baseline.orig" harness/board-baseline.tsv; git add -A; git commit -qm base; gbase="$(git rev-parse HEAD)"
 # also a notes repo for Case-Set lookups (committed decisions.tsv; land.sh uses DEC_REPO HEAD, never a working tree)
@@ -227,7 +229,7 @@ else bad "ceiling F3-drop-fail -> rc $rc"; sed 's/^/       /' "$T/out.ceil.F3-dr
 cp "$T/baseline.orig" "$T/nodiag.tsv"
 node -e 'const fs=require("fs");let t=fs.readFileSync(process.argv[1],"utf8");t=t.replace(/^template-diag\tcounts\t[^\n]+\n/m,"");fs.writeFileSync(process.argv[1],t);' "$T/nodiag.tsv"
 commit_bl "$T/nodiag.tsv" 'F4 drop template-diag'
-ceil F4-drop-diag 1 'template-diag exists on main but is missing'
+ceil F4-drop-diag 1 'template-diag exists on main but is missing|board-baseline removal without D-id cite.*template-diag'
 # F4b: 9 crashes
 cp "$T/baseline.orig" "$T/tdcrash.tsv"
 node -e 'const fs=require("fs");let t=fs.readFileSync(process.argv[1],"utf8");t=t.replace(/^template-diag\tcounts\t[^\n]+/m,"template-diag\tcounts\t9 0");fs.writeFileSync(process.argv[1],t);' "$T/tdcrash.tsv"

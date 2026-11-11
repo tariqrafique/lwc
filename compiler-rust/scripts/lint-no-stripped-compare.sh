@@ -2,9 +2,11 @@
 # D-0219: one equivalence authority. Board/harness comparators decide on exact bytes or ask semdiff (tools/semdiff,
 # D-0196); they never strip, collapse or trim whitespace (or strip banner comments) before comparing code. This lint
 # finds those normalizations in harness/**, tools/** (except tools/semdiff, the authority) and scripts/*.
-# Allowlist (D-0256/D-0257): a closed exact path+line+rule list read only from $MAIN
-# (scripts/lint-no-stripped-compare.allowlist, columns: path<TAB>line<TAB>rule<TAB>D-id). A branch cannot widen it.
-# A hit not on the list fails; a list entry with no hit fails (delete it); every entry must cite a D-id (^D-[0-9]{4}$).
+# Allowlist (D-0256/D-0257, D-0286(2)): exact path+line+rule rows (scripts/lint-no-stripped-compare.allowlist,
+# columns: path<TAB>line<TAB>rule<TAB>D-id). The list judged is $MAIN's UNION the tree's own additions
+# (scripts/registry-union.sh, key `path line rule`). A MAIN row missing from the tree's list needs
+# `# D-NNNN: remove <path> <line> <rule>` there, else rc 1. A hit not on the list fails; a list entry with
+# no hit fails (delete it); every entry must cite a D-id (^D-[0-9]{4}$).
 #
 # Usage: scripts/lint-no-stripped-compare.sh [--self-test] [<repo-root>]   (works from any cwd)
 # Exit: 0 pass; 1 lint failure; 2 usage/self-test failure.
@@ -25,17 +27,20 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$ROOT" && pwd)"
 command -v rg >/dev/null || { echo "lint-no-stripped-compare: rg (ripgrep) is required" >&2; exit 2; }
 
-# Allowlist is read only from $MAIN (explicit, or the repo root this script lives in). A missing file is rc 2.
-# No git-show-main: fallback and no sibling fallback: a branch cannot widen the list, and an absent file is not silent.
+# MAIN's list ($MAIN, or the repo root this script lives in) UNION the tree's additions. A missing MAIN
+# file is rc 2 (no git-show-main: fallback, no sibling fallback). An uncited removal of a MAIN row is rc 1.
+# shellcheck source=registry-union.sh
+source "$SCRIPT_DIR/registry-union.sh"
 load_allowlist() {
-  local dest="$1"
+  local dest="$1" urc=0
   local main="${MAIN:-$(cd "$SCRIPT_DIR/.." && pwd)}"
   local src="$main/scripts/lint-no-stripped-compare.allowlist"
   if [ ! -f "$src" ]; then
     echo "lint-no-stripped-compare: no allowlist at $src (MAIN=${MAIN:-unset})" >&2
     exit 2
   fi
-  cp "$src" "$dest"
+  union_keyed_registry "$src" "$ROOT/scripts/lint-no-stripped-compare.allowlist" 3 > "$dest" || urc=$?
+  case "$urc" in 0) ;; 1) exit 1 ;; *) exit 2 ;; esac
 }
 
 # id <TAB> what <TAB> regex (rg / Rust regex syntax)
@@ -176,18 +181,26 @@ F
   if MAIN="$T" "$0" "$T" >/dev/null; then echo "SELF-TEST FAILED: stale allowlist entry accepted"; exit 2; fi
   scan "$T" | awk -F'\t' '{print $3"\t"$4"\t"$1"\tD-xxxx"}' | sort -u >"$A"
   if MAIN="$T" "$0" "$T" >/dev/null; then echo "SELF-TEST FAILED: bad D-id accepted"; exit 2; fi
-  # $MAIN wins over the tree-under-test's copy.
+  # D-0286(2): the list is MAIN UNION the tree's additions.
   M="$(mktemp -d)"; mkdir -p "$M/scripts"
   scan "$T" | awk -F'\t' '{print $3"\t"$4"\t"$1"\tD-0256"}' | sort -u >"$T/scripts/lint-no-stripped-compare.allowlist"
   : >"$M/scripts/lint-no-stripped-compare.allowlist"
-  if MAIN="$M" "$0" "$T" >/dev/null; then echo "SELF-TEST FAILED: empty MAIN allowlist accepted tree hits"; exit 2; fi
+  MAIN="$M" "$0" "$T" >/dev/null || { echo "SELF-TEST FAILED: tree's own allowlist additions rejected (want MAIN UNION tree)"; exit 2; }
+  # Uncited removal of a MAIN row fails; a cited one (hit gone) passes.
+  printf 'harness/scripts/cmp.mjs\t999\tN1\tD-0256\n' >"$M/scripts/lint-no-stripped-compare.allowlist"
+  rm_rc=0; MAIN="$M" "$0" "$T" >"$T/rm.out" 2>&1 || rm_rc=$?
+  if [ "$rm_rc" -ne 1 ] || ! grep -q 'removal without D-id cite (# D-NNNN: remove harness/scripts/cmp.mjs 999 N1)' "$T/rm.out"; then
+    echo "SELF-TEST FAILED: uncited removal of a MAIN row rc=$rm_rc (want 1 + cite message)"; sed 's/^/       /' "$T/rm.out"; exit 2
+  fi
+  printf '%s\n' '# D-0286: remove harness/scripts/cmp.mjs 999 N1' >>"$T/scripts/lint-no-stripped-compare.allowlist"
+  MAIN="$M" "$0" "$T" >/dev/null || { echo "SELF-TEST FAILED: cited removal of a MAIN row rejected"; exit 2; }
   rm -rf "$M"
   # Missing $MAIN allowlist is rc 2: no git-show main: fallback and no sibling fallback.
   M="$(mktemp -d)"; mkdir -p "$M/scripts"
   miss_rc=0; MAIN="$M" "$0" "$T" >/dev/null 2>"$T/missing.err" || miss_rc=$?
   if [ "$miss_rc" -ne 2 ]; then echo "SELF-TEST FAILED: missing allowlist rc=$miss_rc (want 2)"; sed 's/^/       /' "$T/missing.err"; exit 2; fi
   rm -rf "$M"
-  echo "lint-no-stripped-compare self-test: ok ($n planted hits over 17 rules detected, near-misses and semdiff/fixtures clean, allowlist + MAIN source enforced)"
+  echo "lint-no-stripped-compare self-test: ok ($n planted hits over 17 rules detected, near-misses and semdiff/fixtures clean, allowlist = MAIN UNION tree, uncited removal fails)"
   exit 0
 fi
 

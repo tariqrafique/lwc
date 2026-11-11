@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\">‍<c-record-edit-form><template shadowrootmode=\"open\"></template><c-messages><template shadowrootmode=\"open\"></template></c-messages><lightning-input-field><template shadowrootmode=\"open\"></template></lightning-input-field><c-output-field><template shadowrootmode=\"open\"></template></c-output-field><lightning-input-field><template shadowrootmode=\"open\"></template></lightning-input-field><div class=\"nestedChild\"></div><c-button class=\"submitme\"><template shadowrootmode=\"open\"></template></c-button></c-record-edit-form></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-record-edit-form><template shadowrootmode=\"open\"></template><c-messages><template shadowrootmode=\"open\"></template></c-messages><lightning-input-field><template shadowrootmode=\"open\"></template></lightning-input-field><c-output-field><template shadowrootmode=\"open\"></template></c-output-field><lightning-input-field><template shadowrootmode=\"open\"></template></lightning-input-field><div class=\"nestedChild\"></div><c-button class=\"submitme\"><template shadowrootmode=\"open\"></template></c-button></c-record-edit-form></template></lwc-lbc>"
+ }
+}

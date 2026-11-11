@@ -34,6 +34,7 @@ scripts/install-napi.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/land.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/cargo-locked.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 harness/board-rows.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
+scripts/registry-union.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/land-main-refs.tsv	MAIN_DATA_AS_BASE	-	-
 OWNERS	MAIN_DATA_AS_BASE	-	-
 scripts/land.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required

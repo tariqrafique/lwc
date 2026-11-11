@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Badge\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><h3 class=\"slds-m-bottom_medium\">Badges only have labels in the API. 4th badge is dynamic.</h3><c-badge><template shadowrootmode=\"open\"></template></c-badge><c-badge><template shadowrootmode=\"open\"></template></c-badge><c-badge><template shadowrootmode=\"open\"></template></c-badge><c-badge><template shadowrootmode=\"open\"></template></c-badge><div class=\"slds-m-top_large\"><c-button title=\"Set 4th Badge Label to null\"><template shadowrootmode=\"open\"></template></c-button><c-button class=\"slds-m-left_medium\" title=\"Set 4th Badge Label to Hello\"><template shadowrootmode=\"open\"></template></c-button></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Represents a label which holds a small amount of information, such as the number of unread notifications.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Badge\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><h3 class=\"slds-m-bottom_medium\">Badges only have labels in the API. 4th badge is dynamic.</h3><c-badge><template shadowrootmode=\"open\"></template></c-badge><c-badge><template shadowrootmode=\"open\"></template></c-badge><c-badge><template shadowrootmode=\"open\"></template></c-badge><c-badge><template shadowrootmode=\"open\"></template></c-badge><div class=\"slds-m-top_large\"><c-button title=\"Set 4th Badge Label to null\"><template shadowrootmode=\"open\"></template></c-button><c-button class=\"slds-m-left_medium\" title=\"Set 4th Badge Label to Hello\"><template shadowrootmode=\"open\"></template></c-button></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Represents a label which holds a small amount of information, such as the number of unread notifications.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

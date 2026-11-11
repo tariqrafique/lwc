@@ -21,7 +21,10 @@ from pathlib import Path
 import sys
 p = Path(sys.argv[1])
 t = p.read_text()
-t = t.replace("style-upstream)", "style-upstream d0286-plant)", 1)
+import re
+# Append to ROWS=(...) whatever its last row is (a branch may add rows after style-upstream).
+t, n = re.subn(r"^(ROWS=\([^)\n]*)\)", r"\1 d0286-plant)", t, count=1, flags=re.M)
+assert n == 1, "ROWS=(...) line not found in board-rows.sh"
 p.write_text(t)
 PY
 if plan="$("$GG" --plan "$T/h-add" 2>"$T/plan-add.err")"; then

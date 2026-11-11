@@ -3,18 +3,18 @@
 # {stem} = the bot named by the file name (state/<bot>.md), @d-id = appended through bin/d-id by any bot.
 @bots	migrate,harness,template,ssr,js,semdiff,arch-board,ship
 lwc-rust-migrate/decisions.tsv	migrate,@d-id
-lwc-rust-migrate/CUTOVER.md	harness,migrate
-lwc-rust-migrate/ship-*	harness
-lwc-rust-migrate/error-callsite-form.md	harness
-lwc-rust-migrate/proofs/js-divergences/*	harness
+lwc-rust-migrate/CUTOVER.md	ship,migrate
+lwc-rust-migrate/ship-*	ship
+lwc-rust-migrate/error-callsite-form.md	js
+lwc-rust-migrate/proofs/js-divergences/*	js
 lwc-rust-migrate/*	migrate
 arch-board/proposals/*	*
 arch-board/*	arch-board
-lwc-ssr-rust/*	harness
-template-rust/*	harness
-postcss-rust/*	harness
-state/postcss.md	harness
-state/diagnostics.md	harness
+lwc-ssr-rust/*	ssr
+template-rust/*	template
+postcss-rust/*	js
+state/postcss.md	js
+state/diagnostics.md	template
 state/TEMPLATE.md	migrate
 state/*.md	{stem}
 *	migrate

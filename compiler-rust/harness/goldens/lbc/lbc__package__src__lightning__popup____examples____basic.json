@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-popup aria-describedby=\"popup-body\"><template shadowrootmode=\"open\"></template><div class=\"slds-popover\"><div class=\"slds-popover__body\" id=\"popup-body\"><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><div class=\"slds-m-top_small\"><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-button><template shadowrootmode=\"open\"></template></lightning-button></div></div></div></lightning-popup></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-popup aria-describedby=\"popup-body\"><template shadowrootmode=\"open\"></template><div class=\"slds-popover\"><div class=\"slds-popover__body\" id=\"popup-body\"><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><div class=\"slds-m-top_small\"><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-button><template shadowrootmode=\"open\"></template></lightning-button></div></div></div></lightning-popup></template></lwc-lbc>"
+ }
+}
