@@ -262,6 +262,37 @@ pub fn compare_forcing_rules(oracle: &str, rust: &str, force: &[&str]) -> Verdic
     compare_with(oracle, rust, Some(force))
 }
 
+/// Drop the `: name` tokens of a property whose shorthand flag was canonicalized.
+/// The printer emits `{name}` for both `{name}` and `{name: name}`, so those two tokens are the
+/// spelling the printer already erased. The innermost property wins when spans nest.
+fn drop_shorthand_tokens(tokens: &mut Vec<Tok>, marks: &[crate::normalize::ShorthandMark]) {
+    if marks.is_empty() {
+        return;
+    }
+    let mut seen = vec![false; marks.len()];
+    tokens.retain(|t| {
+        let Some((i, m)) = marks
+            .iter()
+            .enumerate()
+            .filter(|(_, m)| t.start >= m.span.start && t.start < m.span.end)
+            .min_by_key(|(_, m)| m.span.size())
+        else {
+            return true;
+        };
+        if !seen[i] && t.kind == Kind::Ident && t.text == m.name {
+            seen[i] = true;
+            return true;
+        }
+        if t.kind == Kind::Colon {
+            return false;
+        }
+        if t.kind == Kind::Ident && t.text == m.name {
+            return false;
+        }
+        true
+    });
+}
+
 fn reprint(program: &Program<'_>) -> String {
     let opts = CodegenOptions {
         comments: CommentOptions::disabled(),
@@ -296,6 +327,13 @@ fn tokens_outside_imports(tokens: &[Tok], program: &Program<'_>) -> Vec<Tok> {
     out
 }
 
+fn drop_spans(tokens: &mut Vec<Tok>, spans: &[oxc::span::Span]) {
+    if spans.is_empty() {
+        return;
+    }
+    tokens.retain(|t| !spans.iter().any(|s| t.start >= s.start && t.start < s.end));
+}
+
 fn is_stripped_paren(tok: &Tok, spans: &[oxc::span::Span]) -> bool {
     spans.iter().any(|s| {
         (tok.kind == Kind::LParen && tok.start == s.start)
@@ -327,11 +365,27 @@ fn compare_with(oracle: &str, rust: &str, force: Option<&[&str]>) -> Verdict {
         let hoist_changed = en.hoist
             && (crate::normalize::hoist_decls(&alloc_o, &mut prog_o)
                 | crate::normalize::hoist_decls(&alloc_r, &mut prog_r));
-        if import_changed || hoist_changed {
+        let literal_changed = en.var_literal
+            && (crate::normalize::slide_literal_vars(&alloc_o, &mut prog_o)
+                | crate::normalize::slide_literal_vars(&alloc_r, &mut prog_r));
+        let key_spans_o = if en.last_key {
+            crate::normalize::collapse_last_keys(&alloc_o, &mut prog_o)
+        } else {
+            Vec::new()
+        };
+        let key_spans_r = if en.last_key {
+            crate::normalize::collapse_last_keys(&alloc_r, &mut prog_r)
+        } else {
+            Vec::new()
+        };
+        let key_changed = !key_spans_o.is_empty() || !key_spans_r.is_empty();
+        if import_changed || hoist_changed || literal_changed || key_changed {
             o.printed = Some(reprint(&prog_o));
             r.printed = Some(reprint(&prog_r));
             o.tokens = tokens_outside_imports(&o.tokens, &prog_o);
             r.tokens = tokens_outside_imports(&r.tokens, &prog_r);
+            drop_spans(&mut o.tokens, &key_spans_o);
+            drop_spans(&mut r.tokens, &key_spans_r);
             structural = true;
         }
         // Name a structural rule only when it closed a printer gap. A mutation that both sides
@@ -342,6 +396,12 @@ fn compare_with(oracle: &str, rust: &str, force: Option<&[&str]>) -> Verdict {
         }
         if closed_print && hoist_changed {
             note_rule(&mut rules_applied, "R-HOIST-DECL");
+        }
+        if closed_print && literal_changed {
+            note_rule(&mut rules_applied, "R-VAR-LITERAL-IMPORT");
+        }
+        if closed_print && key_changed {
+            note_rule(&mut rules_applied, "R-OBJECT-LAST-KEY");
         }
         let _ = structural;
         if o.printed != r.printed && en.redundant_paren {
@@ -359,7 +419,7 @@ fn compare_with(oracle: &str, rust: &str, force: Option<&[&str]>) -> Verdict {
         } else if o.printed == r.printed && !prog_o.content_eq(&prog_r) && en.redundant_paren {
             let spans_o = crate::normalize::strip_redundant_parens(&alloc_o, &mut prog_o);
             let spans_r = crate::normalize::strip_redundant_parens(&alloc_r, &mut prog_r);
-            if (!spans_o.is_empty() || !spans_r.is_empty()) && prog_o.content_eq(&prog_r) {
+            if prog_o.content_eq(&prog_r) {
                 note_rule(&mut rules_applied, "R-REDUNDANT-PAREN");
                 o.tokens.retain(|t| !is_stripped_paren(t, &spans_o));
                 r.tokens.retain(|t| !is_stripped_paren(t, &spans_r));
@@ -372,7 +432,32 @@ fn compare_with(oracle: &str, rust: &str, force: Option<&[&str]>) -> Verdict {
             );
             (Class::Unclassified, Reason::PrintedDiffers)
         } else if !prog_o.content_eq(&prog_r) {
-            (Class::Unclassified, Reason::AstDiffers)
+            let marks_o = if en.shorthand {
+                crate::normalize::canon_object_shorthand(&mut prog_o)
+            } else {
+                Vec::new()
+            };
+            let marks_r = if en.shorthand {
+                crate::normalize::canon_object_shorthand(&mut prog_r)
+            } else {
+                Vec::new()
+            };
+            if (!marks_o.is_empty() || !marks_r.is_empty()) && prog_o.content_eq(&prog_r) {
+                drop_shorthand_tokens(&mut o.tokens, &marks_o);
+                drop_shorthand_tokens(&mut r.tokens, &marks_r);
+                note_rule(&mut rules_applied, "R-OBJECT-SHORTHAND");
+                token_or_comment(
+                    &o,
+                    &r,
+                    &prog_o,
+                    &prog_r,
+                    force,
+                    &mut rules_applied,
+                    &mut first_diff,
+                )
+            } else {
+                (Class::Unclassified, Reason::AstDiffers)
+            }
         } else {
             token_or_comment(
                 &o,
@@ -397,9 +482,15 @@ fn token_or_comment(
     rules_applied: &mut Vec<String>,
     first_diff: &mut Value,
 ) -> (Class, Reason) {
-    let comment_star = match force {
-        Some(f) => crate::rules::enable_forcing(f).comment_star,
-        None => crate::rules::enabled().comment_star,
+    let (comment_star, inert_line) = match force {
+        Some(f) => {
+            let en = crate::rules::enable_forcing(f);
+            (en.comment_star, en.inert_line)
+        }
+        None => {
+            let en = crate::rules::enabled();
+            (en.comment_star, en.inert_line)
+        }
     };
     if let Some(d) = match force {
         Some(f) => crate::rules::first_token_diff_forcing(
@@ -414,7 +505,13 @@ fn token_or_comment(
     } {
         *first_diff = d;
         (Class::Unclassified, Reason::TokensDiffer)
-    } else if !comments_match(&o.comments, &r.comments, comment_star, rules_applied) {
+    } else if !comments_match(
+        &o.comments,
+        &r.comments,
+        comment_star,
+        inert_line,
+        rules_applied,
+    ) {
         (Class::Unclassified, Reason::CommentsDiffer)
     } else {
         (Class::EquivalentByRewrite, Reason::PrinterEqual)
@@ -422,21 +519,67 @@ fn token_or_comment(
 }
 
 /// Block-comment continuation indent before `*` is the only comment difference this erases.
-fn comments_match(a: &[String], b: &[String], star: bool, applied: &mut Vec<String>) -> bool {
+fn comments_match(
+    a: &[String],
+    b: &[String],
+    star: bool,
+    inert: bool,
+    applied: &mut Vec<String>,
+) -> bool {
     if a == b {
         return true;
     }
-    if !star || a.len() != b.len() {
+    let (af, bf, dropped): (Vec<String>, Vec<String>, bool) = if inert {
+        let af: Vec<String> = a.iter().filter(|c| !is_inert_line(c)).cloned().collect();
+        let bf: Vec<String> = b.iter().filter(|c| !is_inert_line(c)).cloned().collect();
+        let dropped = af.len() != a.len() || bf.len() != b.len();
+        (af, bf, dropped)
+    } else {
+        (a.to_vec(), b.to_vec(), false)
+    };
+    if af.len() != bf.len() {
         return false;
     }
-    if a.iter()
-        .zip(b)
-        .all(|(x, y)| norm_block_comment(x) == norm_block_comment(y))
-    {
-        note_rule(applied, "R-COMMENT-STAR-SPACE");
-        return true;
+    let star_hit = af
+        .iter()
+        .zip(&bf)
+        .any(|(x, y)| x != y && norm_block_comment(x) == norm_block_comment(y));
+    let same = af.iter().zip(&bf).all(|(x, y)| {
+        if x == y {
+            true
+        } else if star {
+            norm_block_comment(x) == norm_block_comment(y)
+        } else {
+            false
+        }
+    });
+    if !same {
+        return false;
     }
-    false
+    if dropped {
+        note_rule(applied, "R-INERT-LINE-COMMENT");
+    }
+    if star_hit {
+        note_rule(applied, "R-COMMENT-STAR-SPACE");
+    }
+    true
+}
+
+/// A `//` note with no tool directive. eslint, istanbul, coverage, pure, and sourceMappingURL stay observed.
+fn is_inert_line(c: &str) -> bool {
+    let t = c.trim();
+    if !t.starts_with("//") {
+        return false;
+    }
+    let body = t.trim_start_matches('/').trim();
+    !(body.starts_with("eslint")
+        || body.contains("eslint-")
+        || body.starts_with("istanbul")
+        || body.starts_with("c8")
+        || body.starts_with("v8")
+        || body.starts_with('#')
+        || body.starts_with('@')
+        || body.contains("sourceMappingURL"))
 }
 
 fn norm_block_comment(c: &str) -> String {

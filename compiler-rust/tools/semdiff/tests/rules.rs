@@ -56,7 +56,7 @@ fn table_lists_both_rules_applied() {
     assert_ne!(rule_table_version(), "rt-1");
     assert_eq!(
         rule_table_version(),
-        "rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-NUMERIC-SPELLING-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1"
+        "rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-INERT-LINE-COMMENT-1@1+R-NUMERIC-SPELLING-1@1+R-OBJECT-LAST-KEY-1@1+R-OBJECT-SHORTHAND-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1"
     );
     for prefix in ["R-ASI-SEMI", "R-TRAILING-COMMA"] {
         let meta = semdiff::rules::table()
@@ -433,6 +433,104 @@ fn a_different_or_missing_comment_is_observed() {
         &force,
     );
     not_equiv("// keep me\nconst a = 1;\n", "const a = 1;\n", &force);
+}
+
+#[test]
+fn literal_var_beside_imports_is_unobservable() {
+    let id = tag("R-VAR-LITERAL-IMPORT");
+    let force = [id.as_str()];
+    let a = "var id = 0;\nimport { a } from \"m\";\nexport const x = id + a;\n";
+    let b = "import { a } from \"m\";\nvar id = 0;\nexport const x = id + a;\n";
+    equiv(a, b, &force);
+    assert!(applied_forced(a, b, &force).iter().any(|t| t == &id));
+}
+
+#[test]
+fn literal_var_does_not_cross_a_call() {
+    let id = tag("R-VAR-LITERAL-IMPORT");
+    let force = [id.as_str()];
+    not_equiv("f();\nvar x = 0;\n", "var x = 0;\nf();\n", &force);
+}
+
+#[test]
+fn duplicate_data_key_keeps_the_last_value() {
+    let id = tag("R-OBJECT-LAST-KEY");
+    let force = [id.as_str()];
+    let a = "const o = { selectedItem: 1, selectedItem: 1, currentContent: 1 };\n";
+    let b = "const o = { selectedItem: 1, currentContent: 1 };\n";
+    equiv(a, b, &force);
+    assert!(applied_forced(a, b, &force).iter().any(|t| t == &id));
+    equiv(
+        "const o = { a: 1, a: 2 };\n",
+        "const o = { a: 2 };\n",
+        &force,
+    );
+}
+
+#[test]
+fn an_earlier_duplicate_value_is_not_the_result() {
+    let id = tag("R-OBJECT-LAST-KEY");
+    let force = [id.as_str()];
+    not_equiv(
+        "const o = { a: 1, a: 2 };\n",
+        "const o = { a: 1 };\n",
+        &force,
+    );
+    not_equiv(
+        "const o = { a: 1, ...b, c: 2 };\n",
+        "const o = { ...b, c: 2 };\n",
+        &force,
+    );
+}
+
+#[test]
+fn an_inert_line_comment_is_unobservable() {
+    let id = tag("R-INERT-LINE-COMMENT");
+    let force = [id.as_str()];
+    let a = "const a = 1; // our props\n";
+    let b = "const a = 1;\n";
+    equiv(a, b, &force);
+    assert!(applied_forced(a, b, &force).iter().any(|t| t == &id));
+}
+
+#[test]
+fn a_directive_line_comment_is_observed() {
+    let id = tag("R-INERT-LINE-COMMENT");
+    let force = [id.as_str()];
+    not_equiv(
+        "const a = 1; // eslint-disable-line no-console\n",
+        "const a = 1;\n",
+        &force,
+    );
+    not_equiv(
+        "const a = 1; //# sourceMappingURL=a.js.map\n",
+        "const a = 1;\n",
+        &force,
+    );
+    not_equiv("/* keep */\nconst a = 1;\n", "const a = 1;\n", &force);
+}
+
+#[test]
+fn explicit_property_shorthand_is_unobservable() {
+    let id = tag("R-OBJECT-SHORTHAND");
+    let force = [id.as_str()];
+    let a = "const o = { itemIndex: itemIndex, url: url };\nconst { url: url } = o;\n";
+    let b = "const o = { itemIndex, url };\nconst { url } = o;\n";
+    equiv(a, b, &force);
+    assert!(applied_forced(a, b, &force).iter().any(|t| t == &id));
+}
+
+#[test]
+fn a_different_property_value_is_observed() {
+    let id = tag("R-OBJECT-SHORTHAND");
+    let force = [id.as_str()];
+    not_equiv("const o = { a: b };\n", "const o = { a };\n", &force);
+    not_equiv(
+        "const o = { __proto__: __proto__ };\n",
+        "const o = { __proto__ };\n",
+        &force,
+    );
+    not_equiv("const { a: b } = o;\n", "const { a } = o;\n", &force);
 }
 
 #[test]

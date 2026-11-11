@@ -172,6 +172,10 @@ pub struct Enable {
     pub numeric: bool,
     pub redundant_paren: bool,
     pub comment_star: bool,
+    pub var_literal: bool,
+    pub last_key: bool,
+    pub inert_line: bool,
+    pub shorthand: bool,
 }
 
 fn applied(rules: &[RuleMeta], prefix: &str) -> bool {
@@ -197,6 +201,10 @@ pub fn enabled() -> Enable {
         numeric: applied(rules, "R-NUMERIC-SPELLING"),
         redundant_paren: applied(rules, "R-REDUNDANT-PAREN"),
         comment_star: applied(rules, "R-COMMENT-STAR-SPACE"),
+        var_literal: applied(rules, "R-VAR-LITERAL-IMPORT"),
+        last_key: applied(rules, "R-OBJECT-LAST-KEY"),
+        inert_line: applied(rules, "R-INERT-LINE-COMMENT"),
+        shorthand: applied(rules, "R-OBJECT-SHORTHAND"),
     }
 }
 
@@ -211,6 +219,10 @@ pub fn enable_forcing(force: &[&str]) -> Enable {
         numeric: forced(rules, "R-NUMERIC-SPELLING", force),
         redundant_paren: forced(rules, "R-REDUNDANT-PAREN", force),
         comment_star: forced(rules, "R-COMMENT-STAR-SPACE", force),
+        var_literal: forced(rules, "R-VAR-LITERAL-IMPORT", force),
+        last_key: forced(rules, "R-OBJECT-LAST-KEY", force),
+        inert_line: forced(rules, "R-INERT-LINE-COMMENT", force),
+        shorthand: forced(rules, "R-OBJECT-SHORTHAND", force),
     }
 }
 

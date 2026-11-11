@@ -286,6 +286,11 @@ impl<'s> Lower<'s> {
             return false;
         }
         self.any = true;
+        // Babel's class-features uid is reserved for a class that has instance fields even when
+        // the alias is not emitted. A later class expression in the same program then gets `_Class2`.
+        if pending_static.is_empty() && !inits.is_empty() && decl.is_none() {
+            let _reserved = self.uids.generate(own.unwrap_or("Class"));
+        }
         // reference used by the trailing statics, and the alias used inside static initializers
         let reference = match decl {
             Some(_) => own.unwrap_or_default().to_string(),

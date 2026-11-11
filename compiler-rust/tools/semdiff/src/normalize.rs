@@ -5,7 +5,7 @@
 use oxc::allocator::{Allocator, TakeIn};
 use oxc::ast::ast::{
     BindingPattern, Expression, ImportDeclarationSpecifier, ImportOrExportKind, ModuleExportName,
-    Program, Statement, VariableDeclarationKind,
+    ObjectPropertyKind, Program, PropertyKind, Statement, VariableDeclarationKind,
 };
 use oxc::ast_visit::walk_mut::walk_expression;
 use oxc::ast_visit::VisitMut;
@@ -374,11 +374,274 @@ impl<'a> VisitMut<'a> for StripParens<'a> {
             };
             self.spans.push(p.span);
             *it = p.expression.take_in(&self.alloc);
+            clear_pife(it);
         }
         walk_expression(self, it);
+        clear_pife(it);
     }
+}
+
+fn clear_pife(it: &mut Expression<'_>) {
+    match it {
+        Expression::ArrowFunctionExpression(a) => a.pife = false,
+        Expression::FunctionExpression(f) => f.pife = false,
+        _ => {}
+    }
+}
+
+/// Drop an earlier data property when a later data property in the same object has the same
+/// static key. `{a: 1, a: 2}` evaluates as `{a: 2}`. A spread or a getter/setter is left alone.
+pub(crate) fn collapse_last_keys<'a>(alloc: &'a Allocator, program: &mut Program<'a>) -> Vec<Span> {
+    let mut v = LastKey {
+        alloc,
+        spans: Vec::new(),
+    };
+    v.visit_program(program);
+    v.spans
+}
+
+struct LastKey<'a> {
+    alloc: &'a Allocator,
+    spans: Vec<Span>,
+}
+
+impl<'a> VisitMut<'a> for LastKey<'a> {
+    fn visit_object_expression(&mut self, it: &mut oxc::ast::ast::ObjectExpression<'a>) {
+        oxc::ast_visit::walk_mut::walk_object_expression(self, it);
+        let mut last: std::collections::BTreeMap<String, usize> = std::collections::BTreeMap::new();
+        let mut spread = false;
+        for (i, prop) in it.properties.iter().enumerate() {
+            match prop {
+                ObjectPropertyKind::SpreadProperty(_) => spread = true,
+                ObjectPropertyKind::ObjectProperty(p)
+                    if p.kind == PropertyKind::Init && !p.computed =>
+                {
+                    if let Some(key) = static_key(&p.key) {
+                        if !spread {
+                            last.insert(key, i);
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        if spread {
+            return;
+        }
+        let keep: std::collections::BTreeSet<usize> = last.values().copied().collect();
+        if keep.len() == it.properties.len() {
+            return;
+        }
+        let mut dropped_until: Vec<(u32, u32)> = Vec::new();
+        for (i, prop) in it.properties.iter().enumerate() {
+            if keep.contains(&i) {
+                continue;
+            }
+            let start = prop.span().start;
+            let end = it
+                .properties
+                .get(i + 1)
+                .map(|n| n.span().start)
+                .unwrap_or(prop.span().end);
+            dropped_until.push((start, end));
+        }
+        let props = it.properties.take_in(&self.alloc);
+        let mut next = oxc::allocator::Vec::new_in(&self.alloc);
+        for (i, prop) in props.into_iter().enumerate() {
+            if keep.contains(&i) {
+                next.push(prop);
+            }
+        }
+        it.properties = next;
+        self.spans.extend(
+            dropped_until
+                .into_iter()
+                .map(|(start, end)| Span::new(start, end)),
+        );
+    }
+}
+
+fn static_key(key: &oxc::ast::ast::PropertyKey<'_>) -> Option<String> {
+    match key {
+        oxc::ast::ast::PropertyKey::StaticIdentifier(id) => Some(id.name.to_string()),
+        oxc::ast::ast::PropertyKey::StringLiteral(s) => s.value.as_str().map(str::to_string),
+        _ => None,
+    }
+}
+
+/// Move `var x = <literal>` across adjacent import declarations only.
+/// `var id = 0` before `import "m"` and `import "m"; var id = 0` both run the
+/// initializer after the module is evaluated. A literal var separated from
+/// imports by any other statement stays where it is.
+pub(crate) fn slide_literal_vars<'a>(alloc: &'a Allocator, program: &mut Program<'a>) -> bool {
+    let body = program.body.take_in(&alloc);
+    let mut stmts: Vec<Statement<'a>> = body.into_iter().collect();
+    let end = stmts
+        .iter()
+        .position(|s| {
+            !is_import(s)
+                && !is_pure_literal_var(s)
+                && !matches!(s, Statement::FunctionDeclaration(_))
+        })
+        .unwrap_or(stmts.len());
+    if end == 0 {
+        program.body = oxc::allocator::Vec::from_iter_in(stmts, &alloc);
+        return false;
+    }
+    let region: Vec<Statement<'a>> = stmts.drain(..end).collect();
+    let before: Vec<u32> = region.iter().map(|s| s.span().start).collect();
+    let mut funcs = Vec::new();
+    let mut imports = Vec::new();
+    let mut lits = Vec::new();
+    for s in region {
+        if matches!(s, Statement::FunctionDeclaration(_)) {
+            funcs.push(s);
+        } else if is_import(&s) {
+            imports.push(s);
+        } else {
+            lits.push(s);
+        }
+    }
+    let mut rebuilt = funcs;
+    rebuilt.extend(imports);
+    rebuilt.extend(lits);
+    let after: Vec<u32> = rebuilt.iter().map(|s| s.span().start).collect();
+    let changed = before != after;
+    rebuilt.extend(stmts);
+    program.body = oxc::allocator::Vec::from_iter_in(rebuilt, &alloc);
+    changed
+}
+
+fn is_pure_literal_var(stmt: &Statement<'_>) -> bool {
+    let Statement::VariableDeclaration(v) = stmt else {
+        return false;
+    };
+    if v.kind != VariableDeclarationKind::Var || v.declarations.is_empty() {
+        return false;
+    }
+    v.declarations.iter().all(|d| {
+        matches!(d.id, BindingPattern::BindingIdentifier(_))
+            && match &d.init {
+                Some(Expression::NumericLiteral(_))
+                | Some(Expression::StringLiteral(_))
+                | Some(Expression::BooleanLiteral(_))
+                | Some(Expression::NullLiteral(_)) => true,
+                Some(Expression::UnaryExpression(u)) => {
+                    u.operator == oxc::ast::ast::UnaryOperator::Void
+                        && matches!(u.argument, Expression::NumericLiteral(_))
+                }
+                _ => false,
+            }
+    })
 }
 
 pub(crate) fn is_import(stmt: &Statement<'_>) -> bool {
     matches!(stmt, Statement::ImportDeclaration(_))
+}
+
+/// `{a: a}` and `{a}` print the same (oxc codegen forces shorthand when the key and the value
+/// identifier match) but `ObjectProperty::shorthand` still differs. Set the flag to the printer's
+/// choice. Returns the spans of properties whose flag flipped, so the extra `: name` tokens can be
+/// dropped. `__proto__` keeps its flag: the printer emits that one as written.
+pub(crate) struct ShorthandMark {
+    pub span: Span,
+    pub name: String,
+}
+
+pub(crate) fn canon_object_shorthand<'a>(program: &mut Program<'a>) -> Vec<ShorthandMark> {
+    let mut v = ShorthandCanon { marks: Vec::new() };
+    v.visit_program(program);
+    v.marks
+}
+
+struct ShorthandCanon {
+    marks: Vec<ShorthandMark>,
+}
+
+impl<'a> VisitMut<'a> for ShorthandCanon {
+    fn visit_object_property(&mut self, it: &mut oxc::ast::ast::ObjectProperty<'a>) {
+        oxc::ast_visit::walk_mut::walk_object_property(self, it);
+        let Some(name) = shorthand_name_expr(&it.key, &it.value) else {
+            return;
+        };
+        if it.shorthand {
+            return;
+        }
+        it.shorthand = true;
+        self.marks.push(ShorthandMark {
+            span: it.span,
+            name,
+        });
+    }
+
+    fn visit_binding_property(&mut self, it: &mut oxc::ast::ast::BindingProperty<'a>) {
+        oxc::ast_visit::walk_mut::walk_binding_property(self, it);
+        let Some(name) = shorthand_name_binding(&it.key, &it.value) else {
+            return;
+        };
+        if it.shorthand {
+            return;
+        }
+        it.shorthand = true;
+        self.marks.push(ShorthandMark {
+            span: it.span,
+            name,
+        });
+    }
+}
+
+fn shorthand_name_expr(
+    key: &oxc::ast::ast::PropertyKey<'_>,
+    value: &Expression<'_>,
+) -> Option<String> {
+    let oxc::ast::ast::PropertyKey::StaticIdentifier(key) = key else {
+        return None;
+    };
+    if key.name == "__proto__" {
+        return None;
+    }
+    let Expression::Identifier(ident) = value.without_parentheses() else {
+        return None;
+    };
+    (key.name == ident.name).then(|| key.name.to_string())
+}
+
+fn shorthand_name_binding(
+    key: &oxc::ast::ast::PropertyKey<'_>,
+    value: &BindingPattern<'_>,
+) -> Option<String> {
+    let oxc::ast::ast::PropertyKey::StaticIdentifier(key) = key else {
+        return None;
+    };
+    let name_matches = match value {
+        BindingPattern::BindingIdentifier(id) => key.name == id.name,
+        BindingPattern::AssignmentPattern(p) => match &p.left {
+            BindingPattern::BindingIdentifier(id) => key.name == id.name,
+            _ => false,
+        },
+        _ => false,
+    };
+    name_matches.then(|| key.name.to_string())
+}
+
+#[cfg(test)]
+mod paren_probe {
+    use super::*;
+    use oxc::codegen::Codegen;
+    use oxc::parser::Parser;
+    use oxc::span::SourceType;
+
+    #[test]
+    fn double_paren_arrow_strips() {
+        let alloc = Allocator::default();
+        let src = "this.stack.indexOf(((item) => item.element === element));";
+        let ret = Parser::new(&alloc, src, SourceType::mjs()).parse();
+        assert_eq!(ret.diagnostics.errors().count(), 0);
+        let mut program = ret.program;
+        let spans = strip_redundant_parens(&alloc, &mut program);
+        let code = Codegen::new().build(&program).code;
+        assert!(!spans.is_empty(), "{code}");
+        assert!(code.contains("indexOf((item)"), "{code}");
+        assert!(!code.contains("indexOf((("), "{code}");
+    }
 }

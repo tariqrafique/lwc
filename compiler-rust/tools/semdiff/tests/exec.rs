@@ -599,7 +599,8 @@ fn oracle_dir_is_the_harness_lwc_root() {
 // treat as unobservable. Equal traces of a printed-differs / token-spelling-differs / printer-equal-ast-differs pair
 // are DIFFERENT static-observed-differs, never EXEC_EQUAL and never UNCLASSIFIED. A hoist-only pair is printed-differs,
 // so it is DIFFERENT. Quote-style-only stays rewrite-equivalent. Trailing commas and ASI-vs-`;`
-// are rewrite-equivalent (both rules arch_review = AB-L0064).
+// are rewrite-equivalent (both rules arch_review = AB-L0064). Object shorthand `{a: a}` vs `{a}` is
+// rewrite-equivalent (R-OBJECT-SHORTHAND-1): the printer emits one form and the values are the same binding.
 
 fn cli_exec(name: &str, cases: Value) -> Value {
     let dir = scratch(name);
@@ -712,8 +713,8 @@ fn arch_probes() -> Vec<Probe> {
             "shorthand",
             rust(),
             rust_with("const {_m0} = $ctx;", "const {_m0: _m0} = $ctx;"),
-            "printer-equal-ast-differs",
-            cap,
+            "printer-equal",
+            rewrite,
         ),
         (
             "masked-shorthand",

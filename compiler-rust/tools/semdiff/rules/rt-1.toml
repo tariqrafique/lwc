@@ -99,3 +99,51 @@ preconditions = "Codegen matches and content_eq holds. Only the comment-text lis
 eval_order_argument = "Comments do not run. The normalized text is the same sequence of comment bodies. A missing comment is a different list and is not skipped."
 positive_tests = "tools/semdiff/tests/rules.rs::block_comment_star_indent_is_unobservable"
 negative_tests = "tools/semdiff/tests/rules.rs::a_different_or_missing_comment_is_observed"
+
+[[rule]]
+id = "R-VAR-LITERAL-IMPORT-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "A `var` whose initializer is a literal may sit before or among import declarations. Imports are evaluated before any module body, so `var id = 0` then `import \"m\"` runs the initializer at the same time as `import \"m\"` then `var id = 0`. The var does not move across any other statement."
+preconditions = "Both sides parse. Only a prefix of import declarations and literal `var`s is reordered, imports first, then those vars, in their own relative order."
+eval_order_argument = "Module instantiation finishes every import before the body. The literal initializer reads nothing and writes only its own binding. `f(); var x = 0` versus `var x = 0; f()` is a different prefix and is not rewritten."
+positive_tests = "tools/semdiff/tests/rules.rs::literal_var_beside_imports_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::literal_var_does_not_cross_a_call"
+
+[[rule]]
+id = "R-OBJECT-LAST-KEY-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "In an object literal, a later data property with the same static key replaces the earlier one. `{selectedItem: 1, selectedItem: 1, currentContent: 1}` and `{selectedItem: 1, currentContent: 1}` produce the same object. A spread, a getter, or a setter is not collapsed."
+preconditions = "Both sides parse. Only Init properties with a static identifier or string key are candidates, and only when the object has no spread."
+eval_order_argument = "Each kept property is still evaluated in its original order. An earlier property with the same key is evaluated and then overwritten; dropping it changes nothing a later read can see when the key is written again as data. `{a: 1, a: 2}` is not `{a: 1}`."
+positive_tests = "tools/semdiff/tests/rules.rs::duplicate_data_key_keeps_the_last_value"
+negative_tests = "tools/semdiff/tests/rules.rs::an_earlier_duplicate_value_is_not_the_result"
+
+[[rule]]
+id = "R-INERT-LINE-COMMENT-1"
+rev = 1
+kind = "comment-text"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "A `//` note that is not an eslint, istanbul, c8, v8, pure, or sourceMappingURL directive does not change evaluation. Those directives stay in the comment list and a missing one is still a difference. Block comments are not this rule."
+preconditions = "Codegen matches and content_eq holds. Only line comments whose body does not start with a tool directive are removed from both comment lists before the compare."
+eval_order_argument = "The removed comments are not parsed as code. A directive comment stays, so a consumer that keys off eslint-disable still sees a mismatch when one side drops it."
+positive_tests = "tools/semdiff/tests/rules.rs::an_inert_line_comment_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::a_directive_line_comment_is_observed"
+
+[[rule]]
+id = "R-OBJECT-SHORTHAND-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "oxc codegen prints `{itemIndex: itemIndex}` and `{itemIndex}` as the same shorthand, and both evaluate to the same property. The `shorthand` flag is the only AST difference. `__proto__` is left as written, because the printer emits that key explicitly when the flag is false."
+preconditions = "Printer texts match and content_eq failed. A data or binding property whose static key equals its identifier value has `shorthand` set. The extra colon and repeated name tokens inside that property span are then ignored."
+eval_order_argument = "The property key is still evaluated once and the value is that same binding. `{a: b}` and `{a}` stay different trees and different printer text, so the rule does not apply. `{__proto__: __proto__}` stays observed against `{__proto__}`."
+positive_tests = "tools/semdiff/tests/rules.rs::explicit_property_shorthand_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::a_different_property_value_is_observed"

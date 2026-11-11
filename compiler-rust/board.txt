@@ -1,5 +1,5 @@
-official board  commit=3d2e472f3394  src=fd035de9d515  napi=5f7e0ab4b4ed  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-11T03:58:08-08:00
-napi sha256:5f7e0ab4b4ed  pinned=/tmp/lwc-board-snap.utHHRX/repo/harness/.pins/lwc-compiler-napi.5f7e0ab4b4ed.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-11T03:52:49-08:00
+official board  commit=505777693b50  src=f3cd89e5c936  napi=2960afb98645  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-11T04:37:01-08:00
+napi sha256:2960afb98645  pinned=/tmp/lwc-board-snap.k6938B/repo/harness/.pins/lwc-compiler-napi.2960afb98645.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-11T04:31:39-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -26,10 +26,10 @@ template-diag-napi     cases 63224  clean 62027  mismatches 1197 (code 2, messag
 style-upstream         Tests  12 passed (12)
 lbc                    Tests  523 passed (523)
 lbc: discovered=522 included=522 excluded=0 compile-error-both=0
-semantic-diff  eq=16795 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-NUMERIC-SPELLING-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1
-template-diag-semdiff  eq=16795 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-NUMERIC-SPELLING-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1
-semantic-diff-ssr  printer-equal=21  static-observed-differs=0  exec-static-comments-differ=1071  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=7,sod=0,esc=357,ed=0,et=0,eu=0,ex=23  async:pe=7,sod=0,esc=357,ed=0,et=0,eu=0,ex=23  asyncYield:pe=7,sod=0,esc=357,ed=0,et=0,eu=0,ex=23  gate=ok
-template-diag-ssr  printer-equal=21  static-observed-differs=0  exec-static-comments-differ=1071  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=7,sod=0,esc=357,ed=0,et=0,eu=0,ex=23  async:pe=7,sod=0,esc=357,ed=0,et=0,eu=0,ex=23  asyncYield:pe=7,sod=0,esc=357,ed=0,et=0,eu=0,ex=23  gate=ok
+semantic-diff  eq=16795 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-INERT-LINE-COMMENT-1@1+R-NUMERIC-SPELLING-1@1+R-OBJECT-LAST-KEY-1@1+R-OBJECT-SHORTHAND-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1
+template-diag-semdiff  eq=16795 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-INERT-LINE-COMMENT-1@1+R-NUMERIC-SPELLING-1@1+R-OBJECT-LAST-KEY-1@1+R-OBJECT-SHORTHAND-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1
+semantic-diff-ssr  printer-equal=27  static-observed-differs=0  exec-static-comments-differ=1065  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=9,sod=0,esc=355,ed=0,et=0,eu=0,ex=23  async:pe=9,sod=0,esc=355,ed=0,et=0,eu=0,ex=23  asyncYield:pe=9,sod=0,esc=355,ed=0,et=0,eu=0,ex=23  gate=ok
+template-diag-ssr  printer-equal=27  static-observed-differs=0  exec-static-comments-differ=1065  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=9,sod=0,esc=355,ed=0,et=0,eu=0,ex=23  async:pe=9,sod=0,esc=355,ed=0,et=0,eu=0,ex=23  asyncYield:pe=9,sod=0,esc=355,ed=0,et=0,eu=0,ex=23  gate=ok
 template-diag-style  integration-wtr=206/206 integration-wdio=7/7 integration-types=1/1 lbc=584/584 lbc-recipes=32/32 slds=223/223 fixture-smoke=69/69 parse-error=67/67 dedup=319 jobs=5136 fail=0 (uncapped style-diff, hash-dedup, direct oracle)
 template-diag-realgate  cases=5441 diagMismatch=0 codegenUnclean=0 crash=0 oracleError=0
 template-diag-napierrors  5/5
@@ -43,8 +43,8 @@ unported-specs         Tests  24 passed (24)
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.utHHRX/notes/decisions.tsv]
-coverage-gate: notes 39c06ccff4fd matrix 75dc5613a667 report-only: 24 sources x 8 stages = 192 cells, 96 covered (declared gating), 0 diagnostic-only, 2 gap, 76 na, 18 dec, 0 invalid
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.k6938B/notes/decisions.tsv]
+coverage-gate: notes d83d1fac508d matrix 75dc5613a667 report-only: 24 sources x 8 stages = 192 cells, 96 covered (declared gating), 0 diagnostic-only, 2 gap, 76 na, 18 dec, 0 invalid
   GAP corpus:template-diag-mutations x template_codegen owner=item 12, 108 diag-mismatch mutations have no codegen verdict
   GAP corpus:template-diag-mutations x template_diagnostics owner=item 12, 108 mismatches stay non-gating until fixed
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)

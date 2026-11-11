@@ -131,6 +131,34 @@ pub fn resolve_like_node(cwd: &std::path::Path, f: &str) -> String {
     format!("/{}", out.join("/"))
 }
 
+/// oxc prints a comment that leads a statement and drops a trailing `// eslint-disable-line`.
+/// Move those directives, plus istanbul and sourceMappingURL, to the start of their line before
+/// the print parse so they are leading comments.
+fn hoist_trailing_directives(src: &str) -> Vec<edits::Edit> {
+    let mut out = Vec::new();
+    let mut line_start = 0u32;
+    for line in src.split_inclusive('\n') {
+        let body = line.trim_end_matches('\n');
+        let rel = body
+            .rfind("// eslint-")
+            .or_else(|| body.rfind("// istanbul"))
+            .or_else(|| body.rfind("//# sourceMappingURL"));
+        if let Some(rel) = rel {
+            let code = body[..rel].trim_end();
+            if !code.is_empty() {
+                let ws = body[..rel].len() - code.len();
+                let del_start = line_start + rel as u32 - ws as u32;
+                let del_end = line_start + body.len() as u32;
+                let comment = &body[rel..];
+                out.push(edits::Edit::replace(del_start, del_end, String::new()));
+                out.push(edits::Edit::insert(line_start, format!("{comment}\n")));
+            }
+        }
+        line_start += line.len() as u32;
+    }
+    out
+}
+
 fn transform_inner(
     src: &str,
     filename: &str,
@@ -214,6 +242,16 @@ fn transform_inner(
     let (edited, pieces) =
         edits::apply_mapped(src, all).expect("lwc-js edits never partially overlap");
     chain.push_edit(pieces);
+    let directive_edits = hoist_trailing_directives(&edited);
+    let (edited, pieces) = if directive_edits.is_empty() {
+        (edited, Vec::new())
+    } else {
+        edits::apply_mapped(&edited, directive_edits)
+            .expect("directive comment moves do not overlap")
+    };
+    if !pieces.is_empty() {
+        chain.push_edit(pieces);
+    }
     // 2. The one print parse. Rest/spread, async and unforgeables are AST passes on this Program.
     let do_rest = !api_version::is_api_feature_enabled(
         ApiFeature::DisableObjectRestSpreadTransformation,
