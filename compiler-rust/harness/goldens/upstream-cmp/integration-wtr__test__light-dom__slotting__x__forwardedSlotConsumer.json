@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><x-forwarded-slot><template shadowrootmode=\"open\"></template><p slot=\"upper\">Upper slot content forwarded</p><p>Default slot forwarded</p><p slot=\"lower\">Lower slot content forwarded</p></x-forwarded-slot></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><x-forwarded-slot><template shadowrootmode=\"open\"></template><p slot=\"upper\">Upper slot content forwarded</p><p>Default slot forwarded</p><p slot=\"lower\">Lower slot content forwarded</p></x-forwarded-slot></lwc-up>"
+ }
+}

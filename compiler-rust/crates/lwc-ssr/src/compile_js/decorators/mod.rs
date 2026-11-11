@@ -4,8 +4,8 @@ pub(super) mod api;
 pub(super) mod track;
 pub(super) mod wire;
 
-use lwc_shared::errors::DecoratorErrors;
 use lwc_shared::CompileError;
+use lwc_shared::errors::DecoratorErrors;
 use oxc::ast::ast::Decorator;
 
 use super::errors::generate_error;
@@ -14,7 +14,11 @@ use track::is_track_decorator;
 use wire::is_wire_decorator;
 
 /// `validateUniqueDecorator`: a member may not combine `@wire` with `@api` / `@track`, or `@api` with `@track`.
-pub(super) fn validate_unique_decorator(decorators: &[Decorator], src: &str, filename: &str) -> Result<(), CompileError> {
+pub(super) fn validate_unique_decorator(
+    decorators: &[Decorator],
+    src: &str,
+    filename: &str,
+) -> Result<(), CompileError> {
     if decorators.len() < 2 {
         return Ok(());
     }
@@ -23,14 +27,32 @@ pub(super) fn validate_unique_decorator(decorators: &[Decorator], src: &str, fil
     let track = decorators.iter().find(|d| is_track_decorator(d));
     if let Some(wire) = wire {
         if api.is_some() {
-            return Err(generate_error(src, filename, wire.span, &DecoratorErrors::CONFLICT_WITH_ANOTHER_DECORATOR, &["api"]));
+            return Err(generate_error(
+                src,
+                filename,
+                wire.span,
+                &DecoratorErrors::CONFLICT_WITH_ANOTHER_DECORATOR,
+                &["api"],
+            ));
         }
         if track.is_some() {
-            return Err(generate_error(src, filename, wire.span, &DecoratorErrors::CONFLICT_WITH_ANOTHER_DECORATOR, &["track"]));
+            return Err(generate_error(
+                src,
+                filename,
+                wire.span,
+                &DecoratorErrors::CONFLICT_WITH_ANOTHER_DECORATOR,
+                &["track"],
+            ));
         }
     }
     if let (Some(api), Some(_)) = (api, track) {
-        return Err(generate_error(src, filename, api.span, &DecoratorErrors::API_AND_TRACK_DECORATOR_CONFLICT, &[]));
+        return Err(generate_error(
+            src,
+            filename,
+            api.span,
+            &DecoratorErrors::API_AND_TRACK_DECORATOR_CONFLICT,
+            &[],
+        ));
     }
     Ok(())
 }

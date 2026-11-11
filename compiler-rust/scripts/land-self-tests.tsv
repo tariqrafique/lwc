@@ -19,6 +19,8 @@ test-board-footers	scripts/test-board-footers.sh	scripts/run-board.sh
 test-semantic-diff-row	scripts/test-semantic-diff-row.sh	scripts/test-semantic-diff-row.sh
 test-semantic-diff-row	scripts/test-semantic-diff-row.sh	harness/scripts/semantic-diff-row.sh
 lint-shell-pipes	scripts/lint-shell-pipes.sh --self-test	scripts/lint-shell-pipes.sh
+lint-no-error-mute	scripts/lint-no-error-mute.sh --self-test	scripts/lint-no-error-mute.sh
+lint-no-error-mute	scripts/lint-no-error-mute.sh --self-test	scripts/tracked-files.sh
 workspace-path-scan	scripts/workspace-path-scan.sh --self-test	scripts/workspace-path-scan.sh
 workspace-path-scan	scripts/workspace-path-scan.sh --self-test	scripts/registry-union.sh
 test-source-scan-tracked	scripts/test-source-scan-tracked.sh	scripts/test-source-scan-tracked.sh
@@ -70,3 +72,15 @@ test-one-pass-land	scripts/test-one-pass-land.sh	scripts/check-land-main-refs.sh
 test-one-pass-land	scripts/test-one-pass-land.sh	scripts/land-main-refs.tsv
 test-one-pass-land	scripts/test-one-pass-land.sh	scripts/baseline-ceiling.sh
 test-one-pass-land	scripts/test-one-pass-land.sh	scripts/run-portable-board.sh
+test-preflight	scripts/test-preflight.sh	scripts/test-preflight.sh
+test-preflight	scripts/test-preflight.sh	scripts/preflight.sh
+test-preflight	scripts/test-preflight.sh	scripts/land.sh
+test-preflight	scripts/test-preflight.sh	scripts/land-path-checks.sh
+test-preflight	scripts/test-preflight.sh	scripts/land-path-checks.tsv
+test-board-ratchet	scripts/test-board-ratchet.sh	scripts/preflight.sh
+test-land-path-checks	scripts/test-land-path-checks.sh	scripts/preflight.sh
+test-land-self-tests	scripts/test-land-self-tests.sh	scripts/preflight.sh
+test-preflight	scripts/test-preflight.sh	scripts/cargo-fmt-check.sh
+test-land-path-checks	scripts/test-land-path-checks.sh	scripts/cargo-fmt-check.sh
+test-board-runtime	scripts/test-board-runtime.sh	scripts/c8-checks.sh
+test-board-runtime	scripts/test-board-runtime.sh	scripts/land-path-checks.tsv

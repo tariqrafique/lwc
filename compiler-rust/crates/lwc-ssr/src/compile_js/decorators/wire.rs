@@ -4,7 +4,9 @@
 use lwc_shared::errors::DecoratorErrors;
 use lwc_shared::js_literal::json_string;
 use lwc_shared::{CompileError, LwcErrorInfo};
-use oxc::ast::ast::{Argument, Decorator, Expression, IdentifierReference, ObjectExpression, ObjectPropertyKind};
+use oxc::ast::ast::{
+    Argument, Decorator, Expression, IdentifierReference, ObjectExpression, ObjectPropertyKind,
+};
 use oxc::semantic::{Scoping, SymbolFlags};
 use oxc::span::{GetSpan, Span};
 
@@ -34,7 +36,9 @@ pub(in crate::compile_js) struct WiredMember<'m, 'a> {
 /// `isWireDecorator`: `@wire(...)`.
 pub(in crate::compile_js) fn is_wire_decorator(decorator: &Decorator) -> bool {
     match decorator.expression.without_parentheses() {
-        Expression::CallExpression(call) => matches!(call.callee.without_parentheses(), Expression::Identifier(i) if i.name == "wire"),
+        Expression::CallExpression(call) => {
+            matches!(call.callee.without_parentheses(), Expression::Identifier(i) if i.name == "wire")
+        }
         _ => false,
     }
 }
@@ -57,16 +61,23 @@ impl Checker<'_> {
 
     /// `path.scope.getBinding(name)?.kind`, as the binding's symbol flags (`None`: no binding).
     fn binding(&self, id: &IdentifierReference) -> Option<SymbolFlags> {
-        let symbol = self.scoping.get_reference(id.reference_id.get()?).symbol_id()?;
+        let symbol = self
+            .scoping
+            .get_reference(id.reference_id.get()?)
+            .symbol_id()?;
         Some(self.scoping.symbol_flags(symbol))
     }
 
     /// `getWireParams`. index.ts calls the catalog only when the first decorator is `@wire(...)`.
-    fn wire_params<'m, 'a>(&self, decorators: &'m [Decorator<'a>]) -> Result<&'m [Argument<'a>], CompileError> {
+    fn wire_params<'m, 'a>(
+        &self,
+        decorators: &'m [Decorator<'a>],
+    ) -> Result<&'m [Argument<'a>], CompileError> {
         if decorators.len() > 1 {
             return Err(self.error(&DecoratorErrors::ONE_WIRE_DECORATOR_ALLOWED));
         }
-        let Expression::CallExpression(call) = decorators[0].expression.without_parentheses() else {
+        let Expression::CallExpression(call) = decorators[0].expression.without_parentheses()
+        else {
             return Err(self.error(&DecoratorErrors::FUNCTION_IDENTIFIER_SHOULD_BE_FIRST_PARAMETER));
         };
         if call.arguments.is_empty() {
@@ -76,10 +87,14 @@ impl Checker<'_> {
     }
 
     /// A member expression's object: `foo` of `foo.bar`.
-    fn member_root<'m, 'a>(&self, object: &'m Expression<'a>) -> Result<&'m IdentifierReference<'a>, CompileError> {
+    fn member_root<'m, 'a>(
+        &self,
+        object: &'m Expression<'a>,
+    ) -> Result<&'m IdentifierReference<'a>, CompileError> {
         match object.without_parentheses() {
             Expression::Identifier(root) => Ok(root),
-            _ => Err(self.error(&DecoratorErrors::FUNCTION_IDENTIFIER_CANNOT_HAVE_NESTED_MEMBER_EXRESSIONS)),
+            _ => Err(self
+                .error(&DecoratorErrors::FUNCTION_IDENTIFIER_CANNOT_HAVE_NESTED_MEMBER_EXRESSIONS)),
         }
     }
 
@@ -88,14 +103,23 @@ impl Checker<'_> {
     fn validate_wire_id(&self, id: &Argument) -> Result<(), CompileError> {
         let adapter_var = match id.as_expression().map(Expression::without_parentheses) {
             Some(Expression::ComputedMemberExpression(_)) => {
-                return Err(self.error(&DecoratorErrors::FUNCTION_IDENTIFIER_CANNOT_HAVE_COMPUTED_PROPS))
+                return Err(
+                    self.error(&DecoratorErrors::FUNCTION_IDENTIFIER_CANNOT_HAVE_COMPUTED_PROPS)
+                );
             }
             Some(Expression::StaticMemberExpression(member)) => self.member_root(&member.object)?,
             Some(Expression::PrivateFieldExpression(member)) => self.member_root(&member.object)?,
             Some(Expression::Identifier(id)) => id,
-            _ => return Err(self.error(&DecoratorErrors::FUNCTION_IDENTIFIER_SHOULD_BE_FIRST_PARAMETER)),
+            _ => {
+                return Err(
+                    self.error(&DecoratorErrors::FUNCTION_IDENTIFIER_SHOULD_BE_FIRST_PARAMETER)
+                );
+            }
         };
-        if !self.binding(adapter_var).is_some_and(SymbolFlags::is_import) {
+        if !self
+            .binding(adapter_var)
+            .is_some_and(SymbolFlags::is_import)
+        {
             return Err(self.error(&DecoratorErrors::COMPUTED_PROPERTY_MUST_BE_CONSTANT_OR_LITERAL));
         }
         Ok(())
@@ -103,19 +127,32 @@ impl Checker<'_> {
 
     /// `validateWireConfig`: an object expression whose computed keys are `const` bindings, an unbound
     /// `undefined`, or non-regexp literals.
-    fn validate_wire_config<'m, 'a>(&self, config: &'m Argument<'a>) -> Result<&'m ObjectExpression<'a>, CompileError> {
-        let Some(Expression::ObjectExpression(object)) = config.as_expression().map(Expression::without_parentheses) else {
+    fn validate_wire_config<'m, 'a>(
+        &self,
+        config: &'m Argument<'a>,
+    ) -> Result<&'m ObjectExpression<'a>, CompileError> {
+        let Some(Expression::ObjectExpression(object)) =
+            config.as_expression().map(Expression::without_parentheses)
+        else {
             return Err(self.error(&DecoratorErrors::CONFIG_OBJECT_SHOULD_BE_SECOND_PARAMETER));
         };
         for property in &object.properties {
-            let ObjectPropertyKind::ObjectProperty(property) = property else { continue };
+            let ObjectPropertyKind::ObjectProperty(property) = property else {
+                continue;
+            };
             if !property.computed {
                 continue;
             }
-            match property.key.as_expression().map(Expression::without_parentheses) {
+            match property
+                .key
+                .as_expression()
+                .map(Expression::without_parentheses)
+            {
                 Some(Expression::Identifier(key)) => {
                     let binding = self.binding(key);
-                    if binding.is_some_and(SymbolFlags::is_const_variable) || (key.name == "undefined" && binding.is_none()) {
+                    if binding.is_some_and(SymbolFlags::is_const_variable)
+                        || (key.name == "undefined" && binding.is_none())
+                    {
                         continue;
                     }
                 }
@@ -127,7 +164,9 @@ impl Checker<'_> {
                     | Expression::BigIntLiteral(_),
                 ) => continue,
                 Some(Expression::TemplateLiteral(_)) => {
-                    return Err(self.error(&DecoratorErrors::COMPUTED_PROPERTY_CANNOT_BE_TEMPLATE_LITERAL))
+                    return Err(
+                        self.error(&DecoratorErrors::COMPUTED_PROPERTY_CANNOT_BE_TEMPLATE_LITERAL)
+                    );
                 }
                 _ => {}
             }
@@ -143,11 +182,20 @@ impl Checker<'_> {
         let mut out = String::new();
         let mut at = object.span.start as usize;
         for property in &object.properties {
-            let ObjectPropertyKind::ObjectProperty(property) = property else { continue };
-            let Expression::StringLiteral(value) = property.value.without_parentheses() else { continue };
+            let ObjectPropertyKind::ObjectProperty(property) = property else {
+                continue;
+            };
+            let Expression::StringLiteral(value) = property.value.without_parentheses() else {
+                continue;
+            };
             let units: Vec<u16> = value.value.encode_utf16().collect();
-            let Some((&DOLLAR, path)) = units.split_first() else { continue };
-            let chain: String = path.split(|&unit| unit == DOT).map(|prop| format!("[{}]", json_string(prop.iter().copied()))).collect();
+            let Some((&DOLLAR, path)) = units.split_first() else {
+                continue;
+            };
+            let chain: String = path
+                .split(|&unit| unit == DOT)
+                .map(|prop| format!("[{}]", json_string(prop.iter().copied())))
+                .collect();
             out.push_str(&self.src[at..value.span.start as usize]);
             out.push_str("instance");
             out.push_str(&chain);
@@ -165,7 +213,12 @@ pub(in crate::compile_js) fn catalog_wire_adapter(
     filename: &str,
     scoping: &Scoping,
 ) -> Result<WireAdapter, CompileError> {
-    let checker = Checker { src, filename, scoping, member: member.span };
+    let checker = Checker {
+        src,
+        filename,
+        scoping,
+        member: member.span,
+    };
     let params = checker.wire_params(member.decorators)?;
     let id = &params[0];
     checker.validate_wire_id(id)?;

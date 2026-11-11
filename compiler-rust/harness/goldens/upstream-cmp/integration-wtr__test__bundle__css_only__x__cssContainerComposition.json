@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Class constructor onlyCssComposition cannot be invoked without 'new'"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"></template></lwc-up>"
+ },
+ "asyncErrors": [
+  "Class constructor onlyCssComposition cannot be invoked without 'new'"
+ ]
+}

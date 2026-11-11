@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">:host {position: absolute;top: 0;left: 0;border: 2px solid #000;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><button class=\"shadow-element-from-point\">Click to run shadow dom element from point</button><button class=\"document-from-point\">Click to run document element from point</button></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {position: absolute;top: 0;left: 0;border: 2px solid #000;}</style><button class=\"shadow-element-from-point\">Click to run shadow dom element from point</button><button class=\"document-from-point\">Click to run document element from point</button></template></lwc-up>"
+ }
+}

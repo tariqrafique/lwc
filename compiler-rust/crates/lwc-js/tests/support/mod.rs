@@ -17,17 +17,28 @@ pub struct Thrown {
 }
 
 impl Thrown {
-    pub fn code(&self) -> Option<u32> { self.errors.first().and_then(|e| e.code) }
+    pub fn code(&self) -> Option<u32> {
+        self.errors.first().and_then(|e| e.code)
+    }
 }
 
 impl From<TransformError> for Thrown {
     fn from(e: TransformError) -> Self {
         match e {
             TransformError::Compiler(e) => Thrown {
-                message: e.message.clone(), name: None,
-                line: e.location.map(|l| l.line), column: e.location.map(|l| l.column), errors: vec![e],
+                message: e.message.clone(),
+                name: None,
+                line: e.location.map(|l| l.line),
+                column: e.location.map(|l| l.column),
+                errors: vec![e],
             },
-            TransformError::Aggregate(a) => Thrown { message: a.message, name: Some("AggregateError"), line: None, column: None, errors: a.errors },
+            TransformError::Aggregate(a) => Thrown {
+                message: a.message,
+                name: Some("AggregateError"),
+                line: None,
+                column: None,
+                errors: a.errors,
+            },
             TransformError::Unnormalized(e) => panic!("JS errors are normalized: {e:?}"),
         }
     }
@@ -35,5 +46,7 @@ impl From<TransformError> for Thrown {
 
 /// `transformSync(src, filename, o)`'s thrown error.
 pub fn thrown(src: &str, filename: &str, o: &CompileOptions) -> Thrown {
-    lwc_compiler::dispatch(src, filename, o).expect_err("should fail").into()
+    lwc_compiler::dispatch(src, filename, o)
+        .expect_err("should fail")
+        .into()
 }

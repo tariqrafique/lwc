@@ -17,7 +17,12 @@ pub fn run(program: &Program<'_>, edits: &mut Vec<Edit>) {
 pub(crate) fn serde_quote(s: &str) -> String {
     let mut o = String::from("\"");
     for c in s.chars() {
-        match c { '"' => o.push_str("\\\""), '\\' => o.push_str("\\\\"), '\n' => o.push_str("\\n"), c => o.push(c) }
+        match c {
+            '"' => o.push_str("\\\""),
+            '\\' => o.push_str("\\\\"),
+            '\n' => o.push_str("\\n"),
+            c => o.push(c),
+        }
     }
     o.push('"');
     o

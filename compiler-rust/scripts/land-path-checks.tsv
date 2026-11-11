@@ -6,6 +6,8 @@ name	path	when
 lint-shell-pipes	scripts/lint-shell-pipes.sh	always
 workspace-path-scan	scripts/workspace-path-scan.sh	always
 lint-no-stripped-compare	scripts/lint-no-stripped-compare.sh	always
+lint-no-error-mute	scripts/lint-no-error-mute.sh	always
 ratchet-ceiling	scripts/ratchet-ceiling.sh	always
 baseline-ceiling	scripts/baseline-ceiling.sh	always
 shim-gate	harness/scripts/shim-gate.mjs	always
+cargo-fmt	scripts/cargo-fmt-check.sh	always

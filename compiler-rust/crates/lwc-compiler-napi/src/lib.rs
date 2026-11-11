@@ -84,7 +84,17 @@ fn js_string(v: &serde_json::Value) -> String {
         V::Bool(b) => b.to_string(),
         V::Number(n) => n.to_string(),
         V::String(s) => s.clone(),
-        V::Array(a) => a.iter().map(|x| if x.is_null() { String::new() } else { js_string(x) }).collect::<Vec<_>>().join(","),
+        V::Array(a) => a
+            .iter()
+            .map(|x| {
+                if x.is_null() {
+                    String::new()
+                } else {
+                    js_string(x)
+                }
+            })
+            .collect::<Vec<_>>()
+            .join(","),
         V::Object(_) => "[object Object]".into(),
     }
 }
@@ -146,7 +156,13 @@ fn to_js_diagnostic(d: lwc_shared::CompilerDiagnostic) -> JsDiagnostic {
 
 impl From<lwc_shared::DiagnosticLocation> for JsDiagnosticLocation {
     fn from(l: lwc_shared::DiagnosticLocation) -> Self {
-        Self { line: l.line, column: l.column, start: l.start, length: l.length, index: l.index }
+        Self {
+            line: l.line,
+            column: l.column,
+            start: l.start,
+            length: l.length,
+            index: l.index,
+        }
     }
 }
 
@@ -215,12 +231,11 @@ pub struct JsCompileResult {
     pub error: Option<JsCompileError>,
 }
 
-
 /// The JSON map string from the compiler -> a JS object (`null` when absent).
 fn map_value(map: Option<&str>) -> serde_json::Value {
-    map.and_then(|m| serde_json::from_str(m).ok()).unwrap_or(serde_json::Value::Null)
+    map.and_then(|m| serde_json::from_str(m).ok())
+        .unwrap_or(serde_json::Value::Null)
 }
-
 
 /// Parse + validate the JSON options into `lwc_shared::CompileOptions`.
 /// `Err(napi)` = malformed/unknown key (thrown); `Ok(Err(compile))` = LWC validation error (returned).
@@ -228,13 +243,24 @@ fn to_compile_options(
     options: serde_json::Value,
     filename: &str,
 ) -> Result<std::result::Result<lwc_shared::CompileOptions, lwc_shared::CompileError>> {
-    let options: JsCompileOptions = serde_json::from_value(options)
-        .map_err(|e| napi::Error::new(napi::Status::InvalidArg, format!("invalid compile options: {e}")))?;
+    let options: JsCompileOptions = serde_json::from_value(options).map_err(|e| {
+        napi::Error::new(
+            napi::Status::InvalidArg,
+            format!("invalid compile options: {e}"),
+        )
+    })?;
     // Start from the single source of defaults; override only fields the caller set.
-    let mut o = lwc_shared::CompileOptions { name: options.name, namespace: options.namespace, ..Default::default() };
+    let mut o = lwc_shared::CompileOptions {
+        name: options.name,
+        namespace: options.namespace,
+        ..Default::default()
+    };
     if let Some(m) = options.ssr_mode.as_deref() {
         o.ssr_mode = lwc_shared::SsrMode::from_js(m).ok_or_else(|| {
-            napi::Error::new(napi::Status::InvalidArg, format!("Invalid ssrMode {m:?}: expected sync | async | asyncYield"))
+            napi::Error::new(
+                napi::Status::InvalidArg,
+                format!("Invalid ssrMode {m:?}: expected sync | async | asyncYield"),
+            )
         })?;
     }
     macro_rules! set { ($($src:ident => $dst:ident),* $(,)?) => { $(if let Some(v) = options.$src { o.$dst = v; })* } }
@@ -250,12 +276,22 @@ fn to_compile_options(
         is_explicit_import => is_explicit_import,
     );
     set_opt!(
-        scoped_styles, api_version, experimental_complex_expressions, preserve_html_comments,
-        enable_static_content_optimization, enable_dynamic_components, enable_lwc_on, experimental_dynamic_directive,
+        scoped_styles,
+        api_version,
+        experimental_complex_expressions,
+        preserve_html_comments,
+        enable_static_content_optimization,
+        enable_dynamic_components,
+        enable_lwc_on,
+        experimental_dynamic_directive,
     );
     if let Some(d) = options.dynamic_imports {
-        if let Some(l) = d.loader { o.dynamic_import_loader = l; }
-        if let Some(s) = d.strict_specifier { o.dynamic_import_strict_specifier = s; }
+        if let Some(l) = d.loader {
+            o.dynamic_import_loader = l;
+        }
+        if let Some(s) = d.strict_specifier {
+            o.dynamic_import_strict_specifier = s;
+        }
     }
     if let Some(sm) = options.output_config.and_then(|c| c.sourcemap) {
         o.sourcemap = match sm {
@@ -265,21 +301,40 @@ fn to_compile_options(
                 Err(e) => return Ok(Err(e)),
             },
             // JS templateString renders the value with String(); `null` is treated as unset by serde.
-            JsSourcemap::Other(v) => return Ok(Err(lwc_shared::Sourcemap::from_js_str(&js_string(&v), filename).unwrap_err())),
+            JsSourcemap::Other(v) => {
+                return Ok(Err(lwc_shared::Sourcemap::from_js_str(
+                    &js_string(&v),
+                    filename,
+                )
+                .unwrap_err()));
+            }
         };
     }
-    o.custom_renderer_config = options.custom_renderer_config.map(|c| lwc_shared::CustomRendererConfig {
-        directives: c.directives,
-        elements: c
-            .elements
-            .into_iter()
-            .map(|e| lwc_shared::CustomRendererElementConfig { tag_name: e.tag_name, namespace: e.namespace, attributes: e.attributes })
-            .collect(),
-    });
-    if let Some(r) = options.stylesheet_config.and_then(|c| c.custom_properties).and_then(|c| c.resolution) {
+    o.custom_renderer_config =
+        options
+            .custom_renderer_config
+            .map(|c| lwc_shared::CustomRendererConfig {
+                directives: c.directives,
+                elements: c
+                    .elements
+                    .into_iter()
+                    .map(|e| lwc_shared::CustomRendererElementConfig {
+                        tag_name: e.tag_name,
+                        namespace: e.namespace,
+                        attributes: e.attributes,
+                    })
+                    .collect(),
+            });
+    if let Some(r) = options
+        .stylesheet_config
+        .and_then(|c| c.custom_properties)
+        .and_then(|c| c.resolution)
+    {
         o.stylesheet_config.custom_properties_resolution = match r {
             JsResolution::Native {} => lwc_shared::CustomPropertiesResolution::Native,
-            JsResolution::Module { name } => lwc_shared::CustomPropertiesResolution::Module { name },
+            JsResolution::Module { name } => {
+                lwc_shared::CustomPropertiesResolution::Module { name }
+            }
         };
     }
     Ok(Ok(o))
@@ -290,9 +345,20 @@ mod tests {
     #[test]
     fn warning_carries_js_location_shape() {
         // JS: LWC1182 "Multiple if: directives ..." warning with location {line,column,start,length}.
-        let o = to_compile_options(json!({"name": "a", "namespace": "x"}), "a.html").unwrap().unwrap();
-        let r = lwc_compiler::dispatch("<template><div if:true={a} if:false={b}></div></template>", "a.html", &o).unwrap();
-        let w = r.warnings.into_iter().find(|w| w.code == Some(1182)).expect("1182 warning");
+        let o = to_compile_options(json!({"name": "a", "namespace": "x"}), "a.html")
+            .unwrap()
+            .unwrap();
+        let r = lwc_compiler::dispatch(
+            "<template><div if:true={a} if:false={b}></div></template>",
+            "a.html",
+            &o,
+        )
+        .unwrap();
+        let w = r
+            .warnings
+            .into_iter()
+            .find(|w| w.code == Some(1182))
+            .expect("1182 warning");
         let j = to_js_diagnostic(w);
         let l = j.location.expect("location");
         assert_eq!(l.line, 1);
@@ -303,8 +369,18 @@ mod tests {
     fn sourcemap_result_shape_matches_shipped() {
         let src = "export const a = 1;\n";
         let run = |sm: serde_json::Value| {
-            let o = to_compile_options(json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": sm}}), "a.js").unwrap().unwrap();
-            map_value(lwc_compiler::dispatch(src, "a.js", &o).unwrap().map.as_deref())
+            let o = to_compile_options(
+                json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": sm}}),
+                "a.js",
+            )
+            .unwrap()
+            .unwrap();
+            map_value(
+                lwc_compiler::dispatch(src, "a.js", &o)
+                    .unwrap()
+                    .map
+                    .as_deref(),
+            )
         };
         let m = run(json!(true));
         let o = m.as_object().expect("map is an object for sourcemap: true");
@@ -312,7 +388,18 @@ mod tests {
         assert_eq!(o["sources"], json!(["a.js"]));
         assert_eq!(o["sourcesContent"], json!([src]));
         assert!(o["names"].is_array() && o["mappings"].as_str().is_some_and(|s| !s.is_empty()));
-        assert!(o.keys().all(|k| ["version", "names", "sources", "sourcesContent", "mappings", "ignoreList"].contains(&k.as_str())), "{o:?}");
+        assert!(
+            o.keys().all(|k| [
+                "version",
+                "names",
+                "sources",
+                "sourcesContent",
+                "mappings",
+                "ignoreList"
+            ]
+            .contains(&k.as_str())),
+            "{o:?}"
+        );
         assert_eq!(run(json!("inline")), serde_json::Value::Null);
         assert_eq!(run(json!(false)), serde_json::Value::Null);
     }
@@ -321,28 +408,56 @@ mod tests {
     use serde_json::json;
 
     fn err(v: serde_json::Value) -> String {
-        to_compile_options(v, "a.js").err().expect("must reject").reason
+        to_compile_options(v, "a.js")
+            .err()
+            .expect("must reject")
+            .reason
     }
 
     #[test]
     fn rejects_unknown_keys_naming_them() {
         assert!(err(json!({"name": "a", "namespace": "x", "bogusTop": 1})).contains("bogusTop"));
-        assert!(err(json!({"name": "a", "namespace": "x", "dynamicImports": {"bogusNested": true}})).contains("bogusNested"));
-        assert!(err(json!({"name": "a", "namespace": "x", "outputConfig": {"sourceMap": true}})).contains("sourceMap"));
+        assert!(
+            err(json!({"name": "a", "namespace": "x", "dynamicImports": {"bogusNested": true}}))
+                .contains("bogusNested")
+        );
+        assert!(
+            err(json!({"name": "a", "namespace": "x", "outputConfig": {"sourceMap": true}}))
+                .contains("sourceMap")
+        );
         assert!(err(json!({"name": "a", "namespace": "x", "customRendererConfig": {"directives": [], "elements": [{"tagName": "div", "attrs": []}]}})).contains("attrs"));
         assert!(err(json!({"name": "a", "namespace": "x", "stylesheetConfig": {"customProperties": {"resolverModule": "m"}}})).contains("resolverModule"));
         assert!(err(json!({"name": "a", "namespace": "x", "stylesheetConfig": {"customProperties": {"resolution": {"type": "native", "extra": 1}}}})).contains("extra"));
-        assert!(err(json!({"name": "a", "namespace": "x", "experimentalComputedMemberExpression": true})).contains("experimentalComputedMemberExpression"));
+        assert!(
+            err(
+                json!({"name": "a", "namespace": "x", "experimentalComputedMemberExpression": true})
+            )
+            .contains("experimentalComputedMemberExpression")
+        );
     }
 
     #[test]
     fn defaults_come_from_lwc_shared() {
-        let o = to_compile_options(json!({"name": "a", "namespace": "x"}), "a.js").unwrap().unwrap();
-        assert_eq!(o, lwc_shared::CompileOptions { name: "a".into(), namespace: "x".into(), ..Default::default() });
+        let o = to_compile_options(json!({"name": "a", "namespace": "x"}), "a.js")
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            o,
+            lwc_shared::CompileOptions {
+                name: "a".into(),
+                namespace: "x".into(),
+                ..Default::default()
+            }
+        );
         assert!(o.dynamic_import_strict_specifier);
         assert!(o.resolved_experimental_dynamic_directive());
         // dynamicImports present without strictSpecifier keeps the default (JS spreads over DEFAULT_DYNAMIC_IMPORT_CONFIG).
-        let o = to_compile_options(json!({"name": "a", "namespace": "x", "dynamicImports": {"loader": "l"}}), "a.js").unwrap().unwrap();
+        let o = to_compile_options(
+            json!({"name": "a", "namespace": "x", "dynamicImports": {"loader": "l"}}),
+            "a.js",
+        )
+        .unwrap()
+        .unwrap();
         assert!(o.dynamic_import_strict_specifier);
     }
 
@@ -357,9 +472,30 @@ mod tests {
         assert!(o.is_explicit_import && o.enable_lightning_web_security_transforms);
         assert_eq!(o.sourcemap, lwc_shared::Sourcemap::Inline);
         let c = o.custom_renderer_config.unwrap();
-        assert_eq!((c.directives, c.elements[0].tag_name.as_str(), c.elements[0].attributes.clone()), (vec!["dom".to_string()], "svg", Some(vec!["href".to_string()])));
-        assert_eq!(o.stylesheet_config.custom_properties_resolution, lwc_shared::CustomPropertiesResolution::Module { name: "@x/r".into() });
-        let o = to_compile_options(json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": true}}), "a.js").unwrap().unwrap();
+        assert_eq!(
+            (
+                c.directives,
+                c.elements[0].tag_name.as_str(),
+                c.elements[0].attributes.clone()
+            ),
+            (
+                vec!["dom".to_string()],
+                "svg",
+                Some(vec!["href".to_string()])
+            )
+        );
+        assert_eq!(
+            o.stylesheet_config.custom_properties_resolution,
+            lwc_shared::CustomPropertiesResolution::Module {
+                name: "@x/r".into()
+            }
+        );
+        let o = to_compile_options(
+            json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": true}}),
+            "a.js",
+        )
+        .unwrap()
+        .unwrap();
         assert_eq!(o.sourcemap, lwc_shared::Sourcemap::On);
     }
 
@@ -373,15 +509,30 @@ mod tests {
     #[test]
     fn invalid_sourcemap_is_lwc1021() {
         for bad in [json!("foo"), json!(1)] {
-            let e = to_compile_options(json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": bad}}), "a.js").unwrap().unwrap_err();
+            let e = to_compile_options(
+                json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": bad}}),
+                "a.js",
+            )
+            .unwrap()
+            .unwrap_err();
             assert_eq!(e.diagnostics[0].code, Some(1021));
-            assert!(e.message.starts_with("LWC1021: Expected a boolean value or 'inline' for outputConfig.sourcemap"), "{}", e.message);
+            assert!(
+                e.message.starts_with(
+                    "LWC1021: Expected a boolean value or 'inline' for outputConfig.sourcemap"
+                ),
+                "{}",
+                e.message
+            );
         }
     }
 }
 
 #[napi]
-pub fn transform(src: String, filename: String, options: serde_json::Value) -> Result<JsCompileResult> {
+pub fn transform(
+    src: String,
+    filename: String,
+    options: serde_json::Value,
+) -> Result<JsCompileResult> {
     let o = match to_compile_options(options, &filename)? {
         Ok(o) => o,
         Err(e) => return Ok(errors::options_error(e)),
@@ -391,12 +542,7 @@ pub fn transform(src: String, filename: String, options: serde_json::Value) -> R
             let warnings = if r.warnings.is_empty() {
                 None
             } else {
-                Some(
-                    r.warnings
-                        .into_iter()
-                        .map(to_js_diagnostic)
-                        .collect(),
-                )
+                Some(r.warnings.into_iter().map(to_js_diagnostic).collect())
             };
             JsCompileResult {
                 code: r.code,

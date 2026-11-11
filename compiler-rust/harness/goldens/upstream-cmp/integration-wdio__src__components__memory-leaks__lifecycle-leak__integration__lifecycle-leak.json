@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "compile-error",
+  "message": "Could not load /virtual-lbc/integration/child/child.js (imported by virtual-lbc/integration/lifecycle-leak/lifecycle-leak.js): ENOENT: no such file or directory, open '/virtual-lbc/integration/child/child.js'"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "Could not load /virtual-lbc/integration/child/child.js (imported by virtual-lbc/integration/lifecycle-leak/lifecycle-leak.js): ENOENT: no such file or directory, open '/virtual-lbc/integration/child/child.js'"
+ }
+}

@@ -13,11 +13,18 @@
 //!   (a `CompilerError`) -> `TransformError::Compiler`; a plain `Error` -> `TransformError::Unnormalized`.
 //! Byte-level spec: tests/fixtures/{single-error-shipped,aggregate-shipped}.json.
 use crate::{JsAggregateEntry, JsCompileError, JsCompileResult};
-use lwc_shared::{CompileError, CompileOptions, CompileResult, CompilerAggregateError, CompilerError, TransformError, UnnormalizedError};
+use lwc_shared::{
+    CompileError, CompileOptions, CompileResult, CompilerAggregateError, CompilerError,
+    TransformError, UnnormalizedError,
+};
 use napi::bindgen_prelude::Either;
 
 /// `lwc_compiler::dispatch`, its error surfaced as the binding's `{ error }` result.
-pub(crate) fn compile(src: &str, filename: &str, o: &CompileOptions) -> Result<CompileResult, JsCompileResult> {
+pub(crate) fn compile(
+    src: &str,
+    filename: &str,
+    o: &CompileOptions,
+) -> Result<CompileResult, JsCompileResult> {
     lwc_compiler::dispatch(src, filename, o).map_err(|e| result(serialize(e)))
 }
 
@@ -27,7 +34,13 @@ pub(crate) fn options_error(e: CompileError) -> JsCompileResult {
 }
 
 fn result(error: JsCompileError) -> JsCompileResult {
-    JsCompileResult { code: String::new(), map: serde_json::Value::Null, css_scope_tokens: None, warnings: None, error: Some(error) }
+    JsCompileResult {
+        code: String::new(),
+        map: serde_json::Value::Null,
+        css_scope_tokens: None,
+        warnings: None,
+        error: Some(error),
+    }
 }
 
 fn serialize(e: TransformError) -> JsCompileError {
@@ -70,16 +83,26 @@ fn aggregate(a: CompilerAggregateError) -> JsCompileError {
         })
         .collect();
     JsCompileError {
-        message: a.message, code: None, filename: None,
-        location: None, errors: Some(errors), level: None, url: None,
+        message: a.message,
+        code: None,
+        filename: None,
+        location: None,
+        errors: Some(errors),
+        level: None,
+        url: None,
     }
 }
 
 /// The producer's error as it threw it: no `level` / `url`; `location` only when it has one.
 fn unnormalized(e: UnnormalizedError) -> JsCompileError {
     JsCompileError {
-        message: e.message, code: e.code, filename: e.filename.map(Either::A),
-        location: e.location.map(|l| Either::A(l.into())), errors: None, level: None, url: None,
+        message: e.message,
+        code: e.code,
+        filename: e.filename.map(Either::A),
+        location: e.location.map(|l| Either::A(l.into())),
+        errors: None,
+        level: None,
+        url: None,
     }
 }
 
@@ -112,12 +135,19 @@ mod tests {
     fn loc_json(l: &JsDiagnosticLocation) -> Value {
         let mut v = json!({"line": l.line, "column": l.column});
         for (k, x) in [("start", l.start), ("length", l.length), ("index", l.index)] {
-            if let Some(x) = x { v[k] = json!(x); }
+            if let Some(x) = x {
+                v[k] = json!(x);
+            }
         }
         v
     }
 
-    fn cwd() -> String { std::env::current_dir().unwrap().to_string_lossy().into_owned() }
+    fn cwd() -> String {
+        std::env::current_dir()
+            .unwrap()
+            .to_string_lossy()
+            .into_owned()
+    }
 
     /// D-0248: oxc parser/semantic errors keep oxc's text and first-label position. Per case: our pinned
     /// `(line, column, index)`; the message is compared up to the class + code + filename prefix only.
@@ -136,26 +166,67 @@ mod tests {
             let id = c["id"].as_str().unwrap();
             let (want, filename) = (&c["error"], c["filename"].as_str().unwrap());
             let j = js_error(c["src"].as_str().unwrap(), filename, c.get("opts"));
-            let shipped: Vec<&str> = want["ownKeys"].as_array().unwrap().iter().map(|k| k.as_str().unwrap()).collect();
+            let shipped: Vec<&str> = want["ownKeys"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|k| k.as_str().unwrap())
+                .collect();
             assert_eq!(j.own_keys(), shipped, "{id} own keys");
             assert_eq!(j.code, want["code"].as_u64().map(|x| x as u32), "{id} code");
-            assert_eq!(j.level, want["level"].as_u64().map(|l| l as u32), "{id} level");
+            assert_eq!(
+                j.level,
+                want["level"].as_u64().map(|l| l as u32),
+                "{id} level"
+            );
             assert_eq!(j.url.as_deref(), want["url"].as_str(), "{id} url");
-            let got = match &j.filename { Some(Either::A(f)) => Value::from(f.as_str()), _ => Value::Null };
+            let got = match &j.filename {
+                Some(Either::A(f)) => Value::from(f.as_str()),
+                _ => Value::Null,
+            };
             assert_eq!(got, want["filename"], "{id} filename");
-            let loc = match &j.location { Some(Either::A(l)) => loc_json(l), _ => Value::Null };
-            if let Some((_, (line, column, index))) = OXC_SYNTAX_ERRORS.iter().find(|(x, _)| *x == id) {
-                assert_ne!(json!({"line": line, "column": column, "index": index}), want["location"], "{id}: matches shipped now; drop the pin");
-                assert_eq!(loc, json!({"line": line, "column": column, "index": index}), "{id} D-0248 pinned location");
+            let loc = match &j.location {
+                Some(Either::A(l)) => loc_json(l),
+                _ => Value::Null,
+            };
+            if let Some((_, (line, column, index))) =
+                OXC_SYNTAX_ERRORS.iter().find(|(x, _)| *x == id)
+            {
+                assert_ne!(
+                    json!({"line": line, "column": column, "index": index}),
+                    want["location"],
+                    "{id}: matches shipped now; drop the pin"
+                );
+                assert_eq!(
+                    loc,
+                    json!({"line": line, "column": column, "index": index}),
+                    "{id} D-0248 pinned location"
+                );
                 let prefix = format!("SyntaxError: LWC1007: {filename}: ");
-                assert!(j.message.starts_with(&prefix) && want["message"].as_str().unwrap().replacen("<cwd>/", "", 1).starts_with(&prefix), "{id} message prefix");
+                assert!(
+                    j.message.starts_with(&prefix)
+                        && want["message"]
+                            .as_str()
+                            .unwrap()
+                            .replacen("<cwd>/", "", 1)
+                            .starts_with(&prefix),
+                    "{id} message prefix"
+                );
                 continue;
             }
             assert_eq!(loc, want["location"], "{id} location");
             if filename.ends_with(".css") {
-                assert_eq!(j.message.replacen(&format!("{}/", cwd()), "<cwd>/", 1), want["message"].as_str().unwrap(), "{id} message");
+                assert_eq!(
+                    j.message.replacen(&format!("{}/", cwd()), "<cwd>/", 1),
+                    want["message"].as_str().unwrap(),
+                    "{id} message"
+                );
             } else if matches!(want["code"].as_u64(), Some(1007 | 1198)) {
-                assert_eq!(j.message, want["message"].as_str().unwrap().replacen("<cwd>/", "", 1), "{id} message");
+                assert_eq!(
+                    j.message,
+                    want["message"].as_str().unwrap().replacen("<cwd>/", "", 1),
+                    "{id} message"
+                );
             }
         }
     }
@@ -165,9 +236,18 @@ mod tests {
     fn aggregates_match_shipped() {
         for f in serde_json::from_str::<Vec<Value>>(AGGREGATE).unwrap() {
             let id = &f["fixture"];
-            let j = js_error(f["src"].as_str().unwrap(), "foo.js", Some(&json!({"experimentalErrorRecoveryMode": true})));
+            let j = js_error(
+                f["src"].as_str().unwrap(),
+                "foo.js",
+                Some(&json!({"experimentalErrorRecoveryMode": true})),
+            );
             assert_eq!(j.message, f["message"].as_str().unwrap(), "{id}");
-            let shipped: Vec<&str> = f["ownKeys"].as_array().unwrap().iter().map(|k| k.as_str().unwrap()).collect();
+            let shipped: Vec<&str> = f["ownKeys"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|k| k.as_str().unwrap())
+                .collect();
             assert_eq!(j.own_keys(), shipped, "{id}");
             let cwd = cwd();
             let got: Vec<Value> = j.errors.unwrap().iter().map(|x| json!({
@@ -176,12 +256,20 @@ mod tests {
                 "location": x.location.as_ref().map(|l| json!({"line": l.line, "column": l.column, "start": l.start, "length": l.length})),
                 "level": x.level, "url": x.url,
             })).collect();
-            let want: Vec<Value> = f["errors"].as_array().unwrap().iter().map(|x| {
-                assert_eq!(x["ownKeys"], json!(["message", "code", "filename", "location", "level", "url"]));
-                let mut x = x.clone();
-                x.as_object_mut().unwrap().remove("ownKeys");
-                x
-            }).collect();
+            let want: Vec<Value> = f["errors"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|x| {
+                    assert_eq!(
+                        x["ownKeys"],
+                        json!(["message", "code", "filename", "location", "level", "url"])
+                    );
+                    let mut x = x.clone();
+                    x.as_object_mut().unwrap().remove("ownKeys");
+                    x
+                })
+                .collect();
             assert_eq!(got, want, "{id}");
         }
     }
@@ -189,9 +277,16 @@ mod tests {
     /// A shipped single error owns `location`, `undefined` when unknown.
     #[test]
     fn missing_location_is_present_undefined() {
-        let j = js_error("", "foo.js", Some(&json!({"outputConfig": {"sourcemap": "foo"}})));
+        let j = js_error(
+            "",
+            "foo.js",
+            Some(&json!({"outputConfig": {"sourcemap": "foo"}})),
+        );
         assert!(matches!(j.location, Some(Either::B(()))));
-        assert_eq!(j.own_keys(), ["message", "code", "filename", "location", "level", "url"]);
+        assert_eq!(
+            j.own_keys(),
+            ["message", "code", "filename", "location", "level", "url"]
+        );
     }
 
     /// AB-R001: the JS location is the stored `DiagnosticLocation` converted as is (CSS `{line, column}`,
@@ -200,12 +295,22 @@ mod tests {
     #[test]
     fn error_location_is_the_producers() {
         let cases = [
-            ("export default class Foo {\n  x = ;\n}\n", "a.js", json!({"line": 2, "column": 6, "index": 33})),
+            (
+                "export default class Foo {\n  x = ;\n}\n",
+                "a.js",
+                json!({"line": 2, "column": 6, "index": 33}),
+            ),
             ("a {", "a.css", json!({"line": 1, "column": 1})),
-            ("<template><div></div></template>\n<template></template>", "a.html", json!({"line": 2, "column": 1, "start": 33, "length": 21})),
+            (
+                "<template><div></div></template>\n<template></template>",
+                "a.html",
+                json!({"line": 2, "column": 1, "start": 33, "length": 21}),
+            ),
         ];
         for (src, filename, want) in cases {
-            let Some(Either::A(l)) = js_error(src, filename, None).location else { panic!("{filename}: no location") };
+            let Some(Either::A(l)) = js_error(src, filename, None).location else {
+                panic!("{filename}: no location")
+            };
             assert_eq!(loc_json(&l), want, "{filename}");
         }
     }
@@ -215,10 +320,19 @@ mod tests {
     #[test]
     fn lwc1121_seam_matches_live_oracle() {
         let src = "const s = 'é😀'; import(foo)";
-        let root = lwc_shared::oracle_root().to_str().expect("LWC_ORACLE must be UTF-8").to_string();
-        let head = std::process::Command::new("git").args(["-C", &root, "rev-parse", "HEAD"]).output().expect("git is required");
+        let root = lwc_shared::oracle_root()
+            .to_str()
+            .expect("LWC_ORACLE must be UTF-8")
+            .to_string();
+        let head = std::process::Command::new("git")
+            .args(["-C", &root, "rev-parse", "HEAD"])
+            .output()
+            .expect("git is required");
         let head = String::from_utf8(head.stdout).unwrap();
-        assert!(head.starts_with("b9e8007"), "oracle {root} is at {head:?}, want b9e8007");
+        assert!(
+            head.starts_with("b9e8007"),
+            "oracle {root} is at {head:?}, want b9e8007"
+        );
         for ssr in [true, false] {
             let extra = json!({"targetSSR": ssr, "ssrMode": "sync", "dynamicImports": {"strictSpecifier": true}});
             let script = format!(
@@ -228,12 +342,24 @@ mod tests {
                    console.log(JSON.stringify({{ code: e.code, level: e.level, url: e.url, filename: e.filename,
                      location: {{ line, column, start, length }} }})); }}"
             );
-            let out = std::process::Command::new("node").arg("-e").arg(script).output().expect("node is required");
-            assert!(out.status.success(), "oracle failed: {}", String::from_utf8_lossy(&out.stderr));
+            let out = std::process::Command::new("node")
+                .arg("-e")
+                .arg(script)
+                .output()
+                .expect("node is required");
+            assert!(
+                out.status.success(),
+                "oracle failed: {}",
+                String::from_utf8_lossy(&out.stderr)
+            );
             let want: Value = serde_json::from_slice(&out.stdout).expect("oracle threw no error");
             let j = js_error(src, "foo.js", Some(&extra));
-            let Some(Either::A(l)) = &j.location else { panic!("ssr={ssr}: no location") };
-            let Some(Either::A(f)) = &j.filename else { panic!("ssr={ssr}: no filename") };
+            let Some(Either::A(l)) = &j.location else {
+                panic!("ssr={ssr}: no location")
+            };
+            let Some(Either::A(f)) = &j.filename else {
+                panic!("ssr={ssr}: no filename")
+            };
             let got = json!({"code": j.code, "level": j.level, "url": j.url, "filename": f, "location": loc_json(l)});
             assert_eq!(got, want, "ssr={ssr}");
         }

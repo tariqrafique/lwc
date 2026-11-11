@@ -55,16 +55,47 @@ else
   ok "omitting a test's own script fails --check-map"
 fi
 
-# board.sh (not land.sh-only) selects ratchet, not the main-refs self-test
-printf '%s\n' 'harness/board.sh' > "$tmp/board"
-got="$("$runner" --list --changed-file "$tmp/board")"
-grep -qx 'test-board-ratchet' <<< "$got" || bad "board.sh did not select test-board-ratchet (got: $got)"
-grep -qx 'check-land-main-refs' <<< "$got" && bad "board.sh should not select check-land-main-refs"
-ok "board.sh selects test-board-ratchet only among the heavy tests"
+# rootcause fix 5: an agent-style harness-only change outside the gate files selects nothing,
+# even when the map lists those paths (harness/board.sh, harness/board-rows.sh, vitest configs).
+printf '%s\n' 'harness/board.sh' 'harness/board-rows.sh' 'harness/vitest.config.ts' 'harness/test/lbc.behavior.test.ts' \
+  'harness/goldens/lbc/x.json' 'crates/lwc-js/src/lib.rs' > "$tmp/agent"
+got="$("$runner" --list --changed-file "$tmp/agent")"
+if [ -z "$got" ]; then ok "agent-style harness-only change runs no self-tests"; else bad "agent-style change selected: $(echo $got)"; fi
+# A gate file selects its mapped tests.
+printf '%s\n' 'harness/board.sh' 'scripts/baseline-ceiling.sh' > "$tmp/gate"
+got="$("$runner" --list --changed-file "$tmp/gate")"
+want="$(awk -F'\t' '$3 == "scripts/baseline-ceiling.sh" { print $1 }' "$map" | sort -u)"
+if [ -n "$want" ] && [ "$(sort -u <<< "$got")" = "$want" ]; then ok "scripts/baseline-ceiling.sh runs its mapped tests ($(echo $got))"
+else bad "gate file selected '$(echo $got)', want '$(echo $want)'"; fi
 
 # land.sh invokes the runner
-grep -q 'run-land-self-tests.sh' "$repo/scripts/land.sh" || bad "land.sh does not invoke run-land-self-tests.sh"
-ok "land.sh invokes the mapped runner"
+grep -q 'run-land-self-tests.sh' "$repo/scripts/preflight.sh" || bad "preflight.sh does not invoke run-land-self-tests.sh"
+ok "preflight.sh invokes the mapped runner"
+
+# --all never skips the napi tests (Migrate 2026-11-11 00:14).
+got="$("$runner" --list --all)"
+for n in test-board-ratchet test-shared-cargo-cache; do
+  if grep -qx "$n" <<< "$got"; then ok "--all lists $n"; else bad "--all does not list $n"; fi
+done
+# Pinned napi unavailable -> the napi tests FAIL naming the missing napi (no skip, nothing run).
+printf '%s\n' 'scripts/test-board-ratchet.sh' > "$tmp/changed"
+rc=0; LWC_SELF_TEST_NAPI_TARGET="$tmp/no-napi-target" "$runner" --changed-file "$tmp/changed" > "$tmp/nonapi.out" 2>&1 || rc=$?
+if [ "$rc" -ne 0 ] && grep -qF "pinned napi MISSING: $tmp/no-napi-target/release/liblwc_compiler_napi.so" "$tmp/nonapi.out" \
+   && grep -qx 'FAIL test-board-ratchet' "$tmp/nonapi.out"; then
+  ok "missing pinned napi fails test-board-ratchet loudly"
+else
+  bad "missing pinned napi rc=$rc"; sed 's/^/       /' "$tmp/nonapi.out"
+fi
+
+# preflight.sh sets MAIN to a git-archive of the base (no .git): check-land-main-refs still reads base's table.
+mkdir -p "$tmp/archive/scripts"; cp "$repo/scripts/land-main-refs.tsv" "$tmp/archive/scripts/"
+printf '%s\n' 'scripts/land-main-refs.tsv' > "$tmp/changed"
+rc=0; MAIN="$tmp/archive" "$runner" --changed-file "$tmp/changed" > "$tmp/archive.out" 2>&1 || rc=$?
+if grep -qx 'ok   check-land-main-refs' "$tmp/archive.out"; then
+  ok "check-land-main-refs runs with MAIN = a base archive (preflight)"
+else
+  bad "check-land-main-refs with MAIN = archive (rc=$rc)"; grep -E 'FAIL|cannot' "$tmp/archive.out" | sed 's/^/       /'
+fi
 
 if [ "$fail" -ne 0 ]; then
   say "test-land-self-tests: FAILED"

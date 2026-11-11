@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "stub is not a function"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "__lwc_component_class_internal$1 is not a function"
+ }
+}

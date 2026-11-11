@@ -24,15 +24,24 @@ pub const DECISIONS_MAP_TSV: &str = include_str!("../decisions.tsv");
 pub const DECISIONS_MAP_HEADER: &str = "case_key\tdecision_id\twhy";
 
 fn is_hex64(s: &str) -> bool {
-    s.len() == 64 && s.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+    s.len() == 64
+        && s.bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
 }
 
 /// A corpus name: the first case_key segment and the manifest `corpus`.
 pub fn check_corpus_name(c: &str) -> Result<(), String> {
-    if !c.is_empty() && c.bytes().all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b)) && c != "." && c != ".." {
+    if !c.is_empty()
+        && c.bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b))
+        && c != "."
+        && c != ".."
+    {
         Ok(())
     } else {
-        Err(format!("corpus {c:?} must be non-empty [A-Za-z0-9._-]+ (it is the first case_key segment)"))
+        Err(format!(
+            "corpus {c:?} must be non-empty [A-Za-z0-9._-]+ (it is the first case_key segment)"
+        ))
     }
 }
 
@@ -41,20 +50,31 @@ pub fn check_corpus_name(c: &str) -> Result<(), String> {
 /// always one TSV field. Returns the corpus segment. semdiff cannot recompute the hashes (the manifest carries
 /// compiled outputs, not templates or options), so the adapter (H-1) owns their correctness; semdiff owns the shape.
 pub fn check_case_key(key: &str) -> Result<&str, String> {
-    let bad = |why: &str| Err(format!("case_key {key:?}: {why} (want corpus/source/sha256(template)/sha256(opts))"));
+    let bad = |why: &str| {
+        Err(format!(
+            "case_key {key:?}: {why} (want corpus/source/sha256(template)/sha256(opts))"
+        ))
+    };
     if key.chars().any(|c| c.is_whitespace() || c.is_control()) {
         return bad("contains whitespace or a control character");
     }
     let mut back = key.rsplitn(3, '/');
-    let (Some(opts), Some(tmpl), Some(rest)) = (back.next(), back.next(), back.next()) else { return bad("too few segments") };
+    let (Some(opts), Some(tmpl), Some(rest)) = (back.next(), back.next(), back.next()) else {
+        return bad("too few segments");
+    };
     if !is_hex64(tmpl) || !is_hex64(opts) {
         return bad("the last two segments must be lowercase 64-hex sha256");
     }
-    let Some((corpus, source)) = rest.split_once('/') else { return bad("missing source segment") };
+    let Some((corpus, source)) = rest.split_once('/') else {
+        return bad("missing source segment");
+    };
     if check_corpus_name(corpus).is_err() {
         return bad("bad corpus segment");
     }
-    if source.split('/').any(|s| s.is_empty() || s == "." || s == "..") {
+    if source
+        .split('/')
+        .any(|s| s.is_empty() || s == "." || s == "..")
+    {
         return bad("source has an empty, `.` or `..` segment");
     }
     Ok(corpus)
@@ -139,9 +159,24 @@ impl Registry {
         let header: Vec<&str> = lines.next().unwrap_or("").split('\t').collect();
         let id_col = header.iter().position(|h| *h == "id");
         if text.is_empty() || header == [""] {
-            findings.push(Finding { code: FindingCode::Malformed, line: Some(1), id: None, detail: "empty registry: no header line".into() });
-        } else if let Some(dup) = header.iter().enumerate().find(|(i, h)| header[..*i].contains(h)).map(|(_, h)| h) {
-            findings.push(Finding { code: FindingCode::Malformed, line: Some(1), id: None, detail: format!("header names column {dup:?} twice") });
+            findings.push(Finding {
+                code: FindingCode::Malformed,
+                line: Some(1),
+                id: None,
+                detail: "empty registry: no header line".into(),
+            });
+        } else if let Some(dup) = header
+            .iter()
+            .enumerate()
+            .find(|(i, h)| header[..*i].contains(h))
+            .map(|(_, h)| h)
+        {
+            findings.push(Finding {
+                code: FindingCode::Malformed,
+                line: Some(1),
+                id: None,
+                detail: format!("header names column {dup:?} twice"),
+            });
         } else if let Some(id_col) = id_col {
             let res_col = header.iter().position(|h| *h == "result");
             for (i, line) in lines.enumerate() {
@@ -150,17 +185,34 @@ impl Registry {
                 let id = f.get(id_col).copied().unwrap_or("");
                 if !is_decision_id(id) {
                     let detail = format!("id {id:?} does not match ^D-[0-9]{{4}}$");
-                    findings.push(Finding { code: FindingCode::DecIdInvalid, line: Some(n), id: Some(id.into()), detail });
+                    findings.push(Finding {
+                        code: FindingCode::DecIdInvalid,
+                        line: Some(n),
+                        id: Some(id.into()),
+                        detail,
+                    });
                     continue;
                 }
                 let locked = res_col.and_then(|c| f.get(c)) == Some(&"locked");
                 if rows.insert(id.to_string(), locked).is_some() {
                     let detail = format!("duplicate id {id}");
-                    findings.push(Finding { code: FindingCode::DecIdInvalid, line: Some(n), id: Some(id.into()), detail });
+                    findings.push(Finding {
+                        code: FindingCode::DecIdInvalid,
+                        line: Some(n),
+                        id: Some(id.into()),
+                        detail,
+                    });
                 }
             }
         }
-        (Registry { sha256: sha256_hex(text.as_bytes()), has_id_column: id_col.is_some(), rows }, findings)
+        (
+            Registry {
+                sha256: sha256_hex(text.as_bytes()),
+                has_id_column: id_col.is_some(),
+                rows,
+            },
+            findings,
+        )
     }
 
     /// [`Registry::check`], failing on any defect (all of them, joined) — the form `semdiff run` uses.
@@ -169,17 +221,40 @@ impl Registry {
         if findings.is_empty() {
             Ok(reg)
         } else {
-            Err(format!("registry: {}", findings.iter().map(Finding::to_string).collect::<Vec<_>>().join("; ")))
+            Err(format!(
+                "registry: {}",
+                findings
+                    .iter()
+                    .map(Finding::to_string)
+                    .collect::<Vec<_>>()
+                    .join("; ")
+            ))
         }
     }
 
     /// None iff `id` resolves (exact match on the id column) to a row whose result is exactly `locked`.
     pub fn resolve(&self, id: &str) -> Option<Finding> {
-        let f = |code, detail: String| Some(Finding { code, line: None, id: Some(id.into()), detail });
+        let f = |code, detail: String| {
+            Some(Finding {
+                code,
+                line: None,
+                id: Some(id.into()),
+                detail,
+            })
+        };
         match self.rows.get(id) {
-            None if !self.has_id_column => f(FindingCode::DecUnresolved, format!("{id}: the registry has no `id` column")),
-            None => f(FindingCode::DecUnresolved, format!("{id} is not an id in the registry")),
-            Some(false) => f(FindingCode::DecNotLocked, format!("{id} resolves but its result is not `locked`")),
+            None if !self.has_id_column => f(
+                FindingCode::DecUnresolved,
+                format!("{id}: the registry has no `id` column"),
+            ),
+            None => f(
+                FindingCode::DecUnresolved,
+                format!("{id} is not an id in the registry"),
+            ),
+            Some(false) => f(
+                FindingCode::DecNotLocked,
+                format!("{id} resolves but its result is not `locked`"),
+            ),
             Some(true) => None,
         }
     }
@@ -211,18 +286,24 @@ impl DecisionMap {
     pub fn parse(text: &str, reg: &Registry) -> Result<DecisionMap, String> {
         let mut lines = text.lines();
         if lines.next() != Some(DECISIONS_MAP_HEADER) {
-            return Err(format!("decisions map: BAD-HEADER: first line must be exactly {DECISIONS_MAP_HEADER:?}"));
+            return Err(format!(
+                "decisions map: BAD-HEADER: first line must be exactly {DECISIONS_MAP_HEADER:?}"
+            ));
         }
         let mut map = BTreeMap::new();
         for (i, line) in lines.enumerate() {
             let at = |why: String| Err(format!("decisions map line {}: {why}", i + 2));
             let f: Vec<&str> = line.split('\t').collect();
-            let [key, id, why] = f[..] else { return at(format!("BAD-LINE: {} fields, want 3", f.len())) };
+            let [key, id, why] = f[..] else {
+                return at(format!("BAD-LINE: {} fields, want 3", f.len()));
+            };
             if let Err(e) = check_case_key(key) {
                 return at(format!("BAD-KEY: {e}"));
             }
             if !is_decision_id(id) {
-                return at(format!("DEC-ID-INVALID: {id:?} does not match ^D-[0-9]{{4}}$"));
+                return at(format!(
+                    "DEC-ID-INVALID: {id:?} does not match ^D-[0-9]{{4}}$"
+                ));
             }
             if why.trim().is_empty() {
                 return at("NO-EVIDENCE: empty `why`".into());
@@ -231,10 +312,15 @@ impl DecisionMap {
                 return at(e);
             }
             if map.insert(key.to_string(), id.to_string()).is_some() {
-                return at(format!("DUP-KEY: case_key {key} appears on more than one row"));
+                return at(format!(
+                    "DUP-KEY: case_key {key} appears on more than one row"
+                ));
             }
         }
-        Ok(DecisionMap { sha256: sha256_hex(text.as_bytes()), map })
+        Ok(DecisionMap {
+            sha256: sha256_hex(text.as_bytes()),
+            map,
+        })
     }
 
     pub fn get(&self, key: &str) -> Option<&str> {

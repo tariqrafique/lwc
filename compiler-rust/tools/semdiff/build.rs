@@ -30,10 +30,17 @@ fn main() {
     let path = manifest_dir().join(SRC);
     println!("cargo:rerun-if-changed={}", path.display());
     println!("cargo:rerun-if-env-changed=LWC_ORACLE");
-    let text = fs::read_to_string(&path).unwrap_or_else(|e| panic!("semdiff build: read {}: {e}", path.display()));
-    let decls: Vec<&str> = text.lines().filter(|l| l.contains("const LWC ") || l.contains("const LWC=")).collect();
+    let text = fs::read_to_string(&path)
+        .unwrap_or_else(|e| panic!("semdiff build: read {}: {e}", path.display()));
+    let decls: Vec<&str> = text
+        .lines()
+        .filter(|l| l.contains("const LWC ") || l.contains("const LWC="))
+        .collect();
     let [line] = decls.as_slice() else {
-        panic!("semdiff build: want exactly one `const LWC` in {}, found {decls:?}", path.display());
+        panic!(
+            "semdiff build: want exactly one `const LWC` in {}, found {decls:?}",
+            path.display()
+        );
     };
     let root = if line.trim() == PORTABLE {
         oracle_from_env()

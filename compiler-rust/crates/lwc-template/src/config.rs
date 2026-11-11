@@ -1,8 +1,8 @@
 //! Compile options mirroring `@lwc/template-compiler` `Config` / `normalizeConfig`.
 
 // Defined in lwc-shared so `lwc_shared::CompileOptions` can carry it; re-exported as the template type.
-pub use lwc_shared::{CustomRendererConfig, CustomRendererElementConfig};
 use lwc_shared::InstrumentationHandle;
+pub use lwc_shared::{CustomRendererConfig, CustomRendererElementConfig};
 
 /// Public compile/parse options (all optional at the call site; normalized below).
 #[derive(Debug, Clone, Default)]
@@ -146,7 +146,15 @@ mod tests {
 
     #[test]
     fn normalize_api_version_like_get_api_version_from_number() {
-        let v = |x: Option<u32>| Config { api_version: x, ..Config::default() }.normalize().unwrap().api_version;
+        let v = |x: Option<u32>| {
+            Config {
+                api_version: x,
+                ..Config::default()
+            }
+            .normalize()
+            .unwrap()
+            .api_version
+        };
         assert_eq!(v(None), 66);
         assert_eq!(v(Some(57)), 58);
         assert_eq!(v(Some(0)), 58);

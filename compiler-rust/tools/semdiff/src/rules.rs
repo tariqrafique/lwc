@@ -10,14 +10,15 @@
 //! sides parse, the printed texts match, and `Program::content_eq` holds (see `compare`).
 use crate::Tok;
 use oxc::ast::ast::{
-    ArrayAssignmentTarget, ArrayExpression, ArrayPattern, CallExpression, ExportNamedDeclaration, FormalParameters,
-    ArrayExpressionElement, ImportDeclaration, NewExpression, ObjectAssignmentTarget, ObjectExpression,
-    ObjectPattern, Program,
+    ArrayAssignmentTarget, ArrayExpression, ArrayExpressionElement, ArrayPattern, CallExpression,
+    ExportNamedDeclaration, FormalParameters, ImportDeclaration, NewExpression,
+    ObjectAssignmentTarget, ObjectExpression, ObjectPattern, Program,
 };
 use oxc::ast_visit::walk::{
     walk_array_assignment_target, walk_array_expression, walk_array_pattern, walk_call_expression,
-    walk_export_named_declaration, walk_formal_parameters, walk_import_declaration, walk_new_expression,
-    walk_object_assignment_target, walk_object_expression, walk_object_pattern,
+    walk_export_named_declaration, walk_formal_parameters, walk_import_declaration,
+    walk_new_expression, walk_object_assignment_target, walk_object_expression,
+    walk_object_pattern,
 };
 use oxc::ast_visit::Visit;
 use oxc::parser::Kind;
@@ -56,16 +57,37 @@ fn parse_table() -> (String, Vec<RuleMeta>) {
         .expect("rt-N.toml: version")
         .to_string();
     let mut rules = Vec::new();
-    let mut cur = RuleMeta { id: String::new(), rev: 0, decision: String::new(), arch_review: String::new(), kind: String::new() };
+    let mut cur = RuleMeta {
+        id: String::new(),
+        rev: 0,
+        decision: String::new(),
+        arch_review: String::new(),
+        kind: String::new(),
+    };
     let mut in_rule = false;
-    let take = |s: &str, k: &str| s.trim().strip_prefix(k)?.trim().strip_prefix('=')?.trim().strip_prefix('"')?.strip_suffix('"').map(str::to_string);
+    let take = |s: &str, k: &str| {
+        s.trim()
+            .strip_prefix(k)?
+            .trim()
+            .strip_prefix('=')?
+            .trim()
+            .strip_prefix('"')?
+            .strip_suffix('"')
+            .map(str::to_string)
+    };
     for line in RAW.lines() {
         if line.trim() == "[[rule]]" {
             if in_rule {
                 rules.push(cur.clone());
             }
             in_rule = true;
-            cur = RuleMeta { id: String::new(), rev: 0, decision: String::new(), arch_review: String::new(), kind: String::new() };
+            cur = RuleMeta {
+                id: String::new(),
+                rev: 0,
+                decision: String::new(),
+                arch_review: String::new(),
+                kind: String::new(),
+            };
             continue;
         }
         if !in_rule {
@@ -80,7 +102,12 @@ fn parse_table() -> (String, Vec<RuleMeta>) {
         } else if let Some(v) = take(line, "arch_review") {
             cur.arch_review = v;
         } else if let Some(rest) = line.trim().strip_prefix("rev") {
-            cur.rev = rest.trim().trim_start_matches('=').trim().parse().expect("rev");
+            cur.rev = rest
+                .trim()
+                .trim_start_matches('=')
+                .trim()
+                .parse()
+                .expect("rev");
         }
     }
     if in_rule {
@@ -96,7 +123,12 @@ pub fn table() -> &'static (String, Vec<RuleMeta>) {
 }
 
 pub fn pending() -> Vec<String> {
-    table().1.iter().filter(|r| r.pending()).map(RuleMeta::tagged).collect()
+    table()
+        .1
+        .iter()
+        .filter(|r| r.pending())
+        .map(RuleMeta::tagged)
+        .collect()
 }
 
 /// Identity of the *applied* set. `rt-0` while every rule is PENDING. Otherwise `rt-1:` plus the sorted tagged
@@ -105,7 +137,12 @@ pub fn pending() -> Vec<String> {
 pub fn applied_table_version() -> &'static str {
     static V: OnceLock<String> = OnceLock::new();
     V.get_or_init(|| {
-        let mut applied: Vec<String> = table().1.iter().filter(|r| r.is_applied()).map(RuleMeta::tagged).collect();
+        let mut applied: Vec<String> = table()
+            .1
+            .iter()
+            .filter(|r| r.is_applied())
+            .map(RuleMeta::tagged)
+            .collect();
         applied.sort();
         if applied.is_empty() {
             "rt-0".into()
@@ -117,7 +154,12 @@ pub fn applied_table_version() -> &'static str {
 }
 
 fn tagged_starting(prefix: &str) -> String {
-    table().1.iter().find(|r| r.id.starts_with(prefix)).unwrap_or_else(|| panic!("rt-1.toml: missing {prefix}")).tagged()
+    table()
+        .1
+        .iter()
+        .find(|r| r.id.starts_with(prefix))
+        .unwrap_or_else(|| panic!("rt-1.toml: missing {prefix}"))
+        .tagged()
 }
 
 pub struct Enable {
@@ -128,16 +170,24 @@ pub struct Enable {
 pub fn enabled() -> Enable {
     let rules = &table().1;
     Enable {
-        comma: rules.iter().any(|r| r.id.starts_with("R-TRAILING-COMMA") && r.is_applied()),
-        asi: rules.iter().any(|r| r.id.starts_with("R-ASI-SEMI") && r.is_applied()),
+        comma: rules
+            .iter()
+            .any(|r| r.id.starts_with("R-TRAILING-COMMA") && r.is_applied()),
+        asi: rules
+            .iter()
+            .any(|r| r.id.starts_with("R-ASI-SEMI") && r.is_applied()),
     }
 }
 
 pub fn enable_forcing(force: &[&str]) -> Enable {
     let rules = &table().1;
     Enable {
-        comma: rules.iter().any(|r| r.id.starts_with("R-TRAILING-COMMA") && force.iter().any(|x| *x == r.tagged())),
-        asi: rules.iter().any(|r| r.id.starts_with("R-ASI-SEMI") && force.iter().any(|x| *x == r.tagged())),
+        comma: rules.iter().any(|r| {
+            r.id.starts_with("R-TRAILING-COMMA") && force.iter().any(|x| *x == r.tagged())
+        }),
+        asi: rules
+            .iter()
+            .any(|r| r.id.starts_with("R-ASI-SEMI") && force.iter().any(|x| *x == r.tagged())),
     }
 }
 
@@ -151,7 +201,11 @@ struct ListParents {
     nodes: Vec<(Span, Option<(u32, u32)>)>,
 }
 
-fn option_list_trailing<T: GetSpan>(elements: &[Option<T>], rest_end: Option<u32>, span: Span) -> Option<(u32, u32)> {
+fn option_list_trailing<T: GetSpan>(
+    elements: &[Option<T>],
+    rest_end: Option<u32>,
+    span: Span,
+) -> Option<(u32, u32)> {
     if let Some(end) = rest_end {
         return Some((end, span.end));
     }
@@ -203,7 +257,11 @@ impl<'a> Visit<'a> for ListParents {
         walk_object_expression(self, it);
     }
     fn visit_formal_parameters(&mut self, it: &FormalParameters<'a>) {
-        let last = it.rest.as_ref().map(|r| r.span.end).or_else(|| it.items.last().map(|p| p.span.end));
+        let last = it
+            .rest
+            .as_ref()
+            .map(|r| r.span.end)
+            .or_else(|| it.items.last().map(|p| p.span.end));
         self.push(it.span, last.map(|e| (e, it.span.end)));
         walk_formal_parameters(self, it);
     }
@@ -218,7 +276,11 @@ impl<'a> Visit<'a> for ListParents {
         walk_new_expression(self, it);
     }
     fn visit_import_declaration(&mut self, it: &ImportDeclaration<'a>) {
-        let last = it.specifiers.as_ref().and_then(|s| s.last()).map(|s| s.span().end);
+        let last = it
+            .specifiers
+            .as_ref()
+            .and_then(|s| s.last())
+            .map(|s| s.span().end);
         self.push(it.span, last.map(|e| (e, it.span.end)));
         walk_import_declaration(self, it);
     }
@@ -228,20 +290,34 @@ impl<'a> Visit<'a> for ListParents {
         walk_export_named_declaration(self, it);
     }
     fn visit_array_pattern(&mut self, it: &ArrayPattern<'a>) {
-        self.push(it.span, option_list_trailing(&it.elements, it.rest.as_ref().map(|r| r.span.end), it.span));
+        self.push(
+            it.span,
+            option_list_trailing(&it.elements, it.rest.as_ref().map(|r| r.span.end), it.span),
+        );
         walk_array_pattern(self, it);
     }
     fn visit_object_pattern(&mut self, it: &ObjectPattern<'a>) {
-        let last = it.rest.as_ref().map(|r| r.span.end).or_else(|| it.properties.last().map(|p| p.span().end));
+        let last = it
+            .rest
+            .as_ref()
+            .map(|r| r.span.end)
+            .or_else(|| it.properties.last().map(|p| p.span().end));
         self.push(it.span, last.map(|e| (e, it.span.end)));
         walk_object_pattern(self, it);
     }
     fn visit_array_assignment_target(&mut self, it: &ArrayAssignmentTarget<'a>) {
-        self.push(it.span, option_list_trailing(&it.elements, it.rest.as_ref().map(|r| r.span.end), it.span));
+        self.push(
+            it.span,
+            option_list_trailing(&it.elements, it.rest.as_ref().map(|r| r.span.end), it.span),
+        );
         walk_array_assignment_target(self, it);
     }
     fn visit_object_assignment_target(&mut self, it: &ObjectAssignmentTarget<'a>) {
-        let last = it.rest.as_ref().map(|r| r.span.end).or_else(|| it.properties.last().map(|p| p.span().end));
+        let last = it
+            .rest
+            .as_ref()
+            .map(|r| r.span.end)
+            .or_else(|| it.properties.last().map(|p| p.span().end));
         self.push(it.span, last.map(|e| (e, it.span.end)));
         walk_object_assignment_target(self, it);
     }
@@ -258,7 +334,9 @@ pub(crate) fn is_semicolon(toks: &[Tok], i: usize) -> bool {
 }
 
 fn skip_trailing(toks: &[Tok], i: usize, program: &Program<'_>) -> bool {
-    toks.get(i).is_some_and(|t| t.kind == Kind::Comma && trailing_comma_in_d0258_or_d0266_context(program, t.start))
+    toks.get(i).is_some_and(|t| {
+        t.kind == Kind::Comma && trailing_comma_in_d0258_or_d0266_context(program, t.start)
+    })
 }
 
 /// Two-pointer comparison: `Tok::same`, plus skips allowed by the enabled D-0258 rules. `applied` collects the
@@ -327,7 +405,9 @@ fn first_token_diff_with(
                     j += 1;
                     continue;
                 }
-                return Some(json!({"coords": "tokens", "index": i.max(j), "oracle": clip(a.get(i)), "rust": clip(b.get(j))}));
+                return Some(
+                    json!({"coords": "tokens", "index": i.max(j), "oracle": clip(a.get(i)), "rust": clip(b.get(j))}),
+                );
             }
         }
     }
@@ -348,7 +428,10 @@ mod tests {
             .filter(|(_, c)| *c == ',')
             .map(|(i, _)| {
                 let start = i as u32;
-                (start, trailing_comma_in_d0258_or_d0266_context(&ret.program, start))
+                (
+                    start,
+                    trailing_comma_in_d0258_or_d0266_context(&ret.program, start),
+                )
             })
             .collect()
     }
@@ -363,11 +446,21 @@ mod tests {
         for (trail, hole, lead) in [
             ("([a,] = o);", "([a,,] = o);", "([,a] = o);"),
             ("let [a,] = o;", "let [a,,] = o;", "let [,a] = o;"),
-            ("function f([a,]) {}", "function f([a,,]) {}", "function f([,a]) {}"),
+            (
+                "function f([a,]) {}",
+                "function f([a,,]) {}",
+                "function f([,a]) {}",
+            ),
         ] {
             assert!(any_trailing(trail), "trailing must be recognized: {trail}");
-            assert!(!any_trailing(hole), "a last-slot hole is an elision, not a trailing comma: {hole}");
-            assert!(!any_trailing(lead), "a leading hole stays an elision: {lead}");
+            assert!(
+                !any_trailing(hole),
+                "a last-slot hole is an elision, not a trailing comma: {hole}"
+            );
+            assert!(
+                !any_trailing(lead),
+                "a leading hole stays an elision: {lead}"
+            );
         }
         // Same for an array literal (D-0258).
         assert!(any_trailing("const a = [a,];"));
@@ -380,7 +473,12 @@ mod tests {
         // Ids live in rt-1.toml; Rust looks them up by prefix rather than duplicating the tagged string.
         for r in &table().1 {
             assert!(RAW.contains(&format!("id = \"{}\"", r.id)), "{}", r.id);
-            assert!(RAW.contains(&format!("rev = {}", r.rev)), "{}@{}", r.id, r.rev);
+            assert!(
+                RAW.contains(&format!("rev = {}", r.rev)),
+                "{}@{}",
+                r.id,
+                r.rev
+            );
             assert_eq!(r.tagged(), format!("{}@{}", r.id, r.rev));
         }
     }

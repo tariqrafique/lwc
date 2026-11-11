@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # D-0286: shared registry readers (main UNION branch additions) and D-id cites.
 # Citation format (minimal, in the incoming registry file):
-#   # D-NNNN: remove <key>
-#   # D-NNNN: loosen <key>
+#   # D-NNNN: remove <key> [-- <one-line reason>]
+#   # D-NNNN: loosen <key> [-- <one-line reason>]
 # NNNN is 4 digits. <key> is the entry id: a board row name, a baseline row
 # name, or an allowlist id (`path` or `path dep`). The key after the action
 # must match exactly (no glob). A cite without a matching D-[0-9]{4} is ignored.
@@ -16,6 +16,7 @@ registry_cited() {
     case "$line" in
       "# D-"[0-9][0-9][0-9][0-9]": $action "*)
         rest="${line#*: $action }"
+        rest="${rest%% -- *}"   # optional ' -- <reason>' suffix
         [ "$rest" = "$key" ] && return 0
         ;;
     esac

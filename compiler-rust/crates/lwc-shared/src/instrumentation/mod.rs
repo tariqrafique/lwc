@@ -4,6 +4,8 @@
 //! `tests/instrumentation_gate.rs`).
 use crate::CompilerDiagnostic;
 
+// Generated (tools/*/gen.mjs, checked byte-for-byte by its --check test): rustfmt must not touch it.
+#[rustfmt::skip]
 mod generated;
 pub use generated::{CompilerMetric, DeprecationId};
 
@@ -32,13 +34,21 @@ pub struct InstrumentationRecorder(std::sync::Mutex<Vec<InstrumentationEvent>>);
 
 impl InstrumentationRecorder {
     /// The events recorded so far, in call order; leaves the recorder empty.
-    pub fn take(&self) -> Vec<InstrumentationEvent> { std::mem::take(&mut *self.0.lock().unwrap_or_else(|e| e.into_inner())) }
-    fn push(&self, e: InstrumentationEvent) { self.0.lock().unwrap_or_else(|e| e.into_inner()).push(e) }
+    pub fn take(&self) -> Vec<InstrumentationEvent> {
+        std::mem::take(&mut *self.0.lock().unwrap_or_else(|e| e.into_inner()))
+    }
+    fn push(&self, e: InstrumentationEvent) {
+        self.0.lock().unwrap_or_else(|e| e.into_inner()).push(e)
+    }
 }
 
 impl Instrumentation for InstrumentationRecorder {
-    fn log(&self, d: &CompilerDiagnostic) { self.push(InstrumentationEvent::Log(d.clone())) }
-    fn increment_counter(&self, m: CompilerMetric) { self.push(InstrumentationEvent::IncrementCounter(m)) }
+    fn log(&self, d: &CompilerDiagnostic) {
+        self.push(InstrumentationEvent::Log(d.clone()))
+    }
+    fn increment_counter(&self, m: CompilerMetric) {
+        self.push(InstrumentationEvent::IncrementCounter(m))
+    }
 }
 
 /// Shared handle so options stay `Clone + Debug + Eq` (equality is pointer identity).
@@ -46,16 +56,26 @@ impl Instrumentation for InstrumentationRecorder {
 pub struct InstrumentationHandle(pub std::sync::Arc<dyn Instrumentation>);
 
 impl InstrumentationHandle {
-    pub fn new(i: impl Instrumentation + 'static) -> Self { Self(std::sync::Arc::new(i)) }
-    pub fn increment_counter(&self, metric: CompilerMetric) { self.0.increment_counter(metric) }
-    pub fn log(&self, d: &CompilerDiagnostic) { self.0.log(d) }
+    pub fn new(i: impl Instrumentation + 'static) -> Self {
+        Self(std::sync::Arc::new(i))
+    }
+    pub fn increment_counter(&self, metric: CompilerMetric) {
+        self.0.increment_counter(metric)
+    }
+    pub fn log(&self, d: &CompilerDiagnostic) {
+        self.0.log(d)
+    }
 }
 
 impl std::fmt::Debug for InstrumentationHandle {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { f.write_str("InstrumentationHandle(..)") }
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("InstrumentationHandle(..)")
+    }
 }
 impl PartialEq for InstrumentationHandle {
-    fn eq(&self, o: &Self) -> bool { std::sync::Arc::ptr_eq(&self.0, &o.0) }
+    fn eq(&self, o: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.0, &o.0)
+    }
 }
 impl Eq for InstrumentationHandle {}
 
@@ -66,7 +86,9 @@ mod tests {
 
     #[test]
     fn js_value_round_trips() {
-        for &m in CompilerMetric::ALL { assert_eq!(CompilerMetric::from_js(m.js_value()), Some(m)); }
+        for &m in CompilerMetric::ALL {
+            assert_eq!(CompilerMetric::from_js(m.js_value()), Some(m));
+        }
         assert_eq!(CompilerMetric::from_js("nope"), None);
     }
 
@@ -78,11 +100,14 @@ mod tests {
         h.increment_counter(CompilerMetric::LwcRenderModeDirective);
         h.log(&d);
         h.increment_counter(CompilerMetric::LwcDynamicDirective);
-        assert_eq!(rec.take(), vec![
-            InstrumentationEvent::IncrementCounter(CompilerMetric::LwcRenderModeDirective),
-            InstrumentationEvent::Log(d),
-            InstrumentationEvent::IncrementCounter(CompilerMetric::LwcDynamicDirective),
-        ]);
+        assert_eq!(
+            rec.take(),
+            vec![
+                InstrumentationEvent::IncrementCounter(CompilerMetric::LwcRenderModeDirective),
+                InstrumentationEvent::Log(d),
+                InstrumentationEvent::IncrementCounter(CompilerMetric::LwcDynamicDirective),
+            ]
+        );
         assert!(rec.take().is_empty());
     }
 }

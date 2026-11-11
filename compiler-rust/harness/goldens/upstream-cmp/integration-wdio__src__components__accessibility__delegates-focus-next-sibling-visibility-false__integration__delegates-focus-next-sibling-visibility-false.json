@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">.invisible-button {visibility: hidden;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><span tabindex=\"0\">Tabbable span</span><br><integration-child tabindex=\"-1\"><template shadowrootmode=\"open\"></template></integration-child><button class=\"invisible-button\">Invisible Button</button></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.invisible-button {visibility: hidden;}</style><span tabindex=\"0\">Tabbable span</span><br><integration-child tabindex=\"-1\"><template shadowrootmode=\"open\"></template></integration-child><button class=\"invisible-button\">Invisible Button</button></template></lwc-up>"
+ }
+}

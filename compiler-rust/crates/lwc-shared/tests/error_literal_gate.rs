@@ -31,7 +31,9 @@ fn no_error_info_literals_outside_lwc_shared_errors() {
     let mut hits = vec![];
     for f in files {
         let rel = rel_slash(&crates, &f);
-        if rel.starts_with("lwc-shared/src/errors/") { continue }
+        if rel.starts_with("lwc-shared/src/errors/") {
+            continue;
+        }
         let text = std::fs::read_to_string(&f).unwrap();
         let body = &text[..test_mod.find(&text).map_or(text.len(), |m| m.start())];
         for p in &pats {
@@ -41,18 +43,32 @@ fn no_error_info_literals_outside_lwc_shared_errors() {
             }
         }
     }
-    assert!(hits.is_empty(), "error-info literals outside lwc-shared/src/errors (use lwc_shared::errors::error_info):\n{}", hits.join("\n"));
+    assert!(
+        hits.is_empty(),
+        "error-info literals outside lwc-shared/src/errors (use lwc_shared::errors::error_info):\n{}",
+        hits.join("\n")
+    );
 }
 
 #[test]
 fn exactly_one_lwc_version_const() {
     let (crates, files) = crate_src_rs();
-    let defs: Vec<_> = files.iter().filter(|f| std::fs::read_to_string(f).unwrap_or_default().contains(concat!("const ", "LWC_VERSION"))).collect();
+    let defs: Vec<_> = files
+        .iter()
+        .filter(|f| {
+            std::fs::read_to_string(f)
+                .unwrap_or_default()
+                .contains(concat!("const ", "LWC_VERSION"))
+        })
+        .collect();
     let rel: Vec<String> = defs.iter().map(|f| rel_slash(&crates, f)).collect();
     let expected = vec!["lwc-shared/src/meta.rs".to_string()];
     let mut got = rel.clone();
     got.sort();
-    assert_eq!(got, expected, "only lwc-shared/src/meta.rs may define the LWC version");
+    assert_eq!(
+        got, expected,
+        "only lwc-shared/src/meta.rs may define the LWC version"
+    );
 }
 
 /// `@lwc/shared` owns `LWC_VERSION_COMMENT`: no crate's source outside lwc-shared/src/meta.rs spells it.
@@ -62,10 +78,17 @@ fn exactly_one_lwc_version_comment() {
     let needle = concat!("LWC compiler", " v");
     let mut got: Vec<String> = files
         .iter()
-        .filter(|f| std::fs::read_to_string(f).unwrap_or_default().contains(needle))
+        .filter(|f| {
+            std::fs::read_to_string(f)
+                .unwrap_or_default()
+                .contains(needle)
+        })
         .map(|f| rel_slash(&crates, f))
         .collect();
     got.sort();
     let expected = vec!["lwc-shared/src/meta.rs".to_string()];
-    assert_eq!(got, expected, "only lwc-shared/src/meta.rs may spell the LWC version comment; use lwc_shared::meta::version_comment");
+    assert_eq!(
+        got, expected,
+        "only lwc-shared/src/meta.rs may spell the LWC version comment; use lwc_shared::meta::version_comment"
+    );
 }

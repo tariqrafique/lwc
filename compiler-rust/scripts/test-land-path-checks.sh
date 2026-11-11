@@ -44,7 +44,8 @@ rm -f "$here/../scripts/_plant-land-path-lint.sh"
 #    catch-all regex). The mapping plant lives in test-land-self-tests.sh; here
 #    we only check that this shared-list test is still on the map and that
 #    land.sh invokes the runner.
-grep -q 'run-land-self-tests.sh' "$repo/scripts/land.sh" || bad "land.sh does not invoke run-land-self-tests.sh"
+grep -q 'main_run scripts/preflight.sh' "$repo/scripts/land.sh" || bad "land.sh does not main_run preflight.sh"
+grep -q 'run-land-self-tests.sh' "$repo/scripts/preflight.sh" || bad "preflight.sh does not invoke run-land-self-tests.sh"
 grep -qE '^test-land-path-checks	' "$here/land-self-tests.tsv" || bad "map missing test-land-path-checks"
 grep -q $'\tscripts/land-path-checks.sh$' "$here/land-self-tests.tsv" || bad "map missing scripts/land-path-checks.sh"
 grep -q $'\tscripts/test-land-path-checks.sh$' "$here/land-self-tests.tsv" || bad "map missing scripts/test-land-path-checks.sh"
@@ -53,7 +54,7 @@ ok "land.sh uses the mapped runner and the map covers land-path-checks"
 
 # 4. both entry points actually call the shared driver.
 grep -q 'land-path-checks.sh' "$here/c8-checks.sh" || bad "c8-checks.sh does not invoke land-path-checks.sh"
-grep -q 'main_run scripts/land-path-checks.sh' "$repo/scripts/land.sh" || bad "land.sh does not main_run land-path-checks.sh"
+grep -q 'main_run scripts/land-path-checks.sh' "$repo/scripts/preflight.sh" || bad "preflight.sh does not main_run land-path-checks.sh"
 ok "land.sh and c8-checks.sh both read the shared list via the driver"
 
 if [ "$fail" -ne 0 ]; then

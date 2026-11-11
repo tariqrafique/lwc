@@ -2,19 +2,30 @@
 //! `{"id","src","filename","scoped","dss","erm"}` and writes JSONL results
 //! `{"id","ok":true,"code"}` | `{"id","ok":false,"err"}` | `{"id","panic":true}`.
 //! Used by tools/style-diff/run.mjs.
-use lwc_style::{transform_with_config, Config, StyleError};
-use serde_json::{json, Value};
+use lwc_style::{Config, StyleError, transform_with_config};
+use serde_json::{Value, json};
 use std::io::{BufRead, Write};
 
 fn err_json(e: &StyleError) -> Value {
     match e {
         // jsErr / normalizeError: a non-CssSyntaxError is `{name, message}`.
-        StyleError::Syntax { name, reason, .. } if name != "CssSyntaxError" => json!({"name": name, "message": reason}),
-        StyleError::Syntax { name, reason, line, column } => {
+        StyleError::Syntax { name, reason, .. } if name != "CssSyntaxError" => {
+            json!({"name": name, "message": reason})
+        }
+        StyleError::Syntax {
+            name,
+            reason,
+            line,
+            column,
+        } => {
             // JSON.stringify drops `undefined` line/column (position-less PostCSS errors).
             let mut o = json!({"name": name, "reason": reason});
-            if let Some(c) = column { o["column"] = json!(c); }
-            if let Some(l) = line { o["line"] = json!(l); }
+            if let Some(c) = column {
+                o["column"] = json!(c);
+            }
+            if let Some(l) = line {
+                o["line"] = json!(l);
+            }
             o
         }
         StyleError::Aggregate(v) => Value::Array(v.iter().map(err_json).collect()),
@@ -27,10 +38,17 @@ fn main() {
     let mut out = std::io::BufWriter::new(std::io::stdout());
     for line in stdin.lock().lines() {
         let line = line.unwrap();
-        if line.trim().is_empty() { continue; }
+        if line.trim().is_empty() {
+            continue;
+        }
         let j: Value = serde_json::from_str(&line).unwrap();
         let b = |k: &str| j[k].as_bool().unwrap_or(false);
-        let cfg = Config { scoped: b("scoped"), disable_synthetic_shadow_support: b("dss"), experimental_error_recovery_mode: b("erm"), api_version: None };
+        let cfg = Config {
+            scoped: b("scoped"),
+            disable_synthetic_shadow_support: b("dss"),
+            experimental_error_recovery_mode: b("erm"),
+            api_version: None,
+        };
         let src = j["src"].as_str().unwrap().to_string();
         let fname = j["filename"].as_str().unwrap_or("x.css").to_string();
         let r = std::panic::catch_unwind(move || transform_with_config(&src, &fname, cfg));

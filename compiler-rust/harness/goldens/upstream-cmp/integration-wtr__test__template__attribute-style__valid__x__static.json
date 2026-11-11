@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div style=\"position: absolute; top: 10px; --custom-property: blue;\">Static style attribute</div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div style=\"position: absolute; top: 10px; --custom-property: blue;\">Static style attribute</div></template></lwc-up>"
+ }
+}

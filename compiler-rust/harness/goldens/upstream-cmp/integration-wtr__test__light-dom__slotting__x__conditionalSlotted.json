@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><x-conditional-slot data-id=\"conditional-slot\"><template shadowrootmode=\"open\"></template><p data-id=\"slotted-text\">Slotted content</p></x-conditional-slot></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><x-conditional-slot data-id=\"conditional-slot\"><template shadowrootmode=\"open\"></template><p data-id=\"slotted-text\">Slotted content</p></x-conditional-slot></lwc-up>"
+ }
+}

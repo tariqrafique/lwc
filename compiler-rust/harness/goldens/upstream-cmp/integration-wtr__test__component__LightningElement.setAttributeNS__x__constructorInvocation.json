@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Method \"setAttributeNS\" not implemented."
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up foo=\"bar\"><template shadowrootmode=\"open\"></template></lwc-up>"
+ }
+}

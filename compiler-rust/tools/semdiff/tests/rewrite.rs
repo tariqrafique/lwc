@@ -12,7 +12,10 @@ const BASE: &str = "import { registerTemplate } from \"lwc\";\nconst stc0 = { ke
 fn positive_whitespace_and_formatting_only_is_equivalent() {
     // D-0196: whitespace and string quote/escape spelling are the ONLY unobservable spelling (semicolons stay).
     let reformatted = "import {registerTemplate} from 'lwc';\n\n\nconst stc0={key:0,props:{'a':1,'\\x62':2}};\nfunction tmpl($api,$cmp){const {h:api_element}=$api;\nreturn [api_element('d\\u{69}v',stc0)];}\nexport default registerTemplate(tmpl);\ntmpl.stylesheets=[];";
-    assert_eq!(class(BASE, reformatted), (Class::EquivalentByRewrite, "printer-equal".into()));
+    assert_eq!(
+        class(BASE, reformatted),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
 }
 
 #[test]
@@ -24,7 +27,10 @@ fn positive_identical_text_is_equivalent() {
 fn negative_swapped_object_keys_not_equivalent() {
     // Key order is observable (Object.keys / for-in / engine prop-patch order): never canonicalized in rt-0.
     let swapped = BASE.replace("\"a\": 1, \"b\": 2", "\"b\": 2, \"a\": 1");
-    assert_eq!(class(BASE, &swapped), (Class::Unclassified, "printed-differs".into()));
+    assert_eq!(
+        class(BASE, &swapped),
+        (Class::Unclassified, "printed-differs".into())
+    );
 }
 
 #[test]
@@ -37,7 +43,10 @@ fn negative_swapped_statements_not_equivalent() {
 #[test]
 fn negative_changed_literal_not_equivalent() {
     let changed = BASE.replace("\"div\"", "\"span\"");
-    assert_eq!(class(BASE, &changed), (Class::Unclassified, "printed-differs".into()));
+    assert_eq!(
+        class(BASE, &changed),
+        (Class::Unclassified, "printed-differs".into())
+    );
     let num = BASE.replace("\"b\": 2", "\"b\": 3");
     assert_eq!(class(BASE, &num).0, Class::Unclassified);
 }
@@ -60,22 +69,37 @@ fn negative_comment_change_not_equivalent() {
 
 #[test]
 fn parse_errors_are_unclassified_per_side() {
-    assert_eq!(class("export default (;", BASE), (Class::Unclassified, "parse-error-oracle".into()));
-    assert_eq!(class(BASE, "export default (;"), (Class::Unclassified, "parse-error-rust".into()));
+    assert_eq!(
+        class("export default (;", BASE),
+        (Class::Unclassified, "parse-error-oracle".into())
+    );
+    assert_eq!(
+        class(BASE, "export default (;"),
+        (Class::Unclassified, "parse-error-rust".into())
+    );
 }
 
 #[test]
 fn verdict_is_byte_reproducible_and_versioned() {
     let b = BASE.replace("\"div\"", "\"span\"");
-    let (j1, j2) = (to_stable_json(&compare(BASE, &b).json), to_stable_json(&compare(BASE, &b).json));
+    let (j1, j2) = (
+        to_stable_json(&compare(BASE, &b).json),
+        to_stable_json(&compare(BASE, &b).json),
+    );
     assert_eq!(j1, j2);
     let v: serde_json::Value = serde_json::from_str(&j1).unwrap();
     assert_eq!(v["schema"], "semdiff-verdict/v1");
     assert_eq!(v["rule_table_version"], semdiff::rule_table_version());
     assert_eq!(v["rules_applied"], serde_json::json!([]));
     // first_diff is located in the oxc-PRINTED text (the compared artifact), not the source.
-    assert_eq!(v["first_diff"]["oracle"], "\treturn [api_element(\"div\", stc0)];");
-    assert_eq!(v["first_diff"]["rust"], "\treturn [api_element(\"span\", stc0)];");
+    assert_eq!(
+        v["first_diff"]["oracle"],
+        "\treturn [api_element(\"div\", stc0)];"
+    );
+    assert_eq!(
+        v["first_diff"]["rust"],
+        "\treturn [api_element(\"span\", stc0)];"
+    );
 }
 
 /// D-0196 default = OBSERVED: spelling the model does not list must never be EQUIVALENT, even where oxc's printer and
@@ -83,20 +107,30 @@ fn verdict_is_byte_reproducible_and_versioned() {
 #[test]
 fn negative_unlisted_spelling_is_observed() {
     for (a, b) in [
-        ("const a = 0x10;", "const a = 16;"),              // numeric-literal spelling
+        ("const a = 0x10;", "const a = 16;"), // numeric-literal spelling
         ("const a = 1.0;", "const a = 1;"),
-        ("const \\u0061 = 1;", "const a = 1;"),            // identifier escape (not string escape spelling)
+        ("const \\u0061 = 1;", "const a = 1;"), // identifier escape (not string escape spelling)
     ] {
-        assert_eq!(class(a, b), (Class::Unclassified, "token-spelling-differs".into()), "{a:?} vs {b:?}");
+        assert_eq!(
+            class(a, b),
+            (Class::Unclassified, "token-spelling-differs".into()),
+            "{a:?} vs {b:?}"
+        );
     }
     // D-0258/D-0266: a trailing comma is applied (R-TRAILING-COMMA-1, AB-L0064).
-    assert_eq!(class("const a = [1,];", "const a = [1];"), (Class::EquivalentByRewrite, "printer-equal".into()));
+    assert_eq!(
+        class("const a = [1,];", "const a = [1];"),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
 }
 
 #[test]
 fn negative_template_raw_text_is_observed() {
     // Template raw text is observed (String.raw / tagged templates), unlike string-literal escape spelling.
-    assert_eq!(class("const t = `a\\x41`;", "const t = `aA`;").0, Class::Unclassified);
+    assert_eq!(
+        class("const t = `a\\x41`;", "const t = `aA`;").0,
+        Class::Unclassified
+    );
 }
 
 #[test]
@@ -107,6 +141,10 @@ fn positive_string_quote_and_escape_spelling_is_unobservable() {
         ("import a from './a.js';", "import a from \"./a.js\";"),
         ("const o = {'k': 1};", "const o = {\"k\": 1};"),
     ] {
-        assert_eq!(class(a, b), (Class::EquivalentByRewrite, "printer-equal".into()), "{a:?} vs {b:?}");
+        assert_eq!(
+            class(a, b),
+            (Class::EquivalentByRewrite, "printer-equal".into()),
+            "{a:?} vs {b:?}"
+        );
     }
 }

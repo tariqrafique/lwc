@@ -67,7 +67,11 @@ fn rust_with(from: &str, to: &str) -> String {
 
 fn scratch(name: &str) -> PathBuf {
     static N: AtomicUsize = AtomicUsize::new(0);
-    let d = std::env::temp_dir().join(format!("semdiff-exec-{name}-{}-{}", std::process::id(), N.fetch_add(1, Ordering::SeqCst)));
+    let d = std::env::temp_dir().join(format!(
+        "semdiff-exec-{name}-{}-{}",
+        std::process::id(),
+        N.fetch_add(1, Ordering::SeqCst)
+    ));
     let _ = fs::remove_dir_all(&d);
     fs::create_dir_all(&d).unwrap();
     d
@@ -75,7 +79,11 @@ fn scratch(name: &str) -> PathBuf {
 
 /// A case_key in corpus `test` (corpus/source/sha256(template)/sha256(opts)).
 fn key(name: &str) -> String {
-    format!("test/{name}/{}/{}", semdiff::sha256_hex(name.as_bytes()), semdiff::sha256_hex(b"{}"))
+    format!(
+        "test/{name}/{}/{}",
+        semdiff::sha256_hex(name.as_bytes()),
+        semdiff::sha256_hex(b"{}")
+    )
 }
 
 fn cfg(work: &Path) -> ExecCfg {
@@ -85,12 +93,16 @@ fn cfg(work: &Path) -> ExecCfg {
 /// Generate, run, decide one pair; returns (decision, input set json, oracle trace, rust trace).
 fn run_pair(name: &str, o: &str, r: &str) -> (exec::ExecDecision, Value, Option<(Value, Value)>) {
     let work = scratch(name);
-    exec::preflight(&cfg(&work)).expect("preflight: oracle clean at ORACLE_COMMIT and node present");
+    exec::preflight(&cfg(&work))
+        .expect("preflight: oracle clean at ORACLE_COMMIT and node present");
     let id = format!("test/{name}");
     let input = exec::generate(1, &id, o, r);
     let out = exec::run_case(&work.join("c"), &input.json, o, r);
     let traces = match &out {
-        exec::Outcome::Traces { o, r } => Some((serde_json::to_value(o).unwrap(), serde_json::to_value(r).unwrap())),
+        exec::Outcome::Traces { o, r } => Some((
+            serde_json::to_value(o).unwrap(),
+            serde_json::to_value(r).unwrap(),
+        )),
         _ => None,
     };
     let json = input.json.clone();
@@ -101,12 +113,25 @@ fn run_pair(name: &str, o: &str, r: &str) -> (exec::ExecDecision, Value, Option<
 
 fn assert_different_at(name: &str, r: &str, label: &str) -> exec::ExecDecision {
     let (d, input, _) = run_pair(name, &oracle(), r);
-    assert_eq!(d.class, Class::Different, "{name}: {:?} {}", d.reason, d.detail);
+    assert_eq!(
+        d.class,
+        Class::Different,
+        "{name}: {:?} {}",
+        d.reason,
+        d.detail
+    );
     assert_eq!(d.reason, Reason::ExecDiffers, "{name}");
-    assert_eq!(d.first_diff["coords"], "exec-step", "{name}: {}", d.first_diff);
+    assert_eq!(
+        d.first_diff["coords"], "exec-step",
+        "{name}: {}",
+        d.first_diff
+    );
     assert_eq!(d.first_diff["label"], label, "{name}: {}", d.first_diff);
     let idx = d.first_diff["index"].as_u64().unwrap() as usize;
-    assert_eq!(input["steps"][idx]["label"], label, "{name}: index points at the labelled step");
+    assert_eq!(
+        input["steps"][idx]["label"], label,
+        "{name}: index points at the labelled step"
+    );
     d
 }
 
@@ -114,19 +139,53 @@ fn assert_different_at(name: &str, r: &str, label: &str) -> exec::ExecDecision {
 fn static_hoisting_pair_is_different_static_observed() {
     // A hoist is printed-differs: Function#toString sees it, so equal traces must not become EXEC_EQUAL.
     let (d, input, traces) = run_pair("pos", &oracle(), &rust());
-    assert_eq!(d.class, Class::Different, "{:?} {} {}", d.reason, d.first_diff, d.detail);
+    assert_eq!(
+        d.class,
+        Class::Different,
+        "{:?} {} {}",
+        d.reason,
+        d.first_diff,
+        d.detail
+    );
     assert_eq!(d.reason, Reason::StaticObservedDiffers);
     assert_eq!(d.detail["trace"], "equal");
     assert_eq!(d.detail["rewrite_reason"], "printed-differs");
     assert!(d.trace_sha256.is_some());
     // The script exercised what the brief lists: initial props, an event, prop changes, iterator-length changes.
-    let labels: Vec<&str> = input["steps"].as_array().unwrap().iter().map(|s| s["label"].as_str().unwrap()).collect();
-    for l in ["load", "mount(A)", "event:click", "set:flag=B", "set:items=B", "len:items=3", "len:items=1", "reset(A)", "unmount"] {
+    let labels: Vec<&str> = input["steps"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|s| s["label"].as_str().unwrap())
+        .collect();
+    for l in [
+        "load",
+        "mount(A)",
+        "event:click",
+        "set:flag=B",
+        "set:items=B",
+        "len:items=3",
+        "len:items=1",
+        "reset(A)",
+        "unmount",
+    ] {
         assert!(labels.contains(&l), "missing step {l}: {labels:?}");
     }
     let (o, _) = traces.unwrap();
-    let reads: Vec<&str> = o["reads"].as_array().unwrap().iter().filter_map(Value::as_str).collect();
-    for p in ["flag", "items", "items[].id", "items[].name", "label", "title"] {
+    let reads: Vec<&str> = o["reads"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter_map(Value::as_str)
+        .collect();
+    for p in [
+        "flag",
+        "items",
+        "items[].id",
+        "items[].name",
+        "label",
+        "title",
+    ] {
         assert!(reads.contains(&p), "slot {p} not read: {reads:?}");
     }
     assert_eq!(o["handled"], json!(["click"]));
@@ -134,9 +193,12 @@ fn static_hoisting_pair_is_different_static_observed() {
 
 #[test]
 fn swapped_attr_value_differs_at_mount() {
-    let r = rust_with(r#""title": $cmp.title,
-      "lang": "en""#, r#""title": "en",
-      "lang": $cmp.title"#);
+    let r = rust_with(
+        r#""title": $cmp.title,
+      "lang": "en""#,
+        r#""title": "en",
+      "lang": $cmp.title"#,
+    );
     assert_different_at("attr", &r, "mount(A)");
 }
 
@@ -152,40 +214,80 @@ fn dropped_listener_differs_at_mount() {
     );
     let d = assert_different_at("listener", &r, "mount(A)");
     // First divergent event: the oracle reads $cmp.handleClick (to bind it); the Rust side moves on to `label`.
-    assert_eq!(d.first_diff["oracle"], r#"{"e":"get","path":"handleClick"}"#, "{}", d.first_diff);
+    assert_eq!(
+        d.first_diff["oracle"], r#"{"e":"get","path":"handleClick"}"#,
+        "{}",
+        d.first_diff
+    );
 }
 
 #[test]
 fn different_key_differs_at_mount() {
-    assert_different_at("key", &rust_with("api_key(2, item.id)", "api_key(3, item.id)"), "mount(A)");
+    assert_different_at(
+        "key",
+        &rust_with("api_key(2, item.id)", "api_key(3, item.id)"),
+        "mount(A)",
+    );
 }
 
 #[test]
 fn different_class_token_differs_at_mount() {
-    assert_different_at("class", &rust_with(r#""box": true"#, r#""box2": true"#), "mount(A)");
+    assert_different_at(
+        "class",
+        &rust_with(r#""box": true"#, r#""box2": true"#),
+        "mount(A)",
+    );
 }
 
 #[test]
 fn branch_only_reached_by_b_values_differs_at_that_set_step() {
     // A values are truthy, so mount and the event agree; the first set step is set:flag=B (roots in name order).
-    assert_different_at("branch", &rust_with(r#"api_text("n")"#, r#"api_text("N")"#), "set:flag=B");
+    assert_different_at(
+        "branch",
+        &rust_with(r#"api_text("n")"#, r#"api_text("N")"#),
+        "set:flag=B",
+    );
 }
 
 #[test]
 fn throw_on_one_side_only_is_different() {
-    let r = rust_with("f: api_flatten}", "f: api_flatten, zz: api_zz}").replacen(r#"[api_text("hi")]"#, r#"[api_zz("hi")]"#, 1);
+    let r = rust_with("f: api_flatten}", "f: api_flatten, zz: api_zz}").replacen(
+        r#"[api_text("hi")]"#,
+        r#"[api_zz("hi")]"#,
+        1,
+    );
     let (d, _, _) = run_pair("throw", &oracle(), &r);
-    assert_eq!((d.class, d.reason), (Class::Different, Reason::ExecThrowOneSide), "{}", d.first_diff);
+    assert_eq!(
+        (d.class, d.reason),
+        (Class::Different, Reason::ExecThrowOneSide),
+        "{}",
+        d.first_diff
+    );
 }
 
 #[test]
 fn rust_only_field_is_in_the_input_set_and_driven() {
     // AB-D0003 (i): the generator reads the UNION of both sides' $cmp chains.
-    let r = rust_with(r#"[api_text("hi")]"#, r#"[api_text(api_dynamic_text($cmp.extra))]"#);
+    let r = rust_with(
+        r#"[api_text("hi")]"#,
+        r#"[api_text(api_dynamic_text($cmp.extra))]"#,
+    );
     let (d, input, traces) = run_pair("union", &oracle(), &r);
-    assert!(input["slots"].as_array().unwrap().contains(&json!("extra")), "{}", input["slots"]);
-    assert!(input["roots"].as_array().unwrap().contains(&json!({"name": "extra", "kind": "prop"})));
-    let labels: Vec<&str> = input["steps"].as_array().unwrap().iter().map(|s| s["label"].as_str().unwrap()).collect();
+    assert!(
+        input["slots"].as_array().unwrap().contains(&json!("extra")),
+        "{}",
+        input["slots"]
+    );
+    assert!(input["roots"]
+        .as_array()
+        .unwrap()
+        .contains(&json!({"name": "extra", "kind": "prop"})));
+    let labels: Vec<&str> = input["steps"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|s| s["label"].as_str().unwrap())
+        .collect();
     assert!(labels.contains(&"set:extra=B"), "{labels:?}");
     let (o, r) = traces.expect("both sides ran");
     let reads = |t: &Value| t["reads"].as_array().unwrap().contains(&json!("extra"));
@@ -200,18 +302,38 @@ fn exec_uncovered_case_is_unclassified() {
     // module can call never ran, so equality is not evidence (AB-D0003 (iii)).
     let body = |s: String| {
         s.replacen("f: api_flatten}", "f: api_flatten, co: api_comment}", 1)
-            .replacen(r#"[api_text("hi")]"#, r#"[$cmp.never === 12345 ? api_comment("x") : api_text("hi")]"#, 1)
+            .replacen(
+                r#"[api_text("hi")]"#,
+                r#"[$cmp.never === 12345 ? api_comment("x") : api_text("hi")]"#,
+                1,
+            )
     };
     let (d, _, _) = run_pair("uncovered", &body(rust()), &body(rust()));
-    assert_eq!((d.class, d.reason), (Class::Unclassified, Reason::ExecUncovered), "{}", d.detail);
-    assert!(d.detail.to_string().contains("helper-not-run:rust:co"), "{}", d.detail);
+    assert_eq!(
+        (d.class, d.reason),
+        (Class::Unclassified, Reason::ExecUncovered),
+        "{}",
+        d.detail
+    );
+    assert!(
+        d.detail.to_string().contains("helper-not-run:rust:co"),
+        "{}",
+        d.detail
+    );
 }
 
 #[test]
 fn comment_difference_is_different_even_when_traces_agree() {
     // D-0196: comments are observed (statically: Function#toString / the engine's banner check).
-    let (d, _, _) = run_pair("banner", &oracle(), &rust_with("  /*LWC compiler v9.5.3*/\n", ""));
-    assert_eq!((d.class, d.reason), (Class::Different, Reason::ExecStaticCommentsDiffer));
+    let (d, _, _) = run_pair(
+        "banner",
+        &oracle(),
+        &rust_with("  /*LWC compiler v9.5.3*/\n", ""),
+    );
+    assert_eq!(
+        (d.class, d.reason),
+        (Class::Different, Reason::ExecStaticCommentsDiffer)
+    );
     assert_eq!(d.first_diff["coords"], "static-comments");
     assert!(d.trace_sha256.is_some(), "traces ran and agreed");
 }
@@ -220,7 +342,10 @@ fn comment_difference_is_different_even_when_traces_agree() {
 fn generator_is_a_pure_function_of_seed_and_case() {
     let a = exec::generate(7, "k", &oracle(), &rust()).json;
     assert_eq!(a, exec::generate(7, "k", &oracle(), &rust()).json);
-    assert_ne!(a["rng_seed"], exec::generate(8, "k", &oracle(), &rust()).json["rng_seed"]);
+    assert_ne!(
+        a["rng_seed"],
+        exec::generate(8, "k", &oracle(), &rust()).json["rng_seed"]
+    );
     assert_eq!(a["seed"], 7);
 }
 
@@ -234,7 +359,11 @@ fn cli_exec_summaries_are_byte_identical_across_runs() {
     let mp = dir.join("manifest.json");
     fs::write(&mp, serde_json::to_string(&m).unwrap()).unwrap();
     let reg = dir.join("decisions.tsv");
-    fs::write(&reg, "id\tts\tphase\tdecision\twhy\tevidence\tresult\nD-0196\tt\tp\td\tw\te\tlocked\n").unwrap();
+    fs::write(
+        &reg,
+        "id\tts\tphase\tdecision\twhy\tevidence\tresult\nD-0196\tt\tp\td\tw\te\tlocked\n",
+    )
+    .unwrap();
     let run = |out: &str, jobs: &str| {
         let o = Command::new(env!("CARGO_BIN_EXE_semdiff"))
             .args(["run", "--exec", "--exec-jobs", jobs, "--manifest"])
@@ -255,11 +384,23 @@ fn cli_exec_summaries_are_byte_identical_across_runs() {
     assert_eq!(s["exec"]["oracle_commit"], exec::ORACLE_COMMIT);
     assert_eq!(s["exec"]["seed"], 1);
     assert_eq!(s["exec"]["cases_run"], 2);
-    assert_eq!(s["by_reason"], json!({"exec-differs": 1, "static-observed-differs": 1}));
+    assert_eq!(
+        s["by_reason"],
+        json!({"exec-differs": 1, "static-observed-differs": 1})
+    );
     let v = &s["cases"][0]["verdict"];
     assert_eq!(v["schema"], "semdiff-verdict/v1");
-    assert_eq!(v["exec"]["input_set"]["seed"], 1, "the input set and seed are in the verdict");
-    let eq = s["cases"].as_array().unwrap().iter().map(|c| &c["verdict"]).find(|v| v["reason"] == "static-observed-differs").unwrap();
+    assert_eq!(
+        v["exec"]["input_set"]["seed"], 1,
+        "the input set and seed are in the verdict"
+    );
+    let eq = s["cases"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|c| &c["verdict"])
+        .find(|v| v["reason"] == "static-observed-differs")
+        .unwrap();
     assert_eq!(eq["exec"]["detail"]["rewrite_reason"], "printed-differs");
     assert_eq!(eq["exec"]["detail"]["trace"], "equal");
     assert_eq!(eq["class"], "DIFFERENT");
@@ -277,11 +418,15 @@ fn base() -> &'static (Value, String) {
     static B: OnceLock<(Value, String)> = OnceLock::new();
     B.get_or_init(|| {
         let work = scratch("base");
-        exec::preflight(&cfg(&work)).expect("preflight: oracle clean at ORACLE_COMMIT and node present");
+        exec::preflight(&cfg(&work))
+            .expect("preflight: oracle clean at ORACLE_COMMIT and node present");
         let input = exec::generate(1, "test/base", &rust(), &rust());
         let dir = work.join("c");
         let out = exec::run_case(&dir, &input.json, &rust(), &rust());
-        assert!(matches!(out, exec::Outcome::Traces { .. }), "base pair must run cleanly");
+        assert!(
+            matches!(out, exec::Outcome::Traces { .. }),
+            "base pair must run cleanly"
+        );
         let t = fs::read_to_string(dir.join("oracle.0.json")).unwrap();
         let _ = fs::remove_dir_all(&work);
         (input.json, t)
@@ -303,7 +448,12 @@ fn base_trace() -> Value {
 #[track_caller]
 fn assert_harness_crash(trace: &str, why: &str) {
     let d = decide_with(trace);
-    assert_eq!((d.class, d.reason), (Class::Crash, Reason::ExecHarnessFailure), "{why}: {}", d.detail);
+    assert_eq!(
+        (d.class, d.reason),
+        (Class::Crash, Reason::ExecHarnessFailure),
+        "{why}: {}",
+        d.detail
+    );
 }
 
 #[track_caller]
@@ -319,12 +469,24 @@ fn unmodified_trace_is_byte_equal() {
     let input = exec::generate(1, "test/base", &rust(), &rust());
     assert_eq!(input.json, base().0, "generate is pure");
     let out = exec::collect(&input.json, |_, _| Ok(base().1.clone()));
-    let exec::Outcome::Traces { o, r } = out else { panic!("control must produce traces") };
-    assert!(exec::first_divergence(&o, &r).is_none(), "rust-vs-rust traces must agree: {}", exec::first_divergence(&o, &r).unwrap());
-    assert_eq!(serde_json::to_string(&o).unwrap(), serde_json::to_string(&r).unwrap());
+    let exec::Outcome::Traces { o, r } = out else {
+        panic!("control must produce traces")
+    };
+    assert!(
+        exec::first_divergence(&o, &r).is_none(),
+        "rust-vs-rust traces must agree: {}",
+        exec::first_divergence(&o, &r).unwrap()
+    );
+    assert_eq!(
+        serde_json::to_string(&o).unwrap(),
+        serde_json::to_string(&r).unwrap()
+    );
     // The typed parse is lossless: it re-serializes to the bytes of the sorted JSON (what trace_sha256 hashes).
     let t = exec::parse_trace(&base().1, &base().0).unwrap();
-    assert_eq!(serde_json::to_string(&t).unwrap(), serde_json::to_string(&base_trace()).unwrap());
+    assert_eq!(
+        serde_json::to_string(&t).unwrap(),
+        serde_json::to_string(&base_trace()).unwrap()
+    );
 }
 
 #[test]
@@ -333,7 +495,10 @@ fn stepless_trace_is_a_crash_never_equivalent() {
     assert_mutation_crashes("no steps", |t| {
         t.as_object_mut().unwrap().remove("steps");
     });
-    assert_harness_crash(r#"{"schema":"semdiff-exec-trace/v0","steps":[],"helpers":{},"reads":[],"handled":[]}"#, "empty");
+    assert_harness_crash(
+        r#"{"schema":"semdiff-exec-trace/v0","steps":[],"helpers":{},"reads":[],"handled":[]}"#,
+        "empty",
+    );
     assert_harness_crash("{}", "{}");
     assert_harness_crash("", "no output");
 }
@@ -349,7 +514,9 @@ fn trace_missing_events_is_a_crash() {
         }
     });
     assert_mutation_crashes("events not a list", |t| t["steps"][1]["events"] = json!({}));
-    assert_mutation_crashes("event without e", |t| t["steps"][1]["events"][0] = json!({"path": "title"}));
+    assert_mutation_crashes("event without e", |t| {
+        t["steps"][1]["events"][0] = json!({"path": "title"})
+    });
 }
 
 #[test]
@@ -370,9 +537,13 @@ fn trace_not_starting_load_mount_a_is_a_crash() {
     assert_mutation_crashes("mount(A) dropped", |t| {
         t["steps"].as_array_mut().unwrap().remove(1);
     });
-    assert_mutation_crashes("step 1 relabelled", |t| t["steps"][1]["label"] = json!("set:flag=B"));
+    assert_mutation_crashes("step 1 relabelled", |t| {
+        t["steps"][1]["label"] = json!("set:flag=B")
+    });
     assert_mutation_crashes("step 1 kind", |t| t["steps"][1]["kind"] = json!("set"));
-    assert_mutation_crashes("steps 0 and 1 swapped", |t| t["steps"].as_array_mut().unwrap().swap(0, 1));
+    assert_mutation_crashes("steps 0 and 1 swapped", |t| {
+        t["steps"].as_array_mut().unwrap().swap(0, 1)
+    });
 }
 
 #[test]
@@ -389,8 +560,12 @@ fn trace_off_script_or_with_unknown_fields_is_a_crash() {
     assert_mutation_crashes("ran step without dom", |t| {
         t["steps"][1].as_object_mut().unwrap().remove("dom");
     });
-    assert_mutation_crashes("skipped load", |t| t["steps"][0] = json!({"kind": "load", "label": "load", "skipped": "x"}));
-    assert_mutation_crashes("wrong schema", |t| t["schema"] = json!("semdiff-exec-trace/v1"));
+    assert_mutation_crashes("skipped load", |t| {
+        t["steps"][0] = json!({"kind": "load", "label": "load", "skipped": "x"})
+    });
+    assert_mutation_crashes("wrong schema", |t| {
+        t["schema"] = json!("semdiff-exec-trace/v1")
+    });
 }
 
 #[test]
@@ -404,9 +579,19 @@ fn oracle_dir_is_the_harness_lwc_root() {
     let text = fs::read_to_string(&ssr).unwrap();
     let literal = format!("export const LWC = '{}/packages/@lwc';", exec::ORACLE_DIR);
     let portable = "export const LWC = `${oracleRoot()}/packages/@lwc`;";
-    assert!(text.contains(&literal) || text.contains(portable), "{}", exec::ORACLE_DIR);
-    let head = Command::new("git").args(["-C", exec::ORACLE_DIR, "rev-parse", "HEAD"]).output().unwrap();
-    assert_eq!(String::from_utf8_lossy(&head.stdout).trim(), exec::ORACLE_COMMIT);
+    assert!(
+        text.contains(&literal) || text.contains(portable),
+        "{}",
+        exec::ORACLE_DIR
+    );
+    let head = Command::new("git")
+        .args(["-C", exec::ORACLE_DIR, "rev-parse", "HEAD"])
+        .output()
+        .unwrap();
+    assert_eq!(
+        String::from_utf8_lossy(&head.stdout).trim(),
+        exec::ORACLE_COMMIT
+    );
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -422,9 +607,21 @@ fn cli_exec(name: &str, cases: Value) -> Value {
     let mp = dir.join("manifest.json");
     fs::write(&mp, serde_json::to_string(&m).unwrap()).unwrap();
     let reg = dir.join("decisions.tsv");
-    fs::write(&reg, "id\tts\tphase\tdecision\twhy\tevidence\tresult\nD-0196\tt\tp\td\tw\te\tlocked\n").unwrap();
+    fs::write(
+        &reg,
+        "id\tts\tphase\tdecision\twhy\tevidence\tresult\nD-0196\tt\tp\td\tw\te\tlocked\n",
+    )
+    .unwrap();
     let o = Command::new(env!("CARGO_BIN_EXE_semdiff"))
-        .args(["run", "--exec", "--exec-jobs", "2", "--gate", "none", "--manifest"])
+        .args([
+            "run",
+            "--exec",
+            "--exec-jobs",
+            "2",
+            "--gate",
+            "none",
+            "--manifest",
+        ])
         .arg(&mp)
         .arg("--out")
         .arg(dir.join("s.json"))
@@ -439,7 +636,13 @@ fn cli_exec(name: &str, cases: Value) -> Value {
 }
 
 /// (name, oracle, rust, expected rewrite reason, expected (class, reason) after exec).
-type Probe = (&'static str, String, String, &'static str, (&'static str, &'static str));
+type Probe = (
+    &'static str,
+    String,
+    String,
+    &'static str,
+    (&'static str, &'static str),
+);
 
 fn extra(side: String, decls: &str) -> String {
     let needle = "import {freezeTemplate, registerTemplate} from \"lwc\";\n";
@@ -451,7 +654,11 @@ fn extra(side: String, decls: &str) -> String {
 fn foo(side: String, arrow: &str) -> String {
     let from = "api_iterator($cmp.items,";
     assert!(side.contains(from));
-    side.replacen(from, &format!("api_iterator(($cmp.items || []).map({arrow}),"), 1)
+    side.replacen(
+        from,
+        &format!("api_iterator(($cmp.items || []).map({arrow}),"),
+        1,
+    )
 }
 
 fn arch_probes() -> Vec<Probe> {
@@ -459,49 +666,249 @@ fn arch_probes() -> Vec<Probe> {
     let cap = ("DIFFERENT", "static-observed-differs");
     let rewrite = ("EQUIVALENT-BY-REWRITE", "printer-equal");
     vec![
-        ("hoist-paren-oracle", oracle().replacen("api_element(\"div\", stc0,", "api_element(\"div\", (stc0),", 1), rust(), "printed-differs", cap),
-        ("hoist-paren-rust", oracle(), format!("{HEAD}{}", BODY.replace("STC0", &format!("({INLINE_STC0})"))), "printed-differs", cap),
-        ("hoist-num-0x0", oracle().replacen("  key: 0\n};", "  key: 0x0\n};", 1), rust(), "printed-differs", cap),
-        ("key-quoting", rust(), rust_with(r#""title": $cmp.title"#, "title: $cmp.title"), "printed-differs", cap),
-        ("masked-key-quoting", oracle(), rust_with(r#""title": $cmp.title"#, "title: $cmp.title"), "printed-differs", cap),
-        ("shorthand", rust(), rust_with("const {_m0} = $ctx;", "const {_m0: _m0} = $ctx;"), "printer-equal-ast-differs", cap),
-        ("masked-shorthand", oracle(), rust_with("const {_m0} = $ctx;", "const {_m0: _m0} = $ctx;"), "printed-differs", cap),
-        ("backtick", rust(), rust_with(r#"api_text("hi")"#, "api_text(`hi`)"), "printed-differs", cap),
-        ("masked-backtick", oracle(), rust_with(r#"api_text("hi")"#, "api_text(`hi`)"), "printed-differs", cap),
-        ("regex-src", extra(rust(), "const re = /a/;"), extra(rust(), "const re = /[a]/;"), "printed-differs", cap),
-        ("regex-flags", extra(rust(), "const re = /a/g;"), extra(rust(), "const re = /a/gi;"), "printed-differs", cap),
-        ("masked-regex-src", extra(oracle(), "const re = /a/;"), extra(rust(), "const re = /[a]/;"), "printed-differs", cap),
-        ("masked-regex-flags", extra(oracle(), "const re = /a/g;"), extra(rust(), "const re = /a/gi;"), "printed-differs", cap),
-        ("cross-classmap", extra(rust(), "const a = {\"box\": true}; const b = {box: true}; void a; void b;"), extra(rust(), "void {box: true}; void {\"box\": true};"), "printed-differs", cap),
-        ("cross-template", extra(rust(), "const a = `x`; const b = \"x\"; void a; void b;"), extra(rust(), "void \"x\"; void `x`;"), "printed-differs", cap),
-        ("cross-parens", extra(rust(), "void (0); void 1;"), extra(rust(), "void 0; void (1);"), "printer-equal-ast-differs", cap),
-        ("member", rust(), rust_with("$cmp.label", "$cmp[\"label\"]"), "printed-differs", cap),
-        ("masked-member", oracle(), rust_with("$cmp.label", "$cmp[\"label\"]"), "printed-differs", cap),
-        ("masked-asi", extra(oracle(), "void 0\n"), extra(rust(), "void 0;"), "printed-differs", cap),
-        ("num", rust(), rust_with("key: 1,", "key: 0b1,"), "token-spelling-differs", cap),
-        ("num-75", rust_with("key: 1,", "key: 75,"), rust_with("key: 1,", "key: 0b1001011,"), "token-spelling-differs", cap),
-        ("masked-num-75", oracle().replacen("key: 1,", "key: 75,", 1), rust_with("key: 1,", "key: 0b1001011,"), "printed-differs", cap),
-        ("paren-arrow", arrow(rust()), arrow(rust()).replacen("item => {", "(item) => {", 1), "token-spelling-differs", cap),
-        ("paren-foo", foo(rust(), "(foo)=>foo"), foo(rust(), "foo=>foo"), "token-spelling-differs", cap),
-        ("paren-expr", rust(), rust_with("$cmp.flag ? api_text", "($cmp.flag) ? api_text"), "printer-equal-ast-differs", cap),
+        (
+            "hoist-paren-oracle",
+            oracle().replacen(
+                "api_element(\"div\", stc0,",
+                "api_element(\"div\", (stc0),",
+                1,
+            ),
+            rust(),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "hoist-paren-rust",
+            oracle(),
+            format!(
+                "{HEAD}{}",
+                BODY.replace("STC0", &format!("({INLINE_STC0})"))
+            ),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "hoist-num-0x0",
+            oracle().replacen("  key: 0\n};", "  key: 0x0\n};", 1),
+            rust(),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "key-quoting",
+            rust(),
+            rust_with(r#""title": $cmp.title"#, "title: $cmp.title"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "masked-key-quoting",
+            oracle(),
+            rust_with(r#""title": $cmp.title"#, "title: $cmp.title"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "shorthand",
+            rust(),
+            rust_with("const {_m0} = $ctx;", "const {_m0: _m0} = $ctx;"),
+            "printer-equal-ast-differs",
+            cap,
+        ),
+        (
+            "masked-shorthand",
+            oracle(),
+            rust_with("const {_m0} = $ctx;", "const {_m0: _m0} = $ctx;"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "backtick",
+            rust(),
+            rust_with(r#"api_text("hi")"#, "api_text(`hi`)"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "masked-backtick",
+            oracle(),
+            rust_with(r#"api_text("hi")"#, "api_text(`hi`)"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "regex-src",
+            extra(rust(), "const re = /a/;"),
+            extra(rust(), "const re = /[a]/;"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "regex-flags",
+            extra(rust(), "const re = /a/g;"),
+            extra(rust(), "const re = /a/gi;"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "masked-regex-src",
+            extra(oracle(), "const re = /a/;"),
+            extra(rust(), "const re = /[a]/;"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "masked-regex-flags",
+            extra(oracle(), "const re = /a/g;"),
+            extra(rust(), "const re = /a/gi;"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "cross-classmap",
+            extra(
+                rust(),
+                "const a = {\"box\": true}; const b = {box: true}; void a; void b;",
+            ),
+            extra(rust(), "void {box: true}; void {\"box\": true};"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "cross-template",
+            extra(rust(), "const a = `x`; const b = \"x\"; void a; void b;"),
+            extra(rust(), "void \"x\"; void `x`;"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "cross-parens",
+            extra(rust(), "void (0); void 1;"),
+            extra(rust(), "void 0; void (1);"),
+            "printer-equal-ast-differs",
+            cap,
+        ),
+        (
+            "member",
+            rust(),
+            rust_with("$cmp.label", "$cmp[\"label\"]"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "masked-member",
+            oracle(),
+            rust_with("$cmp.label", "$cmp[\"label\"]"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "masked-asi",
+            extra(oracle(), "void 0\n"),
+            extra(rust(), "void 0;"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "num",
+            rust(),
+            rust_with("key: 1,", "key: 0b1,"),
+            "token-spelling-differs",
+            cap,
+        ),
+        (
+            "num-75",
+            rust_with("key: 1,", "key: 75,"),
+            rust_with("key: 1,", "key: 0b1001011,"),
+            "token-spelling-differs",
+            cap,
+        ),
+        (
+            "masked-num-75",
+            oracle().replacen("key: 1,", "key: 75,", 1),
+            rust_with("key: 1,", "key: 0b1001011,"),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "paren-arrow",
+            arrow(rust()),
+            arrow(rust()).replacen("item => {", "(item) => {", 1),
+            "token-spelling-differs",
+            cap,
+        ),
+        (
+            "paren-foo",
+            foo(rust(), "(foo)=>foo"),
+            foo(rust(), "foo=>foo"),
+            "token-spelling-differs",
+            cap,
+        ),
+        (
+            "paren-expr",
+            rust(),
+            rust_with("$cmp.flag ? api_text", "($cmp.flag) ? api_text"),
+            "printer-equal-ast-differs",
+            cap,
+        ),
         ("hoist-only", oracle(), rust(), "printed-differs", cap),
-        ("quotes-only", rust(), rust_with(r#""lang": "en""#, r#"'lang': 'en'"#), "printer-equal", rewrite),
-        ("masked-quotes", oracle(), rust_with(r#""lang": "en""#, r#"'lang': '\x65n'"#), "printed-differs", cap),
-        ("trailing-comma", rust(), rust_with(r#"[api_text("hi")]"#, r#"[api_text("hi"),]"#), "printer-equal", rewrite),
-        ("asi-only", rust(), rust().replacen("freezeTemplate(tmpl);", "freezeTemplate(tmpl)", 1), "printer-equal", rewrite),
+        (
+            "quotes-only",
+            rust(),
+            rust_with(r#""lang": "en""#, r#"'lang': 'en'"#),
+            "printer-equal",
+            rewrite,
+        ),
+        (
+            "masked-quotes",
+            oracle(),
+            rust_with(r#""lang": "en""#, r#"'lang': '\x65n'"#),
+            "printed-differs",
+            cap,
+        ),
+        (
+            "trailing-comma",
+            rust(),
+            rust_with(r#"[api_text("hi")]"#, r#"[api_text("hi"),]"#),
+            "printer-equal",
+            rewrite,
+        ),
+        (
+            "asi-only",
+            rust(),
+            rust().replacen("freezeTemplate(tmpl);", "freezeTemplate(tmpl)", 1),
+            "printer-equal",
+            rewrite,
+        ),
     ]
 }
 
 #[test]
 fn arch_probes_are_never_equivalent_by_execution() {
     let cases = arch_probes();
-    let manifest: Vec<Value> = cases.iter().map(|(n, o, r, ..)| json!({"id": key(n), "oracle_code": o, "rust_code": r})).collect();
+    let manifest: Vec<Value> = cases
+        .iter()
+        .map(|(n, o, r, ..)| json!({"id": key(n), "oracle_code": o, "rust_code": r}))
+        .collect();
     let s = cli_exec("probes", json!(manifest));
-    for (c, (n, _, _, rewrite, (class, reason))) in s["cases"].as_array().unwrap().iter().zip(&cases) {
+    for (c, (n, _, _, rewrite, (class, reason))) in
+        s["cases"].as_array().unwrap().iter().zip(&cases)
+    {
         let v = &c["verdict"];
-        let rw = if v["exec"].is_null() { &v["reason"] } else { &v["rewrite"]["reason"] };
-        assert_eq!(rw, rewrite, "{n}: fixture must hit rewrite reason {rewrite}: {v}");
-        assert_eq!((v["class"].as_str().unwrap(), v["reason"].as_str().unwrap()), (*class, *reason), "{n}: {v}");
+        let rw = if v["exec"].is_null() {
+            &v["reason"]
+        } else {
+            &v["rewrite"]["reason"]
+        };
+        assert_eq!(
+            rw, rewrite,
+            "{n}: fixture must hit rewrite reason {rewrite}: {v}"
+        );
+        assert_eq!(
+            (v["class"].as_str().unwrap(), v["reason"].as_str().unwrap()),
+            (*class, *reason),
+            "{n}: {v}"
+        );
         if *reason == "static-observed-differs" {
             assert_eq!(v["exec"]["detail"]["rewrite_reason"], *rewrite, "{n}: {v}");
             assert_eq!(v["exec"]["detail"]["trace"], "equal", "{n}: {v}");
@@ -512,13 +919,39 @@ fn arch_probes_are_never_equivalent_by_execution() {
 #[test]
 fn approved_trailing_comma_is_rewrite_equivalent() {
     // R-TRAILING-COMMA-1 applies: a trailing-comma-only pair is EQUIVALENT-BY-REWRITE and never reaches exec.
-    let (o, r) = (rust(), rust_with(r#"[api_text("hi")]"#, r#"[api_text("hi"),]"#));
+    let (o, r) = (
+        rust(),
+        rust_with(r#"[api_text("hi")]"#, r#"[api_text("hi"),]"#),
+    );
     let v = semdiff::compare(&o, &r);
-    assert_eq!((v.class, v.reason.as_str()), (Class::EquivalentByRewrite, "printer-equal"), "{}", v.json);
-    assert_eq!(v.json["rules_applied"], json!([semdiff::rules::table().1.iter().find(|x| x.id.starts_with("R-TRAILING-COMMA")).unwrap().tagged()]));
+    assert_eq!(
+        (v.class, v.reason.as_str()),
+        (Class::EquivalentByRewrite, "printer-equal"),
+        "{}",
+        v.json
+    );
+    assert_eq!(
+        v.json["rules_applied"],
+        json!([semdiff::rules::table()
+            .1
+            .iter()
+            .find(|x| x.id.starts_with("R-TRAILING-COMMA"))
+            .unwrap()
+            .tagged()])
+    );
     assert_eq!(v.json["rule_table_version"], semdiff::rule_table_version());
-    let s = cli_exec("m5", json!([{"id": key("m5"), "oracle_code": o, "rust_code": r}]));
+    let s = cli_exec(
+        "m5",
+        json!([{"id": key("m5"), "oracle_code": o, "rust_code": r}]),
+    );
     let vv = &s["cases"][0]["verdict"];
-    assert_eq!((vv["class"].as_str().unwrap(), vv["reason"].as_str().unwrap()), ("EQUIVALENT-BY-REWRITE", "printer-equal"), "{vv}");
+    assert_eq!(
+        (
+            vv["class"].as_str().unwrap(),
+            vv["reason"].as_str().unwrap()
+        ),
+        ("EQUIVALENT-BY-REWRITE", "printer-equal"),
+        "{vv}"
+    );
     assert!(vv["exec"].is_null(), "{vv}");
 }

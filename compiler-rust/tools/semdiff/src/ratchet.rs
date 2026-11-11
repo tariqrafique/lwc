@@ -24,21 +24,31 @@ use serde_json::{json, Value};
 use crate::{read_totals, sha256_hex, InternalError, STRICT_BAD, TOTALS_KEYS};
 
 fn rank(bucket: &str) -> usize {
-    TOTALS_KEYS.iter().position(|k| *k == bucket).expect("bucket validated against TOTALS_KEYS")
+    TOTALS_KEYS
+        .iter()
+        .position(|k| *k == bucket)
+        .expect("bucket validated against TOTALS_KEYS")
 }
 
 /// case_key → bucket, from a summary's `cases` (validated: unique ids, known buckets, counts equal `totals`).
 fn buckets_of(summary: &Value, what: &str) -> Result<BTreeMap<String, String>, InternalError> {
     let err = |m: String| Err(InternalError(format!("{what}: {m}")));
     let totals = read_totals(summary).map_err(|e| InternalError(format!("{what}: {e}")))?;
-    let Some(cases) = summary.get("cases").and_then(Value::as_array) else { return err("no `cases` array".into()) };
+    let Some(cases) = summary.get("cases").and_then(Value::as_array) else {
+        return err("no `cases` array".into());
+    };
     let mut out = BTreeMap::new();
     let mut counts: BTreeMap<&str, u64> = TOTALS_KEYS.iter().map(|k| (*k, 0)).collect();
     for (i, c) in cases.iter().enumerate() {
-        let (Some(id), Some(b)) = (c.get("id").and_then(Value::as_str), c.get("bucket").and_then(Value::as_str)) else {
+        let (Some(id), Some(b)) = (
+            c.get("id").and_then(Value::as_str),
+            c.get("bucket").and_then(Value::as_str),
+        ) else {
             return err(format!("cases[{i}] needs string `id` and `bucket`"));
         };
-        let Some(n) = counts.get_mut(b) else { return err(format!("cases[{i}]: unknown bucket {b:?}")) };
+        let Some(n) = counts.get_mut(b) else {
+            return err(format!("cases[{i}]: unknown bucket {b:?}"));
+        };
         *n += 1;
         if out.insert(id.to_string(), b.to_string()).is_some() {
             return err(format!("duplicate case_key {id:?}"));
@@ -46,7 +56,10 @@ fn buckets_of(summary: &Value, what: &str) -> Result<BTreeMap<String, String>, I
     }
     for k in TOTALS_KEYS {
         if counts[k] != totals[k] {
-            return err(format!("totals.{k}={} but {} cases are in that bucket", totals[k], counts[k]));
+            return err(format!(
+                "totals.{k}={} but {} cases are in that bucket",
+                totals[k], counts[k]
+            ));
         }
     }
     Ok(out)
@@ -61,11 +74,14 @@ pub struct Baseline {
 
 /// Parse and validate a baseline summary (any defect: exit 2), then apply the rule-table rule.
 pub fn load_baseline(bytes: &[u8], reset: bool) -> Result<Baseline, InternalError> {
-    let v: Value = serde_json::from_slice(bytes).map_err(|e| InternalError(format!("baseline JSON: {e}")))?;
+    let v: Value =
+        serde_json::from_slice(bytes).map_err(|e| InternalError(format!("baseline JSON: {e}")))?;
     let buckets = buckets_of(&v, "baseline")?;
     let s = |k: &str| v.get(k).and_then(Value::as_str).map(str::to_string);
     let (Some(rule_table_version), Some(corpus)) = (s("rule_table_version"), s("corpus")) else {
-        return Err(InternalError("baseline: needs string `rule_table_version` and `corpus`".into()));
+        return Err(InternalError(
+            "baseline: needs string `rule_table_version` and `corpus`".into(),
+        ));
     };
     match (rule_table_version == crate::rule_table_version(), reset) {
         (false, false) => {
@@ -83,7 +99,12 @@ pub fn load_baseline(bytes: &[u8], reset: bool) -> Result<Baseline, InternalErro
         }
         _ => {}
     }
-    Ok(Baseline { sha256: sha256_hex(bytes), rule_table_version, corpus, buckets })
+    Ok(Baseline {
+        sha256: sha256_hex(bytes),
+        rule_table_version,
+        corpus,
+        buckets,
+    })
 }
 
 pub struct Outcome {
@@ -98,20 +119,32 @@ pub struct Outcome {
 pub fn compare(cur: &Value, base: &Baseline, reset: bool) -> Result<Outcome, InternalError> {
     let cur = buckets_of(cur, "summary")?;
     let mut failures = Vec::new();
-    let (mut regressed, mut improved, mut waived, mut new_failing) = (Vec::new(), Vec::new(), Vec::new(), Vec::new());
-    let new_keys: Vec<&String> = cur.keys().filter(|k| !base.buckets.contains_key(*k)).collect();
-    let dropped: BTreeSet<&String> = base.buckets.keys().filter(|k| !cur.contains_key(*k)).collect();
+    let (mut regressed, mut improved, mut waived, mut new_failing) =
+        (Vec::new(), Vec::new(), Vec::new(), Vec::new());
+    let new_keys: Vec<&String> = cur
+        .keys()
+        .filter(|k| !base.buckets.contains_key(*k))
+        .collect();
+    let dropped: BTreeSet<&String> = base
+        .buckets
+        .keys()
+        .filter(|k| !cur.contains_key(*k))
+        .collect();
     for (k, now) in &cur {
         let Some(was) = base.buckets.get(k) else {
             if STRICT_BAD.contains(&now.as_str()) {
-                failures.push(format!("new case_key {k} is {now} (new keys are judged by strict)"));
+                failures.push(format!(
+                    "new case_key {k} is {now} (new keys are judged by strict)"
+                ));
                 new_failing.push(k);
             }
             continue;
         };
         let mv = json!({"id": k, "from": was, "to": now});
         if reset && STRICT_BAD.contains(&now.as_str()) && now != was {
-            failures.push(format!("case_key {k} is now {now}, was {was} (a rule-table reset cannot create {now})"));
+            failures.push(format!(
+                "case_key {k} is now {now}, was {was} (a rule-table reset cannot create {now})"
+            ));
             regressed.push(mv);
         } else if rank(now) > rank(was) && reset {
             waived.push(mv);

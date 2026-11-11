@@ -27,7 +27,12 @@ fn decorator_outcomes_match_shipped() {
         o.namespace = "x".into();
         o.experimental_error_recovery_mode = c["recover"].as_bool().unwrap();
         o.api_version = c["opts"]["apiVersion"].as_u64().map(|v| v as u32);
-        let r = lwc_compiler::dispatch(c["src"].as_str().unwrap(), c["filename"].as_str().unwrap(), &o).map_err(support::Thrown::from);
+        let r = lwc_compiler::dispatch(
+            c["src"].as_str().unwrap(),
+            c["filename"].as_str().unwrap(),
+            &o,
+        )
+        .map_err(support::Thrown::from);
         let want = &c["shipped"];
         let got = match &r {
             Ok(_) => Value::from("ok"),
@@ -43,9 +48,18 @@ fn decorator_outcomes_match_shipped() {
         let want = match want {
             Value::String(_) => want.clone(),
             w if !w["errors"].is_null() => serde_json::json!({ "errors": w["errors"] }),
-            w => serde_json::json!({ "code": w["code"], "message": w["message"], "hasLocation": w["hasLocation"] }),
+            w => {
+                serde_json::json!({ "code": w["code"], "message": w["message"], "hasLocation": w["hasLocation"] })
+            }
         };
-        if got != want { failures.push(format!("{id}:\n  got  {got}\n  want {want}")); }
+        if got != want {
+            failures.push(format!("{id}:\n  got  {got}\n  want {want}"));
+        }
     }
-    assert!(failures.is_empty(), "{} mismatches:\n{}", failures.len(), failures.join("\n"));
+    assert!(
+        failures.is_empty(),
+        "{} mismatches:\n{}",
+        failures.len(),
+        failures.join("\n")
+    );
 }

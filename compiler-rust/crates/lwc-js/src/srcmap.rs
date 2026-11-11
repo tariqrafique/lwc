@@ -17,23 +17,43 @@ enum Stage {
     Codegen(Vec<(u32, u32)>),
 }
 
-pub struct Chain { enabled: bool, stages: Vec<Stage> }
+pub struct Chain {
+    enabled: bool,
+    stages: Vec<Stage>,
+}
 
 impl Chain {
-    pub fn new(enabled: bool) -> Self { Self { enabled, stages: vec![] } }
-    pub fn enabled(&self) -> bool { self.enabled }
+    pub fn new(enabled: bool) -> Self {
+        Self {
+            enabled,
+            stages: vec![],
+        }
+    }
+    pub fn enabled(&self) -> bool {
+        self.enabled
+    }
 
     pub fn push_edit(&mut self, pieces: Vec<Piece>) {
-        if self.enabled { self.stages.push(Stage::Edit(pieces)); }
+        if self.enabled {
+            self.stages.push(Stage::Edit(pieces));
+        }
     }
 
     /// Record an oxc codegen pass `input` -> `output` with its map.
     pub fn push_codegen(&mut self, map: &SourceMap<'_>, input: &str, output: &str) {
-        if !self.enabled { return; }
+        if !self.enabled {
+            return;
+        }
         let (li, lo) = (LineIndex::new(input), LineIndex::new(output));
-        let mut pts: Vec<(u32, u32)> = map.get_tokens().filter_map(|t| {
-            Some((lo.to_offset(t.get_dst_line(), t.get_dst_col())?, li.to_offset(t.get_src_line(), t.get_src_col())?))
-        }).collect();
+        let mut pts: Vec<(u32, u32)> = map
+            .get_tokens()
+            .filter_map(|t| {
+                Some((
+                    lo.to_offset(t.get_dst_line(), t.get_dst_col())?,
+                    li.to_offset(t.get_src_line(), t.get_src_col())?,
+                ))
+            })
+            .collect();
         pts.sort_by_key(|p| p.0);
         pts.dedup_by_key(|p| p.0);
         self.stages.push(Stage::Codegen(pts));
@@ -41,22 +61,35 @@ impl Chain {
 
     /// Build the final map for `output` against the original `src`.
     pub fn finish(&self, src: &str, filename: &str, output: &str) -> Option<SourceMap<'static>> {
-        if !self.enabled { return None; }
-        let k = self.stages.iter().rposition(|s| matches!(s, Stage::Codegen(_)))?;
-        let Stage::Codegen(pts) = &self.stages[k] else { unreachable!() };
+        if !self.enabled {
+            return None;
+        }
+        let k = self
+            .stages
+            .iter()
+            .rposition(|s| matches!(s, Stage::Codegen(_)))?;
+        let Stage::Codegen(pts) = &self.stages[k] else {
+            unreachable!()
+        };
         let (lsrc, lout) = (LineIndex::new(src), LineIndex::new(output));
-        let mut out: Vec<(u32, u32)> = pts.iter().filter_map(|&(o, i)| {
-            let mut o = o;
-            for s in &self.stages[k + 1..] {
-                let Stage::Edit(p) = s else { return None };
-                o = forward(p, o)?;
-            }
-            let mut i = i;
-            for s in self.stages[..k].iter().rev() {
-                i = match s { Stage::Edit(p) => back_edit(p, i), Stage::Codegen(p) => back_codegen(p, i) };
-            }
-            Some((o, i))
-        }).collect();
+        let mut out: Vec<(u32, u32)> = pts
+            .iter()
+            .filter_map(|&(o, i)| {
+                let mut o = o;
+                for s in &self.stages[k + 1..] {
+                    let Stage::Edit(p) = s else { return None };
+                    o = forward(p, o)?;
+                }
+                let mut i = i;
+                for s in self.stages[..k].iter().rev() {
+                    i = match s {
+                        Stage::Edit(p) => back_edit(p, i),
+                        Stage::Codegen(p) => back_codegen(p, i),
+                    };
+                }
+                Some((o, i))
+            })
+            .collect();
         out.sort_by_key(|p| p.0);
         out.dedup_by_key(|p| p.0);
         let mut b = SourceMapBuilder::default();
@@ -84,9 +117,13 @@ fn ident_at(text: &str, at: u32) -> Option<&str> {
     let at = at as usize;
     let rest = text.get(at..)?;
     let part = |c: char| c == '_' || c == '$' || c.is_alphanumeric();
-    if text[..at].chars().next_back().is_some_and(part) { return None; }
+    if text[..at].chars().next_back().is_some_and(part) {
+        return None;
+    }
     let first = rest.chars().next()?;
-    if !(first == '_' || first == '$' || first.is_alphabetic()) { return None; }
+    if !(first == '_' || first == '$' || first.is_alphabetic()) {
+        return None;
+    }
     let end = rest.find(|c: char| !part(c)).unwrap_or(rest.len());
     Some(&rest[..end])
 }
@@ -105,12 +142,18 @@ fn back_edit(p: &[Piece], o: u32) -> u32 {
     match p.get(idx) {
         Some(x) if x.kept => x.in_start + (o - x.out_start),
         Some(x) => x.in_start,
-        None => p.last().map(|x| x.in_start + if x.kept { x.out_end - x.out_start } else { 0 }).unwrap_or(o),
+        None => p
+            .last()
+            .map(|x| x.in_start + if x.kept { x.out_end - x.out_start } else { 0 })
+            .unwrap_or(o),
     }
 }
 
 fn back_codegen(p: &[(u32, u32)], o: u32) -> u32 {
     let idx = p.partition_point(|x| x.0 <= o);
-    if idx == 0 { p.first().map(|x| x.1).unwrap_or(0) } else { p[idx - 1].1 }
+    if idx == 0 {
+        p.first().map(|x| x.1).unwrap_or(0)
+    } else {
+        p[idx - 1].1
+    }
 }
-

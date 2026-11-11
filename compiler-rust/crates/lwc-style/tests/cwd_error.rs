@@ -4,10 +4,13 @@
 //! recovery mode; empty source and absolute filenames never resolve the cwd.
 //! Its own test binary: it changes the process cwd, which no other test may observe.
 use lwc_shared::TransformError;
-use lwc_style::{transform, CompileOptions};
+use lwc_style::{CompileOptions, transform};
 
 fn compiler(e: TransformError) -> lwc_shared::CompilerError {
-    match e { TransformError::Compiler(e) => e, e => panic!("not a CompilerError: {e:?}") }
+    match e {
+        TransformError::Compiler(e) => e,
+        e => panic!("not a CompilerError: {e:?}"),
+    }
 }
 
 #[test]
@@ -18,17 +21,29 @@ fn deleted_cwd_throws_like_node() {
     std::fs::remove_dir(&dir).unwrap();
 
     for recovery in [false, true] {
-        let opts = CompileOptions { experimental_error_recovery_mode: recovery, ..Default::default() };
+        let opts = CompileOptions {
+            experimental_error_recovery_mode: recovery,
+            ..Default::default()
+        };
         for src in ["a{}", "a{"] {
             let e = compiler(lwc_compiler::dispatch(src, "x.css", &opts).expect_err(src));
-            assert_eq!(e.message, "Error: LWC1009: ENOENT: no such file or directory, uv_cwd", "{src} recovery={recovery}");
+            assert_eq!(
+                e.message, "Error: LWC1009: ENOENT: no such file or directory, uv_cwd",
+                "{src} recovery={recovery}"
+            );
             assert_eq!((e.code, e.location), (Some(1009), None));
             assert_eq!(e.filename.as_deref(), Some("x.css"));
         }
     }
     let opts = CompileOptions::default();
-    assert_eq!(transform("", "x.css", &opts).unwrap().code, "export default undefined");
+    assert_eq!(
+        transform("", "x.css", &opts).unwrap().code,
+        "export default undefined"
+    );
     let e = compiler(lwc_compiler::dispatch("a{", "/abs/x.css", &opts).expect_err("unclosed"));
-    assert_eq!(e.message, "CssSyntaxError: LWC1009: /abs/x.css:1:1: Unclosed block");
+    assert_eq!(
+        e.message,
+        "CssSyntaxError: LWC1009: /abs/x.css:1:1: Unclosed block"
+    );
     assert_eq!(e.location.map(|l| (l.line, l.column)), Some((1, 1)));
 }

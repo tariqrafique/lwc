@@ -23,20 +23,23 @@
 # A missing MAIN table is rc 2. An unlisted helper arg or stale row fails.
 scripts/land.sh	REGION_SHA256	609b496f1f2fc72461de296e78820c742b2d5981985a895ae925199b0a97ab70	-
 scripts/parse5-pin-check.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
-scripts/check-land-main-refs.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
-scripts/land-path-checks.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
-scripts/baseline-ceiling.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
-harness/scripts/shim-gate.mjs	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
-harness/scripts/golden-io-guard.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
-harness/scripts/ensure-deps.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
-harness/scripts/golden-gate.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/install-napi.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/land.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
+# Moved from land.sh into scripts/preflight.sh (Migrate ruling 2026-11-10 23:20, rootcause fix 1);
+# preflight runs them from git archive of base, so land.sh no longer names them. Cited under D-0286(1).
+# D-0286: remove OWNERS -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove harness/board-rows.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove harness/scripts/ensure-deps.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove harness/scripts/golden-gate.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove harness/scripts/golden-io-guard.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove harness/scripts/shim-gate.mjs -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove scripts/baseline-ceiling.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove scripts/check-land-main-refs.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove scripts/land-path-checks.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove scripts/registry-union.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+scripts/preflight.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/cargo-locked.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
-harness/board-rows.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
-scripts/registry-union.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
 scripts/land-main-refs.tsv	MAIN_DATA_AS_BASE	-	-
-OWNERS	MAIN_DATA_AS_BASE	-	-
 scripts/land.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
 scripts/land.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
 scripts/land.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
@@ -69,6 +72,10 @@ scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
 scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
 scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
 scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/cargo-fmt-check.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/cargo-fmt-check.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/cargo-fmt-check.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/cargo-fmt-check.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
 scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
 scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
 scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok

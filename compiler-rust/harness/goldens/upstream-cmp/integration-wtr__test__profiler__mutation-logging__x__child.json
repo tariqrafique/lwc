@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div><strong>First name:</strong> </div><div><strong>Last name:</strong> </div><div><strong>Previous name:</strong>  ()  ()</div><div><strong>Aliases:</strong></div><ul></ul><ul><li>ice cream: </li></ul><div><strong>Wacky accessors:</strong> -  - </div><div><strong>Recursion:</strong>‍</div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div><strong>First name:</strong> </div><div><strong>Last name:</strong> </div><div><strong>Previous name:</strong>  ()  ()</div><div><strong>Aliases:</strong></div><ul></ul><ul><li>ice cream: </li></ul><div><strong>Wacky accessors:</strong> -  - </div><div><strong>Recursion:</strong></div></template></lwc-up>"
+ }
+}

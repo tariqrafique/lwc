@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "compile-error",
+  "message": "Could not load /helpers/aria.js (imported by virtual-lbc/x/child/child.js): ENOENT: no such file or directory, open '/helpers/aria.js'"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "Could not load /helpers/aria.js (imported by virtual-lbc/x/child/child.js): ENOENT: no such file or directory, open '/helpers/aria.js'"
+ }
+}

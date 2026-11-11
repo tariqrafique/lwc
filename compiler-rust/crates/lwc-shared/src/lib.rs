@@ -5,6 +5,8 @@ pub mod aria;
 pub mod custom_element;
 pub mod edits;
 pub mod errors;
+// Generated (tools/*/gen.mjs, checked byte-for-byte by its --check test): rustfmt must not touch it.
+#[rustfmt::skip]
 mod generated;
 #[cfg(test)]
 mod generated_tests;
@@ -15,14 +17,19 @@ pub mod location;
 pub mod meta;
 pub mod namespaces;
 pub mod void_elements;
-pub use errors::{normalize_to_compiler_error, CompilerAggregateError, CompilerError, ProducerPosition, TransformError, UnnormalizedError};
-pub use instrumentation::{CompilerMetric, DeprecationId, Instrumentation, InstrumentationEvent, InstrumentationHandle, InstrumentationRecorder};
+pub use errors::{
+    CompilerAggregateError, CompilerError, ProducerPosition, TransformError, UnnormalizedError,
+    normalize_to_compiler_error,
+};
+pub use instrumentation::{
+    CompilerMetric, DeprecationId, Instrumentation, InstrumentationEvent, InstrumentationHandle,
+    InstrumentationRecorder,
+};
 pub use location::{DiagnosticLocation, LineIndex};
 pub mod js;
 pub mod style;
 pub mod template_ir;
 pub use template_ir::*;
-
 
 /// Directory of the crate currently being built or tested.
 ///
@@ -50,7 +57,10 @@ pub fn oracle_root() -> std::path::PathBuf {
     };
     let p = std::path::PathBuf::from(raw);
     if !p.join("package.json").is_file() {
-        panic!("LWC_ORACLE={} is not an lwc checkout (missing package.json)", p.display());
+        panic!(
+            "LWC_ORACLE={} is not an lwc checkout (missing package.json)",
+            p.display()
+        );
     }
     p
 }
@@ -97,7 +107,10 @@ pub fn resolve_style_corpus(
 
 /// Value for `key` in a generated key-sorted pair table.
 pub(crate) fn lookup<V: Copy>(table: &[(&'static str, V)], key: &str) -> Option<V> {
-    table.binary_search_by(|e| e.0.cmp(key)).ok().map(|i| table[i].1)
+    table
+        .binary_search_by(|e| e.0.cmp(key))
+        .ok()
+        .map(|i| table[i].1)
 }
 
 /// Diagnostic severity matching `@lwc/errors` DiagnosticLevel.
@@ -142,9 +155,25 @@ pub struct CompilerDiagnostic {
 
 impl CompilerDiagnostic {
     /// Checked constructor: `code` must be `None` (uncoded) or a real `LWC####` code, never `Some(0)`.
-    pub fn new(code: Option<u32>, message: impl Into<String>, level: DiagnosticLevel, filename: Option<String>, location: Option<DiagnosticLocation>) -> Self {
-        debug_assert!(code != Some(0), "diagnostic code 0 is not a code; use None for uncoded diagnostics");
-        Self { code, message: message.into(), level, filename, location, node_location: None }
+    pub fn new(
+        code: Option<u32>,
+        message: impl Into<String>,
+        level: DiagnosticLevel,
+        filename: Option<String>,
+        location: Option<DiagnosticLocation>,
+    ) -> Self {
+        debug_assert!(
+            code != Some(0),
+            "diagnostic code 0 is not a code; use None for uncoded diagnostics"
+        );
+        Self {
+            code,
+            message: message.into(),
+            level,
+            filename,
+            location,
+            node_location: None,
+        }
     }
 }
 
@@ -173,10 +202,19 @@ pub enum SsrMode {
 
 impl SsrMode {
     pub fn from_js(s: &str) -> Option<Self> {
-        match s { "sync" => Some(Self::Sync), "async" => Some(Self::Async), "asyncYield" => Some(Self::AsyncYield), _ => None }
+        match s {
+            "sync" => Some(Self::Sync),
+            "async" => Some(Self::Async),
+            "asyncYield" => Some(Self::AsyncYield),
+            _ => None,
+        }
     }
     pub fn js_value(self) -> &'static str {
-        match self { Self::Sync => "sync", Self::Async => "async", Self::AsyncYield => "asyncYield" }
+        match self {
+            Self::Sync => "sync",
+            Self::Async => "async",
+            Self::AsyncYield => "asyncYield",
+        }
     }
 }
 
@@ -192,7 +230,9 @@ pub enum Sourcemap {
 }
 
 impl Sourcemap {
-    pub fn from_bool(b: bool) -> Self { if b { Self::On } else { Self::Off } }
+    pub fn from_bool(b: bool) -> Self {
+        if b { Self::On } else { Self::Off }
+    }
     /// String form of the option. Only `'inline'` is valid (JS `validateOutputConfig`); anything else
     /// is `Err` with LWC1021 `INVALID_SOURCEMAP_PROPERTY`.
     pub fn from_js_str(s: &str, filename: &str) -> Result<Self, CompileError> {
@@ -201,14 +241,19 @@ impl Sourcemap {
         } else {
             Err(CompileError::lwc(
                 1021,
-                format_message("Expected a boolean value or 'inline' for outputConfig.sourcemap, received \"{0}\".", &[s]),
+                format_message(
+                    "Expected a boolean value or 'inline' for outputConfig.sourcemap, received \"{0}\".",
+                    &[s],
+                ),
                 filename,
                 None,
                 None,
             ))
         }
     }
-    pub fn is_enabled(self) -> bool { self != Self::Off }
+    pub fn is_enabled(self) -> bool {
+        self != Self::Off
+    }
 }
 
 /// `@lwc/template-compiler` `CustomRendererElementConfig` (`shared/renderer-hooks.ts`).
@@ -233,7 +278,9 @@ pub struct CustomRendererConfig {
 pub enum CustomPropertiesResolution {
     #[default]
     Native,
-    Module { name: String },
+    Module {
+        name: String,
+    },
 }
 
 /// `@lwc/compiler` `StylesheetConfig` (deprecated upstream: accepted, no output effect;
@@ -389,7 +436,11 @@ impl CompileError {
     pub fn line(&self) -> Option<u32> {
         match self.position {
             crate::errors::ProducerPosition::Raw { line, .. } => line,
-            crate::errors::ProducerPosition::Diagnostics => self.diagnostics.first().and_then(|d| d.location).map(|l| l.line),
+            crate::errors::ProducerPosition::Diagnostics => self
+                .diagnostics
+                .first()
+                .and_then(|d| d.location)
+                .map(|l| l.line),
         }
     }
 
@@ -397,17 +448,33 @@ impl CompileError {
     pub fn column(&self) -> Option<u32> {
         match self.position {
             crate::errors::ProducerPosition::Raw { column, .. } => column,
-            crate::errors::ProducerPosition::Diagnostics => self.diagnostics.first().and_then(|d| d.location).map(|l| l.column),
+            crate::errors::ProducerPosition::Diagnostics => self
+                .diagnostics
+                .first()
+                .and_then(|d| d.location)
+                .map(|l| l.column),
         }
     }
 }
 
 impl CompileError {
     /// `@lwc/errors`-style error: message `LWC{code}: {message}` plus one Error diagnostic carrying `code`.
-    pub fn lwc(code: u32, message: impl Into<String>, filename: &str, line: Option<u32>, column: Option<u32>) -> Self {
+    pub fn lwc(
+        code: u32,
+        message: impl Into<String>,
+        filename: &str,
+        line: Option<u32>,
+        column: Option<u32>,
+    ) -> Self {
         let message = format!("LWC{code}: {}", message.into());
         Self {
-            diagnostics: vec![CompilerDiagnostic::new(Some(code), message.clone(), DiagnosticLevel::Error, Some(filename.into()), None)],
+            diagnostics: vec![CompilerDiagnostic::new(
+                Some(code),
+                message.clone(),
+                DiagnosticLevel::Error,
+                Some(filename.into()),
+                None,
+            )],
             message,
             filename: Some(filename.into()),
             name: None,
@@ -425,10 +492,22 @@ impl CompileError {
     /// `{filename}: {text}`, no `lwcCode`. The one uncoded diagnostic carries Babel's `err.loc` when known.
     /// The JS facade normalizes it (javascript.ts `normalizeToCompilerError(JS_TRANSFORMER_ERROR, e)`:
     /// code 1007, message `{name}: LWC1007: {filename}: {text}`). Never aggregated in recovery mode.
-    pub fn babel(kind: &str, text: impl Into<String>, filename: &str, line: Option<u32>, column: Option<u32>) -> Self {
+    pub fn babel(
+        kind: &str,
+        text: impl Into<String>,
+        filename: &str,
+        line: Option<u32>,
+        column: Option<u32>,
+    ) -> Self {
         let message = format!("{filename}: {}", text.into());
         Self {
-            diagnostics: vec![CompilerDiagnostic::new(None, message.clone(), DiagnosticLevel::Error, Some(filename.into()), None)],
+            diagnostics: vec![CompilerDiagnostic::new(
+                None,
+                message.clone(),
+                DiagnosticLevel::Error,
+                Some(filename.into()),
+                None,
+            )],
             message,
             filename: Some(filename.into()),
             name: Some(kind.into()),
@@ -456,7 +535,8 @@ impl CompileError {
                 // @babel/core File#buildCodeFrameError: `end` only when the node starts and ends on one line.
                 let end = (l.start_line == l.end_line).then_some((l.end_line, l.end_column));
                 self.message.push('\n');
-                self.message.push_str(&code_frame(src, (l.start_line, l.start_column), end));
+                self.message
+                    .push_str(&code_frame(src, (l.start_line, l.start_column), end));
             }
         }
         self
@@ -473,9 +553,13 @@ pub fn babel_line_col(src: &str, off: u32) -> (u32, u32) {
 /// `start`/`end` are (1-based line, 0-based column), as on a Babel node `loc`.
 pub fn code_frame(src: &str, start: (u32, u32), end: Option<(u32, u32)>) -> String {
     let normalized = src.replace("\r\n", "\n"); // NEWLINE = /\r\n|[\n\r\u2028\u2029]/
-    let lines: Vec<&str> = normalized.split(['\n', '\r', '\u{2028}', '\u{2029}']).collect();
+    let lines: Vec<&str> = normalized
+        .split(['\n', '\r', '\u{2028}', '\u{2029}'])
+        .collect();
     let (start_line, start_col) = (start.0 as usize, start.1 as usize + 1);
-    let (end_line, end_col) = end.map(|(l, c)| (l as usize, c as usize + 1)).unwrap_or((start_line, start_col));
+    let (end_line, end_col) = end
+        .map(|(l, c)| (l as usize, c as usize + 1))
+        .unwrap_or((start_line, start_col));
     let first = start_line.saturating_sub(3);
     let last = (end_line + 3).min(lines.len());
     // markerLines: line -> (column, count); count 0 means a single caret.
@@ -484,8 +568,16 @@ pub fn code_frame(src: &str, start: (u32, u32), end: Option<(u32, u32)>) -> Stri
         for i in 0..=(end_line - start_line) {
             let n = start_line + i;
             // shipped reads `source[lineNumber - i]` (the start line) for middle lines; kept as is.
-            let len = lines.get(start_line - 1).map_or(0, |l| l.encode_utf16().count());
-            let m = if i == 0 { (start_col, (len + 1).saturating_sub(start_col)) } else if n == end_line { (0, end_col) } else { (0, len) };
+            let len = lines
+                .get(start_line - 1)
+                .map_or(0, |l| l.encode_utf16().count());
+            let m = if i == 0 {
+                (start_col, (len + 1).saturating_sub(start_col))
+            } else if n == end_line {
+                (0, end_col)
+            } else {
+                (0, len)
+            };
             markers.insert(n, m);
         }
     } else if start_col == end_col {
@@ -498,12 +590,26 @@ pub fn code_frame(src: &str, start: (u32, u32), end: Option<(u32, u32)>) -> Stri
     for (idx, line) in lines[first.min(last)..last].iter().enumerate() {
         let number = first + 1 + idx;
         let gutter = format!(" {:>width$} |", number);
-        let text = if line.is_empty() { String::new() } else { format!(" {line}") };
+        let text = if line.is_empty() {
+            String::new()
+        } else {
+            format!(" {line}")
+        };
         match markers.get(&number) {
             Some(&(col, count)) => {
-                let spacing: String = line.encode_utf16().take(col.saturating_sub(1)).map(|u| if u == b'\t' as u16 { '\t' } else { ' ' }).collect();
-                let gutter_blank: String = gutter.chars().map(|c| if c.is_ascii_digit() { ' ' } else { c }).collect();
-                out.push(format!(">{gutter}{text}\n {gutter_blank} {spacing}{}", "^".repeat(count.max(1))));
+                let spacing: String = line
+                    .encode_utf16()
+                    .take(col.saturating_sub(1))
+                    .map(|u| if u == b'\t' as u16 { '\t' } else { ' ' })
+                    .collect();
+                let gutter_blank: String = gutter
+                    .chars()
+                    .map(|c| if c.is_ascii_digit() { ' ' } else { c })
+                    .collect();
+                out.push(format!(
+                    ">{gutter}{text}\n {gutter_blank} {spacing}{}",
+                    "^".repeat(count.max(1))
+                ));
             }
             None => out.push(format!(" {gutter}{text}")),
         }
@@ -553,7 +659,11 @@ pub(crate) fn template_string(template: &str, args: &[&str]) -> String {
         let digits = after.bytes().take_while(u8::is_ascii_digit).count();
         if digits > 0 && after.as_bytes().get(digits) == Some(&b'}') {
             let idx: Option<usize> = after[..digits].parse().ok();
-            out.push_str(idx.and_then(|i| args.get(i)).copied().unwrap_or("undefined"));
+            out.push_str(
+                idx.and_then(|i| args.get(i))
+                    .copied()
+                    .unwrap_or("undefined"),
+            );
             rest = &after[digits + 1..];
         } else {
             out.push('{');
@@ -571,25 +681,40 @@ impl CompilerDiagnostic {
     /// prefix; callers must not add it again. Level is `strict_level` when `use_strict_error_override`
     /// is set and the info has one, else `level`. Filename and location come only from `origin`
     /// (both `None` without one).
-    pub fn generate(info: &LwcErrorInfo, args: Option<&[&str]>, origin: Option<DiagnosticOrigin>, use_strict_error_override: bool) -> Self {
+    pub fn generate(
+        info: &LwcErrorInfo,
+        args: Option<&[&str]>,
+        origin: Option<DiagnosticOrigin>,
+        use_strict_error_override: bool,
+    ) -> Self {
         let level = match (use_strict_error_override, info.strict_level) {
             (true, Some(strict)) => strict,
             _ => info.level,
         };
         let origin = origin.unwrap_or_default();
-        Self::new(Some(info.code), generate_error_message(info, args), level, origin.filename, origin.location)
+        Self::new(
+            Some(info.code),
+            generate_error_message(info, args),
+            level,
+            origin.filename,
+            origin.location,
+        )
     }
 }
 
 /// `{0}`/`{1}`... substitution as in `@lwc/errors` templateString.
 pub fn format_message(template: &str, args: &[&str]) -> String {
     let mut out = template.to_string();
-    for (i, a) in args.iter().enumerate() { out = out.replace(&format!("{{{i}}}"), a); }
+    for (i, a) in args.iter().enumerate() {
+        out = out.replace(&format!("{{{i}}}"), a);
+    }
     out
 }
 
 impl std::fmt::Display for CompileError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { f.write_str(&self.message) }
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.message)
+    }
 }
 impl std::error::Error for CompileError {}
 
@@ -603,26 +728,50 @@ mod diagnostic_code_tests {
         assert!(o.dynamic_import_strict_specifier);
         assert_eq!(o.experimental_dynamic_directive, None);
         assert!(o.resolved_experimental_dynamic_directive());
-        assert!(!CompileOptions { experimental_dynamic_directive: Some(false), ..o.clone() }.resolved_experimental_dynamic_directive());
+        assert!(
+            !CompileOptions {
+                experimental_dynamic_directive: Some(false),
+                ..o.clone()
+            }
+            .resolved_experimental_dynamic_directive()
+        );
         assert_eq!(o.sourcemap, Sourcemap::Off);
-        assert_eq!(o.stylesheet_config.custom_properties_resolution, CustomPropertiesResolution::Native);
+        assert_eq!(
+            o.stylesheet_config.custom_properties_resolution,
+            CustomPropertiesResolution::Native
+        );
         assert_eq!(o.custom_renderer_config, None);
         assert!(!o.is_explicit_import && !o.enable_lightning_web_security_transforms);
     }
 
     #[test]
     fn sourcemap_string_validation() {
-        assert_eq!(Sourcemap::from_js_str("inline", "a.js").unwrap(), Sourcemap::Inline);
+        assert_eq!(
+            Sourcemap::from_js_str("inline", "a.js").unwrap(),
+            Sourcemap::Inline
+        );
         let e = Sourcemap::from_js_str("foo", "a.js").unwrap_err();
         assert_eq!(e.diagnostics[0].code, Some(1021));
-        assert_eq!(e.message, "LWC1021: Expected a boolean value or 'inline' for outputConfig.sourcemap, received \"foo\".");
+        assert_eq!(
+            e.message,
+            "LWC1021: Expected a boolean value or 'inline' for outputConfig.sourcemap, received \"foo\"."
+        );
     }
 
     #[test]
     fn coded_and_uncoded() {
-        assert_eq!(CompilerDiagnostic::new(Some(1083), "m", DiagnosticLevel::Error, None, None).code, Some(1083));
-        assert_eq!(CompilerDiagnostic::new(None, "m", DiagnosticLevel::Error, None, None).code, None);
-        assert_eq!(CompileError::lwc(1001, "x", "a.js", None, None).diagnostics[0].code, Some(1001));
+        assert_eq!(
+            CompilerDiagnostic::new(Some(1083), "m", DiagnosticLevel::Error, None, None).code,
+            Some(1083)
+        );
+        assert_eq!(
+            CompilerDiagnostic::new(None, "m", DiagnosticLevel::Error, None, None).code,
+            None
+        );
+        assert_eq!(
+            CompileError::lwc(1001, "x", "a.js", None, None).diagnostics[0].code,
+            Some(1001)
+        );
     }
 
     #[test]
@@ -657,58 +806,150 @@ mod diagnostic_code_tests {
     #[test]
     fn generate_1165_error_with_location() {
         // `<template><div lwc:else></div></template>`; JS @b9e8007 location {line:1,column:11,start:10,length:20}.
-        let loc = SourceLocation { start_line: 1, start_column: 11, end_line: 1, end_column: 31, start: 10, end: 30 };
-        let d = CompilerDiagnostic::generate(&LWC_IF_SCOPE_NOT_FOUND, Some(&["lwc:else"]), Some(DiagnosticOrigin { filename: None, location: Some(loc.into()) }), false);
-        assert_eq!(d.message, "LWC1165: 'lwc:else' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.");
+        let loc = SourceLocation {
+            start_line: 1,
+            start_column: 11,
+            end_line: 1,
+            end_column: 31,
+            start: 10,
+            end: 30,
+        };
+        let d = CompilerDiagnostic::generate(
+            &LWC_IF_SCOPE_NOT_FOUND,
+            Some(&["lwc:else"]),
+            Some(DiagnosticOrigin {
+                filename: None,
+                location: Some(loc.into()),
+            }),
+            false,
+        );
+        assert_eq!(
+            d.message,
+            "LWC1165: 'lwc:else' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found."
+        );
         assert_eq!(d.code, Some(1165));
         assert_eq!((d.level, d.level.js_value()), (DiagnosticLevel::Error, 1));
         assert_eq!(d.filename, None);
-        assert_eq!(d.location, Some(DiagnosticLocation { line: 1, column: 11, start: Some(10), length: Some(20), index: None }));
+        assert_eq!(
+            d.location,
+            Some(DiagnosticLocation {
+                line: 1,
+                column: 11,
+                start: Some(10),
+                length: Some(20),
+                index: None
+            })
+        );
     }
 
     #[test]
     fn generate_1182_warning_with_filename() {
         // `<template><div if:true={a} if:false={b}></div></template>`; JS location {line:1,column:11,start:10,length:36}.
-        let loc = SourceLocation { start_line: 1, start_column: 11, end_line: 1, end_column: 47, start: 10, end: 46 };
-        let origin = DiagnosticOrigin { filename: Some("x.html".into()), location: Some(loc.into()) };
-        let d = CompilerDiagnostic::generate(&SINGLE_IF_DIRECTIVE_ALLOWED, Some(&["div"]), Some(origin), false);
-        assert_eq!(d.message, "LWC1182: Multiple if: directives found on 'div'. Only one if: directive is allowed; the rest are ignored.");
+        let loc = SourceLocation {
+            start_line: 1,
+            start_column: 11,
+            end_line: 1,
+            end_column: 47,
+            start: 10,
+            end: 46,
+        };
+        let origin = DiagnosticOrigin {
+            filename: Some("x.html".into()),
+            location: Some(loc.into()),
+        };
+        let d = CompilerDiagnostic::generate(
+            &SINGLE_IF_DIRECTIVE_ALLOWED,
+            Some(&["div"]),
+            Some(origin),
+            false,
+        );
+        assert_eq!(
+            d.message,
+            "LWC1182: Multiple if: directives found on 'div'. Only one if: directive is allowed; the rest are ignored."
+        );
         assert_eq!((d.level, d.level.js_value()), (DiagnosticLevel::Warning, 2));
         assert_eq!(d.filename.as_deref(), Some("x.html"));
-        assert_eq!(d.location, Some(DiagnosticLocation { line: 1, column: 11, start: Some(10), length: Some(36), index: None }));
+        assert_eq!(
+            d.location,
+            Some(DiagnosticLocation {
+                line: 1,
+                column: 11,
+                start: Some(10),
+                length: Some(36),
+                index: None
+            })
+        );
     }
 
     #[test]
     fn generate_without_origin_or_args() {
         // No args: template left as-is (JS `Array.isArray(undefined)` is false). No origin: no filename/location.
         let d = CompilerDiagnostic::generate(&SINGLE_IF_DIRECTIVE_ALLOWED, None, None, false);
-        assert_eq!(d.message, "LWC1182: Multiple if: directives found on '{0}'. Only one if: directive is allowed; the rest are ignored.");
+        assert_eq!(
+            d.message,
+            "LWC1182: Multiple if: directives found on '{0}'. Only one if: directive is allowed; the rest are ignored."
+        );
         assert_eq!((d.filename, d.location), (None, None));
         // Empty args: placeholder becomes `undefined` (JS `args[0]`).
-        assert_eq!(generate_error_message(&SINGLE_IF_DIRECTIVE_ALLOWED, Some(&[])), "LWC1182: Multiple if: directives found on 'undefined'. Only one if: directive is allowed; the rest are ignored.");
+        assert_eq!(
+            generate_error_message(&SINGLE_IF_DIRECTIVE_ALLOWED, Some(&[])),
+            "LWC1182: Multiple if: directives found on 'undefined'. Only one if: directive is allowed; the rest are ignored."
+        );
     }
 
     #[test]
     fn template_string_is_single_pass() {
-        let info = LwcErrorInfo { code: 1, message: "{0}-{1}-{x}-{}", level: DiagnosticLevel::Error, url: None, strict_level: None };
-        assert_eq!(generate_error_message(&info, Some(&["{1}", "b"])), "LWC1: {1}-b-{x}-{}");
+        let info = LwcErrorInfo {
+            code: 1,
+            message: "{0}-{1}-{x}-{}",
+            level: DiagnosticLevel::Error,
+            url: None,
+            strict_level: None,
+        };
+        assert_eq!(
+            generate_error_message(&info, Some(&["{1}", "b"])),
+            "LWC1: {1}-b-{x}-{}"
+        );
     }
 
     #[test]
     fn level_mapping_and_strict_override() {
-        let info = LwcErrorInfo { code: 1, message: "m", level: DiagnosticLevel::Warning, url: None, strict_level: Some(DiagnosticLevel::Error) };
-        assert_eq!(CompilerDiagnostic::generate(&info, None, None, false).level, DiagnosticLevel::Warning);
-        assert_eq!(CompilerDiagnostic::generate(&info, None, None, true).level, DiagnosticLevel::Error);
+        let info = LwcErrorInfo {
+            code: 1,
+            message: "m",
+            level: DiagnosticLevel::Warning,
+            url: None,
+            strict_level: Some(DiagnosticLevel::Error),
+        };
+        assert_eq!(
+            CompilerDiagnostic::generate(&info, None, None, false).level,
+            DiagnosticLevel::Warning
+        );
+        assert_eq!(
+            CompilerDiagnostic::generate(&info, None, None, true).level,
+            DiagnosticLevel::Error
+        );
         // Override without a strictLevel keeps `level`.
-        assert_eq!(CompilerDiagnostic::generate(&SINGLE_IF_DIRECTIVE_ALLOWED, None, None, true).level, DiagnosticLevel::Warning);
-        let js: Vec<u32> = [DiagnosticLevel::Fatal, DiagnosticLevel::Error, DiagnosticLevel::Warning, DiagnosticLevel::Log].iter().map(|l| l.js_value()).collect();
+        assert_eq!(
+            CompilerDiagnostic::generate(&SINGLE_IF_DIRECTIVE_ALLOWED, None, None, true).level,
+            DiagnosticLevel::Warning
+        );
+        let js: Vec<u32> = [
+            DiagnosticLevel::Fatal,
+            DiagnosticLevel::Error,
+            DiagnosticLevel::Warning,
+            DiagnosticLevel::Log,
+        ]
+        .iter()
+        .map(|l| l.js_value())
+        .collect();
         assert_eq!(js, vec![0, 1, 2, 3]);
     }
 }
 
 #[cfg(test)]
 mod style_corpus_root_tests {
-    use super::{resolve_style_corpus, STYLE_CORPUS_DEFAULT};
+    use super::{STYLE_CORPUS_DEFAULT, resolve_style_corpus};
     use std::fs;
     use std::path::{Path, PathBuf};
 
@@ -761,7 +1002,10 @@ mod style_corpus_root_tests {
         let other = scratch("other-ok");
         fs::create_dir_all(&other).unwrap();
         let err = resolve_style_corpus(Some("/no/such/style-corpus-dir"), &other).unwrap_err();
-        assert!(err.contains("STYLE_CORPUS=/no/such/style-corpus-dir"), "{err}");
+        assert!(
+            err.contains("STYLE_CORPUS=/no/such/style-corpus-dir"),
+            "{err}"
+        );
         assert!(err.contains("does not exist"), "{err}");
         let _ = fs::remove_dir_all(&other);
     }
@@ -769,6 +1013,9 @@ mod style_corpus_root_tests {
     #[test]
     fn default_constant_is_the_box_locked_path() {
         assert_eq!(STYLE_CORPUS_DEFAULT, "/workspace/style-corpus");
-        assert_eq!(Path::new(STYLE_CORPUS_DEFAULT), Path::new("/workspace/style-corpus"));
+        assert_eq!(
+            Path::new(STYLE_CORPUS_DEFAULT),
+            Path::new("/workspace/style-corpus")
+        );
     }
 }

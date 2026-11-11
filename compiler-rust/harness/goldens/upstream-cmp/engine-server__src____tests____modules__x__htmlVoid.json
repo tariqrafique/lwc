@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><input type=\"text\"><input type=\"text\"></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><input type=\"text\"><input type=\"text\"></lwc-up>"
+ }
+}

@@ -113,7 +113,10 @@ fn transform_html(
     };
 
     // index.ts: `preserveComments: !!root.directives.find(PreserveComments)?.value` (not the option).
-    let preserve_comments = root.directives.iter().any(|d| matches!(d, lwc_template::RootDirective::PreserveComments(true)));
+    let preserve_comments = root
+        .directives
+        .iter()
+        .any(|d| matches!(d, lwc_template::RootDirective::PreserveComments(true)));
     let mut result = compile_template_for_ssr(
         root,
         &TemplateTransformOptions {
@@ -158,7 +161,11 @@ mod transform_tests {
         assert!(r.code.contains("__lwcYield"), "{}", r.code);
         assert!(r.code.contains("__lwcRegisterTemplate"), "{}", r.code);
         assert!(r.code.contains("stylesheetScopeToken"), "{}", r.code);
-        assert!(!r.code.contains("yield ") && !r.code.contains("async function"), "{}", r.code);
+        assert!(
+            !r.code.contains("yield ") && !r.code.contains("async function"),
+            "{}",
+            r.code
+        );
         assert!(r.css_scope_tokens.is_some());
     }
 
@@ -167,9 +174,23 @@ mod transform_tests {
     // nodes (tabIndex prop normalized to -1), so SSR must keep all 13 children.
     #[test]
     fn transform_html_tabindex_invalid_static_values_kept() {
-        let opts = CompileOptions { name: "component".into(), namespace: "x".into(), target_ssr: true, ..Default::default() };
+        let opts = CompileOptions {
+            name: "component".into(),
+            namespace: "x".into(),
+            target_ssr: true,
+            ..Default::default()
+        };
         let mut src = String::from("<template>\n");
-        for v in ["{undefined}", "{aNull}", "{string}", "{number}", "{zero}", "{minusOne}", "{truthy}", "{falsy}"] {
+        for v in [
+            "{undefined}",
+            "{aNull}",
+            "{string}",
+            "{number}",
+            "{zero}",
+            "{minusOne}",
+            "{truthy}",
+            "{falsy}",
+        ] {
             src.push_str(&format!("    <x-child tabindex={v}></x-child>\n"));
         }
         for v in ["true", "false", "truthy", "0", "-1"] {
@@ -187,21 +208,53 @@ mod transform_tests {
     /// the `<slot>` element throw a plain Error (message only); props (Component, lwc:component) do not.
     #[test]
     fn transform_html_inner_outer_html_attribute_rejected() {
-        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), target_ssr: true, ..Default::default() };
+        let opts = CompileOptions {
+            name: "c".into(),
+            namespace: "x".into(),
+            target_ssr: true,
+            ..Default::default()
+        };
         let err = |src: &str| transform(src, "x/c/c.html", &opts).expect_err(src);
         for (src, msg) in [
-            ("<template><div inner-h-t-m-l=\"x\">o</div></template>", "Cannot set attribute \"inner-h-t-m-l\" on <div>."),
-            ("<template><div outer-h-t-m-l={x}></div></template>", "Cannot set attribute \"outer-h-t-m-l\" on <div>."),
-            ("<template><omg-whatever lwc:external outer-h-t-m-l={x}></omg-whatever></template>", "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>."),
+            (
+                "<template><div inner-h-t-m-l=\"x\">o</div></template>",
+                "Cannot set attribute \"inner-h-t-m-l\" on <div>.",
+            ),
+            (
+                "<template><div outer-h-t-m-l={x}></div></template>",
+                "Cannot set attribute \"outer-h-t-m-l\" on <div>.",
+            ),
+            (
+                "<template><omg-whatever lwc:external outer-h-t-m-l={x}></omg-whatever></template>",
+                "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>.",
+            ),
             // slot.ts:90-91: the slot's own attributes are checked before its children.
-            ("<template><slot inner-h-t-m-l=\"x\"><p outer-h-t-m-l=\"y\"></p></slot></template>", "Cannot set attribute \"inner-h-t-m-l\" on <slot>."),
-            ("<template><section><template if:true={a}><span inner-h-t-m-l=\"x\"></span></template></section></template>", "Cannot set attribute \"inner-h-t-m-l\" on <span>."),
-            ("<template><x-c><b inner-h-t-m-l=\"x\"></b></x-c></template>", "Cannot set attribute \"inner-h-t-m-l\" on <b>."),
+            (
+                "<template><slot inner-h-t-m-l=\"x\"><p outer-h-t-m-l=\"y\"></p></slot></template>",
+                "Cannot set attribute \"inner-h-t-m-l\" on <slot>.",
+            ),
+            (
+                "<template><section><template if:true={a}><span inner-h-t-m-l=\"x\"></span></template></section></template>",
+                "Cannot set attribute \"inner-h-t-m-l\" on <span>.",
+            ),
+            (
+                "<template><x-c><b inner-h-t-m-l=\"x\"></b></x-c></template>",
+                "Cannot set attribute \"inner-h-t-m-l\" on <b>.",
+            ),
         ] {
             let e = err(src);
             assert_eq!(e.message, msg, "{src}");
             // Plain `Error`: no filename, location, code, or diagnostics.
-            assert_eq!((e.filename.as_deref(), e.line(), e.column(), e.diagnostics.len()), (None, None, None, 0), "{src}");
+            assert_eq!(
+                (
+                    e.filename.as_deref(),
+                    e.line(),
+                    e.column(),
+                    e.diagnostics.len()
+                ),
+                (None, None, None, 0),
+                "{src}"
+            );
         }
         // A light-DOM `<slot inner-h-t-m-l>` never reaches the transformer: the parser drops it with LWC1134
         // (template-compiler parser/index.ts:1494), a warning SSR only console.errors.
@@ -220,10 +273,20 @@ mod transform_tests {
     /// sync/async/asyncYield); these pin the cases where a comment child changes what is emitted.
     #[test]
     fn transform_html_comment_children_match_upstream() {
-        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), target_ssr: true, ..Default::default() };
+        let opts = CompileOptions {
+            name: "c".into(),
+            namespace: "x".into(),
+            target_ssr: true,
+            ..Default::default()
+        };
         let code = |body: &str, pc: bool| {
-            let src = format!("<template{}>{body}</template>", if pc { " lwc:preserve-comments" } else { "" });
-            transform(&src, "x/c/c.html", &opts).unwrap_or_else(|e| panic!("{src}: {e:?}")).code
+            let src = format!(
+                "<template{}>{body}</template>",
+                if pc { " lwc:preserve-comments" } else { "" }
+            );
+            transform(&src, "x/c/c.html", &opts)
+                .unwrap_or_else(|e| panic!("{src}: {e:?}"))
+                .code
         };
         // element.ts:269: a foreign element self-closes when its *emitted* children are empty.
         let c = code("<svg><!--c--></svg>", false);
@@ -231,7 +294,10 @@ mod transform_tests {
         let c = code("<svg><!--c--></svg>", true);
         // The preserved comment is a yield between the open and close tags, so shared.ts
         // folds it onto the right spine: one literal `'><!--c--></svg>'`, not a self-close.
-        assert!(c.contains("'><!--c--></svg>'") && !c.contains("'/>'"), "{c}");
+        assert!(
+            c.contains("'><!--c--></svg>'") && !c.contains("'/>'"),
+            "{c}"
+        );
         // element.ts:256 tests `node.children.length` (comments count), so lwc:inner-html is not rendered;
         // the parser allows it (parser/index.ts:1775 effectiveChildren drops non-preserved comments).
         let c = code("<div lwc:inner-html={h}><!--c--></div>", false);
@@ -241,21 +307,45 @@ mod transform_tests {
         let c = code("{a}<!--c-->{b}", false);
         assert!(c.contains("renderTextContent(normalizeTextContent(instance.a) + normalizeTextContent(instance.b))"), "{c}");
         let c = code("{a}<!--c-->{b}", true);
-        assert!(c.contains("renderTextContent(normalizeTextContent(instance.a))") && c.contains("'<!--c-->'"), "{c}");
+        assert!(
+            c.contains("renderTextContent(normalizeTextContent(instance.a))")
+                && c.contains("'<!--c-->'"),
+            "{c}"
+        );
         // slotted-content.ts: a comment-only child yields no shadow content and is not a light-slot leaf.
         let c = code("<x-d><!--c--></x-d>", false);
-        assert!(c.contains("const shadowSlottedContent = null;") && c.contains("const lightSlottedContentMap = null;"), "{c}");
+        assert!(
+            c.contains("const shadowSlottedContent = null;")
+                && c.contains("const lightSlottedContentMap = null;"),
+            "{c}"
+        );
         assert!(!c.contains("addSlottedContent"), "{c}");
         let c = code("<x-d><!--c--></x-d>", true);
-        assert!(c.contains("__lwcGenerateShadowSlottedContent_xD_0") && c.contains("const lightSlottedContentMap = null;"), "{c}");
+        assert!(
+            c.contains("__lwcGenerateShadowSlottedContent_xD_0")
+                && c.contains("const lightSlottedContentMap = null;"),
+            "{c}"
+        );
         // getLightSlottedContent: a text before a comment is not the last of its run, so it is skipped, and the
         // pruned lwc:if clone holds only the final text: upstream renders "b" (not "ab") into the light slot.
-        let c = code("<x-d><template lwc:if={t}>a<!--c-->b</template></x-d>", false);
-        let light = &c[c.find("lightSlottedContentMap = Object.create(null);").expect(&c)..];
-        assert!(light.contains("normalizeTextContent('b')") && !light.contains("normalizeTextContent('a')"), "{c}");
+        let c = code(
+            "<x-d><template lwc:if={t}>a<!--c-->b</template></x-d>",
+            false,
+        );
+        let light = &c[c
+            .find("lightSlottedContentMap = Object.create(null);")
+            .expect(&c)..];
+        assert!(
+            light.contains("normalizeTextContent('b')")
+                && !light.contains("normalizeTextContent('a')"),
+            "{c}"
+        );
         // lwcIf.ts: the if/else chain is built by the parser across the comment, then
         // optimizeIfStatement collapses the two single-yield branches into one ternary.
-        let c = code("<template lwc:if={f}>A</template><!--c--><template lwc:else>B</template>", false);
+        let c = code(
+            "<template lwc:if={f}>A</template><!--c--><template lwc:else>B</template>",
+            false,
+        );
         assert!(c.contains("(instance.f ? '<!---->' + renderTextContent(normalizeTextContent('A')) + '<!---->' : '<!---->' + renderTextContent(normalizeTextContent('B')) + '<!---->')"), "{c}");
     }
 
@@ -264,15 +354,36 @@ mod transform_tests {
     /// throws a plain Error at compile time; as a direct child it is scoped slotted content.
     #[test]
     fn transform_html_nested_scoped_slot_fragment_is_unimplemented() {
-        let opts = CompileOptions { name: "c".into(), namespace: "x".into(), target_ssr: true, ..Default::default() };
+        let opts = CompileOptions {
+            name: "c".into(),
+            namespace: "x".into(),
+            target_ssr: true,
+            ..Default::default()
+        };
         let src = "<template><x-child><template lwc:if={a}><span>A</span></template><template lwc:elseif={b}>\
             <template lwc:slot-data=\"data\"><span>{data.id}</span></template></template></x-child></template>";
         let e = transform(src, "x/c/c.html", &opts).expect_err("nested lwc:slot-data");
-        assert_eq!(e.message, "Unimplemented IR node: { type: 'ScopedSlotFragment' }");
-        assert_eq!((e.filename.as_deref(), e.line(), e.column(), e.diagnostics.len()), (None, None, None, 0));
+        assert_eq!(
+            e.message,
+            "Unimplemented IR node: { type: 'ScopedSlotFragment' }"
+        );
+        assert_eq!(
+            (
+                e.filename.as_deref(),
+                e.line(),
+                e.column(),
+                e.diagnostics.len()
+            ),
+            (None, None, None, 0)
+        );
         let ok = "<template><x-child><template lwc:slot-data=\"data\"><span>{data.id}</span></template></x-child></template>";
-        let c = transform(ok, "x/c/c.html", &opts).expect("direct lwc:slot-data").code;
-        assert!(c.contains("scopedSlottedContentMap = Object.create(null)"), "{c}");
+        let c = transform(ok, "x/c/c.html", &opts)
+            .expect("direct lwc:slot-data")
+            .code;
+        assert!(
+            c.contains("scopedSlottedContentMap = Object.create(null)"),
+            "{c}"
+        );
     }
 
     #[test]
@@ -286,7 +397,12 @@ mod transform_tests {
         let src = "import { LightningElement } from 'lwc';\n\nexport default class TextStatic extends LightningElement {}\n";
         let r = transform(src, "x/text-static/text-static.js", &opts).expect("transform");
         assert!(r.code.contains("@lwc/ssr-runtime"), "{}", r.code);
-        assert!(r.code.contains("__setStaticInternals(TextStatic, \"x-text-static\""), "{}", r.code);
+        assert!(
+            r.code
+                .contains("__setStaticInternals(TextStatic, \"x-text-static\""),
+            "{}",
+            r.code
+        );
         assert!(r.code.contains("./text-static.html"), "{}", r.code);
     }
 }

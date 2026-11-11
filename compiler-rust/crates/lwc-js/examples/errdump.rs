@@ -1,6 +1,6 @@
 //! Dump a transform error as JSON (proof tooling). stdin = source; args: [epm] [rec] [filename=..] [name=..] [namespace=..]
-use std::io::Read;
 use lwc_shared::CompileOptions;
+use std::io::Read;
 
 fn q(s: &str) -> String {
     let mut o = String::from("\"");
@@ -18,7 +18,9 @@ fn q(s: &str) -> String {
     o.push('"');
     o
 }
-fn n(v: Option<u32>) -> String { v.map(|x| x.to_string()).unwrap_or("null".into()) }
+fn n(v: Option<u32>) -> String {
+    v.map(|x| x.to_string()).unwrap_or("null".into())
+}
 
 fn main() {
     let mut src = String::new();
@@ -48,14 +50,37 @@ fn main() {
                 lwc_shared::TransformError::Unnormalized(e) => (e.message, vec![]),
             };
             let loc = |d: &lwc_shared::CompilerError| match d.location {
-                Some(l) => format!("{{\"line\":{},\"column\":{},\"start\":{},\"length\":{}}}", l.line, l.column, n(l.start), n(l.length)),
+                Some(l) => format!(
+                    "{{\"line\":{},\"column\":{},\"start\":{},\"length\":{}}}",
+                    l.line,
+                    l.column,
+                    n(l.start),
+                    n(l.length)
+                ),
                 None => "null".into(),
             };
             let first = errors.first();
-            let errs: Vec<String> = errors.iter().map(|d| format!("{{\"code\":{},\"message\":{},\"location\":{}}}", n(d.code), q(&d.message), loc(d))).collect();
+            let errs: Vec<String> = errors
+                .iter()
+                .map(|d| {
+                    format!(
+                        "{{\"code\":{},\"message\":{},\"location\":{}}}",
+                        n(d.code),
+                        q(&d.message),
+                        loc(d)
+                    )
+                })
+                .collect();
             let at = first.and_then(|d| d.location);
-            println!("{{\"code\":{},\"line\":{},\"column\":{},\"location\":{},\"message\":{},\"diagnostics\":[{}]}}",
-                n(first.and_then(|d| d.code)), n(at.map(|l| l.line)), n(at.map(|l| l.column)), first.map(loc).unwrap_or("null".into()), q(&message), errs.join(","));
+            println!(
+                "{{\"code\":{},\"line\":{},\"column\":{},\"location\":{},\"message\":{},\"diagnostics\":[{}]}}",
+                n(first.and_then(|d| d.code)),
+                n(at.map(|l| l.line)),
+                n(at.map(|l| l.column)),
+                first.map(loc).unwrap_or("null".into()),
+                q(&message),
+                errs.join(",")
+            );
         }
     }
 }

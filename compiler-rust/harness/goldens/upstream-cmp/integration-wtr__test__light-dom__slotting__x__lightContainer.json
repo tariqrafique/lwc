@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><!----><p data-id=\"container-upper-slot-default\">Upper slot default</p><!----><!----><p data-id=\"container-default-slot-default\">Default slot default</p><!----><!----><p data-id=\"container-lower-slot-default\">Lower slot default</p><!----></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><!----><p data-id=\"container-upper-slot-default\">Upper slot default</p><!----><!----><p data-id=\"container-default-slot-default\">Default slot default</p><!----><!----><p data-id=\"container-lower-slot-default\">Lower slot default</p><!----></lwc-up>"
+ }
+}

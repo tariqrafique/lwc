@@ -12,22 +12,47 @@ fn lwc_shared_dependencies_are_allowlisted() {
     let cargo = std::env::var("CARGO").unwrap_or_else(|_| "cargo".into());
     let manifest = lwc_shared::cargo_manifest_dir!().join("Cargo.toml");
     let out = std::process::Command::new(cargo)
-        .args(["metadata", "--format-version", "1", "--no-deps", "--offline", "--manifest-path"])
+        .args([
+            "metadata",
+            "--format-version",
+            "1",
+            "--no-deps",
+            "--offline",
+            "--manifest-path",
+        ])
         .arg(&manifest)
         .output()
         .expect("run cargo metadata");
-    assert!(out.status.success(), "cargo metadata failed: {}", String::from_utf8_lossy(&out.stderr));
+    assert!(
+        out.status.success(),
+        "cargo metadata failed: {}",
+        String::from_utf8_lossy(&out.stderr)
+    );
     let meta: serde_json::Value = serde_json::from_slice(&out.stdout).expect("cargo metadata JSON");
-    let pkg = meta["packages"].as_array().expect("packages").iter()
+    let pkg = meta["packages"]
+        .as_array()
+        .expect("packages")
+        .iter()
         .find(|p| p["manifest_path"].as_str().map(Path::new) == Some(manifest.as_path()))
         .expect("lwc-shared in cargo metadata");
     let deps = pkg["dependencies"].as_array().expect("dependencies");
-    let runtime: Vec<&str> = deps.iter()
+    let runtime: Vec<&str> = deps
+        .iter()
         .filter(|d| matches!(d["kind"].as_str(), None | Some("build")))
         .map(|d| d["name"].as_str().expect("dependency name"))
         .collect();
-    let bad: Vec<&str> = runtime.iter().copied().filter(|d| !ALLOWED.contains(d)).collect();
-    assert!(bad.is_empty(), "lwc-shared may depend only on {ALLOWED:?} (AB-D0004); found {bad:?}");
+    let bad: Vec<&str> = runtime
+        .iter()
+        .copied()
+        .filter(|d| !ALLOWED.contains(d))
+        .collect();
+    assert!(
+        bad.is_empty(),
+        "lwc-shared may depend only on {ALLOWED:?} (AB-D0004); found {bad:?}"
+    );
     // The gate reads real data: the allowlisted crates are present as normal dependencies.
-    assert!(ALLOWED.iter().all(|a| runtime.contains(a)), "expected {ALLOWED:?} among {runtime:?}");
+    assert!(
+        ALLOWED.iter().all(|a| runtime.contains(a)),
+        "expected {ALLOWED:?} among {runtime:?}"
+    );
 }

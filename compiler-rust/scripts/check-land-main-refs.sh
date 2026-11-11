@@ -970,7 +970,7 @@ self_test() {
   fi
   mkdir -p "$T/in.mainextracite/scripts"
   cp "$allow" "$T/in.mainextracite/scripts/land-main-refs.tsv"
-  printf '%s\n' '# D-0286: remove scripts/gone.sh' >> "$T/in.mainextracite/scripts/land-main-refs.tsv"
+  printf '%s\n' '# D-0286: remove scripts/gone.sh -- plant: cite with a one-line reason' >> "$T/in.mainextracite/scripts/land-main-refs.tsv"
   if chk "$land" "$T/allow.mainextra" "$root" "$T/in.mainextracite" >"$T/out.mainextracite" 2>&1; then
     echo "ok   MAIN extra MAIN_* row dropped with a D-id cite is accepted"
   else

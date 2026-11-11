@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div class=\"in-the-shadow\" id=\"in-the-shadow\"></div><input name=\"in-the-shadow\"><x-unique-tag-name><template shadowrootmode=\"open\"></template></x-unique-tag-name></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div class=\"in-the-shadow\" id=\"in-the-shadow\"></div><input name=\"in-the-shadow\"><x-unique-tag-name><template shadowrootmode=\"open\"></template></x-unique-tag-name></template></lwc-up>"
+ }
+}

@@ -18,8 +18,14 @@ pub(super) fn import_declaration(specs: &[Spec], source: &str) -> String {
             Spec::Named(imported, local) => named.push(format!("{imported} as {local}")),
         }
     }
-    if !named.is_empty() { parts.push(format!("{{ {} }}", named.join(", "))); }
-    format!("import {} from {};\n", parts.join(", "), json_string(source.encode_utf16()))
+    if !named.is_empty() {
+        parts.push(format!("{{ {} }}", named.join(", ")));
+    }
+    format!(
+        "import {} from {};\n",
+        parts.join(", "),
+        json_string(source.encode_utf16())
+    )
 }
 
 /// imports.ts `ImportManager`: `Map<source, Map<imported, local>>`, both in first-insertion order,

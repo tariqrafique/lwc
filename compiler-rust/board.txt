@@ -1,5 +1,5 @@
-official board  commit=b2bb4be10388  src=66479d02aafa  napi=4f2941c0e296  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-10T23:53:19-08:00
-napi sha256:4f2941c0e296  pinned=/tmp/lwc-board-snap.NtgUmz/repo/harness/.pins/lwc-compiler-napi.4f2941c0e296.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-10T23:50:04-08:00
+official board  commit=2fe71f284edb  src=55f1d0c2885f  napi=5f7e0ab4b4ed  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-11T03:09:16-08:00
+napi sha256:5f7e0ab4b4ed  pinned=/tmp/lwc-board-snap.7oBQ7a/repo/harness/.pins/lwc-compiler-napi.5f7e0ab4b4ed.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-11T03:04:12-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -27,103 +27,48 @@ style-upstream         Tests  12 passed (12)
 lbc                    Tests  523 passed (523)
 lbc: discovered=522 included=522 excluded=0 compile-error-both=0
 semantic-diff  eq=16795 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1
+template-diag-semdiff  eq=16795 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1
 semantic-diff-ssr  printer-equal=18  static-observed-differs=3  exec-static-comments-differ=1071  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=6,sod=1,esc=357,ed=0,et=0,eu=0,ex=23  async:pe=6,sod=1,esc=357,ed=0,et=0,eu=0,ex=23  asyncYield:pe=6,sod=1,esc=357,ed=0,et=0,eu=0,ex=23  gate=ok
+template-diag-ssr  printer-equal=18  static-observed-differs=3  exec-static-comments-differ=1071  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=6,sod=1,esc=357,ed=0,et=0,eu=0,ex=23  async:pe=6,sod=1,esc=357,ed=0,et=0,eu=0,ex=23  asyncYield:pe=6,sod=1,esc=357,ed=0,et=0,eu=0,ex=23  gate=ok
+template-diag-style  integration-wtr=206/206 integration-wdio=7/7 integration-types=1/1 lbc=584/584 lbc-recipes=32/32 slds=223/223 fixture-smoke=69/69 parse-error=67/67 dedup=319 jobs=5136 fail=0 (uncapped style-diff, hash-dedup, direct oracle)
+template-diag-realgate  cases=5441 diagMismatch=0 codegenUnclean=0 crash=0 oracleError=0
+template-diag-napierrors  5/5
+upstream-cmp           Tests  1414 passed | 22 skipped (1436)
+upstream-cmp: discovered=1435 included=1413 excluded=22 compile-error-both=22
+upstream-cmp exclude integration-types/src/playground/modules/x/counter compile-error-both
+upstream-cmp exclude integration-types/src/playground/modules/x/multiply compile-error-both
+upstream-cmp exclude integration-types/src/playground/modules/x/ref compile-error-both
+upstream-cmp exclude integration-wdio/src/components/memory-leaks/lifecycle-leak/integration/lifecycle-leak compile-error-both
+upstream-cmp exclude integration-wtr/test/component/aria-reflection/x/apiPropDeclared compile-error-both
+upstream-cmp exclude integration-wtr/test/component/aria-reflection/x/apiPropDeclaredNoSuper compile-error-both
+upstream-cmp exclude integration-wtr/test/component/aria-reflection/x/noPropDeclared compile-error-both
+upstream-cmp exclude integration-wtr/test/component/aria-reflection/x/noPropDeclaredNoSuper compile-error-both
+upstream-cmp exclude integration-wtr/test/component/aria-reflection/x/propDeclared compile-error-both
+upstream-cmp exclude integration-wtr/test/component/aria-reflection/x/propDeclaredNoSuper compile-error-both
+upstream-cmp exclude integration-wtr/test/component/aria-reflection/x/trackPropDeclared compile-error-both
+upstream-cmp exclude integration-wtr/test/component/aria-reflection/x/trackPropDeclaredNoSuper compile-error-both
+upstream-cmp exclude integration-wtr/test/component/decorators/api/x/getterSetterAndProp compile-error-both
+upstream-cmp exclude integration-wtr/test/component/LightningElement.attachInternals/elementInternals/sanity/ei/component compile-error-both
+upstream-cmp exclude integration-wtr/test/light-dom/lifecycle/x/slotee compile-error-both
+upstream-cmp exclude integration-wtr/test/rendering/fragment-cache/x/nativeScopedStyles compile-error-both
+upstream-cmp exclude integration-wtr/test/rendering/fragment-cache/x/nativeStyles compile-error-both
+upstream-cmp exclude integration-wtr/test/rendering/fragment-cache/x/noStyles compile-error-both
+upstream-cmp exclude integration-wtr/test/rendering/fragment-cache/x/scopedStyles compile-error-both
+upstream-cmp exclude integration-wtr/test/rendering/fragment-cache/x/styles compile-error-both
+upstream-cmp exclude integration-wtr/test/template/attribute-aria/x/child compile-error-both
+upstream-cmp exclude rollup-plugin/warnings compile-error-both
+js-transform-corpus    Tests  1958 passed (1958)
+unported-specs         Tests  24 passed (24)
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.NtgUmz/notes/decisions.tsv]
-coverage-gate: notes 06afd5e9c148 matrix 121647686387 report-only: 24 sources x 8 stages = 192 cells, 26 covered (declared gating), 11 diagnostic-only, 77 gap, 76 na, 2 dec, 0 invalid
-  GAP upstream:@lwc/style-compiler/fixtures x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:@lwc/template-compiler/fixtures x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:@lwc/babel-plugin-component/fixtures x semantic_diff owner=LWC Semantic Diff
-  DIAG-ONLY upstream:@lwc/ssr-compiler/fixtures x template_diagnostics rows=ssr,ssr-async,ssr-asyncYield,template-diag,template-diag-napi
-  GAP upstream:@lwc/ssr-compiler/fixtures x semantic_diff owner=LWC Semantic Diff
-  DIAG-ONLY upstream:@lwc/engine-server/fixtures.spec x template_diagnostics rows=template-diag,template-diag-napi
-  GAP upstream:@lwc/engine-server/fixtures.spec x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:@lwc/compiler/transformers-specs x style owner=LWC JS Style
-  GAP upstream:@lwc/compiler/transformers-specs x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:@lwc/ssr-compiler/dynamic-imports.spec x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:unported-compiler-unit-specs x style owner=LWC JS Style
-  GAP upstream:unported-compiler-unit-specs x template_codegen owner=LWC Template Rust
-  GAP upstream:unported-compiler-unit-specs x template_diagnostics owner=LWC Template Rust
-  GAP upstream:unported-compiler-unit-specs x js_transform owner=LWC JS Style
-  GAP upstream:unported-compiler-unit-specs x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:@lwc/rollup-plugin/fixtures x style owner=LWC JS Style
-  GAP upstream:@lwc/rollup-plugin/fixtures x template_codegen owner=LWC Template Rust
-  DIAG-ONLY upstream:@lwc/rollup-plugin/fixtures x template_diagnostics rows=template-diag,template-diag-napi
-  GAP upstream:@lwc/rollup-plugin/fixtures x js_transform owner=LWC JS Style
-  GAP upstream:@lwc/rollup-plugin/fixtures x whole_component owner=LWC Harness Cutover
-  GAP upstream:@lwc/rollup-plugin/fixtures x ssr_render owner=LWC SSR Rust
-  GAP upstream:@lwc/rollup-plugin/fixtures x csr_render owner=LWC Harness Cutover
-  GAP upstream:@lwc/rollup-plugin/fixtures x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:@lwc/module-resolver/fixtures x template_codegen owner=LWC Template Rust
-  DIAG-ONLY upstream:@lwc/module-resolver/fixtures x template_diagnostics rows=template-diag,template-diag-napi
-  GAP upstream:@lwc/module-resolver/fixtures x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:@lwc/integration-wtr x style owner=LWC JS Style
-  GAP upstream:@lwc/integration-wtr x template_codegen owner=LWC Template Rust
-  DIAG-ONLY upstream:@lwc/integration-wtr x template_diagnostics rows=template-diag,template-diag-napi
-  GAP upstream:@lwc/integration-wtr x js_transform owner=LWC JS Style
-  GAP upstream:@lwc/integration-wtr x whole_component owner=LWC Harness Cutover
-  GAP upstream:@lwc/integration-wtr x ssr_render owner=LWC SSR Rust
-  GAP upstream:@lwc/integration-wtr x csr_render owner=LWC Harness Cutover
-  GAP upstream:@lwc/integration-wtr x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:@lwc/integration-wdio x style owner=LWC JS Style
-  GAP upstream:@lwc/integration-wdio x template_codegen owner=LWC Template Rust
-  DIAG-ONLY upstream:@lwc/integration-wdio x template_diagnostics rows=template-diag,template-diag-napi
-  GAP upstream:@lwc/integration-wdio x js_transform owner=LWC JS Style
-  GAP upstream:@lwc/integration-wdio x whole_component owner=LWC Harness Cutover
-  GAP upstream:@lwc/integration-wdio x ssr_render owner=LWC SSR Rust
-  GAP upstream:@lwc/integration-wdio x csr_render owner=LWC Harness Cutover
-  GAP upstream:@lwc/integration-wdio x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:@lwc/integration-types x style owner=LWC JS Style
-  GAP upstream:@lwc/integration-types x template_codegen owner=LWC Template Rust
-  DIAG-ONLY upstream:@lwc/integration-types x template_diagnostics rows=template-diag,template-diag-napi
-  GAP upstream:@lwc/integration-types x js_transform owner=LWC JS Style
-  GAP upstream:@lwc/integration-types x whole_component owner=LWC Harness Cutover
-  GAP upstream:@lwc/integration-types x ssr_render owner=LWC SSR Rust
-  GAP upstream:@lwc/integration-types x csr_render owner=LWC Harness Cutover
-  GAP upstream:@lwc/integration-types x semantic_diff owner=LWC Semantic Diff
-  GAP upstream:lwc-other-remainder x style owner=LWC JS Style
-  GAP upstream:lwc-other-remainder x template_codegen owner=LWC Template Rust
-  DIAG-ONLY upstream:lwc-other-remainder x template_diagnostics rows=template-diag,template-diag-napi
-  GAP upstream:lwc-other-remainder x js_transform owner=LWC JS Style
-  GAP upstream:lwc-other-remainder x whole_component owner=LWC Harness Cutover
-  GAP upstream:lwc-other-remainder x ssr_render owner=LWC SSR Rust
-  GAP upstream:lwc-other-remainder x csr_render owner=LWC Harness Cutover
-  GAP upstream:lwc-other-remainder x semantic_diff owner=LWC Semantic Diff
-  GAP corpus:lbc x style owner=LWC JS Style
-  GAP corpus:lbc x template_codegen owner=LWC Template Rust
-  DIAG-ONLY corpus:lbc x template_diagnostics rows=template-diag,template-diag-napi
-  GAP corpus:lbc x js_transform owner=LWC JS Style
-  GAP corpus:lbc x semantic_diff owner=LWC Semantic Diff
-  GAP corpus:lbc-recipes x style owner=LWC JS Style
-  GAP corpus:lbc-recipes x template_codegen owner=LWC Template Rust
-  DIAG-ONLY corpus:lbc-recipes x template_diagnostics rows=template-diag,template-diag-napi
-  GAP corpus:lbc-recipes x js_transform owner=LWC JS Style
-  GAP corpus:lbc-recipes x semantic_diff owner=LWC Semantic Diff
-  GAP corpus:slds x style owner=LWC JS Style
-  GAP corpus:slds x semantic_diff owner=LWC Semantic Diff
-  GAP corpus:template-diag-mutations x template_codegen owner=LWC Template Rust
-  DIAG-ONLY corpus:template-diag-mutations x template_diagnostics rows=template-diag,template-diag-napi
-  GAP corpus:template-diag-mutations x semantic_diff owner=LWC Semantic Diff
-  GAP crate:lwc-style/tests/parse-errors x style owner=LWC JS Style
-  GAP crate:lwc-style/tests/parse-errors x semantic_diff owner=LWC Semantic Diff
-  GAP tool:style-diff-corpus x style owner=LWC JS Style
-  GAP tool:style-diff-corpus x semantic_diff owner=LWC Semantic Diff
-  GAP harness:fixtures/js-eval x semantic_diff owner=LWC Semantic Diff
-  GAP crate:lwc-js/tests x js_transform owner=LWC JS Style
-  GAP crate:lwc-js/tests x semantic_diff owner=LWC Semantic Diff
-  GAP crate:lwc-compiler-napi/tests/fixtures x style owner=LWC JS Style
-  GAP crate:lwc-compiler-napi/tests/fixtures x template_codegen owner=LWC Template Rust
-  GAP crate:lwc-compiler-napi/tests/fixtures x template_diagnostics owner=LWC Template Rust
-  GAP crate:lwc-compiler-napi/tests/fixtures x js_transform owner=LWC Harness Cutover
-  GAP crate:lwc-compiler-napi/tests/fixtures x semantic_diff owner=LWC Semantic Diff
-  GAP crate:lwc-ssr/tests/fixtures/bind_corpus x template_codegen owner=LWC SSR Rust
-  GAP crate:lwc-ssr/tests/fixtures/bind_corpus x template_diagnostics owner=LWC Template Rust
-  GAP crate:lwc-ssr/tests/fixtures/bind_corpus x semantic_diff owner=LWC Semantic Diff
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.7oBQ7a/notes/decisions.tsv]
+coverage-gate: notes a55f85b51732 matrix 75dc5613a667 report-only: 24 sources x 8 stages = 192 cells, 96 covered (declared gating), 0 diagnostic-only, 2 gap, 76 na, 18 dec, 0 invalid
+  GAP corpus:template-diag-mutations x template_codegen owner=item 12, 108 diag-mismatch mutations have no codegen verdict
+  GAP corpus:template-diag-mutations x template_diagnostics owner=item 12, 108 mismatches stay non-gating until fixed
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
 style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)
 csr-clusters[ssr]: pass 392 fail 0
 csr-clusters[template]: pass 568 fail 0
 style-corpus     integration-wtr=206/206 integration-wdio=7/7 integration-types=1/1 lbc=584/584 lbc-recipes=32/32 slds=223/223 fixture-smoke=69/69 parse-error=67/67 dedup=319 jobs=5136 fail=0 (uncapped style-diff, hash-dedup, direct oracle)
-napi-css-errors     2/2 (lwc-compiler-napi single_errors_match_shipped, css-1009 css-1009-host-context)
+napi-css-errors     5/5 (lwc-compiler-napi single_errors_match_shipped, css-1009 css-1009-host-context)

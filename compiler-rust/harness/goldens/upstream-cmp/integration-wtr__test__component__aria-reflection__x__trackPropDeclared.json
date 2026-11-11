@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "compile-error",
+  "message": "Could not load /virtual-lbc/x/shared/base.js (imported by virtual-lbc/x/trackPropDeclared/trackPropDeclared.js): ENOENT: no such file or directory, open '/virtual-lbc/x/shared/base.js'"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "Could not load /virtual-lbc/x/shared/base.js (imported by virtual-lbc/x/trackPropDeclared/trackPropDeclared.js): ENOENT: no such file or directory, open '/virtual-lbc/x/shared/base.js'"
+ }
+}

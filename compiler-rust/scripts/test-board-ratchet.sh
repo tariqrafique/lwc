@@ -22,7 +22,7 @@ assert_observed() {
   fi
   return 0
 }
-tar -C "$R" --exclude=harness/node_modules --exclude=harness/.pins --exclude=harness/.vitest --exclude=harness/.csr-render-out --exclude=harness/.lbc-out \
+tar -C "$R" --exclude=harness/node_modules --exclude=harness/.pins --exclude=harness/.vitest --exclude=harness/.csr-render-out --exclude=harness/.lbc-out --exclude=harness/.upstream-cmp-out \
   --exclude=harness/.ssr-render-out -cf - harness | tar -C "$T" -xf -
 H="$T/harness"
 # board.sh reads SHIM_OWNERS from $here/../OWNERS (the tree board.sh itself lives in). The harness
@@ -35,6 +35,11 @@ cp "$R/scripts/cargo-locked.sh" "$T/scripts/cargo-locked.sh"
 # Copying only cargo-locked.sh left them missing; the land.sh trigger regex never
 # matched, so this sandbox hole was not run until D-0282 fixed the extra ')'.
 cp "$R/scripts/tracked-files.sh" "$R/scripts/tracked-files.mjs" "$T/scripts/"
+# run-land-self-tests.sh pins the board's napi (LWC_NAPI_PIN); that pin always wins over any copy.
+if [ -n "${LWC_NAPI_PIN:-}" ]; then
+  [ -f "$LWC_NAPI_PIN" ] || { echo "!! test-board-ratchet: LWC_NAPI_PIN missing: $LWC_NAPI_PIN" >&2; exit 2; }
+  cp "$LWC_NAPI_PIN" "$H/lwc-compiler-napi.node"
+fi
 if [ ! -f "$H/lwc-compiler-napi.node" ]; then
   _napi_src=""
   if [ -n "${CARGO_TARGET_DIR:-}" ] && [ -f "$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so" ]; then
@@ -45,6 +50,15 @@ if [ ! -f "$H/lwc-compiler-napi.node" ]; then
   if [ -n "$_napi_src" ]; then cp "$_napi_src" "$H/lwc-compiler-napi.node"
   else echo "!! test-board-ratchet: no napi binary ($R/harness/lwc-compiler-napi.node or $R/target/release or \${CARGO_TARGET_DIR}/release)" >&2; exit 2; fi
 fi
+# board.sh's coverage gate (coverage-lbc) builds semdiff from $T/.. (no Cargo.toml here) unless
+# SEMDIFF_BIN is set. Use the built binary next to the napi; missing is rc 2 (prerequisite), like napi.
+if [ -z "${SEMDIFF_BIN:-}" ]; then
+  for _sd in ${CARGO_TARGET_DIR:+"$CARGO_TARGET_DIR/release/semdiff" "$CARGO_TARGET_DIR/debug/semdiff"} "$R/target/release/semdiff" "$R/target/debug/semdiff"; do
+    [ -x "$_sd" ] && { SEMDIFF_BIN="$_sd"; break; }
+  done
+  [ -n "${SEMDIFF_BIN:-}" ] || { echo "!! test-board-ratchet: no semdiff binary (\${CARGO_TARGET_DIR}/release or $R/target); set SEMDIFF_BIN" >&2; exit 2; }
+fi
+export SEMDIFF_BIN
 TEST="$H/test/js-eval.behavior.test.ts"; cp "$TEST" "$T/js-eval.orig"; BL0="$H/board-baseline.tsv"; cp "$BL0" "$T/baseline.orig"
 INJ='board-ratchet injected failure'
 inject() { cp "$T/js-eval.orig" "$TEST"; printf '\nimport { test as __boardRatchetTest } from "vitest";\n__boardRatchetTest(%s, () => { throw new Error("injected"); });\n' "'$INJ'" >> "$TEST"; }
@@ -255,14 +269,15 @@ else bad "ceiling missing pre-land baseline -> rc $ceil_new (want 2)"; sed 's/^/
 # Judges the BRANCH copy ($R), not MAIN content. The chokepoint already forbids raw
 # MAIN reads; this keeps an explicit check that the deleted MAIN-content probe
 # (grep NEW-seed path against $MAIN/scripts/baseline-ceiling.sh) has not returned.
-if grep -nE "NEW-seed path" "$R/scripts/land.sh"    || grep -qF $'grep -q \'NEW-seed path\' "$MAIN/' "$R/scripts/land.sh"; then
+if grep -nE "NEW-seed path" "$R/scripts/land.sh" "$R/scripts/preflight.sh" || grep -qF $'grep -q \'NEW-seed path\' "$MAIN/' "$R/scripts/land.sh" "$R/scripts/preflight.sh"; then
   bad "D-0269: land.sh contains a NEW-seed-path MAIN-content probe"
 else
   ok "D-0269: land.sh does not contain a NEW-seed-path MAIN-content probe"
 fi
 # --- land.sh block, verbatim ---
-blk="$(sed -n '/^# >>> baseline-ceiling/,/^# <<< baseline-ceiling/p' "$R/scripts/land.sh")"
-[ -n "$blk" ] || { bad "baseline-ceiling block not found in scripts/land.sh"; exit 1; }
+# The block moved verbatim from land.sh into preflight.sh (rootcause fix 1).
+blk="$(sed -n '/^# >>> baseline-ceiling/,/^# <<< baseline-ceiling/p' "$R/scripts/preflight.sh")"
+[ -n "$blk" ] || { bad "baseline-ceiling block not found in scripts/preflight.sh"; exit 1; }
 cd "$G"
 landblk() { # name want(accept|refuse) <commit-msg> <how: file|delete|symlink> <reviews-rows> <regex> [decisions-extra]
   git reset -q --hard "$gbase"

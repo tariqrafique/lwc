@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><div class=\"slotname2\"><!---->named slot 2: default content<!----></div><div class=\"defaultslot\"><!---->default slot: default content<!----></div><div class=\"slotname1\"><!---->named slot 1: default content<!----></div><div class=\"slotname3\"><!---->named slot 3: default content<!----></div></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><div class=\"slotname2\"><!---->named slot 2: default content<!----></div><div class=\"defaultslot\"><!---->default slot: default content<!----></div><div class=\"slotname1\"><!---->named slot 1: default content<!----></div><div class=\"slotname3\"><!---->named slot 3: default content<!----></div></lwc-up>"
+ }
+}

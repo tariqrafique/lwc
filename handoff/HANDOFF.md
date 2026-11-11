@@ -1,3 +1,7 @@
+# Handoff
+
+Updated 2026-11-11 03:15 PST. main 2fe71f284edb, official board 55f1d0c2885f (VALID), notes d3ccd99. Plan of record: notes/PLAN.md.
+
 # LWC → Rust migration: handoff (refreshed 2026-11-10 23:58 PST)
 
 Work is on main or on committed `agent/*` branches. Both bundles below are current as of this refresh.

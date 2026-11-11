@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><div class=\"foo\" id=\"foo\">foo</div><div class=\"quux\" id=\"quux\">quux</div><a class=\"go-to-foo\" href=\"#foo\">Go to foo</a><a class=\"go-to-quux\" href=\"#quux\">Go to quux</a><a class=\"go-to-bar\" href=\"#bar\">Go to bar</a></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><div class=\"foo\" id=\"foo\">foo</div><div class=\"quux\" id=\"quux\">quux</div><a class=\"go-to-foo\" href=\"#foo\">Go to foo</a><a class=\"go-to-quux\" href=\"#quux\">Go to quux</a><a class=\"go-to-bar\" href=\"#bar\">Go to bar</a></lwc-up>"
+ }
+}

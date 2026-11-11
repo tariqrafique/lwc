@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><x-light-leaf data-id=\"light-light-leaf\"><template shadowrootmode=\"open\"></template>Default slot not yet forwarded</x-light-leaf></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><x-light-leaf data-id=\"light-light-leaf\"><template shadowrootmode=\"open\"></template>Default slot not yet forwarded</x-light-leaf></lwc-up>"
+ }
+}

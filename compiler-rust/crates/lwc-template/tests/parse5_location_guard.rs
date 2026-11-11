@@ -7,8 +7,17 @@ use std::path::{Path, PathBuf};
 /// Reads of a parse5 location, raw (`source_code_location*`, `start_tag`, `end_tag`, `attrs.get`) or
 /// through the parser's readers.
 const READS: &[&str] = &[
-    "source_code_location", "start_tag", "end_tag", ".attrs.get(", "node_loc(", "required_loc(", "attr_loc(",
-    "attr_loc_in(", "raw_attr(", "element_location(", "elem_parse5_loc(",
+    "source_code_location",
+    "start_tag",
+    "end_tag",
+    ".attrs.get(",
+    "node_loc(",
+    "required_loc(",
+    "attr_loc(",
+    "attr_loc_in(",
+    "raw_attr(",
+    "element_location(",
+    "elem_parse5_loc(",
 ];
 const PANICS: &[&str] = &[".unwrap()", ".expect(", ".unwrap_unchecked("];
 
@@ -31,7 +40,9 @@ fn violations(rel: &str, src: &str) -> Vec<String> {
             let expr = &rest[..rest.find([';', '}']).unwrap_or(rest.len())];
             if PANICS.iter().any(|p| expr.contains(p)) {
                 let hit = format!("{rel}:{}: {expr}", line_of[at]);
-                if !hits.contains(&hit) { hits.push(hit); }
+                if !hits.contains(&hit) {
+                    hits.push(hit);
+                }
             }
         }
     }
@@ -60,7 +71,11 @@ fn no_panicking_parse5_location_read_in_parser() {
     let parser = lwc_shared::cargo_manifest_dir!().join("src/parser");
     let files = tracked_files_filtered(&repo, &["crates/lwc-template/src/parser"], &["rs"]);
     let hits = parser_violations_files(&parser, &files);
-    assert!(hits.is_empty(), "parse5 location reads return `Located<T>`; propagate with `?` instead of panicking:\n{}", hits.join("\n"));
+    assert!(
+        hits.is_empty(),
+        "parse5 location reads return `Located<T>`; propagate with `?` instead of panicking:\n{}",
+        hits.join("\n")
+    );
 }
 
 /// The scan catches planted copies (one line, a chain split over lines, a nested file) and passes the
@@ -75,7 +90,10 @@ fn guard_catches_planted_violations() {
         "fn b(v: Option<u8>) -> u8 { v.unwrap() }\n",
         "fn c(l: &parse5::ElementLocation) -> bool { l.end_tag.is_none() }\n",
     )).unwrap();
-    assert_eq!(parser_violations_files(&root, &[root.join("ok.rs")]), Vec::<String>::new());
+    assert_eq!(
+        parser_violations_files(&root, &[root.join("ok.rs")]),
+        Vec::<String>::new()
+    );
     std::fs::write(root.join("bad.rs"), concat!(
         "fn a(n: &NodeRef) -> SourceLocation { loc(&n.borrow().source_code_location().unwrap().location) }\n",
         "fn b(l: &parse5::ElementLocation) -> SourceLocation {\n",
@@ -84,11 +102,31 @@ fn guard_catches_planted_violations() {
         "        .expect(\"located\"))\n",
         "}\n",
     )).unwrap();
-    std::fs::write(root.join("utils/deep.rs"), "fn c(n: &NodeRef, d: &Ctx) -> RawAttr { raw_attr(n, a, d).unwrap() }\n").unwrap();
-    let hits = parser_violations_files(&root, &[root.join("ok.rs"), root.join("bad.rs"), root.join("utils/deep.rs")]);
+    std::fs::write(
+        root.join("utils/deep.rs"),
+        "fn c(n: &NodeRef, d: &Ctx) -> RawAttr { raw_attr(n, a, d).unwrap() }\n",
+    )
+    .unwrap();
+    let hits = parser_violations_files(
+        &root,
+        &[
+            root.join("ok.rs"),
+            root.join("bad.rs"),
+            root.join("utils/deep.rs"),
+        ],
+    );
     std::fs::remove_dir_all(&root).unwrap();
     assert_eq!(hits.len(), 3, "{hits:#?}");
-    assert!(hits[0].starts_with("bad.rs:1: source_code_location().unwrap()"), "{hits:#?}");
-    assert!(hits[1].starts_with("bad.rs:3: start_tag.as_ref().expect("), "{hits:#?}");
-    assert!(hits[2].starts_with("utils/deep.rs:1: raw_attr(n,a,d).unwrap()"), "{hits:#?}");
+    assert!(
+        hits[0].starts_with("bad.rs:1: source_code_location().unwrap()"),
+        "{hits:#?}"
+    );
+    assert!(
+        hits[1].starts_with("bad.rs:3: start_tag.as_ref().expect("),
+        "{hits:#?}"
+    );
+    assert!(
+        hits[2].starts_with("utils/deep.rs:1: raw_attr(n,a,d).unwrap()"),
+        "{hits:#?}"
+    );
 }

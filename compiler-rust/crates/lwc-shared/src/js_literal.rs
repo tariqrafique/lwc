@@ -33,7 +33,10 @@ mod tests {
 
     #[test]
     fn escapes() {
-        assert_eq!(json_string("a\"b\\c\n\u{1}\u{7f}\u{2028}😀".encode_utf16()), "\"a\\\"b\\\\c\\n\\u0001\u{7f}\u{2028}😀\"");
+        assert_eq!(
+            json_string("a\"b\\c\n\u{1}\u{7f}\u{2028}😀".encode_utf16()),
+            "\"a\\\"b\\\\c\\n\\u0001\u{7f}\u{2028}😀\""
+        );
         assert_eq!(json_string([0xd800, 0x61, 0xdfff]), "\"\\ud800a\\udfff\"");
         assert_eq!(json_string([0xd83d, 0xde00]), "\"😀\"");
     }

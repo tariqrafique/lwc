@@ -34,7 +34,8 @@ tmp="$(mktemp -d /tmp/lwc-golden-gate.XXXXXX)"; trap 'rm -rf "$tmp"' EXIT
 prog="${GOLDEN_GATE_PROGRESS:-$tmp/progress}"
 mkdir -p "$tmp/harness"
 (cd "$h" && find . -type f ! -path '*/node_modules/*' ! -path './goldens/*' ! -path './.pins/*' ! -path './.vitest/*' \
-  ! -path './.csr-render-out/*' ! -path './.ssr-render-out/*' ! -path './.lbc-out/*' ! -name '*.node' -print0 | tar --null -T - -cf -) | tar -xf - -C "$tmp/harness"
+  ! -path './.csr-render-out/*' ! -path './.ssr-render-out/*' ! -path './.lbc-out/*' \
+  ! -path './.upstream-cmp-out/*' ! -name '*.node' -print0 | tar --null -T - -cf -) | tar -xf - -C "$tmp/harness"
 (cd "$h" && find goldens -type d -print0) | (cd "$tmp/harness" && xargs -0 mkdir -p)   # skeleton only: zero golden files
 [ -z "$(find "$tmp/harness/goldens" -type f -print -quit)" ] || { echo "!! GOLDEN GATE FAILED: scratch goldens/ not empty before recording"; exit 1; }
 ln -s "$(readlink -f "$h/node_modules")" "$tmp/harness/node_modules"

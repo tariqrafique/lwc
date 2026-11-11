@@ -72,7 +72,8 @@ portable_srchash() {
   (cd "$snap/repo" && find . -type f \
     ! -path './harness/node_modules/*' ! -path './harness/.pins/*' \
     ! -path './harness/.vitest/*' ! -path './harness/.csr-render-out/*' \
-    ! -path './harness/.ssr-render-out/*' ! -path './harness/.lbc-out/*' ! -path './target/*' \
+    ! -path './harness/.ssr-render-out/*' ! -path './harness/.lbc-out/*' \
+    ! -path './harness/.upstream-cmp-out/*' ! -path './target/*' \
     ! -name '*.node' ! -name 'napi.gen.d.ts' -print0 \
     | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')
 }

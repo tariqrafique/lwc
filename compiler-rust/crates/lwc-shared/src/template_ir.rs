@@ -16,13 +16,20 @@ pub struct ElementSourceLocation {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum LiteralValue { String(String), Bool(bool) }
+pub enum LiteralValue {
+    String(String),
+    Bool(bool),
+}
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Literal { pub value: LiteralValue }
+pub struct Literal {
+    pub value: LiteralValue,
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Identifier { pub name: String }
+pub struct Identifier {
+    pub name: String,
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct MemberExpression<'a> {
@@ -47,7 +54,9 @@ pub struct ComplexExpression<'a> {
 
 /// Structural equality of the expressions (oxc has `ContentEq`, not `PartialEq`).
 impl PartialEq for ComplexExpression<'_> {
-    fn eq(&self, o: &Self) -> bool { self.ast.content_eq(o.ast) }
+    fn eq(&self, o: &Self) -> bool {
+        self.ast.content_eq(o.ast)
+    }
 }
 
 /// A top-level ESTree `Literal` (`isLiteral` / `isStringLiteral` in shared/ast.ts).
@@ -81,17 +90,37 @@ pub enum Expression<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum AttributeValue<'a> { Literal(Literal), Expression(Expression<'a>) }
+pub enum AttributeValue<'a> {
+    Literal(Literal),
+    Expression(Expression<'a>),
+}
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Attribute<'a> { pub name: String, pub value: AttributeValue<'a>, pub location: SourceLocation }
+pub struct Attribute<'a> {
+    pub name: String,
+    pub value: AttributeValue<'a>,
+    pub location: SourceLocation,
+}
 #[derive(Debug, Clone, PartialEq)]
-pub struct Property<'a> { pub name: String, pub attribute_name: String, pub value: AttributeValue<'a>, pub location: SourceLocation }
+pub struct Property<'a> {
+    pub name: String,
+    pub attribute_name: String,
+    pub value: AttributeValue<'a>,
+    pub location: SourceLocation,
+}
 #[derive(Debug, Clone, PartialEq)]
-pub struct EventListener<'a> { pub name: String, pub handler: Expression<'a>, pub location: SourceLocation }
+pub struct EventListener<'a> {
+    pub name: String,
+    pub handler: Expression<'a>,
+    pub location: SourceLocation,
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
-pub enum RenderMode { #[default] Shadow, Light }
+pub enum RenderMode {
+    #[default]
+    Shadow,
+    Light,
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ElementDirective<'a> {
@@ -115,14 +144,25 @@ pub enum RootDirective {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum TextValue<'a> { Literal(String), Expression(Expression<'a>) }
+pub enum TextValue<'a> {
+    Literal(String),
+    Expression(Expression<'a>),
+}
 
 /// Static text uses `TextValue::Literal` (SSR relies on this).
 #[derive(Debug, Clone, PartialEq)]
-pub struct Text<'a> { pub value: TextValue<'a>, pub raw: String, pub location: SourceLocation }
+pub struct Text<'a> {
+    pub value: TextValue<'a>,
+    pub raw: String,
+    pub location: SourceLocation,
+}
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Comment { pub value: String, pub raw: String, pub location: SourceLocation }
+pub struct Comment {
+    pub value: String,
+    pub raw: String,
+    pub location: SourceLocation,
+}
 
 macro_rules! base_parent {
     ($($n:ident),*) => { $(
@@ -156,27 +196,81 @@ pub struct Slot<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct If<'a> { pub modifier: String, pub condition: Expression<'a>, pub children: Vec<ChildNode<'a>>, pub location: SourceLocation, pub directive_location: SourceLocation }
+pub struct If<'a> {
+    pub modifier: String,
+    pub condition: Expression<'a>,
+    pub children: Vec<ChildNode<'a>>,
+    pub location: SourceLocation,
+    pub directive_location: SourceLocation,
+}
 #[derive(Debug, Clone, PartialEq)]
-pub struct IfBlock<'a> { pub condition: Expression<'a>, pub children: Vec<ChildNode<'a>>, pub else_: Option<Box<ElseBranch<'a>>>, pub location: SourceLocation, pub directive_location: SourceLocation }
+pub struct IfBlock<'a> {
+    pub condition: Expression<'a>,
+    pub children: Vec<ChildNode<'a>>,
+    pub else_: Option<Box<ElseBranch<'a>>>,
+    pub location: SourceLocation,
+    pub directive_location: SourceLocation,
+}
 #[derive(Debug, Clone, PartialEq)]
-pub struct ElseifBlock<'a> { pub condition: Expression<'a>, pub children: Vec<ChildNode<'a>>, pub else_: Option<Box<ElseBranch<'a>>>, pub location: SourceLocation, pub directive_location: SourceLocation }
+pub struct ElseifBlock<'a> {
+    pub condition: Expression<'a>,
+    pub children: Vec<ChildNode<'a>>,
+    pub else_: Option<Box<ElseBranch<'a>>>,
+    pub location: SourceLocation,
+    pub directive_location: SourceLocation,
+}
 #[derive(Debug, Clone, PartialEq)]
-pub struct ElseBlock<'a> { pub children: Vec<ChildNode<'a>>, pub location: SourceLocation, pub directive_location: SourceLocation }
+pub struct ElseBlock<'a> {
+    pub children: Vec<ChildNode<'a>>,
+    pub location: SourceLocation,
+    pub directive_location: SourceLocation,
+}
 #[derive(Debug, Clone, PartialEq)]
-pub enum ElseBranch<'a> { Elseif(ElseifBlock<'a>), Else(ElseBlock<'a>) }
+pub enum ElseBranch<'a> {
+    Elseif(ElseifBlock<'a>),
+    Else(ElseBlock<'a>),
+}
 #[derive(Debug, Clone, PartialEq)]
-pub struct ForEach<'a> { pub expression: Expression<'a>, pub item: Identifier, pub index: Option<Identifier>, pub children: Vec<ChildNode<'a>>, pub location: SourceLocation, pub directive_location: SourceLocation }
+pub struct ForEach<'a> {
+    pub expression: Expression<'a>,
+    pub item: Identifier,
+    pub index: Option<Identifier>,
+    pub children: Vec<ChildNode<'a>>,
+    pub location: SourceLocation,
+    pub directive_location: SourceLocation,
+}
 #[derive(Debug, Clone, PartialEq)]
-pub struct ForOf<'a> { pub expression: Expression<'a>, pub iterator: Identifier, pub children: Vec<ChildNode<'a>>, pub location: SourceLocation, pub directive_location: SourceLocation }
+pub struct ForOf<'a> {
+    pub expression: Expression<'a>,
+    pub iterator: Identifier,
+    pub children: Vec<ChildNode<'a>>,
+    pub location: SourceLocation,
+    pub directive_location: SourceLocation,
+}
 #[derive(Debug, Clone, PartialEq)]
-pub struct ScopedSlotFragment<'a> { pub slot_data: Expression<'a>, pub slot_name: AttributeValue<'a>, pub children: Vec<ChildNode<'a>>, pub location: SourceLocation, pub directive_location: SourceLocation }
+pub struct ScopedSlotFragment<'a> {
+    pub slot_data: Expression<'a>,
+    pub slot_name: AttributeValue<'a>,
+    pub children: Vec<ChildNode<'a>>,
+    pub location: SourceLocation,
+    pub directive_location: SourceLocation,
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ChildNode<'a> {
-    Element(Element<'a>), Component(Component<'a>), ExternalComponent(ExternalComponent<'a>), Slot(Slot<'a>),
-    LwcComponent(LwcComponent<'a>), Text(Text<'a>), Comment(Comment), ForEach(ForEach<'a>), ForOf(ForOf<'a>),
-    If(If<'a>), IfBlock(IfBlock<'a>), ElseifBlock(ElseifBlock<'a>), ElseBlock(ElseBlock<'a>),
+    Element(Element<'a>),
+    Component(Component<'a>),
+    ExternalComponent(ExternalComponent<'a>),
+    Slot(Slot<'a>),
+    LwcComponent(LwcComponent<'a>),
+    Text(Text<'a>),
+    Comment(Comment),
+    ForEach(ForEach<'a>),
+    ForOf(ForOf<'a>),
+    If(If<'a>),
+    IfBlock(IfBlock<'a>),
+    ElseifBlock(ElseifBlock<'a>),
+    ElseBlock(ElseBlock<'a>),
     ScopedSlotFragment(ScopedSlotFragment<'a>),
 }
 
@@ -188,13 +282,18 @@ pub struct Root<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum Node<'a> { Root(Root<'a>), Child(ChildNode<'a>) }
+pub enum Node<'a> {
+    Root(Root<'a>),
+    Child(ChildNode<'a>),
+}
 
 /// AB-D0004 condition (6): the IR is `!Sync` (the borrowed oxc AST has `Cell`s), so it cannot cross a
 /// thread; the arena and the IR both live inside one compile call. Compile-time check: if `T: Sync`,
 /// both impls apply and the `_` below is ambiguous.
 #[allow(dead_code)]
-trait AmbiguousIfSync<A> { fn check() {} }
+trait AmbiguousIfSync<A> {
+    fn check() {}
+}
 impl<T: ?Sized> AmbiguousIfSync<()> for T {}
 impl<T: ?Sized + Sync> AmbiguousIfSync<u8> for T {}
 const _: fn() = || {
@@ -207,9 +306,30 @@ mod tests {
     use super::*;
     #[test]
     fn static_text_literal() {
-        let at = SourceLocation { start_line: 1, start_column: 0, end_line: 1, end_column: 1, start: 0, end: 1 };
-        let location = ElementSourceLocation { location: at, start_tag: at, end_tag: None };
-        let r = Root { location, directives: Vec::new(), children: vec![ChildNode::Text(Text { value: TextValue::Literal("a".into()), raw: "a".into(), location: at })] };
-        assert!(matches!(&r.children[0], ChildNode::Text(Text { value: TextValue::Literal(s), .. }) if s == "a"));
+        let at = SourceLocation {
+            start_line: 1,
+            start_column: 0,
+            end_line: 1,
+            end_column: 1,
+            start: 0,
+            end: 1,
+        };
+        let location = ElementSourceLocation {
+            location: at,
+            start_tag: at,
+            end_tag: None,
+        };
+        let r = Root {
+            location,
+            directives: Vec::new(),
+            children: vec![ChildNode::Text(Text {
+                value: TextValue::Literal("a".into()),
+                raw: "a".into(),
+                location: at,
+            })],
+        };
+        assert!(
+            matches!(&r.children[0], ChildNode::Text(Text { value: TextValue::Literal(s), .. }) if s == "a")
+        );
     }
 }

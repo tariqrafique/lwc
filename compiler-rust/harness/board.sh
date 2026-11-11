@@ -10,6 +10,10 @@
 #         (3) shim gate: untagged shim/compat/workaround/hack/mask/rescan line in crates/ (scripts/shim-gate.mjs, allowlist shim-allowlist.tsv w/ reason) OR untracked/stale tagged-shim vs shim-registry.tsv => exit 1.
 #         (2) option-inventory gate (scripts/option-gate.mjs via option_gate in board-rows.sh) -> any unmapped/pending field => exit 1.
 #         (2b) coverage gate (scripts/coverage-gate.mjs) immediately after option-gate. Report-only unless COVGATE_STRICT=1.
+#             Gating coverage rows (not in DIAG): template-diag-semdiff (H-1 codegen pairs),
+#             template-diag-ssr (SSR fixture exec pairs), template-diag-style (uncapped style-corpus),
+#             template-diag-realgate (template fixtures + real html, diag and codegen must be clean),
+#             template-diag-napierrors (napi single-error fixture, including both css cases).
 #         (4) golden-I/O guard (scripts/golden-io-guard.sh): golden writes / UPDATE_GOLDENS outside src/optionRows.ts => exit 1.
 # template-diag row (diagnostic): template-diag-diff corpus (scripts/template-diag-diff.mjs). Mismatches never gate
 #   (clean/mismatch are not recorded in the baseline: only crash and oracle-error, D-0219). crash/panic > 0 or a
@@ -164,6 +168,215 @@ template_diag_row() {
   else why="${why:-summary line unparseable (crash/oracle-error)}"; fi
   [ -z "$why" ] || rowfail+=("$row: $why (see $out)")
 }
+# Coverage rows record a template-diag-shaped observation (crash oracle-error). A passing
+# row writes 0 0. The compare itself fails the board via sdrow or rowfail; these counts
+# are not a second verdict (D-0219: clean/mismatch stay off the baseline).
+_cov_record() {
+  local row="$1" f
+  f="$(mktemp /tmp/board-covobs.XXXXXX)"
+  printf '%s\tcounts\t0 0\n' "$row" > "$f"
+  record_derived_obs "$row" "$f"
+  rm -f "$f"
+  measured_counts["$row"]="0 0"
+}
+# H-1 semantic-diff, promoted to a gating row. Same check as the old footer:
+# semdiff --gate strict on this run's template-diag codegen-only pairs.
+coverage_semdiff_row() {
+  local row=template-diag-semdiff
+  local _tdir="${TEMPLATE_DIAG_OUT_DIR:-$logdir}"
+  local _tdjson="$_tdir/template-diag-crate.json"
+  local _tdman="$_tdir/h1-pairs/manifest.json"
+  local _tdout="$_tdir/semantic-diff.json"
+  local _exp="" _sdrc=0 _sdline=""
+  if [ -z "${SEMDIFF_BIN:-}" ] || [ ! -x "${SEMDIFF_BIN:-}" ]; then
+    echo "!! BOARD FAILED: semantic-diff: semdiff binary missing"; sdrow=1
+    echo "template-diag-semdiff  FAIL semdiff binary missing"
+    return 0
+  fi
+  if [ ! -s "$_tdjson" ]; then
+    echo "!! BOARD FAILED: semantic-diff: producer report missing ($_tdjson)"; sdrow=1
+    echo "template-diag-semdiff  FAIL producer report missing"
+    return 0
+  fi
+  if ! _exp="$(node -e '
+const fs=require("fs");
+const r=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
+if (r.schema!=="template-diag-diff/v2" || typeof r.totals?.codegenOnly!=="number") process.exit(2);
+process.stdout.write(String(r.totals.codegenOnly));
+' "$_tdjson")"; then
+    echo "!! BOARD FAILED: semantic-diff: cannot read totals.codegenOnly from $_tdjson"; sdrow=1
+    echo "template-diag-semdiff  FAIL codegenOnly unreadable"
+    return 0
+  fi
+  _sdline="$("$here/scripts/semantic-diff-row.sh" \
+    --manifest "$_tdman" \
+    --registry "$SEMDIFF_REGISTRY" \
+    --expect-corpus template-diag-codegen-only \
+    --expect-cases "$_exp" \
+    --semdiff "$SEMDIFF_BIN" \
+    --out "$_tdout")" || _sdrc=$?
+  printf '%s\n' "$_sdline"
+  printf 'template-diag-semdiff  %s\n' "${_sdline#semantic-diff  }"
+  if [ "$_sdrc" -ne 0 ]; then
+    echo "!! BOARD FAILED: semantic-diff row (rc=$_sdrc)"; sdrow=1
+    return 0
+  fi
+  _cov_record "$row"
+  return 0
+}
+# SD-2b SSR pairs. Same emitter, semdiff --exec, and line gate as the old footer.
+coverage_ssr_row() {
+  local row=template-diag-ssr
+  local _ssrdir="$logdir/ssr-pairs"
+  local _ssrout="$logdir/semantic-diff-ssr.json"
+  local _ssrlog="$logdir/board-semantic-diff-ssr-$hash.out"
+  local _ssrrc=0 _sdrc=0 _linerc=0 _ssrline="" _sdroot _sdtgt
+  : > "$_ssrlog"
+  if [ -z "${SEMDIFF_BIN:-}" ] || [ ! -x "${SEMDIFF_BIN:-}" ]; then
+    _sdroot="$(cd "$here/.." && pwd)"
+    _sdtgt="${CARGO_TARGET_DIR:-$_sdroot/target}"
+    if ! (cd "$_sdroot" && cargo_locked build --release -q -p semdiff --target-dir "$_sdtgt") >>"$_ssrlog" 2>&1; then
+      echo "!! BOARD FAILED: semantic-diff-ssr: semdiff build failed"
+      _ssrrc=1
+    else
+      SEMDIFF_BIN="$_sdtgt/release/semdiff"
+    fi
+  fi
+  if [ "$_ssrrc" -eq 0 ]; then
+    if ! node --experimental-transform-types --import "$here/scripts/ts-register.mjs" "$here/scripts/ssr-emit-pairs.ts" --out "$_ssrdir" --expect-fixtures 387 >>"$_ssrlog" 2>&1; then
+      echo "!! BOARD FAILED: semantic-diff-ssr: emitter failed (completeness exits 2 when a fixture is dropped)"
+      _ssrrc=2
+    fi
+  fi
+  if [ "$_ssrrc" -eq 0 ]; then
+    "$SEMDIFF_BIN" run --manifest "$_ssrdir/manifest.json" --out "$_ssrout" --registry "$SEMDIFF_REGISTRY" --gate none --exec >>"$_ssrlog" 2>&1 || _sdrc=$?
+    if [ "$_sdrc" -ne 0 ] && [ ! -s "$_ssrout" ]; then
+      echo "!! BOARD FAILED: semantic-diff-ssr: semdiff rc=$_sdrc and no summary"
+      _ssrrc=2
+    fi
+  fi
+  if [ "$_ssrrc" -eq 0 ]; then
+    _ssrline="$(node "$here/scripts/semantic-diff-ssr-line.mjs" --summary "$_ssrout" --meta "$_ssrdir/meta.jsonl" --exclusions "$_ssrdir/exclusions.json" 2>>"$_ssrlog")" || _linerc=$?
+    printf '%s\n' "$_ssrline"
+    printf 'template-diag-ssr  %s\n' "${_ssrline#semantic-diff-ssr  }"
+    if [ "$_linerc" -ne 0 ]; then
+      echo "!! BOARD FAILED: semantic-diff-ssr line (rc=$_linerc)"
+      _ssrrc=1
+    fi
+  else
+    echo "template-diag-ssr  FAIL rc=$_ssrrc"
+  fi
+  if [ "$_ssrrc" -ne 0 ]; then
+    rowfail+=("semantic-diff-ssr rc=$_ssrrc (see $_ssrlog)")
+    return 0
+  fi
+  _cov_record "$row"
+  return 0
+}
+# Uncapped style-diff (scripts/style-corpus.sh). Byte-compares emitted stylesheet
+# modules on both compilers. fail=0 is required; a cap or an allowlisted miss fails.
+coverage_style_row() {
+  local row=template-diag-style
+  local out="$logdir/board-$row-$hash.out"
+  local line="" rc=0
+  line="$("$here/../scripts/style-corpus.sh" "$repo" "$out")" || rc=$?
+  if [ "$rc" -ne 0 ]; then
+    echo "template-diag-style  FAIL rc=$rc"
+    rowfail+=("template-diag-style rc=$rc (see $out)")
+    return 0
+  fi
+  printf 'template-diag-style  %s\n' "$line"
+  _cov_record "$row"
+  return 0
+}
+# Template fixtures + real-world html (no mutations). Fails unless every case is
+# diagnostically exact and codegen-clean (STATIC_EQUAL or REWRITE_EQUAL). Mutations
+# stay out: their 108 diagnostic mismatches are item 12, not a pass.
+coverage_realgate_row() {
+  local row=template-diag-realgate
+  local out="$logdir/board-$row-$hash.out"
+  local json="$logdir/template-diag-realgate.json"
+  local why="" sdroot sdtgt manifest tgt line="" rc=0
+  : > "$out"
+  sdroot="$(cd "$here/.." && pwd)"
+  sdtgt="${CARGO_TARGET_DIR:-$sdroot/target}"
+  if [ -z "${SEMDIFF_BIN:-}" ] || [ ! -x "${SEMDIFF_BIN:-}" ]; then
+    if ! (cd "$sdroot" && cargo_locked build --release -q -p semdiff --target-dir "$sdtgt") >>"$out" 2>&1; then
+      why="semdiff build failed"
+    else
+      SEMDIFF_BIN="$sdtgt/release/semdiff"
+    fi
+  fi
+  manifest="$repo/tools/template-diag-diff/driver/Cargo.toml"
+  tgt="${TDD_DRIVER_TARGET:-${CARGO_TARGET_DIR:-$repo/target}/template-diag-driver}"
+  if [ -z "$why" ]; then
+    if [ ! -f "$manifest" ]; then why="driver manifest missing: $manifest"
+    elif ! cargo_locked build --release -q --manifest-path "$manifest" --target-dir "$tgt" >>"$out" 2>&1; then
+      why="driver build failed"
+    fi
+  fi
+  if [ -z "$why" ]; then
+    if ! env -u TDD_EMIT_PAIRS -u TDD_SEMDIFF_EXEC \
+      TDD_ENGINE=crate TDD_OUT="$json" TDD_SOURCES=fixtures,real \
+      TDD_SEMDIFF="$SEMDIFF_BIN" TDD_SEMDIFF_REGISTRY="$SEMDIFF_REGISTRY" \
+      TDD_DRIVER="$tgt/release/template-diag-driver" \
+      node "$here/scripts/template-diag-diff.mjs" >>"$out" 2>&1; then
+      why="template-diag-diff.mjs exit $?"
+    fi
+  fi
+  if [ -z "$why" ]; then
+    line="$(node -e '
+const fs = require("fs");
+const r = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+if (r.schema !== "template-diag-diff/v2") { console.error("schema " + r.schema); process.exit(2); }
+const t = r.totals || {};
+const b = r.buckets || {};
+const bad = [];
+for (const k of ["diagMismatch", "codegenUnclean", "oracleError"]) {
+  if (t[k] !== 0) bad.push(k + "=" + t[k]);
+}
+if (b.crash !== 0) bad.push("crash=" + b.crash);
+if (typeof t.cases !== "number" || t.cases < 5000) bad.push("cases=" + t.cases);
+const ps = r.perSource || {};
+for (const [name, s] of Object.entries(ps)) {
+  if (s.diagMismatch !== 0) bad.push(name + " diagMismatch=" + s.diagMismatch);
+  if (s.codegenEquivalent !== s.codegenOnly) bad.push(name + " codegen " + s.codegenEquivalent + "/" + s.codegenOnly);
+}
+if (bad.length) { console.error(bad.join(" ")); process.exit(1); }
+process.stdout.write("cases=" + t.cases + " diagMismatch=0 codegenUnclean=0 crash=0 oracleError=0");
+' "$json")" || rc=$?
+    if [ "$rc" -ne 0 ]; then why="fixtures+real are not diag-and-codegen clean (rc=$rc)"; fi
+  fi
+  if [ -n "$why" ]; then
+    echo "template-diag-realgate  FAIL $why"
+    rowfail+=("template-diag-realgate: $why (see $out)")
+    return 0
+  fi
+  printf 'template-diag-realgate  %s\n' "$line"
+  _cov_record "$row"
+  return 0
+}
+# Both CSS cases in the napi single-error fixture, plus the rest of that fixture,
+# compared to the shipped JS observations by the crate test.
+coverage_napierrors_row() {
+  local row=template-diag-napierrors
+  local out="$logdir/board-$row-$hash.out"
+  local line="" rc=0
+  line="$("$here/../scripts/napi-css-errors.sh" "$repo" "$out")" || rc=$?
+  if [ "$rc" -ne 0 ]; then
+    echo "template-diag-napierrors  FAIL rc=$rc"
+    rowfail+=("template-diag-napierrors rc=$rc (see $out)")
+    return 0
+  fi
+  if [ "$line" != "5/5" ]; then
+    echo "template-diag-napierrors  FAIL line=$line"
+    rowfail+=("template-diag-napierrors: want 5/5, got $line")
+    return 0
+  fi
+  printf 'template-diag-napierrors  %s\n' "$line"
+  _cov_record "$row"
+  return 0
+}
 # Parse a vitest 'Tests  F failed | P passed | S skipped (T)' line -> "P F S"; rc 1 on anything unexpected.
 parse_tests() {
   local s="$1" p= f= k= tok toks
@@ -283,10 +496,18 @@ judge_row() {
 }
 declare -A measured_counts=() obs_written=() obs_sha=() cap_out_for=()
 SEMDIFF_BIN="${SEMDIFF_BIN:-}"
+sdrow=0
 if [ ${#suites[@]} -eq 0 ] && [ "${BOARD_SUITES_EXPLICIT:-}" != 1 ]; then suites=("${ROWS[@]}"); fi
 echo "napi sha256:$hash  pinned=$pinned  oracle=$head_sha(clean)  oracle_repo=$ORACLE  $(date -Iseconds)"   # official-board.sh parses oracle=/oracle_repo= (verified values)
 for s in "${suites[@]}"; do
-  case "$s" in template-diag|template-diag-*) template_diag_row "$s" "$( [ "$s" = template-diag ] && echo crate || echo "${s#template-diag-}")"; continue;; esac
+  case "$s" in
+    template-diag-semdiff) coverage_semdiff_row; continue;;
+    template-diag-ssr) coverage_ssr_row; continue;;
+    template-diag-style) coverage_style_row; continue;;
+    template-diag-realgate) coverage_realgate_row; continue;;
+    template-diag-napierrors) coverage_napierrors_row; continue;;
+    template-diag|template-diag-*) template_diag_row "$s" "$( [ "$s" = template-diag ] && echo crate || echo "${s#template-diag-}")"; continue;;
+  esac
   out="$logdir/board-$s-$hash.out"
   test="test/$s.behavior.test.ts"; mode=sync; extra=(); row_timeout=5000
   unset LBC_SUMMARY
@@ -300,6 +521,8 @@ for s in "${suites[@]}"; do
     ssr-render-*) test=test/ssr.render.test.ts; mode="${s#ssr-render-}";;
     ssr-*) test=test/ssr.behavior.test.ts; mode="${s#ssr-}";;
     lbc) row_timeout=20000; LBC_SUMMARY="$logdir/lbc-summary.txt"; export LBC_SUMMARY; rm -f "$LBC_SUMMARY";;
+    upstream-cmp) row_timeout=20000; UPSTREAM_CMP_SUMMARY="$logdir/upstream-cmp-summary.txt"; export UPSTREAM_CMP_SUMMARY; rm -f "$UPSTREAM_CMP_SUMMARY";;
+    js-transform-corpus) row_timeout=20000;;
   esac
   json="$logdir/board-$s-$hash.json"; rm -f "$json"; pat=""; [ ${#extra[@]} -eq 0 ] || pat="${extra[1]}"   # extra is (-t <pattern>) or empty
   vrc=0; SSR_MODE="$mode" run_isolated_vitest "$out" "$json" "$test" "${extra[@]}" || vrc=$?
@@ -316,6 +539,13 @@ for s in "${suites[@]}"; do
       rowfail+=("lbc: missing exclusion summary (${LBC_SUMMARY:-unset})")
     else
       cat -- "$LBC_SUMMARY"
+    fi
+  fi
+  if [ "$s" = upstream-cmp ]; then
+    if [ ! -s "${UPSTREAM_CMP_SUMMARY:-}" ]; then
+      rowfail+=("upstream-cmp: missing exclusion summary (${UPSTREAM_CMP_SUMMARY:-unset})")
+    else
+      cat -- "$UPSTREAM_CMP_SUMMARY"
     fi
   fi
   # D-0242: scope-token async passes (0 skipped) and is printed here. The file bytes are
@@ -347,87 +577,8 @@ for s in "${suites[@]}"; do
   fi
   judge_row "$s" "$vrc" "$lines" "$err" "$cap_out" "${cap_json:-}" "$pat"
 done
-# PLAN §3 item 4 / Arch 03112c1: semantic-diff row on this run's crate H-1 pairs.
-# --gate strict, no baseline. Registry is SEMDIFF_REGISTRY (notes on the box;
-# official-board's NOTES_COMMIT archive; portable snapshot only when notes are absent).
-sdrow=0
-_td_ran=0
-for _s in "${suites[@]}"; do [ "$_s" = template-diag ] && _td_ran=1; done
-if [ "$_td_ran" -eq 1 ]; then
-  _tdir="${TEMPLATE_DIAG_OUT_DIR:-$logdir}"
-  _tdjson="$_tdir/template-diag-crate.json"
-  _tdman="$_tdir/h1-pairs/manifest.json"
-  _tdout="$_tdir/semantic-diff.json"
-  if [ -z "${SEMDIFF_BIN:-}" ] || [ ! -x "${SEMDIFF_BIN:-}" ]; then
-    echo "!! BOARD FAILED: semantic-diff: semdiff binary missing"; sdrow=1
-  elif [ ! -s "$_tdjson" ]; then
-    echo "!! BOARD FAILED: semantic-diff: producer report missing ($_tdjson)"; sdrow=1
-  else
-    _exp=""
-    if ! _exp="$(node -e '
-const fs=require("fs");
-const r=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
-if (r.schema!=="template-diag-diff/v2" || typeof r.totals?.codegenOnly!=="number") process.exit(2);
-process.stdout.write(String(r.totals.codegenOnly));
-' "$_tdjson")"; then
-      echo "!! BOARD FAILED: semantic-diff: cannot read totals.codegenOnly from $_tdjson"; sdrow=1
-    else
-      _sdrc=0
-      _sdline="$("$here/scripts/semantic-diff-row.sh"         --manifest "$_tdman"         --registry "$SEMDIFF_REGISTRY"         --expect-corpus template-diag-codegen-only         --expect-cases "$_exp"         --semdiff "$SEMDIFF_BIN"         --out "$_tdout")" || _sdrc=$?
-      printf '%s
-' "$_sdline"
-      if [ "$_sdrc" -ne 0 ]; then
-        echo "!! BOARD FAILED: semantic-diff row (rc=$_sdrc)"; sdrow=1
-      fi
-    fi
-  fi
-fi
-# SD-2b: SSR pairs from the harness bundleFixture emitter, then semdiff --exec (engine=ssr-runtime).
-# Distinct from the H-1 semantic-diff row above: other corpus, no --gate strict. A full board only.
-if [ ${#suites[@]} -eq ${#ROWS[@]} ]; then
-  _ssrdir="$logdir/ssr-pairs"
-  _ssrout="$logdir/semantic-diff-ssr.json"
-  _ssrlog="$logdir/board-semantic-diff-ssr-$hash.out"
-  : > "$_ssrlog"
-  _ssrrc=0
-  if [ -z "${SEMDIFF_BIN:-}" ] || [ ! -x "${SEMDIFF_BIN:-}" ]; then
-    _sdroot="$(cd "$here/.." && pwd)"
-    _sdtgt="${CARGO_TARGET_DIR:-$_sdroot/target}"
-    if ! (cd "$_sdroot" && cargo_locked build --release -q -p semdiff --target-dir "$_sdtgt") >>"$_ssrlog" 2>&1; then
-      echo "!! BOARD FAILED: semantic-diff-ssr: semdiff build failed"
-      _ssrrc=1
-    else
-      SEMDIFF_BIN="$_sdtgt/release/semdiff"
-    fi
-  fi
-  if [ "$_ssrrc" -eq 0 ]; then
-    if ! node --experimental-transform-types --import "$here/scripts/ts-register.mjs" "$here/scripts/ssr-emit-pairs.ts" --out "$_ssrdir" --expect-fixtures 387 >>"$_ssrlog" 2>&1; then
-      echo "!! BOARD FAILED: semantic-diff-ssr: emitter failed (completeness exits 2 when a fixture is dropped)"
-      _ssrrc=2
-    fi
-  fi
-  if [ "$_ssrrc" -eq 0 ]; then
-    _sdrc=0
-    "$SEMDIFF_BIN" run --manifest "$_ssrdir/manifest.json" --out "$_ssrout" --registry "$SEMDIFF_REGISTRY" --gate none --exec >>"$_ssrlog" 2>&1 || _sdrc=$?
-    if [ "$_sdrc" -ne 0 ] && [ ! -s "$_ssrout" ]; then
-      echo "!! BOARD FAILED: semantic-diff-ssr: semdiff rc=$_sdrc and no summary"
-      _ssrrc=2
-    fi
-  fi
-  if [ "$_ssrrc" -eq 0 ]; then
-    _ssrline=""
-    _linerc=0
-    _ssrline="$(node "$here/scripts/semantic-diff-ssr-line.mjs" --summary "$_ssrout" --meta "$_ssrdir/meta.jsonl" --exclusions "$_ssrdir/exclusions.json" 2>>"$_ssrlog")" || _linerc=$?
-    printf '%s\n' "$_ssrline"
-    if [ "$_linerc" -ne 0 ]; then
-      echo "!! BOARD FAILED: semantic-diff-ssr line (rc=$_linerc)"
-      _ssrrc=1
-    fi
-  fi
-  if [ "$_ssrrc" -ne 0 ]; then
-    rowfail+=("semantic-diff-ssr rc=$_ssrrc (see $_ssrlog)")
-  fi
-fi
+# semantic-diff and semantic-diff-ssr now run as template-diag-semdiff and
+# template-diag-ssr inside the row loop. They still print the footer lines.
 shimgate=0; SHIM_REPO_ROOT="$repo" SHIM_OWNERS="$here/../OWNERS" SHIM_REGISTRY="${SHIM_REGISTRY:-$testdir/shim-registry.tsv}" SHIM_ALLOWLIST="${SHIM_ALLOWLIST:-$testdir/shim-allowlist.tsv}" node "$here/scripts/shim-gate.mjs" || shimgate=1
 gate=0; option_gate || gate=1
 # Coverage gate (v2 spec): report-only unless COVGATE_STRICT=1. Same ROWS the option gate saw.

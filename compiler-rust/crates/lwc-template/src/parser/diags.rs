@@ -10,7 +10,13 @@ use lwc_shared::CompilerDiagnostic;
 pub(crate) struct Diags(Vec<CompilerDiagnostic>);
 
 impl Diags {
-    pub(super) fn new(seed: Vec<CompilerDiagnostic>) -> Self { Diags(seed) }
-    pub(super) fn push(&mut self, d: CompilerDiagnostic) { self.0.push(d); }
-    pub(super) fn into_vec(self) -> Vec<CompilerDiagnostic> { self.0 }
+    pub(super) fn new(seed: Vec<CompilerDiagnostic>) -> Self {
+        Diags(seed)
+    }
+    pub(super) fn push(&mut self, d: CompilerDiagnostic) {
+        self.0.push(d);
+    }
+    pub(super) fn into_vec(self) -> Vec<CompilerDiagnostic> {
+        self.0
+    }
 }

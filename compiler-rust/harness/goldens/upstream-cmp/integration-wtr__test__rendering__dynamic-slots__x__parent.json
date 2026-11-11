@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'a')"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child><template shadowrootmode=\"open\"></template><p>Default slot</p><p slot=\"named1\">Named 1</p><p slot=\"named-with-default-content\">Overridden default content</p><p slot=\"true\">Boolean slot</p><p slot=\"false\">Boolean false slot</p><p slot=\"1\">Number slot</p><p slot=\"0\">Number</p><p slot=\"[object Object]\">Object</p><p slot=\"function() {}\">Function</p></x-child></template></lwc-up>"
+ }
+}

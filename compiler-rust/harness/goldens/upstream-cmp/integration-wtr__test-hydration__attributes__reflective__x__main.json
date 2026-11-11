@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child accesskey=\"tata\" aria-label=\"titi\" dir=\"auto\" draggable=\"false\" id=\"tutu\" lang=\"jp\" role=\"scrollbar\" spellcheck=\"false\" tabindex=\"0\" title=\"tete\"><template shadowrootmode=\"open\"></template></x-child><x-child accesskey=\"tata\" aria-label=\"titi\" dir=\"auto\" draggable=\"true\" hidden id=\"tutu\" lang=\"jp\" role=\"scrollbar\" spellcheck=\"false\" tabindex=\"0\" title=\"tete\"><template shadowrootmode=\"open\"></template></x-child></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child accesskey=\"tata\" aria-label=\"titi\" dir=\"auto\" draggable=\"false\" id=\"tutu\" lang=\"jp\" role=\"scrollbar\" tabindex=\"0\" title=\"tete\"><template shadowrootmode=\"open\"></template></x-child><x-child accesskey=\"tata\" aria-label=\"titi\" dir=\"auto\" draggable=\"true\" hidden=\"\" id=\"tutu\" lang=\"jp\" role=\"scrollbar\" tabindex=\"0\" title=\"tete\"><template shadowrootmode=\"open\"></template></x-child></template></lwc-up>"
+ }
+}

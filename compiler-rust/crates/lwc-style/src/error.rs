@@ -5,12 +5,20 @@
 /// on a whitespace token, which carries no offset (`a{: ;}`).
 #[derive(Debug, Clone, PartialEq)]
 pub enum StyleError {
-    Syntax { name: String, reason: String, line: Option<u32>, column: Option<u32> },
+    Syntax {
+        name: String,
+        reason: String,
+        line: Option<u32>,
+        column: Option<u32>,
+    },
     Aggregate(Vec<StyleError>),
 }
 impl StyleError {
     pub fn reason(&self) -> &str {
-        match self { StyleError::Syntax { reason, .. } => reason, StyleError::Aggregate(_) => "" }
+        match self {
+            StyleError::Syntax { reason, .. } => reason,
+            StyleError::Aggregate(_) => "",
+        }
     }
     pub fn syntax(reason: impl Into<String>, line: u32, column: u32) -> Self {
         Self::syntax_at(reason, Some((line, column)))
@@ -18,11 +26,21 @@ impl StyleError {
     /// A plain JS `throw new Error(message)` from the LWC pipeline outside PostCSS (e.g. serialize.ts
     /// `Unexpected host rules ordering`): `name: "Error"`, no position, message not file-prefixed.
     pub fn error(message: impl Into<String>) -> Self {
-        StyleError::Syntax { name: "Error".into(), reason: message.into(), line: None, column: None }
+        StyleError::Syntax {
+            name: "Error".into(),
+            reason: message.into(),
+            line: None,
+            column: None,
+        }
     }
     /// `pos = None`: PostCSS raised the error without a position.
     pub fn syntax_at(reason: impl Into<String>, pos: Option<(u32, u32)>) -> Self {
-        StyleError::Syntax { name: "CssSyntaxError".into(), reason: reason.into(), line: pos.map(|p| p.0), column: pos.map(|p| p.1) }
+        StyleError::Syntax {
+            name: "CssSyntaxError".into(),
+            reason: reason.into(),
+            line: pos.map(|p| p.0),
+            column: pos.map(|p| p.1),
+        }
     }
     /// PostCSS `CssSyntaxError#setMessage` (no plugin prefix in LWC's pipeline):
     /// `{file}:{line}:{column}: {reason}`, or `{file}: {reason}` without a position.
@@ -30,7 +48,12 @@ impl StyleError {
     pub fn postcss_message(&self, file: &str) -> String {
         match self {
             StyleError::Syntax { name, reason, .. } if name != "CssSyntaxError" => reason.clone(),
-            StyleError::Syntax { reason, line: Some(l), column, .. } => {
+            StyleError::Syntax {
+                reason,
+                line: Some(l),
+                column,
+                ..
+            } => {
                 let c = column.map_or("undefined".to_string(), |c| c.to_string());
                 format!("{file}:{l}:{c}: {reason}")
             }
@@ -40,6 +63,8 @@ impl StyleError {
     }
 }
 impl std::fmt::Display for StyleError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { write!(f, "{self:?}") }
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{self:?}")
+    }
 }
 impl std::error::Error for StyleError {}

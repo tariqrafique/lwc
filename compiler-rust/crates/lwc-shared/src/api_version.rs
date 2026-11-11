@@ -44,11 +44,19 @@ pub enum ApiFeature {
 /// `getAPIVersionFromNumber`: unspecified -> highest; known -> itself; below lowest -> lowest;
 /// otherwise the highest known version lower than the request; above highest -> highest.
 pub fn get_api_version_from_number(version: Option<u32>) -> u32 {
-    let Some(version) = version else { return HIGHEST_API_VERSION };
-    if ALL_VERSIONS.contains(&version) { return version; }
-    if version < LOWEST_API_VERSION { return LOWEST_API_VERSION; }
+    let Some(version) = version else {
+        return HIGHEST_API_VERSION;
+    };
+    if ALL_VERSIONS.contains(&version) {
+        return version;
+    }
+    if version < LOWEST_API_VERSION {
+        return LOWEST_API_VERSION;
+    }
     for i in 1..ALL_VERSIONS.len() {
-        if ALL_VERSIONS[i] > version { return ALL_VERSIONS[i - 1]; }
+        if ALL_VERSIONS[i] > version {
+            return ALL_VERSIONS[i - 1];
+        }
     }
     HIGHEST_API_VERSION
 }
@@ -58,10 +66,14 @@ pub fn min_api_version(feature: ApiFeature) -> u32 {
     use ApiFeature::*;
     (match feature {
         LowercaseScopeTokens | TreatAllParse5ErrorsAsErrors => ApiVersion::V59_246_WINTER_24,
-        DisableObjectRestSpreadTransformation | SkipUnnecessaryRegisterDecorators | UseCommentsForFragmentBookends
+        DisableObjectRestSpreadTransformation
+        | SkipUnnecessaryRegisterDecorators
+        | UseCommentsForFragmentBookends
         | UseFragmentsForLightDomSlots => ApiVersion::V60_248_SPRING_24,
         EnableElementInternalsAndFace | UseLightDomSlotForwarding => ApiVersion::V61_250_SUMMER_24,
-        EnableThisDotHostElement | EnableThisDotStyle | TemplateClassNameObjectBinding => ApiVersion::V62_252_WINTER_25,
+        EnableThisDotHostElement | EnableThisDotStyle | TemplateClassNameObjectBinding => {
+            ApiVersion::V62_252_WINTER_25
+        }
         EnableComplexTemplateExpressions => ApiVersion::V66_260_SPRING_26,
     }) as u32
 }
@@ -80,14 +92,32 @@ mod tests {
         assert_eq!(get_api_version_from_number(Some(60)), 60);
         assert_eq!(get_api_version_from_number(Some(1)), 58);
         assert_eq!(get_api_version_from_number(Some(9999999)), 66);
-        assert!(!is_api_feature_enabled(ApiFeature::EnableComplexTemplateExpressions, get_api_version_from_number(Some(65))));
-        assert!(is_api_feature_enabled(ApiFeature::EnableComplexTemplateExpressions, get_api_version_from_number(None)));
-        assert!(is_api_feature_enabled(ApiFeature::TreatAllParse5ErrorsAsErrors, 59));
-        assert!(!is_api_feature_enabled(ApiFeature::TreatAllParse5ErrorsAsErrors, 58));
-        for f in [ApiFeature::DisableObjectRestSpreadTransformation, ApiFeature::SkipUnnecessaryRegisterDecorators] {
+        assert!(!is_api_feature_enabled(
+            ApiFeature::EnableComplexTemplateExpressions,
+            get_api_version_from_number(Some(65))
+        ));
+        assert!(is_api_feature_enabled(
+            ApiFeature::EnableComplexTemplateExpressions,
+            get_api_version_from_number(None)
+        ));
+        assert!(is_api_feature_enabled(
+            ApiFeature::TreatAllParse5ErrorsAsErrors,
+            59
+        ));
+        assert!(!is_api_feature_enabled(
+            ApiFeature::TreatAllParse5ErrorsAsErrors,
+            58
+        ));
+        for f in [
+            ApiFeature::DisableObjectRestSpreadTransformation,
+            ApiFeature::SkipUnnecessaryRegisterDecorators,
+        ] {
             assert!(!is_api_feature_enabled(f, 59) && is_api_feature_enabled(f, 60));
         }
         assert_eq!(min_api_version(ApiFeature::UseLightDomSlotForwarding), 61);
-        assert_eq!(min_api_version(ApiFeature::TemplateClassNameObjectBinding), 62);
+        assert_eq!(
+            min_api_version(ApiFeature::TemplateClassNameObjectBinding),
+            62
+        );
     }
 }

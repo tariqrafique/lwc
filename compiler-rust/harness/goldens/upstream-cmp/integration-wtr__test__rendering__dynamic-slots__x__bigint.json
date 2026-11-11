@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-bigintchild><template shadowrootmode=\"open\"></template><p slot=\"39438943894384938493829198495749898939\">BigInt</p></x-bigintchild></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-bigintchild><template shadowrootmode=\"open\"></template><p slot=\"39438943894384938493829198495749898939\">BigInt</p></x-bigintchild></template></lwc-up>"
+ }
+}

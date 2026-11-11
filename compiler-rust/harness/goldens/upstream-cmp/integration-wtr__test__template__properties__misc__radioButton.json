@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><input type=\"radio\" name=\"choice\" id=\"a\"><input type=\"radio\" name=\"choice\" id=\"b\"></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><input type=\"radio\" name=\"choice\" id=\"a\" value=\"a\"><input type=\"radio\" name=\"choice\" id=\"b\" value=\"b\"></template></lwc-up>"
+ }
+}

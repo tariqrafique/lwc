@@ -14,7 +14,7 @@ const NAMED_CLASS = /export\s+default\s+class\s+([A-Za-z0-9_]+)\s+extends\s+([A-
 const ANON_CLASS = /export\s+default\s+class\s+extends\s+([A-Za-z0-9_.]+)/;
 
 export interface LbcBundle {
-    corpus: 'lbc' | 'lbc-recipes';
+    corpus: string;
     /** Posix path of the component directory relative to the corpus leaf. */
     rel: string;
     dir: string;
@@ -54,13 +54,13 @@ export function namespaceFor(dir: string): string {
 }
 
 interface Candidate {
-    corpus: LbcBundle['corpus'];
+    corpus: string;
     leaf: string;
     dir: string;
     decl: ClassDecl;
 }
 
-function walkCandidates(corpus: LbcBundle['corpus'], leaf: string, dir: string, out: Candidate[]) {
+function walkCandidates(corpus: string, leaf: string, dir: string, out: Candidate[]) {
     const name = path.basename(dir);
     const js = path.join(dir, `${name}.js`);
     const ts = path.join(dir, `${name}.ts`);
@@ -100,12 +100,19 @@ function toBundle(c: Candidate): LbcBundle {
     };
 }
 
-/** Both leaves. Missing leaf throws: a silent empty corpus is not a pass. */
-export function discoverLbcBundles(corpusRoot: string): LbcBundle[] {
+export interface BundleRoot {
+    corpus: string;
+    leaf: string;
+}
+
+/**
+ * Every `<name>/<name>.js|.ts` whose default export reaches LightningElement,
+ * directly or through a named class in the same corpus. A missing leaf throws.
+ */
+export function discoverBundles(roots: readonly BundleRoot[]): LbcBundle[] {
     const candidates: Candidate[] = [];
-    for (const corpus of ['lbc', 'lbc-recipes'] as const) {
-        const leaf = path.join(corpusRoot, corpus);
-        if (!fs.existsSync(leaf)) throw new Error(`lbc corpus leaf missing: ${leaf}`);
+    for (const { corpus, leaf } of roots) {
+        if (!fs.existsSync(leaf)) throw new Error(`component corpus leaf missing: ${leaf} (${corpus})`);
         walkCandidates(corpus, leaf, leaf, candidates);
     }
     // Class-name → base, per corpus. Named classes only: an anonymous default
@@ -130,6 +137,14 @@ export function discoverLbcBundles(corpusRoot: string): LbcBundle[] {
         ids.add(b.id);
     }
     return out;
+}
+
+/** Both lbc leaves. Missing leaf throws: a silent empty corpus is not a pass. */
+export function discoverLbcBundles(corpusRoot: string): LbcBundle[] {
+    return discoverBundles([
+        { corpus: 'lbc', leaf: path.join(corpusRoot, 'lbc') },
+        { corpus: 'lbc-recipes', leaf: path.join(corpusRoot, 'lbc-recipes') },
+    ]);
 }
 
 const VIRTUAL_EXT = new Set(['.js', '.ts', '.mjs', '.html', '.css']);

@@ -69,9 +69,10 @@ ok "agreement checker is present"
 grep -q 'BOARD_SUITES_EXPLICIT' "$repo/harness/board.sh" || bad "board.sh missing BOARD_SUITES_EXPLICIT guard"
 ok "board.sh empty-suite guard present"
 
-# 6. golden-gate skip and quiet fmt hooks
+# 6. golden-gate skip; fmt is the hard land-path-checks row cargo-fmt that C8 runs (D-0235)
 grep -q 'BOARD_GOLDEN_GATE' "$here/run-board.sh" || bad "run-board missing golden-gate skip"
-grep -q 'BOARD_COLD' "$here/c8-checks.sh" || bad "c8-checks missing quiet-fmt/cold hook"
+grep -q 'land-path-checks.sh' "$here/c8-checks.sh" || bad "c8-checks does not run land-path-checks"
+grep -qP '^cargo-fmt\tscripts/cargo-fmt-check.sh\talways$' "$here/land-path-checks.tsv" || bad "land-path-checks.tsv missing the hard cargo-fmt row"
 grep -q 'BOARD_PREV_BOARD_TXT' "$here/board-footers.sh" || bad "board-footers missing carried csr fallback"
 grep -q 'board-runtime.mjs' "$here/official-board.sh" || bad "official-board missing runtime wiring"
 ok "driver hooks present"

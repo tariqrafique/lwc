@@ -3,7 +3,11 @@
 fn main() {
     let a: Vec<String> = std::env::args().collect();
     let src = std::fs::read_to_string(&a[1]).unwrap();
-    let mut o = lwc_shared::CompileOptions { name: "foo".into(), namespace: "x".into(), ..Default::default() };
+    let mut o = lwc_shared::CompileOptions {
+        name: "foo".into(),
+        namespace: "x".into(),
+        ..Default::default()
+    };
     for f in &a[2..] {
         match f.as_str() {
             "lws" => o.enable_lightning_web_security_transforms = true,
@@ -15,9 +19,19 @@ fn main() {
             s => panic!("unknown flag {s}"),
         }
     }
-    let name = std::path::Path::new(&a[1]).file_name().unwrap().to_str().unwrap().to_string();
+    let name = std::path::Path::new(&a[1])
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_string();
     match lwc_js::transform(&src, &name, &o) {
-        Ok(r) => { print!("{}", r.code); if let Some(m) = r.map { print!("\nMAP {m}"); } }
+        Ok(r) => {
+            print!("{}", r.code);
+            if let Some(m) = r.map {
+                print!("\nMAP {m}");
+            }
+        }
         Err(e) => println!("ERR {e}"),
     }
 }

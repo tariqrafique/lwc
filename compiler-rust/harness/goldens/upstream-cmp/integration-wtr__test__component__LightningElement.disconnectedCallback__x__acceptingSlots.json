@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><slot><div class=\"default\"></div></slot></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><slot><div class=\"default\"></div></slot></template></lwc-up>"
+ },
+ "asyncErrors": [
+  "this.disconnect is not a function"
+ ]
+}

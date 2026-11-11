@@ -11,10 +11,8 @@
 //! `instance`) is applied by the printer in S4, not stored here.
 
 use lwc_shared::template_ir::ComplexExpression;
-use oxc_ast::ast::{
-    BindingPattern, Expression, FormalParameters, ObjectProperty, PropertyKey,
-};
-use oxc_ast_visit::{walk, Visit};
+use oxc_ast::ast::{BindingPattern, Expression, FormalParameters, ObjectProperty, PropertyKey};
+use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
 use std::collections::{HashMap, HashSet};
 
@@ -26,11 +24,19 @@ pub struct BindPlan {
 
 impl BindPlan {
     /// Whether `span` (an `IdentifierReference` span on `ComplexExpression.ast` / `.source`) is prefixed.
-    pub fn contains(&self, span: Span) -> bool { self.prefixed.contains(&span) }
+    pub fn contains(&self, span: Span) -> bool {
+        self.prefixed.contains(&span)
+    }
     /// Prefixed spans in arbitrary order.
-    pub fn iter(&self) -> impl Iterator<Item = Span> + '_ { self.prefixed.iter().copied() }
-    pub fn len(&self) -> usize { self.prefixed.len() }
-    pub fn is_empty(&self) -> bool { self.prefixed.is_empty() }
+    pub fn iter(&self) -> impl Iterator<Item = Span> + '_ {
+        self.prefixed.iter().copied()
+    }
+    pub fn len(&self) -> usize {
+        self.prefixed.len()
+    }
+    pub fn is_empty(&self) -> bool {
+        self.prefixed.is_empty()
+    }
 }
 
 /// `INVALID_EXPR_ARROW_FN_PARAM` (1189): `collectParams` hit a pattern upstream rejects
@@ -45,7 +51,11 @@ pub enum BindError {
 }
 
 impl BindError {
-    fn assignment_pattern() -> Self { Self::ArrowFnParam { kind: "AssignmentPattern" } }
+    fn assignment_pattern() -> Self {
+        Self::ArrowFnParam {
+            kind: "AssignmentPattern",
+        }
+    }
 
     /// The `CompilerError` `invariant(false, INVALID_EXPR_ARROW_FN_PARAM, [kind])` would throw
     /// (`generateCompilerError`, no origin).
@@ -71,7 +81,10 @@ impl BindError {
 ///   or not: `{[c]: d}` leaves `c` unbound (AB-D0004 Q5 / design §3). Nested identifiers in a
 ///   computed key (`{[d.e]: f}`) are still walked.
 /// - Arrow params are shadow-counted (`ExpressionScopes`, `expression.ts:161-191`).
-pub fn bind<'a>(e: &ComplexExpression<'a>, is_local: &dyn Fn(&str) -> bool) -> Result<BindPlan, BindError> {
+pub fn bind<'a>(
+    e: &ComplexExpression<'a>,
+    is_local: &dyn Fn(&str) -> bool,
+) -> Result<BindPlan, BindError> {
     if let Expression::Identifier(id) = e.ast {
         let mut prefixed = HashSet::new();
         if !is_local(id.name.as_str()) {
@@ -79,11 +92,18 @@ pub fn bind<'a>(e: &ComplexExpression<'a>, is_local: &dyn Fn(&str) -> bool) -> R
         }
         return Ok(BindPlan { prefixed });
     }
-    let mut b = Binder { is_local, arrow_params: HashMap::new(), prefixed: HashSet::new(), error: None };
+    let mut b = Binder {
+        is_local,
+        arrow_params: HashMap::new(),
+        prefixed: HashSet::new(),
+        error: None,
+    };
     b.visit_expression(e.ast);
     match b.error {
         Some(err) => Err(err),
-        None => Ok(BindPlan { prefixed: b.prefixed }),
+        None => Ok(BindPlan {
+            prefixed: b.prefixed,
+        }),
     }
 }
 
@@ -113,17 +133,28 @@ impl Binder<'_> {
 
 fn collect_pattern(pat: &BindingPattern<'_>, names: &mut Vec<String>) -> Result<(), BindError> {
     match pat {
-        BindingPattern::BindingIdentifier(id) => { names.push(id.name.to_string()); Ok(()) }
+        BindingPattern::BindingIdentifier(id) => {
+            names.push(id.name.to_string());
+            Ok(())
+        }
         BindingPattern::ObjectPattern(o) => {
-            for p in &o.properties { collect_pattern(&p.value, names)?; }
-            if let Some(rest) = &o.rest { collect_pattern(&rest.argument, names)?; }
+            for p in &o.properties {
+                collect_pattern(&p.value, names)?;
+            }
+            if let Some(rest) = &o.rest {
+                collect_pattern(&rest.argument, names)?;
+            }
             Ok(())
         }
         BindingPattern::ArrayPattern(a) => {
             for el in &a.elements {
-                if let Some(el) = el { collect_pattern(el, names)?; }
+                if let Some(el) = el {
+                    collect_pattern(el, names)?;
+                }
             }
-            if let Some(rest) = &a.rest { collect_pattern(&rest.argument, names)?; }
+            if let Some(rest) = &a.rest {
+                collect_pattern(&rest.argument, names)?;
+            }
             Ok(())
         }
         // expression.ts:241-242 collectParamsFromAssignmentPattern (destructure defaults)
@@ -133,24 +164,37 @@ fn collect_pattern(pat: &BindingPattern<'_>, names: &mut Vec<String>) -> Result<
 
 impl<'a> Visit<'a> for Binder<'_> {
     fn visit_arrow_function_expression(&mut self, it: &oxc_ast::ast::ArrowFunctionExpression<'a>) {
-        if self.error.is_some() { return; }
+        if self.error.is_some() {
+            return;
+        }
         let names = match Self::collect_params(&it.params) {
             Ok(n) => n,
-            Err(e) => { self.error = Some(e); return; }
+            Err(e) => {
+                self.error = Some(e);
+                return;
+            }
         };
-        for n in &names { *self.arrow_params.entry(n.clone()).or_default() += 1; }
+        for n in &names {
+            *self.arrow_params.entry(n.clone()).or_default() += 1;
+        }
         self.visit_arrow_function_body(&it.body);
         for n in &names {
-            if let Some(c) = self.arrow_params.get_mut(n) { *c -= 1; }
+            if let Some(c) = self.arrow_params.get_mut(n) {
+                *c -= 1;
+            }
         }
     }
 
     fn visit_object_property(&mut self, it: &ObjectProperty<'a>) {
-        if self.error.is_some() { return; }
+        if self.error.is_some() {
+            return;
+        }
         match &it.key {
             // `parent.key === node` (expression.ts:140): static keys and computed identifier keys
             // (`{[c]: d}`) are not bound. Nested computed keys (`{[d.e]: f}`) fall through.
-            PropertyKey::StaticIdentifier(_) | PropertyKey::PrivateIdentifier(_) | PropertyKey::Identifier(_) => {
+            PropertyKey::StaticIdentifier(_)
+            | PropertyKey::PrivateIdentifier(_)
+            | PropertyKey::Identifier(_) => {
                 self.visit_expression(&it.value);
             }
             _ => walk::walk_object_property(self, it),
@@ -158,11 +202,19 @@ impl<'a> Visit<'a> for Binder<'_> {
     }
 
     fn visit_identifier_reference(&mut self, it: &oxc_ast::ast::IdentifierReference<'a>) {
-        if self.error.is_some() { return; }
+        if self.error.is_some() {
+            return;
+        }
         let name = it.name.as_str();
-        if name == "undefined" { return; }
-        if (self.is_local)(name) { return; }
-        if self.arrow_params.get(name).is_some_and(|c| *c > 0) { return; }
+        if name == "undefined" {
+            return;
+        }
+        if (self.is_local)(name) {
+            return;
+        }
+        if self.arrow_params.get(name).is_some_and(|c| *c > 0) {
+            return;
+        }
         self.prefixed.insert(it.span);
     }
 }
@@ -174,15 +226,28 @@ mod tests {
     use lwc_shared::template_ir::SourceLocation;
     use oxc_allocator::Allocator;
 
-    const AT: SourceLocation = SourceLocation { start_line: 1, start_column: 1, end_line: 1, end_column: 20, start: 0, end: 19 };
+    const AT: SourceLocation = SourceLocation {
+        start_line: 1,
+        start_column: 1,
+        end_line: 1,
+        end_column: 20,
+        start: 0,
+        end: 19,
+    };
 
     fn names(raw: &str, locals: &[&str]) -> Vec<String> {
         let alloc = Allocator::default();
         let c = build(&alloc, raw, AT).expect(raw);
         let p = bind(&c, &|n| locals.iter().any(|s| *s == n)).expect(raw);
-        let mut got: Vec<(u32, String)> = p.iter().map(|sp| {
-            (sp.start, c.source[sp.start as usize..sp.end as usize].to_string())
-        }).collect();
+        let mut got: Vec<(u32, String)> = p
+            .iter()
+            .map(|sp| {
+                (
+                    sp.start,
+                    c.source[sp.start as usize..sp.end as usize].to_string(),
+                )
+            })
+            .collect();
         got.sort_by_key(|(s, _)| *s);
         got.into_iter().map(|(_, n)| n).collect()
     }
@@ -211,15 +276,24 @@ mod tests {
     fn arrow_params_are_shadow_counted() {
         assert_eq!(names("{xs.map(x => x + y)}", &[]), ["xs", "y"]);
         assert_eq!(names("{(x => x)(x)}", &[]), ["x"]);
-        assert_eq!(names("{({a, b: [c, ...d]}) => a + b + c + d + e}", &[]), ["b", "e"]);
-        assert_eq!(names("{item => item.id === selectedId}", &["item"]), ["selectedId"]);
+        assert_eq!(
+            names("{({a, b: [c, ...d]}) => a + b + c + d + e}", &[]),
+            ["b", "e"]
+        );
+        assert_eq!(
+            names("{item => item.id === selectedId}", &["item"]),
+            ["selectedId"]
+        );
     }
 
     #[test]
     fn default_params_are_1189() {
         let alloc = Allocator::default();
         let c = build(&alloc, "{(x = 1) => x}", AT).unwrap();
-        assert_eq!(bind(&c, &|_| false).unwrap_err(), BindError::assignment_pattern());
+        assert_eq!(
+            bind(&c, &|_| false).unwrap_err(),
+            BindError::assignment_pattern()
+        );
     }
 
     /// Differential test against JS `bindExpression` (complex mode). Oracle:
@@ -229,50 +303,88 @@ mod tests {
     #[test]
     fn js_bind_corpus() {
         let path = lwc_shared::cargo_manifest_dir!().join("tests/fixtures/bind_corpus.json");
-        let corpus: Vec<serde_json::Value> = serde_json::from_str(&std::fs::read_to_string(&path).unwrap()).unwrap();
+        let corpus: Vec<serde_json::Value> =
+            serde_json::from_str(&std::fs::read_to_string(&path).unwrap()).unwrap();
         let (mut n, mut skipped, mut bad) = (0usize, 0usize, vec![]);
         let alloc = Allocator::default();
         for c in &corpus {
-            let Some(want) = c["prefixed"].as_array() else { skipped += 1; continue };
+            let Some(want) = c["prefixed"].as_array() else {
+                skipped += 1;
+                continue;
+            };
             let src = c["src"].as_str().unwrap();
-            let scope: Vec<String> = c["scope"].as_array().unwrap().iter().map(|s| s.as_str().unwrap().to_string()).collect();
-            let want: Vec<(u64, &str)> = want.iter().map(|p| (p[0].as_u64().unwrap(), p[1].as_str().unwrap())).collect();
+            let scope: Vec<String> = c["scope"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|s| s.as_str().unwrap().to_string())
+                .collect();
+            let want: Vec<(u64, &str)> = want
+                .iter()
+                .map(|p| (p[0].as_u64().unwrap(), p[1].as_str().unwrap()))
+                .collect();
             n += 1;
             let raw = format!("{{{src}}}");
             let Ok(expr) = build(&alloc, &raw, AT) else {
-                bad.push(format!("{} {src:?} scope={scope:?}\n   js={want:?}\n rust=build failed", c["origin"]));
+                bad.push(format!(
+                    "{} {src:?} scope={scope:?}\n   js={want:?}\n rust=build failed",
+                    c["origin"]
+                ));
                 continue;
             };
             let plan = match bind(&expr, &|n| scope.iter().any(|s| s == n)) {
                 Ok(p) => p,
                 Err(e) => {
-                    bad.push(format!("{} {src:?} scope={scope:?}\n   js={want:?}\n rust=bind error {e:?}", c["origin"]));
+                    bad.push(format!(
+                        "{} {src:?} scope={scope:?}\n   js={want:?}\n rust=bind error {e:?}",
+                        c["origin"]
+                    ));
                     continue;
                 }
             };
             // build() trims; corpus offsets are UTF-16 into the raw `src`.
             let prefix = src.len() - src.trim_start().len();
-            let mut got: Vec<(u64, String)> = plan.iter().map(|sp| {
-                let byte = prefix + sp.start as usize;
-                let name = expr.source[sp.start as usize..sp.end as usize].to_string();
-                (src[..byte].encode_utf16().count() as u64, name)
-            }).collect();
+            let mut got: Vec<(u64, String)> = plan
+                .iter()
+                .map(|sp| {
+                    let byte = prefix + sp.start as usize;
+                    let name = expr.source[sp.start as usize..sp.end as usize].to_string();
+                    (src[..byte].encode_utf16().count() as u64, name)
+                })
+                .collect();
             got.sort_by_key(|(s, _)| *s);
             let got_ref: Vec<(u64, &str)> = got.iter().map(|(s, n)| (*s, n.as_str())).collect();
             if got_ref != want {
-                bad.push(format!("{} {src:?} scope={scope:?}\n   js={want:?}\n rust={got_ref:?}", c["origin"]));
+                bad.push(format!(
+                    "{} {src:?} scope={scope:?}\n   js={want:?}\n rust={got_ref:?}",
+                    c["origin"]
+                ));
                 continue;
             }
             // BindPlan is inst-agnostic; both CSR `$cmp` and SSR `instance` prefix the same spans.
             for inst in ["$cmp", "instance"] {
-                let got_m: Vec<(u64, String)> = got.iter().map(|(s, n)| (*s, format!("{inst}.{n}"))).collect();
-                let want_m: Vec<(u64, String)> = want.iter().map(|(s, n)| (*s, format!("{inst}.{n}"))).collect();
+                let got_m: Vec<(u64, String)> = got
+                    .iter()
+                    .map(|(s, n)| (*s, format!("{inst}.{n}")))
+                    .collect();
+                let want_m: Vec<(u64, String)> = want
+                    .iter()
+                    .map(|(s, n)| (*s, format!("{inst}.{n}")))
+                    .collect();
                 if got_m != want_m {
-                    bad.push(format!("{} {src:?} inst={inst} scope={scope:?}\n   js={want_m:?}\n rust={got_m:?}", c["origin"]));
+                    bad.push(format!(
+                        "{} {src:?} inst={inst} scope={scope:?}\n   js={want_m:?}\n rust={got_m:?}",
+                        c["origin"]
+                    ));
                 }
             }
         }
         assert!(n > 800, "corpus too small: {n}");
-        assert!(bad.is_empty(), "{} / {n} divergences (skipped {skipped} without prefixed):\n{}", bad.len(), bad.join("\n"));
+        assert!(
+            bad.is_empty(),
+            "{} / {n} divergences (skipped {skipped} without prefixed):\n{}",
+            bad.len(),
+            bad.join("\n")
+        );
     }
 }

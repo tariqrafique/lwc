@@ -1,7 +1,7 @@
 //! D-0265: helper-body templates localize at the AST-member spans pinned in `helpers.rs`.
 use oxc::allocator::Allocator;
 use oxc::ast::ast::{Expression, IdentifierReference, StaticMemberExpression};
-use oxc::ast_visit::{walk, Visit};
+use oxc::ast_visit::{Visit, walk};
 
 struct Hits {
     prefix: u32,

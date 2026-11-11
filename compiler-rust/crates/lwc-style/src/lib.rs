@@ -47,7 +47,9 @@ impl StyleError {
     /// in recovery mode. The lwc-compiler style facade normalizes it against CSS_TRANSFORMER_ERROR.
     pub fn thrown(&self, filename: &str) -> CompileError {
         let (name, line, column) = match self {
-            StyleError::Syntax { name, line, column, .. } => (name.as_str(), *line, *column),
+            StyleError::Syntax {
+                name, line, column, ..
+            } => (name.as_str(), *line, *column),
             StyleError::Aggregate(_) => ("AggregateError", None, None),
         };
         // `transform_with_config` already threw any cwd failure for this filename (as JS `new Input`
@@ -70,7 +72,12 @@ impl StyleError {
 /// else Node `path.resolve(filename)` against the process cwd, which throws when `process.cwd()`
 /// does (e.g. `ENOENT: no such file or directory, uv_cwd` once the cwd is deleted).
 fn postcss_file(filename: &str) -> Result<String, StyleError> {
-    let url_like = filename.find("://").is_some_and(|i| i > 0 && filename[..i].chars().all(|c| c.is_ascii_alphanumeric() || c == '_'));
+    let url_like = filename.find("://").is_some_and(|i| {
+        i > 0
+            && filename[..i]
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || c == '_')
+    });
     if url_like || filename.starts_with('/') {
         return Ok(filename.to_string());
     }
@@ -80,7 +87,9 @@ fn postcss_file(filename: &str) -> Result<String, StyleError> {
     for seg in joined.split('/') {
         match seg {
             "" | "." => {}
-            ".." => { parts.pop(); }
+            ".." => {
+                parts.pop();
+            }
             s => parts.push(s),
         }
     }
@@ -98,11 +107,7 @@ fn uv_cwd_error(e: std::io::Error) -> StyleError {
 }
 
 /// Fixture / internal entry (StyleError). Prefer [`transform`] from the facade.
-pub fn transform_with_config(
-    src: &str,
-    id: &str,
-    config: Config,
-) -> Result<String, StyleError> {
+pub fn transform_with_config(src: &str, id: &str, config: Config) -> Result<String, StyleError> {
     if src.is_empty() {
         return Ok("export default undefined".into());
     }
@@ -111,7 +116,9 @@ pub fn transform_with_config(
     postcss_file(id)?;
     let mut root = match parser::parse(src) {
         Ok(r) => r,
-        Err(e) if config.experimental_error_recovery_mode => return Err(StyleError::Aggregate(vec![e])),
+        Err(e) if config.experimental_error_recovery_mode => {
+            return Err(StyleError::Aggregate(vec![e]));
+        }
         Err(e) => return Err(e),
     };
     postcss_lwc_plugin::scope_root(&mut root, &config, src)?;

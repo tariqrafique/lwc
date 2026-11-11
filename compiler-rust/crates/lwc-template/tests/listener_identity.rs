@@ -47,15 +47,31 @@ fn listeners_keep_identity_across_rerender() {
 
 fn run(static_opt: bool) {
     let src = "<template><button onclick={handleClick}>x</button><template for:each={list} for:item=\"task\"><li key={task.id} onclick={task.del} ontouchstart={foo}></li></template></template>";
-    let cfg = lwc_template::Config { enable_static_content_optimization: Some(static_opt), ..Default::default() };
+    let cfg = lwc_template::Config {
+        enable_static_content_optimization: Some(static_opt),
+        ..Default::default()
+    };
     let code = lwc_template::compile(src, "x.html", cfg).unwrap().code;
     assert_eq!(code.contains("api_static_part"), static_opt, "{code}");
     assert!(code.contains("$ctx._m"), "{code}");
-    let body: String = code.lines()
+    let body: String = code
+        .lines()
         .filter(|l| !l.starts_with("import ") && !l.starts_with("export default "))
-        .map(|l| format!("{l}\n")).collect();
-    let out = Command::new("node").args(["--input-type=module", "-e", &format!("{STUBS}\n{body}\n{DRIVER}")]).output().expect("node on PATH");
-    assert!(out.status.success(), "{}\n{code}", String::from_utf8_lossy(&out.stderr));
+        .map(|l| format!("{l}\n"))
+        .collect();
+    let out = Command::new("node")
+        .args([
+            "--input-type=module",
+            "-e",
+            &format!("{STUBS}\n{body}\n{DRIVER}"),
+        ])
+        .output()
+        .expect("node on PATH");
+    assert!(
+        out.status.success(),
+        "{}\n{code}",
+        String::from_utf8_lossy(&out.stderr)
+    );
     assert_eq!(
         String::from_utf8_lossy(&out.stdout).trim(),
         r#"{"onObject":true,"nonLocalHandler":true,"localHandlerPerItem":true,"freshCtx":true}"#,

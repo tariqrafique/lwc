@@ -8,22 +8,38 @@ use std::path::{Path, PathBuf};
 /// Each banned pattern, with what it catches. Naming the types is fine (signatures, `match` arms);
 /// building a value of them is not.
 const BANNED: &[(&str, &str)] = &[
-    (r"level_url|error_url|Origin::|AGGREGATE_", "error-shape derivation"),
+    (
+        r"level_url|error_url|Origin::|AGGREGATE_",
+        "error-shape derivation",
+    ),
     // `CompilerError { .. }`, `CompilerAggregateError { .. }`, `UnnormalizedError { .. }` struct literals.
-    (r"\b(CompilerError|CompilerAggregateError|UnnormalizedError)\s*\{", "error struct literal"),
+    (
+        r"\b(CompilerError|CompilerAggregateError|UnnormalizedError)\s*\{",
+        "error struct literal",
+    ),
     // `CompilerError::new(..)`, `::generate(..)`, `::from_diagnostic(..)`, `::from(..)`, any associated ctor.
-    (r"\b(CompilerError|CompilerAggregateError|UnnormalizedError|TransformError)\s*::\s*[a-z_]\w*\s*\(", "error constructor call"),
+    (
+        r"\b(CompilerError|CompilerAggregateError|UnnormalizedError|TransformError)\s*::\s*[a-z_]\w*\s*\(",
+        "error constructor call",
+    ),
     // `TransformError::Compiler(..)` etc. as an expression; a `match` / `let` pattern binding one name is exempt below.
-    (r"\bTransformError\s*::\s*(Compiler|Aggregate|Unnormalized)\s*\(", "TransformError variant construction"),
+    (
+        r"\bTransformError\s*::\s*(Compiler|Aggregate|Unnormalized)\s*\(",
+        "TransformError variant construction",
+    ),
     (r"\bnormalize_to_compiler_error\b", "normalization"),
     // `.into()` / `From` into an error type: `-> TransformError` built by conversion.
-    (r"impl\s+From<[^>]*>\s+for\s+(CompilerError|CompilerAggregateError|UnnormalizedError|TransformError)\b", "error conversion impl"),
+    (
+        r"impl\s+From<[^>]*>\s+for\s+(CompilerError|CompilerAggregateError|UnnormalizedError|TransformError)\b",
+        "error conversion impl",
+    ),
 ];
 
 /// `TransformError::Compiler(e) =>` / `| ..` / `let TransformError::Aggregate(a) = ..`: a pattern, not a construction.
 fn is_pattern(line: &str, at: usize) -> bool {
     let rest = &line[at..];
-    let pat = Regex::new(r"^TransformError\s*::\s*\w+\s*\(\s*\w+\s*\)\s*(=>|\||if\b|=[^=>])").unwrap();
+    let pat =
+        Regex::new(r"^TransformError\s*::\s*\w+\s*\(\s*\w+\s*\)\s*(=>|\||if\b|=[^=>])").unwrap();
     pat.is_match(rest)
 }
 
@@ -33,7 +49,9 @@ fn hits(text: &str) -> Vec<(usize, &'static str)> {
         let code = line.split("//").next().unwrap_or("");
         for (re, what) in BANNED {
             let re = Regex::new(re).unwrap();
-            if re.find_iter(code).any(|m| !(what.starts_with("TransformError variant") && is_pattern(code, m.start()))) {
+            if re.find_iter(code).any(|m| {
+                !(what.starts_with("TransformError variant") && is_pattern(code, m.start()))
+            }) {
                 out.push((i + 1, *what));
             }
         }
@@ -45,11 +63,16 @@ fn hits(text: &str) -> Vec<(usize, &'static str)> {
 fn scan_files(root: &Path, files: &[PathBuf]) -> Vec<String> {
     let mut found = vec![];
     for p in files {
-        if !p.extension().is_some_and(|x| x == "rs") { continue }
+        if !p.extension().is_some_and(|x| x == "rs") {
+            continue;
+        }
         let text = std::fs::read_to_string(p).unwrap();
         for (n, what) in hits(&text) {
             let rel = rel_slash(root, p);
-            found.push(format!("{rel}:{n}: {what}: {}", text.lines().nth(n - 1).unwrap()));
+            found.push(format!(
+                "{rel}:{n}: {what}: {}",
+                text.lines().nth(n - 1).unwrap()
+            ));
         }
     }
     found.sort();
@@ -62,7 +85,11 @@ fn napi_src_derives_no_error_shape() {
     let src = lwc_shared::cargo_manifest_dir!().join("src");
     let files = tracked_files_filtered(&repo, &["crates/lwc-compiler-napi/src"], &["rs"]);
     let found = scan_files(&src, &files);
-    assert!(found.is_empty(), "error built or shaped in napi (belongs in the lwc-compiler facades):\n{}", found.join("\n"));
+    assert!(
+        found.is_empty(),
+        "error built or shaped in napi (belongs in the lwc-compiler facades):\n{}",
+        found.join("\n")
+    );
 }
 
 /// The walk is recursive: a banned construction in a nested module file is caught.
@@ -76,7 +103,13 @@ fn nested_module_files_are_scanned() {
     let found = scan_files(&root, &[root.join("lib.rs"), nested.join("deep.rs")]);
     std::fs::remove_dir_all(&root).unwrap();
     assert_eq!(found.len(), 2, "{found:?}");
-    assert!(found.iter().all(|f| f.starts_with(&format!("errors{0}inner{0}deep.rs:2: ", std::path::MAIN_SEPARATOR))), "{found:?}");
+    assert!(
+        found.iter().all(|f| f.starts_with(&format!(
+            "errors{0}inner{0}deep.rs:2: ",
+            std::path::MAIN_SEPARATOR
+        ))),
+        "{found:?}"
+    );
 }
 
 /// The gate catches each construction form and lets signatures and `match` arms through.

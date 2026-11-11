@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'push')"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up></lwc-up>"
+ },
+ "asyncErrors": [
+  "Cannot read properties of undefined (reading 'push')"
+ ]
+}

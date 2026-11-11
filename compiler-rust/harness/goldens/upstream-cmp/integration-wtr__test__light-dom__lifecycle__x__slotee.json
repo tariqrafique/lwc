@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "compile-error",
+  "message": "Could not load /virtual-lbc/util.js (imported by virtual-lbc/x/slotee/slotee.js): ENOENT: no such file or directory, open '/virtual-lbc/util.js'"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "Could not load /virtual-lbc/util.js (imported by virtual-lbc/x/slotee/slotee.js): ENOENT: no such file or directory, open '/virtual-lbc/util.js'"
+ }
+}

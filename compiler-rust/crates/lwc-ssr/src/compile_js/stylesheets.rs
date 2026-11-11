@@ -5,14 +5,29 @@
 use lwc_shared::edits::Edit;
 use oxc::ast::ast::*;
 
-pub(super) fn catalog_and_replace_style_imports(d: &ImportDeclaration, src: &str, edits: &mut Vec<Edit>) {
-    let Some(source) = d.source.value.as_str() else { return };
+pub(super) fn catalog_and_replace_style_imports(
+    d: &ImportDeclaration,
+    src: &str,
+    edits: &mut Vec<Edit>,
+) {
+    let Some(source) = d.source.value.as_str() else {
+        return;
+    };
     let single_default = matches!(
         d.specifiers.as_ref().map(|v| (v.len(), v.first())),
-        Some((1, Some(ImportDeclarationSpecifier::ImportDefaultSpecifier(_))))
+        Some((
+            1,
+            Some(ImportDeclarationSpecifier::ImportDefaultSpecifier(_))
+        ))
     );
-    if !source.ends_with(".css") || !single_default || !source.ends_with(".scoped.css") { return; }
+    if !source.ends_with(".css") || !single_default || !source.ends_with(".scoped.css") {
+        return;
+    }
     let s = d.source.span.start as usize;
     let q = &src[s..s + 1];
-    edits.push(Edit::replace(d.source.span.start, d.source.span.end, format!("{q}{source}?scoped=true{q}")));
+    edits.push(Edit::replace(
+        d.source.span.start,
+        d.source.span.end,
+        format!("{q}{source}?scoped=true{q}"),
+    ));
 }

@@ -6,24 +6,46 @@
 use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 use std::path::{Path, PathBuf};
 
-const FORBIDDEN: &[&str] = &["fn parse_style_text", "fn normalize_style", "fn js_trim", "fn js_ws"];
+const FORBIDDEN: &[&str] = &[
+    "fn parse_style_text",
+    "fn normalize_style",
+    "fn js_trim",
+    "fn js_ws",
+];
 
 /// A U+FEFF char literal that is not JS whitespace: postcss `Input` drops a leading byte-order mark
 /// (U+FEFF, and U+FFFE as decoded by the Rust reader) before tokenizing. `(file under crates/, line text)`.
 const BOM_ALLOWED: &[(&str, &str)] = &[
-    ("lwc-style/src/parser.rs", "src.strip_prefix(['\\u{FEFF}', '\\u{FFFE}'])"),
-    ("lwc-style/src/serialize.rs", "css.trim_start_matches(['\\u{feff}', '\\u{fffe}'])"),
-    ("lwc-style/src/serialize.rs", "css.trim_start_matches('\\u{feff}')"),
+    (
+        "lwc-style/src/parser.rs",
+        "src.strip_prefix(['\\u{FEFF}', '\\u{FFFE}'])",
+    ),
+    (
+        "lwc-style/src/serialize.rs",
+        "css.trim_start_matches(['\\u{feff}', '\\u{fffe}'])",
+    ),
+    (
+        "lwc-style/src/serialize.rs",
+        "css.trim_start_matches('\\u{feff}')",
+    ),
 ];
 
 /// Every guard hit on one file's text; `rel` is the path under `crates/`.
 fn violations(rel: &str, src: &str) -> Vec<String> {
     let mut hits = Vec::new();
     for (i, line) in src.lines().enumerate() {
-        let squashed: String = line.chars().filter(|c| !c.is_ascii_whitespace()).collect::<String>().to_ascii_lowercase();
+        let squashed: String = line
+            .chars()
+            .filter(|c| !c.is_ascii_whitespace())
+            .collect::<String>()
+            .to_ascii_lowercase();
         let feff_literal = squashed.contains('\u{feff}') || has_feff_char_literal(&squashed);
-        let bom_ok = BOM_ALLOWED.iter().any(|(f, l)| *f == rel && line.contains(l));
-        let ws_or = squashed.contains("is_whitespace()||") || squashed.contains("||c.is_whitespace()") || squashed.contains("is_whitespace(c)||");
+        let bom_ok = BOM_ALLOWED
+            .iter()
+            .any(|(f, l)| *f == rel && line.contains(l));
+        let ws_or = squashed.contains("is_whitespace()||")
+            || squashed.contains("||c.is_whitespace()")
+            || squashed.contains("is_whitespace(c)||");
         if FORBIDDEN.iter().any(|f| line.contains(f)) || (feff_literal && !bom_ok) || ws_or {
             hits.push(format!("{rel}:{}: {}", i + 1, line.trim()));
         }
@@ -58,7 +80,11 @@ fn style_text_and_js_whitespace_defined_only_in_lwc_shared() {
         .collect();
     let mut hits = Vec::new();
     scan_files(&crates, &files, &mut hits);
-    assert!(hits.is_empty(), "use lwc_shared::style / lwc_shared::js instead of a local copy:\n{}", hits.join("\n"));
+    assert!(
+        hits.is_empty(),
+        "use lwc_shared::style / lwc_shared::js instead of a local copy:\n{}",
+        hits.join("\n")
+    );
 }
 
 /// Plants renamed copies of JS whitespace in a scratch crate and proves the scan reports each one.
@@ -77,10 +103,19 @@ fn guard_catches_renamed_copies() {
     ];
     std::fs::write(src.join("lib.rs"), planted.join("\n")).unwrap();
     // Not caught: JS whitespace through the shared helper, and plain `char::is_whitespace`.
-    std::fs::write(src.join("ok.rs"), "use lwc_shared::js::js_ws;\nfn f(c: char) -> bool { js_ws(c) && !c.is_whitespace() }\n").unwrap();
+    std::fs::write(
+        src.join("ok.rs"),
+        "use lwc_shared::js::js_ws;\nfn f(c: char) -> bool { js_ws(c) && !c.is_whitespace() }\n",
+    )
+    .unwrap();
     let mut hits = Vec::new();
     scan_files(&root, &[src.join("lib.rs"), src.join("ok.rs")], &mut hits);
     std::fs::remove_dir_all(&root).unwrap();
     assert_eq!(hits.len(), planted.len(), "{hits:#?}");
-    for (h, p) in hits.iter().zip(planted) { assert!(h.starts_with("lwc-planted/src/lib.rs:") && h.ends_with(p), "{h}"); }
+    for (h, p) in hits.iter().zip(planted) {
+        assert!(
+            h.starts_with("lwc-planted/src/lib.rs:") && h.ends_with(p),
+            "{h}"
+        );
+    }
 }

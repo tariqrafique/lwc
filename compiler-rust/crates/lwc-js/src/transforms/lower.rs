@@ -7,7 +7,9 @@
 use lwc_shared::CompileError;
 use oxc::allocator::Allocator;
 use oxc::ast::ast::Program;
-use oxc::transformer::{EnvOptions, ES2017Options, ES2018Options, HelperLoaderMode, TransformOptions};
+use oxc::transformer::{
+    ES2017Options, ES2018Options, EnvOptions, HelperLoaderMode, TransformOptions,
+};
 
 /// Object rest/spread on an already-parsed program (the pre-print AST).
 /// No source-text prefilter: a `...` that lives only in a comment must not force the transform,
@@ -18,10 +20,16 @@ pub fn apply_object_rest_spread<'a>(
     filename: &str,
     program: &mut Program<'a>,
 ) -> Result<(), CompileError> {
-    if !program_has_object_rest(program) { return Ok(()); }
-    let es2017 = EnvOptions::from_target("es2017").map_err(|e| CompileError::new(format!("internal: {e}"), filename))?;
+    if !program_has_object_rest(program) {
+        return Ok(());
+    }
+    let es2017 = EnvOptions::from_target("es2017")
+        .map_err(|e| CompileError::new(format!("internal: {e}"), filename))?;
     let mut env = EnvOptions::default();
-    env.es2018 = ES2018Options { async_generator_functions: false, ..es2017.es2018 };
+    env.es2018 = ES2018Options {
+        async_generator_functions: false,
+        ..es2017.es2018
+    };
     apply_env(alloc, src, filename, env, program)
 }
 
@@ -31,13 +39,30 @@ pub fn program_has_async(program: &Program<'_>) -> bool {
     use oxc::ast_visit::{Visit, walk};
     struct F(bool);
     impl<'a> Visit<'a> for F {
-        fn visit_function(&mut self, it: &oxc::ast::ast::Function<'a>, flags: oxc::semantic::ScopeFlags) {
-            if it.r#async { self.0 = true; return; }
-            if !self.0 { walk::walk_function(self, it, flags); }
+        fn visit_function(
+            &mut self,
+            it: &oxc::ast::ast::Function<'a>,
+            flags: oxc::semantic::ScopeFlags,
+        ) {
+            if it.r#async {
+                self.0 = true;
+                return;
+            }
+            if !self.0 {
+                walk::walk_function(self, it, flags);
+            }
         }
-        fn visit_arrow_function_expression(&mut self, it: &oxc::ast::ast::ArrowFunctionExpression<'a>) {
-            if it.r#async { self.0 = true; return; }
-            if !self.0 { walk::walk_arrow_function_expression(self, it); }
+        fn visit_arrow_function_expression(
+            &mut self,
+            it: &oxc::ast::ast::ArrowFunctionExpression<'a>,
+        ) {
+            if it.r#async {
+                self.0 = true;
+                return;
+            }
+            if !self.0 {
+                walk::walk_arrow_function_expression(self, it);
+            }
         }
     }
     let mut f = F(false);
@@ -50,12 +75,26 @@ fn program_has_object_rest(program: &Program<'_>) -> bool {
     struct F(bool);
     impl<'a> Visit<'a> for F {
         fn visit_object_expression(&mut self, it: &oxc::ast::ast::ObjectExpression<'a>) {
-            if it.properties.iter().any(|p| matches!(p, oxc::ast::ast::ObjectPropertyKind::SpreadProperty(_))) { self.0 = true; return; }
-            if !self.0 { walk::walk_object_expression(self, it); }
+            if it
+                .properties
+                .iter()
+                .any(|p| matches!(p, oxc::ast::ast::ObjectPropertyKind::SpreadProperty(_)))
+            {
+                self.0 = true;
+                return;
+            }
+            if !self.0 {
+                walk::walk_object_expression(self, it);
+            }
         }
         fn visit_object_pattern(&mut self, it: &oxc::ast::ast::ObjectPattern<'a>) {
-            if it.rest.is_some() { self.0 = true; return; }
-            if !self.0 { walk::walk_object_pattern(self, it); }
+            if it.rest.is_some() {
+                self.0 = true;
+                return;
+            }
+            if !self.0 {
+                walk::walk_object_pattern(self, it);
+            }
         }
     }
     let mut f = F(false);
@@ -71,8 +110,13 @@ pub fn apply_async_functions<'a>(
     program: &mut Program<'a>,
 ) -> Result<(), CompileError> {
     let mut env = EnvOptions::default();
-    env.es2017 = ES2017Options { async_to_generator: true };
-    env.es2018 = ES2018Options { object_rest_spread: None, async_generator_functions: true };
+    env.es2017 = ES2017Options {
+        async_to_generator: true,
+    };
+    env.es2018 = ES2018Options {
+        object_rest_spread: None,
+        async_generator_functions: true,
+    };
     apply_env(alloc, src, filename, env, program)
 }
 
@@ -87,6 +131,10 @@ fn apply_env<'a>(
     let mut opts = TransformOptions::default();
     opts.env = env;
     opts.helper_loader.mode = HelperLoaderMode::External;
-    crate::parse::transform(alloc, src, filename, &opts, scoping, program)
-        .map_err(|e| CompileError::new(format!("internal: lowering failed: {}", e.message), filename))
+    crate::parse::transform(alloc, src, filename, &opts, scoping, program).map_err(|e| {
+        CompileError::new(
+            format!("internal: lowering failed: {}", e.message),
+            filename,
+        )
+    })
 }

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Must call super constructor in derived class before accessing 'this' or returning from derived constructor"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "Must call super constructor in derived class before accessing 'this' or returning from derived constructor"
+ }
+}

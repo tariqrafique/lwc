@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><input type=\"text\"><input class=\"custom-focus-out\" type=\"text\"><button>Trigger custom focusout</button></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><input type=\"text\"><input class=\"custom-focus-out\" type=\"text\"><button>Trigger custom focusout</button></template></lwc-up>"
+ }
+}

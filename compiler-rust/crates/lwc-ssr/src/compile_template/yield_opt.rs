@@ -93,10 +93,12 @@ fn try_collapse(test: &str, cons: &[Stmt], alt: &Alt) -> Option<Stmt> {
 
 fn single_yield(stmts: &[Stmt]) -> Option<Expr> {
     match stmts {
-        [Stmt::Yield {
-            expr,
-            delegate: false,
-        }] => Some(expr.clone()),
+        [
+            Stmt::Yield {
+                expr,
+                delegate: false,
+            },
+        ] => Some(expr.clone()),
         _ => None,
     }
 }

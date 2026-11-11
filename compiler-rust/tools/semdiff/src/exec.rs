@@ -34,8 +34,9 @@ use std::time::{Duration, Instant};
 
 use oxc::allocator::Allocator;
 use oxc::ast::ast::{
-    Argument, AssignmentExpression, AssignmentTarget, BindingPattern, CallExpression, Expression, ImportDeclaration,
-    ObjectExpression, ObjectProperty, ObjectPropertyKind, PropertyKey, VariableDeclarator,
+    Argument, AssignmentExpression, AssignmentTarget, BindingPattern, CallExpression, Expression,
+    ImportDeclaration, ObjectExpression, ObjectProperty, ObjectPropertyKind, PropertyKey,
+    VariableDeclarator,
 };
 use oxc::ast_visit::{walk, Visit};
 use oxc::parser::Parser;
@@ -64,9 +65,21 @@ pub fn exec_dir() -> PathBuf {
     cargo_manifest_dir().join("exec")
 }
 /// Runner sources, hashed into `runner_sha256` so a summary names the observer it was produced with.
-pub const RUNNER_FILES: [&str; 6] = ["hooks.mjs", "observer.mjs", "prepare.mjs", "register.mjs", "rt.mjs", "run.mjs"];
+pub const RUNNER_FILES: [&str; 6] = [
+    "hooks.mjs",
+    "observer.mjs",
+    "prepare.mjs",
+    "register.mjs",
+    "rt.mjs",
+    "run.mjs",
+];
 /// SSR observer sources. Hashed only for corpus `ssr-compiler`, so a CSR summary's runner_sha256 is unchanged.
-pub const SSR_RUNNER_FILES: [&str; 4] = ["ssr-hooks.mjs", "ssr-prepare.mjs", "ssr-register.mjs", "ssr-run.mjs"];
+pub const SSR_RUNNER_FILES: [&str; 4] = [
+    "ssr-hooks.mjs",
+    "ssr-prepare.mjs",
+    "ssr-register.mjs",
+    "ssr-run.mjs",
+];
 /// Manifest corpus that selects the SSR exec leg. Every other corpus, including `template-diag-codegen-only`, stays CSR.
 pub const SSR_CORPUS: &str = "ssr-compiler";
 
@@ -77,7 +90,11 @@ pub enum ExecEngine {
 }
 
 pub fn engine_for_corpus(corpus: &str) -> ExecEngine {
-    if corpus == SSR_CORPUS { ExecEngine::Ssr } else { ExecEngine::Csr }
+    if corpus == SSR_CORPUS {
+        ExecEngine::Ssr
+    } else {
+        ExecEngine::Csr
+    }
 }
 
 /// Render inputs the harness emitter wrote to `meta.jsonl`. Not a manifest field (the case key set is closed).
@@ -191,7 +208,9 @@ impl Walker {
                     p.push(m.property.name.to_string());
                     Some(Res::Path(p))
                 }
-                Res::Rec(r) => r.get(m.property.name.as_str()).map(|p| Res::Path(p.clone())),
+                Res::Rec(r) => r
+                    .get(m.property.name.as_str())
+                    .map(|p| Res::Path(p.clone())),
                 g => Some(g),
             },
             Expression::ComputedMemberExpression(m) => match self.chain(&m.object)? {
@@ -228,7 +247,12 @@ impl Walker {
     }
 
     fn mark_arg(&mut self, call: &CallExpression, i: usize, kind: u8) {
-        if let Some(p) = call.arguments.get(i).and_then(arg_expr).and_then(|e| self.path_of(e)) {
+        if let Some(p) = call
+            .arguments
+            .get(i)
+            .and_then(arg_expr)
+            .and_then(|e| self.path_of(e))
+        {
             self.a.tree.mark(&p, kind);
         }
     }
@@ -270,7 +294,9 @@ impl<'a> Visit<'a> for Walker {
     fn visit_expression(&mut self, it: &Expression<'a>) {
         if matches!(
             it.without_parentheses(),
-            Expression::Identifier(_) | Expression::StaticMemberExpression(_) | Expression::ComputedMemberExpression(_)
+            Expression::Identifier(_)
+                | Expression::StaticMemberExpression(_)
+                | Expression::ComputedMemberExpression(_)
         ) {
             if let Some(r) = self.chain(it) {
                 match r {
@@ -305,12 +331,20 @@ impl<'a> Visit<'a> for Walker {
         match helper.as_deref() {
             Some("i") => {
                 self.visit_expression(&it.callee);
-                let list = it.arguments.first().and_then(arg_expr).and_then(|e| self.path_of(e));
+                let list = it
+                    .arguments
+                    .first()
+                    .and_then(arg_expr)
+                    .and_then(|e| self.path_of(e));
                 if let Some(p) = &list {
                     self.a.tree.mark(p, K_LIST);
                 }
                 for (i, a) in it.arguments.iter().enumerate() {
-                    let param = |ps: &oxc::ast::ast::FormalParameters| match ps.items.first().map(|p| &p.pattern) {
+                    let param = |ps: &oxc::ast::ast::FormalParameters| match ps
+                        .items
+                        .first()
+                        .map(|p| &p.pattern)
+                    {
                         Some(BindingPattern::BindingIdentifier(id)) => Some(id.name.to_string()),
                         _ => None,
                     };
@@ -323,7 +357,8 @@ impl<'a> Visit<'a> for Walker {
                         (Some(name), Some(p)) => {
                             let mut el = p.clone();
                             el.push("[]".into());
-                            self.frames.push(BTreeMap::from([(name, Binding::Path(el))]));
+                            self.frames
+                                .push(BTreeMap::from([(name, Binding::Path(el))]));
                             self.visit_argument(a);
                             self.frames.pop();
                         }
@@ -359,9 +394,13 @@ impl<'a> Visit<'a> for Walker {
     fn visit_variable_declarator(&mut self, it: &VariableDeclarator<'a>) {
         match (&it.id, &it.init) {
             // const {k: api_key, …} = $api;
-            (BindingPattern::ObjectPattern(o), Some(Expression::Identifier(init))) if init.name == "$api" => {
+            (BindingPattern::ObjectPattern(o), Some(Expression::Identifier(init)))
+                if init.name == "$api" =>
+            {
                 for p in &o.properties {
-                    if let (Some(k), BindingPattern::BindingIdentifier(local)) = (key_name(&p.key), &p.value) {
+                    if let (Some(k), BindingPattern::BindingIdentifier(local)) =
+                        (key_name(&p.key), &p.value)
+                    {
                         self.alias.insert(local.name.to_string(), k);
                     }
                 }
@@ -380,7 +419,9 @@ impl<'a> Visit<'a> for Walker {
     }
 
     fn visit_assignment_expression(&mut self, it: &AssignmentExpression<'a>) {
-        if let (AssignmentTarget::StaticMemberExpression(m), Expression::StringLiteral(s)) = (&it.left, &it.right) {
+        if let (AssignmentTarget::StaticMemberExpression(m), Expression::StringLiteral(s)) =
+            (&it.left, &it.right)
+        {
             if m.property.name == "renderMode" && s.value == "light" {
                 self.a.light = true;
             }
@@ -405,14 +446,18 @@ impl<'a> Visit<'a> for Walker {
 impl Walker {
     fn path_of_callee(&mut self, callee: &Expression) -> Option<Vec<String>> {
         match callee.without_parentheses() {
-            Expression::StaticMemberExpression(_) | Expression::ComputedMemberExpression(_) => self.path_of(callee),
+            Expression::StaticMemberExpression(_) | Expression::ComputedMemberExpression(_) => {
+                self.path_of(callee)
+            }
             _ => None,
         }
     }
     fn record_of(&self, o: &ObjectExpression) -> Option<BTreeMap<String, Vec<String>>> {
         let mut rec = BTreeMap::new();
         for p in &o.properties {
-            let ObjectPropertyKind::ObjectProperty(p) = p else { return None };
+            let ObjectPropertyKind::ObjectProperty(p) = p else {
+                return None;
+            };
             if let (Some(k), Expression::Identifier(v)) = (key_name(&p.key), &p.value) {
                 if let Some(Binding::Path(path)) = self.lookup(&v.name) {
                     rec.insert(k, path.clone());
@@ -424,9 +469,15 @@ impl Walker {
 }
 
 pub fn is_stub_spec(s: &str) -> bool {
-    let ok = |p: &str| !p.is_empty() && p.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b'-');
+    let ok = |p: &str| {
+        !p.is_empty()
+            && p.bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b'-')
+    };
     match s.split_once('/') {
-        Some((ns, name)) => ns.as_bytes().first().is_some_and(u8::is_ascii_lowercase) && ok(ns) && ok(name),
+        Some((ns, name)) => {
+            ns.as_bytes().first().is_some_and(u8::is_ascii_lowercase) && ok(ns) && ok(name)
+        }
         None => false,
     }
 }
@@ -466,9 +517,19 @@ pub fn analyze(src: &str) -> Analysis {
         w.a.gaps.insert("no-tmpl".into());
     }
     w.visit_program(&ret.program);
-    w.a.comments = ret.program.comments.iter().map(|c| c.span.source_text(src).to_string()).collect();
+    w.a.comments = ret
+        .program
+        .comments
+        .iter()
+        .map(|c| c.span.source_text(src).to_string())
+        .collect();
     let refs = std::mem::take(&mut w.refs);
-    w.a.helpers = w.alias.iter().filter(|(l, _)| refs.contains(*l)).map(|(_, k)| k.clone()).collect();
+    w.a.helpers = w
+        .alias
+        .iter()
+        .filter(|(l, _)| refs.contains(*l))
+        .map(|(_, k)| k.clone())
+        .collect();
     w.a
 }
 
@@ -541,7 +602,14 @@ impl Gen<'_> {
 
     /// `idx`: the index of the innermost list element this node is under (string/number leaves get it as a suffix,
     /// so keys derived from items differ).
-    fn spec(&mut self, n: &Node, path: &mut Vec<String>, mode: Mode, idx: Option<usize>, lens: &BTreeMap<String, usize>) -> Value {
+    fn spec(
+        &mut self,
+        n: &Node,
+        path: &mut Vec<String>,
+        mode: Mode,
+        idx: Option<usize>,
+        lens: &BTreeMap<String, usize>,
+    ) -> Value {
         let conflict = |g: &mut BTreeSet<String>, p: &[String]| {
             g.insert(format!("kind-conflict:{}", path_str(p)));
         };
@@ -555,16 +623,25 @@ impl Gen<'_> {
             if !n.kids.is_empty() || n.kinds & K_LIST != 0 {
                 conflict(&mut self.gaps, path);
             }
-            return if mode == Mode::A { json!({"c": 1}) } else { json!({"l": null}) };
+            return if mode == Mode::A {
+                json!({"c": 1})
+            } else {
+                json!({"l": null})
+            };
         }
         if n.kinds & K_LIST != 0 {
             if n.kids.keys().any(|k| k != "[]" && k != "length") {
                 conflict(&mut self.gaps, path);
             }
-            let len = lens.get(&path_str(path)).copied().unwrap_or(if mode == Mode::A { LIST_A } else { 0 });
+            let len = lens
+                .get(&path_str(path))
+                .copied()
+                .unwrap_or(if mode == Mode::A { LIST_A } else { 0 });
             let el = n.kids.get("[]").cloned().unwrap_or_default();
             path.push("[]".into());
-            let items: Vec<Value> = (0..len).map(|i| self.spec(&el, path, Mode::A, Some(i), lens)).collect();
+            let items: Vec<Value> = (0..len)
+                .map(|i| self.spec(&el, path, Mode::A, Some(i), lens))
+                .collect();
             path.pop();
             return json!({"a": items});
         }
@@ -584,7 +661,12 @@ impl Gen<'_> {
     }
 }
 
-fn walk_paths(n: &Node, path: &mut Vec<String>, out: &mut BTreeSet<String>, lists: &mut Vec<String>) {
+fn walk_paths(
+    n: &Node,
+    path: &mut Vec<String>,
+    out: &mut BTreeSet<String>,
+    lists: &mut Vec<String>,
+) {
     if !path.is_empty() {
         out.insert(path_str(path));
         if n.kinds & K_LIST != 0 && n.kinds & K_FN == 0 {
@@ -623,7 +705,10 @@ impl InputSet {
 /// Rewrite reasons that mean the printed (or printer-equal-but-not-token-equal) texts still differ by something
 /// D-0196 observes via Function#toString. Equal traces are not evidence those texts agree.
 pub fn rewrite_is_statically_observed(reason: crate::Reason) -> bool {
-    matches!(reason, crate::Reason::PrintedDiffers | crate::Reason::TokensDiffer | crate::Reason::AstDiffers)
+    matches!(
+        reason,
+        crate::Reason::PrintedDiffers | crate::Reason::TokensDiffer | crate::Reason::AstDiffers
+    )
 }
 
 pub fn generate(seed: u64, case_key: &str, oracle: &str, rust: &str) -> InputSet {
@@ -632,7 +717,11 @@ pub fn generate(seed: u64, case_key: &str, oracle: &str, rust: &str) -> InputSet
     tree.merge(&r.tree);
     let events: BTreeSet<String> = o.events.union(&r.events).cloned().collect();
     let stubs: BTreeSet<String> = o.stubs.union(&r.stubs).cloned().collect();
-    let mut g = Gen { seed, case: case_key, gaps: o.gaps.union(&r.gaps).cloned().collect() };
+    let mut g = Gen {
+        seed,
+        case: case_key,
+        gaps: o.gaps.union(&r.gaps).cloned().collect(),
+    };
     let none = BTreeMap::new();
     let mut slots = BTreeSet::new();
     let mut lists = Vec::new();
@@ -647,11 +736,21 @@ pub fn generate(seed: u64, case_key: &str, oracle: &str, rust: &str) -> InputSet
             g.spec(n, &mut vec![name.clone()], Mode::A, None, &none); // kind-conflict check only
             continue;
         }
-        props_a.push((name.clone(), g.spec(n, &mut vec![name.clone()], Mode::A, None, &none)));
-        props_b.push((name.clone(), g.spec(n, &mut vec![name.clone()], Mode::B, None, &none)));
+        props_a.push((
+            name.clone(),
+            g.spec(n, &mut vec![name.clone()], Mode::A, None, &none),
+        ));
+        props_b.push((
+            name.clone(),
+            g.spec(n, &mut vec![name.clone()], Mode::B, None, &none),
+        ));
     }
-    let props = |v: &[(String, Value)]| Value::Array(v.iter().map(|(k, s)| json!([k, s])).collect());
-    let mut steps = vec![json!({"kind": "load", "label": "load"}), json!({"kind": "mount", "label": "mount(A)", "props": props(&props_a)})];
+    let props =
+        |v: &[(String, Value)]| Value::Array(v.iter().map(|(k, s)| json!([k, s])).collect());
+    let mut steps = vec![
+        json!({"kind": "load", "label": "load"}),
+        json!({"kind": "mount", "label": "mount(A)", "props": props(&props_a)}),
+    ];
     for t in &events {
         steps.push(json!({"kind": "event", "label": format!("event:{t}"), "type": t}));
     }
@@ -660,7 +759,9 @@ pub fn generate(seed: u64, case_key: &str, oracle: &str, rust: &str) -> InputSet
     }
     for l in &lists {
         let root = l.split(['.', '[']).next().unwrap_or(l).to_string();
-        let Some(n) = tree.kids.get(&root) else { continue };
+        let Some(n) = tree.kids.get(&root) else {
+            continue;
+        };
         if n.kinds & K_FN != 0 {
             continue;
         }
@@ -725,25 +826,45 @@ pub struct ExecCfg {
 
 impl ExecCfg {
     pub fn csr(seed: u64, jobs: usize, oracle_dir: PathBuf, work: PathBuf) -> Self {
-        Self { seed, jobs, oracle_dir, work, engine: ExecEngine::Csr, ssr: BTreeMap::new() }
+        Self {
+            seed,
+            jobs,
+            oracle_dir,
+            work,
+            engine: ExecEngine::Csr,
+            ssr: BTreeMap::new(),
+        }
     }
 }
 
 /// Environment facts recorded in the summary; also the preflight: wrong oracle commit or no node = internal error.
 pub fn preflight(cfg: &ExecCfg) -> Result<Value, InternalError> {
     let git = |args: &[&str]| -> Result<String, InternalError> {
-        let o = Command::new("git").arg("-C").arg(&cfg.oracle_dir).args(args).output()
+        let o = Command::new("git")
+            .arg("-C")
+            .arg(&cfg.oracle_dir)
+            .args(args)
+            .output()
             .map_err(|e| InternalError(format!("exec: git: {e}")))?;
         Ok(String::from_utf8_lossy(&o.stdout).trim().to_string())
     };
     let head = git(&["rev-parse", "HEAD"])?;
     if head != ORACLE_COMMIT {
-        return Err(InternalError(format!("exec: oracle {} is at {head:?}, need {ORACLE_COMMIT}", cfg.oracle_dir.display())));
+        return Err(InternalError(format!(
+            "exec: oracle {} is at {head:?}, need {ORACLE_COMMIT}",
+            cfg.oracle_dir.display()
+        )));
     }
     if !git(&["status", "--porcelain", "--untracked-files=no"])?.is_empty() {
-        return Err(InternalError(format!("exec: oracle {} has tracked modifications", cfg.oracle_dir.display())));
+        return Err(InternalError(format!(
+            "exec: oracle {} has tracked modifications",
+            cfg.oracle_dir.display()
+        )));
     }
-    let node = Command::new("node").arg("--version").output().map_err(|e| InternalError(format!("exec: node: {e}")))?;
+    let node = Command::new("node")
+        .arg("--version")
+        .output()
+        .map_err(|e| InternalError(format!("exec: node: {e}")))?;
     let node = String::from_utf8_lossy(&node.stdout).trim().to_string();
     let files: &[&str] = match cfg.engine {
         ExecEngine::Csr => &RUNNER_FILES,
@@ -751,7 +872,8 @@ pub fn preflight(cfg: &ExecCfg) -> Result<Value, InternalError> {
     };
     let mut runner = String::new();
     for f in files {
-        let t = fs::read_to_string(exec_dir().join(f)).map_err(|e| InternalError(format!("exec: read {f}: {e}")))?;
+        let t = fs::read_to_string(exec_dir().join(f))
+            .map_err(|e| InternalError(format!("exec: read {f}: {e}")))?;
         runner.push_str(&format!("{f}\0{}\0", sha256_hex(t.as_bytes())));
     }
     let engine = match cfg.engine {
@@ -773,7 +895,11 @@ pub fn preflight(cfg: &ExecCfg) -> Result<Value, InternalError> {
 
 fn ssr_mode_label(ssr: &BTreeMap<String, SsrMeta>) -> String {
     let have: BTreeSet<&str> = ssr.values().map(|m| m.mode.as_str()).collect();
-    ["sync", "async", "asyncYield"].into_iter().filter(|m| have.contains(m)).collect::<Vec<_>>().join(",")
+    ["sync", "async", "asyncYield"]
+        .into_iter()
+        .filter(|m| have.contains(m))
+        .collect::<Vec<_>>()
+        .join(",")
 }
 
 enum Proc {
@@ -790,14 +916,32 @@ struct NodeOpts<'a> {
 
 fn node(dir: &Path, script: &str, template: Option<&Path>, out_name: &str) -> Proc {
     let extra: &[(&str, String)] = &[];
-    node_with(dir, script, template, out_name, NodeOpts { register: "register.mjs", transform_types: false, extra })
+    node_with(
+        dir,
+        script,
+        template,
+        out_name,
+        NodeOpts {
+            register: "register.mjs",
+            transform_types: false,
+            extra,
+        },
+    )
 }
 
-fn node_with(dir: &Path, script: &str, template: Option<&Path>, out_name: &str, opts: NodeOpts<'_>) -> Proc {
+fn node_with(
+    dir: &Path,
+    script: &str,
+    template: Option<&Path>,
+    out_name: &str,
+    opts: NodeOpts<'_>,
+) -> Proc {
     let exec = exec_dir();
     let out = dir.join(out_name);
     let err = dir.join(format!("{out_name}.stderr"));
-    let (Ok(fo), Ok(fe)) = (fs::File::create(&out), fs::File::create(&err)) else { return Proc::Fail("create output".into()) };
+    let (Ok(fo), Ok(fe)) = (fs::File::create(&out), fs::File::create(&err)) else {
+        return Proc::Fail("create output".into());
+    };
     let mut cmd = Command::new("node");
     let oracle = std::env::var_os("LWC_ORACLE")
         .unwrap_or_else(|| std::ffi::OsString::from(env!("SEMDIFF_ORACLE_DIR")));
@@ -814,7 +958,8 @@ fn node_with(dir: &Path, script: &str, template: Option<&Path>, out_name: &str, 
         cmd.env(k, v);
     }
     if opts.transform_types {
-        cmd.arg("--experimental-transform-types").arg("--disable-warning=ExperimentalWarning");
+        cmd.arg("--experimental-transform-types")
+            .arg("--disable-warning=ExperimentalWarning");
     }
     cmd.arg("--import")
         .arg(exec.join(opts.register))
@@ -846,8 +991,16 @@ fn node_with(dir: &Path, script: &str, template: Option<&Path>, out_name: &str, 
     let mut stderr = String::new();
     let _ = fs::File::open(&err).and_then(|mut f| f.read_to_string(&mut stderr));
     if !status.success() {
-        let tail: String = stderr.lines().filter(|l| !l.trim().is_empty()).take(3).collect::<Vec<_>>().join(" | ");
-        return Proc::Fail(format!("{script}: exit {status}: {}", tail.chars().take(400).collect::<String>()));
+        let tail: String = stderr
+            .lines()
+            .filter(|l| !l.trim().is_empty())
+            .take(3)
+            .collect::<Vec<_>>()
+            .join(" | ");
+        return Proc::Fail(format!(
+            "{script}: exit {status}: {}",
+            tail.chars().take(400).collect::<String>()
+        ));
     }
     match fs::read_to_string(&out) {
         Ok(s) => Proc::Ok(s),
@@ -890,7 +1043,10 @@ pub struct Step {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum StepBody {
-    Ran { events: Vec<Event>, dom: Dom },
+    Ran {
+        events: Vec<Event>,
+        dom: Dom,
+    },
     /// Not run (`load` threw); the string is run.mjs's reason.
     Skipped(String),
 }
@@ -925,7 +1081,11 @@ impl TryFrom<RawStep> for Step {
                 ))
             }
         };
-        Ok(Step { kind: r.kind, label: r.label, body })
+        Ok(Step {
+            kind: r.kind,
+            label: r.label,
+            body,
+        })
     }
 }
 
@@ -935,7 +1095,13 @@ impl From<Step> for RawStep {
             StepBody::Ran { events, dom } => (Some(events), Some(dom), None),
             StepBody::Skipped(why) => (None, None, Some(why)),
         };
-        RawStep { dom, events, kind: s.kind, label: s.label, skipped }
+        RawStep {
+            dom,
+            events,
+            kind: s.kind,
+            label: s.label,
+            skipped,
+        }
     }
 }
 
@@ -984,7 +1150,12 @@ fn script(input: &Value) -> Vec<(&str, &str)> {
         .as_array()
         .expect("generate: steps")
         .iter()
-        .map(|s| (s["kind"].as_str().expect("generate: kind"), s["label"].as_str().expect("generate: label")))
+        .map(|s| {
+            (
+                s["kind"].as_str().expect("generate: kind"),
+                s["label"].as_str().expect("generate: label"),
+            )
+        })
         .collect()
 }
 
@@ -997,28 +1168,46 @@ pub fn parse_trace(s: &str, input: &Value) -> Result<Trace, String> {
     }
     let t: Trace = serde_json::from_str(s).map_err(|e| format!("trace: {e}"))?;
     if t.schema != TRACE_SCHEMA {
-        return Err(format!("trace schema must be {TRACE_SCHEMA}, got {:?}", t.schema));
+        return Err(format!(
+            "trace schema must be {TRACE_SCHEMA}, got {:?}",
+            t.schema
+        ));
     }
     if t.steps.is_empty() {
         return Err("trace has no steps".into());
     }
     let at = |i: usize| t.steps.get(i).map(|s| (s.kind.as_str(), s.label.as_str()));
     if at(0) != Some(("load", "load")) || at(1) != Some(("mount", "mount(A)")) {
-        return Err(format!("trace must start load, mount(A); got {:?}, {:?}", at(0), at(1)));
+        return Err(format!(
+            "trace must start load, mount(A); got {:?}, {:?}",
+            at(0),
+            at(1)
+        ));
     }
     let want = script(input);
     if t.steps.len() != want.len() {
-        return Err(format!("trace has {} steps, the script {}", t.steps.len(), want.len()));
+        return Err(format!(
+            "trace has {} steps, the script {}",
+            t.steps.len(),
+            want.len()
+        ));
     }
     if let Some(i) = (0..want.len()).find(|&i| at(i) != Some(want[i])) {
-        return Err(format!("trace step {i} is {:?}, the script's is {:?}", at(i), want[i]));
+        return Err(format!(
+            "trace step {i} is {:?}, the script's is {:?}",
+            at(i),
+            want[i]
+        ));
     }
     Ok(t)
 }
 
 /// Parse and check the four runs (oracle 0, 1, rust 0, 1). `run(side, n)` yields run n's stdout or a failure message;
 /// it is called in that order and not again after the first failure.
-pub fn collect(input: &Value, mut run: impl FnMut(&str, usize) -> Result<String, String>) -> Outcome {
+pub fn collect(
+    input: &Value,
+    mut run: impl FnMut(&str, usize) -> Result<String, String>,
+) -> Outcome {
     let mut traces = Vec::new();
     for side in ["oracle", "rust"] {
         let mut runs = Vec::new();
@@ -1035,13 +1224,21 @@ pub fn collect(input: &Value, mut run: impl FnMut(&str, usize) -> Result<String,
     }
     let r = traces.pop().expect("rust");
     let o = traces.pop().expect("oracle");
-    Outcome::Traces { o: Box::new(o), r: Box::new(r) }
+    Outcome::Traces {
+        o: Box::new(o),
+        r: Box::new(r),
+    }
 }
 
 pub fn run_case(dir: &Path, input: &Value, oracle: &str, rust: &str) -> Outcome {
     let hf = |m: String| Outcome::HarnessFailure(m);
     if let Err(e) = fs::create_dir_all(dir)
-        .and_then(|_| fs::write(dir.join("input.json"), serde_json::to_string(input).expect("json")))
+        .and_then(|_| {
+            fs::write(
+                dir.join("input.json"),
+                serde_json::to_string(input).expect("json"),
+            )
+        })
         .and_then(|_| fs::write(dir.join("oracle.js"), oracle))
         .and_then(|_| fs::write(dir.join("rust.js"), rust))
     {
@@ -1050,21 +1247,35 @@ pub fn run_case(dir: &Path, input: &Value, oracle: &str, rust: &str) -> Outcome 
     if let Proc::Fail(m) = node(dir, "prepare.mjs", None, "prepare.out") {
         return hf(m);
     }
-    let map: Value = match fs::read_to_string(dir.join("map.json")).map_err(|e| e.to_string()).and_then(|s| serde_json::from_str(&s).map_err(|e| e.to_string())) {
+    let map: Value = match fs::read_to_string(dir.join("map.json"))
+        .map_err(|e| e.to_string())
+        .and_then(|s| serde_json::from_str(&s).map_err(|e| e.to_string()))
+    {
         Ok(v) => v,
         Err(e) => return hf(format!("map.json: {e}")),
     };
     if let Some(g) = map.get("gap").and_then(Value::as_str) {
         return Outcome::Gap(g.to_string());
     }
-    collect(input, |side, n| match node(dir, "run.mjs", Some(&dir.join(format!("{side}.js"))), &format!("{side}.{n}.json")) {
-        Proc::Ok(s) => Ok(s),
-        Proc::Fail(m) => Err(m),
+    collect(input, |side, n| {
+        match node(
+            dir,
+            "run.mjs",
+            Some(&dir.join(format!("{side}.js"))),
+            &format!("{side}.{n}.json"),
+        ) {
+            Proc::Ok(s) => Ok(s),
+            Proc::Fail(m) => Err(m),
+        }
     })
 }
 
 /// Run `f` over `items` on `jobs` threads; results come back in input order.
-pub fn par_map<T: Sync, R: Send>(items: &[T], jobs: usize, f: impl Fn(usize, &T) -> R + Sync) -> Vec<R> {
+pub fn par_map<T: Sync, R: Send>(
+    items: &[T],
+    jobs: usize,
+    f: impl Fn(usize, &T) -> R + Sync,
+) -> Vec<R> {
     let next = AtomicUsize::new(0);
     let out: Mutex<Vec<Option<R>>> = Mutex::new((0..items.len()).map(|_| None).collect());
     std::thread::scope(|s| {
@@ -1079,7 +1290,11 @@ pub fn par_map<T: Sync, R: Send>(items: &[T], jobs: usize, f: impl Fn(usize, &T)
             });
         }
     });
-    out.into_inner().expect("lock").into_iter().map(|r| r.expect("every item ran")).collect()
+    out.into_inner()
+        .expect("lock")
+        .into_iter()
+        .map(|r| r.expect("every item ran"))
+        .collect()
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1087,13 +1302,28 @@ pub fn par_map<T: Sync, R: Send>(items: &[T], jobs: usize, f: impl Fn(usize, &T)
 
 fn clip(v: &Value) -> String {
     let s = serde_json::to_string(v).expect("json");
-    if s.chars().count() > 300 { format!("{}…", s.chars().take(300).collect::<String>()) } else { s }
+    if s.chars().count() > 300 {
+        format!("{}…", s.chars().take(300).collect::<String>())
+    } else {
+        s
+    }
 }
 
 fn window(a: &str, b: &str) -> (usize, String, String) {
-    let at = a.char_indices().zip(b.chars()).find(|((_, x), y)| x != y).map(|((i, _), _)| i).unwrap_or(a.len().min(b.len()));
-    let at = (0..=at).rev().find(|i| a.is_char_boundary(*i) && b.is_char_boundary(*i)).unwrap_or(0);
-    let from = (0..=at.saturating_sub(60)).rev().find(|i| a.is_char_boundary(*i) && b.is_char_boundary(*i)).unwrap_or(0);
+    let at = a
+        .char_indices()
+        .zip(b.chars())
+        .find(|((_, x), y)| x != y)
+        .map(|((i, _), _)| i)
+        .unwrap_or(a.len().min(b.len()));
+    let at = (0..=at)
+        .rev()
+        .find(|i| a.is_char_boundary(*i) && b.is_char_boundary(*i))
+        .unwrap_or(0);
+    let from = (0..=at.saturating_sub(60))
+        .rev()
+        .find(|i| a.is_char_boundary(*i) && b.is_char_boundary(*i))
+        .unwrap_or(0);
     let cut = |s: &str| s[from..].chars().take(200).collect::<String>();
     (at, cut(a), cut(b))
 }
@@ -1107,26 +1337,44 @@ pub fn first_divergence(o: &Trace, r: &Trace) -> Option<Value> {
         }
         let label = json!(a.label);
         if (&a.kind, &a.label) != (&b.kind, &b.label) {
-            return Some(json!({"coords": "exec-step", "index": i, "label": label, "kind": "step", "event_index": null,
-                "oracle": format!("{}:{}", a.kind, a.label), "rust": format!("{}:{}", b.kind, b.label)}));
+            return Some(
+                json!({"coords": "exec-step", "index": i, "label": label, "kind": "step", "event_index": null,
+                "oracle": format!("{}:{}", a.kind, a.label), "rust": format!("{}:{}", b.kind, b.label)}),
+            );
         }
         let skipped = |s: &Step| match &s.body {
             StepBody::Skipped(why) => json!(why),
             StepBody::Ran { .. } => Value::Null,
         };
-        let (StepBody::Ran { events: ea, dom: da }, StepBody::Ran { events: eb, dom: db }) = (&a.body, &b.body) else {
-            return Some(json!({"coords": "exec-step", "index": i, "label": label, "kind": "skipped", "event_index": null,
-                "oracle": clip(&skipped(a)), "rust": clip(&skipped(b))}));
+        let (
+            StepBody::Ran {
+                events: ea,
+                dom: da,
+            },
+            StepBody::Ran {
+                events: eb,
+                dom: db,
+            },
+        ) = (&a.body, &b.body)
+        else {
+            return Some(
+                json!({"coords": "exec-step", "index": i, "label": label, "kind": "skipped", "event_index": null,
+                "oracle": clip(&skipped(a)), "rust": clip(&skipped(b))}),
+            );
         };
         if let Some(j) = (0..ea.len().max(eb.len())).find(|j| ea.get(*j) != eb.get(*j)) {
             let ev = |e: &[Event]| e.get(j).map(|e| clip(&e.to_value()));
-            return Some(json!({"coords": "exec-step", "index": i, "label": label, "kind": "event", "event_index": j,
-                "oracle": ev(ea), "rust": ev(eb)}));
+            return Some(
+                json!({"coords": "exec-step", "index": i, "label": label, "kind": "event", "event_index": j,
+                "oracle": ev(ea), "rust": ev(eb)}),
+            );
         }
         let (da, db) = (dom_json(da), dom_json(db));
         let (at, x, y) = window(&da, &db);
-        return Some(json!({"coords": "exec-step", "index": i, "label": label, "kind": "dom", "event_index": null,
-            "dom_offset": at, "oracle": x, "rust": y}));
+        return Some(
+            json!({"coords": "exec-step", "index": i, "label": label, "kind": "dom", "event_index": null,
+            "dom_offset": at, "oracle": x, "rust": y}),
+        );
     }
     let (n, m) = (o.steps.len(), r.steps.len());
     (n != m).then(|| {
@@ -1142,7 +1390,9 @@ fn dom_json(d: &Dom) -> String {
 
 fn has_throw(t: &Trace) -> bool {
     t.steps.iter().any(|s| match &s.body {
-        StepBody::Ran { events, .. } => events.iter().any(|e| matches!(e.kind(), "throw" | "error")),
+        StepBody::Ran { events, .. } => {
+            events.iter().any(|e| matches!(e.kind(), "throw" | "error"))
+        }
         StepBody::Skipped(_) => false,
     })
 }
@@ -1151,12 +1401,35 @@ fn has_throw(t: &Trace) -> bool {
 pub fn coverage_missing(input: &InputSet, o: &Trace, r: &Trace) -> Vec<String> {
     let mut miss: Vec<String> = input.gaps.iter().map(|g| format!("gap:{g}")).collect();
     for (side, a, t) in [("oracle", &input.o, o), ("rust", &input.r, r)] {
-        miss.extend(a.helpers.iter().filter(|h| !t.helpers.contains_key(*h)).map(|h| format!("helper-not-run:{side}:{h}")));
+        miss.extend(
+            a.helpers
+                .iter()
+                .filter(|h| !t.helpers.contains_key(*h))
+                .map(|h| format!("helper-not-run:{side}:{h}")),
+        );
     }
-    let reads: BTreeSet<&str> = [o, r].iter().flat_map(|t| t.reads.iter().map(String::as_str)).collect();
-    miss.extend(input.slots.iter().filter(|s| !reads.contains(s.as_str())).map(|s| format!("slot-not-read:{s}")));
-    let handled: BTreeSet<&str> = [o, r].iter().flat_map(|t| t.handled.iter().map(String::as_str)).collect();
-    miss.extend(input.events.iter().filter(|e| !handled.contains(e.as_str())).map(|e| format!("event-not-handled:{e}")));
+    let reads: BTreeSet<&str> = [o, r]
+        .iter()
+        .flat_map(|t| t.reads.iter().map(String::as_str))
+        .collect();
+    miss.extend(
+        input
+            .slots
+            .iter()
+            .filter(|s| !reads.contains(s.as_str()))
+            .map(|s| format!("slot-not-read:{s}")),
+    );
+    let handled: BTreeSet<&str> = [o, r]
+        .iter()
+        .flat_map(|t| t.handled.iter().map(String::as_str))
+        .collect();
+    miss.extend(
+        input
+            .events
+            .iter()
+            .filter(|e| !handled.contains(e.as_str()))
+            .map(|e| format!("event-not-handled:{e}")),
+    );
     miss
 }
 
@@ -1180,7 +1453,13 @@ fn comment_divergence(o: &[String], r: &[String]) -> Option<Value> {
 /// DIFFERENT does not depend on coverage (a seen difference is a difference); EQUIVALENT does.
 pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
     use crate::{Class, Reason};
-    let d = |class, reason, detail: Value| ExecDecision { class, reason, first_diff: Value::Null, trace_sha256: None, detail };
+    let d = |class, reason, detail: Value| ExecDecision {
+        class,
+        reason,
+        first_diff: Value::Null,
+        trace_sha256: None,
+        detail,
+    };
     let comments = comment_divergence(&input.o.comments, &input.r.comments);
     let static_comment = |fd: Value, trace_sha256, detail| ExecDecision {
         class: Class::Different,
@@ -1199,10 +1478,16 @@ pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
     };
     match out {
         Outcome::HarnessFailure(m) => d(Class::Crash, Reason::ExecHarnessFailure, json!(m)),
-        Outcome::Nondeterministic(side) => d(Class::Crash, Reason::ExecNondeterministic, json!(format!("{side} runs differ"))),
-        Outcome::Gap(g) if input.engine == ExecEngine::Ssr => {
-            d(Class::Crash, Reason::ExecHarnessFailure, json!(format!("ssr gap: {g}")))
-        }
+        Outcome::Nondeterministic(side) => d(
+            Class::Crash,
+            Reason::ExecNondeterministic,
+            json!(format!("{side} runs differ")),
+        ),
+        Outcome::Gap(g) if input.engine == ExecEngine::Ssr => d(
+            Class::Crash,
+            Reason::ExecHarnessFailure,
+            json!(format!("ssr gap: {g}")),
+        ),
         Outcome::Gap(g) => {
             let miss = json!([format!("gap:{g}")]);
             match comments {
@@ -1213,7 +1498,11 @@ pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
         Outcome::Traces { o, r } => {
             let sha = |t: &Trace| sha256_hex(serde_json::to_string(t).expect("json").as_bytes());
             if let Some(fd) = first_divergence(&o, &r) {
-                let reason = if has_throw(&o) != has_throw(&r) { Reason::ExecThrowOneSide } else { Reason::ExecDiffers };
+                let reason = if has_throw(&o) != has_throw(&r) {
+                    Reason::ExecThrowOneSide
+                } else {
+                    Reason::ExecDiffers
+                };
                 return ExecDecision {
                     class: Class::Different,
                     reason,
@@ -1223,7 +1512,11 @@ pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
                 };
             }
             // SSR must not reuse CSR helper/slot/event misses: a thin-but-complete trace would become exec-uncovered.
-            let miss = if input.engine == ExecEngine::Ssr { ssr_coverage_missing(&o, &r) } else { coverage_missing(input, &o, &r) };
+            let miss = if input.engine == ExecEngine::Ssr {
+                ssr_coverage_missing(&o, &r)
+            } else {
+                coverage_missing(input, &o, &r)
+            };
             let trace_sha256 = Some(sha(&o));
             if let Some(fd) = comments {
                 return static_comment(fd, trace_sha256, json!(miss));
@@ -1234,22 +1527,41 @@ pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
                 return d;
             }
             // No EXEC_EQUAL path. Helper/slot/event coverage may be complete; branch coverage is not proven (F2).
-            let detail = if miss.is_empty() { json!({"branch_coverage": "not-proven"}) } else { json!(miss) };
-            ExecDecision { class: Class::Unclassified, reason: Reason::ExecUncovered, first_diff: Value::Null, trace_sha256, detail }
+            let detail = if miss.is_empty() {
+                json!({"branch_coverage": "not-proven"})
+            } else {
+                json!(miss)
+            };
+            ExecDecision {
+                class: Class::Unclassified,
+                reason: Reason::ExecUncovered,
+                first_diff: Value::Null,
+                trace_sha256,
+                detail,
+            }
         }
     }
 }
 
 /// Apply the execution leg to a rewrite verdict JSON (which stays under `rewrite`).
 pub fn apply(verdict: &mut Map<String, Value>, input: &InputSet, d: &ExecDecision) {
-    let rewrite = json!({"reason": verdict["reason"].clone(), "first_diff": verdict["first_diff"].clone()});
+    let rewrite =
+        json!({"reason": verdict["reason"].clone(), "first_diff": verdict["first_diff"].clone()});
     verdict.insert("class".into(), json!(d.class.as_str()));
     verdict.insert("reason".into(), json!(d.reason.as_str()));
     verdict.insert("first_diff".into(), d.first_diff.clone());
-    verdict.insert("input_set_sha256".into(), json!(sha256_hex(serde_json::to_string(&input.json).expect("json").as_bytes())));
+    verdict.insert(
+        "input_set_sha256".into(),
+        json!(sha256_hex(
+            serde_json::to_string(&input.json).expect("json").as_bytes()
+        )),
+    );
     verdict.insert("trace_sha256".into(), json!(d.trace_sha256));
     verdict.insert("rewrite".into(), rewrite);
-    verdict.insert("exec".into(), json!({"detail": d.detail, "input_set": input.json}));
+    verdict.insert(
+        "exec".into(),
+        json!({"detail": d.detail, "input_set": input.json}),
+    );
 }
 
 pub fn case_dir(work: &Path, i: usize) -> PathBuf {

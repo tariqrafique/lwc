@@ -62,7 +62,10 @@ fn serde_option_keys(lib_rs: &str) -> BTreeSet<String> {
             j += 1;
         }
         let item = lines[j].trim();
-        assert!(item.starts_with("pub struct ") || item.starts_with("pub enum "), "unexpected item after derive: {item}");
+        assert!(
+            item.starts_with("pub struct ") || item.starts_with("pub enum "),
+            "unexpected item after derive: {item}"
+        );
         let is_enum = item.starts_with("pub enum ");
         let mut rename: Option<String> = None;
         j += 1;
@@ -75,12 +78,22 @@ fn serde_option_keys(lib_rs: &str) -> BTreeSet<String> {
                 if let (Some(a), Some(b)) = (f.find('{'), f.rfind('}')) {
                     for decl in f[a + 1..b].split(',') {
                         if let Some(id) = field_ident(decl) {
-                            keys.insert(if camel_case { camel(id) } else { id.to_string() });
+                            keys.insert(if camel_case {
+                                camel(id)
+                            } else {
+                                id.to_string()
+                            });
                         }
                     }
                 }
             } else if let Some(id) = field_ident(f) {
-                keys.insert(rename.take().unwrap_or_else(|| if camel_case { camel(id) } else { id.to_string() }));
+                keys.insert(rename.take().unwrap_or_else(|| {
+                    if camel_case {
+                        camel(id)
+                    } else {
+                        id.to_string()
+                    }
+                }));
             }
             j += 1;
         }
@@ -90,7 +103,8 @@ fn serde_option_keys(lib_rs: &str) -> BTreeSet<String> {
 }
 
 fn option_keys() -> BTreeSet<String> {
-    let lib = std::fs::read_to_string(lwc_shared::cargo_manifest_dir!().join("src/lib.rs")).unwrap();
+    let lib =
+        std::fs::read_to_string(lwc_shared::cargo_manifest_dir!().join("src/lib.rs")).unwrap();
     let mut k = serde_option_keys(&lib);
     k.extend(NON_SERDE_KEYS.iter().map(|s| s.to_string()));
     k
@@ -105,50 +119,105 @@ fn code_only(js: &str) -> String {
         rest = rest[i..].split_once("*/").map_or("", |(_, r)| r);
     }
     out.push_str(rest);
-    out.lines().map(|l| l.split_once("//").map_or(l, |(a, _)| a)).collect::<Vec<_>>().join("\n")
+    out.lines()
+        .map(|l| l.split_once("//").map_or(l, |(a, _)| a))
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 /// Every identifier-like token, so `.key`, `key:`, `{ key }`, `'key'` and `` `key` `` are all caught.
 fn tokens(code: &str) -> BTreeSet<&str> {
-    code.split(|c: char| !(c.is_ascii_alphanumeric() || c == '_' || c == '$')).filter(|t| !t.is_empty()).collect()
+    code.split(|c: char| !(c.is_ascii_alphanumeric() || c == '_' || c == '$'))
+        .filter(|t| !t.is_empty())
+        .collect()
 }
 
 fn violations(js: &str, keys: &BTreeSet<String>) -> Vec<String> {
     let mut v = Vec::new();
     let compact: String = js.chars().filter(|c| !c.is_whitespace()).collect();
-    for needle in ["process.env", "process[\"env\"]", "process['env']", "process?.env"] {
+    for needle in [
+        "process.env",
+        "process[\"env\"]",
+        "process['env']",
+        "process?.env",
+    ] {
         if compact.contains(needle) {
             v.push(format!("environment access `{needle}`"));
         }
     }
     let code = code_only(js);
     let toks = tokens(&code);
-    v.extend(keys.iter().filter(|k| toks.contains(k.as_str())).map(|k| format!("option key `{k}`")));
+    v.extend(
+        keys.iter()
+            .filter(|k| toks.contains(k.as_str()))
+            .map(|k| format!("option key `{k}`")),
+    );
     v
 }
 
 #[test]
 fn key_set_parses_the_option_structs() {
     let k = option_keys();
-    for must in ["name", "namespace", "targetSSR", "apiVersion", "outputConfig", "sourcemap", "minify", "strictSpecifier", "tagName", "resolution", "type", "instrumentation"] {
+    for must in [
+        "name",
+        "namespace",
+        "targetSSR",
+        "apiVersion",
+        "outputConfig",
+        "sourcemap",
+        "minify",
+        "strictSpecifier",
+        "tagName",
+        "resolution",
+        "type",
+        "instrumentation",
+    ] {
         assert!(k.contains(must), "parser missed `{must}`: {k:?}");
     }
-    assert!(!k.contains("message"), "non-option (napi object) struct leaked into the key set: {k:?}");
+    assert!(
+        !k.contains("message"),
+        "non-option (napi object) struct leaked into the key set: {k:?}"
+    );
 }
 
 #[test]
 fn guard_detects_planted_violations() {
     let k = option_keys();
-    assert!(violations("const x = opts.namespace;", &k).iter().any(|v| v.contains("namespace")));
-    assert!(violations("if (o['targetSSR']) {}", &k).iter().any(|v| v.contains("targetSSR")));
-    assert!(violations("const { outputConfig } = o;", &k).iter().any(|v| v.contains("outputConfig")));
-    assert!(violations("const p = process . env.X;", &k).iter().any(|v| v.contains("environment")));
-    assert!(violations("// mentions namespace in a comment only\nexport const a = 1;", &k).is_empty());
+    assert!(
+        violations("const x = opts.namespace;", &k)
+            .iter()
+            .any(|v| v.contains("namespace"))
+    );
+    assert!(
+        violations("if (o['targetSSR']) {}", &k)
+            .iter()
+            .any(|v| v.contains("targetSSR"))
+    );
+    assert!(
+        violations("const { outputConfig } = o;", &k)
+            .iter()
+            .any(|v| v.contains("outputConfig"))
+    );
+    assert!(
+        violations("const p = process . env.X;", &k)
+            .iter()
+            .any(|v| v.contains("environment"))
+    );
+    assert!(
+        violations(
+            "// mentions namespace in a comment only\nexport const a = 1;",
+            &k
+        )
+        .is_empty()
+    );
 }
 
 #[test]
 fn index_js_has_no_env_access_and_no_option_keys() {
     let js = std::fs::read_to_string(lwc_shared::cargo_manifest_dir!().join("index.js")).unwrap();
     let v = violations(&js, &option_keys());
-    assert!(v.is_empty(), "index.js must not inspect options or the environment (AB-D0005 #5): {v:?}");
+    assert!(
+        v.is_empty(),
+        "index.js must not inspect options or the environment (AB-D0005 #5): {v:?}"
+    );
 }

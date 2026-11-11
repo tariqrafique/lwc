@@ -101,7 +101,15 @@ fn validate_attribute_in<'a>(
     let raw_end = match parse_source(alloc, w.body()) {
         ParseOutcome::Ok(p) => p.expr.span().end as usize,
         ParseOutcome::Internal(msg) => return Err(InternalError(msg)),
-        ParseOutcome::Rejected(r) => match resolve(alloc, raw, &w, value, false, oxc_span::SourceType::mjs(), &r)? {
+        ParseOutcome::Rejected(r) => match resolve(
+            alloc,
+            raw,
+            &w,
+            value,
+            false,
+            oxc_span::SourceType::mjs(),
+            &r,
+        )? {
             Resolved::Expr(e, _) => e.span().end as usize,
             Resolved::Err(e) => return Ok(Some(e)),
         },
@@ -140,7 +148,15 @@ fn validate<'a>(
             (p.expr, p.comments)
         }
         ParseOutcome::Internal(msg) => return Err(InternalError(msg)),
-        ParseOutcome::Rejected(r) => match resolve(alloc, source, &w, source, false, oxc_span::SourceType::mjs(), &r)? {
+        ParseOutcome::Rejected(r) => match resolve(
+            alloc,
+            source,
+            &w,
+            source,
+            false,
+            oxc_span::SourceType::mjs(),
+            &r,
+        )? {
             Resolved::Expr(e, comments) => (e, comments),
             Resolved::Err(e) => return Ok(Err(e)),
         },
@@ -523,7 +539,15 @@ pub(crate) fn legacy(src: &str, o: &expr_check::Opts) -> Option<ExprError> {
     }
     match super::parse_goal(&alloc, w.body(), oxc_span::SourceType::script()) {
         ParseOutcome::Ok(p) => legacy_parsed(src, &w, &p.expr, &p.comments, o),
-        ParseOutcome::Rejected(r) => match resolve(&alloc, src, &w, src, true, oxc_span::SourceType::script(), &r) {
+        ParseOutcome::Rejected(r) => match resolve(
+            &alloc,
+            src,
+            &w,
+            src,
+            true,
+            oxc_span::SourceType::script(),
+            &r,
+        ) {
             Ok(Resolved::Expr(e, c)) => legacy_parsed(src, &w, &e, &c, o),
             Ok(Resolved::Err(e)) => Some(e),
             Err(_) => Some(syntax_error(src, 1, src, "Unexpected token")),
@@ -1010,7 +1034,13 @@ mod tests {
     fn prefix_parse_result_propagates_internal() {
         let alloc = Allocator::default();
         let ret = oxc_parser::Parser::new(&alloc, "let x = 1", oxc_span::SourceType::mjs()).parse();
-        let outcome = classify(&alloc, &ret.program, &ret.diagnostics, "let x = 1", oxc_span::SourceType::mjs());
+        let outcome = classify(
+            &alloc,
+            &ret.program,
+            &ret.diagnostics,
+            "let x = 1",
+            oxc_span::SourceType::mjs(),
+        );
         assert!(
             matches!(outcome, ParseOutcome::Internal(NOT_EXPRESSION_STATEMENT)),
             "expected Internal(NOT_EXPRESSION_STATEMENT), got {outcome:?}",

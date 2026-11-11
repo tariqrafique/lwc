@@ -33,7 +33,7 @@ notes-commit `lwc-rust-migrate/CUTOVER.md`; OWNERS are ship,migrate):
 | `scripts/fetch-style-corpus.sh` | fetch `lbc`, `lbc-recipes`, and `slds` (`@salesforce-ux/design-system@2.264.3`) from public origins; verify vs `external-inputs.lock` (hashes exclude `.git/`) |
 | `scripts/board-footers.sh` | shared `style-parse-errors`, `csr-clusters[*]`, `style-corpus`, and `napi-css-errors` rows for official and portable boards |
 | `harness/decisions.snapshot.tsv` | committed copy of notes `lwc-rust-migrate/decisions.tsv`; `scripts/refresh-decisions-snapshot.sh` refreshes it |
-| `scripts/c8-checks.sh` | fmt (report-only unless `C8_FMT_GATE=1`), clippy ratchet, cargo check/test `--locked`, napi-pack, ssr-oracle-gate |
+| `scripts/c8-checks.sh` | land-path-checks (incl. `cargo fmt --all --check`, D-0235, hard), clippy ratchet, cargo check/test `--locked`, napi-pack, ssr-oracle-gate |
 | `scripts/run-board.sh` | single driver: golden-gate, C8, `harness/board.sh`, board-footers |
 | `scripts/run-portable-board.sh` | cloud / fresh-clone entry: resolve inputs, then `run-board.sh` (does not publish) |
 | `scripts/official-board.sh` | box official path: pin/verify inputs, archive, `run-board.sh`, publish |

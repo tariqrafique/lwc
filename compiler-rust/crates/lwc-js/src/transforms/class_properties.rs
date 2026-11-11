@@ -12,7 +12,7 @@ use super::hoist::{Scopes, Uids};
 use super::private_fields::MARKER;
 use lwc_shared::edits::Edit;
 use oxc::ast::ast::*;
-use oxc::ast_visit::{walk, Visit};
+use oxc::ast_visit::{Visit, walk};
 use oxc::semantic::ScopeFlags;
 use oxc::span::{GetSpan, Span};
 use std::collections::{HashMap, HashSet};
@@ -49,19 +49,51 @@ impl<'s> Lower<'s> {
         let tagged: Vec<(Edit, u8)> = self.prior.iter().cloned().map(|e| (e, 0)).collect();
         apply_in(self.src, &tagged, start, end, &self.ends)
     }
-    fn slice(&self, s: Span) -> String { self.slice_span(s.start, s.end) }
+    fn slice(&self, s: Span) -> String {
+        self.slice_span(s.start, s.end)
+    }
 
-    fn hoist_let(&mut self, name: String) { self.own_lets.push(name); }
-    fn hoist_var(&mut self, name: String) { self.own_vars.push(name); }
+    fn hoist_let(&mut self, name: String) {
+        self.own_lets.push(name);
+    }
+    fn hoist_var(&mut self, name: String) {
+        self.own_vars.push(name);
+    }
 }
 
 /// `this` (outside non-arrow functions / nested classes) and references to `name` inside a static initializer.
-struct Refs<'n> { name: Option<&'n str>, hits: Vec<Span>, opaque: u32 }
-impl<'n> Refs<'n> { fn new(name: Option<&'n str>) -> Self { Self { name, hits: vec![], opaque: 0 } } }
+/// `super` in a static initializer is the superclass constructor (replaced with the heritage text).
+struct Refs<'n> {
+    name: Option<&'n str>,
+    hits: Vec<Span>,
+    supers: Vec<Span>,
+    opaque: u32,
+}
+impl<'n> Refs<'n> {
+    fn new(name: Option<&'n str>) -> Self {
+        Self {
+            name,
+            hits: vec![],
+            supers: vec![],
+            opaque: 0,
+        }
+    }
+}
 impl<'a> Visit<'a> for Refs<'_> {
-    fn visit_this_expression(&mut self, it: &ThisExpression) { if self.opaque == 0 { self.hits.push(it.span); } }
+    fn visit_this_expression(&mut self, it: &ThisExpression) {
+        if self.opaque == 0 {
+            self.hits.push(it.span);
+        }
+    }
+    fn visit_super(&mut self, it: &Super) {
+        if self.opaque == 0 {
+            self.supers.push(it.span);
+        }
+    }
     fn visit_identifier_reference(&mut self, it: &IdentifierReference<'a>) {
-        if Some(it.name.as_str()) == self.name { self.hits.push(it.span); }
+        if Some(it.name.as_str()) == self.name {
+            self.hits.push(it.span);
+        }
     }
     fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
         self.opaque += 1;
@@ -99,16 +131,28 @@ impl<'a> Visit<'a> for Lower<'_> {
     fn visit_statement(&mut self, it: &Statement<'a>) {
         let s = it.span();
         match it {
-            Statement::ClassDeclaration(c) => { self.stmt.insert(c.span.start, (s.start, s.end)); }
-            Statement::ExportDeclaration(e) => if let Declaration::ClassDeclaration(c) = &e.declaration { self.stmt.insert(c.span.start, (s.start, s.end)); },
-            Statement::ExportDefaultDeclaration(e) => if let ExportDefaultDeclarationKind::ClassDeclaration(c) = &e.declaration { self.stmt.insert(c.span.start, (s.start, s.end)); },
+            Statement::ClassDeclaration(c) => {
+                self.stmt.insert(c.span.start, (s.start, s.end));
+            }
+            Statement::ExportDeclaration(e) => {
+                if let Declaration::ClassDeclaration(c) = &e.declaration {
+                    self.stmt.insert(c.span.start, (s.start, s.end));
+                }
+            }
+            Statement::ExportDefaultDeclaration(e) => {
+                if let ExportDefaultDeclarationKind::ClassDeclaration(c) = &e.declaration {
+                    self.stmt.insert(c.span.start, (s.start, s.end));
+                }
+            }
             _ => {}
         }
         walk::walk_statement(self, it);
     }
     fn visit_class(&mut self, class: &Class<'a>) {
         self.ends.insert(class.span.end);
-        if !self.seen.insert(class.span.start) { return; }
+        if !self.seen.insert(class.span.start) {
+            return;
+        }
         let place = self.placing_in_ctor;
         let saved_l = std::mem::take(&mut self.ctor_lets);
         let saved_v = std::mem::take(&mut self.ctor_vars);
@@ -121,11 +165,19 @@ impl<'a> Visit<'a> for Lower<'_> {
             self.ctor_lets.extend(lets);
             self.ctor_vars.extend(vars);
         } else {
-            for l in lets { self.scopes.let_(l); }
-            for v in vars { self.scopes.var(v); }
+            for l in lets {
+                self.scopes.let_(l);
+            }
+            for v in vars {
+                self.scopes.var(v);
+            }
         }
         self.placing_in_ctor = place;
-        if lowered { self.descend_non_fields(class); } else { walk::walk_class(self, class); }
+        if lowered {
+            self.descend_non_fields(class);
+        } else {
+            walk::walk_class(self, class);
+        }
     }
 }
 
@@ -134,9 +186,16 @@ impl<'s> Lower<'s> {
         // LWC turns `export default class extends …` into `registerComponent(class extends …)`.
         // After that edit the class is an expression, so static fields lower and the `_Class`
         // assignment gives the constructor its name. The AST still says declaration.
-        let wrapped_as_expr = self.prior.iter().any(|e| e.end == class.span.start && e.text.contains("registerComponent("));
+        let wrapped_as_expr = self
+            .prior
+            .iter()
+            .any(|e| e.end == class.span.start && e.text.contains("registerComponent("));
         let is_decl = class.is_declaration() && !wrapped_as_expr;
-        let decl = if is_decl { self.stmt.get(&class.span.start).copied() } else { None };
+        let decl = if is_decl {
+            self.stmt.get(&class.span.start).copied()
+        } else {
+            None
+        };
         // anonymous class declarations (only `export default class {}`) cannot carry trailing statics
         let lower_static = decl.is_some() && class.id.is_some() || !is_decl;
         let mut inits = Vec::new();
@@ -150,26 +209,36 @@ impl<'s> Lower<'s> {
         let mut alias: Option<String> = None;
         let mut pending_static: Vec<(String, usize, bool)> = Vec::new(); // suffix, element index, private
         for (el_idx, el) in class.body.body.iter().enumerate() {
-            let ClassElement::PropertyDefinition(p) = el else { continue };
-            if p.r#type == PropertyDefinitionType::TSAbstractPropertyDefinition { continue; }
-            if p.r#static && !lower_static { continue; }
+            let ClassElement::PropertyDefinition(p) = el else {
+                continue;
+            };
+            if p.r#type == PropertyDefinitionType::TSAbstractPropertyDefinition {
+                continue;
+            }
+            if p.r#static && !lower_static {
+                continue;
+            }
             if p.declare {
                 self.edits.push(Edit::replace(p.span.start, p.span.end, ""));
                 continue;
             }
             // key: `.x`, `["lit"]`, `[_k]`, or the private marker
             let (suffix, private) = match &p.key {
-                PropertyKey::StaticIdentifier(id) if !p.computed => match id.name.strip_prefix(MARKER) {
-                    Some(k) => (k.to_string(), true),
-                    None => (format!(".{}", id.name), false),
-                },
-                PropertyKey::PrivateIdentifier(id) => match prior_replacement(self.prior, id.span) {
-                    Some(rep) => match rep.strip_prefix(MARKER) {
+                PropertyKey::StaticIdentifier(id) if !p.computed => {
+                    match id.name.strip_prefix(MARKER) {
                         Some(k) => (k.to_string(), true),
+                        None => (format!(".{}", id.name), false),
+                    }
+                }
+                PropertyKey::PrivateIdentifier(id) => {
+                    match prior_replacement(self.prior, id.span) {
+                        Some(rep) => match rep.strip_prefix(MARKER) {
+                            Some(k) => (k.to_string(), true),
+                            None => continue,
+                        },
                         None => continue,
-                    },
-                    None => continue,
-                },
+                    }
+                }
                 k => {
                     let e = k.as_expression();
                     match e {
@@ -188,11 +257,16 @@ impl<'s> Lower<'s> {
                 if let Some(v) = &p.value {
                     let mut r = Refs::new(own);
                     r.visit_expression(v);
-                    if !r.hits.is_empty() { alias_needed = true; }
+                    if !r.hits.is_empty() {
+                        alias_needed = true;
+                    }
                 }
                 pending_static.push((suffix, el_idx, private));
             } else {
-                let value = p.value.as_ref().map_or("void 0".to_string(), |v| self.render_expr(v));
+                let value = p
+                    .value
+                    .as_ref()
+                    .map_or("void 0".to_string(), |v| self.render_expr(v));
                 inits.push(if private {
                     format!("Object.defineProperty(this, {suffix}, {{\nwritable: true,\nvalue: {value}\n}});")
                 } else {
@@ -200,7 +274,15 @@ impl<'s> Lower<'s> {
                 });
             }
         }
-        if inits.is_empty() && pending_static.is_empty() && keys.is_empty() && !class.body.body.iter().any(|e| matches!(e, ClassElement::PropertyDefinition(p) if p.declare)) {
+        if inits.is_empty()
+            && pending_static.is_empty()
+            && keys.is_empty()
+            && !class
+                .body
+                .body
+                .iter()
+                .any(|e| matches!(e, ClassElement::PropertyDefinition(p) if p.declare))
+        {
             return false;
         }
         self.any = true;
@@ -221,7 +303,9 @@ impl<'s> Lower<'s> {
             alias = Some(a);
         }
         for (suffix, el_idx, private) in pending_static {
-            let ClassElement::PropertyDefinition(p) = &class.body.body[el_idx] else { continue };
+            let ClassElement::PropertyDefinition(p) = &class.body.body[el_idx] else {
+                continue;
+            };
             let value = match &p.value {
                 None => "void 0".to_string(),
                 Some(v) => {
@@ -229,8 +313,21 @@ impl<'s> Lower<'s> {
                     let mut r = Refs::new(own);
                     r.visit_expression(v);
                     let a = alias.clone().unwrap_or_else(|| reference.clone());
-                    let es = r.hits.into_iter().map(|h| Edit::replace(h.start - s.start, h.end - s.start, a.clone())).collect();
-                    lwc_shared::edits::apply(&self.slice(s), es).expect("lwc-js edits never partially overlap")
+                    let heritage = class
+                        .heritage
+                        .as_ref()
+                        .map(|h| self.slice(h.span()))
+                        .unwrap_or_else(|| "Object".to_string());
+                    let mut es: Vec<Edit> = r
+                        .hits
+                        .into_iter()
+                        .map(|h| Edit::replace(h.start - s.start, h.end - s.start, a.clone()))
+                        .collect();
+                    es.extend(r.supers.into_iter().map(|h| {
+                        Edit::replace(h.start - s.start, h.end - s.start, heritage.clone())
+                    }));
+                    lwc_shared::edits::apply(&self.slice(s), es)
+                        .expect("lwc-js edits never partially overlap")
                 }
             };
             statics.push(if private {
@@ -246,15 +343,25 @@ impl<'s> Lower<'s> {
             self.ctor_lets.clear();
             self.ctor_vars.clear();
             let ctor = class.body.body.iter().find_map(|e| match e {
-                ClassElement::MethodDefinition(m) if m.kind == MethodDefinitionKind::Constructor => Some(m),
+                ClassElement::MethodDefinition(m)
+                    if m.kind == MethodDefinitionKind::Constructor =>
+                {
+                    Some(m)
+                }
                 _ => None,
             });
             match ctor.and_then(|m| m.value.body.as_ref()) {
                 Some(b) => {
-                    if !hoist.is_empty() { self.edits.push(Edit::insert(b.span.start + 1, hoist)); }
+                    if !hoist.is_empty() {
+                        self.edits.push(Edit::insert(b.span.start + 1, hoist));
+                    }
                     let after_super = b.statements.iter().find_map(|s| match s {
                         Statement::ExpressionStatement(es) => match &es.expression {
-                            Expression::CallExpression(c) if matches!(c.callee, Expression::Super(_)) => Some(es.span.end),
+                            Expression::CallExpression(c)
+                                if matches!(c.callee, Expression::Super(_)) =>
+                            {
+                                Some(es.span.end)
+                            }
                             _ => None,
                         },
                         _ => None,
@@ -268,7 +375,8 @@ impl<'s> Lower<'s> {
                     } else {
                         format!("constructor() {{{hoist}\n{body}\n}}\n")
                     };
-                    self.edits.push(Edit::insert(class.body.span.start + 1, text));
+                    self.edits
+                        .push(Edit::insert(class.body.span.start + 1, text));
                 }
             }
         } else {
@@ -278,27 +386,47 @@ impl<'s> Lower<'s> {
         match decl {
             Some((start, end)) => {
                 if !keys.is_empty() {
-                    self.edits.push(Edit::insert(start, keys.iter().map(|k| format!("{k};\n")).collect::<String>()));
+                    self.edits.push(Edit::insert(
+                        start,
+                        keys.iter().map(|k| format!("{k};\n")).collect::<String>(),
+                    ));
                 }
                 let mut after = String::new();
-                if let Some(a) = &alias { after += &format!("\n{a} = {reference};"); }
-                for s in &statics { after += &format!("\n{s};"); }
-                if !after.is_empty() { self.edits.push(Edit::insert(end, after)); }
+                if let Some(a) = &alias {
+                    after += &format!("\n{a} = {reference};");
+                }
+                for s in &statics {
+                    after += &format!("\n{s};");
+                }
+                if !after.is_empty() {
+                    self.edits.push(Edit::insert(end, after));
+                }
             }
             None => {
                 let mut pre: Vec<String> = keys.clone();
-                if let Some(a) = &alias { pre.push(format!("{a} = ")); }
+                if let Some(a) = &alias {
+                    pre.push(format!("{a} = "));
+                }
                 let wrap = !pre.is_empty() || !statics.is_empty();
                 if wrap {
                     let head = match &alias {
-                        Some(_) => { let last = pre.pop().unwrap(); pre.iter().map(|p| format!("{p}, ")).collect::<String>() + &last }
+                        Some(_) => {
+                            let last = pre.pop().unwrap();
+                            pre.iter().map(|p| format!("{p}, ")).collect::<String>() + &last
+                        }
                         None => pre.iter().map(|p| format!("{p}, ")).collect::<String>(),
                     };
-                    self.edits.push(Edit::insert(class.span.start, format!("({head}")));
+                    self.edits
+                        .push(Edit::insert(class.span.start, format!("({head}")));
                     let mut tail = String::new();
-                    for s in &statics { tail += &format!(", {s}"); }
-                    if let Some(a) = &alias { tail += &format!(", {a}"); }
-                    self.edits.push(Edit::insert(class.span.end, format!("{tail})")));
+                    for s in &statics {
+                        tail += &format!(", {s}");
+                    }
+                    if let Some(a) = &alias {
+                        tail += &format!(", {a}");
+                    }
+                    self.edits
+                        .push(Edit::insert(class.span.end, format!("{tail})")));
                 }
             }
         }
@@ -310,7 +438,9 @@ impl<'s> Lower<'s> {
         for el in &class.body.body {
             match el {
                 ClassElement::PropertyDefinition(_) => {}
-                ClassElement::MethodDefinition(m) => self.visit_function(&m.value, ScopeFlags::empty()),
+                ClassElement::MethodDefinition(m) => {
+                    self.visit_function(&m.value, ScopeFlags::empty())
+                }
                 ClassElement::StaticBlock(s) => walk::walk_static_block(self, s),
                 _ => {}
             }
@@ -381,7 +511,8 @@ impl<'s> Lower<'s> {
         let out = apply_in(self.src, &tagged, span.start, span.end, &self.ends);
         // Those edits are in `out`. Leaving them in the global list reapplies them beside the
         // deletion of the field, and an insert at the field's end survives `drop_contained`.
-        self.edits.retain(|e| !edit_rendered_into(span.start, span.end, e));
+        self.edits
+            .retain(|e| !edit_rendered_into(span.start, span.end, e));
         self.rendered.push((span.start, span.end));
         out
     }
@@ -395,10 +526,21 @@ pub fn run(program: &Program<'_>, src: &str) -> Vec<Edit> {
 
 pub fn run_after(program: &Program<'_>, src: &str, prior: &[Edit]) -> (Vec<Edit>, Vec<(u32, u32)>) {
     let mut l = Lower {
-        src, prior, edits: Vec::new(), uids: Uids::new(program), scopes: Scopes::default(),
-        stmt: HashMap::new(), any: false, own_lets: Vec::new(), own_vars: Vec::new(),
-        ctor_lets: Vec::new(), ctor_vars: Vec::new(), placing_in_ctor: false, seen: std::collections::HashSet::new(),
-        rendered: Vec::new(), ends: HashSet::new(),
+        src,
+        prior,
+        edits: Vec::new(),
+        uids: Uids::new(program),
+        scopes: Scopes::default(),
+        stmt: HashMap::new(),
+        any: false,
+        own_lets: Vec::new(),
+        own_vars: Vec::new(),
+        ctor_lets: Vec::new(),
+        ctor_vars: Vec::new(),
+        placing_in_ctor: false,
+        seen: std::collections::HashSet::new(),
+        rendered: Vec::new(),
+        ends: HashSet::new(),
     };
     l.visit_program(program);
     let rendered = l.rendered;
@@ -416,30 +558,54 @@ pub(crate) fn edit_rendered_into(start: u32, end: u32, e: &Edit) -> bool {
 
 fn hoist_text(lets: &[String], vars: &[String]) -> String {
     let mut decl = String::new();
-    if !lets.is_empty() { decl += &format!("let {};\n", lets.join(", ")); }
-    if !vars.is_empty() { decl += &format!("var {};\n", vars.join(", ")); }
-    if decl.is_empty() { String::new() } else { format!("\n{decl}") }
+    if !lets.is_empty() {
+        decl += &format!("let {};\n", lets.join(", "));
+    }
+    if !vars.is_empty() {
+        decl += &format!("var {};\n", vars.join(", "));
+    }
+    if decl.is_empty() {
+        String::new()
+    } else {
+        format!("\n{decl}")
+    }
 }
 
 fn inserted_name(prior: &[Edit], class_start: u32) -> Option<String> {
-    prior.iter().find(|e| e.start == class_start + 5 && e.start == e.end && e.text.starts_with(' ')).map(|e| e.text.trim().to_string())
+    prior
+        .iter()
+        .find(|e| e.start == class_start + 5 && e.start == e.end && e.text.starts_with(' '))
+        .map(|e| e.text.trim().to_string())
 }
 
 fn prior_replacement(prior: &[Edit], span: Span) -> Option<&str> {
-    prior.iter().find(|e| e.start == span.start && e.end == span.end && e.start < e.end).map(|e| e.text.as_str())
+    prior
+        .iter()
+        .find(|e| e.start == span.start && e.end == span.end && e.start < e.end)
+        .map(|e| e.text.as_str())
 }
 
 fn apply_in(src: &str, edits: &[(Edit, u8)], start: u32, end: u32, ends: &HashSet<u32>) -> String {
     let mut local = Vec::new();
     for (e, pass) in edits {
         if edit_rendered_into(start, end, e) {
-            local.push((Edit { start: e.start - start, end: e.end - start, text: e.text.clone() }, *pass, e.start));
+            local.push((
+                Edit {
+                    start: e.start - start,
+                    end: e.end - start,
+                    text: e.text.clone(),
+                },
+                *pass,
+                e.start,
+            ));
         }
     }
     // Same rule as `order_same_offset`: at a class end, the later pass's insert is in front.
     local.sort_by(|(a, pa, aa), (b, pb, ba)| {
         (a.start, a.end).cmp(&(b.start, b.end)).then_with(|| {
-            if a.start != a.end || b.start != b.end { return std::cmp::Ordering::Equal; }
+            if a.start != a.end || b.start != b.end {
+                return std::cmp::Ordering::Equal;
+            }
             let la = a.text.starts_with('\n') || ends.contains(aa);
             let lb = b.text.starts_with('\n') || ends.contains(ba);
             match (la, lb) {
@@ -451,23 +617,32 @@ fn apply_in(src: &str, edits: &[(Edit, u8)], start: u32, end: u32, ends: &HashSe
         })
     });
     let plain: Vec<Edit> = local.into_iter().map(|(e, _, _)| e).collect();
-    lwc_shared::edits::apply(&src[start as usize..end as usize], plain).expect("lwc-js edits never partially overlap")
+    lwc_shared::edits::apply(&src[start as usize..end as usize], plain)
+        .expect("lwc-js edits never partially overlap")
 }
 
 fn class_needs_lower(class: &Class<'_>, prior: &[Edit]) -> bool {
     fn walk(class: &Class<'_>, prior: &[Edit]) -> bool {
         for el in &class.body.body {
             match el {
-                ClassElement::PropertyDefinition(p) if p.r#type != PropertyDefinitionType::TSAbstractPropertyDefinition && !p.declare => {
-                    if !matches!(&p.key, PropertyKey::PrivateIdentifier(id) if prior_replacement(prior, id.span).is_none()) {
+                ClassElement::PropertyDefinition(p)
+                    if p.r#type != PropertyDefinitionType::TSAbstractPropertyDefinition
+                        && !p.declare =>
+                {
+                    if !matches!(&p.key, PropertyKey::PrivateIdentifier(id) if prior_replacement(prior, id.span).is_none())
+                    {
                         return true;
                     }
                 }
                 ClassElement::MethodDefinition(m) => {
-                    if fn_has_class(&m.value) { return true; }
+                    if fn_has_class(&m.value) {
+                        return true;
+                    }
                 }
                 ClassElement::StaticBlock(s) => {
-                    if block_has_class(s) { return true; }
+                    if block_has_class(s) {
+                        return true;
+                    }
                 }
                 _ => {}
             }
@@ -475,12 +650,17 @@ fn class_needs_lower(class: &Class<'_>, prior: &[Edit]) -> bool {
         false
     }
     fn fn_has_class(f: &oxc::ast::ast::Function<'_>) -> bool {
-        f.body.as_ref().is_some_and(|b| b.statements.iter().any(stmt_has_class))
+        f.body
+            .as_ref()
+            .is_some_and(|b| b.statements.iter().any(stmt_has_class))
     }
     fn stmt_has_class(s: &Statement<'_>) -> bool {
         struct F(bool);
         impl<'a> Visit<'a> for F {
-            fn visit_class(&mut self, c: &Class<'a>) { self.0 = true; let _ = c; }
+            fn visit_class(&mut self, c: &Class<'a>) {
+                self.0 = true;
+                let _ = c;
+            }
         }
         let mut f = F(false);
         f.visit_statement(s);

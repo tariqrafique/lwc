@@ -21,7 +21,13 @@ impl From<SourceLocation> for DiagnosticLocation {
     /// `@lwc/template-compiler` `normalizeLocation`: line/column = start line/column,
     /// start = start offset, length = end - start.
     fn from(l: SourceLocation) -> Self {
-        Self { line: l.start_line, column: l.start_column, start: Some(l.start), length: Some(l.end.saturating_sub(l.start)), index: None }
+        Self {
+            line: l.start_line,
+            column: l.start_column,
+            start: Some(l.start),
+            length: Some(l.end.saturating_sub(l.start)),
+            index: None,
+        }
     }
 }
 
@@ -30,7 +36,13 @@ impl From<SourceLocation> for DiagnosticLocation {
 pub fn normalize_location(l: Option<SourceLocation>) -> DiagnosticLocation {
     match l {
         Some(l) => l.into(),
-        None => DiagnosticLocation { line: 0, column: 0, start: Some(0), length: Some(0), index: None },
+        None => DiagnosticLocation {
+            line: 0,
+            column: 0,
+            start: Some(0),
+            length: Some(0),
+            index: None,
+        },
     }
 }
 
@@ -51,7 +63,9 @@ impl<'s> LineIndex<'s> {
             match b[i] {
                 b'\n' => starts.push(i as u32 + 1),
                 b'\r' if b.get(i + 1) != Some(&b'\n') => starts.push(i as u32 + 1),
-                0xE2 if b.get(i + 1) == Some(&0x80) && matches!(b.get(i + 2), Some(0xA8 | 0xA9)) => {
+                0xE2 if b.get(i + 1) == Some(&0x80)
+                    && matches!(b.get(i + 2), Some(0xA8 | 0xA9)) =>
+                {
                     starts.push(i as u32 + 3);
                     i += 2;
                 }
@@ -65,7 +79,11 @@ impl<'s> LineIndex<'s> {
     /// Byte offset of (0-based line, UTF-16 column); `None` past the last line.
     pub fn to_offset(&self, line: u32, col16: u32) -> Option<u32> {
         let start = *self.starts.get(line as usize)?;
-        let end = self.starts.get(line as usize + 1).copied().unwrap_or(self.text.len() as u32);
+        let end = self
+            .starts
+            .get(line as usize + 1)
+            .copied()
+            .unwrap_or(self.text.len() as u32);
         let mut c = 0u32;
         for (i, ch) in self.text[start as usize..end as usize].char_indices() {
             if c >= col16 {
@@ -112,13 +130,27 @@ impl<'s> LineIndex<'s> {
     pub fn location(&self, start: u32, end: u32) -> DiagnosticLocation {
         let (line, column) = self.babel_line_col(start);
         let s = self.utf16_offset(start);
-        DiagnosticLocation { line, column, start: Some(s), length: Some(self.utf16_offset(end).saturating_sub(s)), index: None }
+        DiagnosticLocation {
+            line,
+            column,
+            start: Some(s),
+            length: Some(self.utf16_offset(end).saturating_sub(s)),
+            index: None,
+        }
     }
 
     /// The span-keeping [`SourceLocation`] of the byte range `start..end` (Babel line/columns, byte offsets).
     pub fn source_location(&self, start: u32, end: u32) -> SourceLocation {
-        let ((start_line, start_column), (end_line, end_column)) = (self.babel_line_col(start), self.babel_line_col(end));
-        SourceLocation { start_line, start_column, end_line, end_column, start, end }
+        let ((start_line, start_column), (end_line, end_column)) =
+            (self.babel_line_col(start), self.babel_line_col(end));
+        SourceLocation {
+            start_line,
+            start_column,
+            end_line,
+            end_column,
+            start,
+            end,
+        }
     }
 
     fn floor(&self, off: u32) -> usize {
@@ -148,7 +180,16 @@ mod tests {
         assert_eq!(ix.utf16_offset(at("b")), 3);
         assert_eq!(ix.babel_line_col(at("@")), (2, 3));
         // JS: "a😀b\r\n  é".length == 9
-        assert_eq!(ix.location(at("@"), at("@x") + 2), DiagnosticLocation { line: 2, column: 3, start: Some(9), length: Some(2), index: None });
+        assert_eq!(
+            ix.location(at("@"), at("@x") + 2),
+            DiagnosticLocation {
+                line: 2,
+                column: 3,
+                start: Some(9),
+                length: Some(2),
+                index: None
+            }
+        );
         assert_eq!(ix.babel_line_col(at("q")), (3, 0)); // lone \r ends a line
         assert_eq!(ix.babel_line_col(at("z")), (4, 0)); // U+2028 ends a line
         assert_eq!(ix.byte_offset(9), at("@"));

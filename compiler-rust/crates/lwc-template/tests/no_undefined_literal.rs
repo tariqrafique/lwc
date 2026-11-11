@@ -35,7 +35,10 @@ fn production_src(src: &str) -> String {
             }
         }
         if src[i..].starts_with("//") {
-            i += src[i..].find('\n').unwrap_or(src[i..].len().saturating_sub(1)) + 1;
+            i += src[i..]
+                .find('\n')
+                .unwrap_or(src[i..].len().saturating_sub(1))
+                + 1;
             continue;
         }
         let ch = src[i..].chars().next().unwrap();
@@ -46,7 +49,9 @@ fn production_src(src: &str) -> String {
 }
 
 fn stripped(src: &str) -> String {
-    production_src(src).replace("== \"undefined\"", "").replace("\"undefined\" ==", "")
+    production_src(src)
+        .replace("== \"undefined\"", "")
+        .replace("\"undefined\" ==", "")
 }
 
 #[test]
@@ -60,13 +65,22 @@ fn codegen_has_no_undefined_string_literal() {
             hits.push(p.display().to_string());
         }
     }
-    assert!(hits.is_empty(), "forbidden placeholder string in codegen:\n{}", hits.join("\n"));
+    assert!(
+        hits.is_empty(),
+        "forbidden placeholder string in codegen:\n{}",
+        hits.join("\n")
+    );
 }
 
 #[test]
 fn guard_catches_planted_undefined_literal() {
     assert!(stripped("fn f() { let x = \"undefined\"; }\n").contains("\"undefined\""));
     assert!(!stripped("if name == \"undefined\" { return; }\n").contains("\"undefined\""));
-    let skipped = "#[cfg(test)]\nmod tests {\n    fn f() { let x = \"undefined\"; }\n}\nfn g() {}\n";
-    assert!(!stripped(skipped).contains("\"undefined\""), "{}", stripped(skipped));
+    let skipped =
+        "#[cfg(test)]\nmod tests {\n    fn f() { let x = \"undefined\"; }\n}\nfn g() {}\n";
+    assert!(
+        !stripped(skipped).contains("\"undefined\""),
+        "{}",
+        stripped(skipped)
+    );
 }

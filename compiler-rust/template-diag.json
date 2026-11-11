@@ -1,13 +1,13 @@
 {
  "schema": "template-diag-diff/v2",
  "meta": {
-  "generated": "2026-11-11T07:51:24.442Z",
-  "elapsedMs": 6246,
+  "generated": "2026-11-11T11:05:40.024Z",
+  "elapsedMs": 8577,
   "engine": "crate",
   "rust": {
    "driver": "/workspace/cache/lwc-target/3ccfc112e5a6337a/template-diag-driver/release/template-diag-driver",
    "driverSource": "TDD_DRIVER",
-   "sha256": "87b23a9821eb",
+   "sha256": "5bf0dc52292c",
    "lwcTemplate": "lwc_template::compile"
   },
   "oracle": {
@@ -24,16 +24,16 @@
    "semdiff": {
     "bin": {
      "path": "/workspace/cache/lwc-target/3ccfc112e5a6337a/release/semdiff",
-     "sha256": "86537e3d3233"
+     "sha256": "b5a2cc768569"
     },
     "registry": {
-     "path": "/tmp/lwc-board-snap.NtgUmz/notes/decisions.tsv",
-     "sha256": "0ac3e45fe7ce095191fa21dd6592372536f853f7b6ae09ae60dbdd4e28fb6ee3"
+     "path": "/tmp/lwc-board-snap.7oBQ7a/notes/decisions.tsv",
+     "sha256": "e7f63e7d8b08b379b1e4240538b4b9e6f10217b594510f28b84ef0b547c3ef2b"
     },
     "observationModel": "D-0196",
     "ruleTableVersion": "rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1",
     "manifestSha256": "de43daea2686f585519c3e6f3cbadc736012b72bc5cd76ecfe2009e701a52ec5",
-    "summarySha256": "ce5c7f170295",
+    "summarySha256": "ef57393e18b2",
     "totals": {
      "cases": 16795,
      "crash": 0,

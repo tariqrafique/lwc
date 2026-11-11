@@ -37,20 +37,104 @@
 //! diagnostic value and is not caught here.
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
-const TYPE_TOKENS: [&str; 5] = ["OxcDiagnostic", "Diagnostics", "LabeledSpan", "oxc_diagnostics", "miette"];
-const PRODUCERS: [&str; 10] =
-    ["Parser", "SemanticBuilder", "Transformer", "Compiler", "CompilerInterface", "regular_expression", "parse_expression", "oxc_parser", "oxc_semantic", "oxc_transformer"];
-const RETURN_TYPES: [&str; 4] = ["ParserReturn", "SemanticBuilderReturn", "TransformerReturn", "CompilerReturn"];
-const DIAG_ACCESSORS: [&str; 6] = ["errors", "warnings", "into_vec", "has_errors", "has_warnings", "take_errors"];
+const TYPE_TOKENS: [&str; 5] = [
+    "OxcDiagnostic",
+    "Diagnostics",
+    "LabeledSpan",
+    "oxc_diagnostics",
+    "miette",
+];
+const PRODUCERS: [&str; 10] = [
+    "Parser",
+    "SemanticBuilder",
+    "Transformer",
+    "Compiler",
+    "CompilerInterface",
+    "regular_expression",
+    "parse_expression",
+    "oxc_parser",
+    "oxc_semantic",
+    "oxc_transformer",
+];
+const RETURN_TYPES: [&str; 4] = [
+    "ParserReturn",
+    "SemanticBuilderReturn",
+    "TransformerReturn",
+    "CompilerReturn",
+];
+const DIAG_ACCESSORS: [&str; 6] = [
+    "errors",
+    "warnings",
+    "into_vec",
+    "has_errors",
+    "has_warnings",
+    "take_errors",
+];
 /// parse.rs `pub fn` return types (tokens joined without spaces); `None` = `()`.
-const EXPORTS: [&str; 6] = ["SourceType", "Result<Program<'a>,CompileError>", "Scoping", "Semantic<'a>", "Result<(),CompileError>", "u32"];
+const EXPORTS: [&str; 6] = [
+    "SourceType",
+    "Result<Program<'a>,CompileError>",
+    "Scoping",
+    "Semantic<'a>",
+    "Result<(),CompileError>",
+    "u32",
+];
 const BOUNDARY: [&str; 2] = ["first_error", "syntax_error"];
 const BOUNDARY_IDENTS: &[&str] = &[
-    "fn", "first_error", "syntax_error", "src", "str", "filename", "diagnostics", "oxc", "Diagnostics", "Option", "CompileError",
-    "let", "d", "errors", "next", "Some", "label", "labels", "as_ref", "first", "else", "return", "new", "format", "at",
-    "offset", "as", "usize", "message", "text", "line", "column", "lwc_shared", "babel_line_col", "u32", "frame", "code_frame",
-    "None", "index", "LineIndex", "utf16_offset", "location", "DiagnosticLocation", "start", "length", "vec",
-    "CompilerDiagnostic", "clone", "DiagnosticLevel", "Error", "into", "name", "assert", "is_char_boundary",
+    "fn",
+    "first_error",
+    "syntax_error",
+    "src",
+    "str",
+    "filename",
+    "diagnostics",
+    "oxc",
+    "Diagnostics",
+    "Option",
+    "CompileError",
+    "let",
+    "d",
+    "errors",
+    "next",
+    "Some",
+    "label",
+    "labels",
+    "as_ref",
+    "first",
+    "else",
+    "return",
+    "new",
+    "format",
+    "at",
+    "offset",
+    "as",
+    "usize",
+    "message",
+    "text",
+    "line",
+    "column",
+    "lwc_shared",
+    "babel_line_col",
+    "u32",
+    "frame",
+    "code_frame",
+    "None",
+    "index",
+    "LineIndex",
+    "utf16_offset",
+    "location",
+    "DiagnosticLocation",
+    "start",
+    "length",
+    "vec",
+    "CompilerDiagnostic",
+    "clone",
+    "DiagnosticLevel",
+    "Error",
+    "into",
+    "name",
+    "assert",
+    "is_char_boundary",
     "syntax",
 ];
 const BAD_PUNCT: [&str; 6] = ["==", "!=", "<=", ">=", "&&", "||"];
@@ -59,17 +143,37 @@ const BAD_PUNCT: [&str; 6] = ["==", "!=", "<=", ">=", "&&", "||"];
 /// Keyed by `path::fn` (path relative to lwc-js/src). New sites and orphan rows both fail.
 /// D-0265: the three re-parse residuals are gone. Two parses per component (user source + print).
 const PARSE_SITES: &[(&str, &str, &str)] = &[
-    ("parse.rs::parse_source", "user-source parse (semantic check + abstract guard)", "P1-entry"),
-    ("parse.rs::parse", "callee of parse_source and the intermediate parse entry; no semantic check", "P1-entry"),
-    ("parse.rs::parse_with", "the single Parser::new site", "P1-entry"),
-    ("lib.rs::transform_inner", "one parse of span-edited source immediately before print", "P1-print"),
+    (
+        "parse.rs::parse_source",
+        "user-source parse (semantic check + abstract guard)",
+        "P1-entry",
+    ),
+    (
+        "parse.rs::parse",
+        "callee of parse_source and the intermediate parse entry; no semantic check",
+        "P1-entry",
+    ),
+    (
+        "parse.rs::parse_with",
+        "the single Parser::new site",
+        "P1-entry",
+    ),
+    (
+        "lib.rs::transform_inner",
+        "one parse of span-edited source immediately before print",
+        "P1-print",
+    ),
 ];
 
 /// Functions that may search/replace the text `babelHelpers.` (enclosing fn, not a variable name).
 const BABELHELPERS_FIND: &[(&str, &str, &str)] = &[];
 
 #[derive(Debug, Clone, PartialEq)]
-enum Tok { Ident(String), Punct(String), Lit }
+enum Tok {
+    Ident(String),
+    Punct(String),
+    Lit,
+}
 
 /// Rust tokens (idents incl. lifetimes, punctuation, literals collapsed), comments dropped, with 1-based lines.
 fn tokens(src: &str) -> Vec<(Tok, usize)> {
@@ -78,30 +182,63 @@ fn tokens(src: &str) -> Vec<(Tok, usize)> {
     let nl = |s: &[char]| s.iter().filter(|c| **c == '\n').count();
     while i < b.len() {
         let c = b[i];
-        if c == '\n' { line += 1; i += 1; continue; }
-        if c.is_whitespace() { i += 1; continue; }
-        if c == '/' && b.get(i + 1) == Some(&'/') { while i < b.len() && b[i] != '\n' { i += 1; } continue; }
+        if c == '\n' {
+            line += 1;
+            i += 1;
+            continue;
+        }
+        if c.is_whitespace() {
+            i += 1;
+            continue;
+        }
+        if c == '/' && b.get(i + 1) == Some(&'/') {
+            while i < b.len() && b[i] != '\n' {
+                i += 1;
+            }
+            continue;
+        }
         if c == '/' && b.get(i + 1) == Some(&'*') {
             let (start, mut depth) = (i, 0);
             while i < b.len() {
-                if b[i] == '/' && b.get(i + 1) == Some(&'*') { depth += 1; i += 2; }
-                else if b[i] == '*' && b.get(i + 1) == Some(&'/') { depth -= 1; i += 2; if depth == 0 { break; } }
-                else { i += 1; }
+                if b[i] == '/' && b.get(i + 1) == Some(&'*') {
+                    depth += 1;
+                    i += 2;
+                } else if b[i] == '*' && b.get(i + 1) == Some(&'/') {
+                    depth -= 1;
+                    i += 2;
+                    if depth == 0 {
+                        break;
+                    }
+                } else {
+                    i += 1;
+                }
             }
             line += nl(&b[start..i.min(b.len())]);
             continue;
         }
         // raw (byte) strings: r"..", r#".."#, br#".."#
-        let raw_at = if c == 'r' { Some(i + 1) } else if c == 'b' && b.get(i + 1) == Some(&'r') { Some(i + 2) } else { None };
+        let raw_at = if c == 'r' {
+            Some(i + 1)
+        } else if c == 'b' && b.get(i + 1) == Some(&'r') {
+            Some(i + 2)
+        } else {
+            None
+        };
         if let Some(mut j) = raw_at {
             let mut hashes = 0;
-            while b.get(j) == Some(&'#') { hashes += 1; j += 1; }
+            while b.get(j) == Some(&'#') {
+                hashes += 1;
+                j += 1;
+            }
             if b.get(j) == Some(&'"') {
                 let start = i;
                 j += 1;
                 loop {
                     assert!(j < b.len(), "unterminated raw string at line {line}");
-                    if b[j] == '"' && (0..hashes).all(|k| b.get(j + 1 + k) == Some(&'#')) { j += 1 + hashes; break; }
+                    if b[j] == '"' && (0..hashes).all(|k| b.get(j + 1 + k) == Some(&'#')) {
+                        j += 1 + hashes;
+                        break;
+                    }
                     j += 1;
                 }
                 line += nl(&b[start..j]);
@@ -113,7 +250,12 @@ fn tokens(src: &str) -> Vec<(Tok, usize)> {
         if c == '"' || (c == 'b' && b.get(i + 1) == Some(&'"')) {
             let start = i;
             i += if c == 'b' { 2 } else { 1 };
-            while i < b.len() && b[i] != '"' { if b[i] == '\\' { i += 1; } i += 1; }
+            while i < b.len() && b[i] != '"' {
+                if b[i] == '\\' {
+                    i += 1;
+                }
+                i += 1;
+            }
             i += 1;
             line += nl(&b[start..i.min(b.len())]);
             out.push((Tok::Lit, line));
@@ -123,52 +265,86 @@ fn tokens(src: &str) -> Vec<(Tok, usize)> {
             // char literal ('x', '\n', '\u{..}') vs lifetime ('a)
             if b.get(i + 1) == Some(&'\\') {
                 i += 2;
-                while i < b.len() && b[i] != '\'' { i += 1; }
+                while i < b.len() && b[i] != '\'' {
+                    i += 1;
+                }
                 i += 1;
                 out.push((Tok::Lit, line));
                 continue;
             }
-            if b.get(i + 2) == Some(&'\'') { i += 3; out.push((Tok::Lit, line)); continue; }
+            if b.get(i + 2) == Some(&'\'') {
+                i += 3;
+                out.push((Tok::Lit, line));
+                continue;
+            }
             let s = i;
             i += 1;
-            while i < b.len() && (b[i].is_alphanumeric() || b[i] == '_') { i += 1; }
+            while i < b.len() && (b[i].is_alphanumeric() || b[i] == '_') {
+                i += 1;
+            }
             out.push((Tok::Ident(b[s..i].iter().collect()), line));
             continue;
         }
         if c.is_alphabetic() || c == '_' {
             let s = i;
-            while i < b.len() && (b[i].is_alphanumeric() || b[i] == '_') { i += 1; }
+            while i < b.len() && (b[i].is_alphanumeric() || b[i] == '_') {
+                i += 1;
+            }
             out.push((Tok::Ident(b[s..i].iter().collect()), line));
             continue;
         }
         if c.is_ascii_digit() {
-            while i < b.len() && (b[i].is_alphanumeric() || b[i] == '_' || (b[i] == '.' && b.get(i + 1).is_some_and(|d| d.is_ascii_digit()))) { i += 1; }
+            while i < b.len()
+                && (b[i].is_alphanumeric()
+                    || b[i] == '_'
+                    || (b[i] == '.' && b.get(i + 1).is_some_and(|d| d.is_ascii_digit())))
+            {
+                i += 1;
+            }
             out.push((Tok::Lit, line));
             continue;
         }
         let two: String = b[i..(i + 2).min(b.len())].iter().collect();
-        if ["::", "==", "!=", "<=", ">=", "&&", "||", "->", "=>"].contains(&two.as_str()) { out.push((Tok::Punct(two), line)); i += 2; continue; }
+        if ["::", "==", "!=", "<=", ">=", "&&", "||", "->", "=>"].contains(&two.as_str()) {
+            out.push((Tok::Punct(two), line));
+            i += 2;
+            continue;
+        }
         out.push((Tok::Punct(c.to_string()), line));
         i += 1;
     }
     out
 }
 
-fn is_ident(t: &Tok, s: &str) -> bool { matches!(t, Tok::Ident(x) if x == s) }
-fn is_punct(t: &Tok, s: &str) -> bool { matches!(t, Tok::Punct(x) if x == s) }
+fn is_ident(t: &Tok, s: &str) -> bool {
+    matches!(t, Tok::Ident(x) if x == s)
+}
+fn is_punct(t: &Tok, s: &str) -> bool {
+    matches!(t, Tok::Punct(x) if x == s)
+}
 
 /// Token index ranges `[fn, closing brace]` of each `fn <name>` in `toks`.
 fn fn_ranges(toks: &[(Tok, usize)], name: &str) -> Vec<(usize, usize)> {
     let mut out = vec![];
     for i in 0..toks.len().saturating_sub(1) {
-        if !(is_ident(&toks[i].0, "fn") && is_ident(&toks[i + 1].0, name)) { continue; }
-        let open = (i..toks.len()).find(|&j| is_punct(&toks[j].0, "{")).expect("fn body");
+        if !(is_ident(&toks[i].0, "fn") && is_ident(&toks[i + 1].0, name)) {
+            continue;
+        }
+        let open = (i..toks.len())
+            .find(|&j| is_punct(&toks[j].0, "{"))
+            .expect("fn body");
         let mut depth = 0;
-        let close = (open..toks.len()).find(|&j| {
-            if is_punct(&toks[j].0, "{") { depth += 1; }
-            if is_punct(&toks[j].0, "}") { depth -= 1; }
-            depth == 0
-        }).expect("fn body closes");
+        let close = (open..toks.len())
+            .find(|&j| {
+                if is_punct(&toks[j].0, "{") {
+                    depth += 1;
+                }
+                if is_punct(&toks[j].0, "}") {
+                    depth -= 1;
+                }
+                depth == 0
+            })
+            .expect("fn body closes");
         out.push((i, close));
     }
     out
@@ -181,26 +357,56 @@ fn gate(files: &BTreeMap<String, String>) -> Vec<String> {
     for (path, text) in files {
         let toks = tokens(text);
         let is_parse = path == "parse.rs";
-        let regions: Vec<(&str, (usize, usize))> =
-            if is_parse { BOUNDARY.iter().flat_map(|n| fn_ranges(&toks, n).into_iter().map(move |r| (*n, r))).collect() } else { vec![] };
-        if is_parse { boundary_fns += regions.len(); }
-        let parse_source_fns = if is_parse { fn_ranges(&toks, "parse_source") } else { vec![] };
-        for n in BOUNDARY {
-            if !is_parse && !fn_ranges(&toks, n).is_empty() { bad.push(format!("{path}: defines `{n}` outside parse.rs (one conversion boundary)")); }
+        let regions: Vec<(&str, (usize, usize))> = if is_parse {
+            BOUNDARY
+                .iter()
+                .flat_map(|n| fn_ranges(&toks, n).into_iter().map(move |r| (*n, r)))
+                .collect()
+        } else {
+            vec![]
+        };
+        if is_parse {
+            boundary_fns += regions.len();
         }
-        let region_of = |i: usize| regions.iter().find(|(_, (a, b))| (*a..=*b).contains(&i)).map(|(n, _)| *n);
+        let parse_source_fns = if is_parse {
+            fn_ranges(&toks, "parse_source")
+        } else {
+            vec![]
+        };
+        for n in BOUNDARY {
+            if !is_parse && !fn_ranges(&toks, n).is_empty() {
+                bad.push(format!(
+                    "{path}: defines `{n}` outside parse.rs (one conversion boundary)"
+                ));
+            }
+        }
+        let region_of = |i: usize| {
+            regions
+                .iter()
+                .find(|(_, (a, b))| (*a..=*b).contains(&i))
+                .map(|(n, _)| *n)
+        };
         let mut v = |line: usize, why: String| bad.push(format!("{path}:{line}: {why}"));
         // first_error(..) argument spans in parse.rs (call sites, not the definition)
         let mut arg_spans = vec![];
         if is_parse {
             for i in 1..toks.len().saturating_sub(1) {
-                if is_ident(&toks[i].0, "first_error") && !is_ident(&toks[i - 1].0, "fn") && is_punct(&toks[i + 1].0, "(") {
+                if is_ident(&toks[i].0, "first_error")
+                    && !is_ident(&toks[i - 1].0, "fn")
+                    && is_punct(&toks[i + 1].0, "(")
+                {
                     let mut depth = 0;
-                    let close = (i + 1..toks.len()).find(|&j| {
-                        if is_punct(&toks[j].0, "(") { depth += 1; }
-                        if is_punct(&toks[j].0, ")") { depth -= 1; }
-                        depth == 0
-                    }).unwrap_or(toks.len() - 1);
+                    let close = (i + 1..toks.len())
+                        .find(|&j| {
+                            if is_punct(&toks[j].0, "(") {
+                                depth += 1;
+                            }
+                            if is_punct(&toks[j].0, ")") {
+                                depth -= 1;
+                            }
+                            depth == 0
+                        })
+                        .unwrap_or(toks.len() - 1);
                     arg_spans.push((i + 1, close));
                 }
             }
@@ -213,66 +419,148 @@ fn gate(files: &BTreeMap<String, String>) -> Vec<String> {
             if let Tok::Ident(id) = t {
                 let id = id.as_str();
                 // R1
-                let oxc_diag_path = id == "diagnostics" && i >= 2 && is_punct(&toks[i - 1].0, "::") && is_ident(&toks[i - 2].0, "oxc");
+                let oxc_diag_path = id == "diagnostics"
+                    && i >= 2
+                    && is_punct(&toks[i - 1].0, "::")
+                    && is_ident(&toks[i - 2].0, "oxc");
                 if (TYPE_TOKENS.contains(&id) || oxc_diag_path) && !in_first_error {
-                    v(*line, format!("R1: `{}` named outside parse.rs::first_error", if oxc_diag_path { "oxc::diagnostics" } else { id }));
+                    v(
+                        *line,
+                        format!(
+                            "R1: `{}` named outside parse.rs::first_error",
+                            if oxc_diag_path {
+                                "oxc::diagnostics"
+                            } else {
+                                id
+                            }
+                        ),
+                    );
                 }
                 // R2
-                if PRODUCERS.contains(&id) && !is_parse { v(*line, format!("R2: oxc diagnostic producer `{id}` outside parse.rs")); }
-                if RETURN_TYPES.contains(&id) { v(*line, format!("R2: producer return type `{id}` named")); }
+                if PRODUCERS.contains(&id) && !is_parse {
+                    v(
+                        *line,
+                        format!("R2: oxc diagnostic producer `{id}` outside parse.rs"),
+                    );
+                }
+                if RETURN_TYPES.contains(&id) {
+                    v(*line, format!("R2: producer return type `{id}` named"));
+                }
                 // R3
                 if is_parse && region.is_none() {
                     let dot = prev.is_some_and(|p| is_punct(p, "."));
-                    if id == "diagnostics" && dot && !arg_spans.iter().any(|(a, b)| (*a..=*b).contains(&i)) {
-                        v(*line, "R3: `.diagnostics` read outside a first_error(..) argument".into());
+                    if id == "diagnostics"
+                        && dot
+                        && !arg_spans.iter().any(|(a, b)| (*a..=*b).contains(&i))
+                    {
+                        v(
+                            *line,
+                            "R3: `.diagnostics` read outside a first_error(..) argument".into(),
+                        );
                     }
-                    if DIAG_ACCESSORS.contains(&id) { v(*line, format!("R3: diagnostics accessor `{id}` outside first_error")); }
-                    if id == "message" { v(*line, "R5: parse.rs names `message` outside the boundary pair".into()); }
+                    if DIAG_ACCESSORS.contains(&id) {
+                        v(
+                            *line,
+                            format!("R3: diagnostics accessor `{id}` outside first_error"),
+                        );
+                    }
+                    if id == "message" {
+                        v(
+                            *line,
+                            "R5: parse.rs names `message` outside the boundary pair".into(),
+                        );
+                    }
                 }
                 // R5
-                if let Some(r) = region.filter(|_| !BOUNDARY_IDENTS.contains(&id)) { v(*line, format!("R5: `{id}` in the boundary fn {r}")); }
+                if let Some(r) = region.filter(|_| !BOUNDARY_IDENTS.contains(&id)) {
+                    v(*line, format!("R5: `{id}` in the boundary fn {r}"));
+                }
                 // R6
-                if id == "include" && next.is_some_and(|n| is_punct(n, "!")) { v(*line, "R6: include!".into()); }
-                if id == "path" && i >= 2 && is_punct(&toks[i - 1].0, "[") && is_punct(&toks[i - 2].0, "#") { v(*line, "R6: #[path]".into()); }
+                if id == "include" && next.is_some_and(|n| is_punct(n, "!")) {
+                    v(*line, "R6: include!".into());
+                }
+                if id == "path"
+                    && i >= 2
+                    && is_punct(&toks[i - 1].0, "[")
+                    && is_punct(&toks[i - 2].0, "#")
+                {
+                    v(*line, "R6: #[path]".into());
+                }
                 // R7: the early-error check lives only in parse_source
-                if id == "with_check_syntax_error" && !parse_source_fns.iter().any(|(a, b)| (*a..=*b).contains(&i)) {
-                    v(*line, "R7: `with_check_syntax_error` only inside parse.rs::parse_source".into());
+                if id == "with_check_syntax_error"
+                    && !parse_source_fns.iter().any(|(a, b)| (*a..=*b).contains(&i))
+                {
+                    v(
+                        *line,
+                        "R7: `with_check_syntax_error` only inside parse.rs::parse_source".into(),
+                    );
                 }
             }
-            if let (Tok::Punct(p), Some(r)) = (t, region) && BAD_PUNCT.contains(&p.as_str()) {
+            if let (Tok::Punct(p), Some(r)) = (t, region)
+                && BAD_PUNCT.contains(&p.as_str())
+            {
                 v(*line, format!("R5: `{p}` in the boundary fn {r}"));
             }
             // R4
             if is_parse && is_ident(t, "pub") {
-                if !next.is_some_and(|n| is_ident(n, "fn")) { v(*line, "R4: parse.rs exports a non-fn item".into()); continue; }
-                let open = (i..toks.len()).find(|&j| is_punct(&toks[j].0, "{") || is_ident(&toks[j].0, "where")).unwrap_or(toks.len());
+                if !next.is_some_and(|n| is_ident(n, "fn")) {
+                    v(*line, "R4: parse.rs exports a non-fn item".into());
+                    continue;
+                }
+                let open = (i..toks.len())
+                    .find(|&j| is_punct(&toks[j].0, "{") || is_ident(&toks[j].0, "where"))
+                    .unwrap_or(toks.len());
                 let ret = (i..open).find(|&j| is_punct(&toks[j].0, "->"));
                 if let Some(r) = ret {
-                    let ty: String = toks[r + 1..open].iter().map(|(t, _)| match t { Tok::Ident(s) | Tok::Punct(s) => s.as_str(), Tok::Lit => "<lit>" }).collect();
-                    if !EXPORTS.contains(&ty.as_str()) { v(*line, format!("R4: parse.rs pub fn returns `{ty}`, not on EXPORTS")); }
+                    let ty: String = toks[r + 1..open]
+                        .iter()
+                        .map(|(t, _)| match t {
+                            Tok::Ident(s) | Tok::Punct(s) => s.as_str(),
+                            Tok::Lit => "<lit>",
+                        })
+                        .collect();
+                    if !EXPORTS.contains(&ty.as_str()) {
+                        v(
+                            *line,
+                            format!("R4: parse.rs pub fn returns `{ty}`, not on EXPORTS"),
+                        );
+                    }
                 }
             }
         }
     }
-    if boundary_fns != BOUNDARY.len() { bad.push(format!("parse.rs must define first_error and syntax_error exactly once each ({boundary_fns} found)")); }
+    if boundary_fns != BOUNDARY.len() {
+        bad.push(format!("parse.rs must define first_error and syntax_error exactly once each ({boundary_fns} found)"));
+    }
     bad.extend(parse_site_violations(files, PARSE_SITES));
     bad.extend(babelhelpers_find_violations(files, BABELHELPERS_FIND));
     bad
 }
 
-
 fn all_fn_ranges(toks: &[(Tok, usize)]) -> Vec<(String, usize, usize)> {
     let mut out = vec![];
     for i in 0..toks.len().saturating_sub(1) {
-        if !is_ident(&toks[i].0, "fn") { continue; }
-        let Tok::Ident(name) = &toks[i + 1].0 else { continue };
-        let Some(open) = (i..toks.len()).find(|&j| is_punct(&toks[j].0, "{")) else { continue };
+        if !is_ident(&toks[i].0, "fn") {
+            continue;
+        }
+        let Tok::Ident(name) = &toks[i + 1].0 else {
+            continue;
+        };
+        let Some(open) = (i..toks.len()).find(|&j| is_punct(&toks[j].0, "{")) else {
+            continue;
+        };
         let mut depth = 0;
         let Some(close) = (open..toks.len()).find(|&j| {
-            if is_punct(&toks[j].0, "{") { depth += 1; }
-            if is_punct(&toks[j].0, "}") { depth -= 1; }
+            if is_punct(&toks[j].0, "{") {
+                depth += 1;
+            }
+            if is_punct(&toks[j].0, "}") {
+                depth -= 1;
+            }
             depth == 0
-        }) else { continue };
+        }) else {
+            continue;
+        };
         out.push((name.clone(), i, close));
     }
     out
@@ -291,13 +579,22 @@ fn use_aliases(toks: &[(Tok, usize)]) -> HashMap<String, String> {
     let mut map = HashMap::new();
     let mut i = 0;
     while i < toks.len() {
-        if !is_ident(&toks[i].0, "use") { i += 1; continue; }
+        if !is_ident(&toks[i].0, "use") {
+            i += 1;
+            continue;
+        }
         let mut depth = 0;
         let mut j = i + 1;
         while j < toks.len() {
-            if is_punct(&toks[j].0, "{") { depth += 1; }
-            if is_punct(&toks[j].0, "}") { depth -= 1; }
-            if depth == 0 && is_punct(&toks[j].0, ";") { break; }
+            if is_punct(&toks[j].0, "{") {
+                depth += 1;
+            }
+            if is_punct(&toks[j].0, "}") {
+                depth -= 1;
+            }
+            if depth == 0 && is_punct(&toks[j].0, ";") {
+                break;
+            }
             j += 1;
         }
         let mut last: Option<&str> = None;
@@ -313,7 +610,9 @@ fn use_aliases(toks: &[(Tok, usize)]) -> HashMap<String, String> {
                     }
                     last = None;
                 }
-                Tok::Ident(id) if !matches!(id.as_str(), "use" | "crate" | "super" | "self" | "as") => {
+                Tok::Ident(id)
+                    if !matches!(id.as_str(), "use" | "crate" | "super" | "self" | "as") =>
+                {
                     last = Some(id.as_str());
                 }
                 Tok::Punct(p) if matches!(p.as_str(), "," | "{" | "}" | ";") => last = None,
@@ -326,10 +625,18 @@ fn use_aliases(toks: &[(Tok, usize)]) -> HashMap<String, String> {
 }
 
 /// `Some(canonical)` if `toks[i]` is a parse / parse_with / parse_source call or `Parser::new`.
-fn parse_callee(toks: &[(Tok, usize)], i: usize, aliases: &HashMap<String, String>) -> Option<String> {
-    let Tok::Ident(id) = &toks[i].0 else { return None };
+fn parse_callee(
+    toks: &[(Tok, usize)],
+    i: usize,
+    aliases: &HashMap<String, String>,
+) -> Option<String> {
+    let Tok::Ident(id) = &toks[i].0 else {
+        return None;
+    };
     let name = aliases.get(id).map(String::as_str).unwrap_or(id.as_str());
-    if i > 0 && is_ident(&toks[i - 1].0, "fn") { return None; }
+    if i > 0 && is_ident(&toks[i - 1].0, "fn") {
+        return None;
+    }
     if name == "Parser" {
         if toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "::"))
             && toks.get(i + 2).is_some_and(|t| is_ident(&t.0, "new"))
@@ -339,9 +646,15 @@ fn parse_callee(toks: &[(Tok, usize)], i: usize, aliases: &HashMap<String, Strin
         }
         return None;
     }
-    if !PARSE_CALLEES.contains(&name) { return None; }
-    if i > 0 && is_punct(&toks[i - 1].0, ".") { return None; }
-    if !toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "(")) { return None; }
+    if !PARSE_CALLEES.contains(&name) {
+        return None;
+    }
+    if i > 0 && is_punct(&toks[i - 1].0, ".") {
+        return None;
+    }
+    if !toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "(")) {
+        return None;
+    }
     Some(name.into())
 }
 
@@ -349,20 +662,34 @@ fn parse_callee(toks: &[(Tok, usize)], i: usize, aliases: &HashMap<String, Strin
 /// not a `fn` definition, not the `parse` module path (`parse::scoping`), and not a `use` import
 /// (calls through a `use … as` alias are still caught by [`parse_callee`]).
 fn parse_value_use(toks: &[(Tok, usize)], i: usize, aliases: &HashMap<String, String>) -> bool {
-    let Tok::Ident(id) = &toks[i].0 else { return false };
-    if in_use_item(toks, i) { return false; }
+    let Tok::Ident(id) = &toks[i].0 else {
+        return false;
+    };
+    if in_use_item(toks, i) {
+        return false;
+    }
     let name = aliases.get(id).map(String::as_str).unwrap_or(id.as_str());
-    if i > 0 && is_ident(&toks[i - 1].0, "fn") { return false; }
+    if i > 0 && is_ident(&toks[i - 1].0, "fn") {
+        return false;
+    }
     if name == "Parser" {
         let is_new = toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "::"))
             && toks.get(i + 2).is_some_and(|t| is_ident(&t.0, "new"));
         return !is_new;
     }
-    if !PARSE_CALLEES.contains(&name) { return false; }
+    if !PARSE_CALLEES.contains(&name) {
+        return false;
+    }
     // `mod parse`, `foo.parse(` (method), `parse::item` (module path).
-    if i > 0 && (is_ident(&toks[i - 1].0, "mod") || is_punct(&toks[i - 1].0, ".")) { return false; }
-    if toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "::")) { return false; }
-    if toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "(")) && !(i > 0 && is_punct(&toks[i - 1].0, ".")) {
+    if i > 0 && (is_ident(&toks[i - 1].0, "mod") || is_punct(&toks[i - 1].0, ".")) {
+        return false;
+    }
+    if toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "::")) {
+        return false;
+    }
+    if toks.get(i + 1).is_some_and(|t| is_punct(&t.0, "("))
+        && !(i > 0 && is_punct(&toks[i - 1].0, "."))
+    {
         return false;
     }
     true
@@ -373,15 +700,23 @@ fn in_use_item(toks: &[(Tok, usize)], i: usize) -> bool {
     let mut j = i;
     while j > 0 {
         j -= 1;
-        if is_punct(&toks[j].0, "}") { depth += 1; }
-        else if is_punct(&toks[j].0, "{") { depth -= 1; }
-        else if depth <= 0 && is_punct(&toks[j].0, ";") { return false; }
-        else if depth <= 0 && is_ident(&toks[j].0, "use") { return true; }
+        if is_punct(&toks[j].0, "}") {
+            depth += 1;
+        } else if is_punct(&toks[j].0, "{") {
+            depth -= 1;
+        } else if depth <= 0 && is_punct(&toks[j].0, ";") {
+            return false;
+        } else if depth <= 0 && is_ident(&toks[j].0, "use") {
+            return true;
+        }
     }
     false
 }
 
-fn parse_site_violations(files: &BTreeMap<String, String>, allowed: &[(&str, &str, &str)]) -> Vec<String> {
+fn parse_site_violations(
+    files: &BTreeMap<String, String>,
+    allowed: &[(&str, &str, &str)],
+) -> Vec<String> {
     let allowed_keys: BTreeSet<&str> = allowed.iter().map(|a| a.0).collect();
     let mut found: BTreeSet<String> = BTreeSet::new();
     let mut bad = Vec::new();
@@ -390,16 +725,22 @@ fn parse_site_violations(files: &BTreeMap<String, String>, allowed: &[(&str, &st
         let fns = all_fn_ranges(&toks);
         let aliases = use_aliases(&toks);
         for i in 0..toks.len() {
-            let Some(callee) = parse_callee(&toks, i, &aliases) else { continue };
+            let Some(callee) = parse_callee(&toks, i, &aliases) else {
+                continue;
+            };
             let line = toks[i].1;
             let Some(fname) = enclosing(&fns, i) else {
-                bad.push(format!("{path}:{line}: R8: `{callee}` at module level (D-0262 / D-0264)"));
+                bad.push(format!(
+                    "{path}:{line}: R8: `{callee}` at module level (D-0262 / D-0264)"
+                ));
                 continue;
             };
             let key = format!("{path}::{fname}");
             found.insert(key.clone());
             if !allowed_keys.contains(key.as_str()) {
-                bad.push(format!("{path}:{line}: R8: `{callee}` in `{key}` is not on the PARSE_SITES list"));
+                bad.push(format!(
+                    "{path}:{line}: R8: `{callee}` in `{key}` is not on the PARSE_SITES list"
+                ));
             }
         }
         // Function-pointer gap: naming parse / parse_with / parse_source / Parser other than as a
@@ -408,7 +749,9 @@ fn parse_site_violations(files: &BTreeMap<String, String>, allowed: &[(&str, &st
         for i in 0..toks.len() {
             if parse_value_use(&toks, i, &aliases) {
                 let line = toks[i].1;
-                bad.push(format!("{path}:{line}: R8: function-pointer use of a parse entry (D-0265)"));
+                bad.push(format!(
+                    "{path}:{line}: R8: function-pointer use of a parse entry (D-0265)"
+                ));
             }
         }
     }
@@ -423,10 +766,17 @@ fn parse_site_violations(files: &BTreeMap<String, String>, allowed: &[(&str, &st
 fn fn_raw_src(src: &str, toks: &[(Tok, usize)], start: usize, end: usize) -> String {
     let lo = toks[start].1;
     let hi = toks[end].1;
-    src.lines().skip(lo.saturating_sub(1)).take(hi.saturating_sub(lo) + 1).collect::<Vec<_>>().join("\n")
+    src.lines()
+        .skip(lo.saturating_sub(1))
+        .take(hi.saturating_sub(lo) + 1)
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
-fn babelhelpers_find_violations(files: &BTreeMap<String, String>, allowed: &[(&str, &str, &str)]) -> Vec<String> {
+fn babelhelpers_find_violations(
+    files: &BTreeMap<String, String>,
+    allowed: &[(&str, &str, &str)],
+) -> Vec<String> {
     let allowed_keys: BTreeSet<&str> = allowed.iter().map(|a| a.0).collect();
     let mut found: BTreeSet<String> = BTreeSet::new();
     let mut bad = Vec::new();
@@ -435,14 +785,18 @@ fn babelhelpers_find_violations(files: &BTreeMap<String, String>, allowed: &[(&s
         let fns = all_fn_ranges(&toks);
         for (name, a, b) in &fns {
             let raw = fn_raw_src(src, &toks, *a, *b);
-            if !raw.contains("babelHelpers.") { continue; }
+            if !raw.contains("babelHelpers.") {
+                continue;
+            }
             let searches = raw.contains(".find(")
                 || raw.contains(".rfind(")
                 || raw.contains(".match_indices(")
                 || raw.contains(".replace(")
                 || raw.contains(".replacen(")
                 || raw.contains(".replace_range(");
-            if !searches { continue; }
+            if !searches {
+                continue;
+            }
             let key = format!("{path}::{name}");
             found.insert(key.clone());
             if !allowed_keys.contains(key.as_str()) {
@@ -460,14 +814,17 @@ fn babelhelpers_find_violations(files: &BTreeMap<String, String>, allowed: &[(&s
 
 use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 
-fn src_dir() -> std::path::PathBuf { lwc_shared::cargo_manifest_dir!().join("src") }
+fn src_dir() -> std::path::PathBuf {
+    lwc_shared::cargo_manifest_dir!().join("src")
+}
 
 fn real_files() -> BTreeMap<String, String> {
     let repo = workspace_root(&lwc_shared::cargo_manifest_dir!());
     let root = src_dir();
     let mut out = BTreeMap::new();
     for p in tracked_files_filtered(&repo, &["crates/lwc-js/src"], &["rs"]) {
-        let text = std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("unreadable {}: {e}", p.display()));
+        let text = std::fs::read_to_string(&p)
+            .unwrap_or_else(|e| panic!("unreadable {}: {e}", p.display()));
         out.insert(rel_slash(&root, &p), text);
     }
     out
@@ -476,20 +833,51 @@ fn real_files() -> BTreeMap<String, String> {
 #[test]
 fn lwc_js_src_confines_oxc_diagnostics_to_first_error() {
     let files = real_files();
-    assert!(files.len() >= 15 && files.contains_key("parse.rs") && files.contains_key("transforms/lower.rs"), "walked {:?}", files.keys());
+    assert!(
+        files.len() >= 15
+            && files.contains_key("parse.rs")
+            && files.contains_key("transforms/lower.rs"),
+        "walked {:?}",
+        files.keys()
+    );
     let bad = gate(&files);
-    assert!(bad.is_empty(), "oxc diagnostics outside parse.rs::first_error (D-0248, AB-L0063):\n{}", bad.join("\n"));
+    assert!(
+        bad.is_empty(),
+        "oxc diagnostics outside parse.rs::first_error (D-0248, AB-L0063):\n{}",
+        bad.join("\n")
+    );
 }
 
 /// Arch's misses of the old line-grep gate (AB-L0063 (5)), each planted where a diagnostic could be at hand.
 const SHAPES: [(&str, &str); 7] = [
-    ("matches!", "if matches!(d.message.as_ref(), \"Unexpected token\") { return None; }"),
-    (".message().starts_with", "if d.message().starts_with(\"Expected\") { return None; }"),
-    ("alias m.contains", "let m = &d.message;\n    if m.contains(\"abstract\") { return None; }"),
-    ("multi-line call", "if d\n        .message\n        .contains(\n            \"x\",\n        ) { return None; }"),
-    (".to_lowercase().contains", "if d.message.to_lowercase().contains(\"x\") { return None; }"),
-    ("format!(..).contains", "if format!(\"{}\", d.message).contains(\"x\") { return None; }"),
-    ("d.to_string().contains", "if d.to_string().contains(\"x\") { return None; }"),
+    (
+        "matches!",
+        "if matches!(d.message.as_ref(), \"Unexpected token\") { return None; }",
+    ),
+    (
+        ".message().starts_with",
+        "if d.message().starts_with(\"Expected\") { return None; }",
+    ),
+    (
+        "alias m.contains",
+        "let m = &d.message;\n    if m.contains(\"abstract\") { return None; }",
+    ),
+    (
+        "multi-line call",
+        "if d\n        .message\n        .contains(\n            \"x\",\n        ) { return None; }",
+    ),
+    (
+        ".to_lowercase().contains",
+        "if d.message.to_lowercase().contains(\"x\") { return None; }",
+    ),
+    (
+        "format!(..).contains",
+        "if format!(\"{}\", d.message).contains(\"x\") { return None; }",
+    ),
+    (
+        "d.to_string().contains",
+        "if d.to_string().contains(\"x\") { return None; }",
+    ),
 ];
 
 /// Violations the plant adds (the real tree is clean, asserted, so every one is the plant's).
@@ -498,10 +886,18 @@ fn planted(files: &BTreeMap<String, String>, path: &str, anchor: &str, code: &st
     gate(&plant(files, path, anchor, code))
 }
 
-fn plant(files: &BTreeMap<String, String>, path: &str, anchor: &str, code: &str) -> BTreeMap<String, String> {
+fn plant(
+    files: &BTreeMap<String, String>,
+    path: &str,
+    anchor: &str,
+    code: &str,
+) -> BTreeMap<String, String> {
     let mut f = files.clone();
     let text = f.get_mut(path).unwrap_or_else(|| panic!("no {path}"));
-    let at = text.find(anchor).unwrap_or_else(|| panic!("anchor {anchor:?} not in {path}")) + anchor.len();
+    let at = text
+        .find(anchor)
+        .unwrap_or_else(|| panic!("anchor {anchor:?} not in {path}"))
+        + anchor.len();
     text.insert_str(at, &format!("\n    {code}\n"));
     f
 }
@@ -514,11 +910,23 @@ fn every_planted_message_match_fails_the_gate() {
         // inside the boundary fn itself, where `d` is the diagnostic
         ("parse.rs", "let d = diagnostics.errors().next()?;", ""),
         // elsewhere in parse.rs, reading the producer's diagnostics directly
-        ("parse.rs", "let ret = Parser::new(alloc, src, source_type()).with_options(options).parse();", "let d = ret.diagnostics.errors().next().unwrap();\n    "),
+        (
+            "parse.rs",
+            "let ret = Parser::new(alloc, src, source_type())\n        .with_options(options)\n        .parse();",
+            "let d = ret.diagnostics.errors().next().unwrap();\n    ",
+        ),
         // another module, running its own producer without naming any diagnostic type
-        ("transforms/lower.rs", "use lwc_shared::CompileError;", "let ret = oxc::parser::Parser::new(&alloc, code, crate::parse::source_type()).parse();\n    let d = ret.diagnostics.errors().next().unwrap();\n    "),
+        (
+            "transforms/lower.rs",
+            "use lwc_shared::CompileError;",
+            "let ret = oxc::parser::Parser::new(&alloc, code, crate::parse::source_type()).parse();\n    let d = ret.diagnostics.errors().next().unwrap();\n    ",
+        ),
         // another module, SemanticBuilder errors (no Parser, no type named)
-        ("transforms/decorators.rs", "use oxc::semantic::NodeId;", "let d = oxc::semantic::SemanticBuilder::new().with_check_syntax_error(true).build(program).diagnostics.errors().next().unwrap();\n    "),
+        (
+            "transforms/decorators.rs",
+            "use oxc::semantic::NodeId;",
+            "let d = oxc::semantic::SemanticBuilder::new().with_check_syntax_error(true).build(program).diagnostics.errors().next().unwrap();\n    ",
+        ),
     ];
     let mut report = vec![];
     for (path, anchor, acquire) in sites {
@@ -536,7 +944,10 @@ fn every_planted_message_match_fails_the_gate() {
         text.push_str("\n#[cfg(test)]\nmod late { fn f(d: &oxc::diagnostics::OxcDiagnostic) -> bool { d.message.contains(\"x\") } }\n");
         assert!(gate(&files).is_empty(), "baseline must be clean");
         let bad = gate(&f);
-        assert!(!bad.is_empty(), "plant after early #[cfg(test)] in {path} passed");
+        assert!(
+            !bad.is_empty(),
+            "plant after early #[cfg(test)] in {path} passed"
+        );
         report.push(format!("{path} / after #[cfg(test)]: {}", bad.join(" | ")));
     }
     eprintln!("{}", report.join("\n"));
@@ -546,23 +957,78 @@ fn every_planted_message_match_fails_the_gate() {
 fn bypasses_that_never_name_oxc_diagnostic_fail_the_gate() {
     let files = real_files();
     for (name, path, anchor, code) in [
-        ("parse.rs leaks diagnostics as an impl Iterator", "parse.rs", "Semantic<'a> {\n    SemanticBuilder::new().with_build_nodes(true).build(program).semantic\n}",
-            "pub fn leak<'a>(alloc: &'a Allocator, src: &'a str) -> impl Iterator<Item = String> + 'a { Vec::<String>::new().into_iter() }"),
-        ("parse.rs returns the producer result", "parse.rs", "Semantic<'a> {\n    SemanticBuilder::new().with_build_nodes(true).build(program).semantic\n}",
-            "pub fn raw<'a>(alloc: &'a Allocator, src: &'a str) -> oxc::parser::ParserReturn<'a> { Parser::new(alloc, src, source_type()).parse() }"),
-        ("parse.rs exports a struct", "parse.rs", "Semantic<'a> {\n    SemanticBuilder::new().with_build_nodes(true).build(program).semantic\n}", "pub struct Leak(pub Vec<String>);"),
-        ("filter the converted text in parse.rs", "parse.rs", "let program = parse(alloc, src, filename)?;",
-            "if first_error(src, filename, &SemanticBuilder::new().build(&program).diagnostics).is_some_and(|e| e.message.contains(\"x\")) { }"),
-        ("module alias", "lib.rs", "pub mod parse;", "use oxc::diagnostics as dx;"),
-        ("glob import + Transformer", "transforms/lower.rs", "use lwc_shared::CompileError;", "use oxc::transformer::*; fn t() { let _ = Transformer::new; }"),
-        ("include!", "lib.rs", "pub mod parse;", "include!(\"../../lwc-shared/src/x.rs\");"),
-        ("#[path]", "lib.rs", "pub mod parse;", "#[path = \"../../elsewhere.rs\"] mod elsewhere;"),
-        ("boundary fn branches on the text", "parse.rs", "let d = diagnostics.errors().next()?;", "let n = d.message.len(); assert!(n > 0);"),
-        ("second conversion fn", "lib.rs", "pub mod parse;", "fn first_error() {}"),
-        ("semantic check on intermediate parse()", "parse.rs", "pub fn parse<'a>(alloc: &'a Allocator, src: &'a str, filename: &str) -> Result<Program<'a>, CompileError> {
+        (
+            "parse.rs leaks diagnostics as an impl Iterator",
+            "parse.rs",
+            "Semantic<'a> {\n    SemanticBuilder::new()\n        .with_build_nodes(true)\n        .build(program)\n        .semantic\n}",
+            "pub fn leak<'a>(alloc: &'a Allocator, src: &'a str) -> impl Iterator<Item = String> + 'a { Vec::<String>::new().into_iter() }",
+        ),
+        (
+            "parse.rs returns the producer result",
+            "parse.rs",
+            "Semantic<'a> {\n    SemanticBuilder::new()\n        .with_build_nodes(true)\n        .build(program)\n        .semantic\n}",
+            "pub fn raw<'a>(alloc: &'a Allocator, src: &'a str) -> oxc::parser::ParserReturn<'a> { Parser::new(alloc, src, source_type()).parse() }",
+        ),
+        (
+            "parse.rs exports a struct",
+            "parse.rs",
+            "Semantic<'a> {\n    SemanticBuilder::new()\n        .with_build_nodes(true)\n        .build(program)\n        .semantic\n}",
+            "pub struct Leak(pub Vec<String>);",
+        ),
+        (
+            "filter the converted text in parse.rs",
+            "parse.rs",
+            "let program = parse(alloc, src, filename)?;",
+            "if first_error(src, filename, &SemanticBuilder::new().build(&program).diagnostics).is_some_and(|e| e.message.contains(\"x\")) { }",
+        ),
+        (
+            "module alias",
+            "lib.rs",
+            "pub mod parse;",
+            "use oxc::diagnostics as dx;",
+        ),
+        (
+            "glob import + Transformer",
+            "transforms/lower.rs",
+            "use lwc_shared::CompileError;",
+            "use oxc::transformer::*; fn t() { let _ = Transformer::new; }",
+        ),
+        (
+            "include!",
+            "lib.rs",
+            "pub mod parse;",
+            "include!(\"../../lwc-shared/src/x.rs\");",
+        ),
+        (
+            "#[path]",
+            "lib.rs",
+            "pub mod parse;",
+            "#[path = \"../../elsewhere.rs\"] mod elsewhere;",
+        ),
+        (
+            "boundary fn branches on the text",
+            "parse.rs",
+            "let d = diagnostics.errors().next()?;",
+            "let n = d.message.len(); assert!(n > 0);",
+        ),
+        (
+            "second conversion fn",
+            "lib.rs",
+            "pub mod parse;",
+            "fn first_error() {}",
+        ),
+        (
+            "semantic check on intermediate parse()",
+            "parse.rs",
+            "pub fn parse<'a>(
+    alloc: &'a Allocator,
+    src: &'a str,
+    filename: &str,
+) -> Result<Program<'a>, CompileError> {
     parse_with(alloc, src, filename, ParseOptions::default())
 }",
-            "let _ = SemanticBuilder::new().with_check_syntax_error(true);"),
+            "let _ = SemanticBuilder::new().with_check_syntax_error(true);",
+        ),
     ] {
         let bad = planted(&files, path, anchor, code);
         assert!(!bad.is_empty(), "{name}: passed the gate");
@@ -572,8 +1038,19 @@ fn bypasses_that_never_name_oxc_diagnostic_fail_the_gate() {
 
 #[test]
 fn tokenizer_strips_comments_and_literals() {
-    let t = tokens("a // OxcDiagnostic\n/* OxcDiagnostic /* nested */ */ \"OxcDiagnostic\" r#\"OxcDiagnostic\"# 'x' '\\n' b\"Parser\" fn f<'a>() {}");
-    let ids: Vec<&str> = t.iter().filter_map(|(t, _)| if let Tok::Ident(s) = t { Some(s.as_str()) } else { None }).collect();
+    let t = tokens(
+        "a // OxcDiagnostic\n/* OxcDiagnostic /* nested */ */ \"OxcDiagnostic\" r#\"OxcDiagnostic\"# 'x' '\\n' b\"Parser\" fn f<'a>() {}",
+    );
+    let ids: Vec<&str> = t
+        .iter()
+        .filter_map(|(t, _)| {
+            if let Tok::Ident(s) = t {
+                Some(s.as_str())
+            } else {
+                None
+            }
+        })
+        .collect();
     assert_eq!(ids, ["a", "fn", "f", "'a"]);
     assert_eq!(t.last().unwrap().1, 2, "line count across comments");
 }
@@ -581,7 +1058,11 @@ fn tokenizer_strips_comments_and_literals() {
 #[test]
 fn planted_parse_outside_closed_list_fails_the_gate() {
     let files = real_files();
-    assert!(gate(&files).is_empty(), "baseline must be clean: {}", gate(&files).join("\n"));
+    assert!(
+        gate(&files).is_empty(),
+        "baseline must be clean: {}",
+        gate(&files).join("\n")
+    );
     for (name, path, anchor, code) in [
         (
             "renamed variable in a non-listed helper",
@@ -622,22 +1103,43 @@ fn planted_parse_outside_closed_list_fails_the_gate() {
     ] {
         let bad = planted(&files, path, anchor, code);
         assert!(!bad.is_empty(), "{name}: passed the gate");
-        assert!(bad.iter().any(|b| b.contains("R8")), "{name}: expected R8, got {}", bad.join(" | "));
+        assert!(
+            bad.iter().any(|b| b.contains("R8")),
+            "{name}: expected R8, got {}",
+            bad.join(" | ")
+        );
         eprintln!("{name}: {}", bad.join(" | "));
     }
 
     let mut extra: Vec<(&str, &str, &str)> = PARSE_SITES.to_vec();
     extra.push(("no/such.rs::ghost", "orphaned row", "R-ghost"));
     let orphan = parse_site_violations(&files, &extra);
-    assert!(orphan.iter().any(|b| b.contains("orphan") && b.contains("no/such.rs::ghost")),
-        "orphaned allowlist row must fail, got {}", orphan.join(" | "));
-    eprintln!("orphan row: {}", orphan.iter().filter(|b| b.contains("orphan")).cloned().collect::<Vec<_>>().join(" | "));
+    assert!(
+        orphan
+            .iter()
+            .any(|b| b.contains("orphan") && b.contains("no/such.rs::ghost")),
+        "orphaned allowlist row must fail, got {}",
+        orphan.join(" | ")
+    );
+    eprintln!(
+        "orphan row: {}",
+        orphan
+            .iter()
+            .filter(|b| b.contains("orphan"))
+            .cloned()
+            .collect::<Vec<_>>()
+            .join(" | ")
+    );
 }
 
 #[test]
 fn planted_babelhelpers_text_replace_on_printed_output_fails_the_gate() {
     let files = real_files();
-    assert!(gate(&files).is_empty(), "baseline must be clean: {}", gate(&files).join("\n"));
+    assert!(
+        gate(&files).is_empty(),
+        "baseline must be clean: {}",
+        gate(&files).join("\n")
+    );
     for (name, path, anchor, code) in [
         (
             "replace on printed output in post_codegen_edits",
@@ -660,15 +1162,36 @@ fn planted_babelhelpers_text_replace_on_printed_output_fails_the_gate() {
     ] {
         let bad = planted(&files, path, anchor, code);
         assert!(!bad.is_empty(), "{name}: passed the gate");
-        assert!(bad.iter().any(|b| b.contains("R8b")), "{name}: expected R8b, got {}", bad.join(" | "));
+        assert!(
+            bad.iter().any(|b| b.contains("R8b")),
+            "{name}: expected R8b, got {}",
+            bad.join(" | ")
+        );
         eprintln!("{name}: {}", bad.join(" | "));
     }
 
-    let extra: &[(&str, &str, &str)] = &[("helpers.rs::post_codegen_edits", "stale printed-output rename", "R-babelhelpers-print")];
+    let extra: &[(&str, &str, &str)] = &[(
+        "helpers.rs::post_codegen_edits",
+        "stale printed-output rename",
+        "R-babelhelpers-print",
+    )];
     let orphan = babelhelpers_find_violations(&files, extra);
-    assert!(orphan.iter().any(|b| b.contains("orphan") && b.contains("helpers.rs::post_codegen_edits")),
-        "orphaned BABELHELPERS_FIND row must fail, got {}", orphan.join(" | "));
-    eprintln!("orphan row: {}", orphan.iter().filter(|b| b.contains("orphan")).cloned().collect::<Vec<_>>().join(" | "));
+    assert!(
+        orphan
+            .iter()
+            .any(|b| b.contains("orphan") && b.contains("helpers.rs::post_codegen_edits")),
+        "orphaned BABELHELPERS_FIND row must fail, got {}",
+        orphan.join(" | ")
+    );
+    eprintln!(
+        "orphan row: {}",
+        orphan
+            .iter()
+            .filter(|b| b.contains("orphan"))
+            .cloned()
+            .collect::<Vec<_>>()
+            .join(" | ")
+    );
 }
 
 #[test]
@@ -691,5 +1214,8 @@ fn async_predicate_lives_in_one_fn_called_from_one_place() {
             }
         }
     }
-    assert!(defs.is_empty(), "source-text async prefilter reintroduced: {defs:?}");
+    assert!(
+        defs.is_empty(),
+        "source-text async prefilter reintroduced: {defs:?}"
+    );
 }

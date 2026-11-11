@@ -16,8 +16,14 @@ fn production_src_rs(repo: &Path) -> Vec<PathBuf> {
             let rel = rel_slash(repo, p);
             let parts: Vec<&str> = rel.split('/').collect();
             match parts.iter().position(|c| *c == "src") {
-                Some(i) => !parts[..i].iter().any(|c| matches!(*c, "target" | "tests" | "examples" | "benches" | "node_modules"))
-                    && !parts.contains(&"target"),
+                Some(i) => {
+                    !parts[..i].iter().any(|c| {
+                        matches!(
+                            *c,
+                            "target" | "tests" | "examples" | "benches" | "node_modules"
+                        )
+                    }) && !parts.contains(&"target")
+                }
                 None => false,
             }
         })
@@ -39,9 +45,16 @@ fn non_test(text: &str) -> String {
         let len = if first_line.trim_end().ends_with(';') || !first_line.trim_end().ends_with('{') {
             head_end + next.find('\n').map_or(next.len(), |i| i + 1)
         } else {
-            head_end + next.find("\n}").map_or(next.len(), |i| (i + 2).min(next.len()))
+            head_end
+                + next
+                    .find("\n}")
+                    .map_or(next.len(), |i| (i + 2).min(next.len()))
         };
-        out.extend(item[..len].chars().map(|c| if c == '\n' { '\n' } else { ' ' }));
+        out.extend(
+            item[..len]
+                .chars()
+                .map(|c| if c == '\n' { '\n' } else { ' ' }),
+        );
         rest = &item[len..];
     }
     out.push_str(rest);
@@ -62,7 +75,10 @@ fn violations(rel: &str, text: &str) -> Vec<String> {
     for p in &pats {
         for m in p.find_iter(body) {
             let line = body[..m.start()].lines().count().max(1);
-            hits.push(format!("{rel}:{line}: {}", m.as_str().split_whitespace().collect::<Vec<_>>().join(" ")));
+            hits.push(format!(
+                "{rel}:{line}: {}",
+                m.as_str().split_whitespace().collect::<Vec<_>>().join(" ")
+            ));
         }
     }
     hits
@@ -72,13 +88,23 @@ fn violations(rel: &str, text: &str) -> Vec<String> {
 fn no_defaulted_source_location_outside_tests() {
     let root = workspace_root(&lwc_shared::cargo_manifest_dir!());
     let files = production_src_rs(&root);
-    assert!(files.iter().any(|f| f.ends_with("lwc-shared/src/template_ir.rs")), "gate scans nothing: {} files", files.len());
+    assert!(
+        files
+            .iter()
+            .any(|f| f.ends_with("lwc-shared/src/template_ir.rs")),
+        "gate scans nothing: {} files",
+        files.len()
+    );
     let mut hits = vec![];
     for f in files {
         let rel = rel_slash(&root, &f);
         hits.extend(violations(&rel, &std::fs::read_to_string(&f).unwrap()));
     }
-    assert!(hits.is_empty(), "defaulted SourceLocation outside tests (carry the real location, or None / normalize_location(None) on the diagnostic):\n{}", hits.join("\n"));
+    assert!(
+        hits.is_empty(),
+        "defaulted SourceLocation outside tests (carry the real location, or None / normalize_location(None) on the diagnostic):\n{}",
+        hits.join("\n")
+    );
 }
 
 /// The patterns catch each banned form (multi-line literals included) and spare test modules and

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><button>toggle section</button><div></div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "LWC1188: Invalid dynamic components usage, lwc:component and lwc:is can only be used when dynamic components have been enabled."
+ }
+}

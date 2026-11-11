@@ -23,30 +23,55 @@ fn opts(target_ssr: bool) -> CompileOptions {
 
 /// `[code, level, url, line, column, start, length]` of what 9.5.3 `transformSync` throws for SRC.
 fn oracle(target_ssr: bool) -> String {
-    let root = lwc_shared::oracle_root().to_str().expect("LWC_ORACLE must be UTF-8").to_string();
-    let head = Command::new("git").args(["-C", &root, "rev-parse", "HEAD"]).output().expect("git is required");
+    let root = lwc_shared::oracle_root()
+        .to_str()
+        .expect("LWC_ORACLE must be UTF-8")
+        .to_string();
+    let head = Command::new("git")
+        .args(["-C", &root, "rev-parse", "HEAD"])
+        .output()
+        .expect("git is required");
     let head = String::from_utf8(head.stdout).unwrap();
-    assert!(head.starts_with(ORACLE_SHA), "oracle {root} is at {head:?}, want {ORACLE_SHA}");
+    assert!(
+        head.starts_with(ORACLE_SHA),
+        "oracle {root} is at {head:?}, want {ORACLE_SHA}"
+    );
     let script = format!(
         "const {{ transformSync }} = require({root:?} + '/packages/@lwc/compiler');
          try {{ transformSync({SRC:?}, 'foo.js', {{ name: 'foo', namespace: 'x', targetSSR: {target_ssr}, ssrMode: 'sync',
              dynamicImports: {{ strictSpecifier: true }} }}); console.log('no throw'); }}
          catch (e) {{ const l = e.location; console.log(JSON.stringify([e.code, e.level, e.url, l.line, l.column, l.start, l.length])); }}"
     );
-    let out = Command::new("node").arg("-e").arg(script).output().expect("node is required");
-    assert!(out.status.success(), "oracle failed: {}", String::from_utf8_lossy(&out.stderr));
+    let out = Command::new("node")
+        .arg("-e")
+        .arg(script)
+        .output()
+        .expect("node is required");
+    assert!(
+        out.status.success(),
+        "oracle failed: {}",
+        String::from_utf8_lossy(&out.stderr)
+    );
     String::from_utf8(out.stdout).unwrap().trim().to_string()
 }
 
 /// The facade's error (what napi serializes field for field) in the oracle's shape.
 fn ours(target_ssr: bool) -> String {
-    let TransformError::Compiler(e) = lwc_compiler::dispatch(SRC, "foo.js", &opts(target_ssr)).unwrap_err() else {
+    let TransformError::Compiler(e) =
+        lwc_compiler::dispatch(SRC, "foo.js", &opts(target_ssr)).unwrap_err()
+    else {
         panic!("not a CompilerError")
     };
     let l = e.location.expect("location");
     format!(
         "[{},{},\"{}\",{},{},{},{}]",
-        e.code.unwrap(), e.level.js_value(), e.url, l.line, l.column, l.start.unwrap(), l.length.unwrap()
+        e.code.unwrap(),
+        e.level.js_value(),
+        e.url,
+        l.line,
+        l.column,
+        l.start.unwrap(),
+        l.length.unwrap()
     )
 }
 

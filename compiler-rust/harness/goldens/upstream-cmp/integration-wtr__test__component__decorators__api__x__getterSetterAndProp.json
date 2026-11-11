@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "compile-error",
+  "message": "Could not load /helpers/utils.js (imported by virtual-lbc/x/getterSetterAndProp/getterSetterAndProp.js): ENOENT: no such file or directory, open '/helpers/utils.js'"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "Could not load /helpers/utils.js (imported by virtual-lbc/x/getterSetterAndProp/getterSetterAndProp.js): ENOENT: no such file or directory, open '/helpers/utils.js'"
+ }
+}

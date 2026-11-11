@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up foo=\"something else\" data-lwc-host-mutated=\"foo\"><template shadowrootmode=\"open\"><div>anything</div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up foo=\"something else\"><template shadowrootmode=\"open\"><div>anything</div></template></lwc-up>"
+ }
+}

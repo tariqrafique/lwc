@@ -277,10 +277,28 @@ mod tests {
     /// (oracle expression-complex/invalid/{await,super,import-meta} at apiVersion 57–65).
     #[test]
     fn complex_flag_below_api_66_stays_a_script_parse_error() {
-        let o = Opts { complex: true, computed_ok: false, api_version: 59, unquoted: false };
+        let o = Opts {
+            complex: true,
+            computed_ok: false,
+            api_version: 59,
+            unquoted: false,
+        };
         let msg = |s: &str| check_opts(s, &o).unwrap().message;
-        assert!(msg("{await foo()}").contains("Unexpected end of expression"), "{}", msg("{await foo()}"));
-        assert!(msg("{super('duper')}").contains("'super' keyword outside a method"), "{}", msg("{super('duper')}"));
-        assert!(msg("{() => doThing(import.meta.env.SSR)}").contains("Cannot use 'import.meta' outside a module"), "{}", msg("{() => doThing(import.meta.env.SSR)}"));
+        assert!(
+            msg("{await foo()}").contains("Unexpected end of expression"),
+            "{}",
+            msg("{await foo()}")
+        );
+        assert!(
+            msg("{super('duper')}").contains("'super' keyword outside a method"),
+            "{}",
+            msg("{super('duper')}")
+        );
+        assert!(
+            msg("{() => doThing(import.meta.env.SSR)}")
+                .contains("Cannot use 'import.meta' outside a module"),
+            "{}",
+            msg("{() => doThing(import.meta.env.SSR)}")
+        );
     }
 }

@@ -1,0 +1,1 @@
+{"ok":false,"name":"Error","codes":[1007],"message":"SyntaxError: LWC1007: <cwd>/counter.ts: Unexpected token (5:11)\n\n  3 |\n  4 | export default class extends LightningElement {\n> 5 |     public counter: number = 0;\n    |            ^\n  6 |\n  7 |     connectedCallback(): void {\n  8 |         console.log('connected counter');"}

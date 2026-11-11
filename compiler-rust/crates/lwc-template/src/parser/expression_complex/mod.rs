@@ -132,7 +132,11 @@ pub(crate) fn parse_source<'a>(alloc: &'a Allocator, text: &str) -> ParseOutcome
 
 /// Same parse as [`parse_source`] under a different goal. Legacy template expressions are scripts
 /// (`allowAwaitOutsideFunction: false`); complex expressions are modules.
-pub(crate) fn parse_goal<'a>(alloc: &'a Allocator, text: &str, goal: SourceType) -> ParseOutcome<'a> {
+pub(crate) fn parse_goal<'a>(
+    alloc: &'a Allocator,
+    text: &str,
+    goal: SourceType,
+) -> ParseOutcome<'a> {
     let wrapped = alloc.alloc_str(&format!("({text}\n)"));
     crate::parse_count::bump();
     let ret = Parser::new(alloc, wrapped, goal)
@@ -392,7 +396,13 @@ mod tests {
             "expected a non-ExpressionStatement body, got {:?}",
             ret.program.body.first(),
         );
-        match classify(&alloc, &ret.program, &ret.diagnostics, "let x = 1", SourceType::mjs()) {
+        match classify(
+            &alloc,
+            &ret.program,
+            &ret.diagnostics,
+            "let x = 1",
+            SourceType::mjs(),
+        ) {
             ParseOutcome::Internal(NOT_EXPRESSION_STATEMENT) => {}
             other => panic!("expected Internal(NOT_EXPRESSION_STATEMENT), got {other:?}"),
         }
@@ -416,7 +426,13 @@ mod tests {
             "expected a non-ExpressionStatement body, got {:?}",
             ret.program.body.first(),
         );
-        match classify(&alloc, &ret.program, &ret.diagnostics, "function f(){}", SourceType::mjs()) {
+        match classify(
+            &alloc,
+            &ret.program,
+            &ret.diagnostics,
+            "function f(){}",
+            SourceType::mjs(),
+        ) {
             ParseOutcome::Internal(NOT_EXPRESSION_STATEMENT) => {}
             other => panic!("expected Internal(NOT_EXPRESSION_STATEMENT), got {other:?}"),
         }
@@ -444,7 +460,13 @@ mod tests {
             0,
             "unwrapped expression should start at byte 0"
         );
-        match classify(&alloc, &ret.program, &ret.diagnostics, "a", SourceType::mjs()) {
+        match classify(
+            &alloc,
+            &ret.program,
+            &ret.diagnostics,
+            "a",
+            SourceType::mjs(),
+        ) {
             ParseOutcome::Internal(EXPRESSION_ACCEPTED) => {}
             other => panic!("expected Internal(EXPRESSION_ACCEPTED), got {other:?}"),
         }
@@ -471,7 +493,13 @@ mod tests {
             0,
             "unwrapped expression should start at byte 0"
         );
-        match classify(&alloc, &ret.program, &ret.diagnostics, "1+1", SourceType::mjs()) {
+        match classify(
+            &alloc,
+            &ret.program,
+            &ret.diagnostics,
+            "1+1",
+            SourceType::mjs(),
+        ) {
             ParseOutcome::Internal(EXPRESSION_ACCEPTED) => {}
             other => panic!("expected Internal(EXPRESSION_ACCEPTED), got {other:?}"),
         }

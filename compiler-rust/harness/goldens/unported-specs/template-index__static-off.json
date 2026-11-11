@@ -1,0 +1,5 @@
+{
+  "ok": true,
+  "code": "import _implicitStylesheets from \"./x.css\";\nimport _implicitScopedStylesheets from \"./x.scoped.css?scoped=true\";\nimport {freezeTemplate, registerTemplate} from \"lwc\";\nconst stc0 = {\n  attrs: {\n    \"src\": \"http://example.com/img.png\",\n    \"crossorigin\": \"anonymous\"\n  },\n  key: 0\n};\nfunction tmpl($api, $cmp, $slotset, $ctx) {\n  const {h: api_element} = $api;\n  return [api_element(\"img\", stc0)];\n  /*LWC compiler v9.5.3*/\n}\nexport default registerTemplate(tmpl);\ntmpl.stylesheets = [];\ntmpl.stylesheetToken = \"lwc-6up3hu9avn6\";\nif (_implicitStylesheets) {\n  tmpl.stylesheets.push.apply(tmpl.stylesheets, _implicitStylesheets);\n}\nif (_implicitScopedStylesheets) {\n  tmpl.stylesheets.push.apply(tmpl.stylesheets, _implicitScopedStylesheets);\n}\nfreezeTemplate(tmpl);\n",
+  "warnings": []
+}

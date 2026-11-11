@@ -38,3 +38,5 @@ harness/test/csr.render.test.ts	static imports use the Vite alias specifier
 harness/test/ssr.render.test.ts	static imports use the Vite alias specifier
 harness/test/ssr_render.behavior.test.ts	static imports use the Vite alias specifier
 harness/test/ssr_render_api.behavior.test.ts	static imports use the Vite alias specifier
+scripts/preflight.sh	box-only land checks moved from land.sh (notes arch-board, decisions repo)
+scripts/run-land-self-tests.sh	box-only shared CARGO_TARGET_DIR root (as official-board.sh) to pin the board napi

@@ -5,10 +5,20 @@ use semdiff::{compare, compare_forcing_rules, rule_table_version, Class};
 use serde_json::json;
 
 fn comma() -> String {
-    semdiff::rules::table().1.iter().find(|r| r.id.starts_with("R-TRAILING-COMMA")).unwrap().tagged()
+    semdiff::rules::table()
+        .1
+        .iter()
+        .find(|r| r.id.starts_with("R-TRAILING-COMMA"))
+        .unwrap()
+        .tagged()
 }
 fn asi() -> String {
-    semdiff::rules::table().1.iter().find(|r| r.id.starts_with("R-ASI-SEMI")).unwrap().tagged()
+    semdiff::rules::table()
+        .1
+        .iter()
+        .find(|r| r.id.starts_with("R-ASI-SEMI"))
+        .unwrap()
+        .tagged()
 }
 
 fn class_forced(a: &str, b: &str, force: &[&str]) -> (Class, String) {
@@ -24,11 +34,19 @@ fn applied_forced(a: &str, b: &str, force: &[&str]) -> Vec<String> {
         .collect()
 }
 fn equiv(a: &str, b: &str, force: &[&str]) {
-    assert_eq!(class_forced(a, b, force), (Class::EquivalentByRewrite, "printer-equal".into()), "{a:?} vs {b:?}");
+    assert_eq!(
+        class_forced(a, b, force),
+        (Class::EquivalentByRewrite, "printer-equal".into()),
+        "{a:?} vs {b:?}"
+    );
 }
 fn not_equiv(a: &str, b: &str, force: &[&str]) {
     let (c, r) = class_forced(a, b, force);
-    assert_ne!((c, r.as_str()), (Class::EquivalentByRewrite, "printer-equal"), "{a:?} vs {b:?} must not be rewrite-equivalent: {c:?} {r}");
+    assert_ne!(
+        (c, r.as_str()),
+        (Class::EquivalentByRewrite, "printer-equal"),
+        "{a:?} vs {b:?} must not be rewrite-equivalent: {c:?} {r}"
+    );
 }
 
 #[test]
@@ -36,9 +54,16 @@ fn table_lists_both_rules_applied() {
     assert!(semdiff::rules::pending().is_empty());
     // ASI-only on 681aba0 used the any-applied name "rt-1". Both rules applied must not reuse it.
     assert_ne!(rule_table_version(), "rt-1");
-    assert_eq!(rule_table_version(), "rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1");
+    assert_eq!(
+        rule_table_version(),
+        "rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1"
+    );
     for prefix in ["R-ASI-SEMI", "R-TRAILING-COMMA"] {
-        let meta = semdiff::rules::table().1.iter().find(|r| r.id.starts_with(prefix)).unwrap();
+        let meta = semdiff::rules::table()
+            .1
+            .iter()
+            .find(|r| r.id.starts_with(prefix))
+            .unwrap();
         assert_eq!(meta.arch_review, "AB-L0064");
         assert!(meta.is_applied());
     }
@@ -50,7 +75,12 @@ fn approved_trailing_comma_applies() {
     let a = "const a = [1, 2,];";
     let b = "const a = [1, 2];";
     let v = compare(a, b);
-    assert_eq!((v.class, v.reason.as_str()), (Class::EquivalentByRewrite, "printer-equal"), "{}", v.json);
+    assert_eq!(
+        (v.class, v.reason.as_str()),
+        (Class::EquivalentByRewrite, "printer-equal"),
+        "{}",
+        v.json
+    );
     assert_eq!(v.json["rules_applied"], json!([comma()]));
     assert_eq!(v.json["rule_table_version"], rule_table_version());
 }
@@ -61,7 +91,12 @@ fn asi_rule_applies_when_approved() {
     let a = "const a = 1\n";
     let b = "const a = 1;\n";
     let v = compare(a, b);
-    assert_eq!((v.class, v.reason.as_str()), (Class::EquivalentByRewrite, "printer-equal"), "{}", v.json);
+    assert_eq!(
+        (v.class, v.reason.as_str()),
+        (Class::EquivalentByRewrite, "printer-equal"),
+        "{}",
+        v.json
+    );
     assert_eq!(v.json["rules_applied"], json!([asi()]));
     assert_eq!(v.json["rule_table_version"], rule_table_version());
 }
@@ -90,7 +125,11 @@ fn trailing_comma_is_unobservable() {
         ("function f([a,]) {}", "function f([a]) {}"),
     ] {
         equiv(a, b, &force);
-        assert!(applied_forced(a, b, &force).iter().any(|x| x == &c), "{a:?} vs {b:?}: {}", applied_forced(a, b, &force).join(","));
+        assert!(
+            applied_forced(a, b, &force).iter().any(|x| x == &c),
+            "{a:?} vs {b:?}: {}",
+            applied_forced(a, b, &force).join(",")
+        );
     }
 }
 
@@ -106,7 +145,10 @@ fn a_hole_is_not_a_trailing_comma() {
     ] {
         not_equiv(a, b, &force);
         let applied = applied_forced(a, b, &force);
-        assert!(!applied.iter().any(|x| x == &c) || class_forced(a, b, &force).0 != Class::EquivalentByRewrite);
+        assert!(
+            !applied.iter().any(|x| x == &c)
+                || class_forced(a, b, &force).0 != Class::EquivalentByRewrite
+        );
     }
 }
 
@@ -148,10 +190,17 @@ fn asi_semicolon_with_identical_ast_is_unobservable() {
         ("f()\ng()\n", "f();\ng();\n"),
         ("const a = 1\n", "const a = 1;\n"),
         ("function f() { return\n}\n", "function f() { return; }\n"),
-        ("function f() { return\nx }\n", "function f() { return;\nx }\n"),
+        (
+            "function f() { return\nx }\n",
+            "function f() { return;\nx }\n",
+        ),
     ] {
         equiv(x, y, &force);
-        assert!(applied_forced(x, y, &force).iter().any(|t| t == &a), "{x:?} vs {y:?}: {}", applied_forced(x, y, &force).join(","));
+        assert!(
+            applied_forced(x, y, &force).iter().any(|t| t == &a),
+            "{x:?} vs {y:?}: {}",
+            applied_forced(x, y, &force).join(",")
+        );
     }
 }
 
@@ -159,9 +208,21 @@ fn asi_semicolon_with_identical_ast_is_unobservable() {
 fn asi_that_changes_the_ast_is_observed() {
     let a = asi();
     let force = [a.as_str()];
-    not_equiv("let a = f, b = 1;\na\n(b)\n", "let a = f, b = 1;\na;\n(b)\n", &force);
-    not_equiv("function f() { return\nx }", "function f() { return x }", &force);
-    not_equiv("let a = f, b = 1;\na\n[b]\n", "let a = f, b = 1;\na;\n[b]\n", &force);
+    not_equiv(
+        "let a = f, b = 1;\na\n(b)\n",
+        "let a = f, b = 1;\na;\n(b)\n",
+        &force,
+    );
+    not_equiv(
+        "function f() { return\nx }",
+        "function f() { return x }",
+        &force,
+    );
+    not_equiv(
+        "let a = f, b = 1;\na\n[b]\n",
+        "let a = f, b = 1;\na;\n[b]\n",
+        &force,
+    );
 }
 
 #[test]

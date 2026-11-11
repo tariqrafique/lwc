@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div class=\"shizuoka\" id=\"shizuoka\">shizuoka</div><div class=\"yamanashi\" id=\"yamanashi\">yamanashi</div><input class=\"idref-static\" aria-describedby=\"shizuoka yamanashi\"><input class=\"idref-dynamic\" aria-labelledby=\"yamanashi shizuoka\"></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div class=\"shizuoka\" id=\"shizuoka\">shizuoka</div><div class=\"yamanashi\" id=\"yamanashi\">yamanashi</div><input class=\"idref-static\" aria-describedby=\"shizuoka yamanashi\"><input class=\"idref-dynamic\" aria-labelledby=\"yamanashi shizuoka\"></template></lwc-up>"
+ }
+}

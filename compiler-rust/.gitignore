@@ -8,6 +8,7 @@ harness/.vitest/
 harness/.csr-render-out/
 harness/.ssr-render-out/
 harness/.lbc-out/
+harness/.upstream-cmp-out/
 harness/render-out/
 harness/.template-diag-diff/
 

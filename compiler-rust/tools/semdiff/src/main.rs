@@ -13,10 +13,12 @@
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
-use semdiff::decisions::{is_decision_id, DecisionMap, Finding, FindingCode, Registry, DECISIONS_MAP_TSV};
+use semdiff::decisions::{
+    is_decision_id, DecisionMap, Finding, FindingCode, Registry, DECISIONS_MAP_TSV,
+};
 use semdiff::{
-    compare, exec, load_manifest, ratchet, read_totals, strict_failures, summarize_with, to_stable_json, write_atomic,
-    Gate, InternalError, OBSERVATION_MODEL,
+    compare, exec, load_manifest, ratchet, read_totals, strict_failures, summarize_with,
+    to_stable_json, write_atomic, Gate, InternalError, OBSERVATION_MODEL,
 };
 
 const USAGE: &str = "usage: semdiff pair <oracle.js> <rust.js>\n       semdiff run --manifest <m.json> --out <summary.json> --registry <decisions.tsv> [--gate none|ratchet|strict] [--baseline <summary.json>] [--reset-baseline] [--exec [--exec-seed <u64>] [--exec-jobs <n>] [--exec-keep <dir>]]\n       semdiff check-registry --registry <decisions.tsv> [--require <D-id>]...";
@@ -38,7 +40,9 @@ fn main() -> ExitCode {
 fn real_main(args: &[String]) -> Result<ExitCode, InternalError> {
     match args.first().map(String::as_str) {
         Some("pair") if args.len() == 3 => {
-            let read = |p: &str| std::fs::read_to_string(p).map_err(|e| InternalError(format!("read {p}: {e}")));
+            let read = |p: &str| {
+                std::fs::read_to_string(p).map_err(|e| InternalError(format!("read {p}: {e}")))
+            };
             let v = compare(&read(&args[1])?, &read(&args[2])?);
             print!("{}", to_stable_json(&v.json));
             Ok(ExitCode::SUCCESS)
@@ -50,11 +54,16 @@ fn real_main(args: &[String]) -> Result<ExitCode, InternalError> {
 }
 
 fn run(args: &[String]) -> Result<ExitCode, InternalError> {
-    let (mut manifest, mut out, mut baseline, mut registry, mut gate, mut reset) = (None, None, None, None, Gate::None, false);
+    let (mut manifest, mut out, mut baseline, mut registry, mut gate, mut reset) =
+        (None, None, None, None, Gate::None, false);
     let (mut exec_on, mut exec_seed, mut exec_jobs, mut exec_keep) = (false, 1u64, None, None);
     let mut it = args.iter();
     while let Some(a) = it.next() {
-        let mut val = || it.next().cloned().ok_or_else(|| InternalError(format!("{a} needs a value\n{USAGE}")));
+        let mut val = || {
+            it.next()
+                .cloned()
+                .ok_or_else(|| InternalError(format!("{a} needs a value\n{USAGE}")))
+        };
         match a.as_str() {
             "--manifest" => manifest = Some(PathBuf::from(val()?)),
             "--out" => out = Some(PathBuf::from(val()?)),
@@ -63,10 +72,17 @@ fn run(args: &[String]) -> Result<ExitCode, InternalError> {
             "--reset-baseline" => reset = true,
             "--exec" => exec_on = true,
             "--exec-seed" => {
-                exec_seed = val()?.parse().map_err(|e| InternalError(format!("--exec-seed: {e}")))?;
+                exec_seed = val()?
+                    .parse()
+                    .map_err(|e| InternalError(format!("--exec-seed: {e}")))?;
             }
             "--exec-jobs" => {
-                exec_jobs = Some(val()?.parse::<usize>().map_err(|e| InternalError(format!("--exec-jobs: {e}")))?.max(1));
+                exec_jobs = Some(
+                    val()?
+                        .parse::<usize>()
+                        .map_err(|e| InternalError(format!("--exec-jobs: {e}")))?
+                        .max(1),
+                );
             }
             "--exec-keep" => exec_keep = Some(PathBuf::from(val()?)),
             "--gate" => {
@@ -80,38 +96,61 @@ fn run(args: &[String]) -> Result<ExitCode, InternalError> {
             _ => return Err(InternalError(format!("unknown argument {a:?}\n{USAGE}"))),
         }
     }
-    let (Some(manifest), Some(out)) = (manifest, out) else { return Err(InternalError(USAGE.into())) };
+    let (Some(manifest), Some(out)) = (manifest, out) else {
+        return Err(InternalError(USAGE.into()));
+    };
     // Never leave a stale summary for the board to read: the old file goes before any work starts.
     remove_stale(&out)?;
-    let Some(registry) = registry else { return Err(InternalError(format!("--registry is required\n{USAGE}"))) };
+    let Some(registry) = registry else {
+        return Err(InternalError(format!("--registry is required\n{USAGE}")));
+    };
     let reg_text = std::fs::read_to_string(&registry)
         .map_err(|e| InternalError(format!("read registry {}: {e}", registry.display())))?;
     let reg = Registry::parse(&reg_text).map_err(InternalError)?;
     // The observation model every verdict cites must itself be a locked decision.
-    reg.require_locked(OBSERVATION_MODEL).map_err(|e| InternalError(format!("observation model: {e}")))?;
+    reg.require_locked(OBSERVATION_MODEL)
+        .map_err(|e| InternalError(format!("observation model: {e}")))?;
     let map = DecisionMap::parse(DECISIONS_MAP_TSV, &reg).map_err(InternalError)?;
     let base = match (gate, &baseline) {
-        (Gate::Ratchet, None) => return Err(InternalError("--gate ratchet needs --baseline".into())),
+        (Gate::Ratchet, None) => {
+            return Err(InternalError("--gate ratchet needs --baseline".into()))
+        }
         (Gate::Ratchet, Some(b)) => {
-            let bytes = std::fs::read(b).map_err(|e| InternalError(format!("read baseline {}: {e}", b.display())))?;
+            let bytes = std::fs::read(b)
+                .map_err(|e| InternalError(format!("read baseline {}: {e}", b.display())))?;
             Some(ratchet::load_baseline(&bytes, reset)?)
         }
-        (_, Some(_)) => return Err(InternalError("--baseline is only meaningful with --gate ratchet".into())),
-        (_, None) if reset => return Err(InternalError("--reset-baseline is only meaningful with --gate ratchet".into())),
+        (_, Some(_)) => {
+            return Err(InternalError(
+                "--baseline is only meaningful with --gate ratchet".into(),
+            ))
+        }
+        (_, None) if reset => {
+            return Err(InternalError(
+                "--reset-baseline is only meaningful with --gate ratchet".into(),
+            ))
+        }
         _ => None,
     };
     let m = load_manifest(&manifest)?;
     if let Some(b) = &base {
         if b.corpus != m.corpus {
-            return Err(InternalError(format!("baseline-corpus-mismatch: baseline {:?}, manifest {:?}", b.corpus, m.corpus)));
+            return Err(InternalError(format!(
+                "baseline-corpus-mismatch: baseline {:?}, manifest {:?}",
+                b.corpus, m.corpus
+            )));
         }
     }
     let mut summary = if exec_on {
         let (work, keep) = match exec_keep {
             Some(d) => (d, true),
-            None => (std::env::temp_dir().join(format!("semdiff-exec-{}", std::process::id())), false),
+            None => (
+                std::env::temp_dir().join(format!("semdiff-exec-{}", std::process::id())),
+                false,
+            ),
         };
-        let jobs = exec_jobs.unwrap_or_else(|| std::thread::available_parallelism().map_or(1, |n| n.get()));
+        let jobs = exec_jobs
+            .unwrap_or_else(|| std::thread::available_parallelism().map_or(1, |n| n.get()));
         // Corpus `ssr-compiler` selects the SSR observer. Every other corpus, including
         // `template-diag-codegen-only`, stays on the CSR runner.
         let oracle_dir = PathBuf::from(exec::ORACLE_DIR);
@@ -121,7 +160,14 @@ fn run(args: &[String]) -> Result<ExitCode, InternalError> {
         } else {
             std::collections::BTreeMap::new()
         };
-        let cfg = exec::ExecCfg { seed: exec_seed, jobs, oracle_dir, work: work.clone(), engine, ssr };
+        let cfg = exec::ExecCfg {
+            seed: exec_seed,
+            jobs,
+            oracle_dir,
+            work: work.clone(),
+            engine,
+            ssr,
+        };
         let env = exec::preflight(&cfg)?;
         let s = summarize_with(&m, &map, &reg.sha256, Some((&cfg, env)));
         if !keep {
@@ -130,7 +176,9 @@ fn run(args: &[String]) -> Result<ExitCode, InternalError> {
         s?
     } else {
         if exec_seed != 1 || exec_jobs.is_some() || exec_keep.is_some() {
-            return Err(InternalError("--exec-seed/--exec-jobs/--exec-keep need --exec".into()));
+            return Err(InternalError(
+                "--exec-seed/--exec-jobs/--exec-keep need --exec".into(),
+            ));
         }
         summarize_with(&m, &map, &reg.sha256, None)?
     };
@@ -146,7 +194,12 @@ fn run(args: &[String]) -> Result<ExitCode, InternalError> {
     };
     write_atomic(&out, &to_stable_json(&summary))?;
     let t: Vec<String> = totals.iter().map(|(k, v)| format!("{k}={v}")).collect();
-    println!("semdiff {} cases={} {}", m.corpus, m.cases.len(), t.join(" "));
+    println!(
+        "semdiff {} cases={} {}",
+        m.corpus,
+        m.cases.len(),
+        t.join(" ")
+    );
     if let Some(r) = summary.get("ratchet") {
         let n = |k: &str| r[k].as_array().map_or(0, Vec::len);
         println!(
@@ -166,7 +219,13 @@ fn run(args: &[String]) -> Result<ExitCode, InternalError> {
     }
     // Malformed SSR traces and runner failures are protocol errors: exit 2 after the summary is written.
     let protocol = exec_on && m.corpus == exec::SSR_CORPUS && exec::ssr_protocol_failure(&summary);
-    Ok(if protocol { ExitCode::from(2) } else if fails.is_empty() { ExitCode::SUCCESS } else { ExitCode::from(1) })
+    Ok(if protocol {
+        ExitCode::from(2)
+    } else if fails.is_empty() {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(1)
+    })
 }
 
 /// The registry validator as a command, for coverage-gate.mjs (AB-L0030). Same code as `run`: [`Registry::check`]
@@ -176,24 +235,46 @@ fn check_registry(args: &[String]) -> Result<ExitCode, InternalError> {
     let (mut registry, mut require) = (None, Vec::new());
     let mut it = args.iter();
     while let Some(a) = it.next() {
-        let mut val = || it.next().cloned().ok_or_else(|| InternalError(format!("{a} needs a value\n{USAGE}")));
+        let mut val = || {
+            it.next()
+                .cloned()
+                .ok_or_else(|| InternalError(format!("{a} needs a value\n{USAGE}")))
+        };
         match a.as_str() {
             "--registry" if registry.is_none() => registry = Some(PathBuf::from(val()?)),
             "--require" => {
                 let id = val()?;
                 if !is_decision_id(&id) {
-                    return Err(InternalError(format!("--require {id:?} does not match ^D-[0-9]{{4}}$")));
+                    return Err(InternalError(format!(
+                        "--require {id:?} does not match ^D-[0-9]{{4}}$"
+                    )));
                 }
                 require.push(id);
             }
             _ => return Err(InternalError(format!("unexpected argument {a:?}\n{USAGE}"))),
         }
     }
-    let Some(registry) = registry else { return Err(InternalError(format!("--registry is required\n{USAGE}"))) };
-    let malformed = |detail: String| Finding { code: FindingCode::Malformed, line: None, id: None, detail };
+    let Some(registry) = registry else {
+        return Err(InternalError(format!("--registry is required\n{USAGE}")));
+    };
+    let malformed = |detail: String| Finding {
+        code: FindingCode::Malformed,
+        line: None,
+        id: None,
+        detail,
+    };
     let (reg, mut findings) = match std::fs::read(&registry).map(String::from_utf8) {
-        Err(e) => (None, vec![malformed(format!("read {}: {e}", registry.display()))]),
-        Ok(Err(e)) => (None, vec![malformed(format!("{} is not UTF-8: {e}", registry.display()))]),
+        Err(e) => (
+            None,
+            vec![malformed(format!("read {}: {e}", registry.display()))],
+        ),
+        Ok(Err(e)) => (
+            None,
+            vec![malformed(format!(
+                "{} is not UTF-8: {e}",
+                registry.display()
+            ))],
+        ),
         Ok(Ok(text)) => {
             let (r, f) = Registry::check(&text);
             (Some(r), f)
@@ -203,7 +284,13 @@ fn check_registry(args: &[String]) -> Result<ExitCode, InternalError> {
     if let (Some(r), false) = (&reg, defective) {
         findings.extend(require.iter().filter_map(|id| r.resolve(id)));
     }
-    let code = if defective { 2 } else if findings.is_empty() { 0 } else { 1 };
+    let code = if defective {
+        2
+    } else if findings.is_empty() {
+        0
+    } else {
+        1
+    };
     let out = serde_json::json!({
         "schema": REGISTRY_CHECK_SCHEMA,
         "registry_sha256": reg.as_ref().map(|r| r.sha256.clone()),
@@ -224,6 +311,9 @@ fn remove_stale(out: &Path) -> Result<(), InternalError> {
     match std::fs::remove_file(out) {
         Ok(()) => Ok(()),
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
-        Err(e) => Err(InternalError(format!("remove stale {}: {e}", out.display()))),
+        Err(e) => Err(InternalError(format!(
+            "remove stale {}: {e}",
+            out.display()
+        ))),
     }
 }

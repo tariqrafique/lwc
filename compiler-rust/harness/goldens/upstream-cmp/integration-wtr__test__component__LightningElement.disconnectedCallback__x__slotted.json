@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div><x-accepting-slots><template shadowrootmode=\"open\"></template><div class=\"slotted\"></div><x-test class=\"slotted\"><template shadowrootmode=\"open\"></template></x-test></x-accepting-slots><x-ignoring-slots><template shadowrootmode=\"open\"></template><div class=\"ignored-slot\"></div><x-test class=\"ignored-slot\"><template shadowrootmode=\"open\"></template></x-test></x-ignoring-slots></div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div><x-accepting-slots><template shadowrootmode=\"open\"></template><div class=\"slotted\"></div><x-test class=\"slotted\"><template shadowrootmode=\"open\"></template></x-test></x-accepting-slots><x-ignoring-slots><template shadowrootmode=\"open\"></template><div class=\"ignored-slot\"></div><x-test class=\"ignored-slot\"><template shadowrootmode=\"open\"></template></x-test></x-ignoring-slots></div></template></lwc-up>"
+ },
+ "asyncErrors": [
+  "this.disconnect is not a function"
+ ]
+}
