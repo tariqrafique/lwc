@@ -256,7 +256,7 @@ function compose(thisLogPath, prevTxt, outPath, ranList, repo) {
     if (line) out.push(line);
   }
   for (const line of thisTail.split(/\n/)) {
-    if (line.startsWith("style-parse-errors") || line.startsWith("csr-clusters[")) out.push(line);
+    if (line.startsWith("style-parse-errors") || line.startsWith("style-corpus") || line.startsWith("napi-css-errors") || line.startsWith("csr-clusters[")) out.push(line);
   }
   const body = out.join("\n").replace(/\n+$/, "") + "\n";
   writeFileSync(outPath, body);

@@ -27,7 +27,7 @@ for f in "$OB" "$PB"; do
 done
 # Grep gate: only board-footers.sh writes those footer row strings among scripts/.
 # (tests and this file mention them; run-board.sh only calls board-footers.sh.)
-writers="$(grep -Rln --include='*.sh' -e 'style-parse-errors     ' -e 'csr-clusters\[' "$ROOT/scripts" || true)"
+writers="$(grep -Rln --include='*.sh' -e 'style-parse-errors     ' -e 'csr-clusters\[' -e 'style-corpus     ' -e 'napi-css-errors     ' "$ROOT/scripts" || true)"
 # allow board-footers.sh itself
 only="$(printf '%s\n' "$writers" | grep -vE 'test-board-footers\.sh$' || true)"
 if [ "$(grep -c . <<< "$only" || true)" -eq 1 ] && grep -q 'scripts/board-footers.sh$' <<< "$only"; then
@@ -51,8 +51,8 @@ printf '%s\n' '{"rows":[{"fixture":"a","pass":true,"status":"ok","goldenStatus":
 printf '%s\n' '{"rows":[{"fixture":"ok","pass":true,"status":"ok","goldenStatus":"ok"},{"fixture":"bad","pass":false,"status":"fail","goldenStatus":"ok","got":{"html":"","error":"Assert Violation: [object Object], is not a vnode"},"want":{"html":"x"}}]}' \
   > "$T/hs/.csr-render-out/rust-template/report-template.json"
 
-got="$("$S" "$T/hs" "67/67")"
-want=$'style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)\ncsr-clusters[ssr]: pass 3 fail 0\ncsr-clusters[template]: pass 1 fail 1 vnode=1'
+got="$("$S" "$T/hs" "67/67" "integration-wtr=206/206 dedup=0 jobs=0 fail=0 (uncapped style-diff, hash-dedup, direct oracle)" "2/2")"
+want=$'style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)\ncsr-clusters[ssr]: pass 3 fail 0\ncsr-clusters[template]: pass 1 fail 1 vnode=1\nstyle-corpus     integration-wtr=206/206 dedup=0 jobs=0 fail=0 (uncapped style-diff, hash-dedup, direct oracle)\nnapi-css-errors     2/2 (lwc-compiler-napi single_errors_match_shipped, css-1009 css-1009-host-context)'
 if [ "$got" = "$want" ]; then
   echo "ok   planted reports match expected footer rows"
 else
@@ -61,11 +61,11 @@ else
   fail=1
 fi
 
-rc=0; "$S" "$T/hs" "not-a-ratio" >"$T/out" 2>&1 || rc=$?
+rc=0; "$S" "$T/hs" "not-a-ratio" "x" "2/2" >"$T/out" 2>&1 || rc=$?
 if [ "$rc" -eq 2 ]; then echo "ok   bad spe is rc 2"; else echo "FAIL bad spe rc=$rc"; fail=1; fi
 
 rm -rf "$T/hs/.csr-render-out"
-rc=0; "$S" "$T/hs" "0/1" >"$T/out" 2>&1 || rc=$?
+rc=0; "$S" "$T/hs" "0/1" "x" "2/2" >"$T/out" 2>&1 || rc=$?
 if [ "$rc" -eq 3 ] && grep -q '^!! csr clusters: missing' "$T/out"; then
   echo "ok   missing CSR report fails (rc 3)"
 else
@@ -75,7 +75,7 @@ fi
 
 # D-0282: carried CSR cluster lines may be reused when the reports were not rerun.
 printf '%s\n' 'csr-clusters[ssr]: pass 387 fail 0' 'csr-clusters[template]: pass 567 fail 0' > "$T/prev.board.txt"
-rc=0; got="$(BOARD_PREV_BOARD_TXT="$T/prev.board.txt" "$S" "$T/hs" "67/67")" || rc=$?
+rc=0; got="$(BOARD_PREV_BOARD_TXT="$T/prev.board.txt" "$S" "$T/hs" "67/67" "integration-wtr=206/206" "2/2")" || rc=$?
 if [ "$rc" -eq 0 ] && grep -q 'csr-clusters\[ssr\]: pass 387 fail 0' <<< "$got" && grep -q 'csr-clusters\[template\]: pass 567 fail 0' <<< "$got"; then
   echo "ok   missing CSR report reuses previous board footer lines"
 else

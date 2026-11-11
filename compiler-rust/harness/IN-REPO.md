@@ -30,8 +30,8 @@ notes-commit `lwc-rust-migrate/CUTOVER.md`; OWNERS are ship,migrate):
 | `harness/oracle.pin` | full 40-hex salesforce/lwc sha |
 | `harness/scripts/oracle-root.mjs` (`.sh` wrappers, `.ts` re-export) | single resolver for `LWC_ORACLE`, `STYLE_CORPUS`, notes `decisions.tsv` |
 | `scripts/fetch-oracle.sh` | clone/fetch the pin into a dest that is **never** `/workspace/lwc` |
-| `scripts/fetch-style-corpus.sh` | fetch `lbc` (npm) and `lbc-recipes` (git) from public origins; verify vs `external-inputs.lock` (hashes exclude `.git/`) |
-| `scripts/board-footers.sh` | shared `style-parse-errors` + `csr-clusters[*]` rows for official and portable boards |
+| `scripts/fetch-style-corpus.sh` | fetch `lbc`, `lbc-recipes`, and `slds` (`@salesforce-ux/design-system@2.264.3`) from public origins; verify vs `external-inputs.lock` (hashes exclude `.git/`) |
+| `scripts/board-footers.sh` | shared `style-parse-errors`, `csr-clusters[*]`, `style-corpus`, and `napi-css-errors` rows for official and portable boards |
 | `harness/decisions.snapshot.tsv` | committed copy of notes `lwc-rust-migrate/decisions.tsv`; `scripts/refresh-decisions-snapshot.sh` refreshes it |
 | `scripts/c8-checks.sh` | fmt (report-only unless `C8_FMT_GATE=1`), clippy ratchet, cargo check/test `--locked`, napi-pack, ssr-oracle-gate |
 | `scripts/run-board.sh` | single driver: golden-gate, C8, `harness/board.sh`, board-footers |
@@ -69,6 +69,7 @@ checkout exists, `oracle-root.mjs` uses that checkout.
 | salesforce/lwc @ pin | `/workspace/lwc` | `LWC_ORACLE` or `scripts/fetch-oracle.sh`; fail-closed if neither |
 | `style-corpus/lbc` | `/workspace/style-corpus/lbc` | `scripts/fetch-style-corpus.sh` downloads `lightning-base-components@1.28.19-alpha` from the public npm registry and extracts it to `lbc/package/`. Hash in `external-inputs.lock` must match (fail closed). `STYLE_CORPUS_SOURCE` is an optional override, never required. package.json says MIT; `LICENSE.txt` is Salesforce Terms of Use (we fetch, we do not vendor). |
 | `style-corpus/lbc-recipes` | `/workspace/style-corpus/lbc-recipes` | fetch `https://github.com/salesforce/base-components-recipes.git` @ `9c5f95d4e0cd5434a2b8373405e4f6c7657c88e8`. Hash excludes `.git/` (`036116865208`). LICENSE file MIT; package.json `CC0-1.0`. |
+| `style-corpus/slds` | `/workspace/style-corpus/slds` | `scripts/fetch-style-corpus.sh` downloads `@salesforce-ux/design-system@2.264.3` and extracts it to `slds/package/`. Hash in `external-inputs.lock` must match (fail closed). CSS is the compiler input; `.scss` is not. |
 | notes `lwc-rust-migrate/decisions.tsv` | `/workspace/notes/...` | Committed `harness/decisions.snapshot.tsv` + `harness/decisions.snapshot.notes-commit`. `notes_decisions_path()` uses live `/workspace/notes/...` when present and the committed snapshot only when notes are absent. `official-board.sh` archives live notes, `cmp`s them against the snapshot, and reads `harness/decisions.snapshot.notes-commit` (fail closed on drift; skip if the boarded commit predates the file). Refresh with `scripts/refresh-decisions-snapshot.sh` on the box. |
 | parse5-rust | `/workspace/parse5-rust` (official-board still archives a local clone) | Unset `PARSE5_DIR` means `/workspace/parse5-rust` and fails closed if absent. `run-portable-board.sh` sets `PARSE5_DIR=remote` to depth-1-fetch the lock rev from the public Cargo.toml URL. `land.sh` passes the box path explicitly. |
 | `node_modules` / vitest | `harness/scripts/ensure-deps.sh` links into `$LWC_ORACLE` | same script; requires the oracle to be built (`compiler`, `engine-dom`, `engine-server`, `ssr-runtime` dist + vitest) |

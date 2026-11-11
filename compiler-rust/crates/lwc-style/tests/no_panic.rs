@@ -61,15 +61,32 @@ fn sweep(inputs: &[String]) -> (usize, Vec<String>) {
 
 #[test]
 fn nothing_panics() {
-    panic::set_hook(Box::new(|_| {}));
+    // Resolve the corpus before installing the sweep hook so a setup error
+    // is not swallowed. `$STYLE_CORPUS` is optional ("when present").
     let lwc = lwc_shared::oracle_root();
     let mut small: Vec<String> = PROBES.iter().map(|s| s.to_string()).collect();
     css_files(&lwc_shared::cargo_manifest_dir!().join("tests/parse-errors"), &mut small);
     let mut corpus = Vec::new();
     css_files(&Path::new(&lwc).join("packages/@lwc/style-compiler/src/__tests__/fixtures"), &mut corpus);
     for pkg in ["integration-wtr", "integration-wdio", "integration-types"] { css_files(&Path::new(&lwc).join("packages/@lwc").join(pkg), &mut corpus); }
-    let slds = lwc_shared::style_corpus_root();
-    for sub in ["lbc", "slds", "lbc-recipes"] { css_files(&Path::new(&slds).join(sub), &mut corpus); }
+    match lwc_shared::style_corpus_root() {
+        Ok(slds) => {
+            for sub in ["lbc", "slds", "lbc-recipes"] { css_files(&Path::new(&slds).join(sub), &mut corpus); }
+        }
+        Err(e) => eprintln!("nothing_panics: style corpus not present ({e})"),
+    }
+
+    let prev = panic::take_hook();
+    panic::set_hook(Box::new(move |info| {
+        if let Some(s) = info.payload().downcast_ref::<&str>() {
+            eprintln!("nothing_panics: {s}");
+        } else if let Some(s) = info.payload().downcast_ref::<String>() {
+            eprintln!("nothing_panics: {s}");
+        } else {
+            eprintln!("nothing_panics: {info}");
+        }
+        prev(info);
+    }));
 
     let mut prefixes = Vec::new();
     for s in &small { for (i, _) in s.char_indices().skip(1) { prefixes.push(s[..i].to_string()); } }

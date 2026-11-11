@@ -55,17 +55,44 @@ pub fn oracle_root() -> std::path::PathBuf {
     p
 }
 
-/// Fail-closed path to the style corpus (`STYLE_CORPUS`).
-pub fn style_corpus_root() -> std::path::PathBuf {
-    let raw = match std::env::var("STYLE_CORPUS") {
-        Ok(v) if !v.is_empty() => v,
-        _ => panic!("STYLE_CORPUS is unset; export it via harness/scripts/oracle-root.mjs"),
+/// Box-wide pinned fetch destination used by `harness/scripts/oracle-root.mjs`
+/// when `STYLE_CORPUS` is unset. `scripts/fetch-style-corpus.sh` populates it
+/// (or `<repo>/.oracle/style-corpus` when invoked without a dest / env).
+pub const STYLE_CORPUS_DEFAULT: &str = "/workspace/style-corpus";
+
+/// Path to the style corpus. When `STYLE_CORPUS` is set, that directory is
+/// required to exist (same as before). When it is unset, the locked fetch
+/// path [`STYLE_CORPUS_DEFAULT`] is used if present; otherwise a clear error
+/// names the variable and `scripts/fetch-style-corpus.sh`. Never panics.
+pub fn style_corpus_root() -> Result<std::path::PathBuf, String> {
+    let var = match std::env::var("STYLE_CORPUS") {
+        Ok(v) if !v.is_empty() => Some(v),
+        _ => None,
     };
-    let p = std::path::PathBuf::from(raw);
-    if !p.is_dir() {
-        panic!("STYLE_CORPUS={} does not exist", p.display());
+    resolve_style_corpus(var.as_deref(), std::path::Path::new(STYLE_CORPUS_DEFAULT))
+}
+
+/// Resolve the corpus given an optional `STYLE_CORPUS` value and a default
+/// directory (the locked fetch path in production). Extracted so tests can
+/// exercise both arms without mutating process environment.
+pub fn resolve_style_corpus(
+    style_corpus: Option<&str>,
+    default: &std::path::Path,
+) -> Result<std::path::PathBuf, String> {
+    if let Some(raw) = style_corpus.filter(|s| !s.is_empty()) {
+        let p = std::path::PathBuf::from(raw);
+        if p.is_dir() {
+            return Ok(p);
+        }
+        return Err(format!("STYLE_CORPUS={} does not exist", p.display()));
     }
-    p
+    if default.is_dir() {
+        return Ok(default.to_path_buf());
+    }
+    Err(format!(
+        "STYLE_CORPUS is unset and {} is absent; run scripts/fetch-style-corpus.sh",
+        default.display()
+    ))
 }
 
 /// Value for `key` in a generated key-sorted pair table.
@@ -676,5 +703,72 @@ mod diagnostic_code_tests {
         assert_eq!(CompilerDiagnostic::generate(&SINGLE_IF_DIRECTIVE_ALLOWED, None, None, true).level, DiagnosticLevel::Warning);
         let js: Vec<u32> = [DiagnosticLevel::Fatal, DiagnosticLevel::Error, DiagnosticLevel::Warning, DiagnosticLevel::Log].iter().map(|l| l.js_value()).collect();
         assert_eq!(js, vec![0, 1, 2, 3]);
+    }
+}
+
+#[cfg(test)]
+mod style_corpus_root_tests {
+    use super::{resolve_style_corpus, STYLE_CORPUS_DEFAULT};
+    use std::fs;
+    use std::path::{Path, PathBuf};
+
+    fn scratch(name: &str) -> PathBuf {
+        let d = std::env::temp_dir().join(format!(
+            "style-corpus-{}-{}-{}",
+            name,
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        let _ = fs::remove_dir_all(&d);
+        d
+    }
+
+    #[test]
+    fn unset_without_corpus_names_var_and_fetch() {
+        let missing = scratch("missing");
+        let err = resolve_style_corpus(None, &missing).unwrap_err();
+        assert!(err.contains("STYLE_CORPUS"), "{err}");
+        assert!(err.contains("scripts/fetch-style-corpus.sh"), "{err}");
+        assert!(err.contains(&missing.display().to_string()), "{err}");
+    }
+
+    #[test]
+    fn unset_with_locked_path_present_resolves() {
+        let present = scratch("present");
+        fs::create_dir_all(&present).unwrap();
+        let got = resolve_style_corpus(None, &present).unwrap();
+        assert_eq!(got, present);
+        let _ = fs::remove_dir_all(&present);
+    }
+
+    #[test]
+    fn set_variable_is_used_even_when_default_exists() {
+        let chosen = scratch("chosen");
+        let other = scratch("other");
+        fs::create_dir_all(&chosen).unwrap();
+        fs::create_dir_all(&other).unwrap();
+        let got = resolve_style_corpus(Some(chosen.to_str().unwrap()), &other).unwrap();
+        assert_eq!(got, chosen);
+        let _ = fs::remove_dir_all(&chosen);
+        let _ = fs::remove_dir_all(&other);
+    }
+
+    #[test]
+    fn set_variable_missing_dir_is_an_error_not_the_default() {
+        let other = scratch("other-ok");
+        fs::create_dir_all(&other).unwrap();
+        let err = resolve_style_corpus(Some("/no/such/style-corpus-dir"), &other).unwrap_err();
+        assert!(err.contains("STYLE_CORPUS=/no/such/style-corpus-dir"), "{err}");
+        assert!(err.contains("does not exist"), "{err}");
+        let _ = fs::remove_dir_all(&other);
+    }
+
+    #[test]
+    fn default_constant_is_the_box_locked_path() {
+        assert_eq!(STYLE_CORPUS_DEFAULT, "/workspace/style-corpus");
+        assert_eq!(Path::new(STYLE_CORPUS_DEFAULT), Path::new("/workspace/style-corpus"));
     }
 }

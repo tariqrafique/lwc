@@ -629,7 +629,10 @@ check() {
   # Missing incoming table is rc 2. Unlisted helpers stay vs MAIN's table.
   # Stale MAIN_* (path+class) and BOX_CONFIG_DEPENDENT (path+dep) rows are
   # (incoming ∩ MAIN) minus found uses: a MAIN-only drop and an incoming-only
-  # pending addition are accepted; a row in both that is unused fails.
+  # pending addition are accepted; a row in both that is unused fails, except a
+  # BOX_CONFIG_DEPENDENT row whose script is absent on both main and incoming,
+  # which warns without failing. Once the script exists, the normal stale rule
+  # applies.
   local inext igot
   if [ -z "${incoming_table:-}" ] || [ ! -f "$incoming_table" ]; then
     echo "check-land-main-refs: no incoming allowlist at ${incoming_table:-<empty>}" >&2
@@ -711,7 +714,33 @@ check() {
   miss="$(comm -13 <(printf '%s\n' "$box_listed") <(printf '%s\n' "$box_found"))"
   extra="$(comm -23 <(printf '%s\n' "$box_listed_both") <(printf '%s\n' "$box_found"))"
   [ -z "$miss" ] || { echo "FAIL unlisted box-config dependency:"; printf '%s\n' "$miss" | sed 's/^/  /'; fail=1; }
-  [ -z "$extra" ] || { echo "FAIL stale allowlist BOX_CONFIG_DEPENDENT row(s):"; printf '%s\n' "$extra" | sed 's/^/  /'; fail=1; }
+  if [ -n "$extra" ]; then
+    local orphans="" stale="" line rel f
+    while IFS= read -r line || [ -n "$line" ]; do
+      [ -n "$line" ] || continue
+      rel="${line%%$'\t'*}"
+      f="$(resolve_file "$rel" "$overlay" "$root")"
+      if [ -n "${f:-}" ] && [ -f "$f" ]; then
+        stale+="$line"$'\n'
+        continue
+      fi
+      if git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1 \
+         && git -C "$root" cat-file -e "main:$rel" 2>/dev/null; then
+        stale+="$line"$'\n'
+        continue
+      fi
+      orphans+="$line"$'\n'
+    done <<< "$extra"
+    if [ -n "$orphans" ]; then
+      echo "WARN orphan allowlist BOX_CONFIG_DEPENDENT row(s) (script absent on main and incoming):"
+      printf '%s' "$orphans" | sed 's/^/  /'
+    fi
+    if [ -n "$stale" ]; then
+      echo "FAIL stale allowlist BOX_CONFIG_DEPENDENT row(s):"
+      printf '%s' "$stale" | sed 's/^/  /'
+      fail=1
+    fi
+  fi
 
   if [ "$fail" -eq 0 ]; then
     local nfound nbox
@@ -971,11 +1000,14 @@ self_test() {
   printf 'scripts/not-yet-on-main.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/allow.boxbothabsent"
   cp "$T/allow.boxbothabsent" "$T/in.boxbothabsent/scripts/land-main-refs.tsv"
   if chk "$land" "$T/allow.boxbothabsent" "$root" "$T/in.boxbothabsent" >"$T/out.boxbothabsent" 2>&1; then
-    echo "FAIL unused BOX_CONFIG_DEPENDENT row for an absent file in both tables was accepted"; sed 's/^/       /' "$T/out.boxbothabsent"; fail=1
-  elif grep -q 'stale allowlist BOX_CONFIG' "$T/out.boxbothabsent" && grep -q 'not-yet-on-main.sh' "$T/out.boxbothabsent"; then
-    echo "ok   unused BOX_CONFIG_DEPENDENT row for an absent file in both tables fails"
+    if grep -q 'WARN orphan allowlist BOX_CONFIG' "$T/out.boxbothabsent" && grep -q 'not-yet-on-main.sh' "$T/out.boxbothabsent" \
+       && ! grep -q 'FAIL stale allowlist BOX_CONFIG' "$T/out.boxbothabsent"; then
+      echo "ok   unused BOX_CONFIG_DEPENDENT row for an absent file in both tables warns"
+    else
+      echo "FAIL unused absent-file BOX in both: want WARN orphan, rc 0"; sed 's/^/       /' "$T/out.boxbothabsent"; fail=1
+    fi
   else
-    echo "FAIL unused absent-file BOX in both: want not-yet-on-main.sh"; sed 's/^/       /' "$T/out.boxbothabsent"; fail=1
+    echo "FAIL unused BOX_CONFIG_DEPENDENT row for an absent file in both tables should warn (rc 0)"; sed 's/^/       /' "$T/out.boxbothabsent"; fail=1
   fi
 
   # Same file as $allow and incoming (how --self-test's live check calls check).

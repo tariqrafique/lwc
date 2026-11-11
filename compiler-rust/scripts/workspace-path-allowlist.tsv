@@ -4,6 +4,7 @@
 # Reasons must not themselves contain the substring that the scanner forbids
 # if this file is not listed here; keep reasons free of that box-root prefix.
 harness/scripts/oracle-root.mjs	single resolver: box defaults for the oracle, style corpus, and notes decisions
+crates/lwc-shared/src/lib.rs	Rust twin of oracle-root.mjs styleCorpusRoot: box default when STYLE_CORPUS is unset
 scripts/land.sh	box-only land chokepoint (MAIN checkout, lock, notes, parse5)
 scripts/official-board.sh	box-only official board default inputs and publish dest
 scripts/publish-official.sh	box-only official push dest

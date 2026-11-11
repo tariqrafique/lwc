@@ -68,3 +68,7 @@ scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
 scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
 scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
 scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required

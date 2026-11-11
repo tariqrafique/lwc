@@ -52,13 +52,22 @@ copy_official_run_logs() {
   fi
   mkdir -p "$dest"
   local f copied=0
-  for f in board.log golden.progress style-fixtures.log row-provenance.tsv; do
+  for f in board.log golden.progress style-fixtures.log style-corpus.log napi-css-errors.log row-provenance.tsv; do
     if [ -f "$snapdir/$f" ]; then cp "$snapdir/$f" "$dest/$f"; copied=1; fi
   done
   printf '%s\n' "$rc" > "$dest/run.rc"
   echo "official-board: stored run logs in $dest (rc=$rc${copied:+, copied})"
 }
 # <<< store-logs
+# Surface orphan BOX_CONFIG_DEPENDENT allowlist rows (script absent on both
+# main and incoming) without changing the board rc.
+print_orphan_allowlist_warns() {
+  local tree="$1" helper
+  helper="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/print-orphan-allowlist-warns.sh"
+  [ -x "$helper" ] || return 0
+  "$helper" "$tree" || true
+}
+
 # >>> official-input-pins (exercised by scripts/test-notes-precheck.sh)
 OFFICIAL_DEFAULT_MAIN=/workspace/lwc-compiler-rust
 OFFICIAL_DEFAULT_NOTES=/workspace/notes
@@ -244,7 +253,7 @@ export SSR_ORACLE_GIT="$MAIN" SSR_ORACLE_MAIN="$commit"
 tdiag="$snap/template-diag"
 export CRATES_ROOT="$ws/crates" SHIM_RATCHET_DIR="$hs/ratchets" OPTGATE_DECISIONS="$snap/notes/decisions.tsv"
 export BOARD_REPO_ROOT="$ws" TEMPLATE_DIAG_OUT_DIR="$tdiag" SEMDIFF_REGISTRY="$snap/notes/decisions.tsv"
-export C8_TARBALLS="$snap/tarballs" SPE_LOG="$snap/style-fixtures.log"
+export C8_TARBALLS="$snap/tarballs" BOARD_FOOTER_LOG_DIR="$snap"
 _run="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/run-board.sh"
 [ -x "$_run" ] || die3 "run-board.sh missing next to official-board.sh"
 _rt="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/board-runtime.mjs"
@@ -293,6 +302,10 @@ so="$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so"
 napi="$(sha256sum "$so" | cut -c1-12)"
 spe="$(sed -nE 's/^style-parse-errors[[:space:]]+([0-9]+\/[0-9]+).*/\1/p' "$snap/board.log" | tail -1)"
 echo "official: src=$h0 napi=$napi rc=$rc"
+orphan_warns="$(print_orphan_allowlist_warns "$ws")"
+if [ -n "${orphan_warns:-}" ]; then
+  printf '%s\n' "$orphan_warns"
+fi
 _rt="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/board-runtime.mjs"
 if [ "$rc" -eq 0 ] && [ $# -eq 0 ] && [ "${BOARD_SCOPE:-FULL}" = scoped ] && [ -n "${BOARD_PREV_BOARD_TXT:-}" ] && [ -x "$_rt" ]; then
   node "$_rt" compose "$snap/board.log" "$BOARD_PREV_BOARD_TXT" "$snap/board.log" "$MAIN" --ran "${BOARD_ROWS:-}"
@@ -318,7 +331,7 @@ if [ $# -eq 0 ]; then
   {
     printf 'row\tstatus\tsource_board_id\n'
     # shellcheck disable=SC2086
-    for _r in style js js-eval template ssr ssr-async ssr-asyncYield ssr-render ssr-render-async ssr-render-asyncYield csr-render csr-render-template template-renderer js-options js-api template-options ssr_dynamic_imports style-api template-api ssr_render_api template-diag template-diag-napi; do
+    for _r in style js js-eval template ssr ssr-async ssr-asyncYield ssr-render ssr-render-async ssr-render-asyncYield csr-render csr-render-template template-renderer js-options js-api template-options ssr_dynamic_imports style-api template-api ssr_render_api template-diag template-diag-napi style-upstream; do
       _st=carried
       for _x in ${BOARD_ROWS:-}; do
         if [ "$_x" = "$_r" ]; then _st=rerun; break; fi
@@ -344,6 +357,7 @@ if [ "$rc" -eq 0 ] && [ $# -eq 0 ]; then
   base="$push/official-$h0"
   { echo "official board  commit=${commit:0:12}  src=$h0  napi=$napi  parse5-rust=$p5 (build dep, NOT in tgz)  $(date -Iseconds)"
     sed -n '/^napi sha256:/,$p' "$snap/board.log"
+    if [ -n "${orphan_warns:-}" ]; then printf '%s\n' "$orphan_warns"; fi
   } > "$base.board.txt.tmp"
   for c in ssr template; do rep="$hs/.csr-render-out/rust-$c/report-$c.json"; [ -f "$rep" ] || continue
     node -e 'const r=require(process.argv[1]);for(const x of r.rows)console.log([x.fixture,x.pass,x.status,x.goldenStatus].join("\t"))' "$rep" > "$base.csr-$c.tsv"; done

@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 # Single in-repo board driver (AB-M0002). Produces every board.txt data row:
-# golden-gate, C8, board.sh, then footers (style-parse-errors + csr-clusters).
+# golden-gate, C8, board.sh, then footers (style-parse-errors, csr-clusters, style-corpus, napi-css-errors).
 # official-board.sh pins/verifies box inputs, calls this, then publishes.
 # run-portable-board.sh fetches inputs, then calls this.
 #
 # Usage: run-board.sh <repo-root> <board-log> [board.sh args...]
 # Required env: PARSE5_DIR (official pins the box clone; portable sets remote).
-# Optional env: C8_TARBALLS, SPE_LOG, BOARD_TXT, GOLDEN_GATE_PROGRESS,
-#   CARGO_TARGET_DIR, SSR_ORACLE_*, CRATES_ROOT, OPTGATE_DECISIONS, SEMDIFF_REGISTRY,
-#   TEMPLATE_DIAG_OUT_DIR, SHIM_FILE_LIST, SHIM_RATCHET_DIR, BOARD_REPO_ROOT.
+# Optional env: C8_TARBALLS, BOARD_FOOTER_LOG_DIR, SPE_LOG, STYLE_CORPUS_LOG, NAPI_CSS_LOG,
+#   BOARD_TXT, GOLDEN_GATE_PROGRESS, CARGO_TARGET_DIR, SSR_ORACLE_*, CRATES_ROOT,
+#   OPTGATE_DECISIONS, SEMDIFF_REGISTRY, TEMPLATE_DIAG_OUT_DIR, SHIM_FILE_LIST,
+#   SHIM_RATCHET_DIR, BOARD_REPO_ROOT.
+# Footer script logs (style-parse-errors, style-corpus, napi-css-errors) all derive
+# from BOARD_FOOTER_LOG_DIR (default $ws/.oracle). Official-board sets that dir to
+# the snap run dir so they never land inside the archived repo. Explicit SPE_LOG /
+# STYLE_CORPUS_LOG / NAPI_CSS_LOG still override a single file.
 # C8 helper scripts come from this file's tree (the runner).
 set -euo pipefail
 runner="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
@@ -52,11 +57,22 @@ so="${CARGO_TARGET_DIR:-$ws/target}/release/liblwc_compiler_napi.so"
 cp "$so" "$hs/lwc-compiler-napi.node"
 "$hs/scripts/ensure-deps.sh" "$hs" || { echo "!! run-board: ensure-deps failed" >&2; exit 2; }
 
-spe_log="${SPE_LOG:-$ws/.oracle/style-fixtures.log}"
-mkdir -p "$(dirname "$spe_log")" "$(dirname "$board_log")"
+# One directory for every board-footer log. Do not default these into $ws/.oracle
+# when a caller (official-board) has set BOARD_FOOTER_LOG_DIR outside the snap.
+footer_log_dir="${BOARD_FOOTER_LOG_DIR:-$ws/.oracle}"
+mkdir -p "$footer_log_dir" "$(dirname "$board_log")"
+spe_log="${SPE_LOG:-$footer_log_dir/style-fixtures.log}"
+corpus_log="${STYLE_CORPUS_LOG:-$footer_log_dir/style-corpus.log}"
+napi_log="${NAPI_CSS_LOG:-$footer_log_dir/napi-css-errors.log}"
+mkdir -p "$(dirname "$spe_log")" "$(dirname "$corpus_log")" "$(dirname "$napi_log")"
 spe="$("$runner/style-parse-errors.sh" "$ws" "$spe_log")" \
   || { echo "!! run-board: style-parse-errors failed (see $spe_log)" >&2; exit 3; }
 [[ "$spe" =~ ^[0-9]+/[0-9]+$ ]] || { echo "!! run-board: style-parse-errors.sh printed '$spe', want <passed>/<total>" >&2; exit 3; }
+
+corpus="$("$runner/style-corpus.sh" "$ws" "$corpus_log")" \
+  || { echo "!! run-board: style-corpus failed (see $corpus_log)" >&2; exit 3; }
+napi="$("$runner/napi-css-errors.sh" "$ws" "$napi_log")" \
+  || { echo "!! run-board: napi-css-errors failed (see $napi_log)" >&2; exit 3; }
 
 set +e
 env -u BOARD_RATCHET_UPDATE -u TDD_SEMDIFF_EXEC "$hs/board.sh" "$@" 2>&1 | tee "$board_log"
@@ -68,7 +84,7 @@ if grep -q '^!! ' "$board_log" && [ "$rc" -eq 0 ]; then
 fi
 
 set +e
-foot="$("$runner/board-footers.sh" "$hs" "$spe")"
+foot="$("$runner/board-footers.sh" "$hs" "$spe" "$corpus" "$napi")"
 frc=$?
 set -e
 printf '%s\n' "$foot" | tee -a "$board_log"

@@ -15549,3 +15549,16 @@ ssr_render_api	passed	ssr_render_api: parse5 compile-only v67/parse5/unclosed-di
 ssr_render_api	passed	ssr_render_api: parse5 compile-only v67/parse5/valid-control
 template-diag	counts	0 0
 template-diag-napi	counts	0 0
+style-upstream	counts	12 0 0
+style-upstream	passed	style-upstream finds 11 upstream style inputs
+style-upstream	passed	style-upstream playground/src/modules/x/app/app.css
+style-upstream	passed	style-upstream rollup-plugin/scoped-styles/src/x/app/app.scoped.css
+style-upstream	passed	style-upstream rollup-plugin/test/test.css
+style-upstream	passed	style-upstream rollup-plugin/typescript/typescript.css
+style-upstream	passed	style-upstream transformers-specs/backslash
+style-upstream	passed	style-upstream transformers-specs/erm-lt
+style-upstream	passed	style-upstream transformers-specs/grave-accent
+style-upstream	passed	style-upstream transformers-specs/host-div
+style-upstream	passed	style-upstream transformers-specs/invalid-lt
+style-upstream	passed	style-upstream transformers-specs/var-bg-color
+style-upstream	passed	style-upstream unported-inline/examples

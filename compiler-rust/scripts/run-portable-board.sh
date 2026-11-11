@@ -25,6 +25,7 @@ export SEMDIFF_REGISTRY="$reg" OPTGATE_DECISIONS="$reg"
 export PARSE5_DIR=remote
 export NO_COLOR="${NO_COLOR:-1}"
 export C8_TARBALLS="${PORTABLE_TARBALLS:-$root/.oracle/tarballs}"
+export BOARD_FOOTER_LOG_DIR="${PORTABLE_FOOTER_LOG_DIR:-$root/.oracle}"
 export SPE_LOG="${PORTABLE_SPE_LOG:-$root/.oracle/style-fixtures.log}"
 export BOARD_TXT="${PORTABLE_BOARD_TXT:-$root/.oracle/board.txt}"
 board_log="${PORTABLE_BOARD_LOG:-$root/.oracle/board.log}"

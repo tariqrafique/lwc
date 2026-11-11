@@ -15,7 +15,7 @@ node tools/style-diff/run.mjs      # from $REPO; builds the Rust driver first
   {name,reason,line,column} (key order ignored) = pass. On byte mismatch the module is evaluated and
   `stylesheet(token, host, dir)` compared over 4 combos (reported as `semantic: equal|different`) — still a fail.
 - Exit 1 on any failure. Optional `allowlist.json` (`[{file, config?, why}]`) — currently none.
-- Env: `LWC_ROOT`, `STYLE_DIFF_CAP`, `STYLE_DIFF_OUT` (default `target/style-diff`), `STYLE_DIFF_NO_FIXTURES`, `STYLE_DIFF_NO_BUILD`.
+- Env: `LWC_ROOT`, `STYLE_DIFF_CAP` (default 200), `STYLE_DIFF_SLDS_CAP` (default 300), `STYLE_DIFF_UNCAPPED=1` (disables both caps; the `style-corpus` board row sets this), `STYLE_DIFF_OUT` (default `target/style-diff`), `STYLE_DIFF_NO_FIXTURES`, `STYLE_DIFF_NO_BUILD`.
 - Full report: `target/style-diff/report.json`.
 - Parse-error inputs (kind `parse-error`, every corpus mode; skip with `STYLE_DIFF_NO_PARSE_ERRORS=1`):
   `crates/lwc-style/tests/parse-errors/*/actual.css`, generated from the JS oracle by

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Populate style-corpus/{lbc,lbc-recipes} from their public origins and verify
+# Populate style-corpus/{lbc,lbc-recipes,slds} from their public origins and verify
 # harness/external-inputs.lock hashes (D-0280). Hashes exclude files under .git/.
 #
 #   lbc          npm lightning-base-components@1.28.19-alpha
@@ -9,8 +9,12 @@
 #   lbc-recipes  git https://github.com/salesforce/base-components-recipes.git
 #                @ 9c5f95d4e0cd5434a2b8373405e4f6c7657c88e8
 #                (LICENSE file: MIT; package.json license: CC0-1.0)
+#   slds         npm @salesforce-ux/design-system@2.264.3
+#                https://registry.npmjs.org/@salesforce-ux/design-system/-/design-system-2.264.3.tgz
+#                (extracts to slds/package/; package.json license BSD-3-Clause —
+#                we fetch the published npm tree, we do not vendor it.)
 #
-# STYLE_CORPUS_SOURCE, if set, copies those two leaves instead of fetching
+# STYLE_CORPUS_SOURCE, if set, copies those leaves instead of fetching
 # (still hash-verified, fail-closed). It is never required.
 #
 # Usage: scripts/fetch-style-corpus.sh [dest]
@@ -23,6 +27,8 @@ lock="$root/harness/external-inputs.lock"
 LBC_NPM_TARBALL="https://registry.npmjs.org/lightning-base-components/-/lightning-base-components-1.28.19-alpha.tgz"
 LBC_RECIPES_URL="https://github.com/salesforce/base-components-recipes.git"
 LBC_RECIPES_REV="9c5f95d4e0cd5434a2b8373405e4f6c7657c88e8"
+SLDS_NPM_TARBALL="https://registry.npmjs.org/@salesforce-ux/design-system/-/design-system-2.264.3.tgz"
+SLDS_VERSION="2.264.3"
 
 dest="${1:-${STYLE_CORPUS:-$root/.oracle/style-corpus}}"
 dest="$(realpath -m "$dest")"
@@ -62,6 +68,25 @@ fetch_lbc() {
   rm -rf "$tmp"
 }
 
+fetch_slds() {
+  local tmp
+  tmp="$(mktemp -d)"
+  echo "fetch-style-corpus: downloading $SLDS_NPM_TARBALL" >&2
+  curl -fsSL "$SLDS_NPM_TARBALL" -o "$tmp/slds.tgz" \
+    || { echo "fetch-style-corpus: failed to download @salesforce-ux/design-system tarball" >&2; rm -rf "$tmp"; return 2; }
+  mkdir -p "$dest/slds"
+  tar -xzf "$tmp/slds.tgz" -C "$dest/slds" \
+    || { echo "fetch-style-corpus: failed to extract slds tarball" >&2; rm -rf "$tmp" "$dest/slds"; return 2; }
+  [ -f "$dest/slds/package/package.json" ] \
+    || { echo "fetch-style-corpus: slds tarball missing package/package.json" >&2; rm -rf "$tmp" "$dest/slds"; return 2; }
+  python3 -c 'import json,sys; p=json.load(open(sys.argv[1]));
+name, ver = p.get("name"), p.get("version")
+ok = name == "@salesforce-ux/design-system" and ver == sys.argv[2]
+sys.exit(0 if ok else 1)' "$dest/slds/package/package.json" "$SLDS_VERSION" \
+    || { echo "fetch-style-corpus: slds package.json is not @salesforce-ux/design-system@$SLDS_VERSION" >&2; rm -rf "$tmp" "$dest/slds"; return 2; }
+  rm -rf "$tmp"
+}
+
 fetch_recipes() {
   local tmp
   tmp="$(mktemp -d)"
@@ -93,14 +118,16 @@ ensure_leaf() {
   case "$leaf" in
     lbc) fetch_lbc ;;
     lbc-recipes) fetch_recipes ;;
+    slds) fetch_slds ;;
     *) echo "fetch-style-corpus: unknown leaf $leaf" >&2; return 2 ;;
   esac
 }
 
 ensure_leaf lbc || exit $?
 ensure_leaf lbc-recipes || exit $?
+ensure_leaf slds || exit $?
 ok=1
-for leaf in lbc lbc-recipes; do
+for leaf in lbc lbc-recipes slds; do
   want="$(want_hash "style-corpus/$leaf")" || { echo "fetch-style-corpus: no lock row for style-corpus/$leaf" >&2; exit 2; }
   got="$(hash_leaf "$leaf")"
   if [ "$got" != "$want" ]; then

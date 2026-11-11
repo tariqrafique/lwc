@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": ":host {color: var(--my-color);}",
+        "x|host=false|dir=true": "[x-host] {color: var(--my-color);}",
+        "x|host=false|dir=false": "[x-host] {color: var(--my-color);}",
+        "x|host=true|dir=true": ":host {color: var(--my-color);}",
+        "-|host=true|dir=false": ":host {color: var(--my-color);}"
+      }
+    }
+  ]
+}

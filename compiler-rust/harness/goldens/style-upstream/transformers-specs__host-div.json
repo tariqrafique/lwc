@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": ":host {color: red;}div[x] {background-color: red;}",
+        "x|host=false|dir=true": "[x-host] {color: red;}div[x] {background-color: red;}",
+        "x|host=false|dir=false": "[x-host] {color: red;}div[x] {background-color: red;}",
+        "x|host=true|dir=true": ":host {color: red;}div[x] {background-color: red;}",
+        "-|host=true|dir=false": ":host {color: red;}div {background-color: red;}"
+      }
+    }
+  ]
+}
