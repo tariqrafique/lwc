@@ -517,3 +517,25 @@ No official board this run. df was 46G free before the slice. Did not fetch remo
 ### D-0268 / inflight
 - Worktrees /tmp/d0282-selftest-map and /tmp/d0282-selftest-measure removed without --force; local branches deleted after ff. No `git add -A`/`-am`. agent-inflight was absent before each land.sh (not created). disk 72% (91G/128G), inodes 85%.
 
+## 2026-11-10 16:33 PST (America/Los_Angeles) — rust-test-inputs (land cargo-test coverage)
+
+- The previous land.sh rule (skip rust check/test/napi unless `*.rs` / Cargo / toolchain) was a coverage hole: `tools/semdiff/tests/exec_ssr.rs` spawns `harness/scripts/ssr-emit-pairs.ts` (via `ts-register.mjs`). An ssr-emit-pairs.ts-only regression would have skipped `cargo test`.
+- Official/C8 confirmation: official-board.sh → run-board.sh:48 → c8-checks.sh. C8 runs **both** `cargo_locked check --workspace --all-targets` (c8-checks.sh:94) **and** `cargo_locked test --workspace` (c8-checks.sh:99). So a landed ssr-emit-pairs.ts hole would still be caught later by official C8 cargo test (not “nothing would catch it”), but main would already contain the bad commit. The land-time hole is what this change closes.
+
+### Derived input list
+- Scanner: `scripts/rust-test-inputs.py` (wrapper `scripts/rust-test-inputs.sh`). Walks crates/**/{src,tests}/**/*.rs, tools/**/{src,tests}/**/*.rs, and every build.rs. Extracts include_str!/include_bytes!, .join("…") and repo path literals, Command::new("node"|npx|npm) JS path args, and CARGO_MANIFEST_DIR / cargo_manifest_dir crate-root directories. Follows relative JS/TS imports (including `new URL('./…')`, so ts-hooks.mjs is included from ts-register.mjs). Drops only top-level mega-prefixes (`crates/`, `tools/`, `harness/`, `scripts/`).
+- Checked-in file: `scripts/rust-test-inputs.tsv`, **49 rows** (path\tpackage). Includes `harness/scripts/ssr-emit-pairs.ts`, `ts-register.mjs`, `ts-hooks.mjs`, `oracle-root.mjs` → semdiff; `tools/semdiff/` and `tools/semdiff/exec/`; harness/src/{backend,oracleRoot,ssrRender}.ts pulled in by those imports; crate goldens/fixtures/index.js/gen.mjs paths; not `harness/board.sh`.
+- `--check` fails if the scan finds a (path, package) missing from the file. `scripts/test-rust-test-inputs.sh` plants: drop the ssr-emit-pairs.ts row → --check fails; board.sh → `skip`; ssr-emit-pairs.ts → `packages -p semdiff`; `*.rs` → `workspace`. Mapped in land-self-tests.tsv.
+- land.sh `--decide`: `workspace` → check + test --workspace + napi; `packages -p …` → `cargo test` of those packages only (no napi rebuild); `skip` otherwise.
+
+### Plants
+- (a) Scratch land of a broken relative import `./oracle-root-MISSING.mjs` in ssr-emit-pairs.ts (workspace-path-scan does not flag it; not a bare @lwc/ import). Log /workspace/scratch/harness/rust-inputs-plant-a.log. LAND_START=2026-11-10T16:32:01-08:00 LAND_END=16:33:00 elapsed=**59s** rc=1. `land: rust-test-inputs --decide packages -p semdiff`, then workspace-test, `Running tests/exec_ssr.rs`, 8 exec_ssr tests FAILED with ERR_MODULE_NOT_FOUND for oracle-root-MISSING.mjs imported from ssr-emit-pairs.ts. `error: test failed, to rerun pass -p semdiff --test exec_ssr`. `!! LAND REFUSED: workspace test failed`. Main unchanged. Worktree /tmp/d0283-ssr-plant and branch bot/d0283-ssr-plant removed (not merged).
+- (b) `harness/board.sh` still skips cargo: `rust-test-inputs.sh --decide` prints `skip`; planted in test-rust-test-inputs.sh (ok during the feature land). Rechecked on main after landing: skip.
+
+### Golden-gate
+- Re-checked harness/scripts (other than golden-gate.sh / golden-io-guard.sh): no file writes goldens or reads UPDATE_GOLDENS. Goldens come from harness/test + src + fixtures (JS-oracle vitest). Files that affect that recording already trigger the narrowed regex: golden-*, ensure-deps, oracle-root (also imported by harness/src/oracleRoot.ts), ts-hooks.mjs, ts-register.mjs, vitest configs. ssr-emit-pairs.ts writes semdiff pair files to `--out`, not harness/goldens; changing it now correctly runs `cargo test -p semdiff` and does not re-record 4624 goldens.
+
+### Land / timings / D-0268
+- Feature landed via land.sh (agent-inflight absent). Log /workspace/scratch/harness/rust-inputs-land.log. LAND_START=2026-11-10T16:30:04-08:00 LAND_END=16:31:51 elapsed=**107s**. This land still used previous land.sh (skip cargo; no *.rs). Self-tests: test-land-path-checks, check-land-main-refs, test-land-self-tests, test-rust-test-inputs (jobs=4). Snapshot follow-on **d53106484392** (notes@ac4c7e8). Fix commit **82b8c973fcff**.
+- D-0268: /tmp/d0283-rust-inputs and /tmp/d0283-ssr-plant removed without --force; bot/d0283-rust-inputs deleted after ff; bot/d0283-ssr-plant deleted after the refused scratch land. No git add -A/-am.
+
