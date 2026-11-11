@@ -15,6 +15,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { serializeNode, trackShadowRoots, ENGINE_DOM_ESM } from '../src/csrRender';
 import { bundleLbcComponent, discoverBundles, type LbcBundle } from '../src/lbcBundle';
+import type { LwcPluginOptions } from '../src/ssrRender';
 import { UPDATE, readGolden, writeGolden, goldenName } from '../src/optionRows';
 import { canonOraclePath } from '../src/oracleRoot';
 import { upstreamComponentRoots } from '../src/upstreamRoots';
@@ -32,6 +33,13 @@ fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
 const bundles = discoverBundles(upstreamComponentRoots());
+
+// Options the component's own upstream test passes to @lwc/rollup-plugin.
+// rollup-plugin warnings.spec.ts compiles fixtures/warnings at API 58, where the
+// extra </template> is warning LWC1148. At the default API it is error LWC1058.
+const BUNDLE_OPTIONS: Record<string, Partial<LwcPluginOptions>> = {
+    'rollup-plugin/warnings': { apiVersion: 58 },
+};
 
 type Side = { status: 'ok'; html: string } | { status: 'compile-error'; message: string } | { status: 'render-error'; message: string };
 type Observed = { ssr: Side; csr: Side; asyncErrors?: string[] };
@@ -209,6 +217,7 @@ async function stage(bundle: LbcBundle, targetSSR: boolean, id: string): Promise
             targetSSR,
             lwcPath: ENGINE_DOM_ESM,
             ssrRuntimePath: SSR_RUNTIME_ESM,
+            pluginOptions: BUNDLE_OPTIONS[bundle.id],
         });
     } catch (e) {
         return { status: 'compile-error', message: norm(messageOf(e)) };
@@ -218,6 +227,13 @@ async function stage(bundle: LbcBundle, targetSSR: boolean, id: string): Promise
 
 function bothCompileError(o: Observed): boolean {
     return o.ssr.status === 'compile-error' && o.csr.status === 'compile-error';
+}
+
+/** LWC codes in the oracle golden. A bundle that still fails names these on the exclusion line. */
+function oracleCodes(o: Observed): string {
+    const parts = [o.ssr, o.csr].flatMap((s) => s.status === 'compile-error' ? s.message : []);
+    const codes = [...new Set(parts.join('\n').match(/LWC\d{4}/g) ?? [])].sort();
+    return codes.length ? codes.join('+') : 'no-lwc-code';
 }
 
 function uniqueStray(): string[] {
@@ -285,7 +301,7 @@ describe('upstream-cmp', () => {
             }
             const golden = readGolden(g) as Observed;
             if (bothCompileError(golden) && bothCompileError(observed)) {
-                exclusions.push({ id: bundle.id, why: 'compile-error-both' });
+                exclusions.push({ id: bundle.id, why: `compile-error-both ${oracleCodes(golden)}` });
                 ctx.skip();
                 return;
             }

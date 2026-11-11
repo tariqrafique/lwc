@@ -47,6 +47,16 @@ function extendsLightningElement(base: string, byName: Map<string, string>, seen
     return extendsLightningElement(next, byName, seen);
 }
 
+export /** `packages/@lwc/<name>` that contains `dir`, or `dir` itself. */
+function packageRoot(dir: string): string {
+    const marker = `${path.sep}packages${path.sep}@lwc${path.sep}`;
+    const at = dir.indexOf(marker);
+    if (at < 0) return dir;
+    const rest = dir.slice(at + marker.length);
+    const pkg = rest.split(path.sep)[0];
+    return dir.slice(0, at + marker.length + pkg.length);
+}
+
 export function namespaceFor(dir: string): string {
     const parent = path.basename(path.dirname(dir));
     if (/^[a-z][a-z0-9]*$/.test(parent) && !NOT_NAMESPACE.has(parent)) return parent;
@@ -179,6 +189,8 @@ export function bundleLbcComponent(backend: CompilerBackend, bundle: LbcBundle, 
     /** Absolute module the bundle's `lwc` external is pinned to. */
     lwcPath: string;
     ssrRuntimePath?: string;
+    /** Compiler options the component's own upstream test passes. */
+    pluginOptions?: Partial<LwcPluginOptions>;
 }): Promise<string> {
     const ns = bundle.namespace;
     const name = bundle.name;
@@ -187,6 +199,32 @@ export function bundleLbcComponent(backend: CompilerBackend, bundle: LbcBundle, 
     const entryFile = `${vdir}/${name}${path.extname(bundle.js)}`;
     if (!(entryFile in files)) files[entryFile] = fs.readFileSync(bundle.js, 'utf8');
     const own = `${ns}/${name}`;
+    // Relative imports that leave the component directory (a sibling template, a
+    // suite helper) are real files in the same package. The upstream rollup
+    // config compiles those paths. A path outside the package stays unresolved.
+    const pkgRoot = packageRoot(bundle.dir);
+    const virtRoot = vdir;
+    const importerOnDisk = (id: string): string | null => {
+        const fromVirt = realFromVirtual(id);
+        if (fromVirt) return fromVirt;
+        const norm = path.normalize(id);
+        if ((norm === pkgRoot || norm.startsWith(pkgRoot + path.sep)) && fs.existsSync(norm)) return norm;
+        if (id.startsWith(virtRoot)) {
+            const rel = path.posix.relative(virtRoot, id);
+            const real = path.resolve(bundle.dir, rel);
+            return fs.existsSync(real) ? real : null;
+        }
+        return null;
+    };
+    const realFromVirtual = (id: string): string | null => {
+        const base = id.split('?')[0];
+        if (!base.startsWith('/virtual-lbc/')) return null;
+        const rel = path.posix.relative(virtRoot, base);
+        const real = path.resolve(bundle.dir, rel);
+        const normReal = path.normalize(real);
+        if (normReal !== pkgRoot && !normReal.startsWith(pkgRoot + path.sep)) return null;
+        return fs.existsSync(normReal) && fs.statSync(normReal).isFile() ? normReal : null;
+    };
     const stubCmp = (id: string) => {
         const parts = id.split('/').filter(Boolean);
         const comp = parts[parts.length - 1] || 'Stub';
@@ -205,6 +243,20 @@ export function bundleLbcComponent(backend: CompilerBackend, bundle: LbcBundle, 
                 const candidates = [base, `${base}.js`, `${base}.ts`, `${base}.mjs`, `${base}.html`, `${base}.css`, `${base}/index.js`];
                 for (const c of candidates) {
                     if (c in files) return query ? `${c}?${query}` : c;
+                    const real = realFromVirtual(c);
+                    if (real) return query ? `${c}?${query}` : c;
+                }
+                // `../` that climbs out of the virtual root is a real file next to the component.
+                const importerReal = importerOnDisk(importer.split('?')[0]);
+                if (importerReal) {
+                    const disk = path.resolve(path.dirname(importerReal), spec);
+                    const diskCandidates = [disk, `${disk}.js`, `${disk}.ts`, `${disk}.mjs`, `${disk}.html`, `${disk}.css`, path.join(disk, 'index.js')];
+                    for (const c of diskCandidates) {
+                        const norm = path.normalize(c);
+                        if ((norm === pkgRoot || norm.startsWith(pkgRoot + path.sep)) && fs.existsSync(norm) && fs.statSync(norm).isFile()) {
+                            return query ? `${norm}?${query}` : norm;
+                        }
+                    }
                 }
                 return null;
             }
@@ -215,6 +267,8 @@ export function bundleLbcComponent(backend: CompilerBackend, bundle: LbcBundle, 
         load(id: string) {
             const base = id.split('?')[0];
             if (base in files) return files[base];
+            const real = realFromVirtual(base) ?? (path.isAbsolute(base) ? importerOnDisk(base) : null);
+            if (real && fs.statSync(real).isFile()) return fs.readFileSync(real, 'utf8');
             if (base.startsWith('/virtual-lbc-stub/')) return stubCmp(base.slice('/virtual-lbc-stub/'.length).replace(/\.js$/, ''));
             if (base.startsWith('/virtual-lbc-mod/')) return 'const stub = {};\nexport default stub;\n';
             return null;
@@ -229,6 +283,7 @@ export function bundleLbcComponent(backend: CompilerBackend, bundle: LbcBundle, 
         ...(opts.targetSSR ? { ssrMode: 'sync' as const } : {}),
         rootDir: vdir,
         enableStaticContentOptimization: true,
+        ...opts.pluginOptions,
     };
     return bundleLwc(backend, {
         entrySource: `export { default } from "${own}";`,

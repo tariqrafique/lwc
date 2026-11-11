@@ -16091,7 +16091,7 @@ template-diag-ssr	counts	0 0
 template-diag-style	counts	0 0
 template-diag-realgate	counts	0 0
 template-diag-napierrors	counts	0 0
-upstream-cmp	counts	1414 0 22
+upstream-cmp	counts	1433 0 3
 upstream-cmp	passed	upstream-cmp discovers upstream component bundles
 upstream-cmp	passed	upstream-cmp engine-server/src/__tests__/modules/x/htmlVoid
 upstream-cmp	passed	upstream-cmp engine-server/src/__tests__/modules/x/htmlVoidAdjacentText
@@ -16216,6 +16216,7 @@ upstream-cmp	passed	upstream-cmp integration-wdio/src/components/events/retarget
 upstream-cmp	passed	upstream-cmp integration-wdio/src/components/events/slotted-event-target/integration/child
 upstream-cmp	passed	upstream-cmp integration-wdio/src/components/events/slotted-event-target/integration/slotted-event-target
 upstream-cmp	passed	upstream-cmp integration-wdio/src/components/memory-leaks/lifecycle-leak/integration/child
+upstream-cmp	passed	upstream-cmp integration-wdio/src/components/memory-leaks/lifecycle-leak/integration/lifecycle-leak
 upstream-cmp	passed	upstream-cmp integration-wtr/test-hydration/adjacent-text-and-comment-nodes/x/main
 upstream-cmp	passed	upstream-cmp integration-wtr/test-hydration/adjacent-text-nodes/x/main
 upstream-cmp	passed	upstream-cmp integration-wtr/test-hydration/attributes/class/x/main
@@ -16504,6 +16505,7 @@ upstream-cmp	passed	upstream-cmp integration-wtr/test/component/LightningElement
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/LightningElement.attachInternals/elementInternals/formAssociated/x/input
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/LightningElement.attachInternals/elementInternals/formAssociated/x/notFormAssociated
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/LightningElement.attachInternals/elementInternals/formAssociated/x/notFormAssociatedNoAttachInternals
+upstream-cmp	passed	upstream-cmp integration-wtr/test/component/LightningElement.attachInternals/elementInternals/sanity/ei/component
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/LightningElement.classList/x/accessDuringConstruction
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/LightningElement.classList/x/test
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/LightningElement.connectedCallback/x/child
@@ -16604,8 +16606,17 @@ upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aom-setter/x/chi
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aom-setter/x/parent
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aom-setter/x/roleTester
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/api-with-superclasses/x/superSuperClass
+upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aria-reflection/x/apiPropDeclared
+upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aria-reflection/x/apiPropDeclaredNoSuper
+upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aria-reflection/x/noPropDeclared
+upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aria-reflection/x/noPropDeclaredNoSuper
+upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aria-reflection/x/propDeclared
+upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aria-reflection/x/propDeclaredNoSuper
+upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aria-reflection/x/trackPropDeclared
+upstream-cmp	passed	upstream-cmp integration-wtr/test/component/aria-reflection/x/trackPropDeclaredNoSuper
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/decorators/api/x/constructorGetterAccess
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/decorators/api/x/getterSetter
+upstream-cmp	passed	upstream-cmp integration-wtr/test/component/decorators/api/x/getterSetterAndProp
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/decorators/api/x/inheritance
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/decorators/api/x/inheritanceBase
 upstream-cmp	passed	upstream-cmp integration-wtr/test/component/decorators/api/x/methods
@@ -16799,6 +16810,7 @@ upstream-cmp	passed	upstream-cmp integration-wtr/test/light-dom/lifecycle/x/dyna
 upstream-cmp	passed	upstream-cmp integration-wtr/test/light-dom/lifecycle/x/dynamicSlotForwarding
 upstream-cmp	passed	upstream-cmp integration-wtr/test/light-dom/lifecycle/x/forwardedSlottable
 upstream-cmp	passed	upstream-cmp integration-wtr/test/light-dom/lifecycle/x/slotForwarding
+upstream-cmp	passed	upstream-cmp integration-wtr/test/light-dom/lifecycle/x/slotee
 upstream-cmp	passed	upstream-cmp integration-wtr/test/light-dom/lifecycle/x/slottable
 upstream-cmp	passed	upstream-cmp integration-wtr/test/light-dom/lifecycle/x/standardSlotting
 upstream-cmp	passed	upstream-cmp integration-wtr/test/light-dom/light-parent-shadow-child/x/lightParent
@@ -17046,6 +17058,11 @@ upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/elements-are-not
 upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/elements-are-not-recycled/x/container
 upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/elements-are-not-recycled/x/simple
 upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/form-tag/x/container
+upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/fragment-cache/x/nativeScopedStyles
+upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/fragment-cache/x/nativeStyles
+upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/fragment-cache/x/noStyles
+upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/fragment-cache/x/scopedStyles
+upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/fragment-cache/x/styles
 upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/if-inside-custom-render/x/customRender
 upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/iframe/x/component
 upstream-cmp	passed	upstream-cmp integration-wtr/test/rendering/inheritance/x/bar
@@ -17382,6 +17399,7 @@ upstream-cmp	passed	upstream-cmp integration-wtr/test/template-expressions/error
 upstream-cmp	passed	upstream-cmp integration-wtr/test/template-expressions/errors/x/undefinedMemberExpressionObjChild
 upstream-cmp	passed	upstream-cmp integration-wtr/test/template-expressions/errors/x/undefinedMemberExpressionObjParent
 upstream-cmp	passed	upstream-cmp integration-wtr/test/template-expressions/smoke-test/x/test
+upstream-cmp	passed	upstream-cmp integration-wtr/test/template/attribute-aria/x/child
 upstream-cmp	passed	upstream-cmp integration-wtr/test/template/attribute-aria/x/parent
 upstream-cmp	passed	upstream-cmp integration-wtr/test/template/attribute-boolean-global/x/child
 upstream-cmp	passed	upstream-cmp integration-wtr/test/template/attribute-boolean-global/x/computed
@@ -17506,28 +17524,10 @@ upstream-cmp	passed	upstream-cmp rollup-plugin/scoped-styles/src/x/app
 upstream-cmp	passed	upstream-cmp rollup-plugin/test
 upstream-cmp	passed	upstream-cmp rollup-plugin/third-party-import/src/x/app
 upstream-cmp	passed	upstream-cmp rollup-plugin/typescript
+upstream-cmp	passed	upstream-cmp rollup-plugin/warnings
 upstream-cmp	skipped	upstream-cmp integration-types/src/playground/modules/x/counter
 upstream-cmp	skipped	upstream-cmp integration-types/src/playground/modules/x/multiply
 upstream-cmp	skipped	upstream-cmp integration-types/src/playground/modules/x/ref
-upstream-cmp	skipped	upstream-cmp integration-wdio/src/components/memory-leaks/lifecycle-leak/integration/lifecycle-leak
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/component/LightningElement.attachInternals/elementInternals/sanity/ei/component
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/component/aria-reflection/x/apiPropDeclared
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/component/aria-reflection/x/apiPropDeclaredNoSuper
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/component/aria-reflection/x/noPropDeclared
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/component/aria-reflection/x/noPropDeclaredNoSuper
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/component/aria-reflection/x/propDeclared
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/component/aria-reflection/x/propDeclaredNoSuper
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/component/aria-reflection/x/trackPropDeclared
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/component/aria-reflection/x/trackPropDeclaredNoSuper
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/component/decorators/api/x/getterSetterAndProp
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/light-dom/lifecycle/x/slotee
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/rendering/fragment-cache/x/nativeScopedStyles
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/rendering/fragment-cache/x/nativeStyles
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/rendering/fragment-cache/x/noStyles
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/rendering/fragment-cache/x/scopedStyles
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/rendering/fragment-cache/x/styles
-upstream-cmp	skipped	upstream-cmp integration-wtr/test/template/attribute-aria/x/child
-upstream-cmp	skipped	upstream-cmp rollup-plugin/warnings
 js-transform-corpus	counts	1958 0 0
 js-transform-corpus	passed	js-transform-corpus discovers every component class
 js-transform-corpus	passed	js-transform-corpus engine-server/src/__tests__/modules/x/htmlVoid

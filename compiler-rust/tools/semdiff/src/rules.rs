@@ -113,7 +113,8 @@ fn parse_table() -> (String, Vec<RuleMeta>) {
     if in_rule {
         rules.push(cur);
     }
-    assert_eq!(rules.len(), 2, "rt-1 has exactly two rules");
+    let markers = RAW.matches("[[rule]]").count();
+    assert_eq!(rules.len(), markers, "rt-1.toml rule count");
     (version, rules)
 }
 
@@ -153,7 +154,7 @@ pub fn applied_table_version() -> &'static str {
     .as_str()
 }
 
-fn tagged_starting(prefix: &str) -> String {
+pub(crate) fn tagged_starting(prefix: &str) -> String {
     table()
         .1
         .iter()
@@ -165,29 +166,51 @@ fn tagged_starting(prefix: &str) -> String {
 pub struct Enable {
     pub comma: bool,
     pub asi: bool,
+    pub import_merge: bool,
+    pub hoist: bool,
+    pub arrow_paren: bool,
+    pub numeric: bool,
+    pub redundant_paren: bool,
+    pub comment_star: bool,
+}
+
+fn applied(rules: &[RuleMeta], prefix: &str) -> bool {
+    rules
+        .iter()
+        .any(|r| r.id.starts_with(prefix) && r.is_applied())
+}
+
+fn forced(rules: &[RuleMeta], prefix: &str, force: &[&str]) -> bool {
+    rules
+        .iter()
+        .any(|r| r.id.starts_with(prefix) && force.iter().any(|x| *x == r.tagged()))
 }
 
 pub fn enabled() -> Enable {
     let rules = &table().1;
     Enable {
-        comma: rules
-            .iter()
-            .any(|r| r.id.starts_with("R-TRAILING-COMMA") && r.is_applied()),
-        asi: rules
-            .iter()
-            .any(|r| r.id.starts_with("R-ASI-SEMI") && r.is_applied()),
+        comma: applied(rules, "R-TRAILING-COMMA"),
+        asi: applied(rules, "R-ASI-SEMI"),
+        import_merge: applied(rules, "R-IMPORT-MERGE"),
+        hoist: applied(rules, "R-HOIST-DECL"),
+        arrow_paren: applied(rules, "R-ARROW-PAREN"),
+        numeric: applied(rules, "R-NUMERIC-SPELLING"),
+        redundant_paren: applied(rules, "R-REDUNDANT-PAREN"),
+        comment_star: applied(rules, "R-COMMENT-STAR-SPACE"),
     }
 }
 
 pub fn enable_forcing(force: &[&str]) -> Enable {
     let rules = &table().1;
     Enable {
-        comma: rules.iter().any(|r| {
-            r.id.starts_with("R-TRAILING-COMMA") && force.iter().any(|x| *x == r.tagged())
-        }),
-        asi: rules
-            .iter()
-            .any(|r| r.id.starts_with("R-ASI-SEMI") && force.iter().any(|x| *x == r.tagged())),
+        comma: forced(rules, "R-TRAILING-COMMA", force),
+        asi: forced(rules, "R-ASI-SEMI", force),
+        import_merge: forced(rules, "R-IMPORT-MERGE", force),
+        hoist: forced(rules, "R-HOIST-DECL", force),
+        arrow_paren: forced(rules, "R-ARROW-PAREN", force),
+        numeric: forced(rules, "R-NUMERIC-SPELLING", force),
+        redundant_paren: forced(rules, "R-REDUNDANT-PAREN", force),
+        comment_star: forced(rules, "R-COMMENT-STAR-SPACE", force),
     }
 }
 
@@ -405,12 +428,86 @@ fn first_token_diff_with(
                     j += 1;
                     continue;
                 }
+                if en.arrow_paren {
+                    if let Some((ni, nj)) = align_arrow_paren(a, i, b, j) {
+                        note(applied, tagged_starting("R-ARROW-PAREN"));
+                        i = ni;
+                        j = nj;
+                        continue;
+                    }
+                }
+                if en.numeric && same_number(a.get(i), b.get(j)) {
+                    note(applied, tagged_starting("R-NUMERIC-SPELLING"));
+                    i += 1;
+                    j += 1;
+                    continue;
+                }
                 return Some(
                     json!({"coords": "tokens", "index": i.max(j), "oracle": clip(a.get(i)), "rust": clip(b.get(j))}),
                 );
             }
         }
     }
+}
+
+/// `(ident) =>` and `ident =>` are the same arrow. The paren side's index moves to the `=>`,
+/// and the bare side's index moves to its `=>`. A parameter list, default, rest, or pattern is not this shape.
+fn align_arrow_paren(a: &[Tok], i: usize, b: &[Tok], j: usize) -> Option<(usize, usize)> {
+    fn name_token(t: &Tok) -> bool {
+        t.text
+            .starts_with(|c: char| c == '_' || c == '$' || c.is_ascii_alphabetic())
+    }
+    fn wrapped(toks: &[Tok], i: usize) -> bool {
+        matches!(
+            (toks.get(i), toks.get(i + 1), toks.get(i + 2), toks.get(i + 3)),
+            (Some(p), Some(id), Some(c), Some(ar))
+                if p.kind == Kind::LParen && name_token(id) && c.kind == Kind::RParen && ar.kind == Kind::Arrow
+        )
+    }
+    fn bare(toks: &[Tok], i: usize) -> bool {
+        matches!((toks.get(i), toks.get(i + 1)), (Some(id), Some(ar)) if name_token(id) && ar.kind == Kind::Arrow)
+    }
+    if wrapped(a, i) && bare(b, j) && a[i + 1].text == b[j].text {
+        return Some((i + 3, j + 1));
+    }
+    if wrapped(b, j) && bare(a, i) && b[j + 1].text == a[i].text {
+        return Some((i + 1, j + 3));
+    }
+    None
+}
+
+/// Same finite number, including sign of zero. `1000` and `1e3` match. `1000` and `1001` do not.
+/// Non-finite values do not match (`1e309` and `1e310` are both infinities).
+fn same_number(x: Option<&Tok>, y: Option<&Tok>) -> bool {
+    let (Some(x), Some(y)) = (x, y) else {
+        return false;
+    };
+    if !is_decimal_number(x.kind) || !is_decimal_number(y.kind) || x.text == y.text {
+        return false;
+    }
+    let (Ok(a), Ok(b)) = (parse_js_number(&x.text), parse_js_number(&y.text)) else {
+        return false;
+    };
+    a.is_finite() && b.is_finite() && a == b && a.is_sign_negative() == b.is_sign_negative()
+}
+
+/// Decimal spellings only. `0b` / `0o` / `0x` stay observed (arch probe `num` / `num-75`).
+fn is_decimal_number(kind: Kind) -> bool {
+    matches!(
+        kind,
+        Kind::Decimal | Kind::Float | Kind::PositiveExponential | Kind::NegativeExponential
+    )
+}
+
+fn parse_js_number(s: &str) -> Result<f64, ()> {
+    let t = s.replace('_', "");
+    if t.len() > 2 {
+        let p = t.as_bytes()[1];
+        if t.as_bytes()[0] == b'0' && matches!(p, b'x' | b'X' | b'b' | b'B' | b'o' | b'O') {
+            return Err(());
+        }
+    }
+    t.parse::<f64>().map_err(|_| ())
 }
 
 #[cfg(test)]

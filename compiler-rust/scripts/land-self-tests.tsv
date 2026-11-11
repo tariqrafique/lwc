@@ -84,3 +84,6 @@ test-preflight	scripts/test-preflight.sh	scripts/cargo-fmt-check.sh
 test-land-path-checks	scripts/test-land-path-checks.sh	scripts/cargo-fmt-check.sh
 test-board-runtime	scripts/test-board-runtime.sh	scripts/c8-checks.sh
 test-board-runtime	scripts/test-board-runtime.sh	scripts/land-path-checks.tsv
+test-install-napi	scripts/test-install-napi.sh	scripts/test-install-napi.sh
+test-install-napi	scripts/test-install-napi.sh	scripts/install-napi.sh
+test-install-napi	scripts/test-install-napi.sh	scripts/cargo-locked.sh

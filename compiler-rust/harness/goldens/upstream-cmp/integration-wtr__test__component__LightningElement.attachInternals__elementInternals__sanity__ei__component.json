@@ -1,10 +1,10 @@
 {
  "ssr": {
-  "status": "compile-error",
-  "message": "Could not load /helpers/aria.js (imported by virtual-lbc/ei/component/component.js): ENOENT: no such file or directory, open '/helpers/aria.js'"
+  "status": "render-error",
+  "message": "\"attachInternals\" is not supported in this environment"
  },
  "csr": {
-  "status": "compile-error",
-  "message": "Could not load /helpers/aria.js (imported by virtual-lbc/ei/component/component.js): ENOENT: no such file or directory, open '/helpers/aria.js'"
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host(:state(--checked)) {color: rgb(255, 0, 0);}</style></template></lwc-up>"
  }
 }

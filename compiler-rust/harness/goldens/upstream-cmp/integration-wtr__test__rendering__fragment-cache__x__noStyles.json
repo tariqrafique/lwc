@@ -1,10 +1,10 @@
 {
  "ssr": {
-  "status": "compile-error",
-  "message": "Could not load /virtual-lbc/x/template/template.html (imported by virtual-lbc/x/noStyles/noStyles.js): ENOENT: no such file or directory, open '/virtual-lbc/x/template/template.html'"
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><h1>hello</h1></template></lwc-up>"
  },
  "csr": {
-  "status": "compile-error",
-  "message": "Could not load /virtual-lbc/x/template/template.html (imported by virtual-lbc/x/noStyles/noStyles.js): ENOENT: no such file or directory, open '/virtual-lbc/x/template/template.html'"
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><h1>hello</h1></template></lwc-up>"
  }
 }

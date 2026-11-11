@@ -27,3 +27,75 @@ preconditions = "Both sides parse cleanly and Program::content_eq already holds 
 eval_order_argument = "When the ASTs are identical the extra ';' does not introduce, drop, or reorder any statement or expression. An empty-statement ';' is its own AST node, so ContentEq fails and the rule does not run."
 positive_tests = "tools/semdiff/tests/rules.rs::asi_semicolon_with_identical_ast_is_unobservable"
 negative_tests = "tools/semdiff/tests/rules.rs::asi_that_changes_the_ast_is_observed"
+
+[[rule]]
+id = "R-IMPORT-MERGE-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "Two value imports of the same module specifier bind the same exports. Merging them, dropping a duplicate side-effect import of a module that is already imported, and sorting specifiers by local name does not change module evaluation order or the binding set. Imports of different modules stay in source order. A with-clause, an import phase, two defaults, two namespaces, or the same local name bound to two exports is not merged."
+preconditions = "Both sides parse cleanly. The rule rewrites import declarations before oxc codegen. A mismatch that survives the merge fails content_eq or the token check."
+eval_order_argument = "ESM evaluates each module once. Collapsing a second request of the same specifier does not add or remove a module from the first-seen request order. Specifier order inside one declaration does not change which binding is initialized."
+positive_tests = "tools/semdiff/tests/rules.rs::import_merge_same_module_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::import_merge_does_not_reorder_modules; tools/semdiff/tests/rules.rs::import_merge_does_not_drop_a_binding"
+
+[[rule]]
+id = "R-HOIST-DECL-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "A top-level function declaration and an initializer-less var are instantiated before module evaluation. Moving them to the top of the body, and sorting uniquely named functions, does not change when their initializers run because they have none. let, const, and var with an initializer stay where they are."
+preconditions = "Both sides parse cleanly. Only Statement::FunctionDeclaration and var declarations whose every declarator has no initializer and a simple binding are moved."
+eval_order_argument = "Function declarations are hoisted. var bindings are created before evaluation and an initializer-less var does not run code at its source position. An initializer's position relative to other statements is observable and is not moved."
+positive_tests = "tools/semdiff/tests/rules.rs::hoisted_decl_position_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::let_and_initialized_var_are_not_hoisted; tools/semdiff/tests/rules.rs::duplicate_function_order_is_observed"
+
+[[rule]]
+id = "R-ARROW-PAREN-1"
+rev = 1
+kind = "token-spelling"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "Parentheses around a single binding identifier arrow parameter are optional. (el) => el and el => el parse to the same parameter list. A list, default, rest, or pattern is a different parameter list and is not skipped."
+preconditions = "The token check runs only after codegen matches and content_eq holds. The skipped shape is exactly '(' Identifier ')' '=>' aligned with Identifier '=>'."
+eval_order_argument = "The parameter list is one binding either way. No expression is added, removed, or reordered."
+positive_tests = "tools/semdiff/tests/rules.rs::arrow_parens_around_one_binding_are_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::arrow_parens_do_not_hide_a_different_parameter_list"
+
+[[rule]]
+id = "R-NUMERIC-SPELLING-1"
+rev = 1
+kind = "token-spelling"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "Two finite decimal number tokens with the same value and the same sign of zero are the same number. 1000 and 1e3, and 0.5 and .5, are that case. 1000 and 1001 are not. Hex, binary, and octal spellings stay observed. Non-finite spellings are not equated."
+preconditions = "The token check runs only after codegen matches and content_eq holds, so the AST values already match. This rule only skips Kind::Decimal, Kind::Float, and the exponential kinds."
+eval_order_argument = "The number value is unchanged. No other token is skipped."
+positive_tests = "tools/semdiff/tests/rules.rs::numeric_spelling_with_the_same_value_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::a_different_number_is_observed"
+
+[[rule]]
+id = "R-REDUNDANT-PAREN-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "A ParenthesizedExpression wrapper does not change the tree it wraps. It is removed only after oxc codegen of the two programs is already byte-identical, so a paren the printer still has to emit (because it changes the parse) cannot be equated away."
+preconditions = "Printer texts match and content_eq failed. After stripping ParenthesizedExpression nodes, content_eq must hold. The stripped spans' paren tokens are then ignored."
+eval_order_argument = "Removing a grouping node leaves the same child in the same parent. f((a, b)) and f(a, b) keep different trees, and their printer texts differ, so the rule does not apply."
+positive_tests = "tools/semdiff/tests/rules.rs::redundant_parens_with_identical_print_are_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::parens_that_change_the_parse_are_observed"
+
+[[rule]]
+id = "R-COMMENT-STAR-SPACE-1"
+rev = 1
+kind = "comment-text"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "A block comment continuation line's indentation before '*' is printer whitespace. '/*\\n * Copyright\\n */' and '/*\\n* Copyright\\n */' are the same comment text. A different word, a line comment, or a dropped comment stays observed."
+preconditions = "Codegen matches and content_eq holds. Only the comment-text lists are rewritten, and only by deleting spaces and tabs between a newline and a '*' inside a block comment."
+eval_order_argument = "Comments do not run. The normalized text is the same sequence of comment bodies. A missing comment is a different list and is not skipped."
+positive_tests = "tools/semdiff/tests/rules.rs::block_comment_star_indent_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::a_different_or_missing_comment_is_observed"

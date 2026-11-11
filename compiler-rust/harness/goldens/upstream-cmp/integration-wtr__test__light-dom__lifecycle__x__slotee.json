@@ -1,10 +1,13 @@
 {
  "ssr": {
-  "status": "compile-error",
-  "message": "Could not load /virtual-lbc/util.js (imported by virtual-lbc/x/slotee/slotee.js): ENOENT: no such file or directory, open '/virtual-lbc/util.js'"
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'push')"
  },
  "csr": {
-  "status": "compile-error",
-  "message": "Could not load /virtual-lbc/util.js (imported by virtual-lbc/x/slotee/slotee.js): ENOENT: no such file or directory, open '/virtual-lbc/util.js'"
- }
+  "status": "ok",
+  "html": "<lwc-up></lwc-up>"
+ },
+ "asyncErrors": [
+  "Cannot read properties of undefined (reading 'push')"
+ ]
 }

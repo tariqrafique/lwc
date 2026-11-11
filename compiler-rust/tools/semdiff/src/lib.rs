@@ -1,8 +1,10 @@
 //! semdiff SD-0: deterministic semantic-equivalence verdicts for (JS-oracle output, Rust output) module pairs.
 //!
-//! Rule table file `rt-1` (D-0258): two token-spelling rules. A PENDING rule loads but does not apply (AB-D0003);
-//! both R-ASI-SEMI-1 and R-TRAILING-COMMA-1 are enabled (`arch_review = "AB-L0064"`). The applied-set identity
-//! names the applied rules (not merely "any rule"), so it differs from the ASI-only `rt-1` used on 681aba0. A pair is EQUIVALENT-BY-REWRITE when:
+//! Rule table file `rt-1` (D-0258, AB-L0088): token-spelling rules and AST normalizations. A PENDING rule loads
+//! but does not apply (AB-D0003). R-ASI-SEMI-1 and R-TRAILING-COMMA-1 are enabled (`arch_review = "AB-L0064"`).
+//! R-IMPORT-MERGE-1, R-HOIST-DECL-1, R-ARROW-PAREN-1, R-NUMERIC-SPELLING-1, R-REDUNDANT-PAREN-1, and
+//! R-COMMENT-STAR-SPACE-1 are enabled (`arch_review = "AB-L0088"`). The applied-set identity names every
+//! applied rule. A pair is EQUIVALENT-BY-REWRITE when:
 //!   1. both texts parse as ES modules with oxc and no diagnostics;
 //!   2. oxc codegen (comments off) of both ASTs is byte-identical (formatting-only differences vanish);
 //!   3. the ASTs are `ContentEq` (span-insensitive structural equality) — guards against printer collisions;
@@ -20,6 +22,7 @@
 
 pub mod decisions;
 pub mod exec;
+pub mod normalize;
 pub mod ratchet;
 pub mod rules;
 mod sha256;
@@ -34,7 +37,7 @@ use oxc::ast_visit::Visit;
 use oxc::codegen::{Codegen, CodegenOptions, CommentOptions};
 use oxc::parser::config::TokensParserConfig;
 use oxc::parser::{Kind, Parser};
-use oxc::span::{ContentEq, SourceType};
+use oxc::span::{ContentEq, GetSpan, SourceType};
 use serde_json::{json, Map, Value};
 
 use decisions::{check_case_key, check_corpus_name, DecisionMap};
@@ -148,6 +151,7 @@ struct Side {
 }
 
 /// One lexed token: kind, exact source spelling, and (string literals only) the decoded value.
+#[derive(Clone)]
 pub(crate) struct Tok {
     pub(crate) kind: Kind,
     pub(crate) text: String,
@@ -258,49 +262,205 @@ pub fn compare_forcing_rules(oracle: &str, rust: &str, force: &[&str]) -> Verdic
     compare_with(oracle, rust, Some(force))
 }
 
+fn reprint(program: &Program<'_>) -> String {
+    let opts = CodegenOptions {
+        comments: CommentOptions::disabled(),
+        ..CodegenOptions::default()
+    };
+    Codegen::new().with_options(opts).build(program).code
+}
+
+fn note_rule(applied: &mut Vec<String>, prefix: &str) {
+    let id = crate::rules::tagged_starting(prefix);
+    if !applied.iter().any(|x| x == &id) {
+        applied.push(id);
+    }
+}
+
+/// Tokens of every top-level statement except import declarations, in the program's current order.
+/// Import spelling is the merged AST's binding set (content_eq), not the source token order.
+fn tokens_outside_imports(tokens: &[Tok], program: &Program<'_>) -> Vec<Tok> {
+    let mut out = Vec::new();
+    for stmt in &program.body {
+        if crate::normalize::is_import(stmt) {
+            continue;
+        }
+        let span = stmt.span();
+        out.extend(
+            tokens
+                .iter()
+                .filter(|t| t.start >= span.start && t.start < span.end)
+                .cloned(),
+        );
+    }
+    out
+}
+
+fn is_stripped_paren(tok: &Tok, spans: &[oxc::span::Span]) -> bool {
+    spans.iter().any(|s| {
+        (tok.kind == Kind::LParen && tok.start == s.start)
+            || (tok.kind == Kind::RParen && tok.start.saturating_add(1) == s.end)
+    })
+}
+
 fn compare_with(oracle: &str, rust: &str, force: Option<&[&str]>) -> Verdict {
+    let en = match force {
+        Some(f) => crate::rules::enable_forcing(f),
+        None => crate::rules::enabled(),
+    };
     let (alloc_o, alloc_r) = (Allocator::default(), Allocator::default());
-    let (prog_o, o) = parse(&alloc_o, oracle);
-    let (prog_r, r) = parse(&alloc_r, rust);
+    let (mut prog_o, mut o) = parse(&alloc_o, oracle);
+    let (mut prog_r, mut r) = parse(&alloc_r, rust);
     let mut first_diff = Value::Null;
     let mut rules_applied: Vec<String> = Vec::new();
     let (class, reason) = if o.parse_errors > 0 {
         (Class::Unclassified, Reason::ParseErrorOracle)
     } else if r.parse_errors > 0 {
         (Class::Unclassified, Reason::ParseErrorRust)
-    } else if o.printed != r.printed {
-        first_diff = first_line_diff(
-            o.printed.as_deref().unwrap_or(""),
-            r.printed.as_deref().unwrap_or(""),
-        );
-        (Class::Unclassified, Reason::PrintedDiffers)
-    } else if !prog_o.content_eq(&prog_r) {
-        (Class::Unclassified, Reason::AstDiffers)
-    } else if let Some(d) = match force {
+    } else {
+        let pre_o = o.printed.clone();
+        let pre_r = r.printed.clone();
+        let mut structural = false;
+        let import_changed = en.import_merge
+            && (crate::normalize::merge_imports(&alloc_o, &mut prog_o)
+                | crate::normalize::merge_imports(&alloc_r, &mut prog_r));
+        let hoist_changed = en.hoist
+            && (crate::normalize::hoist_decls(&alloc_o, &mut prog_o)
+                | crate::normalize::hoist_decls(&alloc_r, &mut prog_r));
+        if import_changed || hoist_changed {
+            o.printed = Some(reprint(&prog_o));
+            r.printed = Some(reprint(&prog_r));
+            o.tokens = tokens_outside_imports(&o.tokens, &prog_o);
+            r.tokens = tokens_outside_imports(&r.tokens, &prog_r);
+            structural = true;
+        }
+        // Name a structural rule only when it closed a printer gap. A mutation that both sides
+        // already shared (or that leaves the printer texts different) is not why the pair matched.
+        let closed_print = structural && pre_o != pre_r && o.printed == r.printed;
+        if closed_print && import_changed {
+            note_rule(&mut rules_applied, "R-IMPORT-MERGE");
+        }
+        if closed_print && hoist_changed {
+            note_rule(&mut rules_applied, "R-HOIST-DECL");
+        }
+        let _ = structural;
+        if o.printed != r.printed && en.redundant_paren {
+            let spans_o = crate::normalize::strip_redundant_parens(&alloc_o, &mut prog_o);
+            let spans_r = crate::normalize::strip_redundant_parens(&alloc_r, &mut prog_r);
+            if !spans_o.is_empty() || !spans_r.is_empty() {
+                o.printed = Some(reprint(&prog_o));
+                r.printed = Some(reprint(&prog_r));
+                o.tokens.retain(|t| !is_stripped_paren(t, &spans_o));
+                r.tokens.retain(|t| !is_stripped_paren(t, &spans_r));
+                if o.printed == r.printed && prog_o.content_eq(&prog_r) {
+                    note_rule(&mut rules_applied, "R-REDUNDANT-PAREN");
+                }
+            }
+        } else if o.printed == r.printed && !prog_o.content_eq(&prog_r) && en.redundant_paren {
+            let spans_o = crate::normalize::strip_redundant_parens(&alloc_o, &mut prog_o);
+            let spans_r = crate::normalize::strip_redundant_parens(&alloc_r, &mut prog_r);
+            if (!spans_o.is_empty() || !spans_r.is_empty()) && prog_o.content_eq(&prog_r) {
+                note_rule(&mut rules_applied, "R-REDUNDANT-PAREN");
+                o.tokens.retain(|t| !is_stripped_paren(t, &spans_o));
+                r.tokens.retain(|t| !is_stripped_paren(t, &spans_r));
+            }
+        }
+        if o.printed != r.printed {
+            first_diff = first_line_diff(
+                o.printed.as_deref().unwrap_or(""),
+                r.printed.as_deref().unwrap_or(""),
+            );
+            (Class::Unclassified, Reason::PrintedDiffers)
+        } else if !prog_o.content_eq(&prog_r) {
+            (Class::Unclassified, Reason::AstDiffers)
+        } else {
+            token_or_comment(
+                &o,
+                &r,
+                &prog_o,
+                &prog_r,
+                force,
+                &mut rules_applied,
+                &mut first_diff,
+            )
+        }
+    };
+    verdict(class, reason, Some((&o, &r)), first_diff, rules_applied)
+}
+
+fn token_or_comment(
+    o: &Side,
+    r: &Side,
+    prog_o: &Program<'_>,
+    prog_r: &Program<'_>,
+    force: Option<&[&str]>,
+    rules_applied: &mut Vec<String>,
+    first_diff: &mut Value,
+) -> (Class, Reason) {
+    let comment_star = match force {
+        Some(f) => crate::rules::enable_forcing(f).comment_star,
+        None => crate::rules::enabled().comment_star,
+    };
+    if let Some(d) = match force {
         Some(f) => crate::rules::first_token_diff_forcing(
             &o.tokens,
             &r.tokens,
-            &mut rules_applied,
+            rules_applied,
             f,
-            &prog_o,
-            &prog_r,
+            prog_o,
+            prog_r,
         ),
-        None => crate::rules::first_token_diff(
-            &o.tokens,
-            &r.tokens,
-            &mut rules_applied,
-            &prog_o,
-            &prog_r,
-        ),
+        None => crate::rules::first_token_diff(&o.tokens, &r.tokens, rules_applied, prog_o, prog_r),
     } {
-        first_diff = d;
+        *first_diff = d;
         (Class::Unclassified, Reason::TokensDiffer)
-    } else if o.comments != r.comments {
+    } else if !comments_match(&o.comments, &r.comments, comment_star, rules_applied) {
         (Class::Unclassified, Reason::CommentsDiffer)
     } else {
         (Class::EquivalentByRewrite, Reason::PrinterEqual)
-    };
-    verdict(class, reason, Some((&o, &r)), first_diff, rules_applied)
+    }
+}
+
+/// Block-comment continuation indent before `*` is the only comment difference this erases.
+fn comments_match(a: &[String], b: &[String], star: bool, applied: &mut Vec<String>) -> bool {
+    if a == b {
+        return true;
+    }
+    if !star || a.len() != b.len() {
+        return false;
+    }
+    if a.iter()
+        .zip(b)
+        .all(|(x, y)| norm_block_comment(x) == norm_block_comment(y))
+    {
+        note_rule(applied, "R-COMMENT-STAR-SPACE");
+        return true;
+    }
+    false
+}
+
+fn norm_block_comment(c: &str) -> String {
+    if !c.starts_with("/*") {
+        return c.to_string();
+    }
+    let chars: Vec<char> = c.chars().collect();
+    let mut out = String::new();
+    let mut i = 0;
+    while i < chars.len() {
+        out.push(chars[i]);
+        if chars[i] == '\n' {
+            let mut j = i + 1;
+            while j < chars.len() && (chars[j] == ' ' || chars[j] == '\t') {
+                j += 1;
+            }
+            if j < chars.len() && chars[j] == '*' {
+                i = j;
+                continue;
+            }
+        }
+        i += 1;
+    }
+    out
 }
 
 fn verdict(

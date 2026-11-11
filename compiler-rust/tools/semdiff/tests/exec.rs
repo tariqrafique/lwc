@@ -781,12 +781,13 @@ fn arch_probes() -> Vec<Probe> {
             "printed-differs",
             cap,
         ),
+        // R-REDUNDANT-PAREN-1: grouping parens the printer drops are rewrite-equivalent.
         (
             "cross-parens",
             extra(rust(), "void (0); void 1;"),
             extra(rust(), "void 0; void (1);"),
-            "printer-equal-ast-differs",
-            cap,
+            "printer-equal",
+            rewrite,
         ),
         (
             "member",
@@ -830,26 +831,28 @@ fn arch_probes() -> Vec<Probe> {
             "printed-differs",
             cap,
         ),
+        // R-ARROW-PAREN-1: optional parens on a single binding arrow parameter.
         (
             "paren-arrow",
             arrow(rust()),
             arrow(rust()).replacen("item => {", "(item) => {", 1),
-            "token-spelling-differs",
-            cap,
+            "printer-equal",
+            rewrite,
         ),
         (
             "paren-foo",
             foo(rust(), "(foo)=>foo"),
             foo(rust(), "foo=>foo"),
-            "token-spelling-differs",
-            cap,
+            "printer-equal",
+            rewrite,
         ),
+        // R-REDUNDANT-PAREN-1.
         (
             "paren-expr",
             rust(),
             rust_with("$cmp.flag ? api_text", "($cmp.flag) ? api_text"),
-            "printer-equal-ast-differs",
-            cap,
+            "printer-equal",
+            rewrite,
         ),
         ("hoist-only", oracle(), rust(), "printed-differs", cap),
         (

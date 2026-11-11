@@ -1,10 +1,10 @@
 {
  "ssr": {
-  "status": "compile-error",
-  "message": "Template compilation failure; see warnings in the console."
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><h1>Hello world</h1></template></lwc-up>"
  },
  "csr": {
-  "status": "compile-error",
-  "message": "LWC1058: Invalid HTML syntax: end-tag-without-matching-open-element. For more information, please visit https://html.spec.whatwg.org/multipage/parsing.html#parse-error-end-tag-without-matching-open-element"
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><h1>Hello world</h1></template></lwc-up>"
  }
 }

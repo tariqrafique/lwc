@@ -1,10 +1,10 @@
 {
  "ssr": {
-  "status": "compile-error",
-  "message": "Could not load /virtual-lbc/x/template/template.html (imported by virtual-lbc/x/scopedStyles/scopedStyles.js): ENOENT: no such file or directory, open '/virtual-lbc/x/template/template.html'"
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-2it5vhebv0i-host\" data-lwc-host-scope-token=\"lwc-2it5vhebv0i-host\"><template shadowrootmode=\"open\"><style class=\"lwc-2it5vhebv0i\" id=\"lwc-style--0\" type=\"text/css\">h1.lwc-2it5vhebv0i {color: green;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><h1 class=\"lwc-2it5vhebv0i\">hello</h1></template></lwc-up>"
  },
  "csr": {
-  "status": "compile-error",
-  "message": "Could not load /virtual-lbc/x/template/template.html (imported by virtual-lbc/x/scopedStyles/scopedStyles.js): ENOENT: no such file or directory, open '/virtual-lbc/x/template/template.html'"
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-2it5vhebv0i-host\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">h1.lwc-2it5vhebv0i {color: green;}</style><h1 class=\"lwc-2it5vhebv0i\">hello</h1></template></lwc-up>"
  }
 }
