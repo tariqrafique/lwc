@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ul>\n      <li data-index=\"0\" data-item=\"one\">\n        0 - one\n      </li>\n      <x-child data-index=\"0\" data-item=\"one\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        0 - one\n      </x-child>\n      <li data-index=\"1\" data-item=\"two\">\n        1 - two\n      </li>\n      <x-child data-index=\"1\" data-item=\"two\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        1 - two\n      </x-child>\n      <li data-index=\"2\" data-item=\"three\">\n        2 - three\n      </li>\n      <x-child data-index=\"2\" data-item=\"three\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        2 - three\n      </x-child>\n    </ul>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ul>\n      <li data-index=\"0\" data-item=\"one\">\n        0 - one\n      </li>\n      <x-child data-index=\"0\" data-item=\"one\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        0 - one\n      </x-child>\n      <li data-index=\"1\" data-item=\"two\">\n        1 - two\n      </li>\n      <x-child data-index=\"1\" data-item=\"two\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        1 - two\n      </x-child>\n      <li data-index=\"2\" data-item=\"three\">\n        2 - three\n      </li>\n      <x-child data-index=\"2\" data-item=\"three\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        2 - three\n      </x-child>\n    </ul>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ul>\n      <li data-index=\"0\" data-item=\"one\">\n        0 - one\n      </li>\n      <x-child data-index=\"0\" data-item=\"one\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        0 - one\n      </x-child>\n      <li data-index=\"1\" data-item=\"two\">\n        1 - two\n      </li>\n      <x-child data-index=\"1\" data-item=\"two\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        1 - two\n      </x-child>\n      <li data-index=\"2\" data-item=\"three\">\n        2 - three\n      </li>\n      <x-child data-index=\"2\" data-item=\"three\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        2 - three\n      </x-child>\n    </ul>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ul>\n      <li data-index=\"0\" data-item=\"one\">\n        0 - one\n      </li>\n      <x-child data-index=\"0\" data-item=\"one\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        0 - one\n      </x-child>\n      <li data-index=\"1\" data-item=\"two\">\n        1 - two\n      </li>\n      <x-child data-index=\"1\" data-item=\"two\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        1 - two\n      </x-child>\n      <li data-index=\"2\" data-item=\"three\">\n        2 - three\n      </li>\n      <x-child data-index=\"2\" data-item=\"three\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        2 - three\n      </x-child>\n    </ul>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ul>\n      <li data-index=\"0\" data-item=\"one\">\n        0 - one\n      </li>\n      <x-child data-index=\"0\" data-item=\"one\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        0 - one\n      </x-child>\n      <li data-index=\"1\" data-item=\"two\">\n        1 - two\n      </li>\n      <x-child data-index=\"1\" data-item=\"two\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        1 - two\n      </x-child>\n      <li data-index=\"2\" data-item=\"three\">\n        2 - three\n      </li>\n      <x-child data-index=\"2\" data-item=\"three\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        2 - three\n      </x-child>\n    </ul>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ul>\n      <li data-index=\"0\" data-item=\"one\">\n        0 - one\n      </li>\n      <x-child data-index=\"0\" data-item=\"one\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        0 - one\n      </x-child>\n      <li data-index=\"1\" data-item=\"two\">\n        1 - two\n      </li>\n      <x-child data-index=\"1\" data-item=\"two\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        1 - two\n      </x-child>\n      <li data-index=\"2\" data-item=\"three\">\n        2 - three\n      </li>\n      <x-child data-index=\"2\" data-item=\"three\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        2 - three\n      </x-child>\n    </ul>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ul>\n      <li data-index=\"0\" data-item=\"one\">\n        0 - one\n      </li>\n      <x-child data-index=\"0\" data-item=\"one\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        0 - one\n      </x-child>\n      <li data-index=\"1\" data-item=\"two\">\n        1 - two\n      </li>\n      <x-child data-index=\"1\" data-item=\"two\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        1 - two\n      </x-child>\n      <li data-index=\"2\" data-item=\"three\">\n        2 - three\n      </li>\n      <x-child data-index=\"2\" data-item=\"three\">\n        <template shadowrootmode=\"open\">\n          <slot>\n          </slot>\n        </template>\n        2 - three\n      </x-child>\n    </ul>\n  </template>\n</fixture-test>"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child aria-label=\"KIX to HKG\"><template shadowrootmode=\"open\"></template></x-child><div aria-label=\"KIX to HKG\"></div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child aria-label=\"KIX to HKG\"><template shadowrootmode=\"open\"></template></x-child><div aria-label=\"KIX to HKG\"></div></template></lwc-up>"
+ }
+}

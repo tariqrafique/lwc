@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./dynamic-components.css",
+    "./dynamic-components.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-73vspqvsbp7",
+    "lwc-73vspqvsbp7-host",
+    "x-dynamic-components_dynamic-components",
+    "x-dynamic-components_dynamic-components-host"
+  ]
+}

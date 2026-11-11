@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "imports": [
+    "foo"
+  ],
+  "lwcImports": [],
+  "exports": {},
+  "defaultExport": null,
+  "decorators": [],
+  "warnings": []
+}

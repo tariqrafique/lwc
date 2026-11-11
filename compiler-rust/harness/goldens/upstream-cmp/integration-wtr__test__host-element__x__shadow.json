@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'appendChild')"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"></template><div></div></lwc-up>"
+ }
+}

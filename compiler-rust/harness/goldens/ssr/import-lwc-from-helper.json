@@ -1,0 +1,58 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/cmp/cmp.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./cmp.css",
+        "./cmp.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-14rotbo8rb",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/cmp/cmp.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./cmp.html",
+        "../../../wire-adapter",
+        "../../../imports"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-cmp",
+          "publicProps": [
+            "api"
+          ],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

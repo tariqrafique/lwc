@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./inline-both-standard-element.css",
+    "./inline-both-standard-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1182,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-5i94se9dprh",
+    "lwc-5i94se9dprh-host",
+    "x-inline-both-standard-element_inline-both-standard-element",
+    "x-inline-both-standard-element_inline-both-standard-element-host"
+  ]
+}

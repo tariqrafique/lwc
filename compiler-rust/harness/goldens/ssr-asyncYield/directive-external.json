@@ -1,0 +1,108 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/hello/hello.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./hello.css",
+        "./hello.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-1dccrj31ufi",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/hello/hello.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./hello.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-hello",
+          "publicProps": [
+            "foo",
+            "bar"
+          ],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/test/test.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/hello",
+        "./test.css",
+        "./test.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-4q42cv2n9vo",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/test/test.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./test.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-test",
+          "publicProps": [
+            "foo",
+            "bar"
+          ],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

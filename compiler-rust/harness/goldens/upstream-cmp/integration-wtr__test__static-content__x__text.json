@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><span data-id=\"emptyString\">‍</span><span data-id=\"concateBeginning\">default value</span><span data-id=\"concateEnd\">value default</span><div data-id=\"siblings\">standard text<span>second default</span></div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><span data-id=\"emptyString\"></span><span data-id=\"concateBeginning\">default value</span><span data-id=\"concateEnd\">value default</span><div data-id=\"siblings\">standard text<span>second default</span></div></template></lwc-up>"
+ }
+}

@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./href-with-literal-value.css",
+    "./href-with-literal-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseSVGFragment",
+    "registerTemplate",
+    "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-609tun6ro15",
+    "lwc-609tun6ro15-host",
+    "x-href-with-literal-value_href-with-literal-value",
+    "x-href-with-literal-value_href-with-literal-value-host"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/component/component.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./component.css",
+        "./component.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-6a8uqob2ku4",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/component/component.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./component.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-component",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/component/component.scoped.css": {
+      "ok": true,
+      "warnings": []
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Tab Set\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-tabset><template shadowrootmode=\"open\"></template><c-tab><template shadowrootmode=\"open\"></template>One Content</c-tab><c-tab><template shadowrootmode=\"open\"></template>Two Content</c-tab><c-tab><template shadowrootmode=\"open\"></template>Three Content</c-tab></c-tabset><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Represents a list of tabs.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Tab Set\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-tabset><template shadowrootmode=\"open\"></template><c-tab><template shadowrootmode=\"open\"></template>One Content</c-tab><c-tab><template shadowrootmode=\"open\"></template>Two Content</c-tab><c-tab><template shadowrootmode=\"open\"></template>Three Content</c-tab></c-tabset><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Represents a list of tabs.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

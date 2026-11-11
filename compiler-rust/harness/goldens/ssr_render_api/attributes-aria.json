@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <span id=\"label-id\">\n      This is a section\n    </span>\n    <div aria-describedby=\"label-id\">\n      I am section\n    </div>\n    <div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"20\" role=\"progressbar\">\n      I am a progress bar\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <span id=\"label-id\">\n      This is a section\n    </span>\n    <div aria-describedby=\"label-id\">\n      I am section\n    </div>\n    <div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"20\" role=\"progressbar\">\n      I am a progress bar\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <span id=\"label-id\">\n      This is a section\n    </span>\n    <div aria-describedby=\"label-id\">\n      I am section\n    </div>\n    <div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"20\" role=\"progressbar\">\n      I am a progress bar\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <span id=\"label-id\">\n      This is a section\n    </span>\n    <div aria-describedby=\"label-id\">\n      I am section\n    </div>\n    <div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"20\" role=\"progressbar\">\n      I am a progress bar\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <span id=\"label-id\">\n      This is a section\n    </span>\n    <div aria-describedby=\"label-id\">\n      I am section\n    </div>\n    <div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"20\" role=\"progressbar\">\n      I am a progress bar\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <span id=\"label-id\">\n      This is a section\n    </span>\n    <div aria-describedby=\"label-id\">\n      I am section\n    </div>\n    <div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"20\" role=\"progressbar\">\n      I am a progress bar\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <span id=\"label-id\">\n      This is a section\n    </span>\n    <div aria-describedby=\"label-id\">\n      I am section\n    </div>\n    <div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"20\" role=\"progressbar\">\n      I am a progress bar\n    </div>\n  </template>\n</fixture-test>"
+ }
+}

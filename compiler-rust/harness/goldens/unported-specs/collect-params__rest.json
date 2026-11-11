@@ -1,0 +1,5 @@
+{
+  "ok": true,
+  "code": "import _implicitStylesheets from \"./x.css\";\nimport _implicitScopedStylesheets from \"./x.scoped.css?scoped=true\";\nimport {freezeTemplate, parseFragment, registerTemplate} from \"lwc\";\nconst $fragment1 = parseFragment`<button${3}></button>`;\nfunction tmpl($api, $cmp, $slotset, $ctx) {\n  const {b: api_bind, sp: api_static_part, st: api_static_fragment} = $api;\n  const {_m0, _m1} = $ctx;\n  return [api_static_fragment($fragment1, 1, [api_static_part(0, {\n    on: _m1 || ($ctx._m1 = {\n      \"click\": api_bind((...rest) => rest.length)\n    })\n  }, null)])];\n  /*LWC compiler v9.5.3*/\n}\nexport default registerTemplate(tmpl);\ntmpl.stylesheets = [];\ntmpl.stylesheetToken = \"lwc-6up3hu9avn6\";\nif (_implicitStylesheets) {\n  tmpl.stylesheets.push.apply(tmpl.stylesheets, _implicitStylesheets);\n}\nif (_implicitScopedStylesheets) {\n  tmpl.stylesheets.push.apply(tmpl.stylesheets, _implicitScopedStylesheets);\n}\nfreezeTemplate(tmpl);\n",
+  "warnings": []
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Render using: radio</p><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Render using: radio</p><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable></template></lwc-lbc>"
+ }
+}

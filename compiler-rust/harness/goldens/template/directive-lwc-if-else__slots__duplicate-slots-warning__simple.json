@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./simple.css",
+    "./simple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1137,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-1lae0rspni6",
+    "lwc-1lae0rspni6-host",
+    "x-simple_simple",
+    "x-simple_simple-host"
+  ]
+}

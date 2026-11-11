@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./nested-scoped-slot.css",
+    "./nested-scoped-slot.scoped.css?scoped=true",
+    "x/row",
+    "x/table"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-1uogi8eu1mb",
+    "lwc-1uogi8eu1mb-host",
+    "x-nested-scoped-slot_nested-scoped-slot",
+    "x-nested-scoped-slot_nested-scoped-slot-host"
+  ]
+}

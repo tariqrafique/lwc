@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "line": null,
+  "column": null,
+  "expectedName": "CssSyntaxError"
+}

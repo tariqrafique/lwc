@@ -1,0 +1,13 @@
+# Shared land-path checks (D-0282). Read by scripts/land-path-checks.sh.
+# Columns: name<TAB>path<TAB>when
+# when is "always" (every land and every C8) or a special token handled in the driver.
+# A plant that appends a row here must be observed by both the land and C8 entry points.
+name	path	when
+lint-shell-pipes	scripts/lint-shell-pipes.sh	always
+workspace-path-scan	scripts/workspace-path-scan.sh	always
+lint-no-stripped-compare	scripts/lint-no-stripped-compare.sh	always
+lint-no-error-mute	scripts/lint-no-error-mute.sh	always
+ratchet-ceiling	scripts/ratchet-ceiling.sh	always
+baseline-ceiling	scripts/baseline-ceiling.sh	always
+shim-gate	harness/scripts/shim-gate.mjs	always
+cargo-fmt	scripts/cargo-fmt-check.sh	always

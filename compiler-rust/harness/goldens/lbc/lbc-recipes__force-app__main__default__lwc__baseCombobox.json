@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "_missingExportShim is not a function"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-combobox_container\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.slds-inline-logo {height: 1rem;margin-top: 1rem;margin-bottom: 1rem;}</style></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "_missingExportShim is not a function"
+ ]
+}

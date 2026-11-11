@@ -1,0 +1,45 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./test.html"
+  ],
+  "lwcImports": [
+    "LightningElement",
+    "registerComponent",
+    "registerDecorators"
+  ],
+  "exports": {
+    "default": "class"
+  },
+  "defaultExport": {
+    "kind": "class",
+    "extendsLightningElement": true,
+    "registered": true,
+    "registerOptions": {
+      "sel": "lwc-test",
+      "apiVersion": "number",
+      "hasTmpl": true
+    }
+  },
+  "decorators": [
+    {
+      "className": "Test",
+      "meta": {
+        "fields": [
+          "_a",
+          "_b"
+        ],
+        "publicProps": {
+          "a": {
+            "config": 3
+          },
+          "b": {
+            "config": 3
+          }
+        }
+      }
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./same-slot-types.css",
+    "./same-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-70bcseng4gg",
+    "lwc-70bcseng4gg-host",
+    "x-same-slot-types_same-slot-types",
+    "x-same-slot-types_same-slot-types-host"
+  ]
+}

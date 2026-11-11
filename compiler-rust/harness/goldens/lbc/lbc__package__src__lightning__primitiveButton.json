@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot convert undefined or null to object"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "Invalid component constructor, the class should extend LightningElement."
+ }
+}

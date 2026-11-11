@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Invalid template returned by the render() method on lwc-up. It must return an imported template (e.g.: `import html from \"./RenderInvalid.html\"`), instead, it has returned: undefined."
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"></template></lwc-up>"
+ },
+ "asyncErrors": [
+  "Invalid template returned by the render() method on lwc-up. It must return an imported template (e.g.: `import html from \"./RenderInvalid.html\"`), instead, it has returned: undefined."
+ ]
+}

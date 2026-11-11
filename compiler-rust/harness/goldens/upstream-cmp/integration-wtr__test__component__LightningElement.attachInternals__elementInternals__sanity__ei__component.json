@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "\"attachInternals\" is not supported in this environment"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host(:state(--checked)) {color: rgb(255, 0, 0);}</style></template></lwc-up>"
+ }
+}

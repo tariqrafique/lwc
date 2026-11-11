@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./menuitem.css",
+    "./menuitem.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1057,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-c8rrcpliua",
+    "lwc-c8rrcpliua-host",
+    "x-menuitem_menuitem",
+    "x-menuitem_menuitem-host"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "[turkey='val'][x] {}[keyboard='val'][x] {}[notif\\:true='val'][x] {}[notfor\\:item='val'][x] {}[notfor\\:each='val'][x] {}[notiterator\\:name='val'][x] {}",
+        "x|host=false|dir=true": "[turkey='val'][x] {}[keyboard='val'][x] {}[notif\\:true='val'][x] {}[notfor\\:item='val'][x] {}[notfor\\:each='val'][x] {}[notiterator\\:name='val'][x] {}",
+        "x|host=false|dir=false": "[turkey='val'][x] {}[keyboard='val'][x] {}[notif\\:true='val'][x] {}[notfor\\:item='val'][x] {}[notfor\\:each='val'][x] {}[notiterator\\:name='val'][x] {}",
+        "x|host=true|dir=true": "[turkey='val'][x] {}[keyboard='val'][x] {}[notif\\:true='val'][x] {}[notfor\\:item='val'][x] {}[notfor\\:each='val'][x] {}[notiterator\\:name='val'][x] {}",
+        "-|host=true|dir=false": "[turkey='val'] {}[keyboard='val'] {}[notif\\:true='val'] {}[notfor\\:item='val'] {}[notfor\\:each='val'] {}[notiterator\\:name='val'] {}"
+      }
+    }
+  ]
+}

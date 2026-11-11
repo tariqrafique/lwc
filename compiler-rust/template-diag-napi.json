@@ -1,0 +1,7091 @@
+{
+ "schema": "template-diag-diff/v2",
+ "meta": {
+  "generated": "2026-11-11T13:37:52.185Z",
+  "elapsedMs": 9240,
+  "engine": "napi",
+  "rust": {
+   "napi": "/tmp/lwc-board-snap.UC06sQ/repo/harness/.pins/lwc-compiler-napi.e600cf9120f7.node",
+   "sha256": "e600cf9120f7"
+  },
+  "oracle": {
+   "repo": "/workspace/lwc",
+   "entry": "@lwc/compiler transformSync (experimentalErrorRecoveryMode)"
+  },
+  "options": {
+   "namespace": "x",
+   "cap": 40,
+   "sources": "all"
+  },
+  "codegenCompare": {
+   "mode": "exact-bytes+semdiff",
+   "semdiff": {
+    "bin": {
+     "path": "/workspace/cache/lwc-target/e9fa67832b3bd2f6/release/semdiff",
+     "sha256": "ffa1e8737974"
+    },
+    "registry": {
+     "path": "/tmp/lwc-board-snap.UC06sQ/notes/decisions.tsv",
+     "sha256": "e7f63e7d8b08b379b1e4240538b4b9e6f10217b594510f28b84ef0b547c3ef2b"
+    },
+    "observationModel": "D-0196",
+    "ruleTableVersion": "rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-INERT-LINE-COMMENT-1@1+R-NUMERIC-SPELLING-1@1+R-OBJECT-LAST-KEY-1@1+R-OBJECT-SHORTHAND-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1",
+    "manifestSha256": "d2b569f4bd7af063763ffcebdee014a3e3c2fd2ad17106170cc3c312130bfa13",
+    "summarySha256": "568c716c800f",
+    "totals": {
+     "cases": 16766,
+     "crash": 0,
+     "different_decided": 0,
+     "different_undecided": 0,
+     "equivalent": 16766,
+     "unclassified": 0
+    },
+    "byReason": {
+     "printer-equal": 16766
+    }
+   }
+  }
+ },
+ "totals": {
+  "cases": 63224,
+  "clean": 63147,
+  "staticEqual": 46381,
+  "rewriteEqual": 16766,
+  "pass": 46381,
+  "codegenEquivalent": 16766,
+  "diagPass": 63147,
+  "diagMismatch": 77,
+  "codegenOnly": 16766,
+  "codegenUnclean": 0,
+  "oracleError": 0
+ },
+ "sources": {
+  "template-fixtures": {
+   "files": 567,
+   "templates": 567,
+   "unique": 567
+  },
+  "lwc-integration-wtr": {
+   "files": 1173,
+   "templates": 1173,
+   "unique": 895
+  },
+  "lwc-integration-wdio": {
+   "files": 205,
+   "templates": 146,
+   "unique": 117
+  },
+  "lwc-ssr-compiler-fixtures": {
+   "files": 978,
+   "templates": 566,
+   "unique": 348
+  },
+  "lwc-other": {
+   "files": 46,
+   "templates": 44,
+   "unique": 39
+  },
+  "lightning-base-components": {
+   "files": 7479,
+   "templates": 7479,
+   "unique": 2257
+  },
+  "lbc-recipes": {
+   "files": 1271,
+   "templates": 1271,
+   "unique": 1218
+  }
+ },
+ "families": {
+  "apiVersion": 5033,
+  "apiVersion-edge": 3882,
+  "options": 11402,
+  "insert-root": 6119,
+  "insert-elem": 21821,
+  "attr-dup": 879,
+  "attr-value": 7825,
+  "attr-drop": 822
+ },
+ "perSource": {
+  "template-fixtures": {
+   "cases": 567,
+   "pass": 330,
+   "diagMismatch": 0,
+   "codegenOnly": 237,
+   "codegenEquivalent": 237
+  },
+  "lwc-integration-wtr": {
+   "cases": 895,
+   "pass": 511,
+   "diagMismatch": 0,
+   "codegenOnly": 384,
+   "codegenEquivalent": 384
+  },
+  "lwc-integration-wdio": {
+   "cases": 117,
+   "pass": 77,
+   "diagMismatch": 0,
+   "codegenOnly": 40,
+   "codegenEquivalent": 40
+  },
+  "lwc-ssr-compiler-fixtures": {
+   "cases": 348,
+   "pass": 173,
+   "diagMismatch": 0,
+   "codegenOnly": 175,
+   "codegenEquivalent": 175
+  },
+  "lwc-other": {
+   "cases": 39,
+   "pass": 22,
+   "diagMismatch": 0,
+   "codegenOnly": 17,
+   "codegenEquivalent": 17
+  },
+  "lightning-base-components": {
+   "cases": 2257,
+   "pass": 54,
+   "diagMismatch": 0,
+   "codegenOnly": 2203,
+   "codegenEquivalent": 2203
+  },
+  "lbc-recipes": {
+   "cases": 1218,
+   "pass": 14,
+   "diagMismatch": 0,
+   "codegenOnly": 1204,
+   "codegenEquivalent": 1204
+  },
+  "mutation:apiVersion": {
+   "cases": 5033,
+   "pass": 3134,
+   "diagMismatch": 0,
+   "codegenOnly": 1899,
+   "codegenEquivalent": 1899
+  },
+  "mutation:apiVersion-edge": {
+   "cases": 3882,
+   "pass": 2339,
+   "diagMismatch": 0,
+   "codegenOnly": 1543,
+   "codegenEquivalent": 1543
+  },
+  "mutation:options": {
+   "cases": 11402,
+   "pass": 6671,
+   "diagMismatch": 0,
+   "codegenOnly": 4731,
+   "codegenEquivalent": 4731
+  },
+  "mutation:insert-root": {
+   "cases": 6119,
+   "pass": 5455,
+   "diagMismatch": 0,
+   "codegenOnly": 664,
+   "codegenEquivalent": 664
+  },
+  "mutation:insert-elem": {
+   "cases": 21821,
+   "pass": 18821,
+   "diagMismatch": 24,
+   "codegenOnly": 2976,
+   "codegenEquivalent": 2976
+  },
+  "mutation:attr-dup": {
+   "cases": 879,
+   "pass": 879,
+   "diagMismatch": 0,
+   "codegenOnly": 0,
+   "codegenEquivalent": 0
+  },
+  "mutation:attr-value": {
+   "cases": 7825,
+   "pass": 7257,
+   "diagMismatch": 48,
+   "codegenOnly": 520,
+   "codegenEquivalent": 520
+  },
+  "mutation:attr-drop": {
+   "cases": 822,
+   "pass": 644,
+   "diagMismatch": 5,
+   "codegenOnly": 173,
+   "codegenEquivalent": 173
+  }
+ },
+ "buckets": {
+  "oracle-error": 0,
+  "crash": 0,
+  "seam-reject": 0,
+  "missing-diag": 42,
+  "extra-diag": 30,
+  "code": 5,
+  "level": 0,
+  "message": 0,
+  "location": 3,
+  "order": 4,
+  "codegen-only": 16766
+ },
+ "primary": {
+  "oracle-error": 0,
+  "crash": 0,
+  "seam-reject": 0,
+  "missing-diag": 42,
+  "extra-diag": 29,
+  "code": 2,
+  "level": 0,
+  "message": 0,
+  "location": 0,
+  "order": 4,
+  "codegen-only": 16766
+ },
+ "semdiffBuckets": {
+  "equivalent": 16766
+ },
+ "resultCounts": {
+  "REWRITE_EQUAL": 16766,
+  "STATIC_EQUAL": 46381
+ },
+ "clusters": [
+  {
+   "key": "missing-diag:1178",
+   "count": 28,
+   "examples": [
+    {
+     "id": 54041,
+     "source": "mutation",
+     "family": "attr-drop",
+     "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+     "label": "drop lwc:elseif@168",
+     "opts": {},
+     "src": "<template>\n    <x-child>\n        <template lwc:slot-data=\"variations\">\n            <x-counter lwc:if={variations.variation1}>Counter1</x-counter>\n            <x-counter><!--Counter 2--></x-counter>\n            <x-counter lwc:elseif={variations.variation2}></x-counter>\n        </template>\n        <template lwc:slot-data=\"variations\" slot=\"foo\">\n            <template lwc:if={variations.variation1}>\n                <x-button1>Button 1</x-button1>\n            </template>\n            <template lwc:elseif={variations.variation2}>\n                <x-button2><!-- Button 2 --></x-button2>\n            </template>\n            <template lwc:else>\n                <x-button3></x-button3>\n            </template>\n        </template>\n    </x-child>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1165,
+        "level": 1,
+        "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+        "location": {
+         "line": 6,
+         "column": 13,
+         "start": 210,
+         "length": 58
+        }
+       },
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 8,
+         "column": 9,
+         "start": 297,
+         "length": 429
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1165,
+        "level": 1,
+        "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+        "location": {
+         "line": 6,
+         "column": 13,
+         "start": 210,
+         "length": 58
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 54039,
+     "source": "mutation",
+     "family": "attr-drop",
+     "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+     "label": "drop lwc:if@93",
+     "opts": {},
+     "src": "<template>\n    <x-child>\n        <template lwc:slot-data=\"variations\">\n            <x-counter>Counter1</x-counter>\n            <x-counter lwc:elseif={variations.variation2}><!--Counter 2--></x-counter>\n            <x-counter lwc:elseif={variations.variation2}></x-counter>\n        </template>\n        <template lwc:slot-data=\"variations\" slot=\"foo\">\n            <template lwc:if={variations.variation1}>\n                <x-button1>Button 1</x-button1>\n            </template>\n            <template lwc:elseif={variations.variation2}>\n                <x-button2><!-- Button 2 --></x-button2>\n            </template>\n            <template lwc:else>\n                <x-button3></x-button3>\n            </template>\n        </template>\n    </x-child>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1165,
+        "level": 1,
+        "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+        "location": {
+         "line": 5,
+         "column": 13,
+         "start": 127,
+         "length": 74
+        }
+       },
+       {
+        "code": 1165,
+        "level": 1,
+        "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+        "location": {
+         "line": 6,
+         "column": 13,
+         "start": 214,
+         "length": 58
+        }
+       },
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 8,
+         "column": 9,
+         "start": 301,
+         "length": 429
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1165,
+        "level": 1,
+        "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+        "location": {
+         "line": 5,
+         "column": 13,
+         "start": 127,
+         "length": 74
+        }
+       },
+       {
+        "code": 1165,
+        "level": 1,
+        "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+        "location": {
+         "line": 6,
+         "column": 13,
+         "start": 214,
+         "length": 58
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 54067,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+     "label": "lwc:if=<bool>@93",
+     "opts": {},
+     "src": "<template>\n    <x-child>\n        <template lwc:slot-data=\"variations\">\n            <x-counter lwc:if>Counter1</x-counter>\n            <x-counter lwc:elseif={variations.variation2}><!--Counter 2--></x-counter>\n            <x-counter lwc:elseif={variations.variation2}></x-counter>\n        </template>\n        <template lwc:slot-data=\"variations\" slot=\"foo\">\n            <template lwc:if={variations.variation1}>\n                <x-button1>Button 1</x-button1>\n            </template>\n            <template lwc:elseif={variations.variation2}>\n                <x-button2><!-- Button 2 --></x-button2>\n            </template>\n            <template lwc:else>\n                <x-button3></x-button3>\n            </template>\n        </template>\n    </x-child>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1159,
+        "level": 1,
+        "message": "LWC1159: lwc:if directive value should be an expression",
+        "location": {
+         "line": 4,
+         "column": 24,
+         "start": 94,
+         "length": 6
+        }
+       },
+       {
+        "code": 1165,
+        "level": 1,
+        "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+        "location": {
+         "line": 5,
+         "column": 13,
+         "start": 134,
+         "length": 74
+        }
+       },
+       {
+        "code": 1165,
+        "level": 1,
+        "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+        "location": {
+         "line": 6,
+         "column": 13,
+         "start": 221,
+         "length": 58
+        }
+       },
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 8,
+         "column": 9,
+         "start": 308,
+         "length": 429
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1159,
+        "level": 1,
+        "message": "LWC1159: lwc:if directive value should be an expression",
+        "location": {
+         "line": 4,
+         "column": 24,
+         "start": 94,
+         "length": 6
+        }
+       },
+       {
+        "code": 1165,
+        "level": 1,
+        "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+        "location": {
+         "line": 5,
+         "column": 13,
+         "start": 134,
+         "length": 74
+        }
+       },
+       {
+        "code": 1165,
+        "level": 1,
+        "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+        "location": {
+         "line": 6,
+         "column": 13,
+         "start": 221,
+         "length": 58
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "extra-diag:1173",
+   "count": 14,
+   "examples": [
+    {
+     "id": 50173,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+     "label": "lwc:slot-bind=\"{x}\"@181",
+     "opts": {},
+     "src": "<template lwc:render-mode=\"light\">\n    <template lwc:if={showStandard}>\n        <slot name=\"slotname1\"></slot>\n    </template>\n    <template lwc:else>\n        <slot name=\"slotname1\" lwc:slot-bind=\"{x}\"></slot>\n    </template>\n    <slot name=\"slotname1\" lwc:slot-bind={slot1VariantData}></slot>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1034,
+        "level": 1,
+        "message": "LWC1034: Ambiguous attribute value lwc:slot-bind=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:slot-bind={x}. If you want to make it a string you should escape it lwc:slot-bind=\"\\{x}\".",
+        "location": {
+         "line": 6,
+         "column": 32,
+         "start": 182,
+         "length": 19
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1034,
+        "level": 1,
+        "message": "LWC1034: Ambiguous attribute value lwc:slot-bind=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:slot-bind={x}. If you want to make it a string you should escape it lwc:slot-bind=\"\\{x}\".",
+        "location": {
+         "line": 6,
+         "column": 32,
+         "start": 182,
+         "length": 19
+        }
+       },
+       {
+        "code": 1173,
+        "level": 1,
+        "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+        "location": {
+         "line": 8,
+         "column": 5,
+         "start": 230,
+         "length": 63
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 50129,
+     "source": "mutation",
+     "family": "attr-drop",
+     "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+     "label": "drop lwc:else@140",
+     "opts": {},
+     "src": "<template lwc:render-mode=\"light\">\n    <template lwc:if={showStandard}>\n        <slot name=\"slotname1\"></slot>\n    </template>\n    <template>\n        <slot name=\"slotname1\" lwc:slot-bind={slot1VariantData}></slot>\n    </template>\n    <slot name=\"slotname1\" lwc:slot-bind={slot1VariantData}></slot>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1077,
+        "level": 1,
+        "message": "LWC1077: Invalid template tag. A directive is expected to be associated with the template tag.",
+        "location": {
+         "line": 5,
+         "column": 5,
+         "start": 131,
+         "length": 98
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1077,
+        "level": 1,
+        "message": "LWC1077: Invalid template tag. A directive is expected to be associated with the template tag.",
+        "location": {
+         "line": 5,
+         "column": 5,
+         "start": 131,
+         "length": 98
+        }
+       },
+       {
+        "code": 1173,
+        "level": 1,
+        "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+        "location": {
+         "line": 8,
+         "column": 5,
+         "start": 234,
+         "length": 63
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 50159,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+     "label": "lwc:else=\"\"@140",
+     "opts": {},
+     "src": "<template lwc:render-mode=\"light\">\n    <template lwc:if={showStandard}>\n        <slot name=\"slotname1\"></slot>\n    </template>\n    <template lwc:else=\"\">\n        <slot name=\"slotname1\" lwc:slot-bind={slot1VariantData}></slot>\n    </template>\n    <slot name=\"slotname1\" lwc:slot-bind={slot1VariantData}></slot>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1161,
+        "level": 1,
+        "message": "LWC1161: lwc:else directive cannot have a value",
+        "location": {
+         "line": 5,
+         "column": 5,
+         "start": 131,
+         "length": 110
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1161,
+        "level": 1,
+        "message": "LWC1161: lwc:else directive cannot have a value",
+        "location": {
+         "line": 5,
+         "column": 5,
+         "start": 131,
+         "length": 110
+        }
+       },
+       {
+        "code": 1173,
+        "level": 1,
+        "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+        "location": {
+         "line": 8,
+         "column": 5,
+         "start": 246,
+         "length": 63
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "extra-diag:1178",
+   "count": 11,
+   "examples": [
+    {
+     "id": 53042,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/parent-default-slot",
+     "label": "x-child+if:true={c}",
+     "opts": {},
+     "src": "<template>\n    <x-child if:true={c}>\n        <template lwc:slot-data=\"item\">\n            <span>{item.id} - {item.name}</span>\n        </template>\n    </x-child>\n</template> ",
+     "js": {
+      "ok": true,
+      "diags": []
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 45,
+         "length": 100
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 52838,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/name-is-expression",
+     "label": "x-child+if:true={c}",
+     "opts": {},
+     "src": "<template>\n    <x-child if:true={c}>\n        <template lwc:slot-data=\"item\" slot={name}>\n            <span>{item.id} - {item.name}</span>\n        </template>\n    </x-child>\n</template> ",
+     "js": {
+      "ok": true,
+      "diags": []
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 45,
+         "length": 112
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 54606,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/with-parent-bindings",
+     "label": "x-list+if:true={c}",
+     "opts": {},
+     "src": "<template>\n    {title}\n    <x-list if:true={c}>\n        <template lwc:slot-data=\"item\">\n            <div>{label}</div>\n            <span>{item.id} - {item.name}</span>\n        </template>\n    </x-list>\n</template>",
+     "js": {
+      "ok": true,
+      "diags": []
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 4,
+         "column": 9,
+         "start": 56,
+         "length": 131
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "missing-diag:1043",
+   "count": 5,
+   "examples": [
+    {
+     "id": 35428,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "expression-complex/invalid/new-operator",
+     "label": "onward=\"{true}\"@39",
+     "opts": {
+      "experimentalComplexExpressions": true
+     },
+     "src": "<template>\n    <section>\n        <x-foo onward=\"{true}\"></x-foo>\n    </section>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1043,
+        "level": 1,
+        "message": "LWC1043: Event handler should be an expression",
+        "location": {
+         "line": 3,
+         "column": 16,
+         "start": 40,
+         "length": 15
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": true,
+      "diags": []
+     }
+    },
+    {
+     "id": 33658,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "expression-complex/invalid/arrow-function-async",
+     "label": "onclick=\"{true}\"@40",
+     "opts": {
+      "experimentalComplexExpressions": true
+     },
+     "src": "<template>\n    <section>\n        <button onclick=\"{true}\"></button>\n    </section>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1043,
+        "level": 1,
+        "message": "LWC1043: Event handler should be an expression",
+        "location": {
+         "line": 3,
+         "column": 17,
+         "start": 41,
+         "length": 16
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": true,
+      "diags": []
+     }
+    },
+    {
+     "id": 33755,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "expression-complex/invalid/arrow-function-block-body",
+     "label": "onblick=\"{true}\"@40",
+     "opts": {
+      "experimentalComplexExpressions": true
+     },
+     "src": "<template>\n    <section>\n        <button onblick=\"{true}\"></button>\n    </section>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1043,
+        "level": 1,
+        "message": "LWC1043: Event handler should be an expression",
+        "location": {
+         "line": 3,
+         "column": 17,
+         "start": 41,
+         "length": 16
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": true,
+      "diags": []
+     }
+    }
+   ]
+  },
+  {
+   "key": "order",
+   "count": 4,
+   "examples": [
+    {
+     "id": 29132,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "directive-ref/dynamic-ref",
+     "label": "div+key={k}",
+     "opts": {},
+     "src": "<template>\n    <div key={k} lwc:ref=\"foo\" dynamic={dynamic}></div>\n</template>\n",
+     "js": {
+      "ok": true,
+      "diags": [
+       {
+        "code": 1149,
+        "level": 2,
+        "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+        "location": {
+         "line": 2,
+         "column": 10,
+         "start": 20,
+         "length": 7
+        }
+       },
+       {
+        "code": 1057,
+        "level": 2,
+        "message": "LWC1057: dynamic is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+        "location": {
+         "line": 2,
+         "column": 32,
+         "start": 42,
+         "length": 17
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": true,
+      "diags": [
+       {
+        "code": 1057,
+        "level": 2,
+        "message": "LWC1057: dynamic is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+        "location": {
+         "line": 2,
+         "column": 32,
+         "start": 42,
+         "length": 17
+        }
+       },
+       {
+        "code": 1149,
+        "level": 2,
+        "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+        "location": {
+         "line": 2,
+         "column": 10,
+         "start": 20,
+         "length": 7
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 57440,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "static-content/attr-name-escape/non-optimized",
+     "label": "div+key={k}",
+     "opts": {
+      "enableStaticContentOptimization": false
+     },
+     "src": "<template>\n    <div key={k} a`b`c></div>\n    <div a`b`c=\"yolo\"></div>\n</template>\n",
+     "js": {
+      "ok": true,
+      "diags": [
+       {
+        "code": 1149,
+        "level": 2,
+        "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+        "location": {
+         "line": 2,
+         "column": 10,
+         "start": 20,
+         "length": 7
+        }
+       },
+       {
+        "code": 1057,
+        "level": 2,
+        "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+        "location": {
+         "line": 2,
+         "column": 18,
+         "start": 28,
+         "length": 5
+        }
+       },
+       {
+        "code": 1057,
+        "level": 2,
+        "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+        "location": {
+         "line": 3,
+         "column": 10,
+         "start": 50,
+         "length": 12
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": true,
+      "diags": [
+       {
+        "code": 1057,
+        "level": 2,
+        "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+        "location": {
+         "line": 2,
+         "column": 18,
+         "start": 28,
+         "length": 5
+        }
+       },
+       {
+        "code": 1149,
+        "level": 2,
+        "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+        "location": {
+         "line": 2,
+         "column": 10,
+         "start": 20,
+         "length": 7
+        }
+       },
+       {
+        "code": 1057,
+        "level": 2,
+        "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+        "location": {
+         "line": 3,
+         "column": 10,
+         "start": 50,
+         "length": 12
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 57525,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "static-content/attr-name-escape/optimized",
+     "label": "div+key={k}",
+     "opts": {
+      "enableStaticContentOptimization": true
+     },
+     "src": "<template>\n    <div key={k} a`b`c></div>\n    <div a`b`c=\"yolo\"></div>\n</template>\n",
+     "js": {
+      "ok": true,
+      "diags": [
+       {
+        "code": 1149,
+        "level": 2,
+        "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+        "location": {
+         "line": 2,
+         "column": 10,
+         "start": 20,
+         "length": 7
+        }
+       },
+       {
+        "code": 1057,
+        "level": 2,
+        "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+        "location": {
+         "line": 2,
+         "column": 18,
+         "start": 28,
+         "length": 5
+        }
+       },
+       {
+        "code": 1057,
+        "level": 2,
+        "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+        "location": {
+         "line": 3,
+         "column": 10,
+         "start": 50,
+         "length": 12
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": true,
+      "diags": [
+       {
+        "code": 1057,
+        "level": 2,
+        "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+        "location": {
+         "line": 2,
+         "column": 18,
+         "start": 28,
+         "length": 5
+        }
+       },
+       {
+        "code": 1149,
+        "level": 2,
+        "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+        "location": {
+         "line": 2,
+         "column": 10,
+         "start": 20,
+         "length": 7
+        }
+       },
+       {
+        "code": 1057,
+        "level": 2,
+        "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+        "location": {
+         "line": 3,
+         "column": 10,
+         "start": 50,
+         "length": 12
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "extra-diag:1172",
+   "count": 3,
+   "examples": [
+    {
+     "id": 49855,
+     "source": "mutation",
+     "family": "attr-drop",
+     "file": "scoped-slots/if-block/invalid/duplicate-default-slot-after",
+     "label": "drop lwc:else@234",
+     "opts": {},
+     "src": "<template lwc:render-mode=\"light\">\n    <template lwc:if={showStandard}>\n        <slot></slot>\n    </template>\n    <template lwc:elseif={showVariant}>\n        <slot lwc:slot-bind={slot1VariantData}></slot>\n    </template>\n    <template>\n        <slot lwc:slot-bind={slot2VariantData}></slot>\n    </template>\n    <slot lwc:slot-bind={slot3VariantData}></slot>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1077,
+        "level": 1,
+        "message": "LWC1077: Invalid template tag. A directive is expected to be associated with the template tag.",
+        "location": {
+         "line": 8,
+         "column": 5,
+         "start": 225,
+         "length": 81
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1077,
+        "level": 1,
+        "message": "LWC1077: Invalid template tag. A directive is expected to be associated with the template tag.",
+        "location": {
+         "line": 8,
+         "column": 5,
+         "start": 225,
+         "length": 81
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 11,
+         "column": 5,
+         "start": 311,
+         "length": 46
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 49934,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/if-block/invalid/duplicate-default-slot-after",
+     "label": "template+lwc:else",
+     "opts": {},
+     "src": "<template lwc:render-mode=\"light\">\n    <template lwc:else lwc:if={showStandard}>\n        <slot></slot>\n    </template>\n    <template lwc:elseif={showVariant}>\n        <slot lwc:slot-bind={slot1VariantData}></slot>\n    </template>\n    <template lwc:else>\n        <slot lwc:slot-bind={slot2VariantData}></slot>\n    </template>\n    <slot lwc:slot-bind={slot3VariantData}></slot>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1162,
+        "level": 1,
+        "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:else' directives on the same element.",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 39,
+         "length": 79
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 11,
+         "column": 5,
+         "start": 329,
+         "length": 46
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1162,
+        "level": 1,
+        "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:else' directives on the same element.",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 39,
+         "length": 79
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 9,
+         "column": 9,
+         "start": 262,
+         "length": 46
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 11,
+         "column": 5,
+         "start": 329,
+         "length": 46
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 49935,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/if-block/invalid/duplicate-default-slot-after",
+     "label": "template+lwc:elseif={c}",
+     "opts": {},
+     "src": "<template lwc:render-mode=\"light\">\n    <template lwc:elseif={c} lwc:if={showStandard}>\n        <slot></slot>\n    </template>\n    <template lwc:elseif={showVariant}>\n        <slot lwc:slot-bind={slot1VariantData}></slot>\n    </template>\n    <template lwc:else>\n        <slot lwc:slot-bind={slot2VariantData}></slot>\n    </template>\n    <slot lwc:slot-bind={slot3VariantData}></slot>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1162,
+        "level": 1,
+        "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:elseif' directives on the same element.",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 39,
+         "length": 85
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 11,
+         "column": 5,
+         "start": 335,
+         "length": 46
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1162,
+        "level": 1,
+        "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:elseif' directives on the same element.",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 39,
+         "length": 85
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 9,
+         "column": 9,
+         "start": 268,
+         "length": 46
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 11,
+         "column": 5,
+         "start": 335,
+         "length": 46
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "code:1177->1178",
+   "count": 3,
+   "examples": [
+    {
+     "id": 51752,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/invalid/slot-data/comment-direct-child",
+     "label": "x-list+if:true={c}",
+     "opts": {
+      "preserveHtmlComments": true
+     },
+     "src": "<template>\n    <x-list if:true={c}>\n        <template lwc:slot-data=\"item\">\n            <!-- comment node -->\n            <span>{item.id} - {item.name}</span>\n        </template>\n    </x-list>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 4,
+         "column": 13,
+         "start": 88,
+         "length": 21
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 44,
+         "length": 134
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 53712,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/slot-content-with-directives/invalid/if-true",
+     "label": "x-child+if:true={c}",
+     "opts": {
+      "preserveHtmlComments": true
+     },
+     "src": "<template>\n    <x-child if:true={c}>\n        <template lwc:slot-data=\"variations\">\n            <template if:true={variations.variation1}>\n                Button 1\n                <x-button1></x-button1>\n            </template>\n            <template if:false={variations.variation1}>\n                <!-- Button 2 -->\n                <x-button1></x-button1>\n            </template>\n        </template>\n    </x-child>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 4,
+         "column": 55,
+         "start": 137,
+         "length": 42
+        }
+       },
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 9,
+         "column": 17,
+         "start": 299,
+         "length": 17
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 45,
+         "length": 355
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 53583,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/slot-content-with-directives/invalid/if-block",
+     "label": "x-child+if:true={c}",
+     "opts": {
+      "preserveHtmlComments": true
+     },
+     "src": "<template>\n    <x-child if:true={c}>\n        <template lwc:slot-data=\"variations\" slot=\"foo\">\n            <template lwc:if={variations.variation1}>\n                Button 1\n                <x-button1></x-button1>\n            </template>\n            <template lwc:elseif={variations.variation2}>\n                <!-- Button 2 -->\n                <x-button2></x-button2>\n            </template>\n            <template lwc:else>\n                <x-button3></x-button3>\n                Button 3\n            </template>\n        </template>\n    </x-child>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 4,
+         "column": 54,
+         "start": 147,
+         "length": 42
+        }
+       },
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 9,
+         "column": 17,
+         "start": 311,
+         "length": 17
+        }
+       },
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 13,
+         "column": 40,
+         "start": 464,
+         "length": 38
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 45,
+         "length": 488
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "missing-diag:1177",
+   "count": 3,
+   "examples": [
+    {
+     "id": 52226,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/invalid/slot-data/text-direct-child",
+     "label": "x-list+if:true={c}",
+     "opts": {},
+     "src": "<template>\n    <x-list if:true={c}>\n        <template lwc:slot-data=\"item\">\n            {item.id}\n            <span>{item.id} - {item.name}</span>\n        </template>\n    </x-list>\n    <x-list>\n        <template lwc:slot-data=\"item\">\n            Text literal\n            <span>{item.id} - {item.name}</span>\n        </template>\n    </x-list>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 3,
+         "column": 40,
+         "start": 75,
+         "length": 35
+        }
+       },
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 9,
+         "column": 40,
+         "start": 233,
+         "length": 38
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 44,
+         "length": 122
+        }
+       },
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 9,
+         "column": 40,
+         "start": 233,
+         "length": 38
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 53712,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/slot-content-with-directives/invalid/if-true",
+     "label": "x-child+if:true={c}",
+     "opts": {
+      "preserveHtmlComments": true
+     },
+     "src": "<template>\n    <x-child if:true={c}>\n        <template lwc:slot-data=\"variations\">\n            <template if:true={variations.variation1}>\n                Button 1\n                <x-button1></x-button1>\n            </template>\n            <template if:false={variations.variation1}>\n                <!-- Button 2 -->\n                <x-button1></x-button1>\n            </template>\n        </template>\n    </x-child>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 4,
+         "column": 55,
+         "start": 137,
+         "length": 42
+        }
+       },
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 9,
+         "column": 17,
+         "start": 299,
+         "length": 17
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 45,
+         "length": 355
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 53583,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/slot-content-with-directives/invalid/if-block",
+     "label": "x-child+if:true={c}",
+     "opts": {
+      "preserveHtmlComments": true
+     },
+     "src": "<template>\n    <x-child if:true={c}>\n        <template lwc:slot-data=\"variations\" slot=\"foo\">\n            <template lwc:if={variations.variation1}>\n                Button 1\n                <x-button1></x-button1>\n            </template>\n            <template lwc:elseif={variations.variation2}>\n                <!-- Button 2 -->\n                <x-button2></x-button2>\n            </template>\n            <template lwc:else>\n                <x-button3></x-button3>\n                Button 3\n            </template>\n        </template>\n    </x-child>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 4,
+         "column": 54,
+         "start": 147,
+         "length": 42
+        }
+       },
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 9,
+         "column": 17,
+         "start": 311,
+         "length": 17
+        }
+       },
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 13,
+         "column": 40,
+         "start": 464,
+         "length": 38
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 45,
+         "length": 488
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "extra-diag:1153",
+   "count": 2,
+   "examples": [
+    {
+     "id": 33561,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "expression-complex/compatibility/directive-if/template-expression",
+     "label": "if:true=\"{x()}\"@42",
+     "opts": {
+      "experimentalComplexExpressions": true
+     },
+     "src": "<template>\n    <section>\n        <template if:true=\"{x()}\">\n            {foo}\n            {bar}\n        </template>\n    </section>\n</template>\n",
+     "js": {
+      "ok": true,
+      "diags": []
+     },
+     "rust": {
+      "ok": true,
+      "diags": [
+       {
+        "code": 1153,
+        "level": 2,
+        "message": "LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 33,
+         "length": 82
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 33556,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "expression-complex/compatibility/directive-if/template-expression",
+     "label": "if:true=\"{x[0]}\"@42",
+     "opts": {
+      "experimentalComplexExpressions": true
+     },
+     "src": "<template>\n    <section>\n        <template if:true=\"{x[0]}\">\n            {foo}\n            {bar}\n        </template>\n    </section>\n</template>\n",
+     "js": {
+      "ok": true,
+      "diags": []
+     },
+     "rust": {
+      "ok": true,
+      "diags": [
+       {
+        "code": 1153,
+        "level": 2,
+        "message": "LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 33,
+         "length": 83
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "location:1172:line+column+start",
+   "count": 2,
+   "examples": [
+    {
+     "id": 49934,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/if-block/invalid/duplicate-default-slot-after",
+     "label": "template+lwc:else",
+     "opts": {},
+     "src": "<template lwc:render-mode=\"light\">\n    <template lwc:else lwc:if={showStandard}>\n        <slot></slot>\n    </template>\n    <template lwc:elseif={showVariant}>\n        <slot lwc:slot-bind={slot1VariantData}></slot>\n    </template>\n    <template lwc:else>\n        <slot lwc:slot-bind={slot2VariantData}></slot>\n    </template>\n    <slot lwc:slot-bind={slot3VariantData}></slot>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1162,
+        "level": 1,
+        "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:else' directives on the same element.",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 39,
+         "length": 79
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 11,
+         "column": 5,
+         "start": 329,
+         "length": 46
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1162,
+        "level": 1,
+        "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:else' directives on the same element.",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 39,
+         "length": 79
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 9,
+         "column": 9,
+         "start": 262,
+         "length": 46
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 11,
+         "column": 5,
+         "start": 329,
+         "length": 46
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 49935,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/if-block/invalid/duplicate-default-slot-after",
+     "label": "template+lwc:elseif={c}",
+     "opts": {},
+     "src": "<template lwc:render-mode=\"light\">\n    <template lwc:elseif={c} lwc:if={showStandard}>\n        <slot></slot>\n    </template>\n    <template lwc:elseif={showVariant}>\n        <slot lwc:slot-bind={slot1VariantData}></slot>\n    </template>\n    <template lwc:else>\n        <slot lwc:slot-bind={slot2VariantData}></slot>\n    </template>\n    <slot lwc:slot-bind={slot3VariantData}></slot>\n</template>",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1162,
+        "level": 1,
+        "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:elseif' directives on the same element.",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 39,
+         "length": 85
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 11,
+         "column": 5,
+         "start": 335,
+         "length": 46
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1162,
+        "level": 1,
+        "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:elseif' directives on the same element.",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 39,
+         "length": 85
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 9,
+         "column": 9,
+         "start": 268,
+         "length": 46
+        }
+       },
+       {
+        "code": 1172,
+        "level": 1,
+        "message": "LWC1172: Invalid duplicate scoped slots (default)",
+        "location": {
+         "line": 11,
+         "column": 5,
+         "start": 335,
+         "length": 46
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "missing-diag:1142",
+   "count": 2,
+   "examples": [
+    {
+     "id": 55902,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "slots/error-slot-and-directive",
+     "label": "section+lwc:inner-html={h}",
+     "opts": {},
+     "src": "<template>\n    <section lwc:inner-html={h}>\n       <slot if:true={isTrue}>X</slot>\n    </section>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1082,
+        "level": 1,
+        "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+        "location": {
+         "line": 3,
+         "column": 8,
+         "start": 51,
+         "length": 31
+        }
+       },
+       {
+        "code": 1142,
+        "level": 1,
+        "message": "LWC1142: Invalid lwc:inner-html usage on element \"<section>\". The directive can't be used on an element with content.",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 15,
+         "length": 82
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1082,
+        "level": 1,
+        "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+        "location": {
+         "line": 3,
+         "column": 8,
+         "start": 51,
+         "length": 31
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": 55903,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "slots/error-slot-and-directive",
+     "label": "section+lwc:inner-html=\"h\"",
+     "opts": {},
+     "src": "<template>\n    <section lwc:inner-html=\"h\">\n       <slot if:true={isTrue}>X</slot>\n    </section>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1082,
+        "level": 1,
+        "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+        "location": {
+         "line": 3,
+         "column": 8,
+         "start": 51,
+         "length": 31
+        }
+       },
+       {
+        "code": 1142,
+        "level": 1,
+        "message": "LWC1142: Invalid lwc:inner-html usage on element \"<section>\". The directive can't be used on an element with content.",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 15,
+         "length": 82
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1082,
+        "level": 1,
+        "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+        "location": {
+         "line": 3,
+         "column": 8,
+         "start": 51,
+         "length": 31
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "code:1054->1153",
+   "count": 1,
+   "examples": [
+    {
+     "id": 33560,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "expression-complex/compatibility/directive-if/template-expression",
+     "label": "if:true=\"{true}\"@42",
+     "opts": {
+      "experimentalComplexExpressions": true
+     },
+     "src": "<template>\n    <section>\n        <template if:true=\"{true}\">\n            {foo}\n            {bar}\n        </template>\n    </section>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1054,
+        "level": 1,
+        "message": "LWC1054: If directive should be an expression",
+        "location": {
+         "line": 3,
+         "column": 19,
+         "start": 43,
+         "length": 16
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": true,
+      "diags": [
+       {
+        "code": 1153,
+        "level": 2,
+        "message": "LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 33,
+         "length": 83
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "missing-diag:<error-vs-ok>",
+   "count": 1,
+   "examples": [
+    {
+     "id": 33560,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "expression-complex/compatibility/directive-if/template-expression",
+     "label": "if:true=\"{true}\"@42",
+     "opts": {
+      "experimentalComplexExpressions": true
+     },
+     "src": "<template>\n    <section>\n        <template if:true=\"{true}\">\n            {foo}\n            {bar}\n        </template>\n    </section>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1054,
+        "level": 1,
+        "message": "LWC1054: If directive should be an expression",
+        "location": {
+         "line": 3,
+         "column": 19,
+         "start": 43,
+         "length": 16
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": true,
+      "diags": [
+       {
+        "code": 1153,
+        "level": 2,
+        "message": "LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 33,
+         "length": 83
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "missing-diag:1045",
+   "count": 1,
+   "examples": [
+    {
+     "id": 37314,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "expression-complex/valid/iterator",
+     "label": "for:each=\"{true}\"@24",
+     "opts": {
+      "experimentalComplexExpressions": true
+     },
+     "src": "<template>\n    <template for:each=\"{true}\" for:item=\"okazu\">\n        <div key={okazu}>\n            <a onclick=\"{() => taberu(okazu)}\">\n                one\n            </a>\n        </div>\n    </template>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1045,
+        "level": 1,
+        "message": "LWC1045: for:each directive is expected to be a expression.",
+        "location": {
+         "line": 2,
+         "column": 15,
+         "start": 25,
+         "length": 17
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": true,
+      "diags": []
+     }
+    }
+   ]
+  },
+  {
+   "key": "missing-diag:1064",
+   "count": 1,
+   "examples": [
+    {
+     "id": 37338,
+     "source": "mutation",
+     "family": "attr-value",
+     "file": "expression-complex/valid/iterator",
+     "label": "key=\"{true}\"@72",
+     "opts": {
+      "experimentalComplexExpressions": true
+     },
+     "src": "<template>\n    <template for:each={bento} for:item=\"okazu\">\n        <div key=\"{true}\">\n            <a onclick=\"{() => taberu(okazu)}\">\n                one\n            </a>\n        </div>\n    </template>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1064,
+        "level": 1,
+        "message": "LWC1064: Key attribute value should be an expression",
+        "location": {
+         "line": 3,
+         "column": 14,
+         "start": 73,
+         "length": 12
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": true,
+      "diags": []
+     }
+    }
+   ]
+  },
+  {
+   "key": "location:1177:line+start+length",
+   "count": 1,
+   "examples": [
+    {
+     "id": 52226,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/invalid/slot-data/text-direct-child",
+     "label": "x-list+if:true={c}",
+     "opts": {},
+     "src": "<template>\n    <x-list if:true={c}>\n        <template lwc:slot-data=\"item\">\n            {item.id}\n            <span>{item.id} - {item.name}</span>\n        </template>\n    </x-list>\n    <x-list>\n        <template lwc:slot-data=\"item\">\n            Text literal\n            <span>{item.id} - {item.name}</span>\n        </template>\n    </x-list>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 3,
+         "column": 40,
+         "start": 75,
+         "length": 35
+        }
+       },
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 9,
+         "column": 40,
+         "start": 233,
+         "length": 38
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 44,
+         "length": 122
+        }
+       },
+       {
+        "code": 1177,
+        "level": 1,
+        "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+        "location": {
+         "line": 9,
+         "column": 40,
+         "start": 233,
+         "length": 38
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "code:1174->1178",
+   "count": 1,
+   "examples": [
+    {
+     "id": 52328,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "scoped-slots/invalid/slot-data/value-non-string",
+     "label": "x-child+if:true={c}",
+     "opts": {},
+     "src": "<template>\n    <x-child if:true={c}>\n        <template lwc:slot-data={item}>\n            <span>{item.id} - {item.name}</span>\n        </template>\n    </x-child>\n</template> ",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1174,
+        "level": 1,
+        "message": "LWC1174: lwc:slot-data attribute value is expected to be a string.",
+        "location": {
+         "line": 3,
+         "column": 19,
+         "start": 55,
+         "length": 20
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1178,
+        "level": 1,
+        "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+        "location": {
+         "line": 3,
+         "column": 9,
+         "start": 45,
+         "length": 100
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "key": "missing-diag:1086",
+   "count": 1,
+   "examples": [
+    {
+     "id": 55900,
+     "source": "mutation",
+     "family": "insert-elem",
+     "file": "slots/error-slot-and-directive",
+     "label": "section+lwc:dom=\"manual\"",
+     "opts": {},
+     "src": "<template>\n    <section lwc:dom=\"manual\">\n       <slot if:true={isTrue}>X</slot>\n    </section>\n</template>\n",
+     "js": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1082,
+        "level": 1,
+        "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+        "location": {
+         "line": 3,
+         "column": 8,
+         "start": 49,
+         "length": 31
+        }
+       },
+       {
+        "code": 1086,
+        "level": 1,
+        "message": "LWC1086: Invalid contents for element with \"lwc:dom\". Element must be empty",
+        "location": {
+         "line": 2,
+         "column": 5,
+         "start": 15,
+         "length": 80
+        }
+       }
+      ]
+     },
+     "rust": {
+      "ok": false,
+      "diags": [
+       {
+        "code": 1082,
+        "level": 1,
+        "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+        "location": {
+         "line": 3,
+         "column": 8,
+         "start": 49,
+         "length": 31
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "mismatches": [
+  {
+   "id": 10010,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "attributes/scoped-id/expression/not-scoped",
+   "label": "div+key={k}",
+   "opts": {},
+   "buckets": [
+    "order"
+   ],
+   "keys": [
+    "order"
+   ],
+   "js": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1149,
+      "level": 2,
+      "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+      "location": {
+       "line": 4,
+       "column": 10,
+       "start": 172,
+       "length": 7
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: aria-described-by is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 5,
+       "column": 9,
+       "start": 189,
+       "length": 26
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: aria-active-descendant is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 6,
+       "column": 9,
+       "start": 224,
+       "length": 31
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: aria-error-message is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 7,
+       "column": 9,
+       "start": 264,
+       "length": 27
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: aria-flow-to is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 300,
+       "length": 21
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: aria-labelled-by is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 9,
+       "column": 9,
+       "start": 330,
+       "length": 25
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: aria-described-by is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 5,
+       "column": 9,
+       "start": 189,
+       "length": 26
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: aria-active-descendant is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 6,
+       "column": 9,
+       "start": 224,
+       "length": 31
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: aria-error-message is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 7,
+       "column": 9,
+       "start": 264,
+       "length": 27
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: aria-flow-to is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 300,
+       "length": 21
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: aria-labelled-by is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 9,
+       "column": 9,
+       "start": 330,
+       "length": 25
+      }
+     },
+     {
+      "code": 1149,
+      "level": 2,
+      "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+      "location": {
+       "line": 4,
+       "column": 10,
+       "start": 172,
+       "length": 7
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 29132,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "directive-ref/dynamic-ref",
+   "label": "div+key={k}",
+   "opts": {},
+   "buckets": [
+    "order"
+   ],
+   "keys": [
+    "order"
+   ],
+   "js": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1149,
+      "level": 2,
+      "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+      "location": {
+       "line": 2,
+       "column": 10,
+       "start": 20,
+       "length": 7
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: dynamic is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 2,
+       "column": 32,
+       "start": 42,
+       "length": 17
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: dynamic is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 2,
+       "column": 32,
+       "start": 42,
+       "length": 17
+      }
+     },
+     {
+      "code": 1149,
+      "level": 2,
+      "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+      "location": {
+       "line": 2,
+       "column": 10,
+       "start": 20,
+       "length": 7
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 33556,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "expression-complex/compatibility/directive-if/template-expression",
+   "label": "if:true=\"{x[0]}\"@42",
+   "opts": {
+    "experimentalComplexExpressions": true
+   },
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1153"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1153,
+      "level": 2,
+      "message": "LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 33,
+       "length": 83
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 33560,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "expression-complex/compatibility/directive-if/template-expression",
+   "label": "if:true=\"{true}\"@42",
+   "opts": {
+    "experimentalComplexExpressions": true
+   },
+   "buckets": [
+    "missing-diag",
+    "code"
+   ],
+   "keys": [
+    "code:1054->1153",
+    "missing-diag:<error-vs-ok>"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1054,
+      "level": 1,
+      "message": "LWC1054: If directive should be an expression",
+      "location": {
+       "line": 3,
+       "column": 19,
+       "start": 43,
+       "length": 16
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1153,
+      "level": 2,
+      "message": "LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 33,
+       "length": 83
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 33561,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "expression-complex/compatibility/directive-if/template-expression",
+   "label": "if:true=\"{x()}\"@42",
+   "opts": {
+    "experimentalComplexExpressions": true
+   },
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1153"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1153,
+      "level": 2,
+      "message": "LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 33,
+       "length": 82
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 33658,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "expression-complex/invalid/arrow-function-async",
+   "label": "onclick=\"{true}\"@40",
+   "opts": {
+    "experimentalComplexExpressions": true
+   },
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1043"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1043,
+      "level": 1,
+      "message": "LWC1043: Event handler should be an expression",
+      "location": {
+       "line": 3,
+       "column": 17,
+       "start": 41,
+       "length": 16
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": []
+   }
+  },
+  {
+   "id": 33755,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "expression-complex/invalid/arrow-function-block-body",
+   "label": "onblick=\"{true}\"@40",
+   "opts": {
+    "experimentalComplexExpressions": true
+   },
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1043"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1043,
+      "level": 1,
+      "message": "LWC1043: Event handler should be an expression",
+      "location": {
+       "line": 3,
+       "column": 17,
+       "start": 41,
+       "length": 16
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": []
+   }
+  },
+  {
+   "id": 34445,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "expression-complex/invalid/function-expr",
+   "label": "onawesomething=\"{true}\"@41",
+   "opts": {
+    "experimentalComplexExpressions": true
+   },
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1043"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1043,
+      "level": 1,
+      "message": "LWC1043: Event handler should be an expression",
+      "location": {
+       "line": 3,
+       "column": 18,
+       "start": 42,
+       "length": 23
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": []
+   }
+  },
+  {
+   "id": 35428,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "expression-complex/invalid/new-operator",
+   "label": "onward=\"{true}\"@39",
+   "opts": {
+    "experimentalComplexExpressions": true
+   },
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1043"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1043,
+      "level": 1,
+      "message": "LWC1043: Event handler should be an expression",
+      "location": {
+       "line": 3,
+       "column": 16,
+       "start": 40,
+       "length": 15
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": []
+   }
+  },
+  {
+   "id": 37126,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "expression-complex/valid/computed-property",
+   "label": "onclick=\"{true}\"@23",
+   "opts": {
+    "experimentalComplexExpressions": true
+   },
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1043"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1043,
+      "level": 1,
+      "message": "LWC1043: Event handler should be an expression",
+      "location": {
+       "line": 2,
+       "column": 14,
+       "start": 24,
+       "length": 16
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": []
+   }
+  },
+  {
+   "id": 37314,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "expression-complex/valid/iterator",
+   "label": "for:each=\"{true}\"@24",
+   "opts": {
+    "experimentalComplexExpressions": true
+   },
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1045"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1045,
+      "level": 1,
+      "message": "LWC1045: for:each directive is expected to be a expression.",
+      "location": {
+       "line": 2,
+       "column": 15,
+       "start": 25,
+       "length": 17
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": []
+   }
+  },
+  {
+   "id": 37338,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "expression-complex/valid/iterator",
+   "label": "key=\"{true}\"@72",
+   "opts": {
+    "experimentalComplexExpressions": true
+   },
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1064"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1064,
+      "level": 1,
+      "message": "LWC1064: Key attribute value should be an expression",
+      "location": {
+       "line": 3,
+       "column": 14,
+       "start": 73,
+       "length": 12
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": []
+   }
+  },
+  {
+   "id": 49851,
+   "source": "mutation",
+   "family": "attr-drop",
+   "file": "scoped-slots/if-block/invalid/duplicate-default-slot-after",
+   "label": "drop lwc:elseif@123",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1077,
+      "level": 1,
+      "message": "LWC1077: Invalid template tag. A directive is expected to be associated with the template tag.",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 114,
+       "length": 81
+      }
+     },
+     {
+      "code": 1172,
+      "level": 1,
+      "message": "LWC1172: Invalid duplicate scoped slots (default)",
+      "location": {
+       "line": 11,
+       "column": 5,
+       "start": 295,
+       "length": 46
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1077,
+      "level": 1,
+      "message": "LWC1077: Invalid template tag. A directive is expected to be associated with the template tag.",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 114,
+       "length": 81
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (default) slot.",
+      "location": {
+       "line": 9,
+       "column": 9,
+       "start": 228,
+       "length": 46
+      }
+     },
+     {
+      "code": 1172,
+      "level": 1,
+      "message": "LWC1172: Invalid duplicate scoped slots (default)",
+      "location": {
+       "line": 11,
+       "column": 5,
+       "start": 295,
+       "length": 46
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 49855,
+   "source": "mutation",
+   "family": "attr-drop",
+   "file": "scoped-slots/if-block/invalid/duplicate-default-slot-after",
+   "label": "drop lwc:else@234",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1172"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1077,
+      "level": 1,
+      "message": "LWC1077: Invalid template tag. A directive is expected to be associated with the template tag.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 225,
+       "length": 81
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1077,
+      "level": 1,
+      "message": "LWC1077: Invalid template tag. A directive is expected to be associated with the template tag.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 225,
+       "length": 81
+      }
+     },
+     {
+      "code": 1172,
+      "level": 1,
+      "message": "LWC1172: Invalid duplicate scoped slots (default)",
+      "location": {
+       "line": 11,
+       "column": 5,
+       "start": 311,
+       "length": 46
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 49934,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/if-block/invalid/duplicate-default-slot-after",
+   "label": "template+lwc:else",
+   "opts": {},
+   "buckets": [
+    "extra-diag",
+    "location"
+   ],
+   "keys": [
+    "extra-diag:1172",
+    "location:1172:line+column+start"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1162,
+      "level": 1,
+      "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:else' directives on the same element.",
+      "location": {
+       "line": 2,
+       "column": 5,
+       "start": 39,
+       "length": 79
+      }
+     },
+     {
+      "code": 1172,
+      "level": 1,
+      "message": "LWC1172: Invalid duplicate scoped slots (default)",
+      "location": {
+       "line": 11,
+       "column": 5,
+       "start": 329,
+       "length": 46
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1162,
+      "level": 1,
+      "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:else' directives on the same element.",
+      "location": {
+       "line": 2,
+       "column": 5,
+       "start": 39,
+       "length": 79
+      }
+     },
+     {
+      "code": 1172,
+      "level": 1,
+      "message": "LWC1172: Invalid duplicate scoped slots (default)",
+      "location": {
+       "line": 9,
+       "column": 9,
+       "start": 262,
+       "length": 46
+      }
+     },
+     {
+      "code": 1172,
+      "level": 1,
+      "message": "LWC1172: Invalid duplicate scoped slots (default)",
+      "location": {
+       "line": 11,
+       "column": 5,
+       "start": 329,
+       "length": 46
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 49935,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/if-block/invalid/duplicate-default-slot-after",
+   "label": "template+lwc:elseif={c}",
+   "opts": {},
+   "buckets": [
+    "extra-diag",
+    "location"
+   ],
+   "keys": [
+    "extra-diag:1172",
+    "location:1172:line+column+start"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1162,
+      "level": 1,
+      "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:elseif' directives on the same element.",
+      "location": {
+       "line": 2,
+       "column": 5,
+       "start": 39,
+       "length": 85
+      }
+     },
+     {
+      "code": 1172,
+      "level": 1,
+      "message": "LWC1172: Invalid duplicate scoped slots (default)",
+      "location": {
+       "line": 11,
+       "column": 5,
+       "start": 335,
+       "length": 46
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1162,
+      "level": 1,
+      "message": "LWC1162: Invalid usage of 'lwc:if' and 'lwc:elseif' directives on the same element.",
+      "location": {
+       "line": 2,
+       "column": 5,
+       "start": 39,
+       "length": 85
+      }
+     },
+     {
+      "code": 1172,
+      "level": 1,
+      "message": "LWC1172: Invalid duplicate scoped slots (default)",
+      "location": {
+       "line": 9,
+       "column": 9,
+       "start": 268,
+       "length": 46
+      }
+     },
+     {
+      "code": 1172,
+      "level": 1,
+      "message": "LWC1172: Invalid duplicate scoped slots (default)",
+      "location": {
+       "line": 11,
+       "column": 5,
+       "start": 335,
+       "length": 46
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50129,
+   "source": "mutation",
+   "family": "attr-drop",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "drop lwc:else@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1077,
+      "level": 1,
+      "message": "LWC1077: Invalid template tag. A directive is expected to be associated with the template tag.",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 131,
+       "length": 98
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1077,
+      "level": 1,
+      "message": "LWC1077: Invalid template tag. A directive is expected to be associated with the template tag.",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 131,
+       "length": 98
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 234,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50159,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else=\"\"@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1161,
+      "level": 1,
+      "message": "LWC1161: lwc:else directive cannot have a value",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 131,
+       "length": 110
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1161,
+      "level": 1,
+      "message": "LWC1161: lwc:else directive cannot have a value",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 131,
+       "length": 110
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 246,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50160,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else=\"x\"@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1161,
+      "level": 1,
+      "message": "LWC1161: lwc:else directive cannot have a value",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 131,
+       "length": 111
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1161,
+      "level": 1,
+      "message": "LWC1161: lwc:else directive cannot have a value",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 131,
+       "length": 111
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 247,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50161,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else=\"{x}\"@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={x}. If you want to make it a string you should escape it lwc:else=\"\\{x}\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 14
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={x}. If you want to make it a string you should escape it lwc:else=\"\\{x}\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 14
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 249,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50162,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else=\"{x.y}\"@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{x.y}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={x.y}. If you want to make it a string you should escape it lwc:else=\"\\{x.y}\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 16
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{x.y}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={x.y}. If you want to make it a string you should escape it lwc:else=\"\\{x.y}\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 16
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 251,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50163,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else=\"{x[0]}\"@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{x[0]}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={x[0]}. If you want to make it a string you should escape it lwc:else=\"\\{x[0]}\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 17
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{x[0]}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={x[0]}. If you want to make it a string you should escape it lwc:else=\"\\{x[0]}\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 17
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 252,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50164,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else=\"{ x }\"@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{ x }\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={ x }. If you want to make it a string you should escape it lwc:else=\"\\{ x }\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 16
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{ x }\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={ x }. If you want to make it a string you should escape it lwc:else=\"\\{ x }\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 16
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 251,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50165,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else=\"{x} y\"@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1035,
+      "level": 1,
+      "message": "LWC1035: Ambiguous attribute value lwc:else=\"{x} y\". If you want to make it a string you should escape it lwc:else=\"\\{x} y\"",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 16
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1035,
+      "level": 1,
+      "message": "LWC1035: Ambiguous attribute value lwc:else=\"{x} y\". If you want to make it a string you should escape it lwc:else=\"\\{x} y\"",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 16
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 251,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50166,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else=\"true\"@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1161,
+      "level": 1,
+      "message": "LWC1161: lwc:else directive cannot have a value",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 131,
+       "length": 114
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1161,
+      "level": 1,
+      "message": "LWC1161: lwc:else directive cannot have a value",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 131,
+       "length": 114
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 250,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50167,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else=\"{true}\"@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{true}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={true}. If you want to make it a string you should escape it lwc:else=\"\\{true}\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 17
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{true}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={true}. If you want to make it a string you should escape it lwc:else=\"\\{true}\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 17
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 252,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50168,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else=\"{x()}\"@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{x()}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={x()}. If you want to make it a string you should escape it lwc:else=\"\\{x()}\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 16
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:else=\"{x()}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:else={x()}. If you want to make it a string you should escape it lwc:else=\"\\{x()}\".",
+      "location": {
+       "line": 5,
+       "column": 15,
+       "start": 141,
+       "length": 16
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 251,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50169,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:else={x}@140",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1161,
+      "level": 1,
+      "message": "LWC1161: lwc:else directive cannot have a value",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 131,
+       "length": 111
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1161,
+      "level": 1,
+      "message": "LWC1161: lwc:else directive cannot have a value",
+      "location": {
+       "line": 5,
+       "column": 5,
+       "start": 131,
+       "length": 111
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 247,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 50173,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/if-block/invalid/duplicate-named-slot-after",
+   "label": "lwc:slot-bind=\"{x}\"@181",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1173"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:slot-bind=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:slot-bind={x}. If you want to make it a string you should escape it lwc:slot-bind=\"\\{x}\".",
+      "location": {
+       "line": 6,
+       "column": 32,
+       "start": 182,
+       "length": 19
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:slot-bind=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:slot-bind={x}. If you want to make it a string you should escape it lwc:slot-bind=\"\\{x}\".",
+      "location": {
+       "line": 6,
+       "column": 32,
+       "start": 182,
+       "length": 19
+      }
+     },
+     {
+      "code": 1173,
+      "level": 1,
+      "message": "LWC1173: Mixing slot types disallowed for same (name=\"slotname1\") slot.",
+      "location": {
+       "line": 8,
+       "column": 5,
+       "start": 230,
+       "length": 63
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 51752,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/invalid/slot-data/comment-direct-child",
+   "label": "x-list+if:true={c}",
+   "opts": {
+    "preserveHtmlComments": true
+   },
+   "buckets": [
+    "code"
+   ],
+   "keys": [
+    "code:1177->1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1177,
+      "level": 1,
+      "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+      "location": {
+       "line": 4,
+       "column": 13,
+       "start": 88,
+       "length": 21
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 44,
+       "length": 134
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 52226,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/invalid/slot-data/text-direct-child",
+   "label": "x-list+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "missing-diag",
+    "extra-diag",
+    "location"
+   ],
+   "keys": [
+    "missing-diag:1177",
+    "extra-diag:1178",
+    "location:1177:line+start+length"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1177,
+      "level": 1,
+      "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+      "location": {
+       "line": 3,
+       "column": 40,
+       "start": 75,
+       "length": 35
+      }
+     },
+     {
+      "code": 1177,
+      "level": 1,
+      "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+      "location": {
+       "line": 9,
+       "column": 40,
+       "start": 233,
+       "length": 38
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 44,
+       "length": 122
+      }
+     },
+     {
+      "code": 1177,
+      "level": 1,
+      "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+      "location": {
+       "line": 9,
+       "column": 40,
+       "start": 233,
+       "length": 38
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 52328,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/invalid/slot-data/value-non-string",
+   "label": "x-child+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "code"
+   ],
+   "keys": [
+    "code:1174->1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1174,
+      "level": 1,
+      "message": "LWC1174: lwc:slot-data attribute value is expected to be a string.",
+      "location": {
+       "line": 3,
+       "column": 19,
+       "start": 55,
+       "length": 20
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 45,
+       "length": 100
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 52838,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/name-is-expression",
+   "label": "x-child+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1178"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 45,
+       "length": 112
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 52954,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/nested-scoped-slot",
+   "label": "x-table+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1178"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 57,
+       "length": 455
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 53042,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/parent-default-slot",
+   "label": "x-child+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1178"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 45,
+       "length": 100
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 53172,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/parent-mixed-slot-content",
+   "label": "x-child+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1178"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 45,
+       "length": 109
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 53310,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/parent-named-slot",
+   "label": "x-child+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1178",
+    "extra-diag:1178",
+    "extra-diag:1178"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 45,
+       "length": 109
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 7,
+       "column": 9,
+       "start": 164,
+       "length": 110
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 11,
+       "column": 9,
+       "start": 284,
+       "length": 97
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 53583,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/slot-content-with-directives/invalid/if-block",
+   "label": "x-child+if:true={c}",
+   "opts": {
+    "preserveHtmlComments": true
+   },
+   "buckets": [
+    "missing-diag",
+    "code"
+   ],
+   "keys": [
+    "missing-diag:1177",
+    "missing-diag:1177",
+    "code:1177->1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1177,
+      "level": 1,
+      "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+      "location": {
+       "line": 4,
+       "column": 54,
+       "start": 147,
+       "length": 42
+      }
+     },
+     {
+      "code": 1177,
+      "level": 1,
+      "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+      "location": {
+       "line": 9,
+       "column": 17,
+       "start": 311,
+       "length": 17
+      }
+     },
+     {
+      "code": 1177,
+      "level": 1,
+      "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+      "location": {
+       "line": 13,
+       "column": 40,
+       "start": 464,
+       "length": 38
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 45,
+       "length": 488
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 53712,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/slot-content-with-directives/invalid/if-true",
+   "label": "x-child+if:true={c}",
+   "opts": {
+    "preserveHtmlComments": true
+   },
+   "buckets": [
+    "missing-diag",
+    "code"
+   ],
+   "keys": [
+    "missing-diag:1177",
+    "code:1177->1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1177,
+      "level": 1,
+      "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+      "location": {
+       "line": 4,
+       "column": 55,
+       "start": 137,
+       "length": 42
+      }
+     },
+     {
+      "code": 1177,
+      "level": 1,
+      "message": "LWC1177: <template> tag with lwc:slot-data directive cannot contain a comment or text node as a direct child.",
+      "location": {
+       "line": 9,
+       "column": 17,
+       "start": 299,
+       "length": 17
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 45,
+       "length": 355
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 53991,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/slot-content-with-directives/valid/dynamic-components/parent",
+   "label": "x-child+if:true={c}",
+   "opts": {
+    "enableDynamicComponents": true
+   },
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1178"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 45,
+       "length": 322
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54039,
+   "source": "mutation",
+   "family": "attr-drop",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "drop lwc:if@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 127,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 214,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 301,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 127,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 214,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54041,
+   "source": "mutation",
+   "family": "attr-drop",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "drop lwc:elseif@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 210,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 297,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 210,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54067,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=<bool>@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1159,
+      "level": 1,
+      "message": "LWC1159: lwc:if directive value should be an expression",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 6
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 134,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 221,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 308,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1159,
+      "level": 1,
+      "message": "LWC1159: lwc:if directive value should be an expression",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 6
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 134,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 221,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54068,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=\"\"@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1159,
+      "level": 1,
+      "message": "LWC1159: lwc:if directive value should be an expression",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 9
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 137,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 224,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 311,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1159,
+      "level": 1,
+      "message": "LWC1159: lwc:if directive value should be an expression",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 9
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 137,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 224,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54069,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=\"x\"@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1159,
+      "level": 1,
+      "message": "LWC1159: lwc:if directive value should be an expression",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 10
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 138,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 225,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 312,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1159,
+      "level": 1,
+      "message": "LWC1159: lwc:if directive value should be an expression",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 10
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 138,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 225,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54070,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=\"{x}\"@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={x}. If you want to make it a string you should escape it lwc:if=\"\\{x}\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 12
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 140,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 227,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 314,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={x}. If you want to make it a string you should escape it lwc:if=\"\\{x}\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 12
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 140,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 227,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54071,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=\"{x.y}\"@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{x.y}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={x.y}. If you want to make it a string you should escape it lwc:if=\"\\{x.y}\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 14
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 142,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 229,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 316,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{x.y}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={x.y}. If you want to make it a string you should escape it lwc:if=\"\\{x.y}\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 14
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 142,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 229,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54072,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=\"{x[0]}\"@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{x[0]}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={x[0]}. If you want to make it a string you should escape it lwc:if=\"\\{x[0]}\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 15
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 143,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 230,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 317,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{x[0]}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={x[0]}. If you want to make it a string you should escape it lwc:if=\"\\{x[0]}\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 15
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 143,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 230,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54073,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=\"{ x }\"@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{ x }\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={ x }. If you want to make it a string you should escape it lwc:if=\"\\{ x }\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 14
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 142,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 229,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 316,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{ x }\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={ x }. If you want to make it a string you should escape it lwc:if=\"\\{ x }\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 14
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 142,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 229,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54074,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=\"{x} y\"@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1035,
+      "level": 1,
+      "message": "LWC1035: Ambiguous attribute value lwc:if=\"{x} y\". If you want to make it a string you should escape it lwc:if=\"\\{x} y\"",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 14
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 142,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 229,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 316,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1035,
+      "level": 1,
+      "message": "LWC1035: Ambiguous attribute value lwc:if=\"{x} y\". If you want to make it a string you should escape it lwc:if=\"\\{x} y\"",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 14
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 142,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 229,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54075,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=\"true\"@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1159,
+      "level": 1,
+      "message": "LWC1159: lwc:if directive value should be an expression",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 13
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 141,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 228,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 315,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1159,
+      "level": 1,
+      "message": "LWC1159: lwc:if directive value should be an expression",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 13
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 141,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 228,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54076,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=\"{true}\"@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{true}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={true}. If you want to make it a string you should escape it lwc:if=\"\\{true}\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 15
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 143,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 230,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 317,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{true}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={true}. If you want to make it a string you should escape it lwc:if=\"\\{true}\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 15
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 143,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 230,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54077,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:if=\"{x()}\"@93",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{x()}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={x()}. If you want to make it a string you should escape it lwc:if=\"\\{x()}\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 14
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 142,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 229,
+       "length": 58
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 316,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:if=\"{x()}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:if={x()}. If you want to make it a string you should escape it lwc:if=\"\\{x()}\".",
+      "location": {
+       "line": 4,
+       "column": 24,
+       "start": 94,
+       "length": 14
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 5,
+       "column": 13,
+       "start": 142,
+       "length": 74
+      }
+     },
+     {
+      "code": 1165,
+      "level": 1,
+      "message": "LWC1165: 'lwc:elseif' directive must be used immediately after an element with 'lwc:if' or 'lwc:elseif'. No such element found.",
+      "location": {
+       "line": 6,
+       "column": 13,
+       "start": 229,
+       "length": 58
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54079,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=<bool>@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 10
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 308,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 10
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54080,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"\"@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 13
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 311,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 13
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54081,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"x\"@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 14
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 312,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 14
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54082,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"{x}\"@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={x}. If you want to make it a string you should escape it lwc:elseif=\"\\{x}\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 16
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 314,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={x}. If you want to make it a string you should escape it lwc:elseif=\"\\{x}\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 16
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54083,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"{x.y}\"@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{x.y}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={x.y}. If you want to make it a string you should escape it lwc:elseif=\"\\{x.y}\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 18
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 316,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{x.y}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={x.y}. If you want to make it a string you should escape it lwc:elseif=\"\\{x.y}\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 18
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54084,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"{x[0]}\"@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{x[0]}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={x[0]}. If you want to make it a string you should escape it lwc:elseif=\"\\{x[0]}\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 19
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 317,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{x[0]}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={x[0]}. If you want to make it a string you should escape it lwc:elseif=\"\\{x[0]}\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 19
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54085,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"{ x }\"@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{ x }\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={ x }. If you want to make it a string you should escape it lwc:elseif=\"\\{ x }\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 18
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 316,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{ x }\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={ x }. If you want to make it a string you should escape it lwc:elseif=\"\\{ x }\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 18
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54086,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"{x} y\"@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1035,
+      "level": 1,
+      "message": "LWC1035: Ambiguous attribute value lwc:elseif=\"{x} y\". If you want to make it a string you should escape it lwc:elseif=\"\\{x} y\"",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 18
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 316,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1035,
+      "level": 1,
+      "message": "LWC1035: Ambiguous attribute value lwc:elseif=\"{x} y\". If you want to make it a string you should escape it lwc:elseif=\"\\{x} y\"",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 18
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54087,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"true\"@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 17
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 315,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 17
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54088,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"{true}\"@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{true}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={true}. If you want to make it a string you should escape it lwc:elseif=\"\\{true}\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 19
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 317,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{true}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={true}. If you want to make it a string you should escape it lwc:elseif=\"\\{true}\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 19
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54089,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"{x()}\"@168",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{x()}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={x()}. If you want to make it a string you should escape it lwc:elseif=\"\\{x()}\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 18
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 316,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{x()}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={x()}. If you want to make it a string you should escape it lwc:elseif=\"\\{x()}\".",
+      "location": {
+       "line": 5,
+       "column": 24,
+       "start": 169,
+       "length": 18
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54091,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=<bool>@255",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 6,
+       "column": 24,
+       "start": 256,
+       "length": 10
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 308,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 6,
+       "column": 24,
+       "start": 256,
+       "length": 10
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54092,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"\"@255",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 6,
+       "column": 24,
+       "start": 256,
+       "length": 13
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 311,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 6,
+       "column": 24,
+       "start": 256,
+       "length": 13
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54093,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"x\"@255",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 6,
+       "column": 24,
+       "start": 256,
+       "length": 14
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 312,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1160,
+      "level": 1,
+      "message": "LWC1160: lwc:elseif directive value should be an expression",
+      "location": {
+       "line": 6,
+       "column": 24,
+       "start": 256,
+       "length": 14
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54094,
+   "source": "mutation",
+   "family": "attr-value",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "lwc:elseif=\"{x}\"@255",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1178"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={x}. If you want to make it a string you should escape it lwc:elseif=\"\\{x}\".",
+      "location": {
+       "line": 6,
+       "column": 24,
+       "start": 256,
+       "length": 16
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 314,
+       "length": 429
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1034,
+      "level": 1,
+      "message": "LWC1034: Ambiguous attribute value lwc:elseif=\"{x}\". If you want to make it a valid identifier you should remove the surrounding quotes lwc:elseif={x}. If you want to make it a string you should escape it lwc:elseif=\"\\{x}\".",
+      "location": {
+       "line": 6,
+       "column": 24,
+       "start": 256,
+       "length": 16
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54137,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-block",
+   "label": "x-child+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1178",
+    "extra-diag:1178"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 45,
+       "length": 290
+      }
+     },
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 8,
+       "column": 9,
+       "start": 344,
+       "length": 429
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54267,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/slot-content-with-directives/valid/if-true",
+   "label": "x-child+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1178"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 45,
+       "length": 242
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54504,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/text-non-direct-child",
+   "label": "x-list+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1178"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 3,
+       "column": 9,
+       "start": 44,
+       "length": 257
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 54606,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "scoped-slots/with-parent-bindings",
+   "label": "x-list+if:true={c}",
+   "opts": {},
+   "buckets": [
+    "extra-diag"
+   ],
+   "keys": [
+    "extra-diag:1178"
+   ],
+   "js": {
+    "ok": true,
+    "diags": []
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1178,
+      "level": 1,
+      "message": "LWC1178: <template> tag with lwc:slot-data directive must be the direct child of a custom element.",
+      "location": {
+       "line": 4,
+       "column": 9,
+       "start": 56,
+       "length": 131
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 55900,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "slots/error-slot-and-directive",
+   "label": "section+lwc:dom=\"manual\"",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1086"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1082,
+      "level": 1,
+      "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+      "location": {
+       "line": 3,
+       "column": 8,
+       "start": 49,
+       "length": 31
+      }
+     },
+     {
+      "code": 1086,
+      "level": 1,
+      "message": "LWC1086: Invalid contents for element with \"lwc:dom\". Element must be empty",
+      "location": {
+       "line": 2,
+       "column": 5,
+       "start": 15,
+       "length": 80
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1082,
+      "level": 1,
+      "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+      "location": {
+       "line": 3,
+       "column": 8,
+       "start": 49,
+       "length": 31
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 55902,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "slots/error-slot-and-directive",
+   "label": "section+lwc:inner-html={h}",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1142"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1082,
+      "level": 1,
+      "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+      "location": {
+       "line": 3,
+       "column": 8,
+       "start": 51,
+       "length": 31
+      }
+     },
+     {
+      "code": 1142,
+      "level": 1,
+      "message": "LWC1142: Invalid lwc:inner-html usage on element \"<section>\". The directive can't be used on an element with content.",
+      "location": {
+       "line": 2,
+       "column": 5,
+       "start": 15,
+       "length": 82
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1082,
+      "level": 1,
+      "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+      "location": {
+       "line": 3,
+       "column": 8,
+       "start": 51,
+       "length": 31
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 55903,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "slots/error-slot-and-directive",
+   "label": "section+lwc:inner-html=\"h\"",
+   "opts": {},
+   "buckets": [
+    "missing-diag"
+   ],
+   "keys": [
+    "missing-diag:1142"
+   ],
+   "js": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1082,
+      "level": 1,
+      "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+      "location": {
+       "line": 3,
+       "column": 8,
+       "start": 51,
+       "length": 31
+      }
+     },
+     {
+      "code": 1142,
+      "level": 1,
+      "message": "LWC1142: Invalid lwc:inner-html usage on element \"<section>\". The directive can't be used on an element with content.",
+      "location": {
+       "line": 2,
+       "column": 5,
+       "start": 15,
+       "length": 82
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": false,
+    "diags": [
+     {
+      "code": 1082,
+      "level": 1,
+      "message": "LWC1082: <slot> tag can't be associated with if:true, lwc:if, lwc:elseif, lwc:else, for:each, for:of, lwc:slot-data template directives.",
+      "location": {
+       "line": 3,
+       "column": 8,
+       "start": 51,
+       "length": 31
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 57440,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "static-content/attr-name-escape/non-optimized",
+   "label": "div+key={k}",
+   "opts": {
+    "enableStaticContentOptimization": false
+   },
+   "buckets": [
+    "order"
+   ],
+   "keys": [
+    "order"
+   ],
+   "js": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1149,
+      "level": 2,
+      "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+      "location": {
+       "line": 2,
+       "column": 10,
+       "start": 20,
+       "length": 7
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 2,
+       "column": 18,
+       "start": 28,
+       "length": 5
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 3,
+       "column": 10,
+       "start": 50,
+       "length": 12
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 2,
+       "column": 18,
+       "start": 28,
+       "length": 5
+      }
+     },
+     {
+      "code": 1149,
+      "level": 2,
+      "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+      "location": {
+       "line": 2,
+       "column": 10,
+       "start": 20,
+       "length": 7
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 3,
+       "column": 10,
+       "start": 50,
+       "length": 12
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": 57525,
+   "source": "mutation",
+   "family": "insert-elem",
+   "file": "static-content/attr-name-escape/optimized",
+   "label": "div+key={k}",
+   "opts": {
+    "enableStaticContentOptimization": true
+   },
+   "buckets": [
+    "order"
+   ],
+   "keys": [
+    "order"
+   ],
+   "js": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1149,
+      "level": 2,
+      "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+      "location": {
+       "line": 2,
+       "column": 10,
+       "start": 20,
+       "length": 7
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 2,
+       "column": 18,
+       "start": 28,
+       "length": 5
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 3,
+       "column": 10,
+       "start": 50,
+       "length": 12
+      }
+     }
+    ]
+   },
+   "rust": {
+    "ok": true,
+    "diags": [
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 2,
+       "column": 18,
+       "start": 28,
+       "length": 5
+      }
+     },
+     {
+      "code": 1149,
+      "level": 2,
+      "message": "LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
+      "location": {
+       "line": 2,
+       "column": 10,
+       "start": 20,
+       "length": 7
+      }
+     },
+     {
+      "code": 1057,
+      "level": 2,
+      "message": "LWC1057: a`b`c is not valid attribute for div. For more information refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
+      "location": {
+       "line": 3,
+       "column": 10,
+       "start": 50,
+       "length": 12
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "codegenUnclean": []
+}

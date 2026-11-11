@@ -1,0 +1,27 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1108
+  ],
+  "line": null,
+  "expectedCodes": [
+    1108
+  ],
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1108,
+        "message": "LWC1108: Invalid property name \"onClickHandler\". Properties starting with \"on\" are reserved for event handlers.",
+        "location": {
+          "line": 4,
+          "column": 2,
+          "start": 101,
+          "length": 22
+        }
+      }
+    ]
+  }
+}

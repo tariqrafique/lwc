@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Max row selection value: 4</p><lightning-button class=\"increaseMaxRowSelection\"><template shadowrootmode=\"open\"></template></lightning-button><lightning-button class=\"decreaseMaxRowSelection\"><template shadowrootmode=\"open\"></template></lightning-button><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Max row selection value: 4</p><lightning-button class=\"increaseMaxRowSelection\"><template shadowrootmode=\"open\"></template></lightning-button><lightning-button class=\"decreaseMaxRowSelection\"><template shadowrootmode=\"open\"></template></lightning-button><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable></template></lwc-lbc>"
+ }
+}

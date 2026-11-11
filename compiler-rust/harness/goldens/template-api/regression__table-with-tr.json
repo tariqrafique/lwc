@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./table-with-tr.css",
+   "./table-with-tr.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1144,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3rhlerpfqpi",
+   "lwc-3rhlerpfqpi-host",
+   "x-table-with-tr_table-with-tr",
+   "x-table-with-tr_table-with-tr-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<table${3}><tbody${3}><tr${3}></tr></tbody></table>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3rhlerpfqpi"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./table-with-tr.css",
+   "./table-with-tr.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1144,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3rhlerpfqpi",
+   "lwc-3rhlerpfqpi-host",
+   "x-table-with-tr_table-with-tr",
+   "x-table-with-tr_table-with-tr-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<table${3}><tbody${3}><tr${3}></tr></tbody></table>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-table-with-tr_table-with-tr"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./table-with-tr.css",
+   "./table-with-tr.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1144,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3rhlerpfqpi",
+   "lwc-3rhlerpfqpi-host",
+   "x-table-with-tr_table-with-tr",
+   "x-table-with-tr_table-with-tr-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<table${3}><tbody${3}><tr${3}></tr></tbody></table>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-table-with-tr_table-with-tr"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./table-with-tr.css",
+   "./table-with-tr.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1144,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3rhlerpfqpi",
+   "lwc-3rhlerpfqpi-host",
+   "x-table-with-tr_table-with-tr",
+   "x-table-with-tr_table-with-tr-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<table${3}><tbody${3}><tr${3}></tr></tbody></table>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3rhlerpfqpi"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./table-with-tr.css",
+   "./table-with-tr.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1144,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3rhlerpfqpi",
+   "lwc-3rhlerpfqpi-host",
+   "x-table-with-tr_table-with-tr",
+   "x-table-with-tr_table-with-tr-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<table${3}><tbody${3}><tr${3}></tr></tbody></table>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3rhlerpfqpi"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./table-with-tr.css",
+   "./table-with-tr.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1144,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3rhlerpfqpi",
+   "lwc-3rhlerpfqpi-host",
+   "x-table-with-tr_table-with-tr",
+   "x-table-with-tr_table-with-tr-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<table${3}><tbody${3}><tr${3}></tr></tbody></table>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3rhlerpfqpi"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./table-with-tr.css",
+   "./table-with-tr.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1144,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3rhlerpfqpi",
+   "lwc-3rhlerpfqpi-host",
+   "x-table-with-tr_table-with-tr",
+   "x-table-with-tr_table-with-tr-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<table${3}><tbody${3}><tr${3}></tr></tbody></table>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3rhlerpfqpi"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./table-with-tr.css",
+   "./table-with-tr.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1144,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3rhlerpfqpi",
+   "lwc-3rhlerpfqpi-host",
+   "x-table-with-tr_table-with-tr",
+   "x-table-with-tr_table-with-tr-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<table${3}><tbody${3}><tr${3}></tr></tbody></table>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3rhlerpfqpi"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./table-with-tr.css",
+   "./table-with-tr.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1144,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3rhlerpfqpi",
+   "lwc-3rhlerpfqpi-host",
+   "x-table-with-tr_table-with-tr",
+   "x-table-with-tr_table-with-tr-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<table${3}><tbody${3}><tr${3}></tr></tbody></table>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3rhlerpfqpi"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./table-with-tr.css",
+   "./table-with-tr.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1144,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3rhlerpfqpi",
+   "lwc-3rhlerpfqpi-host",
+   "x-table-with-tr_table-with-tr",
+   "x-table-with-tr_table-with-tr-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<table${3}><tbody${3}><tr${3}></tr></tbody></table>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3rhlerpfqpi"
+  }
+ }
+}

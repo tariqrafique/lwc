@@ -1,0 +1,332 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset-complex.css",
+   "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-71sssdb1eho",
+   "lwc-71sssdb1eho-host",
+   "x-dataset-complex_dataset-complex",
+   "x-dataset-complex_dataset-complex-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data--bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-71sssdb1eho"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset-complex.css",
+   "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-71sssdb1eho",
+   "lwc-71sssdb1eho-host",
+   "x-dataset-complex_dataset-complex",
+   "x-dataset-complex_dataset-complex-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data--bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-dataset-complex_dataset-complex"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset-complex.css",
+   "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-71sssdb1eho",
+   "lwc-71sssdb1eho-host",
+   "x-dataset-complex_dataset-complex",
+   "x-dataset-complex_dataset-complex-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data--bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-dataset-complex_dataset-complex"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset-complex.css",
+   "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-71sssdb1eho",
+   "lwc-71sssdb1eho-host",
+   "x-dataset-complex_dataset-complex",
+   "x-dataset-complex_dataset-complex-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data--bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-71sssdb1eho"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset-complex.css",
+   "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-71sssdb1eho",
+   "lwc-71sssdb1eho-host",
+   "x-dataset-complex_dataset-complex",
+   "x-dataset-complex_dataset-complex-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data--bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-71sssdb1eho"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset-complex.css",
+   "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-71sssdb1eho",
+   "lwc-71sssdb1eho-host",
+   "x-dataset-complex_dataset-complex",
+   "x-dataset-complex_dataset-complex-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data--bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-71sssdb1eho"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset-complex.css",
+   "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-71sssdb1eho",
+   "lwc-71sssdb1eho-host",
+   "x-dataset-complex_dataset-complex",
+   "x-dataset-complex_dataset-complex-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data--bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-71sssdb1eho"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset-complex.css",
+   "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-71sssdb1eho",
+   "lwc-71sssdb1eho-host",
+   "x-dataset-complex_dataset-complex",
+   "x-dataset-complex_dataset-complex-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data--bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-71sssdb1eho"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset-complex.css",
+   "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-71sssdb1eho",
+   "lwc-71sssdb1eho-host",
+   "x-dataset-complex_dataset-complex",
+   "x-dataset-complex_dataset-complex-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data--bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-71sssdb1eho"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset-complex.css",
+   "./dataset-complex.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-71sssdb1eho",
+   "lwc-71sssdb1eho-host",
+   "x-dataset-complex_dataset-complex",
+   "x-dataset-complex_dataset-complex-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data--bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-71sssdb1eho"
+  }
+ }
+}

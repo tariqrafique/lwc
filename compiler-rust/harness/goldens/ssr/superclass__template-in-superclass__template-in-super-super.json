@@ -1,0 +1,104 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/sub/sub.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./sub.html",
+        "x/super"
+      ],
+      "runtimeImports": [
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": false,
+        "staticInternals": {
+          "tagName": "x-sub",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/super/super.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./super.html",
+        "x/superSuper"
+      ],
+      "runtimeImports": [
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": false,
+        "staticInternals": {
+          "tagName": "x-super",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/superSuper/superSuper.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./superSuper.css",
+        "./superSuper.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-7gtu22904oc",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/superSuper/superSuper.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./superSuper.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-super-super",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

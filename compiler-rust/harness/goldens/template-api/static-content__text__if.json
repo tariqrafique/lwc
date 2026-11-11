@@ -1,0 +1,402 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if.css",
+   "./if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-24vr4p2ioo5",
+   "lwc-24vr4p2ioo5-host",
+   "x-if_if",
+   "x-if_if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1</span></div>",
+   "parseFragment:<div${3}><span${3}>text2</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3</span>${\"t3\"}<span${3}>text4</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-24vr4p2ioo5"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if.css",
+   "./if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-24vr4p2ioo5",
+   "lwc-24vr4p2ioo5-host",
+   "x-if_if",
+   "x-if_if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1</span></div>",
+   "parseFragment:<div${3}><span${3}>text2</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3</span>${\"t3\"}<span${3}>text4</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-if_if"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if.css",
+   "./if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-24vr4p2ioo5",
+   "lwc-24vr4p2ioo5-host",
+   "x-if_if",
+   "x-if_if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1</span></div>",
+   "parseFragment:<div${3}><span${3}>text2</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3</span>${\"t3\"}<span${3}>text4</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-if_if"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if.css",
+   "./if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-24vr4p2ioo5",
+   "lwc-24vr4p2ioo5-host",
+   "x-if_if",
+   "x-if_if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1</span></div>",
+   "parseFragment:<div${3}><span${3}>text2</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3</span>${\"t3\"}<span${3}>text4</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-24vr4p2ioo5"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if.css",
+   "./if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-24vr4p2ioo5",
+   "lwc-24vr4p2ioo5-host",
+   "x-if_if",
+   "x-if_if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1</span></div>",
+   "parseFragment:<div${3}><span${3}>text2</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3</span>${\"t3\"}<span${3}>text4</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-24vr4p2ioo5"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if.css",
+   "./if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-24vr4p2ioo5",
+   "lwc-24vr4p2ioo5-host",
+   "x-if_if",
+   "x-if_if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1</span></div>",
+   "parseFragment:<div${3}><span${3}>text2</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3</span>${\"t3\"}<span${3}>text4</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-24vr4p2ioo5"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if.css",
+   "./if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-24vr4p2ioo5",
+   "lwc-24vr4p2ioo5-host",
+   "x-if_if",
+   "x-if_if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1</span></div>",
+   "parseFragment:<div${3}><span${3}>text2</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3</span>${\"t3\"}<span${3}>text4</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-24vr4p2ioo5"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if.css",
+   "./if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-24vr4p2ioo5",
+   "lwc-24vr4p2ioo5-host",
+   "x-if_if",
+   "x-if_if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1</span></div>",
+   "parseFragment:<div${3}><span${3}>text2</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3</span>${\"t3\"}<span${3}>text4</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-24vr4p2ioo5"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if.css",
+   "./if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-24vr4p2ioo5",
+   "lwc-24vr4p2ioo5-host",
+   "x-if_if",
+   "x-if_if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1</span></div>",
+   "parseFragment:<div${3}><span${3}>text2</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3</span>${\"t3\"}<span${3}>text4</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-24vr4p2ioo5"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if.css",
+   "./if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-24vr4p2ioo5",
+   "lwc-24vr4p2ioo5-host",
+   "x-if_if",
+   "x-if_if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1</span></div>",
+   "parseFragment:<div${3}><span${3}>text2</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3</span>${\"t3\"}<span${3}>text4</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-24vr4p2ioo5"
+  }
+ }
+}

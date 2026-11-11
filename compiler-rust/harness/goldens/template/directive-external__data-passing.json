@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./data-passing.css",
+    "./data-passing.scoped.css?scoped=true",
+    "x/test"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-74096niamqs",
+    "lwc-74096niamqs-host",
+    "x-data-passing_data-passing",
+    "x-data-passing_data-passing-host"
+  ]
+}

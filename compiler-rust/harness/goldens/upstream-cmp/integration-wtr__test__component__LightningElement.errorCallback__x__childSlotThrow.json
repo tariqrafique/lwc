@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">I&#x27;m a slot and i throw during rendereing</template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">I'm a slot and i throw during rendereing</template></lwc-up>"
+ },
+ "asyncErrors": [
+  "Slot thew an error during rendering"
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">.slds-box {padding: 1rem;margin: 0;border-radius: 0.25rem;border: 1px solid lightgrey;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><div class=\"slds-box\"><h2 class=\"header\">Input Checkbox Button</h2><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.slds-box {padding: 1rem;margin: 0;border-radius: 0.25rem;border: 1px solid lightgrey;}</style><div class=\"slds-box\"><h2 class=\"header\">Input Checkbox Button</h2><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div></template></lwc-lbc>"
+ }
+}

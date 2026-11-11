@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test aria-label=\"connectedCallback\" data-lwc-host-mutated=\"aria-label\">\n  <template shadowrootmode=\"open\">\n    <div>\n      ariaLabel: connectedCallback\n    </div>\n    <div>\n      ariaCurrent: connectedCallback\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test aria-label=\"connectedCallback\" data-lwc-host-mutated=\"aria-label\">\n  <template shadowrootmode=\"open\">\n    <div>\n      ariaLabel: connectedCallback\n    </div>\n    <div>\n      ariaCurrent: connectedCallback\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test aria-label=\"connectedCallback\" data-lwc-host-mutated=\"aria-label\">\n  <template shadowrootmode=\"open\">\n    <div>\n      ariaLabel: connectedCallback\n    </div>\n    <div>\n      ariaCurrent: connectedCallback\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test aria-label=\"connectedCallback\" data-lwc-host-mutated=\"aria-label\">\n  <template shadowrootmode=\"open\">\n    <div>\n      ariaLabel: connectedCallback\n    </div>\n    <div>\n      ariaCurrent: connectedCallback\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test aria-label=\"connectedCallback\" data-lwc-host-mutated=\"aria-label\">\n  <template shadowrootmode=\"open\">\n    <div>\n      ariaLabel: connectedCallback\n    </div>\n    <div>\n      ariaCurrent: connectedCallback\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test aria-label=\"connectedCallback\" data-lwc-host-mutated=\"aria-label\">\n  <template shadowrootmode=\"open\">\n    <div>\n      ariaLabel: connectedCallback\n    </div>\n    <div>\n      ariaCurrent: connectedCallback\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test aria-label=\"connectedCallback\" data-lwc-host-mutated=\"aria-label\">\n  <template shadowrootmode=\"open\">\n    <div>\n      ariaLabel: connectedCallback\n    </div>\n    <div>\n      ariaCurrent: connectedCallback\n    </div>\n  </template>\n</fixture-test>"
+ }
+}

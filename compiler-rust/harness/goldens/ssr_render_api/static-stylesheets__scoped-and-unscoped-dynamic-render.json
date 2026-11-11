@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-72njdrv8nr1-host\" data-lwc-host-scope-token=\"lwc-72njdrv8nr1-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--0\" type=\"text/css\">\n      h1 {border: 1px solid goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {outline: 2px solid chartreuse;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--2\" type=\"text/css\">\n      h1 {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--3\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <h1 class=\"lwc-72njdrv8nr1\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-72njdrv8nr1-host\" data-lwc-host-scope-token=\"lwc-72njdrv8nr1-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--0\" type=\"text/css\">\n      h1 {border: 1px solid goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {outline: 2px solid chartreuse;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--2\" type=\"text/css\">\n      h1 {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--3\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <h1 class=\"lwc-72njdrv8nr1\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-72njdrv8nr1-host\" data-lwc-host-scope-token=\"lwc-72njdrv8nr1-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--0\" type=\"text/css\">\n      h1 {border: 1px solid goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {outline: 2px solid chartreuse;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--2\" type=\"text/css\">\n      h1 {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--3\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <h1 class=\"lwc-72njdrv8nr1\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-72njdrv8nr1-host\" data-lwc-host-scope-token=\"lwc-72njdrv8nr1-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--0\" type=\"text/css\">\n      h1 {border: 1px solid goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {outline: 2px solid chartreuse;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--2\" type=\"text/css\">\n      h1 {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--3\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <h1 class=\"lwc-72njdrv8nr1\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-72njdrv8nr1-host\" data-lwc-host-scope-token=\"lwc-72njdrv8nr1-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--0\" type=\"text/css\">\n      h1 {border: 1px solid goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {outline: 2px solid chartreuse;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--2\" type=\"text/css\">\n      h1 {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--3\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <h1 class=\"lwc-72njdrv8nr1\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-72njdrv8nr1-host\" data-lwc-host-scope-token=\"lwc-72njdrv8nr1-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--0\" type=\"text/css\">\n      h1 {border: 1px solid goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {outline: 2px solid chartreuse;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--2\" type=\"text/css\">\n      h1 {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--3\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <h1 class=\"lwc-72njdrv8nr1\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-72njdrv8nr1-host\" data-lwc-host-scope-token=\"lwc-72njdrv8nr1-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--0\" type=\"text/css\">\n      h1 {border: 1px solid goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {outline: 2px solid chartreuse;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--2\" type=\"text/css\">\n      h1 {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <style class=\"lwc-72njdrv8nr1\" id=\"lwc-style--3\" type=\"text/css\">\n      h1.lwc-72njdrv8nr1 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <h1 class=\"lwc-72njdrv8nr1\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-2idtulmc17f-host\" data-lwc-host-scope-token=\"lwc-2idtulmc17f-host\"><template shadowrootmode=\"open\"><style class=\"lwc-2idtulmc17f\" id=\"lwc-style--0\" type=\"text/css\">:host {color: green;}div {background: brown;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><style class=\"lwc-2idtulmc17f\" id=\"lwc-style--1\" type=\"text/css\">:host {background: blue;}div.lwc-2idtulmc17f {color: yellow;}</style><lwc-style style-id=\"lwc-style--1\"></lwc-style><div class=\"dynamic lwc-2idtulmc17f\"></div><div class=\"static lwc-2idtulmc17f\"></div><div class=\"manual lwc-2idtulmc17f\"></div><div class=\"lwc-2idtulmc17f expression\"></div><span class=\"lwc-2idtulmc17f\">0</span></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-2idtulmc17f-host\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {color: green;}div {background: brown;}</style><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {background: blue;}div.lwc-2idtulmc17f {color: yellow;}</style><div class=\"lwc-2idtulmc17f dynamic\"></div><div class=\"static lwc-2idtulmc17f\"></div><div class=\"lwc-2idtulmc17f manual\"><span></span></div><div class=\"lwc-2idtulmc17f expression\"></div><span class=\"lwc-2idtulmc17f\">0</span></template></lwc-up>"
+ }
+}

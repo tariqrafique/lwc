@@ -1,0 +1,2 @@
+source	inputs	style	template_codegen	template_diagnostics	js_transform	whole_component	ssr_render	csr_render	semantic_diff	notes
+s	css,html,js,component	row:a;row:b	row:a;row:b	row:a;row:b	row:a;row:b	row:a;row:b	row:a;row:b	row:a;row:b	row:a;row:b	evidence

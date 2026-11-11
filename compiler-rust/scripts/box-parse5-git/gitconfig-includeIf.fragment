@@ -1,0 +1,3 @@
+# Append to the box gitconfig (${CARGO_HOME} expanded by apply.sh; default $HOME/.cargo):
+[includeIf "gitdir:${CARGO_HOME}/git/"]
+	path = /workspace/.cargo/parse5-url-rewrite.gitconfig

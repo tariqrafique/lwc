@@ -1,0 +1,181 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unary-expr-bitwise.css",
+   "./unary-expr-bitwise.scoped.css?scoped=true",
+   "x/pert"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3c5ct80lpft",
+   "lwc-3c5ct80lpft-host",
+   "x-unary-expr-bitwise_unary-expr-bitwise",
+   "x-unary-expr-bitwise_unary-expr-bitwise-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3c5ct80lpft"
+  }
+ },
+ "v57": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v58": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v59": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v60": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v61": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v62": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v65": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unary-expr-bitwise.css",
+   "./unary-expr-bitwise.scoped.css?scoped=true",
+   "x/pert"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3c5ct80lpft",
+   "lwc-3c5ct80lpft-host",
+   "x-unary-expr-bitwise_unary-expr-bitwise",
+   "x-unary-expr-bitwise_unary-expr-bitwise-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3c5ct80lpft"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unary-expr-bitwise.css",
+   "./unary-expr-bitwise.scoped.css?scoped=true",
+   "x/pert"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3c5ct80lpft",
+   "lwc-3c5ct80lpft-host",
+   "x-unary-expr-bitwise_unary-expr-bitwise",
+   "x-unary-expr-bitwise_unary-expr-bitwise-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-3c5ct80lpft"
+  }
+ }
+}

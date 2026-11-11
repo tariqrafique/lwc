@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) 0 0 3px\n );}",
+        "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) 0 0 3px\n );}",
+        "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) 0 0 3px\n );}",
+        "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) 0 0 3px\n );}",
+        "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) 0 0 3px\n );}"
+      }
+    }
+  ]
+}

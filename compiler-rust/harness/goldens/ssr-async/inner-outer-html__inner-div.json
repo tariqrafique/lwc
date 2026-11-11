@@ -1,0 +1,36 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": true,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/inner/inner.html": {
+      "ok": false,
+      "code": null
+    },
+    "x/inner/inner.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./inner.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-inner",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

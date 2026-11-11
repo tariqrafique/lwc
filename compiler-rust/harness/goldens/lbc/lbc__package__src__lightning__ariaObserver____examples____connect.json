@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div><label id=\"foo\">Foo</label></div><div><label id=\"bar\">Bar</label></div><div><label id=\"hello\">Hello</label></div><div><label id=\"world\">World</label></div><div><ariaobserver-connect-child aria-labelledby=\"foo bar\"><template shadowrootmode=\"open\"></template></ariaobserver-connect-child><div>Current Id: foo bar</div><div><button>Update Ids to &#x27;foo bar hello world&#x27;</button></div></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div><label id=\"foo\">Foo</label></div><div><label id=\"bar\">Bar</label></div><div><label id=\"hello\">Hello</label></div><div><label id=\"world\">World</label></div><div><ariaobserver-connect-child aria-labelledby=\"foo bar\"><template shadowrootmode=\"open\"></template></ariaobserver-connect-child><div>Current Id: foo bar</div><div><button>Update Ids to 'foo bar hello world'</button></div></div></template></lwc-lbc>"
+ }
+}

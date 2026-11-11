@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "_missingExportShim is not a function"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc role=\"separator\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {display: block;}</style></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "_missingExportShim is not a function"
+ ]
+}

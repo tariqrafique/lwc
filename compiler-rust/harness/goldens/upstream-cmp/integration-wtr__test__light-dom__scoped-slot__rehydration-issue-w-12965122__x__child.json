@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><ul><li><!----><!----></li></ul></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><ul><li><!----><!----></li></ul></lwc-up>"
+ },
+ "asyncErrors": [
+  "Cannot read properties of undefined (reading 'push')"
+ ]
+}

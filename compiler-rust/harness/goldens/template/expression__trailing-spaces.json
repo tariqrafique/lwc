@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./trailing-spaces.css",
+    "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2t7oqs531sa",
+    "lwc-2t7oqs531sa-host",
+    "x-trailing-spaces_trailing-spaces",
+    "x-trailing-spaces_trailing-spaces-host"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./valid-svg.css",
+    "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5g5a2lm585s",
+    "lwc-5g5a2lm585s-host",
+    "x-valid-svg_valid-svg",
+    "x-valid-svg_valid-svg-host"
+  ]
+}

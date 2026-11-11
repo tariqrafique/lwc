@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-dropdown__header slds-truncate\" role=\"separator\" data-lwc-host-mutated=\"class role\"><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">:host {display: block;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><span>‍</span></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-dropdown__header slds-truncate\" role=\"separator\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {display: block;}</style><span></span></template></lwc-lbc>"
+ }
+}

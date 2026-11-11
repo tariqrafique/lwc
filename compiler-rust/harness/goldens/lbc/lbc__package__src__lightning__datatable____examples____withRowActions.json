@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div style=\"height: 300px;\"><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable></div><div class=\"slds-m-around--medium\" style=\"width: 30rem;\"><article class=\"slds-tile\"><h3 class=\"slds-tile__title slds-truncate\" title=\"Record details\"><a href=\"javascript:void(0);\">Record details</a></h3><div class=\"slds-tile__detail\"><dl class=\"slds-list_horizontal slds-wrap\"><dt class=\"slds-item_label slds-text-color_weak slds-truncate\" title=\"Name\">Name:</dt><dd class=\"slds-item_detail slds-truncate\">‍</dd><dt class=\"slds-item_label slds-text-color_weak slds-truncate\" title=\"Balance\">Balance:</dt><dd class=\"slds-item_detail slds-truncate\"><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></dd></dl></div></article></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div style=\"height: 300px;\"><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable></div><div class=\"slds-m-around--medium\" style=\"width: 30rem;\"><article class=\"slds-tile\"><h3 class=\"slds-tile__title slds-truncate\" title=\"Record details\"><a href=\"javascript:void(0);\">Record details</a></h3><div class=\"slds-tile__detail\"><dl class=\"slds-list_horizontal slds-wrap\"><dt class=\"slds-item_label slds-text-color_weak slds-truncate\" title=\"Name\">Name:</dt><dd class=\"slds-item_detail slds-truncate\"></dd><dt class=\"slds-item_label slds-text-color_weak slds-truncate\" title=\"Balance\">Balance:</dt><dd class=\"slds-item_detail slds-truncate\"><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></dd></dl></div></article></div></template></lwc-lbc>"
+ }
+}

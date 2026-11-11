@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./inline-index.css",
+    "./inline-index.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-a96me6lsm3",
+    "lwc-a96me6lsm3-host",
+    "x-inline-index_inline-index",
+    "x-inline-index_inline-index-host"
+  ]
+}

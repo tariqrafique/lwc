@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-native-child><template shadowrootmode=\"open\"></template><button class=\"lwc-native-child-slotted-button\"></button></x-native-child><x-synthetic-child><template shadowrootmode=\"open\"></template><button class=\"lwc-synthetic-child-slotted-button\"></button></x-synthetic-child><mixed-shadow-mode-retargeting><button class=\"native-wc-slotted-button\"></button></mixed-shadow-mode-retargeting></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-native-child><template shadowrootmode=\"open\"></template><button class=\"lwc-native-child-slotted-button\"></button></x-native-child><x-synthetic-child><template shadowrootmode=\"open\"></template><button class=\"lwc-synthetic-child-slotted-button\"></button></x-synthetic-child><mixed-shadow-mode-retargeting><template shadowrootmode=\"closed\"><slot></slot><button></button></template><button class=\"native-wc-slotted-button\"></button></mixed-shadow-mode-retargeting></template></lwc-up>"
+ }
+}

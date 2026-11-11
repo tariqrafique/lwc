@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Class constructor sldsUtilsTruncation cannot be invoked without 'new'"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "Class constructor sldsUtilsTruncation cannot be invoked without 'new'"
+ ]
+}

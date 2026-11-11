@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "\"getChildNodes\" is not supported in this environment"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"></template></lwc-up>"
+ }
+}

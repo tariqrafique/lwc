@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "createElement cannot be used in SSR context."
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "_missingExportShim is not a function"
+ }
+}

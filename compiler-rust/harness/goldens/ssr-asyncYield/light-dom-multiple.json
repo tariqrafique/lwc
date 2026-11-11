@@ -1,0 +1,166 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/one/one.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/one/one.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./one.css",
+        "./one.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-2c15n1201lc",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/one/one.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./one.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-one",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/parent/other.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/parent/parent.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/parent/parent.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/one",
+        "x/two",
+        "./parent.css",
+        "./parent.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-ts1rr7v761",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/parent/parent.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./parent.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-parent",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/two/two.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/two/two.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./two.css",
+        "./two.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-7r2h5lcc",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/two/two.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./two.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-two",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

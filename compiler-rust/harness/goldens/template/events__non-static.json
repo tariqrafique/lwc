@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./non-static.css",
+    "./non-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3ncpfrc8qob",
+    "lwc-3ncpfrc8qob-host",
+    "x-non-static_non-static",
+    "x-non-static_non-static-host"
+  ]
+}

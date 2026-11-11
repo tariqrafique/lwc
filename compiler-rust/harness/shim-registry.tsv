@@ -1,0 +1,3 @@
+# path(repo-relative)	tag(exact text inside SHIM(...))	owner	expiry	reason
+# Expiry is NOT machine-evaluated by shim-gate; it is enforced at the named stage's review (S<n>, AB-..., or D-NNNN).
+# D-0265 removed the three lwc-js rows (pass_with, unforgeables, async_functions).

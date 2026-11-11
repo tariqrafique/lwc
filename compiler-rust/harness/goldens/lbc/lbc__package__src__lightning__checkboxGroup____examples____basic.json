@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-checkbox-group><template shadowrootmode=\"open\"></template></lightning-checkbox-group><p>Selected Values are: option1</p></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-checkbox-group><template shadowrootmode=\"open\"></template></lightning-checkbox-group><p>Selected Values are: option1</p></template></lwc-lbc>"
+ }
+}

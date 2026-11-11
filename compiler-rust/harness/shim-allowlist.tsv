@@ -1,0 +1,4 @@
+# path(rel to crates/)	word(lowercase match)	reason (required)
+lwc-template/src/parser/tables.rs	mask	SVG <mask> element name in SUPPORTED_SVG_TAGS (upstream @lwc/template-compiler parser/constants.ts)
+lwc-shared/src/errors/error_info.rs	compat	generated upstream @lwc/errors 9.5.3 entry INVALID_COMPAT_PROPERTY (LWC1013, outputConfig.compat); verbatim upstream name and message, not a shim
+lwc-template/src/parser/constants.rs	mask	SVG <mask> element name in SUPPORTED_SVG_TAGS (generated from upstream @lwc/template-compiler parser/constants.ts)

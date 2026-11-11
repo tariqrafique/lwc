@@ -1,0 +1,392 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./name-is-expression.css",
+   "./name-is-expression.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ho8kalrapc",
+   "lwc-ho8kalrapc-host",
+   "x-name-is-expression_name-is-expression",
+   "x-name-is-expression_name-is-expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ho8kalrapc"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./name-is-expression.css",
+   "./name-is-expression.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ho8kalrapc",
+   "lwc-ho8kalrapc-host",
+   "x-name-is-expression_name-is-expression",
+   "x-name-is-expression_name-is-expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-name-is-expression_name-is-expression"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./name-is-expression.css",
+   "./name-is-expression.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ho8kalrapc",
+   "lwc-ho8kalrapc-host",
+   "x-name-is-expression_name-is-expression",
+   "x-name-is-expression_name-is-expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-name-is-expression_name-is-expression"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./name-is-expression.css",
+   "./name-is-expression.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ho8kalrapc",
+   "lwc-ho8kalrapc-host",
+   "x-name-is-expression_name-is-expression",
+   "x-name-is-expression_name-is-expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ho8kalrapc"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./name-is-expression.css",
+   "./name-is-expression.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ho8kalrapc",
+   "lwc-ho8kalrapc-host",
+   "x-name-is-expression_name-is-expression",
+   "x-name-is-expression_name-is-expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ho8kalrapc"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./name-is-expression.css",
+   "./name-is-expression.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ho8kalrapc",
+   "lwc-ho8kalrapc-host",
+   "x-name-is-expression_name-is-expression",
+   "x-name-is-expression_name-is-expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ho8kalrapc"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./name-is-expression.css",
+   "./name-is-expression.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ho8kalrapc",
+   "lwc-ho8kalrapc-host",
+   "x-name-is-expression_name-is-expression",
+   "x-name-is-expression_name-is-expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ho8kalrapc"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./name-is-expression.css",
+   "./name-is-expression.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ho8kalrapc",
+   "lwc-ho8kalrapc-host",
+   "x-name-is-expression_name-is-expression",
+   "x-name-is-expression_name-is-expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ho8kalrapc"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./name-is-expression.css",
+   "./name-is-expression.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ho8kalrapc",
+   "lwc-ho8kalrapc-host",
+   "x-name-is-expression_name-is-expression",
+   "x-name-is-expression_name-is-expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ho8kalrapc"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./name-is-expression.css",
+   "./name-is-expression.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ho8kalrapc",
+   "lwc-ho8kalrapc-host",
+   "x-name-is-expression_name-is-expression",
+   "x-name-is-expression_name-is-expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ho8kalrapc"
+  }
+ }
+}

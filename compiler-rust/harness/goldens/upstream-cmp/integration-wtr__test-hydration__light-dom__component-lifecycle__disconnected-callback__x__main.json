@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><p>rendered</p></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><p>rendered</p></lwc-up>"
+ },
+ "asyncErrors": [
+  "Cannot read properties of undefined (reading 'call')"
+ ]
+}

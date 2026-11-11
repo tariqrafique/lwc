@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./component-definition.css",
+    "./component-definition.scoped.css?scoped=true",
+    "x/foo"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5kp75peq61d",
+    "lwc-5kp75peq61d-host",
+    "x-component-definition_component-definition",
+    "x-component-definition_component-definition-host"
+  ]
+}

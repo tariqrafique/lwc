@@ -1,0 +1,90 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/component/component.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./component.css",
+        "./component.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-6a8uqob2ku4",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/component/component.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./component.html",
+        "x/mixinSuperclass",
+        "x/notLwcClass",
+        "x/superless"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": false,
+        "staticInternals": {
+          "tagName": "x-component",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/mixinSuperclass/mixinSuperclass.js": {
+      "ok": true,
+      "imports": [],
+      "runtimeImports": [],
+      "exports": {
+        "FancyMixin": "function"
+      },
+      "defaultExport": null,
+      "warnings": []
+    },
+    "x/notLwcClass/notLwcClass.js": {
+      "ok": true,
+      "imports": [],
+      "runtimeImports": [],
+      "exports": {
+        "NotDefault": "class"
+      },
+      "defaultExport": null,
+      "warnings": []
+    },
+    "x/superless/superless.js": {
+      "ok": true,
+      "imports": [],
+      "runtimeImports": [],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": false
+      },
+      "warnings": []
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-test title=\"child title\"><template shadowrootmode=\"open\"></template></x-test></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-test title=\"child title\"><template shadowrootmode=\"open\"></template></x-test></template></lwc-up>"
+ }
+}

@@ -1,0 +1,312 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./trailing-spaces.css",
+   "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2t7oqs531sa",
+   "lwc-2t7oqs531sa-host",
+   "x-trailing-spaces_trailing-spaces",
+   "x-trailing-spaces_trailing-spaces-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2t7oqs531sa"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./trailing-spaces.css",
+   "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2t7oqs531sa",
+   "lwc-2t7oqs531sa-host",
+   "x-trailing-spaces_trailing-spaces",
+   "x-trailing-spaces_trailing-spaces-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-trailing-spaces_trailing-spaces"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./trailing-spaces.css",
+   "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2t7oqs531sa",
+   "lwc-2t7oqs531sa-host",
+   "x-trailing-spaces_trailing-spaces",
+   "x-trailing-spaces_trailing-spaces-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-trailing-spaces_trailing-spaces"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./trailing-spaces.css",
+   "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2t7oqs531sa",
+   "lwc-2t7oqs531sa-host",
+   "x-trailing-spaces_trailing-spaces",
+   "x-trailing-spaces_trailing-spaces-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2t7oqs531sa"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./trailing-spaces.css",
+   "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2t7oqs531sa",
+   "lwc-2t7oqs531sa-host",
+   "x-trailing-spaces_trailing-spaces",
+   "x-trailing-spaces_trailing-spaces-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2t7oqs531sa"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./trailing-spaces.css",
+   "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2t7oqs531sa",
+   "lwc-2t7oqs531sa-host",
+   "x-trailing-spaces_trailing-spaces",
+   "x-trailing-spaces_trailing-spaces-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2t7oqs531sa"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./trailing-spaces.css",
+   "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2t7oqs531sa",
+   "lwc-2t7oqs531sa-host",
+   "x-trailing-spaces_trailing-spaces",
+   "x-trailing-spaces_trailing-spaces-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2t7oqs531sa"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./trailing-spaces.css",
+   "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2t7oqs531sa",
+   "lwc-2t7oqs531sa-host",
+   "x-trailing-spaces_trailing-spaces",
+   "x-trailing-spaces_trailing-spaces-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2t7oqs531sa"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./trailing-spaces.css",
+   "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2t7oqs531sa",
+   "lwc-2t7oqs531sa-host",
+   "x-trailing-spaces_trailing-spaces",
+   "x-trailing-spaces_trailing-spaces-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2t7oqs531sa"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./trailing-spaces.css",
+   "./trailing-spaces.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2t7oqs531sa",
+   "lwc-2t7oqs531sa-host",
+   "x-trailing-spaces_trailing-spaces",
+   "x-trailing-spaces_trailing-spaces-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2t7oqs531sa"
+  }
+ }
+}

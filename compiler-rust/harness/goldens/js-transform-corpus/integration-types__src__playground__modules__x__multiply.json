@@ -1,0 +1,1 @@
+{"ok":false,"name":"Error","codes":[1007],"message":"SyntaxError: LWC1007: <cwd>/multiply.ts: Unexpected token (5:16)\n\n  3 |\n  4 | export default class extends LightningElement {\n> 5 |     @api message: string = '';\n    |                 ^\n  6 |\n  7 |     @track inputs = { first: 0, second: 0 };\n  8 |"}

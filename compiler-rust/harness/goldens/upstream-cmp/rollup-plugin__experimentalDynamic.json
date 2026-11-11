@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "compile-error",
+  "message": "Invalid LWC configuration in \"/virtual-lbc/fixtures/experimentalDynamic/experimentalDynamic.html\". Unable to find any LWC configuration file"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"></template></lwc-up>"
+ }
+}

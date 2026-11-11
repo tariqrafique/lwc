@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-button-menu id=\"btn-menu1\" accesskey=\"M\" title=\"Select from options\"><template shadowrootmode=\"open\"></template><c-menu-item id=\"menu1-id\" accesskey=\"1\"><template shadowrootmode=\"open\"></template></c-menu-item><c-menu-item id=\"menu2-id\" accesskey=\"2\" tabindex=\"0\"><template shadowrootmode=\"open\"></template>&gt;</c-menu-item><c-menu-item id=\"menu3-id\" accesskey=\"3\"><template shadowrootmode=\"open\"></template></c-menu-item></c-button-menu></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-button-menu id=\"btn-menu1\" accesskey=\"M\" title=\"Select from options\"><template shadowrootmode=\"open\"></template><c-menu-item id=\"menu1-id\" accesskey=\"1\"><template shadowrootmode=\"open\"></template></c-menu-item><c-menu-item id=\"menu2-id\" accesskey=\"2\" tabindex=\"0\"><template shadowrootmode=\"open\"></template>&gt;</c-menu-item><c-menu-item id=\"menu3-id\" accesskey=\"3\"><template shadowrootmode=\"open\"></template></c-menu-item></c-button-menu></template></lwc-lbc>"
+ }
+}

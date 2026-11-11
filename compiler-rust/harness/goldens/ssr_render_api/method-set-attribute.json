@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-boolean=\"true\" data-empty-string data-lwc-host-mutated=\"data-boolean data-empty-string data-null data-number data-override data-string\" data-null=\"null\" data-number=\"1\" data-override=\"override\" data-string=\"test\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-boolean=\"true\" data-empty-string data-lwc-host-mutated=\"data-boolean data-empty-string data-null data-number data-override data-string\" data-null=\"null\" data-number=\"1\" data-override=\"override\" data-string=\"test\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-boolean=\"true\" data-empty-string data-lwc-host-mutated=\"data-boolean data-empty-string data-null data-number data-override data-string\" data-null=\"null\" data-number=\"1\" data-override=\"override\" data-string=\"test\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-boolean=\"true\" data-empty-string data-lwc-host-mutated=\"data-boolean data-empty-string data-null data-number data-override data-string\" data-null=\"null\" data-number=\"1\" data-override=\"override\" data-string=\"test\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-boolean=\"true\" data-empty-string data-lwc-host-mutated=\"data-boolean data-empty-string data-null data-number data-override data-string\" data-null=\"null\" data-number=\"1\" data-override=\"override\" data-string=\"test\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-boolean=\"true\" data-empty-string data-lwc-host-mutated=\"data-boolean data-empty-string data-null data-number data-override data-string\" data-null=\"null\" data-number=\"1\" data-override=\"override\" data-string=\"test\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-boolean=\"true\" data-empty-string data-lwc-host-mutated=\"data-boolean data-empty-string data-null data-number data-override data-string\" data-null=\"null\" data-number=\"1\" data-override=\"override\" data-string=\"test\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ }
+}

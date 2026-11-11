@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./external-component.css",
+    "./external-component.scoped.css?scoped=true",
+    "foo/bar"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate",
+    "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5fjt5cr87l5",
+    "lwc-5fjt5cr87l5-host",
+    "x-external-component_external-component",
+    "x-external-component_external-component-host"
+  ]
+}

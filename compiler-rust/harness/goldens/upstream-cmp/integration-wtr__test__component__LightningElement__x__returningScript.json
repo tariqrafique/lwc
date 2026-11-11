@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Class constructor LightningElement cannot be invoked without 'new'"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "Invalid component constructor, the class should extend LightningElement."
+ }
+}

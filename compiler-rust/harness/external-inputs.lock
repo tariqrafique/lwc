@@ -1,0 +1,12 @@
+# Pinned hashes of official-board external inputs (paths relative to EXT_INPUTS_ROOT).
+# hash-format: content-only
+# sha256[:12] of sorted per-file sha256sum, excluding files under any .git/ (D-0280).
+# style-corpus/lbc: npm lightning-base-components@1.28.19-alpha (extracts to lbc/package/)
+# style-corpus/lbc-recipes: git https://github.com/salesforce/base-components-recipes.git @ 9c5f95d4e0cd5434a2b8373405e4f6c7657c88e8
+# style-corpus/slds: npm @salesforce-ux/design-system@2.264.3 (extracts to slds/package/). CSS inputs only; .scss is not a compiler input.
+# lwc/.../dist: hashed from the built oracle tree (not fetched by fetch-style-corpus.sh).
+# Change ONLY via a landing. Milestone Arch review applies when a landing flips a gate or changes ownership (D-0276). Regenerate: see scripts/official-board.sh inputhash1().
+style-corpus/lbc	0519d3825645
+style-corpus/lbc-recipes	036116865208
+style-corpus/slds	6c74356ddfd1
+lwc/packages/@lwc/template-compiler/dist	0163d9bc3029

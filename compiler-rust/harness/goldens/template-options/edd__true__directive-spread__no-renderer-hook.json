@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./no-renderer-hook.css",
+    "./no-renderer-hook.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1187,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-54kh0v6mpj0",
+    "lwc-54kh0v6mpj0-host",
+    "x-no-renderer-hook_no-renderer-hook",
+    "x-no-renderer-hook_no-renderer-hook-host"
+  ]
+}

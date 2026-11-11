@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Click the email link: <lightning-formatted-email><template shadowrootmode=\"open\"></template></lightning-formatted-email></p><p aria-live=\"polite\">Click count: 0</p></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Click the email link: <lightning-formatted-email><template shadowrootmode=\"open\"></template></lightning-formatted-email></p><p aria-live=\"polite\">Click count: 0</p></template></lwc-lbc>"
+ }
+}

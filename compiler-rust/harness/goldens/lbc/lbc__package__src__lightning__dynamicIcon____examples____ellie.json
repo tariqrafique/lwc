@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>The ellie icon is a pulsing blue circle, which pulses and stops after one animation cycle.</p><lightning-dynamic-icon><template shadowrootmode=\"open\"></template></lightning-dynamic-icon></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>The ellie icon is a pulsing blue circle, which pulses and stops after one animation cycle.</p><lightning-dynamic-icon><template shadowrootmode=\"open\"></template></lightning-dynamic-icon></template></lwc-lbc>"
+ }
+}

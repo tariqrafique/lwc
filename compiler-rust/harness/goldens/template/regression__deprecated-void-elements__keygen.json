@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./keygen.css",
+    "./keygen.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1057,
+      "level": 2
+    },
+    {
+      "code": 1057,
+      "level": 2
+    },
+    {
+      "code": 1057,
+      "level": 2
+    },
+    {
+      "code": 1057,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-1tm45udomu6",
+    "lwc-1tm45udomu6-host",
+    "x-keygen_keygen",
+    "x-keygen_keygen-host"
+  ]
+}

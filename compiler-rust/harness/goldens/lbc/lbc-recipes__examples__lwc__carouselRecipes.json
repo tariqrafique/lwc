@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Carousel\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-carousel><template shadowrootmode=\"open\"></template><c-carousel-image><template shadowrootmode=\"open\"></template></c-carousel-image><c-carousel-image><template shadowrootmode=\"open\"></template></c-carousel-image><c-carousel-image><template shadowrootmode=\"open\"></template></c-carousel-image></c-carousel><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A collection of images that are displayed one at a time.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Carousel\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-carousel><template shadowrootmode=\"open\"></template><c-carousel-image><template shadowrootmode=\"open\"></template></c-carousel-image><c-carousel-image><template shadowrootmode=\"open\"></template></c-carousel-image><c-carousel-image><template shadowrootmode=\"open\"></template></c-carousel-image></c-carousel><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A collection of images that are displayed one at a time.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

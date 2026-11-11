@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./test.html"
+  ],
+  "lwcImports": [
+    "registerComponent",
+    "registerDecorators"
+  ],
+  "exports": {
+    "default": "class"
+  },
+  "defaultExport": {
+    "kind": "class",
+    "extendsLightningElement": false,
+    "registered": true,
+    "registerOptions": {
+      "sel": "lwc-test",
+      "apiVersion": "number",
+      "hasTmpl": true
+    }
+  },
+  "decorators": [
+    {
+      "className": "MyClazz",
+      "meta": {
+        "fields": [
+          "foo"
+        ]
+      }
+    }
+  ],
+  "warnings": []
+}

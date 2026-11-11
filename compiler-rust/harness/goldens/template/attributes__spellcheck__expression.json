@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./expression.css",
+    "./expression.scoped.css?scoped=true",
+    "x/foo"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-602vdkaauac",
+    "lwc-602vdkaauac-host",
+    "x-expression_expression",
+    "x-expression_expression-host"
+  ]
+}

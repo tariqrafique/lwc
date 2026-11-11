@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "compile-error",
+  "message": "Cannot set attribute \"inner-h-t-m-l\" on <div>."
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div data-id=\"div-inner-static\" data-expect-no-warning=\"\" inner-h-t-m-l=\"<p>Ü</p>\">original</div><div data-id=\"div-inner-computed\" data-expect-no-warning=\"\" inner-h-t-m-l=\"<div>injected</div>\">original</div><div data-id=\"div-inner-spread\">original</div><x-component data-id=\"cmp-inner-static\"><template shadowrootmode=\"open\"></template>original</x-component><x-component data-id=\"cmp-inner-computed\"><template shadowrootmode=\"open\"></template>original</x-component><x-component data-id=\"cmp-inner-spread\"><template shadowrootmode=\"open\"></template>original</x-component><omg-whatever data-id=\"external-inner-static\">original</omg-whatever><omg-whatever data-id=\"external-inner-computed\">original</omg-whatever><omg-whatever data-id=\"external-inner-spread\">original</omg-whatever></template></lwc-up>"
+ }
+}

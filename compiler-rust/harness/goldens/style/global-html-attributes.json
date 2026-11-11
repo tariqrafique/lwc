@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+        "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+        "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+        "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+        "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+      }
+    }
+  ]
+}

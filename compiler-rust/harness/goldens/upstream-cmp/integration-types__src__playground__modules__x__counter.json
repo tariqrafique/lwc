@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "compile-error",
+  "message": "[5:11-5:18]: Unexpected token: 'identifier'"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "SyntaxError: LWC1007: /virtual-lbc/x/counter/counter.ts: Unexpected token (5:11)\n\n  3 |\n  4 | export default class extends LightningElement {\n> 5 |     public counter: number = 0;\n    |            ^\n  6 |\n  7 |     connectedCallback(): void {\n  8 |         console.log('connected counter');"
+ }
+}

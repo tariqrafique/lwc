@@ -1,0 +1,149 @@
+# semdiff rule table rt-1 (D-0258). Loading is fail-closed per AB-D0003 (6):
+# a rule is enabled when its arch_review field holds an AB- id (a reviewed code change).
+# There is no reviews.tsv check and no with_pending_applied. A PENDING rule is loaded so
+# Arch can review its tests, but is not applied. Flipping PENDING to an AB- id is the enable.
+version = "rt-1"
+
+[[rule]]
+id = "R-TRAILING-COMMA-1"
+rev = 1
+kind = "token-spelling"
+decision = "D-0258"
+arch_review = "AB-L0064"
+justification = "D-0258 and D-0266: a single trailing comma in an array or object literal, a parameter or argument list, an import/export specifier list, or a destructuring pattern (ObjectPattern, ArrayPattern, and the same as assignment targets) is UNOBSERVABLE. The printer and ContentEq already drop it; the token check would otherwise keep the pair UNCLASSIFIED. A hole is an Elision or a None slot in the elements array and stays OBSERVED: [a,] vs [a] matches, [a,,] vs [a,] and [,a] vs [a] do not. Distinction is by AST element structure, not token text."
+preconditions = "Both sides parse cleanly. The token check runs only after oxc codegen is identical and Program::content_eq holds, so this rule never hides an AST difference."
+eval_order_argument = "A trailing comma is punctuation after the last element (the elements array's last Some/non-Elision entry), parameter, argument, specifier, or pattern property. Nothing is evaluated, reordered, or dropped. If the last slot is None or Elision, that comma is a hole (different length and slot) and is not skipped."
+positive_tests = "tools/semdiff/tests/rules.rs::trailing_comma_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::a_hole_is_not_a_trailing_comma; tools/semdiff/tests/rules.rs::pattern_elision_is_observed"
+
+[[rule]]
+id = "R-ASI-SEMI-1"
+rev = 1
+kind = "token-spelling"
+decision = "D-0258"
+arch_review = "AB-L0064"
+justification = "D-0258: an ASI-inserted semicolon vs an explicit ';' is UNOBSERVABLE when both sides parse to an identical AST. The printer inserts semicolons; ContentEq already holds; the leftover token is only the explicit ';'."
+preconditions = "Both sides parse cleanly and Program::content_eq already holds (enforced by compare() order). An ASI difference that changes the AST (a\\n(b) call vs a;(b) statements; return\\nx vs return x) never reaches this rule."
+eval_order_argument = "When the ASTs are identical the extra ';' does not introduce, drop, or reorder any statement or expression. An empty-statement ';' is its own AST node, so ContentEq fails and the rule does not run."
+positive_tests = "tools/semdiff/tests/rules.rs::asi_semicolon_with_identical_ast_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::asi_that_changes_the_ast_is_observed"
+
+[[rule]]
+id = "R-IMPORT-MERGE-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "Two value imports of the same module specifier bind the same exports. Merging them, dropping a duplicate side-effect import of a module that is already imported, and sorting specifiers by local name does not change module evaluation order or the binding set. Imports of different modules stay in source order. A with-clause, an import phase, two defaults, two namespaces, or the same local name bound to two exports is not merged."
+preconditions = "Both sides parse cleanly. The rule rewrites import declarations before oxc codegen. A mismatch that survives the merge fails content_eq or the token check."
+eval_order_argument = "ESM evaluates each module once. Collapsing a second request of the same specifier does not add or remove a module from the first-seen request order. Specifier order inside one declaration does not change which binding is initialized."
+positive_tests = "tools/semdiff/tests/rules.rs::import_merge_same_module_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::import_merge_does_not_reorder_modules; tools/semdiff/tests/rules.rs::import_merge_does_not_drop_a_binding"
+
+[[rule]]
+id = "R-HOIST-DECL-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "A top-level function declaration and an initializer-less var are instantiated before module evaluation. Moving them to the top of the body, and sorting uniquely named functions, does not change when their initializers run because they have none. let, const, and var with an initializer stay where they are."
+preconditions = "Both sides parse cleanly. Only Statement::FunctionDeclaration and var declarations whose every declarator has no initializer and a simple binding are moved."
+eval_order_argument = "Function declarations are hoisted. var bindings are created before evaluation and an initializer-less var does not run code at its source position. An initializer's position relative to other statements is observable and is not moved."
+positive_tests = "tools/semdiff/tests/rules.rs::hoisted_decl_position_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::let_and_initialized_var_are_not_hoisted; tools/semdiff/tests/rules.rs::duplicate_function_order_is_observed"
+
+[[rule]]
+id = "R-ARROW-PAREN-1"
+rev = 1
+kind = "token-spelling"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "Parentheses around a single binding identifier arrow parameter are optional. (el) => el and el => el parse to the same parameter list. A list, default, rest, or pattern is a different parameter list and is not skipped."
+preconditions = "The token check runs only after codegen matches and content_eq holds. The skipped shape is exactly '(' Identifier ')' '=>' aligned with Identifier '=>'."
+eval_order_argument = "The parameter list is one binding either way. No expression is added, removed, or reordered."
+positive_tests = "tools/semdiff/tests/rules.rs::arrow_parens_around_one_binding_are_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::arrow_parens_do_not_hide_a_different_parameter_list"
+
+[[rule]]
+id = "R-NUMERIC-SPELLING-1"
+rev = 1
+kind = "token-spelling"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "Two finite decimal number tokens with the same value and the same sign of zero are the same number. 1000 and 1e3, and 0.5 and .5, are that case. 1000 and 1001 are not. Hex, binary, and octal spellings stay observed. Non-finite spellings are not equated."
+preconditions = "The token check runs only after codegen matches and content_eq holds, so the AST values already match. This rule only skips Kind::Decimal, Kind::Float, and the exponential kinds."
+eval_order_argument = "The number value is unchanged. No other token is skipped."
+positive_tests = "tools/semdiff/tests/rules.rs::numeric_spelling_with_the_same_value_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::a_different_number_is_observed"
+
+[[rule]]
+id = "R-REDUNDANT-PAREN-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "A ParenthesizedExpression wrapper does not change the tree it wraps. It is removed only after oxc codegen of the two programs is already byte-identical, so a paren the printer still has to emit (because it changes the parse) cannot be equated away."
+preconditions = "Printer texts match and content_eq failed. After stripping ParenthesizedExpression nodes, content_eq must hold. The stripped spans' paren tokens are then ignored."
+eval_order_argument = "Removing a grouping node leaves the same child in the same parent. f((a, b)) and f(a, b) keep different trees, and their printer texts differ, so the rule does not apply."
+positive_tests = "tools/semdiff/tests/rules.rs::redundant_parens_with_identical_print_are_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::parens_that_change_the_parse_are_observed"
+
+[[rule]]
+id = "R-COMMENT-STAR-SPACE-1"
+rev = 1
+kind = "comment-text"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "A block comment continuation line's indentation before '*' is printer whitespace. '/*\\n * Copyright\\n */' and '/*\\n* Copyright\\n */' are the same comment text. A different word, a line comment, or a dropped comment stays observed."
+preconditions = "Codegen matches and content_eq holds. Only the comment-text lists are rewritten, and only by deleting spaces and tabs between a newline and a '*' inside a block comment."
+eval_order_argument = "Comments do not run. The normalized text is the same sequence of comment bodies. A missing comment is a different list and is not skipped."
+positive_tests = "tools/semdiff/tests/rules.rs::block_comment_star_indent_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::a_different_or_missing_comment_is_observed"
+
+[[rule]]
+id = "R-VAR-LITERAL-IMPORT-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "A `var` whose initializer is a literal may sit before or among import declarations. Imports are evaluated before any module body, so `var id = 0` then `import \"m\"` runs the initializer at the same time as `import \"m\"` then `var id = 0`. The var does not move across any other statement."
+preconditions = "Both sides parse. Only a prefix of import declarations and literal `var`s is reordered, imports first, then those vars, in their own relative order."
+eval_order_argument = "Module instantiation finishes every import before the body. The literal initializer reads nothing and writes only its own binding. `f(); var x = 0` versus `var x = 0; f()` is a different prefix and is not rewritten."
+positive_tests = "tools/semdiff/tests/rules.rs::literal_var_beside_imports_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::literal_var_does_not_cross_a_call"
+
+[[rule]]
+id = "R-OBJECT-LAST-KEY-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "In an object literal, a later data property with the same static key replaces the earlier one. `{selectedItem: 1, selectedItem: 1, currentContent: 1}` and `{selectedItem: 1, currentContent: 1}` produce the same object. A spread, a getter, or a setter is not collapsed."
+preconditions = "Both sides parse. Only Init properties with a static identifier or string key are candidates, and only when the object has no spread."
+eval_order_argument = "Each kept property is still evaluated in its original order. An earlier property with the same key is evaluated and then overwritten; dropping it changes nothing a later read can see when the key is written again as data. `{a: 1, a: 2}` is not `{a: 1}`."
+positive_tests = "tools/semdiff/tests/rules.rs::duplicate_data_key_keeps_the_last_value"
+negative_tests = "tools/semdiff/tests/rules.rs::an_earlier_duplicate_value_is_not_the_result"
+
+[[rule]]
+id = "R-INERT-LINE-COMMENT-1"
+rev = 1
+kind = "comment-text"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "A `//` note that is not an eslint, istanbul, c8, v8, pure, or sourceMappingURL directive does not change evaluation. Those directives stay in the comment list and a missing one is still a difference. Block comments are not this rule."
+preconditions = "Codegen matches and content_eq holds. Only line comments whose body does not start with a tool directive are removed from both comment lists before the compare."
+eval_order_argument = "The removed comments are not parsed as code. A directive comment stays, so a consumer that keys off eslint-disable still sees a mismatch when one side drops it."
+positive_tests = "tools/semdiff/tests/rules.rs::an_inert_line_comment_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::a_directive_line_comment_is_observed"
+
+[[rule]]
+id = "R-OBJECT-SHORTHAND-1"
+rev = 1
+kind = "ast-normalize"
+decision = "D-0196"
+arch_review = "AB-L0088"
+justification = "oxc codegen prints `{itemIndex: itemIndex}` and `{itemIndex}` as the same shorthand, and both evaluate to the same property. The `shorthand` flag is the only AST difference. `__proto__` is left as written, because the printer emits that key explicitly when the flag is false."
+preconditions = "Printer texts match and content_eq failed. A data or binding property whose static key equals its identifier value has `shorthand` set. The extra colon and repeated name tokens inside that property span are then ignored."
+eval_order_argument = "The property key is still evaluated once and the value is that same binding. `{a: b}` and `{a}` stay different trees and different printer text, so the rule does not apply. `{__proto__: __proto__}` stays observed against `{__proto__}`."
+positive_tests = "tools/semdiff/tests/rules.rs::explicit_property_shorthand_is_unobservable"
+negative_tests = "tools/semdiff/tests/rules.rs::a_different_property_value_is_observed"

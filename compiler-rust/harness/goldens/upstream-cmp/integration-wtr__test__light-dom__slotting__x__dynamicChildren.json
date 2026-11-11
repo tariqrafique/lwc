@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><x-light-container data-id=\"x-light-container\"><template shadowrootmode=\"open\"></template><p data-id=\"1\">1</p><p data-id=\"2\">2</p><p data-id=\"3\">3</p><p data-id=\"4\">4</p><p data-id=\"5\">5</p></x-light-container><button data-id=\"button\">Reverse</button></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><x-light-container data-id=\"x-light-container\"><template shadowrootmode=\"open\"></template><p data-id=\"1\">1</p><p data-id=\"2\">2</p><p data-id=\"3\">3</p><p data-id=\"4\">4</p><p data-id=\"5\">5</p></x-light-container><button data-id=\"button\">Reverse</button></lwc-up>"
+ }
+}

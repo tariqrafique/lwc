@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><x-consumer data-id=\"consumer\"><template shadowrootmode=\"open\"></template><p data-id=\"p\">I am an assigned element.</p>I am an assigned text.</x-consumer></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><x-consumer data-id=\"consumer\"><template shadowrootmode=\"open\"></template><p data-id=\"p\">I am an assigned element.</p>I am an assigned text.</x-consumer></lwc-up>"
+ }
+}

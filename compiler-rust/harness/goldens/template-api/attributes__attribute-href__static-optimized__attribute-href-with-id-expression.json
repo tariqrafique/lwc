@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-expression.css",
+   "./attribute-href-with-id-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s0jmj9uli4",
+   "lwc-4s0jmj9uli4-host",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Time to travel!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s0jmj9uli4"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-expression.css",
+   "./attribute-href-with-id-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s0jmj9uli4",
+   "lwc-4s0jmj9uli4-host",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Time to travel!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-attribute-href-with-id-expression_attribute-href-with-id-expression"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-expression.css",
+   "./attribute-href-with-id-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s0jmj9uli4",
+   "lwc-4s0jmj9uli4-host",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Time to travel!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-attribute-href-with-id-expression_attribute-href-with-id-expression"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-expression.css",
+   "./attribute-href-with-id-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s0jmj9uli4",
+   "lwc-4s0jmj9uli4-host",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Time to travel!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s0jmj9uli4"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-expression.css",
+   "./attribute-href-with-id-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s0jmj9uli4",
+   "lwc-4s0jmj9uli4-host",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Time to travel!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s0jmj9uli4"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-expression.css",
+   "./attribute-href-with-id-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s0jmj9uli4",
+   "lwc-4s0jmj9uli4-host",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Time to travel!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s0jmj9uli4"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-expression.css",
+   "./attribute-href-with-id-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s0jmj9uli4",
+   "lwc-4s0jmj9uli4-host",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Time to travel!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s0jmj9uli4"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-expression.css",
+   "./attribute-href-with-id-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s0jmj9uli4",
+   "lwc-4s0jmj9uli4-host",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Time to travel!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s0jmj9uli4"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-expression.css",
+   "./attribute-href-with-id-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s0jmj9uli4",
+   "lwc-4s0jmj9uli4-host",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Time to travel!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s0jmj9uli4"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-expression.css",
+   "./attribute-href-with-id-expression.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s0jmj9uli4",
+   "lwc-4s0jmj9uli4-host",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression",
+   "x-attribute-href-with-id-expression_attribute-href-with-id-expression-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a${\"a0:href\"}${3}>KIX</a>",
+   "parseFragment:<map${3}><area${\"a1:href\"}${3}><area${\"a2:href\"}${3}></map>",
+   "parseFragment:<h1${\"a0:id\"}${3}>Time to travel!</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s0jmj9uli4"
+  }
+ }
+}

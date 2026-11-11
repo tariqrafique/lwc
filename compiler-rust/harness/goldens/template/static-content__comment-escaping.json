@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./comment-escaping.css",
+    "./comment-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6hk9n52i71a",
+    "lwc-6hk9n52i71a-host",
+    "x-comment-escaping_comment-escaping",
+    "x-comment-escaping_comment-escaping-host"
+  ]
+}

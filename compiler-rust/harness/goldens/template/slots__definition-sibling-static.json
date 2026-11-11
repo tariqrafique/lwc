@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./definition-sibling-static.css",
+    "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5n9s7p96h6j",
+    "lwc-5n9s7p96h6j-host",
+    "x-definition-sibling-static_definition-sibling-static",
+    "x-definition-sibling-static_definition-sibling-static-host"
+  ]
+}

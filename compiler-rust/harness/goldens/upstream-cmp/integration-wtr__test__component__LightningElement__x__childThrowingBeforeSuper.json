@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Throwing before calling super"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "Throwing before calling super"
+ }
+}

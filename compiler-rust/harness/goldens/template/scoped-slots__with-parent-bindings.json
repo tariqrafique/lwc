@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./with-parent-bindings.css",
+    "./with-parent-bindings.scoped.css?scoped=true",
+    "x/list"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-ft0hnohr70",
+    "lwc-ft0hnohr70-host",
+    "x-with-parent-bindings_with-parent-bindings",
+    "x-with-parent-bindings_with-parent-bindings-host"
+  ]
+}

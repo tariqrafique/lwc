@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><marquee class=\"leak-class\" id=\"leak-id\" name=\"leak-name\"></marquee><svg/></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><marquee class=\"leak-class\" name=\"leak-name\" id=\"leak-id\"></marquee><svg></svg></template></lwc-up>"
+ }
+}

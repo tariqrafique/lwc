@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up>a<!---->fallback for default<!---->b<!---->fallback for foo<!---->c</lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up>a<!---->fallback for default<!---->b<!---->fallback for foo<!---->c</lwc-up>"
+ }
+}

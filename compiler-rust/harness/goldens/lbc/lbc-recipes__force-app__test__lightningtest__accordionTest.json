@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-accordion title=\"accordion title\"><template shadowrootmode=\"open\"></template><c-accordion-section class=\"section-a\" title=\"section A\"><template shadowrootmode=\"open\"></template><c-button-menu slot=\"actions\"><template shadowrootmode=\"open\"></template><c-menu-item><template shadowrootmode=\"open\"></template></c-menu-item><c-menu-item><template shadowrootmode=\"open\"></template></c-menu-item></c-button-menu><p>This is the content area for section A.</p></c-accordion-section><c-accordion-section class=\"section-c\" title=\"section C\"><template shadowrootmode=\"open\"></template><p>This is the content area for section C.</p></c-accordion-section></c-accordion></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-accordion title=\"accordion title\"><template shadowrootmode=\"open\"></template><c-accordion-section class=\"section-a\" title=\"section A\"><template shadowrootmode=\"open\"></template><c-button-menu slot=\"actions\"><template shadowrootmode=\"open\"></template><c-menu-item><template shadowrootmode=\"open\"></template></c-menu-item><c-menu-item><template shadowrootmode=\"open\"></template></c-menu-item></c-button-menu><p>This is the content area for section A.</p></c-accordion-section><c-accordion-section class=\"section-c\" title=\"section C\"><template shadowrootmode=\"open\"></template><p>This is the content area for section C.</p></c-accordion-section></c-accordion></template></lwc-lbc>"
+ }
+}

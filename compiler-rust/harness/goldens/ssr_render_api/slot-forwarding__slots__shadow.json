@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-slot>\n      <template shadowrootmode=\"open\">\n        <x-leaf>\n          <template shadowrootmode=\"open\">\n            <slot name=\"top\">\n            </slot>\n            <slot name=\"bottom\">\n            </slot>\n          </template>\n          <slot name=\"top\" slot=\"bottom\">\n          </slot>\n          <slot name=\"bottom\" slot=\"top\">\n          </slot>\n        </x-leaf>\n      </template>\n      <h1 slot=\"top\">\n        top content\n      </h1>\n      <h1 slot=\"bottom\">\n        bottom content\n      </h1>\n    </x-slot>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-slot>\n      <template shadowrootmode=\"open\">\n        <x-leaf>\n          <template shadowrootmode=\"open\">\n            <slot name=\"top\">\n            </slot>\n            <slot name=\"bottom\">\n            </slot>\n          </template>\n          <slot name=\"top\" slot=\"bottom\">\n          </slot>\n          <slot name=\"bottom\" slot=\"top\">\n          </slot>\n        </x-leaf>\n      </template>\n      <h1 slot=\"top\">\n        top content\n      </h1>\n      <h1 slot=\"bottom\">\n        bottom content\n      </h1>\n    </x-slot>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-slot>\n      <template shadowrootmode=\"open\">\n        <x-leaf>\n          <template shadowrootmode=\"open\">\n            <slot name=\"top\">\n            </slot>\n            <slot name=\"bottom\">\n            </slot>\n          </template>\n          <slot name=\"top\" slot=\"bottom\">\n          </slot>\n          <slot name=\"bottom\" slot=\"top\">\n          </slot>\n        </x-leaf>\n      </template>\n      <h1 slot=\"top\">\n        top content\n      </h1>\n      <h1 slot=\"bottom\">\n        bottom content\n      </h1>\n    </x-slot>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-slot>\n      <template shadowrootmode=\"open\">\n        <x-leaf>\n          <template shadowrootmode=\"open\">\n            <slot name=\"top\">\n            </slot>\n            <slot name=\"bottom\">\n            </slot>\n          </template>\n          <slot name=\"top\" slot=\"bottom\">\n          </slot>\n          <slot name=\"bottom\" slot=\"top\">\n          </slot>\n        </x-leaf>\n      </template>\n      <h1 slot=\"top\">\n        top content\n      </h1>\n      <h1 slot=\"bottom\">\n        bottom content\n      </h1>\n    </x-slot>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-slot>\n      <template shadowrootmode=\"open\">\n        <x-leaf>\n          <template shadowrootmode=\"open\">\n            <slot name=\"top\">\n            </slot>\n            <slot name=\"bottom\">\n            </slot>\n          </template>\n          <slot name=\"top\" slot=\"bottom\">\n          </slot>\n          <slot name=\"bottom\" slot=\"top\">\n          </slot>\n        </x-leaf>\n      </template>\n      <h1 slot=\"top\">\n        top content\n      </h1>\n      <h1 slot=\"bottom\">\n        bottom content\n      </h1>\n    </x-slot>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-slot>\n      <template shadowrootmode=\"open\">\n        <x-leaf>\n          <template shadowrootmode=\"open\">\n            <slot name=\"top\">\n            </slot>\n            <slot name=\"bottom\">\n            </slot>\n          </template>\n          <slot name=\"top\" slot=\"bottom\">\n          </slot>\n          <slot name=\"bottom\" slot=\"top\">\n          </slot>\n        </x-leaf>\n      </template>\n      <h1 slot=\"top\">\n        top content\n      </h1>\n      <h1 slot=\"bottom\">\n        bottom content\n      </h1>\n    </x-slot>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-slot>\n      <template shadowrootmode=\"open\">\n        <x-leaf>\n          <template shadowrootmode=\"open\">\n            <slot name=\"top\">\n            </slot>\n            <slot name=\"bottom\">\n            </slot>\n          </template>\n          <slot name=\"top\" slot=\"bottom\">\n          </slot>\n          <slot name=\"bottom\" slot=\"top\">\n          </slot>\n        </x-leaf>\n      </template>\n      <h1 slot=\"top\">\n        top content\n      </h1>\n      <h1 slot=\"bottom\">\n        bottom content\n      </h1>\n    </x-slot>\n  </template>\n</fixture-test>"
+ }
+}

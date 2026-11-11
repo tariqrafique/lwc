@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./preserve-html-comments-option.css",
+    "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-gaekmoo0tf",
+    "lwc-gaekmoo0tf-host",
+    "x-preserve-html-comments-option_preserve-html-comments-option",
+    "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ]
+}

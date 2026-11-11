@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./mixed.css",
+    "./mixed.scoped.css?scoped=true",
+    "x/b"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3qe0c8mgo6d",
+    "lwc-3qe0c8mgo6d-host",
+    "x-mixed_mixed",
+    "x-mixed_mixed-host"
+  ]
+}

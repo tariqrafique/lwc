@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./computed-property.css",
+    "./computed-property.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-14g777mv3bo",
+    "lwc-14g777mv3bo-host",
+    "x-computed-property_computed-property",
+    "x-computed-property_computed-property-host"
+  ]
+}

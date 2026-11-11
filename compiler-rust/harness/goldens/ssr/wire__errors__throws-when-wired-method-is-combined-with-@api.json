@@ -1,0 +1,21 @@
+{
+  "expectedCompileError": 1095,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/adapter/adapter.js": {
+      "ok": true,
+      "imports": [],
+      "runtimeImports": [],
+      "exports": {
+        "Adapter": "class"
+      },
+      "defaultExport": null,
+      "warnings": []
+    },
+    "x/wire/wire.js": {
+      "ok": false,
+      "code": 1095
+    }
+  }
+}

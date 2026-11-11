@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div data-id=\"static1\"></div><div data-id=\"dynamic1\"></div><div><div data-id=\"deepStatic1\"></div></div><div data-id=\"static2\"></div><div data-id=\"dynamic2\"></div><div><div data-id=\"deepStatic2\"></div></div><div data-id=\"static3\"></div><div data-id=\"dynamic3\"></div><div><div data-id=\"deepStatic3\"></div></div><div data-id=\"static4\"></div><div data-id=\"dynamic4\"></div><div><div data-id=\"deepStatic4\"></div></div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div data-id=\"static1\"></div><div data-id=\"dynamic1\"></div><div><div data-id=\"deepStatic1\"></div></div><div data-id=\"static2\"></div><div data-id=\"dynamic2\"></div><div><div data-id=\"deepStatic2\"></div></div><div data-id=\"static3\"></div><div data-id=\"dynamic3\"></div><div><div data-id=\"deepStatic3\"></div></div><div data-id=\"static4\"></div><div data-id=\"dynamic4\"></div><div><div data-id=\"deepStatic4\"></div></div></template></lwc-up>"
+ }
+}

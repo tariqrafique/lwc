@@ -1,0 +1,14 @@
+[package]
+name = "lwc-compiler"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lwc-shared = { path = "../lwc-shared" }
+lwc-style = { path = "../lwc-style" }
+lwc-template = { path = "../lwc-template" }
+lwc-ssr = { path = "../lwc-ssr" }
+lwc-js = { path = "../lwc-js" }
+
+[dev-dependencies]
+serde_json = "1"

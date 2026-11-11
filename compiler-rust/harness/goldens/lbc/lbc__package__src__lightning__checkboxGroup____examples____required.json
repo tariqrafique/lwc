@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-checkbox-group><template shadowrootmode=\"open\"></template></lightning-checkbox-group></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-checkbox-group><template shadowrootmode=\"open\"></template></lightning-checkbox-group></template></lwc-lbc>"
+ }
+}

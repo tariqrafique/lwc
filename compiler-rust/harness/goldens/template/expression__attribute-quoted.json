@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-quoted.css",
+    "./attribute-quoted.scoped.css?scoped=true",
+    "x/foo",
+    "x/bar"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6n0ltrg1cd2",
+    "lwc-6n0ltrg1cd2-host",
+    "x-attribute-quoted_attribute-quoted",
+    "x-attribute-quoted_attribute-quoted-host"
+  ]
+}

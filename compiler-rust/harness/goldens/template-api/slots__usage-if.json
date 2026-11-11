@@ -1,0 +1,332 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./usage-if.css",
+   "./usage-if.scoped.css?scoped=true",
+   "ns/cmp"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6dcki86fmnh",
+   "lwc-6dcki86fmnh-host",
+   "x-usage-if_usage-if",
+   "x-usage-if_usage-if-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6dcki86fmnh"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./usage-if.css",
+   "./usage-if.scoped.css?scoped=true",
+   "ns/cmp"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6dcki86fmnh",
+   "lwc-6dcki86fmnh-host",
+   "x-usage-if_usage-if",
+   "x-usage-if_usage-if-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-usage-if_usage-if"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./usage-if.css",
+   "./usage-if.scoped.css?scoped=true",
+   "ns/cmp"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6dcki86fmnh",
+   "lwc-6dcki86fmnh-host",
+   "x-usage-if_usage-if",
+   "x-usage-if_usage-if-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-usage-if_usage-if"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./usage-if.css",
+   "./usage-if.scoped.css?scoped=true",
+   "ns/cmp"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6dcki86fmnh",
+   "lwc-6dcki86fmnh-host",
+   "x-usage-if_usage-if",
+   "x-usage-if_usage-if-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6dcki86fmnh"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./usage-if.css",
+   "./usage-if.scoped.css?scoped=true",
+   "ns/cmp"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6dcki86fmnh",
+   "lwc-6dcki86fmnh-host",
+   "x-usage-if_usage-if",
+   "x-usage-if_usage-if-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6dcki86fmnh"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./usage-if.css",
+   "./usage-if.scoped.css?scoped=true",
+   "ns/cmp"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6dcki86fmnh",
+   "lwc-6dcki86fmnh-host",
+   "x-usage-if_usage-if",
+   "x-usage-if_usage-if-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6dcki86fmnh"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./usage-if.css",
+   "./usage-if.scoped.css?scoped=true",
+   "ns/cmp"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6dcki86fmnh",
+   "lwc-6dcki86fmnh-host",
+   "x-usage-if_usage-if",
+   "x-usage-if_usage-if-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6dcki86fmnh"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./usage-if.css",
+   "./usage-if.scoped.css?scoped=true",
+   "ns/cmp"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6dcki86fmnh",
+   "lwc-6dcki86fmnh-host",
+   "x-usage-if_usage-if",
+   "x-usage-if_usage-if-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6dcki86fmnh"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./usage-if.css",
+   "./usage-if.scoped.css?scoped=true",
+   "ns/cmp"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6dcki86fmnh",
+   "lwc-6dcki86fmnh-host",
+   "x-usage-if_usage-if",
+   "x-usage-if_usage-if-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6dcki86fmnh"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./usage-if.css",
+   "./usage-if.scoped.css?scoped=true",
+   "ns/cmp"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6dcki86fmnh",
+   "lwc-6dcki86fmnh-host",
+   "x-usage-if_usage-if",
+   "x-usage-if_usage-if-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6dcki86fmnh"
+  }
+ }
+}

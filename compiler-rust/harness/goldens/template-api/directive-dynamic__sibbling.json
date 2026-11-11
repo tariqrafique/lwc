@@ -1,0 +1,402 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./sibbling.css",
+   "./sibbling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1187,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3gcvleqa6si",
+   "lwc-3gcvleqa6si-host",
+   "x-sibbling_sibbling",
+   "x-sibbling_sibbling-host"
+  ],
+  "apiHelpers": [
+   "ddc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3gcvleqa6si"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./sibbling.css",
+   "./sibbling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1187,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3gcvleqa6si",
+   "lwc-3gcvleqa6si-host",
+   "x-sibbling_sibbling",
+   "x-sibbling_sibbling-host"
+  ],
+  "apiHelpers": [
+   "ddc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-sibbling_sibbling"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./sibbling.css",
+   "./sibbling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1187,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3gcvleqa6si",
+   "lwc-3gcvleqa6si-host",
+   "x-sibbling_sibbling",
+   "x-sibbling_sibbling-host"
+  ],
+  "apiHelpers": [
+   "ddc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-sibbling_sibbling"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./sibbling.css",
+   "./sibbling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1187,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3gcvleqa6si",
+   "lwc-3gcvleqa6si-host",
+   "x-sibbling_sibbling",
+   "x-sibbling_sibbling-host"
+  ],
+  "apiHelpers": [
+   "ddc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3gcvleqa6si"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./sibbling.css",
+   "./sibbling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1187,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3gcvleqa6si",
+   "lwc-3gcvleqa6si-host",
+   "x-sibbling_sibbling",
+   "x-sibbling_sibbling-host"
+  ],
+  "apiHelpers": [
+   "ddc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3gcvleqa6si"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./sibbling.css",
+   "./sibbling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1187,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3gcvleqa6si",
+   "lwc-3gcvleqa6si-host",
+   "x-sibbling_sibbling",
+   "x-sibbling_sibbling-host"
+  ],
+  "apiHelpers": [
+   "ddc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3gcvleqa6si"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./sibbling.css",
+   "./sibbling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1187,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3gcvleqa6si",
+   "lwc-3gcvleqa6si-host",
+   "x-sibbling_sibbling",
+   "x-sibbling_sibbling-host"
+  ],
+  "apiHelpers": [
+   "ddc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3gcvleqa6si"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./sibbling.css",
+   "./sibbling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1187,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3gcvleqa6si",
+   "lwc-3gcvleqa6si-host",
+   "x-sibbling_sibbling",
+   "x-sibbling_sibbling-host"
+  ],
+  "apiHelpers": [
+   "ddc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3gcvleqa6si"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./sibbling.css",
+   "./sibbling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1187,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3gcvleqa6si",
+   "lwc-3gcvleqa6si-host",
+   "x-sibbling_sibbling",
+   "x-sibbling_sibbling-host"
+  ],
+  "apiHelpers": [
+   "ddc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3gcvleqa6si"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./sibbling.css",
+   "./sibbling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1187,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-3gcvleqa6si",
+   "lwc-3gcvleqa6si-host",
+   "x-sibbling_sibbling",
+   "x-sibbling_sibbling-host"
+  ],
+  "apiHelpers": [
+   "ddc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>before</div>",
+   "parseFragment:<div${3}>after</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3gcvleqa6si"
+  }
+ }
+}

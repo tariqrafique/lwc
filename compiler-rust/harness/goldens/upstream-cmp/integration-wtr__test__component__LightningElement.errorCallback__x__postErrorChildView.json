@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div class=\"boundary-alt-view-child\">I&#x27;m an alterntaive offender child! You SHOULD see me because i cause boundary error that can&#x27;t recover!</div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div class=\"boundary-alt-view-child\">I'm an alterntaive offender child! You SHOULD see me because i cause boundary error that can't recover!</div></template></lwc-up>"
+ },
+ "asyncErrors": [
+  "Boundary Alternative Child Offender Throws"
+ ]
+}

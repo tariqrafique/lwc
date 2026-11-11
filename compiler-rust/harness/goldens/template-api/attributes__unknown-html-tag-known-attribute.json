@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unknown-html-tag-known-attribute.css",
+   "./unknown-html-tag-known-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5vl7nbrekm",
+   "lwc-5vl7nbrekm-host",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<somefancytag min=\"4\"${3}></somefancytag>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5vl7nbrekm"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unknown-html-tag-known-attribute.css",
+   "./unknown-html-tag-known-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5vl7nbrekm",
+   "lwc-5vl7nbrekm-host",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<somefancytag min=\"4\"${3}></somefancytag>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unknown-html-tag-known-attribute.css",
+   "./unknown-html-tag-known-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5vl7nbrekm",
+   "lwc-5vl7nbrekm-host",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<somefancytag min=\"4\"${3}></somefancytag>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unknown-html-tag-known-attribute.css",
+   "./unknown-html-tag-known-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5vl7nbrekm",
+   "lwc-5vl7nbrekm-host",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<somefancytag min=\"4\"${3}></somefancytag>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5vl7nbrekm"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unknown-html-tag-known-attribute.css",
+   "./unknown-html-tag-known-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5vl7nbrekm",
+   "lwc-5vl7nbrekm-host",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<somefancytag min=\"4\"${3}></somefancytag>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5vl7nbrekm"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unknown-html-tag-known-attribute.css",
+   "./unknown-html-tag-known-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5vl7nbrekm",
+   "lwc-5vl7nbrekm-host",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<somefancytag min=\"4\"${3}></somefancytag>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5vl7nbrekm"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unknown-html-tag-known-attribute.css",
+   "./unknown-html-tag-known-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5vl7nbrekm",
+   "lwc-5vl7nbrekm-host",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<somefancytag min=\"4\"${3}></somefancytag>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5vl7nbrekm"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unknown-html-tag-known-attribute.css",
+   "./unknown-html-tag-known-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5vl7nbrekm",
+   "lwc-5vl7nbrekm-host",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<somefancytag min=\"4\"${3}></somefancytag>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5vl7nbrekm"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unknown-html-tag-known-attribute.css",
+   "./unknown-html-tag-known-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5vl7nbrekm",
+   "lwc-5vl7nbrekm-host",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<somefancytag min=\"4\"${3}></somefancytag>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5vl7nbrekm"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./unknown-html-tag-known-attribute.css",
+   "./unknown-html-tag-known-attribute.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5vl7nbrekm",
+   "lwc-5vl7nbrekm-host",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute",
+   "x-unknown-html-tag-known-attribute_unknown-html-tag-known-attribute-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<somefancytag min=\"4\"${3}></somefancytag>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5vl7nbrekm"
+  }
+ }
+}

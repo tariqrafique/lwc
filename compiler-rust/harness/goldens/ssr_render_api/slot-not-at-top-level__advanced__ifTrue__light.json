@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    !\n    <!---->\n    acegijmopqstu\n    <x-another>\n      %\n      <!---->\n      vy\n      <!---->\n      ^\n      <!---->\n      <div>\n        w\n      </div>\n      <div>\n        x\n      </div>\n      <!---->\n      *\n      <!---->\n      fallback for bar\n      <!---->\n      ~\n    </x-another>\n    z\n    <external-another>\n      1\n      <div slot=\"foo\">\n        2\n      </div>\n      34\n      <div slot=\"foo\">\n        5\n      </div>\n      67\n    </external-another>\n    8\n    <!---->\n    @\n    <!---->\n    <div>\n      b\n    </div>\n    <div>\n      f\n    </div>\n    <div>\n      k\n    </div>\n    <div>\n      n\n    </div>\n    <div>\n      r\n    </div>\n    <!---->\n    #\n    <!---->\n    <div>\n      d\n    </div>\n    <div>\n      h\n    </div>\n    <div>\n      l\n    </div>\n    <!---->\n    $\n  </x-inner>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    !\n    <!---->\n    acegijmopqstu\n    <x-another>\n      %\n      <!---->\n      vy\n      <!---->\n      ^\n      <!---->\n      <div>\n        w\n      </div>\n      <div>\n        x\n      </div>\n      <!---->\n      *\n      <!---->\n      fallback for bar\n      <!---->\n      ~\n    </x-another>\n    z\n    <external-another>\n      1\n      <div slot=\"foo\">\n        2\n      </div>\n      34\n      <div slot=\"foo\">\n        5\n      </div>\n      67\n    </external-another>\n    8\n    <!---->\n    @\n    <!---->\n    <div>\n      b\n    </div>\n    <div>\n      f\n    </div>\n    <div>\n      k\n    </div>\n    <div>\n      n\n    </div>\n    <div>\n      r\n    </div>\n    <!---->\n    #\n    <!---->\n    <div>\n      d\n    </div>\n    <div>\n      h\n    </div>\n    <div>\n      l\n    </div>\n    <!---->\n    $\n  </x-inner>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    !\n    <!---->\n    acegijmopqstu\n    <x-another>\n      %\n      <!---->\n      vy\n      <!---->\n      ^\n      <!---->\n      <div>\n        w\n      </div>\n      <div>\n        x\n      </div>\n      <!---->\n      *\n      <!---->\n      fallback for bar\n      <!---->\n      ~\n    </x-another>\n    z\n    <external-another>\n      1\n      <div slot=\"foo\">\n        2\n      </div>\n      34\n      <div slot=\"foo\">\n        5\n      </div>\n      67\n    </external-another>\n    8\n    <!---->\n    @\n    <!---->\n    <div>\n      b\n    </div>\n    <div>\n      f\n    </div>\n    <div>\n      k\n    </div>\n    <div>\n      n\n    </div>\n    <div>\n      r\n    </div>\n    <!---->\n    #\n    <!---->\n    <div>\n      d\n    </div>\n    <div>\n      h\n    </div>\n    <div>\n      l\n    </div>\n    <!---->\n    $\n  </x-inner>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    !\n    <!---->\n    acegijmopqstu\n    <x-another>\n      %\n      <!---->\n      vy\n      <!---->\n      ^\n      <!---->\n      <div>\n        w\n      </div>\n      <div>\n        x\n      </div>\n      <!---->\n      *\n      <!---->\n      fallback for bar\n      <!---->\n      ~\n    </x-another>\n    z\n    <external-another>\n      1\n      <div slot=\"foo\">\n        2\n      </div>\n      34\n      <div slot=\"foo\">\n        5\n      </div>\n      67\n    </external-another>\n    8\n    <!---->\n    @\n    <!---->\n    <div>\n      b\n    </div>\n    <div>\n      f\n    </div>\n    <div>\n      k\n    </div>\n    <div>\n      n\n    </div>\n    <div>\n      r\n    </div>\n    <!---->\n    #\n    <!---->\n    <div>\n      d\n    </div>\n    <div>\n      h\n    </div>\n    <div>\n      l\n    </div>\n    <!---->\n    $\n  </x-inner>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    !\n    <!---->\n    acegijmopqstu\n    <x-another>\n      %\n      <!---->\n      vy\n      <!---->\n      ^\n      <!---->\n      <div>\n        w\n      </div>\n      <div>\n        x\n      </div>\n      <!---->\n      *\n      <!---->\n      fallback for bar\n      <!---->\n      ~\n    </x-another>\n    z\n    <external-another>\n      1\n      <div slot=\"foo\">\n        2\n      </div>\n      34\n      <div slot=\"foo\">\n        5\n      </div>\n      67\n    </external-another>\n    8\n    <!---->\n    @\n    <!---->\n    <div>\n      b\n    </div>\n    <div>\n      f\n    </div>\n    <div>\n      k\n    </div>\n    <div>\n      n\n    </div>\n    <div>\n      r\n    </div>\n    <!---->\n    #\n    <!---->\n    <div>\n      d\n    </div>\n    <div>\n      h\n    </div>\n    <div>\n      l\n    </div>\n    <!---->\n    $\n  </x-inner>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    !\n    <!---->\n    acegijmopqstu\n    <x-another>\n      %\n      <!---->\n      vy\n      <!---->\n      ^\n      <!---->\n      <div>\n        w\n      </div>\n      <div>\n        x\n      </div>\n      <!---->\n      *\n      <!---->\n      fallback for bar\n      <!---->\n      ~\n    </x-another>\n    z\n    <external-another>\n      1\n      <div slot=\"foo\">\n        2\n      </div>\n      34\n      <div slot=\"foo\">\n        5\n      </div>\n      67\n    </external-another>\n    8\n    <!---->\n    @\n    <!---->\n    <div>\n      b\n    </div>\n    <div>\n      f\n    </div>\n    <div>\n      k\n    </div>\n    <div>\n      n\n    </div>\n    <div>\n      r\n    </div>\n    <!---->\n    #\n    <!---->\n    <div>\n      d\n    </div>\n    <div>\n      h\n    </div>\n    <div>\n      l\n    </div>\n    <!---->\n    $\n  </x-inner>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    !\n    <!---->\n    acegijmopqstu\n    <x-another>\n      %\n      <!---->\n      vy\n      <!---->\n      ^\n      <!---->\n      <div>\n        w\n      </div>\n      <div>\n        x\n      </div>\n      <!---->\n      *\n      <!---->\n      fallback for bar\n      <!---->\n      ~\n    </x-another>\n    z\n    <external-another>\n      1\n      <div slot=\"foo\">\n        2\n      </div>\n      34\n      <div slot=\"foo\">\n        5\n      </div>\n      67\n    </external-another>\n    8\n    <!---->\n    @\n    <!---->\n    <div>\n      b\n    </div>\n    <div>\n      f\n    </div>\n    <div>\n      k\n    </div>\n    <div>\n      n\n    </div>\n    <div>\n      r\n    </div>\n    <!---->\n    #\n    <!---->\n    <div>\n      d\n    </div>\n    <div>\n      h\n    </div>\n    <div>\n      l\n    </div>\n    <!---->\n    $\n  </x-inner>\n</fixture-test>"
+ }
+}

@@ -1,0 +1,387 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-content-optimization.css",
+   "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-40fo8n330sd",
+   "lwc-40fo8n330sd-host",
+   "x-static-content-optimization_static-content-optimization",
+   "x-static-content-optimization_static-content-optimization-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:data-dynamic\"}${3}></span><span data-static=\"bar\"${3}></span><span${\"s3\"}${3}></span><span${3}></span><span style=\"background: red;\"${3}></span><span${3}>${\"t7\"}</span><span${\"a8:data-dynamic\"}${\"s8\"}${\"c8\"}${2}>${\"t9\"}</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-40fo8n330sd"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-content-optimization.css",
+   "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-40fo8n330sd",
+   "lwc-40fo8n330sd-host",
+   "x-static-content-optimization_static-content-optimization",
+   "x-static-content-optimization_static-content-optimization-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:data-dynamic\"}${3}></span><span data-static=\"bar\"${3}></span><span${\"s3\"}${3}></span><span${3}></span><span style=\"background: red;\"${3}></span><span${3}>${\"t7\"}</span><span${\"a8:data-dynamic\"}${\"s8\"}${\"c8\"}${2}>${\"t9\"}</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-static-content-optimization_static-content-optimization"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-content-optimization.css",
+   "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-40fo8n330sd",
+   "lwc-40fo8n330sd-host",
+   "x-static-content-optimization_static-content-optimization",
+   "x-static-content-optimization_static-content-optimization-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:data-dynamic\"}${3}></span><span data-static=\"bar\"${3}></span><span${\"s3\"}${3}></span><span${3}></span><span style=\"background: red;\"${3}></span><span${3}>${\"t7\"}</span><span${\"a8:data-dynamic\"}${\"s8\"}${\"c8\"}${2}>${\"t9\"}</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-static-content-optimization_static-content-optimization"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-content-optimization.css",
+   "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-40fo8n330sd",
+   "lwc-40fo8n330sd-host",
+   "x-static-content-optimization_static-content-optimization",
+   "x-static-content-optimization_static-content-optimization-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:data-dynamic\"}${3}></span><span data-static=\"bar\"${3}></span><span${\"s3\"}${3}></span><span${3}></span><span style=\"background: red;\"${3}></span><span${3}>${\"t7\"}</span><span${\"a8:data-dynamic\"}${\"s8\"}${\"c8\"}${2}>${\"t9\"}</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-40fo8n330sd"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-content-optimization.css",
+   "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-40fo8n330sd",
+   "lwc-40fo8n330sd-host",
+   "x-static-content-optimization_static-content-optimization",
+   "x-static-content-optimization_static-content-optimization-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:data-dynamic\"}${3}></span><span data-static=\"bar\"${3}></span><span${\"s3\"}${3}></span><span${3}></span><span style=\"background: red;\"${3}></span><span${3}>${\"t7\"}</span><span${\"a8:data-dynamic\"}${\"s8\"}${\"c8\"}${2}>${\"t9\"}</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-40fo8n330sd"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-content-optimization.css",
+   "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-40fo8n330sd",
+   "lwc-40fo8n330sd-host",
+   "x-static-content-optimization_static-content-optimization",
+   "x-static-content-optimization_static-content-optimization-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:data-dynamic\"}${3}></span><span data-static=\"bar\"${3}></span><span${\"s3\"}${3}></span><span${3}></span><span style=\"background: red;\"${3}></span><span${3}>${\"t7\"}</span><span${\"a8:data-dynamic\"}${\"s8\"}${\"c8\"}${2}>${\"t9\"}</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-40fo8n330sd"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-content-optimization.css",
+   "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-40fo8n330sd",
+   "lwc-40fo8n330sd-host",
+   "x-static-content-optimization_static-content-optimization",
+   "x-static-content-optimization_static-content-optimization-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:data-dynamic\"}${3}></span><span data-static=\"bar\"${3}></span><span${\"s3\"}${3}></span><span${3}></span><span style=\"background: red;\"${3}></span><span${3}>${\"t7\"}</span><span${\"a8:data-dynamic\"}${\"s8\"}${\"c8\"}${2}>${\"t9\"}</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-40fo8n330sd"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-content-optimization.css",
+   "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-40fo8n330sd",
+   "lwc-40fo8n330sd-host",
+   "x-static-content-optimization_static-content-optimization",
+   "x-static-content-optimization_static-content-optimization-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:data-dynamic\"}${3}></span><span data-static=\"bar\"${3}></span><span${\"s3\"}${3}></span><span${3}></span><span style=\"background: red;\"${3}></span><span${3}>${\"t7\"}</span><span${\"a8:data-dynamic\"}${\"s8\"}${\"c8\"}${2}>${\"t9\"}</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-40fo8n330sd"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-content-optimization.css",
+   "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-40fo8n330sd",
+   "lwc-40fo8n330sd-host",
+   "x-static-content-optimization_static-content-optimization",
+   "x-static-content-optimization_static-content-optimization-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:data-dynamic\"}${3}></span><span data-static=\"bar\"${3}></span><span${\"s3\"}${3}></span><span${3}></span><span style=\"background: red;\"${3}></span><span${3}>${\"t7\"}</span><span${\"a8:data-dynamic\"}${\"s8\"}${\"c8\"}${2}>${\"t9\"}</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-40fo8n330sd"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-content-optimization.css",
+   "./static-content-optimization.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-40fo8n330sd",
+   "lwc-40fo8n330sd-host",
+   "x-static-content-optimization_static-content-optimization",
+   "x-static-content-optimization_static-content-optimization-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><span${\"a1:data-dynamic\"}${3}></span><span data-static=\"bar\"${3}></span><span${\"s3\"}${3}></span><span${3}></span><span style=\"background: red;\"${3}></span><span${3}>${\"t7\"}</span><span${\"a8:data-dynamic\"}${\"s8\"}${\"c8\"}${2}>${\"t9\"}</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-40fo8n330sd"
+  }
+ }
+}

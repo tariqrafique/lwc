@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=false|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "x|host=true|dir=true": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}",
+     "-|host=true|dir=false": ".foo {animation-name: fadeIn;}@keyframes fadeIn {0% {opacity: 0;}100% {opacity: 1;}}"
+    }
+   }
+  ]
+ }
+}

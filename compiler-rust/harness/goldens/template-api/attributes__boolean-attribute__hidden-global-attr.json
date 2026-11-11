@@ -1,0 +1,412 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./hidden-global-attr.css",
+   "./hidden-global-attr.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5hma34rpdl8",
+   "lwc-5hma34rpdl8-host",
+   "x-hidden-global-attr_hidden-global-attr",
+   "x-hidden-global-attr_hidden-global-attr-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>boolean present</p>",
+   "parseFragment:<p hidden${3}>empty string, should be true</p>",
+   "parseFragment:<p hidden=\"other than true\"${3}>string value, should be true</p>",
+   "parseFragment:<p${\"a0:hidden\"}${3}>computed value, should be resolved in component</p>",
+   "parseFragment:<p hidden=\"3\"${3}>integer value, should be true</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5hma34rpdl8"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./hidden-global-attr.css",
+   "./hidden-global-attr.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5hma34rpdl8",
+   "lwc-5hma34rpdl8-host",
+   "x-hidden-global-attr_hidden-global-attr",
+   "x-hidden-global-attr_hidden-global-attr-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>boolean present</p>",
+   "parseFragment:<p hidden${3}>empty string, should be true</p>",
+   "parseFragment:<p hidden=\"other than true\"${3}>string value, should be true</p>",
+   "parseFragment:<p${\"a0:hidden\"}${3}>computed value, should be resolved in component</p>",
+   "parseFragment:<p hidden=\"3\"${3}>integer value, should be true</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-hidden-global-attr_hidden-global-attr"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./hidden-global-attr.css",
+   "./hidden-global-attr.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5hma34rpdl8",
+   "lwc-5hma34rpdl8-host",
+   "x-hidden-global-attr_hidden-global-attr",
+   "x-hidden-global-attr_hidden-global-attr-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>boolean present</p>",
+   "parseFragment:<p hidden${3}>empty string, should be true</p>",
+   "parseFragment:<p hidden=\"other than true\"${3}>string value, should be true</p>",
+   "parseFragment:<p${\"a0:hidden\"}${3}>computed value, should be resolved in component</p>",
+   "parseFragment:<p hidden=\"3\"${3}>integer value, should be true</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-hidden-global-attr_hidden-global-attr"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./hidden-global-attr.css",
+   "./hidden-global-attr.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5hma34rpdl8",
+   "lwc-5hma34rpdl8-host",
+   "x-hidden-global-attr_hidden-global-attr",
+   "x-hidden-global-attr_hidden-global-attr-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>boolean present</p>",
+   "parseFragment:<p hidden${3}>empty string, should be true</p>",
+   "parseFragment:<p hidden=\"other than true\"${3}>string value, should be true</p>",
+   "parseFragment:<p${\"a0:hidden\"}${3}>computed value, should be resolved in component</p>",
+   "parseFragment:<p hidden=\"3\"${3}>integer value, should be true</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5hma34rpdl8"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./hidden-global-attr.css",
+   "./hidden-global-attr.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5hma34rpdl8",
+   "lwc-5hma34rpdl8-host",
+   "x-hidden-global-attr_hidden-global-attr",
+   "x-hidden-global-attr_hidden-global-attr-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>boolean present</p>",
+   "parseFragment:<p hidden${3}>empty string, should be true</p>",
+   "parseFragment:<p hidden=\"other than true\"${3}>string value, should be true</p>",
+   "parseFragment:<p${\"a0:hidden\"}${3}>computed value, should be resolved in component</p>",
+   "parseFragment:<p hidden=\"3\"${3}>integer value, should be true</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5hma34rpdl8"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./hidden-global-attr.css",
+   "./hidden-global-attr.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5hma34rpdl8",
+   "lwc-5hma34rpdl8-host",
+   "x-hidden-global-attr_hidden-global-attr",
+   "x-hidden-global-attr_hidden-global-attr-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>boolean present</p>",
+   "parseFragment:<p hidden${3}>empty string, should be true</p>",
+   "parseFragment:<p hidden=\"other than true\"${3}>string value, should be true</p>",
+   "parseFragment:<p${\"a0:hidden\"}${3}>computed value, should be resolved in component</p>",
+   "parseFragment:<p hidden=\"3\"${3}>integer value, should be true</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5hma34rpdl8"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./hidden-global-attr.css",
+   "./hidden-global-attr.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5hma34rpdl8",
+   "lwc-5hma34rpdl8-host",
+   "x-hidden-global-attr_hidden-global-attr",
+   "x-hidden-global-attr_hidden-global-attr-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>boolean present</p>",
+   "parseFragment:<p hidden${3}>empty string, should be true</p>",
+   "parseFragment:<p hidden=\"other than true\"${3}>string value, should be true</p>",
+   "parseFragment:<p${\"a0:hidden\"}${3}>computed value, should be resolved in component</p>",
+   "parseFragment:<p hidden=\"3\"${3}>integer value, should be true</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5hma34rpdl8"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./hidden-global-attr.css",
+   "./hidden-global-attr.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5hma34rpdl8",
+   "lwc-5hma34rpdl8-host",
+   "x-hidden-global-attr_hidden-global-attr",
+   "x-hidden-global-attr_hidden-global-attr-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>boolean present</p>",
+   "parseFragment:<p hidden${3}>empty string, should be true</p>",
+   "parseFragment:<p hidden=\"other than true\"${3}>string value, should be true</p>",
+   "parseFragment:<p${\"a0:hidden\"}${3}>computed value, should be resolved in component</p>",
+   "parseFragment:<p hidden=\"3\"${3}>integer value, should be true</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5hma34rpdl8"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./hidden-global-attr.css",
+   "./hidden-global-attr.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5hma34rpdl8",
+   "lwc-5hma34rpdl8-host",
+   "x-hidden-global-attr_hidden-global-attr",
+   "x-hidden-global-attr_hidden-global-attr-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>boolean present</p>",
+   "parseFragment:<p hidden${3}>empty string, should be true</p>",
+   "parseFragment:<p hidden=\"other than true\"${3}>string value, should be true</p>",
+   "parseFragment:<p${\"a0:hidden\"}${3}>computed value, should be resolved in component</p>",
+   "parseFragment:<p hidden=\"3\"${3}>integer value, should be true</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5hma34rpdl8"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./hidden-global-attr.css",
+   "./hidden-global-attr.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5hma34rpdl8",
+   "lwc-5hma34rpdl8-host",
+   "x-hidden-global-attr_hidden-global-attr",
+   "x-hidden-global-attr_hidden-global-attr-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>boolean present</p>",
+   "parseFragment:<p hidden${3}>empty string, should be true</p>",
+   "parseFragment:<p hidden=\"other than true\"${3}>string value, should be true</p>",
+   "parseFragment:<p${\"a0:hidden\"}${3}>computed value, should be resolved in component</p>",
+   "parseFragment:<p hidden=\"3\"${3}>integer value, should be true</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5hma34rpdl8"
+  }
+ }
+}

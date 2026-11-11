@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "imports": [
+    "@foo/test"
+  ],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "/*import:@foo/test:x*/",
+        "x|host=false|dir=true": "/*import:@foo/test:x*/",
+        "x|host=false|dir=false": "/*import:@foo/test:x*/",
+        "x|host=true|dir=true": "/*import:@foo/test:x*/",
+        "-|host=true|dir=false": "/*import:@foo/test*/"
+      }
+    }
+  ]
+}

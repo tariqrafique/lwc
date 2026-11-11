@@ -1,0 +1,24 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1119
+  ],
+  "line": null,
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1119,
+        "message": "LWC1119: Failed to resolve @wire adapter \"invalidConfig\". Ensure it is imported.",
+        "location": {
+          "line": 4,
+          "column": 8,
+          "start": 108,
+          "length": 13
+        }
+      }
+    ]
+  }
+}

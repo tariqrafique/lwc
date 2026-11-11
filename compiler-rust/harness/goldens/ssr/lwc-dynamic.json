@@ -1,0 +1,102 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": true,
+  "modules": {
+    "x/lwc-dynamic/lwc-dynamic.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./lwc-dynamic.css",
+        "./lwc-dynamic.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-7cme3po6n8m",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/lwc-dynamic/lwc-dynamic.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./lwc-dynamic.html",
+        "x/test"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-lwc-dynamic",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/test/test.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./test.css",
+        "./test.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-4q42cv2n9vo",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/test/test.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./test.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-test",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

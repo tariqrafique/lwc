@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=false|dir=false": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "x|host=true|dir=true": "[hidden][x] {}[lang=\"fr\"][x] {}",
+     "-|host=true|dir=false": "[hidden] {}[lang=\"fr\"] {}"
+    }
+   }
+  ]
+ }
+}

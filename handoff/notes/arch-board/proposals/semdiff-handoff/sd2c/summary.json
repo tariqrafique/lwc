@@ -1,0 +1,41 @@
+{
+  "summary": "/workspace/scratch/h1-1dab7cd/s1.json",
+  "pairs_dir": "/workspace/scratch/h1-b87b3fb/pairs1",
+  "totals": {
+    "cases": 16795,
+    "crash": 0,
+    "different_decided": 0,
+    "different_undecided": 246,
+    "equivalent": 16549,
+    "unclassified": 0
+  },
+  "by_reason": {
+    "exec-differs": 71,
+    "exec-throw-one-side": 35,
+    "printer-equal": 16549,
+    "static-observed-differs": 140
+  },
+  "printer_equal_never_need_sd2c": 16549,
+  "non_equal": 246,
+  "equal_traces_candidates": 140,
+  "would_certify": 140,
+  "equal_traces_but_channel_observed": 0,
+  "unequal_traces_not_candidates": 106,
+  "hoist_only_equal_trace": 0,
+  "cluster_totals_among_246": {
+    "C2-arrow-parens": 35,
+    "C1-numeric": 105,
+    "C4-C5-exec-differs": 70,
+    "C3-tagged-template-throw": 35,
+    "C2-arrow-parens-exec-differs": 1
+  },
+  "cluster_equal_trace_decisions": {
+    "C2-arrow-parens:certify": 35,
+    "C1-numeric:certify": 105
+  },
+  "reason_counts": {
+    "static-observed-differs": 140,
+    "exec-differs": 71,
+    "exec-throw-one-side": 35
+  }
+}

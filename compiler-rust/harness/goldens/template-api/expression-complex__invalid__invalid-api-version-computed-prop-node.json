@@ -1,0 +1,172 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./invalid-api-version-computed-prop-node.css",
+   "./invalid-api-version-computed-prop-node.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4fm5mln7hgr",
+   "lwc-4fm5mln7hgr-host",
+   "x-invalid-api-version-computed-prop-node_invalid-api-version-computed-prop-node",
+   "x-invalid-api-version-computed-prop-node_invalid-api-version-computed-prop-node-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4fm5mln7hgr"
+  }
+ },
+ "v57": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1209
+  ],
+  "line": 1,
+  "errors": [
+   1209
+  ]
+ },
+ "v58": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1209
+  ],
+  "line": 1,
+  "errors": [
+   1209
+  ]
+ },
+ "v59": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1209
+  ],
+  "line": 1,
+  "errors": [
+   1209
+  ]
+ },
+ "v60": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1209
+  ],
+  "line": 1,
+  "errors": [
+   1209
+  ]
+ },
+ "v61": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1209
+  ],
+  "line": 1,
+  "errors": [
+   1209
+  ]
+ },
+ "v62": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1209
+  ],
+  "line": 1,
+  "errors": [
+   1209
+  ]
+ },
+ "v65": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1209
+  ],
+  "line": 1,
+  "errors": [
+   1209
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./invalid-api-version-computed-prop-node.css",
+   "./invalid-api-version-computed-prop-node.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4fm5mln7hgr",
+   "lwc-4fm5mln7hgr-host",
+   "x-invalid-api-version-computed-prop-node_invalid-api-version-computed-prop-node",
+   "x-invalid-api-version-computed-prop-node_invalid-api-version-computed-prop-node-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4fm5mln7hgr"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./invalid-api-version-computed-prop-node.css",
+   "./invalid-api-version-computed-prop-node.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4fm5mln7hgr",
+   "lwc-4fm5mln7hgr-host",
+   "x-invalid-api-version-computed-prop-node_invalid-api-version-computed-prop-node",
+   "x-invalid-api-version-computed-prop-node_invalid-api-version-computed-prop-node-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-4fm5mln7hgr"
+  }
+ }
+}

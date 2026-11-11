@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child><template shadowrootmode=\"open\"></template><p slot=\"Symbol(1)\">Symbol</p></x-child></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child><template shadowrootmode=\"open\"></template></x-child></template></lwc-up>"
+ },
+ "asyncErrors": [
+  "TypeError: Failed to execute 'setAttribute' on 'Element': parameter 2 is a symbol, which cannot be converted to a string."
+ ]
+}

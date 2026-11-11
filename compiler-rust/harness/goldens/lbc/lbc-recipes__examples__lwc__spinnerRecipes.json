@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">.exampleHolder {position: relative;display: inline-block;width: 4rem;height: 4rem;}.backgroundInverse {background-color: #16325c;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><c-card title=\"Spinner\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\">Put loaded content here<div><c-button><template shadowrootmode=\"open\"></template></c-button></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Displays an animated spinner.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.exampleHolder {position: relative;display: inline-block;width: 4rem;height: 4rem;}.backgroundInverse {background-color: #16325c;}</style><c-card title=\"Spinner\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\">Put loaded content here<div><c-button><template shadowrootmode=\"open\"></template></c-button></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Displays an animated spinner.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

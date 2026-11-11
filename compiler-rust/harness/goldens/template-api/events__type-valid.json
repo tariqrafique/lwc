@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./type-valid.css",
+   "./type-valid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-56j34l79noq",
+   "lwc-56j34l79noq-host",
+   "x-type-valid_type-valid",
+   "x-type-valid_type-valid-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-56j34l79noq"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./type-valid.css",
+   "./type-valid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-56j34l79noq",
+   "lwc-56j34l79noq-host",
+   "x-type-valid_type-valid",
+   "x-type-valid_type-valid-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-type-valid_type-valid"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./type-valid.css",
+   "./type-valid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-56j34l79noq",
+   "lwc-56j34l79noq-host",
+   "x-type-valid_type-valid",
+   "x-type-valid_type-valid-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-type-valid_type-valid"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./type-valid.css",
+   "./type-valid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-56j34l79noq",
+   "lwc-56j34l79noq-host",
+   "x-type-valid_type-valid",
+   "x-type-valid_type-valid-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-56j34l79noq"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./type-valid.css",
+   "./type-valid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-56j34l79noq",
+   "lwc-56j34l79noq-host",
+   "x-type-valid_type-valid",
+   "x-type-valid_type-valid-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-56j34l79noq"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./type-valid.css",
+   "./type-valid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-56j34l79noq",
+   "lwc-56j34l79noq-host",
+   "x-type-valid_type-valid",
+   "x-type-valid_type-valid-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-56j34l79noq"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./type-valid.css",
+   "./type-valid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-56j34l79noq",
+   "lwc-56j34l79noq-host",
+   "x-type-valid_type-valid",
+   "x-type-valid_type-valid-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-56j34l79noq"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./type-valid.css",
+   "./type-valid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-56j34l79noq",
+   "lwc-56j34l79noq-host",
+   "x-type-valid_type-valid",
+   "x-type-valid_type-valid-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-56j34l79noq"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./type-valid.css",
+   "./type-valid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-56j34l79noq",
+   "lwc-56j34l79noq-host",
+   "x-type-valid_type-valid",
+   "x-type-valid_type-valid-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-56j34l79noq"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./type-valid.css",
+   "./type-valid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-56j34l79noq",
+   "lwc-56j34l79noq-host",
+   "x-type-valid_type-valid",
+   "x-type-valid_type-valid-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>",
+   "parseFragment:<div${3}>Click</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-56j34l79noq"
+  }
+ }
+}

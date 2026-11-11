@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot redefine property: __lwcPublicProperties__"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "LWC1206: Invalid lwc:on usage. The `lwc:on` directive must be enabled in order to use this feature."
+ }
+}

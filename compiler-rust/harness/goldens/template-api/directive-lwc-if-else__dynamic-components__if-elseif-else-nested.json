@@ -1,0 +1,402 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else-nested.css",
+   "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ejbkifb08c",
+   "lwc-2ejbkifb08c-host",
+   "x-if-elseif-else-nested_if-elseif-else-nested",
+   "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>outer if</h1>",
+   "parseFragment:<h1${3}>outer elseif</h1>",
+   "parseFragment:<h1${3}>inner if</h1>",
+   "parseFragment:<h1${3}>inner elseif</h1>",
+   "parseFragment:<h1${3}>inner else</h1>",
+   "parseFragment:<h1${3}>outer else</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ejbkifb08c"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else-nested.css",
+   "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ejbkifb08c",
+   "lwc-2ejbkifb08c-host",
+   "x-if-elseif-else-nested_if-elseif-else-nested",
+   "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>outer if</h1>",
+   "parseFragment:<h1${3}>outer elseif</h1>",
+   "parseFragment:<h1${3}>inner if</h1>",
+   "parseFragment:<h1${3}>inner elseif</h1>",
+   "parseFragment:<h1${3}>inner else</h1>",
+   "parseFragment:<h1${3}>outer else</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-if-elseif-else-nested_if-elseif-else-nested"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else-nested.css",
+   "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ejbkifb08c",
+   "lwc-2ejbkifb08c-host",
+   "x-if-elseif-else-nested_if-elseif-else-nested",
+   "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>outer if</h1>",
+   "parseFragment:<h1${3}>outer elseif</h1>",
+   "parseFragment:<h1${3}>inner if</h1>",
+   "parseFragment:<h1${3}>inner elseif</h1>",
+   "parseFragment:<h1${3}>inner else</h1>",
+   "parseFragment:<h1${3}>outer else</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-if-elseif-else-nested_if-elseif-else-nested"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else-nested.css",
+   "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ejbkifb08c",
+   "lwc-2ejbkifb08c-host",
+   "x-if-elseif-else-nested_if-elseif-else-nested",
+   "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>outer if</h1>",
+   "parseFragment:<h1${3}>outer elseif</h1>",
+   "parseFragment:<h1${3}>inner if</h1>",
+   "parseFragment:<h1${3}>inner elseif</h1>",
+   "parseFragment:<h1${3}>inner else</h1>",
+   "parseFragment:<h1${3}>outer else</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ejbkifb08c"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else-nested.css",
+   "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ejbkifb08c",
+   "lwc-2ejbkifb08c-host",
+   "x-if-elseif-else-nested_if-elseif-else-nested",
+   "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>outer if</h1>",
+   "parseFragment:<h1${3}>outer elseif</h1>",
+   "parseFragment:<h1${3}>inner if</h1>",
+   "parseFragment:<h1${3}>inner elseif</h1>",
+   "parseFragment:<h1${3}>inner else</h1>",
+   "parseFragment:<h1${3}>outer else</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ejbkifb08c"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else-nested.css",
+   "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ejbkifb08c",
+   "lwc-2ejbkifb08c-host",
+   "x-if-elseif-else-nested_if-elseif-else-nested",
+   "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>outer if</h1>",
+   "parseFragment:<h1${3}>outer elseif</h1>",
+   "parseFragment:<h1${3}>inner if</h1>",
+   "parseFragment:<h1${3}>inner elseif</h1>",
+   "parseFragment:<h1${3}>inner else</h1>",
+   "parseFragment:<h1${3}>outer else</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ejbkifb08c"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else-nested.css",
+   "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ejbkifb08c",
+   "lwc-2ejbkifb08c-host",
+   "x-if-elseif-else-nested_if-elseif-else-nested",
+   "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>outer if</h1>",
+   "parseFragment:<h1${3}>outer elseif</h1>",
+   "parseFragment:<h1${3}>inner if</h1>",
+   "parseFragment:<h1${3}>inner elseif</h1>",
+   "parseFragment:<h1${3}>inner else</h1>",
+   "parseFragment:<h1${3}>outer else</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ejbkifb08c"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else-nested.css",
+   "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ejbkifb08c",
+   "lwc-2ejbkifb08c-host",
+   "x-if-elseif-else-nested_if-elseif-else-nested",
+   "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>outer if</h1>",
+   "parseFragment:<h1${3}>outer elseif</h1>",
+   "parseFragment:<h1${3}>inner if</h1>",
+   "parseFragment:<h1${3}>inner elseif</h1>",
+   "parseFragment:<h1${3}>inner else</h1>",
+   "parseFragment:<h1${3}>outer else</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ejbkifb08c"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else-nested.css",
+   "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ejbkifb08c",
+   "lwc-2ejbkifb08c-host",
+   "x-if-elseif-else-nested_if-elseif-else-nested",
+   "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>outer if</h1>",
+   "parseFragment:<h1${3}>outer elseif</h1>",
+   "parseFragment:<h1${3}>inner if</h1>",
+   "parseFragment:<h1${3}>inner elseif</h1>",
+   "parseFragment:<h1${3}>inner else</h1>",
+   "parseFragment:<h1${3}>outer else</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ejbkifb08c"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-else-nested.css",
+   "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2ejbkifb08c",
+   "lwc-2ejbkifb08c-host",
+   "x-if-elseif-else-nested_if-elseif-else-nested",
+   "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>outer if</h1>",
+   "parseFragment:<h1${3}>outer elseif</h1>",
+   "parseFragment:<h1${3}>inner if</h1>",
+   "parseFragment:<h1${3}>inner elseif</h1>",
+   "parseFragment:<h1${3}>inner else</h1>",
+   "parseFragment:<h1${3}>outer else</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2ejbkifb08c"
+  }
+ }
+}

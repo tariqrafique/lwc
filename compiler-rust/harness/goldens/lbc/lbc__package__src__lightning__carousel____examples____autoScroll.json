@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-size_3-of-4\"><div class=\"slds-box slds-box_x-small slds-text-align_center slds-m-around_x-small\">Carousel With disable-auto-scroll Attribute<lightning-carousel><template shadowrootmode=\"open\"></template><lightning-carousel-image><template shadowrootmode=\"open\"></template></lightning-carousel-image><lightning-carousel-image><template shadowrootmode=\"open\"></template></lightning-carousel-image><lightning-carousel-image><template shadowrootmode=\"open\"></template></lightning-carousel-image></lightning-carousel></div></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-size_3-of-4\"><div class=\"slds-box slds-box_x-small slds-text-align_center slds-m-around_x-small\">Carousel With disable-auto-scroll Attribute<lightning-carousel><template shadowrootmode=\"open\"></template><lightning-carousel-image><template shadowrootmode=\"open\"></template></lightning-carousel-image><lightning-carousel-image><template shadowrootmode=\"open\"></template></lightning-carousel-image><lightning-carousel-image><template shadowrootmode=\"open\"></template></lightning-carousel-image></lightning-carousel></div></div></template></lwc-lbc>"
+ }
+}

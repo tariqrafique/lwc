@@ -1,0 +1,58 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/attribute-dynamic-with-scoped-css/attribute-dynamic-with-scoped-css.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./attribute-dynamic-with-scoped-css.css",
+        "./attribute-dynamic-with-scoped-css.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-47oqt8q93b2",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/attribute-dynamic-with-scoped-css/attribute-dynamic-with-scoped-css.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./attribute-dynamic-with-scoped-css.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-attribute-dynamic-with-scoped-css",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/attribute-dynamic-with-scoped-css/attribute-dynamic-with-scoped-css.scoped.css": {
+      "ok": true,
+      "warnings": []
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "this.template.addEventListener is not a function"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-file-selector__dropzone\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">slot {display: inline-block;}</style><slot></slot></template></lwc-lbc>"
+ }
+}

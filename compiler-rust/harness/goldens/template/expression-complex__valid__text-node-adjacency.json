@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./text-node-adjacency.css",
+    "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6kcfs482gvt",
+    "lwc-6kcfs482gvt-host",
+    "x-text-node-adjacency_text-node-adjacency",
+    "x-text-node-adjacency_text-node-adjacency-host"
+  ]
+}

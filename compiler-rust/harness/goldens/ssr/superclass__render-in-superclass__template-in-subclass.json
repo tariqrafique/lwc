@@ -1,0 +1,102 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/component/component.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./component.css",
+        "./component.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-6a8uqob2ku4",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/component/component.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./component.html",
+        "x/fancyElement"
+      ],
+      "runtimeImports": [
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": false,
+        "staticInternals": {
+          "tagName": "x-component",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/fancyElement/fancyElement.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./fancyElement.html",
+        "./tmpl.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-fancy-element",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/fancyElement/tmpl.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./tmpl.css",
+        "./tmpl.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-4skpuj7h5e5",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    }
+  }
+}

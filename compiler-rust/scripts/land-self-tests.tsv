@@ -1,0 +1,89 @@
+# name	argv	path
+# A changed path selects every name that lists it (or a directory prefix
+# ending in /). Changing a test's own script always lists that test.
+# test-land-classify.sh is a magic path in the runner: it selects every
+# non-napi name (the old sequential bundle).
+test-parse5-pin	scripts/test-parse5-pin.sh	scripts/test-parse5-pin.sh
+test-parse5-pin	scripts/test-parse5-pin.sh	scripts/parse5-pin-check.sh
+test-shim-registry	scripts/test-shim-registry.sh	scripts/test-shim-registry.sh
+test-shim-registry	scripts/test-shim-registry.sh	harness/scripts/shim-gate.mjs
+test-shim-registry	scripts/test-shim-registry.sh	harness/shim-registry.tsv
+test-oracle-root	scripts/test-oracle-root.sh	scripts/test-oracle-root.sh
+test-oracle-root	scripts/test-oracle-root.sh	harness/scripts/oracle-root.mjs
+test-oracle-root	scripts/test-oracle-root.sh	harness/scripts/oracle-root.sh
+test-board-footers	scripts/test-board-footers.sh	scripts/test-board-footers.sh
+test-board-footers	scripts/test-board-footers.sh	scripts/board-footers.sh
+test-board-footers	scripts/test-board-footers.sh	scripts/official-board.sh
+test-board-footers	scripts/test-board-footers.sh	scripts/run-portable-board.sh
+test-board-footers	scripts/test-board-footers.sh	scripts/run-board.sh
+test-semantic-diff-row	scripts/test-semantic-diff-row.sh	scripts/test-semantic-diff-row.sh
+test-semantic-diff-row	scripts/test-semantic-diff-row.sh	harness/scripts/semantic-diff-row.sh
+lint-shell-pipes	scripts/lint-shell-pipes.sh --self-test	scripts/lint-shell-pipes.sh
+lint-no-error-mute	scripts/lint-no-error-mute.sh --self-test	scripts/lint-no-error-mute.sh
+lint-no-error-mute	scripts/lint-no-error-mute.sh --self-test	scripts/tracked-files.sh
+workspace-path-scan	scripts/workspace-path-scan.sh --self-test	scripts/workspace-path-scan.sh
+workspace-path-scan	scripts/workspace-path-scan.sh --self-test	scripts/registry-union.sh
+test-source-scan-tracked	scripts/test-source-scan-tracked.sh	scripts/test-source-scan-tracked.sh
+test-source-scan-tracked	scripts/test-source-scan-tracked.sh	scripts/tracked-files.sh
+test-source-scan-tracked	scripts/test-source-scan-tracked.sh	scripts/tracked-files.mjs
+test-source-scan-tracked	scripts/test-source-scan-tracked.sh	scripts/registry-union.sh
+test-land-agent-branch	scripts/test-land-agent-branch.sh	scripts/test-land-agent-branch.sh
+test-land-agent-branch	scripts/test-land-agent-branch.sh	scripts/land-agent-branch.sh
+test-board-select	scripts/test-board-select.sh	scripts/test-board-select.sh
+test-board-select	scripts/test-board-select.sh	scripts/board-select.mjs
+test-board-runtime	scripts/test-board-runtime.sh	scripts/test-board-runtime.sh
+test-board-runtime	scripts/test-board-runtime.sh	scripts/board-runtime.mjs
+test-land-path-checks	scripts/test-land-path-checks.sh	scripts/test-land-path-checks.sh
+test-land-path-checks	scripts/test-land-path-checks.sh	scripts/land-path-checks.sh
+test-land-path-checks	scripts/test-land-path-checks.sh	scripts/land-path-checks.tsv
+test-land-path-checks	scripts/test-land-path-checks.sh	scripts/land.sh
+test-land-path-checks	scripts/test-land-path-checks.sh	scripts/c8-checks.sh
+baseline-ceiling	scripts/baseline-ceiling.sh --self-test	scripts/baseline-ceiling.sh
+baseline-ceiling	scripts/baseline-ceiling.sh --self-test	scripts/registry-union.sh
+ratchet-ceiling	scripts/ratchet-ceiling.sh --self-test	scripts/ratchet-ceiling.sh
+lint-no-stripped-compare	@lint-no-stripped-compare	scripts/lint-no-stripped-compare.sh
+lint-no-stripped-compare	@lint-no-stripped-compare	scripts/registry-union.sh
+check-land-main-refs	@check-land-main-refs	scripts/check-land-main-refs.sh
+check-land-main-refs	@check-land-main-refs	scripts/land-main-refs.tsv
+check-land-main-refs	@check-land-main-refs	scripts/land.sh
+check-land-main-refs	@check-land-main-refs	scripts/cargo-locked.sh
+test-board-ratchet	scripts/test-board-ratchet.sh	scripts/test-board-ratchet.sh
+test-board-ratchet	scripts/test-board-ratchet.sh	harness/board.sh
+test-board-ratchet	scripts/test-board-ratchet.sh	harness/board-rows.sh
+test-board-ratchet	scripts/test-board-ratchet.sh	harness/scripts/board-baseline.mjs
+test-board-ratchet	scripts/test-board-ratchet.sh	harness/vitest.config.ts
+test-board-ratchet	scripts/test-board-ratchet.sh	harness/vitest.board.config.ts
+test-board-ratchet	scripts/test-board-ratchet.sh	scripts/registry-union.sh
+test-land-self-tests	scripts/test-land-self-tests.sh	scripts/test-land-self-tests.sh
+test-land-self-tests	scripts/test-land-self-tests.sh	scripts/run-land-self-tests.sh
+test-land-self-tests	scripts/test-land-self-tests.sh	scripts/land-self-tests.tsv
+test-land-self-tests	scripts/test-land-self-tests.sh	scripts/land.sh
+test-shared-cargo-cache	scripts/test-shared-cargo-cache.sh	scripts/test-shared-cargo-cache.sh
+test-rust-test-inputs	scripts/test-rust-test-inputs.sh	scripts/test-rust-test-inputs.sh
+test-rust-test-inputs	scripts/test-rust-test-inputs.sh	scripts/rust-test-inputs.sh
+test-rust-test-inputs	scripts/test-rust-test-inputs.sh	scripts/rust-test-inputs.py
+test-rust-test-inputs	scripts/test-rust-test-inputs.sh	scripts/rust-test-inputs.tsv
+test-rust-test-inputs	scripts/test-rust-test-inputs.sh	scripts/land.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/test-one-pass-land.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/registry-union.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	harness/board-rows.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	harness/scripts/golden-gate.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/check-land-main-refs.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/land-main-refs.tsv
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/baseline-ceiling.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/run-portable-board.sh
+test-preflight	scripts/test-preflight.sh	scripts/test-preflight.sh
+test-preflight	scripts/test-preflight.sh	scripts/preflight.sh
+test-preflight	scripts/test-preflight.sh	scripts/land.sh
+test-preflight	scripts/test-preflight.sh	scripts/land-path-checks.sh
+test-preflight	scripts/test-preflight.sh	scripts/land-path-checks.tsv
+test-board-ratchet	scripts/test-board-ratchet.sh	scripts/preflight.sh
+test-land-path-checks	scripts/test-land-path-checks.sh	scripts/preflight.sh
+test-land-self-tests	scripts/test-land-self-tests.sh	scripts/preflight.sh
+test-preflight	scripts/test-preflight.sh	scripts/cargo-fmt-check.sh
+test-land-path-checks	scripts/test-land-path-checks.sh	scripts/cargo-fmt-check.sh
+test-board-runtime	scripts/test-board-runtime.sh	scripts/c8-checks.sh
+test-board-runtime	scripts/test-board-runtime.sh	scripts/land-path-checks.tsv
+test-install-napi	scripts/test-install-napi.sh	scripts/test-install-napi.sh
+test-install-napi	scripts/test-install-napi.sh	scripts/install-napi.sh
+test-install-napi	scripts/test-install-napi.sh	scripts/cargo-locked.sh

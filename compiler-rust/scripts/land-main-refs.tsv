@@ -1,0 +1,82 @@
+# MAIN reachability table for scripts/land.sh (D-0274(5), D-0275, AB-L0079).
+# Columns: path<TAB>class<TAB>depends_on<TAB>absent_ok
+# class is exactly one of:
+#   MAIN_SCRIPT_ON_BRANCH_INPUT  executed or sourced MAIN path (main_run, or
+#                                main_data of a *.sh that is exec'd or sourced)
+#   MAIN_DATA_AS_BASE            path-only data: the table itself, ratchets, OWNERS
+#   BOX_CONFIG_DEPENDENT         a scanned gate whose verdict depends on box config
+#   REGION_SHA256                pinned sha256 of land.sh's main-chokepoint body
+#   NEXT_REGION_SHA256           optional one-land successor pin (see harness/README.md)
+# MAIN_DATA_AS_BASE is only land-main-refs.tsv, harness/ratchets, and OWNERS.
+# MAIN_* depends_on and absent_ok are "-".
+# REGION_SHA256 depends_on is the 64-hex digest of the bytes between the single
+# # >>> main-chokepoint and # <<< main-chokepoint markers (markers excluded).
+# NEXT_REGION_SHA256, if present (at most one), is also a 64-hex digest: the
+# checker accepts a body matching REGION_SHA256 or NEXT_REGION_SHA256.
+# BOX_CONFIG_DEPENDENT depends_on is exactly one of:
+#   ~/.gitconfig
+#   /workspace/.cargo/config.toml
+#   CARGO_HOME
+#   /workspace/.cargo/parse5-url-rewrite.gitconfig
+# absent_ok is "required" (missing file fails the land) or "absent_ok".
+# The table is read from MAIN (not the branch) when land.sh runs the checker.
+# A missing MAIN table is rc 2. An unlisted helper arg or stale row fails.
+scripts/land.sh	REGION_SHA256	609b496f1f2fc72461de296e78820c742b2d5981985a895ae925199b0a97ab70	-
+scripts/parse5-pin-check.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
+scripts/install-napi.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
+scripts/land.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
+# Moved from land.sh into scripts/preflight.sh (Migrate ruling 2026-11-10 23:20, rootcause fix 1);
+# preflight runs them from git archive of base, so land.sh no longer names them. Cited under D-0286(1).
+# D-0286: remove OWNERS -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove harness/board-rows.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove harness/scripts/ensure-deps.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove harness/scripts/golden-gate.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove harness/scripts/golden-io-guard.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove harness/scripts/shim-gate.mjs -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove scripts/baseline-ceiling.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove scripts/check-land-main-refs.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove scripts/land-path-checks.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+# D-0286: remove scripts/registry-union.sh -- row existed only for the inline land.sh check block moved to preflight.sh
+scripts/preflight.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
+scripts/cargo-locked.sh	MAIN_SCRIPT_ON_BRANCH_INPUT	-	-
+scripts/land-main-refs.tsv	MAIN_DATA_AS_BASE	-	-
+scripts/land.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/land.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/land.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/land.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+harness/board.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+harness/board.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+harness/board.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+harness/board.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/install-napi.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/install-napi.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/install-napi.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/install-napi.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/cargo-locked.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/cargo-locked.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/cargo-locked.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/cargo-locked.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/style-parse-errors.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/style-parse-errors.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/style-parse-errors.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/style-parse-errors.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/box-parse5-git/apply.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/box-parse5-git/apply.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/box-parse5-git/apply.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/box-parse5-git/apply.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/c8-checks.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/c8-checks.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/c8-checks.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/c8-checks.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/clippy-ratchet.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/cargo-fmt-check.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/cargo-fmt-check.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/cargo-fmt-check.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/cargo-fmt-check.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/napi-css-errors.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required

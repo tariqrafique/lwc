@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div>Profiler Sanity</div><div><x-error-child class=\"profiler-error\"><template shadowrootmode=\"open\"></template>Make child throw error</x-error-child></div><button class=\"profiler-renderList\">Render Children List</button><x-light><template shadowrootmode=\"open\"></template></x-light></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div>Profiler Sanity</div><div><x-error-child class=\"profiler-error\"><template shadowrootmode=\"open\"></template>Make child throw error</x-error-child></div><button class=\"profiler-renderList\">Render Children List</button><x-light><template shadowrootmode=\"open\"></template></x-light></template></lwc-up>"
+ }
+}

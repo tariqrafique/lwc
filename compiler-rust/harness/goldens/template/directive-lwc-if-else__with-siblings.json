@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./with-siblings.css",
+    "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-17drfojvaju",
+    "lwc-17drfojvaju-host",
+    "x-with-siblings_with-siblings",
+    "x-with-siblings_with-siblings-host"
+  ]
+}

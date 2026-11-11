@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><ce-with-delayed-upgrade foo=\"default\"></ce-with-delayed-upgrade></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><ce-with-delayed-upgrade foo=\"default\"></ce-with-delayed-upgrade></template></lwc-up>"
+ }
+}

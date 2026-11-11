@@ -1,0 +1,19 @@
+{
+    "name": "Error",
+    "message": "CssSyntaxError: LWC1009: <cwd>/x.css:2:3: Unclosed block",
+    "code": 1009,
+    "filename": "x.css",
+    "location": {
+        "line": 2,
+        "column": 3
+    },
+    "level": 1,
+    "url": "https://lwc.dev/guide/error_codes#lwc1009",
+    "ownKeys": [
+        "code",
+        "filename",
+        "location",
+        "level",
+        "url"
+    ]
+}

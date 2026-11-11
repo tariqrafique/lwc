@@ -1,0 +1,60 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/elements/elements.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./elements.css",
+        "./elements.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-4q9u0sqsfc0",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/elements/elements.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./elements.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-elements",
+          "publicProps": [
+            "foreignNamespaceInnerHtml"
+          ],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/elements/elements.scoped.css": {
+      "ok": true,
+      "warnings": []
+    }
+  }
+}

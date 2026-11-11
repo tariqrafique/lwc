@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><button class=\"textToggle\">Toggle slotted text</button><x-multiple-slot-level1><template shadowrootmode=\"open\"></template><x-multiple-slot-level2><template shadowrootmode=\"open\"></template>text in multiple level slot</x-multiple-slot-level2></x-multiple-slot-level1></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><button class=\"textToggle\">Toggle slotted text</button><x-multiple-slot-level1><template shadowrootmode=\"open\"></template><x-multiple-slot-level2><template shadowrootmode=\"open\"></template>text in multiple level slot</x-multiple-slot-level2></x-multiple-slot-level1></template></lwc-up>"
+ }
+}

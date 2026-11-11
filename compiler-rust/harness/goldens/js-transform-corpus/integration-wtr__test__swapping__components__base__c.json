@@ -1,0 +1,1 @@
+{"ok":true,"code":"import _tmpl from \"./c.html\";\nimport { LightningElement, registerComponent as _registerComponent } from 'lwc';\nclass C extends LightningElement {\n  /*LWC compiler v9.5.3*/\n}\nconst __lwc_component_class_internal = _registerComponent(C, {\n  tmpl: _tmpl,\n  sel: \"base-c\",\n  apiVersion: 66\n});\nexport default __lwc_component_class_internal;"}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./used-attrs.css",
+    "./used-attrs.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-46132jpta3a",
+    "lwc-46132jpta3a-host",
+    "x-used-attrs_used-attrs",
+    "x-used-attrs_used-attrs-host"
+  ]
+}

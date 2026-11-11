@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><p title=\"client-title\" data-same=\"same-value\" data-another-diff=\"client-val\">text</p></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><p title=\"client-title\" data-same=\"same-value\" data-another-diff=\"client-val\">text</p></template></lwc-up>"
+ }
+}

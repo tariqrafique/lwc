@@ -1,0 +1,175 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./numeric-literal-binary.css",
+   "./numeric-literal-binary.scoped.css?scoped=true",
+   "x/pert"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6bhl2sst5pp",
+   "lwc-6bhl2sst5pp-host",
+   "x-numeric-literal-binary_numeric-literal-binary",
+   "x-numeric-literal-binary_numeric-literal-binary-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6bhl2sst5pp"
+  }
+ },
+ "v57": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v58": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v59": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v60": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v61": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v62": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v65": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./numeric-literal-binary.css",
+   "./numeric-literal-binary.scoped.css?scoped=true",
+   "x/pert"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6bhl2sst5pp",
+   "lwc-6bhl2sst5pp-host",
+   "x-numeric-literal-binary_numeric-literal-binary",
+   "x-numeric-literal-binary_numeric-literal-binary-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6bhl2sst5pp"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./numeric-literal-binary.css",
+   "./numeric-literal-binary.scoped.css?scoped=true",
+   "x/pert"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6bhl2sst5pp",
+   "lwc-6bhl2sst5pp-host",
+   "x-numeric-literal-binary_numeric-literal-binary",
+   "x-numeric-literal-binary_numeric-literal-binary-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-6bhl2sst5pp"
+  }
+ }
+}

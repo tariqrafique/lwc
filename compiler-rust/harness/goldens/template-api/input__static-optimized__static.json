@@ -1,0 +1,392 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static.css",
+   "./static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-548g1ondp5s",
+   "lwc-548g1ondp5s-host",
+   "x-static_static",
+   "x-static_static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled=\"disabled\"${3}>",
+   "parseFragment:<input disabled=\"FALSE\"${3}>",
+   "parseFragment:<input disabled=\"TRUE\"${3}>",
+   "parseFragment:<input disabled=\"yolo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-548g1ondp5s"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static.css",
+   "./static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-548g1ondp5s",
+   "lwc-548g1ondp5s-host",
+   "x-static_static",
+   "x-static_static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled=\"disabled\"${3}>",
+   "parseFragment:<input disabled=\"FALSE\"${3}>",
+   "parseFragment:<input disabled=\"TRUE\"${3}>",
+   "parseFragment:<input disabled=\"yolo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-static_static"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static.css",
+   "./static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-548g1ondp5s",
+   "lwc-548g1ondp5s-host",
+   "x-static_static",
+   "x-static_static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled=\"disabled\"${3}>",
+   "parseFragment:<input disabled=\"FALSE\"${3}>",
+   "parseFragment:<input disabled=\"TRUE\"${3}>",
+   "parseFragment:<input disabled=\"yolo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-static_static"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static.css",
+   "./static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-548g1ondp5s",
+   "lwc-548g1ondp5s-host",
+   "x-static_static",
+   "x-static_static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled=\"disabled\"${3}>",
+   "parseFragment:<input disabled=\"FALSE\"${3}>",
+   "parseFragment:<input disabled=\"TRUE\"${3}>",
+   "parseFragment:<input disabled=\"yolo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-548g1ondp5s"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static.css",
+   "./static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-548g1ondp5s",
+   "lwc-548g1ondp5s-host",
+   "x-static_static",
+   "x-static_static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled=\"disabled\"${3}>",
+   "parseFragment:<input disabled=\"FALSE\"${3}>",
+   "parseFragment:<input disabled=\"TRUE\"${3}>",
+   "parseFragment:<input disabled=\"yolo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-548g1ondp5s"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static.css",
+   "./static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-548g1ondp5s",
+   "lwc-548g1ondp5s-host",
+   "x-static_static",
+   "x-static_static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled=\"disabled\"${3}>",
+   "parseFragment:<input disabled=\"FALSE\"${3}>",
+   "parseFragment:<input disabled=\"TRUE\"${3}>",
+   "parseFragment:<input disabled=\"yolo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-548g1ondp5s"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static.css",
+   "./static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-548g1ondp5s",
+   "lwc-548g1ondp5s-host",
+   "x-static_static",
+   "x-static_static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled=\"disabled\"${3}>",
+   "parseFragment:<input disabled=\"FALSE\"${3}>",
+   "parseFragment:<input disabled=\"TRUE\"${3}>",
+   "parseFragment:<input disabled=\"yolo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-548g1ondp5s"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static.css",
+   "./static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-548g1ondp5s",
+   "lwc-548g1ondp5s-host",
+   "x-static_static",
+   "x-static_static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled=\"disabled\"${3}>",
+   "parseFragment:<input disabled=\"FALSE\"${3}>",
+   "parseFragment:<input disabled=\"TRUE\"${3}>",
+   "parseFragment:<input disabled=\"yolo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-548g1ondp5s"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static.css",
+   "./static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-548g1ondp5s",
+   "lwc-548g1ondp5s-host",
+   "x-static_static",
+   "x-static_static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled=\"disabled\"${3}>",
+   "parseFragment:<input disabled=\"FALSE\"${3}>",
+   "parseFragment:<input disabled=\"TRUE\"${3}>",
+   "parseFragment:<input disabled=\"yolo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-548g1ondp5s"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static.css",
+   "./static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-548g1ondp5s",
+   "lwc-548g1ondp5s-host",
+   "x-static_static",
+   "x-static_static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled${3}>",
+   "parseFragment:<input disabled=\"disabled\"${3}>",
+   "parseFragment:<input disabled=\"FALSE\"${3}>",
+   "parseFragment:<input disabled=\"TRUE\"${3}>",
+   "parseFragment:<input disabled=\"yolo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-548g1ondp5s"
+  }
+ }
+}

@@ -1,0 +1,184 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./update-inside-arrow.css",
+   "./update-inside-arrow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2nerumn9on6",
+   "lwc-2nerumn9on6-host",
+   "x-update-inside-arrow_update-inside-arrow",
+   "x-update-inside-arrow_update-inside-arrow-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><button${3}></button></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2nerumn9on6"
+  }
+ },
+ "v57": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v58": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v59": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v60": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v61": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v62": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v65": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./update-inside-arrow.css",
+   "./update-inside-arrow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2nerumn9on6",
+   "lwc-2nerumn9on6-host",
+   "x-update-inside-arrow_update-inside-arrow",
+   "x-update-inside-arrow_update-inside-arrow-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><button${3}></button></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2nerumn9on6"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./update-inside-arrow.css",
+   "./update-inside-arrow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2nerumn9on6",
+   "lwc-2nerumn9on6-host",
+   "x-update-inside-arrow_update-inside-arrow",
+   "x-update-inside-arrow_update-inside-arrow-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><button${3}></button></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2nerumn9on6"
+  }
+ }
+}

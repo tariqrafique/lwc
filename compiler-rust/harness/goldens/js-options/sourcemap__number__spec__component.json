@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1021
+  ],
+  "line": null,
+  "message": "LWC1021: Expected a boolean value or 'inline' for outputConfig.sourcemap, received \"123\"."
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "this.template.querySelector is not a function"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child-with-api-getter-setter><template shadowrootmode=\"open\"></template></x-child-with-api-getter-setter></template></lwc-up>"
+ }
+}

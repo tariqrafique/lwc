@@ -1,0 +1,305 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots-sharing-bindings.css",
+   "./slots-sharing-bindings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-26f7f538c7h",
+   "lwc-26f7f538c7h-host",
+   "x-slots-sharing-bindings_slots-sharing-bindings",
+   "x-slots-sharing-bindings_slots-sharing-bindings-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-26f7f538c7h"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots-sharing-bindings.css",
+   "./slots-sharing-bindings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-26f7f538c7h",
+   "lwc-26f7f538c7h-host",
+   "x-slots-sharing-bindings_slots-sharing-bindings",
+   "x-slots-sharing-bindings_slots-sharing-bindings-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-slots-sharing-bindings_slots-sharing-bindings"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots-sharing-bindings.css",
+   "./slots-sharing-bindings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-26f7f538c7h",
+   "lwc-26f7f538c7h-host",
+   "x-slots-sharing-bindings_slots-sharing-bindings",
+   "x-slots-sharing-bindings_slots-sharing-bindings-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-slots-sharing-bindings_slots-sharing-bindings"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots-sharing-bindings.css",
+   "./slots-sharing-bindings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-26f7f538c7h",
+   "lwc-26f7f538c7h-host",
+   "x-slots-sharing-bindings_slots-sharing-bindings",
+   "x-slots-sharing-bindings_slots-sharing-bindings-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-26f7f538c7h"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots-sharing-bindings.css",
+   "./slots-sharing-bindings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-26f7f538c7h",
+   "lwc-26f7f538c7h-host",
+   "x-slots-sharing-bindings_slots-sharing-bindings",
+   "x-slots-sharing-bindings_slots-sharing-bindings-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-26f7f538c7h"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots-sharing-bindings.css",
+   "./slots-sharing-bindings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-26f7f538c7h",
+   "lwc-26f7f538c7h-host",
+   "x-slots-sharing-bindings_slots-sharing-bindings",
+   "x-slots-sharing-bindings_slots-sharing-bindings-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-26f7f538c7h"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots-sharing-bindings.css",
+   "./slots-sharing-bindings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-26f7f538c7h",
+   "lwc-26f7f538c7h-host",
+   "x-slots-sharing-bindings_slots-sharing-bindings",
+   "x-slots-sharing-bindings_slots-sharing-bindings-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-26f7f538c7h"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots-sharing-bindings.css",
+   "./slots-sharing-bindings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-26f7f538c7h",
+   "lwc-26f7f538c7h-host",
+   "x-slots-sharing-bindings_slots-sharing-bindings",
+   "x-slots-sharing-bindings_slots-sharing-bindings-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-26f7f538c7h"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots-sharing-bindings.css",
+   "./slots-sharing-bindings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-26f7f538c7h",
+   "lwc-26f7f538c7h-host",
+   "x-slots-sharing-bindings_slots-sharing-bindings",
+   "x-slots-sharing-bindings_slots-sharing-bindings-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-26f7f538c7h"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots-sharing-bindings.css",
+   "./slots-sharing-bindings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-26f7f538c7h",
+   "lwc-26f7f538c7h-host",
+   "x-slots-sharing-bindings_slots-sharing-bindings",
+   "x-slots-sharing-bindings_slots-sharing-bindings-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-26f7f538c7h"
+  }
+ }
+}

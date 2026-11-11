@@ -1,0 +1,11 @@
+{
+  "expectedCompileError": 1092,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/wire/wire.js": {
+      "ok": false,
+      "code": 1092
+    }
+  }
+}

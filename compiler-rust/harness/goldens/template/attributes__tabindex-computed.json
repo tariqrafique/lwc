@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./tabindex-computed.css",
+    "./tabindex-computed.scoped.css?scoped=true",
+    "x/foo"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-576tik9amt5",
+    "lwc-576tik9amt5-host",
+    "x-tabindex-computed_tabindex-computed",
+    "x-tabindex-computed_tabindex-computed-host"
+  ]
+}

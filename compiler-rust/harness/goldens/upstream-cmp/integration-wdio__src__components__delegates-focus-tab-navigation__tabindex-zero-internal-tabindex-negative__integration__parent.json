@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\" shadowrootdelegatesfocus><integration-child tabindex=\"-1\"><template shadowrootmode=\"open\"></template></integration-child><input class=\"parent\" placeholder=\"parent input\"><integration-child tabindex=\"-1\"><template shadowrootmode=\"open\"></template></integration-child></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><integration-child tabindex=\"-1\"><template shadowrootmode=\"open\"></template></integration-child><input placeholder=\"parent input\" class=\"parent\"><integration-child tabindex=\"-1\"><template shadowrootmode=\"open\"></template></integration-child></template></lwc-up>"
+ }
+}

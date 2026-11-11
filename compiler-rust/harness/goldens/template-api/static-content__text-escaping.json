@@ -1,0 +1,332 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-escaping.css",
+   "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6t1doghra7u",
+   "lwc-6t1doghra7u-host",
+   "x-text-escaping_text-escaping",
+   "x-text-escaping_text-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Hello &lt;div&gt;world&lt;/div&gt;</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6t1doghra7u"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-escaping.css",
+   "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6t1doghra7u",
+   "lwc-6t1doghra7u-host",
+   "x-text-escaping_text-escaping",
+   "x-text-escaping_text-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Hello &lt;div&gt;world&lt;/div&gt;</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-text-escaping_text-escaping"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-escaping.css",
+   "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6t1doghra7u",
+   "lwc-6t1doghra7u-host",
+   "x-text-escaping_text-escaping",
+   "x-text-escaping_text-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Hello &lt;div&gt;world&lt;/div&gt;</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-text-escaping_text-escaping"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-escaping.css",
+   "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6t1doghra7u",
+   "lwc-6t1doghra7u-host",
+   "x-text-escaping_text-escaping",
+   "x-text-escaping_text-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Hello &lt;div&gt;world&lt;/div&gt;</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6t1doghra7u"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-escaping.css",
+   "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6t1doghra7u",
+   "lwc-6t1doghra7u-host",
+   "x-text-escaping_text-escaping",
+   "x-text-escaping_text-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Hello &lt;div&gt;world&lt;/div&gt;</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6t1doghra7u"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-escaping.css",
+   "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6t1doghra7u",
+   "lwc-6t1doghra7u-host",
+   "x-text-escaping_text-escaping",
+   "x-text-escaping_text-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Hello &lt;div&gt;world&lt;/div&gt;</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6t1doghra7u"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-escaping.css",
+   "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6t1doghra7u",
+   "lwc-6t1doghra7u-host",
+   "x-text-escaping_text-escaping",
+   "x-text-escaping_text-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Hello &lt;div&gt;world&lt;/div&gt;</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6t1doghra7u"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-escaping.css",
+   "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6t1doghra7u",
+   "lwc-6t1doghra7u-host",
+   "x-text-escaping_text-escaping",
+   "x-text-escaping_text-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Hello &lt;div&gt;world&lt;/div&gt;</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6t1doghra7u"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-escaping.css",
+   "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6t1doghra7u",
+   "lwc-6t1doghra7u-host",
+   "x-text-escaping_text-escaping",
+   "x-text-escaping_text-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Hello &lt;div&gt;world&lt;/div&gt;</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6t1doghra7u"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-escaping.css",
+   "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6t1doghra7u",
+   "lwc-6t1doghra7u-host",
+   "x-text-escaping_text-escaping",
+   "x-text-escaping_text-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Hello &lt;div&gt;world&lt;/div&gt;</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6t1doghra7u"
+  }
+ }
+}

@@ -1,0 +1,1554 @@
+[
+ {
+  "id": "dup-let",
+  "src": "let a; let a;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'a' has already been declared. (1:11)\n\n> 1 | let a; let a;\n    |            ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 11,
+    "index": 11
+   }
+  }
+ },
+ {
+  "id": "dup-let-rec",
+  "src": "let a; let a;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"a\"\n> 1 | let a; let a;\n    |            ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "with",
+  "src": "with(a){}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: 'with' in strict mode. (1:0)\n\n> 1 | with(a){}\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "with-rec",
+  "src": "with(a){}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "delete-ident",
+  "src": "delete x;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Deleting local variable in strict mode. (1:0)\n\n> 1 | delete x;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "delete-ident-rec",
+  "src": "delete x;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "legacy-octal",
+  "src": "00",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Legacy octal literals are not allowed in strict mode. (1:0)\n\n> 1 | 00\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "legacy-octal-rec",
+  "src": "00",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "var-eval",
+  "src": "var eval",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Binding 'eval' in strict mode. (1:4)\n\n> 1 | var eval\n    |     ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 4,
+    "index": 4
+   }
+  }
+ },
+ {
+  "id": "var-eval-rec",
+  "src": "var eval",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "dup-label",
+  "src": "l: l: ;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Label 'l' is already declared. (1:3)\n\n> 1 | l: l: ;\n    |    ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 3,
+    "index": 3
+   }
+  }
+ },
+ {
+  "id": "dup-label-rec",
+  "src": "l: l: ;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "dup-proto",
+  "src": "({__proto__: 1, __proto__: 2});",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Redefinition of __proto__ property. (1:16)\n\n> 1 | ({__proto__: 1, __proto__: 2});\n    |                 ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 16,
+    "index": 16
+   }
+  }
+ },
+ {
+  "id": "dup-proto-rec",
+  "src": "({__proto__: 1, __proto__: 2});",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "break-undef-label",
+  "src": "break foo;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unsyntactic break. (1:0)\n\n> 1 | break foo;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "break-undef-label-rec",
+  "src": "break foo;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "rw-let-eq",
+  "src": "let = ;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'let'. (1:0)\n\n> 1 | let = ;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "rw-let-eq-rec",
+  "src": "let = ;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token (1:6)\n\n> 1 | let = ;\n    |       ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 6,
+    "index": 6
+   }
+  }
+ },
+ {
+  "id": "rw-let-1",
+  "src": "let = 1;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'let'. (1:0)\n\n> 1 | let = 1;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "rw-let-1-rec",
+  "src": "let = 1;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "rw-let-comment",
+  "src": "let /*c*/ = ;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'let'. (1:0)\n\n> 1 | let /*c*/ = ;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "rw-let-comment-rec",
+  "src": "let /*c*/ = ;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token (1:12)\n\n> 1 | let /*c*/ = ;\n    |             ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 12,
+    "index": 12
+   }
+  }
+ },
+ {
+  "id": "rw-let-after",
+  "src": "x; let = ;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'let'. (1:3)\n\n> 1 | x; let = ;\n    |    ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 3,
+    "index": 3
+   }
+  }
+ },
+ {
+  "id": "rw-let-after-rec",
+  "src": "x; let = ;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token (1:9)\n\n> 1 | x; let = ;\n    |          ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 9,
+    "index": 9
+   }
+  }
+ },
+ {
+  "id": "rw-let-utf",
+  "src": "const s = \"é\"; let = ;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'let'. (1:15)\n\n> 1 | const s = \"é\"; let = ;\n    |                ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 15,
+    "index": 15
+   }
+  }
+ },
+ {
+  "id": "rw-let-utf-rec",
+  "src": "const s = \"é\"; let = ;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token (1:21)\n\n> 1 | const s = \"é\"; let = ;\n    |                      ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 21,
+    "index": 21
+   }
+  }
+ },
+ {
+  "id": "rw-static",
+  "src": "var static = 1;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'static'. (1:4)\n\n> 1 | var static = 1;\n    |     ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 4,
+    "index": 4
+   }
+  }
+ },
+ {
+  "id": "rw-static-rec",
+  "src": "var static = 1;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "rw-yield-param",
+  "src": "function f(yield){}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'yield'. (1:11)\n\n> 1 | function f(yield){}\n    |            ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 11,
+    "index": 11
+   }
+  }
+ },
+ {
+  "id": "rw-yield-param-rec",
+  "src": "function f(yield){}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "rw-let-shorthand",
+  "src": "({let});",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'let'. (1:2)\n\n> 1 | ({let});\n    |   ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 2,
+    "index": 2
+   }
+  }
+ },
+ {
+  "id": "rw-let-shorthand-rec",
+  "src": "({let});",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "rw-let-line2",
+  "src": "let x = 1;\nx = let;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'let'. (2:4)\n\n  1 | let x = 1;\n> 2 | x = let;\n    |     ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 2,
+    "column": 4,
+    "index": 15
+   }
+  }
+ },
+ {
+  "id": "rw-let-line2-rec",
+  "src": "let x = 1;\nx = let;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "rw-let-template",
+  "src": "const a = `${let}`;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'let'. (1:13)\n\n> 1 | const a = `${let}`;\n    |              ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 13,
+    "index": 13
+   }
+  }
+ },
+ {
+  "id": "rw-let-template-rec",
+  "src": "const a = `${let}`;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "ok-class-static",
+  "src": "class A { static = 1; let = 2; }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": "ok"
+ },
+ {
+  "id": "ok-class-static-rec",
+  "src": "class A { static = 1; let = 2; }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok"
+ },
+ {
+  "id": "ok-props",
+  "src": "obj.public = 1; ({private: 1});",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": "ok"
+ },
+ {
+  "id": "ok-props-rec",
+  "src": "obj.public = 1; ({private: 1});",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok"
+ },
+ {
+  "id": "ok-import-let",
+  "src": "import { let as l } from 'm';",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": "ok"
+ },
+ {
+  "id": "ok-import-let-rec",
+  "src": "import { let as l } from 'm';",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok"
+ },
+ {
+  "id": "ok-let-comment",
+  "src": "let /* let */ x = 'let';",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": "ok"
+ },
+ {
+  "id": "ok-let-comment-rec",
+  "src": "let /* let */ x = 'let';",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok"
+ },
+ {
+  "id": "abstract-default",
+  "src": "export default abstract class {}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Missing semicolon. (1:23)\n\n> 1 | export default abstract class {}\n    |                        ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 23,
+    "index": 23
+   }
+  }
+ },
+ {
+  "id": "abstract-default-rec",
+  "src": "export default abstract class {}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: A class name is required. (1:30)\n\n> 1 | export default abstract class {}\n    |                               ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 30,
+    "index": 30
+   }
+  }
+ },
+ {
+  "id": "abstract-default-named",
+  "src": "export default abstract class A {}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Missing semicolon. (1:23)\n\n> 1 | export default abstract class A {}\n    |                        ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 23,
+    "index": 23
+   }
+  }
+ },
+ {
+  "id": "abstract-default-named-rec",
+  "src": "export default abstract class A {}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "abstract-decl",
+  "src": "abstract class A {}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Missing semicolon. (1:8)\n\n> 1 | abstract class A {}\n    |         ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 8,
+    "index": 8
+   }
+  }
+ },
+ {
+  "id": "abstract-decl-rec",
+  "src": "abstract class A {}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "abstract-export",
+  "src": "export abstract class A {}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token, expected \"{\" (1:7)\n\n> 1 | export abstract class A {}\n    |        ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 7,
+    "index": 7
+   }
+  }
+ },
+ {
+  "id": "abstract-export-rec",
+  "src": "export abstract class A {}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token, expected \"{\" (1:7)\n\n> 1 | export abstract class A {}\n    |        ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 7,
+    "index": 7
+   }
+  }
+ },
+ {
+  "id": "dup-let-var",
+  "src": "let a; var a;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'a' has already been declared. (1:11)\n\n> 1 | let a; var a;\n    |            ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 11,
+    "index": 11
+   }
+  }
+ },
+ {
+  "id": "dup-let-var-rec",
+  "src": "let a; var a;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"a\"\n> 1 | let a; var a;\n    |            ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "dup-var-let",
+  "src": "var a; let a;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'a' has already been declared. (1:11)\n\n> 1 | var a; let a;\n    |            ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 11,
+    "index": 11
+   }
+  }
+ },
+ {
+  "id": "dup-var-let-rec",
+  "src": "var a; let a;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"a\"\n> 1 | var a; let a;\n    |            ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "dup-const-let",
+  "src": "const a = 1; let a;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'a' has already been declared. (1:17)\n\n> 1 | const a = 1; let a;\n    |                  ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 17,
+    "index": 17
+   }
+  }
+ },
+ {
+  "id": "dup-const-let-rec",
+  "src": "const a = 1; let a;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"a\"\n> 1 | const a = 1; let a;\n    |                  ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "dup-class-let",
+  "src": "class A {} let A;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'A' has already been declared. (1:15)\n\n> 1 | class A {} let A;\n    |                ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 15,
+    "index": 15
+   }
+  }
+ },
+ {
+  "id": "dup-class-let-rec",
+  "src": "class A {} let A;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"A\"\n> 1 | class A {} let A;\n    |                ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "dup-fn-let",
+  "src": "function f() {} let f;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'f' has already been declared. (1:20)\n\n> 1 | function f() {} let f;\n    |                     ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 20,
+    "index": 20
+   }
+  }
+ },
+ {
+  "id": "dup-fn-let-rec",
+  "src": "function f() {} let f;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"f\"\n> 1 | function f() {} let f;\n    |                     ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "dup-let-fn",
+  "src": "let f; function f() {}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'f' has already been declared. (1:16)\n\n> 1 | let f; function f() {}\n    |                 ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 16,
+    "index": 16
+   }
+  }
+ },
+ {
+  "id": "dup-let-fn-rec",
+  "src": "let f; function f() {}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"f\"\n> 1 | let f; function f() {}\n    |                 ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "dup-import-let",
+  "src": "import a from 'x'; let a;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'a' has already been declared. (1:23)\n\n> 1 | import a from 'x'; let a;\n    |                        ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 23,
+    "index": 23
+   }
+  }
+ },
+ {
+  "id": "dup-import-let-rec",
+  "src": "import a from 'x'; let a;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"a\"\n> 1 | import a from 'x'; let a;\n    |                        ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "dup-block-let",
+  "src": "{ let a; let a; }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'a' has already been declared. (1:13)\n\n> 1 | { let a; let a; }\n    |              ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 13,
+    "index": 13
+   }
+  }
+ },
+ {
+  "id": "dup-block-let-rec",
+  "src": "{ let a; let a; }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"a\"\n> 1 | { let a; let a; }\n    |              ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "dup-param-let",
+  "src": "function f(a) { let a; }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'a' has already been declared. (1:11)\n\n> 1 | function f(a) { let a; }\n    |            ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 11,
+    "index": 11
+   }
+  }
+ },
+ {
+  "id": "dup-param-let-rec",
+  "src": "function f(a) { let a; }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"a\"\n> 1 | function f(a) { let a; }\n    |                     ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "dup-catch-let",
+  "src": "try {} catch (e) { let e; }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'e' has already been declared. (1:23)\n\n> 1 | try {} catch (e) { let e; }\n    |                        ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 23,
+    "index": 23
+   }
+  }
+ },
+ {
+  "id": "dup-catch-let-rec",
+  "src": "try {} catch (e) { let e; }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"e\"\n> 1 | try {} catch (e) { let e; }\n    |                        ^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "dup-params",
+  "src": "function f(a, a) {}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Argument name clash. (1:14)\n\n> 1 | function f(a, a) {}\n    |               ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 14,
+    "index": 14
+   }
+  }
+ },
+ {
+  "id": "dup-params-rec",
+  "src": "function f(a, a) {}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "dup-export",
+  "src": "export const a = 1; export { a };",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: `a` has already been exported. Exported identifiers must be unique. (1:29)\n\n> 1 | export const a = 1; export { a };\n    |                              ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 29,
+    "index": 29
+   }
+  }
+ },
+ {
+  "id": "dup-export-rec",
+  "src": "export const a = 1; export { a };",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "dup-default-export",
+  "src": "export default 1; export default 2;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Only one default export allowed per module. (1:18)\n\n> 1 | export default 1; export default 2;\n    |                   ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 18,
+    "index": 18
+   }
+  }
+ },
+ {
+  "id": "dup-default-export-rec",
+  "src": "export default 1; export default 2;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "export-undeclared",
+  "src": "export { nope };",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Export 'nope' is not defined. (1:9)\n\n> 1 | export { nope };\n    |          ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 9,
+    "index": 9
+   }
+  }
+ },
+ {
+  "id": "export-undeclared-rec",
+  "src": "export { nope };",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "priv-undeclared",
+  "src": "class A { m() { this.#x; } }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Private name #x is not defined. (1:21)\n\n> 1 | class A { m() { this.#x; } }\n    |                      ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 21,
+    "index": 21
+   }
+  }
+ },
+ {
+  "id": "priv-undeclared-rec",
+  "src": "class A { m() { this.#x; } }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "priv-dup",
+  "src": "class A { #x; #x; }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Duplicate private name #x. (1:14)\n\n> 1 | class A { #x; #x; }\n    |               ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 14,
+    "index": 14
+   }
+  }
+ },
+ {
+  "id": "priv-dup-rec",
+  "src": "class A { #x; #x; }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Duplicate private field\n> 1 | class A { #x; #x; }\n    |               ^^^",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "new-target-top",
+  "src": "new.target;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: `new.target` can only be used in functions or class properties. (1:0)\n\n> 1 | new.target;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "new-target-top-rec",
+  "src": "new.target;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "super-top",
+  "src": "super.x;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: 'super' is only allowed in object methods and classes. (1:0)\n\n> 1 | super.x;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "super-top-rec",
+  "src": "super.x;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "return-top",
+  "src": "return 1;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: 'return' outside of function. (1:0)\n\n> 1 | return 1;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "return-top-rec",
+  "src": "return 1;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "continue-undef",
+  "src": "for(;;) { continue foo; }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unsyntactic continue. (1:10)\n\n> 1 | for(;;) { continue foo; }\n    |           ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 10,
+    "index": 10
+   }
+  }
+ },
+ {
+  "id": "continue-undef-rec",
+  "src": "for(;;) { continue foo; }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "break-outside",
+  "src": "break;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unsyntactic break. (1:0)\n\n> 1 | break;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "break-outside-rec",
+  "src": "break;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "assign-eval",
+  "src": "eval = 1;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Assigning to 'eval' in strict mode. (1:0)\n\n> 1 | eval = 1;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "assign-eval-rec",
+  "src": "eval = 1;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "assign-arguments",
+  "src": "arguments = 1;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Assigning to 'arguments' in strict mode. (1:0)\n\n> 1 | arguments = 1;\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "assign-arguments-rec",
+  "src": "arguments = 1;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "octal-escape",
+  "src": "'\\01';",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: The only valid numeric escape in strict mode is '\\0'. (1:2)\n\n> 1 | '\\01';\n    |   ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 2,
+    "index": 2
+   }
+  }
+ },
+ {
+  "id": "octal-escape-rec",
+  "src": "'\\01';",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "fn-in-if",
+  "src": "if (1) function f() {}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: In strict mode code, functions can only be declared at top level or inside a block. (1:7)\n\n> 1 | if (1) function f() {}\n    |        ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 7,
+    "index": 7
+   }
+  }
+ },
+ {
+  "id": "fn-in-if-rec",
+  "src": "if (1) function f() {}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "labeled-fn",
+  "src": "l: function f() {}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: In strict mode code, functions can only be declared at top level or inside a block. (1:3)\n\n> 1 | l: function f() {}\n    |    ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 3,
+    "index": 3
+   }
+  }
+ },
+ {
+  "id": "labeled-fn-rec",
+  "src": "l: function f() {}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "await-top-id",
+  "src": "var await;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'await'. (1:4)\n\n> 1 | var await;\n    |     ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 4,
+    "index": 4
+   }
+  }
+ },
+ {
+  "id": "await-top-id-rec",
+  "src": "var await;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "yield-id",
+  "src": "var yield;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'yield'. (1:4)\n\n> 1 | var yield;\n    |     ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 4,
+    "index": 4
+   }
+  }
+ },
+ {
+  "id": "yield-id-rec",
+  "src": "var yield;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "strict-impl",
+  "src": "var implements;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected reserved word 'implements'. (1:4)\n\n> 1 | var implements;\n    |     ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 4,
+    "index": 4
+   }
+  }
+ },
+ {
+  "id": "strict-impl-rec",
+  "src": "var implements;",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "getter-param",
+  "src": "({ get x(a) {} });",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: A 'get' accessor must not have any formal parameters. (1:3)\n\n> 1 | ({ get x(a) {} });\n    |    ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 3,
+    "index": 3
+   }
+  }
+ },
+ {
+  "id": "getter-param-rec",
+  "src": "({ get x(a) {} });",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "setter-noparam",
+  "src": "({ set x() {} });",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: A 'set' accessor must have exactly one formal parameter. (1:3)\n\n> 1 | ({ set x() {} });\n    |    ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 3,
+    "index": 3
+   }
+  }
+ },
+ {
+  "id": "setter-noparam-rec",
+  "src": "({ set x() {} });",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "class-ctor-dup",
+  "src": "class A { constructor() {} constructor() {} }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Duplicate constructor in the same class. (1:27)\n\n> 1 | class A { constructor() {} constructor() {} }\n    |                            ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 27,
+    "index": 27
+   }
+  }
+ },
+ {
+  "id": "class-ctor-dup-rec",
+  "src": "class A { constructor() {} constructor() {} }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "super-call-no-extends",
+  "src": "class A { constructor() { super(); } }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: `super()` is only valid inside a class constructor of a subclass. Maybe a typo in the method name ('constructor') or not extending another class? (1:26)\n\n> 1 | class A { constructor() { super(); } }\n    |                           ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 26,
+    "index": 26
+   }
+  }
+ },
+ {
+  "id": "super-call-no-extends-rec",
+  "src": "class A { constructor() { super(); } }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "use-strict-nonsimple",
+  "src": "function f(a = 1) { 'use strict'; }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Illegal 'use strict' directive in function with non-simple parameter list. (1:0)\n\n> 1 | function f(a = 1) { 'use strict'; }\n    | ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "use-strict-nonsimple-rec",
+  "src": "function f(a = 1) { 'use strict'; }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "delete-private",
+  "src": "class A { #x; m() { delete this.#x; } }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Deleting a private field is not allowed. (1:20)\n\n> 1 | class A { #x; m() { delete this.#x; } }\n    |                     ^",
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 20,
+    "index": 20
+   }
+  }
+ },
+ {
+  "id": "delete-private-rec",
+  "src": "class A { #x; m() { delete this.#x; } }",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "Error: LWC1007: foo.js: Internal Babel error: deleting private elements is a parsing error.",
+   "filename": "foo.js",
+   "location": null
+  }
+ },
+ {
+  "id": "lwc-comp-dup",
+  "src": "import { LightningElement } from 'lwc';\nlet a; let a;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Identifier 'a' has already been declared. (2:11)\n\n  1 | import { LightningElement } from 'lwc';\n> 2 | let a; let a;\n    |            ^\n  3 | export default class Foo extends LightningElement {}",
+   "filename": "foo.js",
+   "location": {
+    "line": 2,
+    "column": 11,
+    "index": 51
+   }
+  }
+ },
+ {
+  "id": "lwc-comp-dup-rec",
+  "src": "import { LightningElement } from 'lwc';\nlet a; let a;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "TypeError: LWC1007: Duplicate declaration \"a\"\n  1 | import { LightningElement } from 'lwc';\n> 2 | let a; let a;\n    |            ^\n  3 | export default class Foo extends LightningElement {}",
+   "filename": "foo.js",
+   "location": null
+  }
+ }
+]

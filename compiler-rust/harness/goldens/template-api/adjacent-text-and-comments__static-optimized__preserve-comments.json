@@ -1,0 +1,352 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments.css",
+   "./preserve-comments.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-332m459dd46",
+   "lwc-332m459dd46-host",
+   "x-preserve-comments_preserve-comments",
+   "x-preserve-comments_preserve-comments-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}><!-- yolo -->${\"t2\"}<!-- yolo -->${\"t4\"}<!-- yolo --></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-332m459dd46"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments.css",
+   "./preserve-comments.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-332m459dd46",
+   "lwc-332m459dd46-host",
+   "x-preserve-comments_preserve-comments",
+   "x-preserve-comments_preserve-comments-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}><!-- yolo -->${\"t2\"}<!-- yolo -->${\"t4\"}<!-- yolo --></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-preserve-comments_preserve-comments"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments.css",
+   "./preserve-comments.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-332m459dd46",
+   "lwc-332m459dd46-host",
+   "x-preserve-comments_preserve-comments",
+   "x-preserve-comments_preserve-comments-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}><!-- yolo -->${\"t2\"}<!-- yolo -->${\"t4\"}<!-- yolo --></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-preserve-comments_preserve-comments"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments.css",
+   "./preserve-comments.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-332m459dd46",
+   "lwc-332m459dd46-host",
+   "x-preserve-comments_preserve-comments",
+   "x-preserve-comments_preserve-comments-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}><!-- yolo -->${\"t2\"}<!-- yolo -->${\"t4\"}<!-- yolo --></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-332m459dd46"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments.css",
+   "./preserve-comments.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-332m459dd46",
+   "lwc-332m459dd46-host",
+   "x-preserve-comments_preserve-comments",
+   "x-preserve-comments_preserve-comments-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}><!-- yolo -->${\"t2\"}<!-- yolo -->${\"t4\"}<!-- yolo --></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-332m459dd46"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments.css",
+   "./preserve-comments.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-332m459dd46",
+   "lwc-332m459dd46-host",
+   "x-preserve-comments_preserve-comments",
+   "x-preserve-comments_preserve-comments-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}><!-- yolo -->${\"t2\"}<!-- yolo -->${\"t4\"}<!-- yolo --></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-332m459dd46"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments.css",
+   "./preserve-comments.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-332m459dd46",
+   "lwc-332m459dd46-host",
+   "x-preserve-comments_preserve-comments",
+   "x-preserve-comments_preserve-comments-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}><!-- yolo -->${\"t2\"}<!-- yolo -->${\"t4\"}<!-- yolo --></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-332m459dd46"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments.css",
+   "./preserve-comments.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-332m459dd46",
+   "lwc-332m459dd46-host",
+   "x-preserve-comments_preserve-comments",
+   "x-preserve-comments_preserve-comments-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}><!-- yolo -->${\"t2\"}<!-- yolo -->${\"t4\"}<!-- yolo --></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-332m459dd46"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments.css",
+   "./preserve-comments.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-332m459dd46",
+   "lwc-332m459dd46-host",
+   "x-preserve-comments_preserve-comments",
+   "x-preserve-comments_preserve-comments-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}><!-- yolo -->${\"t2\"}<!-- yolo -->${\"t4\"}<!-- yolo --></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-332m459dd46"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments.css",
+   "./preserve-comments.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-332m459dd46",
+   "lwc-332m459dd46-host",
+   "x-preserve-comments_preserve-comments",
+   "x-preserve-comments_preserve-comments-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}><!-- yolo -->${\"t2\"}<!-- yolo -->${\"t4\"}<!-- yolo --></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-332m459dd46"
+  }
+ }
+}

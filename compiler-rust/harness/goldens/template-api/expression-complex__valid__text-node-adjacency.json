@@ -1,0 +1,352 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-node-adjacency.css",
+   "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6kcfs482gvt",
+   "lwc-6kcfs482gvt-host",
+   "x-text-node-adjacency_text-node-adjacency",
+   "x-text-node-adjacency_text-node-adjacency-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><div${3}>${\"t2\"}</div><div${3}>${\"t4\"}</div><div${3}>${\"t6\"}</div><div${3}>${\"t8\"}</div><div${3}>${\"t10\"}</div><div${3}>${\"t12\"}</div><div${3}>${\"t14\"}</div><div${3}>${\"t16\"}</div><div${3}>${\"t18\"}</div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6kcfs482gvt"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-node-adjacency.css",
+   "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6kcfs482gvt",
+   "lwc-6kcfs482gvt-host",
+   "x-text-node-adjacency_text-node-adjacency",
+   "x-text-node-adjacency_text-node-adjacency-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><div${3}>${\"t2\"}</div><div${3}>${\"t4\"}</div><div${3}>${\"t6\"}</div><div${3}>${\"t8\"}</div><div${3}>${\"t10\"}</div><div${3}>${\"t12\"}</div><div${3}>${\"t14\"}</div><div${3}>${\"t16\"}</div><div${3}>${\"t18\"}</div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-text-node-adjacency_text-node-adjacency"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-node-adjacency.css",
+   "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6kcfs482gvt",
+   "lwc-6kcfs482gvt-host",
+   "x-text-node-adjacency_text-node-adjacency",
+   "x-text-node-adjacency_text-node-adjacency-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><div${3}>${\"t2\"}</div><div${3}>${\"t4\"}</div><div${3}>${\"t6\"}</div><div${3}>${\"t8\"}</div><div${3}>${\"t10\"}</div><div${3}>${\"t12\"}</div><div${3}>${\"t14\"}</div><div${3}>${\"t16\"}</div><div${3}>${\"t18\"}</div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-text-node-adjacency_text-node-adjacency"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-node-adjacency.css",
+   "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6kcfs482gvt",
+   "lwc-6kcfs482gvt-host",
+   "x-text-node-adjacency_text-node-adjacency",
+   "x-text-node-adjacency_text-node-adjacency-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><div${3}>${\"t2\"}</div><div${3}>${\"t4\"}</div><div${3}>${\"t6\"}</div><div${3}>${\"t8\"}</div><div${3}>${\"t10\"}</div><div${3}>${\"t12\"}</div><div${3}>${\"t14\"}</div><div${3}>${\"t16\"}</div><div${3}>${\"t18\"}</div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6kcfs482gvt"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-node-adjacency.css",
+   "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6kcfs482gvt",
+   "lwc-6kcfs482gvt-host",
+   "x-text-node-adjacency_text-node-adjacency",
+   "x-text-node-adjacency_text-node-adjacency-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><div${3}>${\"t2\"}</div><div${3}>${\"t4\"}</div><div${3}>${\"t6\"}</div><div${3}>${\"t8\"}</div><div${3}>${\"t10\"}</div><div${3}>${\"t12\"}</div><div${3}>${\"t14\"}</div><div${3}>${\"t16\"}</div><div${3}>${\"t18\"}</div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6kcfs482gvt"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-node-adjacency.css",
+   "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6kcfs482gvt",
+   "lwc-6kcfs482gvt-host",
+   "x-text-node-adjacency_text-node-adjacency",
+   "x-text-node-adjacency_text-node-adjacency-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><div${3}>${\"t2\"}</div><div${3}>${\"t4\"}</div><div${3}>${\"t6\"}</div><div${3}>${\"t8\"}</div><div${3}>${\"t10\"}</div><div${3}>${\"t12\"}</div><div${3}>${\"t14\"}</div><div${3}>${\"t16\"}</div><div${3}>${\"t18\"}</div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6kcfs482gvt"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-node-adjacency.css",
+   "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6kcfs482gvt",
+   "lwc-6kcfs482gvt-host",
+   "x-text-node-adjacency_text-node-adjacency",
+   "x-text-node-adjacency_text-node-adjacency-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><div${3}>${\"t2\"}</div><div${3}>${\"t4\"}</div><div${3}>${\"t6\"}</div><div${3}>${\"t8\"}</div><div${3}>${\"t10\"}</div><div${3}>${\"t12\"}</div><div${3}>${\"t14\"}</div><div${3}>${\"t16\"}</div><div${3}>${\"t18\"}</div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6kcfs482gvt"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-node-adjacency.css",
+   "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6kcfs482gvt",
+   "lwc-6kcfs482gvt-host",
+   "x-text-node-adjacency_text-node-adjacency",
+   "x-text-node-adjacency_text-node-adjacency-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><div${3}>${\"t2\"}</div><div${3}>${\"t4\"}</div><div${3}>${\"t6\"}</div><div${3}>${\"t8\"}</div><div${3}>${\"t10\"}</div><div${3}>${\"t12\"}</div><div${3}>${\"t14\"}</div><div${3}>${\"t16\"}</div><div${3}>${\"t18\"}</div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6kcfs482gvt"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-node-adjacency.css",
+   "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6kcfs482gvt",
+   "lwc-6kcfs482gvt-host",
+   "x-text-node-adjacency_text-node-adjacency",
+   "x-text-node-adjacency_text-node-adjacency-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><div${3}>${\"t2\"}</div><div${3}>${\"t4\"}</div><div${3}>${\"t6\"}</div><div${3}>${\"t8\"}</div><div${3}>${\"t10\"}</div><div${3}>${\"t12\"}</div><div${3}>${\"t14\"}</div><div${3}>${\"t16\"}</div><div${3}>${\"t18\"}</div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6kcfs482gvt"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./text-node-adjacency.css",
+   "./text-node-adjacency.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6kcfs482gvt",
+   "lwc-6kcfs482gvt-host",
+   "x-text-node-adjacency_text-node-adjacency",
+   "x-text-node-adjacency_text-node-adjacency-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><div${3}>${\"t2\"}</div><div${3}>${\"t4\"}</div><div${3}>${\"t6\"}</div><div${3}>${\"t8\"}</div><div${3}>${\"t10\"}</div><div${3}>${\"t12\"}</div><div${3}>${\"t14\"}</div><div${3}>${\"t16\"}</div><div${3}>${\"t18\"}</div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6kcfs482gvt"
+  }
+ }
+}

@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./invalid-config.css",
+    "./invalid-config.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1187,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-4hpru6vq4i9",
+    "lwc-4hpru6vq4i9-host",
+    "x-invalid-config_invalid-config",
+    "x-invalid-config_invalid-config-host"
+  ]
+}

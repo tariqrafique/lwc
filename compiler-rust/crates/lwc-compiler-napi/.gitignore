@@ -1,0 +1,6 @@
+# Built by `npm run build` (napi build --platform) and `napi artifacts`; never committed.
+*.node
+# napi CLI v2 always emits a d.ts; the shipped index.d.ts is hand-written (S1 untyped, S2 generated from AB-0008).
+napi.gen.d.ts
+node_modules/
+*.tgz

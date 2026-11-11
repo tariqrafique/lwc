@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-slot>\n    <x-leaf>\n      <!---->\n      <h1>\n        bottom content\n      </h1>\n      <!---->\n      <!---->\n      <h1>\n        top content\n      </h1>\n      <!---->\n    </x-leaf>\n  </x-slot>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-slot>\n    <x-leaf>\n      <!---->\n      <h1>\n        bottom content\n      </h1>\n      <!---->\n      <!---->\n      <h1>\n        top content\n      </h1>\n      <!---->\n    </x-leaf>\n  </x-slot>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-slot>\n    <x-leaf>\n      <!---->\n      <h1>\n        bottom content\n      </h1>\n      <!---->\n      <!---->\n      <h1>\n        top content\n      </h1>\n      <!---->\n    </x-leaf>\n  </x-slot>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-slot>\n    <x-leaf>\n      <!---->\n      <h1>\n        bottom content\n      </h1>\n      <!---->\n      <!---->\n      <h1>\n        top content\n      </h1>\n      <!---->\n    </x-leaf>\n  </x-slot>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-slot>\n    <x-leaf>\n      <!---->\n      <h1>\n        bottom content\n      </h1>\n      <!---->\n      <!---->\n      <h1>\n        top content\n      </h1>\n      <!---->\n    </x-leaf>\n  </x-slot>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-slot>\n    <x-leaf>\n      <!---->\n      <h1>\n        bottom content\n      </h1>\n      <!---->\n      <!---->\n      <h1>\n        top content\n      </h1>\n      <!---->\n    </x-leaf>\n  </x-slot>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-slot>\n    <x-leaf>\n      <!---->\n      <h1>\n        bottom content\n      </h1>\n      <!---->\n      <!---->\n      <h1>\n        top content\n      </h1>\n      <!---->\n    </x-leaf>\n  </x-slot>\n</fixture-test>"
+ }
+}

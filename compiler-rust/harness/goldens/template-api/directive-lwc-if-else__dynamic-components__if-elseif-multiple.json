@@ -1,0 +1,372 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-multiple.css",
+   "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ht1tjprfr4",
+   "lwc-4ht1tjprfr4-host",
+   "x-if-elseif-multiple_if-elseif-multiple",
+   "x-if-elseif-multiple_if-elseif-multiple-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ht1tjprfr4"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-multiple.css",
+   "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ht1tjprfr4",
+   "lwc-4ht1tjprfr4-host",
+   "x-if-elseif-multiple_if-elseif-multiple",
+   "x-if-elseif-multiple_if-elseif-multiple-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-if-elseif-multiple_if-elseif-multiple"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-multiple.css",
+   "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ht1tjprfr4",
+   "lwc-4ht1tjprfr4-host",
+   "x-if-elseif-multiple_if-elseif-multiple",
+   "x-if-elseif-multiple_if-elseif-multiple-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-if-elseif-multiple_if-elseif-multiple"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-multiple.css",
+   "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ht1tjprfr4",
+   "lwc-4ht1tjprfr4-host",
+   "x-if-elseif-multiple_if-elseif-multiple",
+   "x-if-elseif-multiple_if-elseif-multiple-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ht1tjprfr4"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-multiple.css",
+   "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ht1tjprfr4",
+   "lwc-4ht1tjprfr4-host",
+   "x-if-elseif-multiple_if-elseif-multiple",
+   "x-if-elseif-multiple_if-elseif-multiple-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ht1tjprfr4"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-multiple.css",
+   "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ht1tjprfr4",
+   "lwc-4ht1tjprfr4-host",
+   "x-if-elseif-multiple_if-elseif-multiple",
+   "x-if-elseif-multiple_if-elseif-multiple-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ht1tjprfr4"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-multiple.css",
+   "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ht1tjprfr4",
+   "lwc-4ht1tjprfr4-host",
+   "x-if-elseif-multiple_if-elseif-multiple",
+   "x-if-elseif-multiple_if-elseif-multiple-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ht1tjprfr4"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-multiple.css",
+   "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ht1tjprfr4",
+   "lwc-4ht1tjprfr4-host",
+   "x-if-elseif-multiple_if-elseif-multiple",
+   "x-if-elseif-multiple_if-elseif-multiple-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ht1tjprfr4"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-multiple.css",
+   "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ht1tjprfr4",
+   "lwc-4ht1tjprfr4-host",
+   "x-if-elseif-multiple_if-elseif-multiple",
+   "x-if-elseif-multiple_if-elseif-multiple-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ht1tjprfr4"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./if-elseif-multiple.css",
+   "./if-elseif-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ht1tjprfr4",
+   "lwc-4ht1tjprfr4-host",
+   "x-if-elseif-multiple_if-elseif-multiple",
+   "x-if-elseif-multiple_if-elseif-multiple-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ht1tjprfr4"
+  }
+ }
+}

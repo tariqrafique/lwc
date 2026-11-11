@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'STANDARD')"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-form-element\"><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "Cannot read properties of undefined (reading 'STANDARD')"
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up></lwc-up>"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "<lwc-up> was already registered with formAssociated=undefined. It cannot be re-registered with formAssociated=true. Please rename your component to have a different name than <lwc-up>"
+ }
+}

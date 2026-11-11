@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./id.css",
+    "./id.scoped.css?scoped=true",
+    "x/subject",
+    "x/description",
+    "x/textarea"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6rsnvsuaeq1",
+    "lwc-6rsnvsuaeq1-host",
+    "x-id_id",
+    "x-id_id-host"
+  ]
+}

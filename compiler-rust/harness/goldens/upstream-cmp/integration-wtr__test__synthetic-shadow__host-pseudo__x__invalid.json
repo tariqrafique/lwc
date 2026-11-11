@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-6hl5rtkl7qa-host\" data-lwc-host-scope-token=\"lwc-6hl5rtkl7qa-host\"><template shadowrootmode=\"open\"><style class=\"lwc-6hl5rtkl7qa\" id=\"lwc-style--0\" type=\"text/css\">:host(.foo, .bar) .baz .quux {margin-left: 17px;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><style class=\"lwc-6hl5rtkl7qa\" id=\"lwc-style--1\" type=\"text/css\">:host(.foo, .bar) .baz.lwc-6hl5rtkl7qa .quux.lwc-6hl5rtkl7qa {color: green;}</style><lwc-style style-id=\"lwc-style--1\"></lwc-style><div class=\"baz lwc-6hl5rtkl7qa\"><div class=\"quux lwc-6hl5rtkl7qa\"></div></div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-6hl5rtkl7qa-host\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host(.foo, .bar) .baz .quux {margin-left: 17px;}</style><style type=\"text/css\" data-rendered-by-lwc=\"\">:host(.foo, .bar) .baz.lwc-6hl5rtkl7qa .quux.lwc-6hl5rtkl7qa {color: green;}</style><div class=\"baz lwc-6hl5rtkl7qa\"><div class=\"quux lwc-6hl5rtkl7qa\"></div></div></template></lwc-up>"
+ }
+}

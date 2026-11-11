@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-pill title=\"Title for Pill\"><template shadowrootmode=\"open\"></template><c-avatar><template shadowrootmode=\"open\"></template></c-avatar></c-pill><c-pill title=\"Title for Pill\"><template shadowrootmode=\"open\"></template><c-icon><template shadowrootmode=\"open\"></template></c-icon></c-pill><c-pill title=\"Title for Pill\"><template shadowrootmode=\"open\"></template><c-avatar><template shadowrootmode=\"open\"></template></c-avatar></c-pill><c-pill title=\"Title for Pill\"><template shadowrootmode=\"open\"></template><c-icon><template shadowrootmode=\"open\"></template></c-icon></c-pill><c-pill class=\"standard\" title=\"Title for pill\"><template shadowrootmode=\"open\"></template></c-pill><c-pill class=\"standard\" title=\"Title for pill\"><template shadowrootmode=\"open\"></template></c-pill></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-pill title=\"Title for Pill\"><template shadowrootmode=\"open\"></template><c-avatar><template shadowrootmode=\"open\"></template></c-avatar></c-pill><c-pill title=\"Title for Pill\"><template shadowrootmode=\"open\"></template><c-icon><template shadowrootmode=\"open\"></template></c-icon></c-pill><c-pill title=\"Title for Pill\"><template shadowrootmode=\"open\"></template><c-avatar><template shadowrootmode=\"open\"></template></c-avatar></c-pill><c-pill title=\"Title for Pill\"><template shadowrootmode=\"open\"></template><c-icon><template shadowrootmode=\"open\"></template></c-icon></c-pill><c-pill class=\"standard\" title=\"Title for pill\"><template shadowrootmode=\"open\"></template></c-pill><c-pill class=\"standard\" title=\"Title for pill\"><template shadowrootmode=\"open\"></template></c-pill></template></lwc-lbc>"
+ }
+}

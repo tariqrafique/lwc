@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Combobox\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><div class=\"slds-box\"><h2 class=\"header\">Basic Combobox</h2><c-combobox><template shadowrootmode=\"open\"></template></c-combobox><p>Selected value is: inProgress</p></div><div class=\"slds-box\"><c-combobox><template shadowrootmode=\"open\"></template></c-combobox><p>Selected value is: </p></div><div class=\"slds-box\"><c-combobox><template shadowrootmode=\"open\"></template></c-combobox><p>Selected value is: </p></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A combobox provides an input field that is readonly, accompanied by a dropdown list of selectable options.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Combobox\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><div class=\"slds-box\"><h2 class=\"header\">Basic Combobox</h2><c-combobox><template shadowrootmode=\"open\"></template></c-combobox><p>Selected value is: inProgress</p></div><div class=\"slds-box\"><c-combobox><template shadowrootmode=\"open\"></template></c-combobox><p>Selected value is: </p></div><div class=\"slds-box\"><c-combobox><template shadowrootmode=\"open\"></template></c-combobox><p>Selected value is: </p></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A combobox provides an input field that is readonly, accompanied by a dropdown list of selectable options.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}
