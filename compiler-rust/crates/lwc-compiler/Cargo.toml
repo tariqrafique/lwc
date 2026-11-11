@@ -9,3 +9,6 @@ lwc-style = { path = "../lwc-style" }
 lwc-template = { path = "../lwc-template" }
 lwc-ssr = { path = "../lwc-ssr" }
 lwc-js = { path = "../lwc-js" }
+
+[dev-dependencies]
+serde_json = "1"

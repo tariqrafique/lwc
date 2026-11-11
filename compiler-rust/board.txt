@@ -1,5 +1,5 @@
-official board  commit=3bca78988c75  src=b4b4637149dc  napi=2960afb98645  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-11T05:07:44-08:00
-napi sha256:2960afb98645  pinned=/tmp/lwc-board-snap.HLiMku/repo/harness/.pins/lwc-compiler-napi.2960afb98645.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-11T05:01:52-08:00
+official board  commit=1a0062de53a4  src=ca2ab905b502  napi=e600cf9120f7  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-11T05:41:44-08:00
+napi sha256:e600cf9120f7  pinned=/tmp/lwc-board-snap.UC06sQ/repo/harness/.pins/lwc-compiler-napi.e600cf9120f7.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-11T05:35:44-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -22,7 +22,7 @@ style-api              Tests  829 passed (829)
 template-api           Tests  5671 passed (5671)
 ssr_render_api         Tests  2724 passed (2724)
 template-diag          cases 63224  clean 63116  mismatches 108 (code 2, message 21, level 0, location 0, order 4, missing-diag 50, extra-diag 31)  codegen-unclean 0 (STATIC_EQUAL 46321, REWRITE_EQUAL 16795, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
-template-diag-napi     cases 63224  clean 62027  mismatches 1197 (code 2, message 0, level 0, location 0, order 4, missing-diag 42, extra-diag 29, seam-reject 1120)  codegen-unclean 0 (STATIC_EQUAL 45675, REWRITE_EQUAL 16352, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
+template-diag-napi     cases 63224  clean 63147  mismatches 77 (code 2, message 0, level 0, location 0, order 4, missing-diag 42, extra-diag 29, seam-reject 0)  codegen-unclean 0 (STATIC_EQUAL 46381, REWRITE_EQUAL 16766, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
 style-upstream         Tests  12 passed (12)
 lbc                    Tests  523 passed (523)
 lbc: discovered=522 included=522 excluded=0 compile-error-both=0
@@ -43,8 +43,8 @@ unported-specs         Tests  24 passed (24)
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.HLiMku/notes/decisions.tsv]
-coverage-gate: notes a64c6ceec81b matrix 75dc5613a667 report-only: 24 sources x 8 stages = 192 cells, 96 covered (declared gating), 0 diagnostic-only, 2 gap, 76 na, 18 dec, 0 invalid
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.UC06sQ/notes/decisions.tsv]
+coverage-gate: notes 141b66ab3934 matrix 75dc5613a667 report-only: 24 sources x 8 stages = 192 cells, 96 covered (declared gating), 0 diagnostic-only, 2 gap, 76 na, 18 dec, 0 invalid
   GAP corpus:template-diag-mutations x template_codegen owner=item 12, 108 diag-mismatch mutations have no codegen verdict
   GAP corpus:template-diag-mutations x template_diagnostics owner=item 12, 108 mismatches stay non-gating until fixed
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)

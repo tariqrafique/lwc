@@ -166,8 +166,8 @@ pub struct CompilerAggregateError {
     pub message: String,
 }
 
-/// An error thrown by a compiler step no `@lwc/compiler` facade normalizes (the SSR compiler; an
-/// unsupported file extension): the producer's error, carried through unchanged.
+/// An error thrown by a compiler step no `@lwc/compiler` facade normalizes (the SSR compiler):
+/// the producer's error, carried through unchanged. A missing transformer is LWC1005, not this.
 /// `location` is only the first diagnostic's, when present (D-0239 / D-0241 / AB-L0080).
 /// A [`ProducerPosition::Raw`] error has no diagnostic; this path does not invent one.
 #[derive(Debug, Clone, PartialEq, Eq)]

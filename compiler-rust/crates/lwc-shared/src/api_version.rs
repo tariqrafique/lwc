@@ -44,17 +44,26 @@ pub enum ApiFeature {
 /// `getAPIVersionFromNumber`: unspecified -> highest; known -> itself; below lowest -> lowest;
 /// otherwise the highest known version lower than the request; above highest -> highest.
 pub fn get_api_version_from_number(version: Option<u32>) -> u32 {
-    let Some(version) = version else {
-        return HIGHEST_API_VERSION;
-    };
-    if ALL_VERSIONS.contains(&version) {
-        return version;
+    match version {
+        None => HIGHEST_API_VERSION,
+        Some(v) => get_api_version_from_f64(v as f64),
     }
-    if version < LOWEST_API_VERSION {
+}
+
+/// `getAPIVersionFromNumber` on a JS number (AB-0008 / D-0206). `u32` cannot carry `60.5`.
+/// Non-finite values follow the JS comparisons (`NaN` / `Infinity` fall through to the highest).
+pub fn get_api_version_from_f64(version: f64) -> u32 {
+    if !version.is_finite() {
+        return HIGHEST_API_VERSION;
+    }
+    if let Some(v) = ALL_VERSIONS.into_iter().find(|v| version == *v as f64) {
+        return v;
+    }
+    if version < LOWEST_API_VERSION as f64 {
         return LOWEST_API_VERSION;
     }
     for i in 1..ALL_VERSIONS.len() {
-        if ALL_VERSIONS[i] > version {
+        if ALL_VERSIONS[i] as f64 > version {
             return ALL_VERSIONS[i - 1];
         }
     }
@@ -92,6 +101,16 @@ mod tests {
         assert_eq!(get_api_version_from_number(Some(60)), 60);
         assert_eq!(get_api_version_from_number(Some(1)), 58);
         assert_eq!(get_api_version_from_number(Some(9999999)), 66);
+        // template-diag-napi apiVersion-edge floats (were serde u32 seam-rejects).
+        assert_eq!(get_api_version_from_f64(60.5), 60);
+        assert_eq!(get_api_version_from_f64(63.9), 63);
+        assert_eq!(get_api_version_from_f64(0.0), 58);
+        assert_eq!(get_api_version_from_f64(57.0), 58);
+        assert_eq!(get_api_version_from_f64(58.0), 58);
+        assert_eq!(get_api_version_from_f64(67.0), 66);
+        assert_eq!(get_api_version_from_f64(999.0), 66);
+        assert_eq!(get_api_version_from_f64(f64::NAN), 66);
+        assert_eq!(get_api_version_from_f64(f64::INFINITY), 66);
         assert!(!is_api_feature_enabled(
             ApiFeature::EnableComplexTemplateExpressions,
             get_api_version_from_number(Some(65))

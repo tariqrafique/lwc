@@ -1,0 +1,55 @@
+{
+  "keys": [
+    "name",
+    "namespace",
+    "scopedStyles",
+    "disableSyntheticShadowSupport",
+    "apiVersion",
+    "targetSSR",
+    "ssrMode",
+    "experimentalErrorRecoveryMode",
+    "enablePrivateMethods",
+    "experimentalComplexExpressions",
+    "preserveHtmlComments",
+    "enableStaticContentOptimization",
+    "enableDynamicComponents",
+    "enableLwcOn",
+    "experimentalDynamicDirective",
+    "enableSyntheticElementInternals",
+    "componentFeatureFlagModulePath",
+    "dynamicImports",
+    "enableLightningWebSecurityTransforms",
+    "isExplicitImport",
+    "outputConfig",
+    "customRendererConfig",
+    "stylesheetConfig"
+  ],
+  "nested": {
+    "dynamicImports": {
+      "loader": true,
+      "strictSpecifier": true
+    },
+    "outputConfig": {
+      "minify": true,
+      "sourcemap": true
+    },
+    "customRendererConfig": {
+      "directives": true,
+      "elements": {
+        "[]": {
+          "tagName": true,
+          "namespace": true,
+          "attributes": true
+        }
+      }
+    },
+    "stylesheetConfig": {
+      "customProperties": {
+        "resolution": {
+          "type": true,
+          "name": true
+        }
+      }
+    }
+  }
+}

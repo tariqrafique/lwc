@@ -1,4 +1,5 @@
 // Mirrors Rust `lwc_compiler::CompilerBackend` (crates/lwc-compiler/src/lib.rs).
+import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -92,23 +93,22 @@ function loadNative(): NativeAddon {
     throw new Error(`rust backend: native addon not found (tried ${candidates.join(', ')}); last error: ${last}`);
 }
 
-// Allowlist mirroring napi `JsCompileOptions` (crates/lwc-compiler-napi/src/lib.rs). Every key here is
-// forwarded; any other key throws (never silently dropped). napi re-checks the same set (serde deny_unknown_fields).
-const RUST_OPTION_KEYS = [
-    'name', 'namespace', 'scopedStyles', 'disableSyntheticShadowSupport', 'apiVersion', 'targetSSR', 'ssrMode',
-    'experimentalErrorRecoveryMode', 'enablePrivateMethods', 'experimentalComplexExpressions', 'preserveHtmlComments',
-    'enableStaticContentOptimization', 'enableDynamicComponents', 'enableLwcOn', 'experimentalDynamicDirective',
-    'enableSyntheticElementInternals', 'componentFeatureFlagModulePath', 'dynamicImports',
-    'enableLightningWebSecurityTransforms', 'isExplicitImport', 'outputConfig', 'customRendererConfig', 'stylesheetConfig',
-] as const;
-// Nested shapes (same keys napi accepts). `[]` = array of objects with these keys.
+// Allowlist generated from crates/lwc-compiler/src/options.rs OPTION_KEYS (rust-option-keys.json).
+// Every key here is forwarded; any other key throws (never silently dropped). napi re-checks the same
+// set (serde deny_unknown_fields). Do not edit the list by hand.
 type Shape = { [k: string]: Shape | true } | { '[]': Shape };
-const NESTED_SHAPES: Record<string, Shape> = {
-    dynamicImports: { loader: true, strictSpecifier: true },
-    outputConfig: { sourcemap: true, minify: true },
-    customRendererConfig: { directives: true, elements: { '[]': { tagName: true, namespace: true, attributes: true } } },
-    stylesheetConfig: { customProperties: { resolution: { type: true, name: true } } },
+// fileURLToPath, not `new URL(..., import.meta.url)`: vite rewrites that form into a
+// non-file URL under the jsdom vitest environment, and readFileSync rejects it.
+const schemaPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'rust-option-keys.json');
+const OPTION_SCHEMA = JSON.parse(readFileSync(schemaPath, 'utf8')) as {
+    keys: readonly string[];
+    nested: Record<string, Shape>;
 };
+if (!Array.isArray(OPTION_SCHEMA.keys) || OPTION_SCHEMA.keys.length === 0) {
+    throw new Error('rust-option-keys.json: missing keys');
+}
+const RUST_OPTION_KEYS = OPTION_SCHEMA.keys;
+const NESTED_SHAPES: Record<string, Shape> = OPTION_SCHEMA.nested;
 function assertShape(v: unknown, shape: Shape, where: string): void {
     if (v == null || typeof v !== 'object') return;
     if ('[]' in shape) {

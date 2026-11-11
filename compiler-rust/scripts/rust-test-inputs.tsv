@@ -42,6 +42,9 @@ harness/scripts/ts-hooks.mjs	semdiff
 harness/scripts/ts-register.mjs	semdiff
 harness/src/backend.ts	semdiff
 harness/src/oracleRoot.ts	semdiff
+harness/src/rust-option-keys.json	lwc-compiler
+harness/src/rust-option-keys.json	lwc-compiler-napi
+harness/src/rust-option-keys.json	semdiff
 harness/src/ssrRender.ts	semdiff
 scripts/fetch-style-corpus.sh	lwc-shared
 tools/gen-error-info/gen.mjs	lwc-shared

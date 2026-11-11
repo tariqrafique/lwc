@@ -6,6 +6,15 @@ use lwc_shared::{
     CompilerAggregateError, CompilerError, DiagnosticLevel, normalize_to_compiler_error,
 };
 
+mod options;
+mod transformers;
+pub use options::{
+    CustomProperties, DynamicImportConfig, NormalizedTransformOptions, OPTION_KEYS, OutputConfig,
+    SourcemapInput, StylesheetConfig, TransformOptions, missing_options_error,
+    option_schema_document, prepare_compile_options, validate_transform_options,
+    validated_compile_options,
+};
+
 pub trait CompilerBackend {
     fn transform(
         &self,
@@ -35,25 +44,10 @@ pub fn dispatch(
     filename: &str,
     options: &CompileOptions,
 ) -> Result<CompileResult, TransformError> {
-    let ext = filename.rsplit('.').next().unwrap_or("");
-    match ext {
-        "css" => transform_style(src, filename, options),
-        // HTML: SSR vs CSR — matches JS transformFile + PROGRAM.md
-        // SSR errors are surfaced as @lwc/ssr-compiler throws them (shipped `transformSync` does not normalize them,
-        // transformer.ts:98-99 / :112-113). compile-template throws a plain `Error` (compile-template/index.ts:111).
-        "html" if options.target_ssr => {
-            lwc_ssr::transform(src, filename, options).map_err(unnormalized)
-        }
-        "html" => transform_template(src, filename, options),
-        "js" | "ts" | "mjs" | "jsx" | "tsx" if options.target_ssr => {
-            lwc_ssr::transform(src, filename, options).map_err(ssr_js_error)
-        }
-        "js" | "ts" | "mjs" | "jsx" | "tsx" => transform_javascript(src, filename, options),
-        _ => Err(unnormalized(CompileError::new(
-            format!("unsupported file extension: {filename}"),
-            filename,
-        ))),
-    }
+    // AB-0008: Rust callers validate too. napi deserializes into TransformOptions and uses
+    // `validated_compile_options` before this (invalid sourcemap never becomes a CompileOptions).
+    let options = prepare_compile_options(options).map_err(options_error)?;
+    transformers::transform_file(src, filename, &options)
 }
 
 fn unnormalized(e: CompileError) -> TransformError {
@@ -74,7 +68,7 @@ fn ssr_js_error(e: CompileError) -> TransformError {
     }
 }
 
-/// An options validation failure (the binding's `to_compile_options`; today only LWC1021) surfaced as
+/// An options validation failure (`validate_transform_options`; LWC1021, LWC1023) surfaced as
 /// `transformSync` throws it: options.ts:206-211 `validateOutputConfig` -> `invariant(.., INVALID_SOURCEMAP_PROPERTY,
 /// [config.sourcemap])` (@lwc/errors compiler/errors.ts:109-119) -> `generateCompilerError(info, { messageArgs })`
 /// (:77-100). Code, message, level and url come from the info; with no `origin`, `filename` and `location`
@@ -482,6 +476,7 @@ for (const recovery of [false, true]) for (const set of JSON.parse(process.argv[
         assert_eq!(css.map.as_deref(), Some(""));
         // .js routes to lwc-js: empty module compiles; lwc-js parse errors surface.
         assert_eq!(dispatch("", "a.js", &o).unwrap().code, "");
+        assert_eq!(dispatch("", "a.mts", &o).unwrap().code, "");
         assert!(dispatch("let = ;", "a.js", &o).is_err());
         let lws = CompileOptions {
             enable_lightning_web_security_transforms: true,
@@ -502,7 +497,27 @@ for (const recovery of [false, true]) for (const set of JSON.parse(process.argv[
             ),
             "{on}"
         );
-        assert!(dispatch("", "a.txt", &o).is_err());
+        let e = compiler(dispatch("", "x.txt", &o).unwrap_err());
+        assert_eq!(
+            (
+                e.code,
+                e.level,
+                e.filename.as_deref(),
+                e.location,
+                e.message.as_str()
+            ),
+            (
+                Some(1005),
+                DiagnosticLevel::Error,
+                Some("x.txt"),
+                None,
+                "LWC1005: No available transformer for \"x.txt\""
+            )
+        );
+        assert_eq!(
+            lwc_shared::errors::TransformerErrors::NO_AVAILABLE_TRANSFORMER.strict_level,
+            Some(DiagnosticLevel::Fatal)
+        );
     }
 
     #[test]
@@ -549,7 +564,7 @@ for (const recovery of [false, true]) for (const set of JSON.parse(process.argv[
         );
         // js/ts + target_ssr: live compileComponentForSSR via lwc-ssr
         let src = "import { LightningElement } from 'lwc';\nexport default class A extends LightningElement {}\n";
-        for f in ["a.js", "a.ts"] {
+        for f in ["a.js", "a.ts", "a.mts"] {
             let r = dispatch(src, f, &o).unwrap_or_else(|e| panic!("{f} + target_ssr: {e:?}"));
             assert!(
                 r.code.contains("ssr-runtime"),
@@ -726,5 +741,77 @@ for (const recovery of [false, true]) for (const set of JSON.parse(process.argv[
             "{}",
             inline.code
         );
+    }
+
+    /// AB-0009: `x.mts` compiles as a script and `x.txt` is LWC1005, both against shipped `transformSync`.
+    #[test]
+    fn mts_and_txt_match_shipped_transform_sync() {
+        let root = lwc_shared::oracle_root();
+        let head = std::process::Command::new("git")
+            .args(["-C", root.to_str().unwrap(), "rev-parse", "HEAD"])
+            .output()
+            .expect("git is required");
+        let head = String::from_utf8(head.stdout).unwrap();
+        assert!(
+            head.starts_with("b9e8007"),
+            "oracle {} is at {head:?}, want b9e8007",
+            root.display()
+        );
+        const ORACLE: &str = r#"
+const { transformSync } = require(process.env.LWC_ORACLE + '/packages/@lwc/compiler/dist/index.cjs');
+const src = 'export const a = 1;\n';
+const opts = { name: 'a', namespace: 'x' };
+const out = {};
+for (const filename of ['x.mts', 'x.js', 'x.txt']) {
+  try {
+    const r = transformSync(src, filename, opts);
+    out[filename] = { ok: true, code: r.code };
+  } catch (e) {
+    out[filename] = {
+      ok: false, message: String(e.message), code: e.code, level: e.level,
+      filename: e.filename === undefined ? null : e.filename,
+      location: e.location === undefined ? null : e.location,
+      url: e.url === undefined ? null : e.url,
+    };
+  }
+}
+console.log(JSON.stringify(out));
+"#;
+        let out = std::process::Command::new("node")
+            .args(["-e", ORACLE])
+            .env("LWC_ORACLE", &root)
+            .output()
+            .expect("node is required");
+        assert!(
+            out.status.success(),
+            "oracle failed: {}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+        let want: serde_json::Value = serde_json::from_slice(&out.stdout).expect("oracle json");
+        let src = "export const a = 1;\n";
+        let o = CompileOptions {
+            name: "a".into(),
+            namespace: "x".into(),
+            ..CompileOptions::default()
+        };
+        // Shipped transformSync treats .mts as .js. Rust must do the same, including the
+        // script printer's existing trailing newline (not an extension-arm difference).
+        assert_eq!(want["x.mts"]["ok"], true, "{want}");
+        assert_eq!(want["x.js"]["ok"], true, "{want}");
+        assert_eq!(want["x.mts"]["code"], want["x.js"]["code"]);
+        let rust_mts = dispatch(src, "x.mts", &o).unwrap().code;
+        let rust_js = dispatch(src, "x.js", &o).unwrap().code;
+        assert_eq!(rust_mts, rust_js);
+        let oracle = want["x.mts"]["code"].as_str().unwrap();
+        assert_eq!(rust_mts, format!("{oracle}\n"));
+        let e = compiler(dispatch(src, "x.txt", &o).unwrap_err());
+        let w = &want["x.txt"];
+        assert_eq!(w["ok"], false, "{w}");
+        assert_eq!(e.message, w["message"].as_str().unwrap());
+        assert_eq!(e.code, w["code"].as_u64().map(|c| c as u32));
+        assert_eq!(e.level.js_value(), w["level"].as_u64().unwrap() as u32);
+        assert_eq!(e.filename.as_deref(), w["filename"].as_str());
+        assert!(e.location.is_none() && w["location"].is_null());
+        assert_eq!(e.url, w["url"].as_str().unwrap());
     }
 }

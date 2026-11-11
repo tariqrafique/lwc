@@ -387,6 +387,7 @@ dependencies = [
  "lwc-ssr",
  "lwc-style",
  "lwc-template",
+ "serde_json",
 ]
 
 [[package]]
