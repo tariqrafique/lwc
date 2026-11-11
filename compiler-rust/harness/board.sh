@@ -371,6 +371,52 @@ process.stdout.write(String(r.totals.codegenOnly));
     fi
   fi
 fi
+# SD-2b: SSR pairs from the harness bundleFixture emitter, then semdiff --exec (engine=ssr-runtime).
+# Distinct from the H-1 semantic-diff row above: other corpus, no --gate strict. A full board only.
+if [ ${#suites[@]} -eq ${#ROWS[@]} ]; then
+  _ssrdir="$logdir/ssr-pairs"
+  _ssrout="$logdir/semantic-diff-ssr.json"
+  _ssrlog="$logdir/board-semantic-diff-ssr-$hash.out"
+  : > "$_ssrlog"
+  _ssrrc=0
+  if [ -z "${SEMDIFF_BIN:-}" ] || [ ! -x "${SEMDIFF_BIN:-}" ]; then
+    _sdroot="$(cd "$here/.." && pwd)"
+    _sdtgt="${CARGO_TARGET_DIR:-$_sdroot/target}"
+    if ! (cd "$_sdroot" && cargo_locked build --release -q -p semdiff --target-dir "$_sdtgt") >>"$_ssrlog" 2>&1; then
+      echo "!! BOARD FAILED: semantic-diff-ssr: semdiff build failed"
+      _ssrrc=1
+    else
+      SEMDIFF_BIN="$_sdtgt/release/semdiff"
+    fi
+  fi
+  if [ "$_ssrrc" -eq 0 ]; then
+    if ! node --experimental-transform-types --import "$here/scripts/ts-register.mjs" "$here/scripts/ssr-emit-pairs.ts" --out "$_ssrdir" --expect-fixtures 387 >>"$_ssrlog" 2>&1; then
+      echo "!! BOARD FAILED: semantic-diff-ssr: emitter failed (completeness exits 2 when a fixture is dropped)"
+      _ssrrc=2
+    fi
+  fi
+  if [ "$_ssrrc" -eq 0 ]; then
+    _sdrc=0
+    "$SEMDIFF_BIN" run --manifest "$_ssrdir/manifest.json" --out "$_ssrout" --registry "$SEMDIFF_REGISTRY" --gate none --exec >>"$_ssrlog" 2>&1 || _sdrc=$?
+    if [ "$_sdrc" -ne 0 ] && [ ! -s "$_ssrout" ]; then
+      echo "!! BOARD FAILED: semantic-diff-ssr: semdiff rc=$_sdrc and no summary"
+      _ssrrc=2
+    fi
+  fi
+  if [ "$_ssrrc" -eq 0 ]; then
+    _ssrline=""
+    _linerc=0
+    _ssrline="$(node "$here/scripts/semantic-diff-ssr-line.mjs" --summary "$_ssrout" --meta "$_ssrdir/meta.jsonl" --exclusions "$_ssrdir/exclusions.json" 2>>"$_ssrlog")" || _linerc=$?
+    printf '%s\n' "$_ssrline"
+    if [ "$_linerc" -ne 0 ]; then
+      echo "!! BOARD FAILED: semantic-diff-ssr line (rc=$_linerc)"
+      _ssrrc=1
+    fi
+  fi
+  if [ "$_ssrrc" -ne 0 ]; then
+    rowfail+=("semantic-diff-ssr rc=$_ssrrc (see $_ssrlog)")
+  fi
+fi
 shimgate=0; SHIM_REPO_ROOT="$repo" SHIM_OWNERS="$here/../OWNERS" SHIM_REGISTRY="${SHIM_REGISTRY:-$testdir/shim-registry.tsv}" SHIM_ALLOWLIST="${SHIM_ALLOWLIST:-$testdir/shim-allowlist.tsv}" node "$here/scripts/shim-gate.mjs" || shimgate=1
 gate=0; option_gate || gate=1
 gioguard=0; "$here/scripts/golden-io-guard.sh" "$testdir" || gioguard=1

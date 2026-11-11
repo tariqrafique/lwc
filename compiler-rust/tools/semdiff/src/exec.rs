@@ -1,5 +1,6 @@
-//! SD-2a: the execution leg, CSR only, template-module pairs only.
-//! Design: notes/arch-board/proposals/semdiff-SD-2a.md (AB-D0003 (i)–(iii), D-0196).
+//! SD-2a CSR execution leg, and SD-2b SSR (`engine = "ssr-runtime"`) when the manifest corpus is
+//! `ssr-compiler`. CSR stays the default, including `template-diag-codegen-only` and the `test` corpus.
+//! Design: notes/arch-board/proposals/semdiff-SD-2a.md and semdiff-SD-2b.md (AB-D0007 r2).
 //!
 //! Split of work: this file does every decision. It runs the static union analysis of both sides (oxc), generates the
 //! seeded input set, orchestrates one fresh node process per (case, side, run), compares the traces and issues the
@@ -64,6 +65,30 @@ pub fn exec_dir() -> PathBuf {
 }
 /// Runner sources, hashed into `runner_sha256` so a summary names the observer it was produced with.
 pub const RUNNER_FILES: [&str; 6] = ["hooks.mjs", "observer.mjs", "prepare.mjs", "register.mjs", "rt.mjs", "run.mjs"];
+/// SSR observer sources. Hashed only for corpus `ssr-compiler`, so a CSR summary's runner_sha256 is unchanged.
+pub const SSR_RUNNER_FILES: [&str; 4] = ["ssr-hooks.mjs", "ssr-prepare.mjs", "ssr-register.mjs", "ssr-run.mjs"];
+/// Manifest corpus that selects the SSR exec leg. Every other corpus, including `template-diag-codegen-only`, stays CSR.
+pub const SSR_CORPUS: &str = "ssr-compiler";
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ExecEngine {
+    Csr,
+    Ssr,
+}
+
+pub fn engine_for_corpus(corpus: &str) -> ExecEngine {
+    if corpus == SSR_CORPUS { ExecEngine::Ssr } else { ExecEngine::Csr }
+}
+
+/// Render inputs the harness emitter wrote to `meta.jsonl`. Not a manifest field (the case key set is closed).
+#[derive(Clone, Debug)]
+pub struct SsrMeta {
+    pub rel: String,
+    pub mode: String,
+    pub props: Value,
+    pub style_dedupe: Value,
+    pub runtime_kind: String,
+}
 pub const STEP_CAP: usize = 48;
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 const LEAF_A: [&str; 7] = [r#""a""#, r#""a b""#, "1", "-1", "true", "[]", "{}"];
@@ -583,6 +608,8 @@ pub struct InputSet {
     pub gaps: BTreeSet<String>,
     pub rewrite_reason: crate::Reason,
     pub rewrite_first_diff: Value,
+    /// Which observer produced the traces. Not serialized into CSR input JSON.
+    pub engine: ExecEngine,
 }
 
 impl InputSet {
@@ -675,6 +702,7 @@ pub fn generate(seed: u64, case_key: &str, oracle: &str, rust: &str) -> InputSet
         r,
         rewrite_reason: v.reason,
         rewrite_first_diff: v.json["first_diff"].clone(),
+        engine: ExecEngine::Csr,
     }
 }
 
@@ -690,6 +718,15 @@ pub struct ExecCfg {
     pub jobs: usize,
     pub oracle_dir: PathBuf,
     pub work: PathBuf,
+    pub engine: ExecEngine,
+    /// Empty unless `engine` is [`ExecEngine::Ssr`]. Keyed by case_key.
+    pub ssr: BTreeMap<String, SsrMeta>,
+}
+
+impl ExecCfg {
+    pub fn csr(seed: u64, jobs: usize, oracle_dir: PathBuf, work: PathBuf) -> Self {
+        Self { seed, jobs, oracle_dir, work, engine: ExecEngine::Csr, ssr: BTreeMap::new() }
+    }
 }
 
 /// Environment facts recorded in the summary; also the preflight: wrong oracle commit or no node = internal error.
@@ -708,18 +745,35 @@ pub fn preflight(cfg: &ExecCfg) -> Result<Value, InternalError> {
     }
     let node = Command::new("node").arg("--version").output().map_err(|e| InternalError(format!("exec: node: {e}")))?;
     let node = String::from_utf8_lossy(&node.stdout).trim().to_string();
+    let files: &[&str] = match cfg.engine {
+        ExecEngine::Csr => &RUNNER_FILES,
+        ExecEngine::Ssr => &SSR_RUNNER_FILES,
+    };
     let mut runner = String::new();
-    for f in RUNNER_FILES {
+    for f in files {
         let t = fs::read_to_string(exec_dir().join(f)).map_err(|e| InternalError(format!("exec: read {f}: {e}")))?;
         runner.push_str(&format!("{f}\0{}\0", sha256_hex(t.as_bytes())));
     }
-    Ok(json!({
+    let engine = match cfg.engine {
+        ExecEngine::Csr => "@lwc/engine-dom (oracle dist), jsdom, CSR",
+        ExecEngine::Ssr => "ssr-runtime",
+    };
+    let mut v = json!({
         "runner_sha256": sha256_hex(runner.as_bytes()),
         "oracle_commit": head,
-        "engine": "@lwc/engine-dom (oracle dist), jsdom, CSR",
+        "engine": engine,
         "node": node,
         "seed": cfg.seed,
-    }))
+    });
+    if cfg.engine == ExecEngine::Ssr {
+        v["ssr_mode"] = json!(ssr_mode_label(&cfg.ssr));
+    }
+    Ok(v)
+}
+
+fn ssr_mode_label(ssr: &BTreeMap<String, SsrMeta>) -> String {
+    let have: BTreeSet<&str> = ssr.values().map(|m| m.mode.as_str()).collect();
+    ["sync", "async", "asyncYield"].into_iter().filter(|m| have.contains(m)).collect::<Vec<_>>().join(",")
 }
 
 enum Proc {
@@ -727,7 +781,19 @@ enum Proc {
     Fail(String),
 }
 
+struct NodeOpts<'a> {
+    /// Loader next to `exec/`. CSR uses `register.mjs`; SSR uses `ssr-register.mjs`.
+    register: &'a str,
+    transform_types: bool,
+    extra: &'a [(&'a str, String)],
+}
+
 fn node(dir: &Path, script: &str, template: Option<&Path>, out_name: &str) -> Proc {
+    let extra: &[(&str, String)] = &[];
+    node_with(dir, script, template, out_name, NodeOpts { register: "register.mjs", transform_types: false, extra })
+}
+
+fn node_with(dir: &Path, script: &str, template: Option<&Path>, out_name: &str, opts: NodeOpts<'_>) -> Proc {
     let exec = exec_dir();
     let out = dir.join(out_name);
     let err = dir.join(format!("{out_name}.stderr"));
@@ -743,9 +809,15 @@ fn node(dir: &Path, script: &str, template: Option<&Path>, out_name: &str) -> Pr
         .env("LANG", "C")
         .env("LWC_ORACLE", &oracle)
         .env("LWC_ROOT", &oracle)
-        .env("SD_EXEC_CASE", dir)
-        .arg("--import")
-        .arg(exec.join("register.mjs"))
+        .env("SD_EXEC_CASE", dir);
+    for (k, v) in opts.extra {
+        cmd.env(k, v);
+    }
+    if opts.transform_types {
+        cmd.arg("--experimental-transform-types").arg("--disable-warning=ExperimentalWarning");
+    }
+    cmd.arg("--import")
+        .arg(exec.join(opts.register))
         .arg(exec.join(script))
         .arg(dir)
         .stdin(Stdio::null())
@@ -920,6 +992,9 @@ fn script(input: &Value) -> Vec<(&str, &str)> {
 /// scripted step, same kind and label, so it starts `load`, `mount(A)` (generate always emits that prefix; the load
 /// step is where module-evaluation throws land, so the first step that mounts anything is step 1).
 pub fn parse_trace(s: &str, input: &Value) -> Result<Trace, String> {
+    if input.get("engine").and_then(Value::as_str) == Some("ssr-runtime") {
+        return parse_ssr_trace(s, input);
+    }
     let t: Trace = serde_json::from_str(s).map_err(|e| format!("trace: {e}"))?;
     if t.schema != TRACE_SCHEMA {
         return Err(format!("trace schema must be {TRACE_SCHEMA}, got {:?}", t.schema));
@@ -1125,6 +1200,9 @@ pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
     match out {
         Outcome::HarnessFailure(m) => d(Class::Crash, Reason::ExecHarnessFailure, json!(m)),
         Outcome::Nondeterministic(side) => d(Class::Crash, Reason::ExecNondeterministic, json!(format!("{side} runs differ"))),
+        Outcome::Gap(g) if input.engine == ExecEngine::Ssr => {
+            d(Class::Crash, Reason::ExecHarnessFailure, json!(format!("ssr gap: {g}")))
+        }
         Outcome::Gap(g) => {
             let miss = json!([format!("gap:{g}")]);
             match comments {
@@ -1144,7 +1222,8 @@ pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
                     detail: json!({"oracle_trace_sha256": sha(&o), "rust_trace_sha256": sha(&r)}),
                 };
             }
-            let miss = coverage_missing(input, &o, &r);
+            // SSR must not reuse CSR helper/slot/event misses: a thin-but-complete trace would become exec-uncovered.
+            let miss = if input.engine == ExecEngine::Ssr { ssr_coverage_missing(&o, &r) } else { coverage_missing(input, &o, &r) };
             let trace_sha256 = Some(sha(&o));
             if let Some(fd) = comments {
                 return static_comment(fd, trace_sha256, json!(miss));
@@ -1175,4 +1254,408 @@ pub fn apply(verdict: &mut Map<String, Value>, input: &InputSet, d: &ExecDecisio
 
 pub fn case_dir(work: &Path, i: usize) -> PathBuf {
     work.join(format!("c{i:06}"))
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// SD-2b SSR. The decide order above is unchanged. This section only builds the input, runs the thin observer, and
+// parses its trace. CSR `coverage_missing` is not used: a thin-but-complete SSR trace must not become exec-uncovered
+// because a helper, slot, or event the CSR walker invented never ran.
+
+/// Canonical JSON (sorted object keys, no whitespace). Matches `canonicalJson` in the emitter and `ssr-run.mjs`.
+pub fn canonical_json(v: &Value) -> Result<String, String> {
+    fn rec(v: &Value) -> Result<String, String> {
+        match v {
+            Value::Null => Ok("null".into()),
+            Value::Bool(true) => Ok("true".into()),
+            Value::Bool(false) => Ok("false".into()),
+            Value::Number(n) => Ok(n.to_string()),
+            Value::String(s) => serde_json::to_string(s).map_err(|e| e.to_string()),
+            Value::Array(a) => {
+                let parts = a.iter().map(rec).collect::<Result<Vec<_>, _>>()?;
+                Ok(format!("[{}]", parts.join(",")))
+            }
+            Value::Object(o) => {
+                let mut keys: Vec<&String> = o.keys().collect();
+                keys.sort();
+                let mut parts = Vec::with_capacity(keys.len());
+                for k in keys {
+                    let ks = serde_json::to_string(k).map_err(|e| e.to_string())?;
+                    parts.push(format!("{ks}:{}", rec(&o[k])?));
+                }
+                Ok(format!("{{{}}}", parts.join(",")))
+            }
+        }
+    }
+    rec(v)
+}
+
+pub fn generate_ssr(
+    seed: u64,
+    case_key: &str,
+    oracle: &str,
+    rust: &str,
+    meta: &SsrMeta,
+) -> Result<InputSet, String> {
+    let props_canonical = canonical_json(&meta.props)?;
+    let props_sha = sha256_hex(props_canonical.as_bytes());
+    let (o, r) = (analyze(oracle), analyze(rust));
+    let json = json!({
+        "schema": INPUT_SCHEMA,
+        "engine": "ssr-runtime",
+        "seed": seed,
+        "mode": meta.mode,
+        "tag": "fixture-test",
+        "props": meta.props,
+        "props_sha256": props_sha,
+        "styleDedupe": meta.style_dedupe,
+        "rel": meta.rel,
+        "runtimeKind": meta.runtime_kind,
+        "steps": [{"kind": "render", "label": "serverSideRenderComponent"}],
+    });
+    let _ = case_key;
+    let v = crate::compare(oracle, rust);
+    Ok(InputSet {
+        json,
+        slots: BTreeSet::new(),
+        events: BTreeSet::new(),
+        gaps: BTreeSet::new(),
+        o,
+        r,
+        rewrite_reason: v.reason,
+        rewrite_first_diff: v.json["first_diff"].clone(),
+        engine: ExecEngine::Ssr,
+    })
+}
+
+pub fn ssr_runtime_path(oracle: &Path, kind: &str) -> PathBuf {
+    let base = oracle.join("packages/@lwc/ssr-runtime");
+    if kind == "src" {
+        base.join("src/index.ts")
+    } else {
+        base.join("dist/index.js")
+    }
+}
+
+fn ssr_node(
+    dir: &Path,
+    script: &str,
+    template: Option<&Path>,
+    out_name: &str,
+    extra: &[(&str, String)],
+) -> Proc {
+    node_with(
+        dir,
+        script,
+        template,
+        out_name,
+        NodeOpts {
+            register: "ssr-register.mjs",
+            transform_types: true,
+            extra,
+        },
+    )
+}
+
+pub fn run_case_ssr(
+    dir: &Path,
+    input: &Value,
+    oracle_src: &str,
+    rust_src: &str,
+    runtime: &Path,
+) -> Outcome {
+    run_case_ssr_mut(dir, input, oracle_src, rust_src, runtime, None)
+}
+
+/// `mutate` is the test-only observer post-hook (`html-suffix`, `throw-rust`, `random-rust`).
+/// Production calls pass `None`. It is not read from the process environment, so parallel tests cannot leak it.
+pub fn run_case_ssr_mut(
+    dir: &Path,
+    input: &Value,
+    oracle_src: &str,
+    rust_src: &str,
+    runtime: &Path,
+    mutate: Option<&str>,
+) -> Outcome {
+    let hf = |m: String| Outcome::HarnessFailure(m);
+    if let Err(e) = fs::create_dir_all(dir)
+        .and_then(|_| {
+            fs::write(
+                dir.join("input.json"),
+                serde_json::to_string(input).expect("json"),
+            )
+        })
+        .and_then(|_| fs::write(dir.join("oracle.js"), oracle_src))
+        .and_then(|_| fs::write(dir.join("rust.js"), rust_src))
+    {
+        return hf(format!("write case dir: {e}"));
+    }
+    let mode = input
+        .get("mode")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
+    let mut extra = vec![
+        ("SD_SSR_RUNTIME", runtime.display().to_string()),
+        ("SSR_MODE", mode),
+    ];
+    if let Some(v) = mutate {
+        if !v.is_empty() {
+            extra.push(("SD_EXEC_MUTATE", v.to_string()));
+        }
+    }
+    if let Ok(v) = std::env::var("SD_EXEC_DEBUG") {
+        if !v.is_empty() {
+            extra.push(("SD_EXEC_DEBUG", v));
+        }
+    }
+    if let Proc::Fail(m) = ssr_node(dir, "ssr-prepare.mjs", None, "prepare.out", &extra) {
+        return hf(m);
+    }
+    collect(input, |side, n| {
+        match ssr_node(
+            dir,
+            "ssr-run.mjs",
+            Some(&dir.join(format!("{side}.js"))),
+            &format!("{side}.{n}.json"),
+            &extra,
+        ) {
+            Proc::Ok(s) => Ok(s),
+            Proc::Fail(m) => Err(m),
+        }
+    })
+}
+
+/// Parsed SSR traces already proved enter + (html|throw) + chunk shape. Do not add CSR helper/slot/event misses.
+fn ssr_coverage_missing(_o: &Trace, _r: &Trace) -> Vec<String> {
+    Vec::new()
+}
+
+fn event_str<'a>(e: &'a Event, k: &str) -> Option<&'a str> {
+    e.0.get(k).and_then(Value::as_str)
+}
+
+fn keys_are(e: &Event, want: &[&str]) -> bool {
+    e.0.len() == want.len() && want.iter().all(|k| e.0.contains_key(*k))
+}
+
+fn parse_ssr_trace(s: &str, input: &Value) -> Result<Trace, String> {
+    let t: Trace = serde_json::from_str(s).map_err(|e| format!("trace: {e}"))?;
+    if t.schema != TRACE_SCHEMA {
+        return Err(format!(
+            "trace schema must be {TRACE_SCHEMA}, got {:?}",
+            t.schema
+        ));
+    }
+    if t.steps.len() != 1 {
+        return Err(format!("ssr trace has {} steps, want 1", t.steps.len()));
+    }
+    let step = &t.steps[0];
+    if step.kind != "render" || step.label != "serverSideRenderComponent" {
+        return Err(format!(
+            "ssr trace step is {} {}, want render serverSideRenderComponent",
+            step.kind, step.label
+        ));
+    }
+    let StepBody::Ran { events, dom } = &step.body else {
+        return Err("ssr render step was skipped".into());
+    };
+    if !dom.body.is_null() || !dom.head.is_empty() {
+        return Err("ssr trace dom must be empty".into());
+    }
+    let mode = input.get("mode").and_then(Value::as_str).unwrap_or("");
+    let tag = input.get("tag").and_then(Value::as_str).unwrap_or("");
+    let props_sha = input
+        .get("props_sha256")
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let style = input.get("styleDedupe").unwrap_or(&Value::Null);
+    let ev = |i: usize| events.get(i);
+    let enter = ev(0).ok_or("ssr trace has no events")?;
+    if enter.kind() != "enter"
+        || !keys_are(enter, &["e", "mode", "props_sha256", "styleDedupe", "tag"])
+    {
+        return Err("ssr trace enter event is missing or has extra fields".into());
+    }
+    if event_str(enter, "tag") != Some(tag)
+        || event_str(enter, "mode") != Some(mode)
+        || event_str(enter, "props_sha256") != Some(props_sha)
+    {
+        return Err("ssr trace enter does not match the input set".into());
+    }
+    if enter.0.get("styleDedupe") != Some(style) {
+        return Err("ssr trace enter styleDedupe does not match the input set".into());
+    }
+    let mut i = 1usize;
+    if mode == "asyncYield" {
+        while ev(i).map(|e| e.kind()) == Some("chunk") {
+            let c = ev(i).unwrap();
+            if !keys_are(c, &["e", "length", "sha256"]) {
+                return Err("ssr chunk event fields".into());
+            }
+            let sha = event_str(c, "sha256").unwrap_or("");
+            let len_ok = c.0.get("length").and_then(Value::as_u64).is_some();
+            if !len_ok
+                || sha.len() != 64
+                || !sha
+                    .bytes()
+                    .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
+            {
+                return Err("ssr chunk length or sha256".into());
+            }
+            i += 1;
+        }
+    }
+    let result = ev(i).ok_or("ssr trace missing html or throw")?;
+    match result.kind() {
+        "html" => {
+            if !keys_are(result, &["e", "html"]) || event_str(result, "html").is_none() {
+                return Err("ssr html event must be {e, html}".into());
+            }
+        }
+        "throw" => {
+            if !keys_are(result, &["e", "message", "name"])
+                || event_str(result, "name").is_none()
+                || event_str(result, "message").is_none()
+            {
+                return Err("ssr throw event must be {e, name, message} with no stack".into());
+            }
+        }
+        other => {
+            return Err(format!(
+                "ssr trace result event is {other}, want html or throw"
+            ))
+        }
+    }
+    i += 1;
+    // HTML plus a later unhandled rejection (async mode) is html, then throw.
+    if result.kind() == "html" && ev(i).map(|e| e.kind()) == Some("throw") {
+        let rejection = ev(i).unwrap();
+        if !keys_are(rejection, &["e", "message", "name"])
+            || event_str(rejection, "name").is_none()
+            || event_str(rejection, "message").is_none()
+        {
+            return Err("ssr rejection event must be {e, name, message}".into());
+        }
+        i += 1;
+    }
+    while ev(i).map(|e| e.kind()) == Some("sandbox-trap") {
+        let c = ev(i).unwrap();
+        if !keys_are(c, &["count", "e", "fn"]) {
+            return Err("ssr sandbox-trap fields".into());
+        }
+        let fn_ok = matches!(event_str(c, "fn"), Some("Date.now" | "Math.random"));
+        let count_ok =
+            c.0.get("count")
+                .and_then(Value::as_u64)
+                .is_some_and(|n| n > 0);
+        if !fn_ok || !count_ok {
+            return Err("ssr sandbox-trap fn or count".into());
+        }
+        i += 1;
+    }
+    let exit = ev(i).ok_or("ssr trace missing exit")?;
+    if exit.kind() != "exit" || !keys_are(exit, &["e"]) || events.len() != i + 1 {
+        return Err("ssr trace must end with a bare exit event".into());
+    }
+    Ok(t)
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SsrMetaLine {
+    id: String,
+    rel: String,
+    mode: String,
+    props: Value,
+    #[serde(rename = "styleDedupe")]
+    style_dedupe: Value,
+    #[serde(rename = "runtimeKind")]
+    runtime_kind: String,
+}
+
+pub fn load_ssr_meta(manifest: &Path) -> Result<BTreeMap<String, SsrMeta>, InternalError> {
+    let p = manifest
+        .parent()
+        .filter(|d| !d.as_os_str().is_empty())
+        .unwrap_or(Path::new("."))
+        .join("meta.jsonl");
+    let text = fs::read_to_string(&p)
+        .map_err(|e| InternalError(format!("ssr meta {}: {e}", p.display())))?;
+    let mut map = BTreeMap::new();
+    for (n, line) in text.lines().enumerate() {
+        if line.is_empty() {
+            continue;
+        }
+        let raw: SsrMetaLine = serde_json::from_str(line)
+            .map_err(|e| InternalError(format!("ssr meta {}:{}: {e}", p.display(), n + 1)))?;
+        if !matches!(raw.mode.as_str(), "sync" | "async" | "asyncYield") {
+            return Err(InternalError(format!(
+                "ssr meta {}: bad mode {}",
+                raw.id, raw.mode
+            )));
+        }
+        if !matches!(raw.runtime_kind.as_str(), "dist" | "src") {
+            return Err(InternalError(format!(
+                "ssr meta {}: bad runtimeKind {}",
+                raw.id, raw.runtime_kind
+            )));
+        }
+        if !raw.props.is_object() {
+            return Err(InternalError(format!(
+                "ssr meta {}: props must be an object",
+                raw.id
+            )));
+        }
+        if !(raw.style_dedupe.is_boolean() || raw.style_dedupe.is_string()) {
+            return Err(InternalError(format!(
+                "ssr meta {}: styleDedupe must be a bool or string",
+                raw.id
+            )));
+        }
+        if raw.rel.is_empty()
+            || raw.rel.starts_with('/')
+            || raw.rel.contains('\\')
+            || raw
+                .rel
+                .split('/')
+                .any(|s| s.is_empty() || s == "." || s == "..")
+        {
+            return Err(InternalError(format!(
+                "ssr meta {}: bad rel {}",
+                raw.id, raw.rel
+            )));
+        }
+        let id = raw.id;
+        if map
+            .insert(
+                id.clone(),
+                SsrMeta {
+                    rel: raw.rel,
+                    mode: raw.mode,
+                    props: raw.props,
+                    style_dedupe: raw.style_dedupe,
+                    runtime_kind: raw.runtime_kind,
+                },
+            )
+            .is_some()
+        {
+            return Err(InternalError(format!("ssr meta: duplicate id {id}")));
+        }
+    }
+    if map.is_empty() {
+        return Err(InternalError(format!("ssr meta {}: no cases", p.display())));
+    }
+    Ok(map)
+}
+
+/// True when an SSR exec run hit a protocol failure. The CLI exits 2 after the summary is written.
+pub fn ssr_protocol_failure(summary: &Value) -> bool {
+    let n = |k: &str| {
+        summary
+            .get("by_reason")
+            .and_then(|b| b.get(k))
+            .and_then(Value::as_u64)
+            .unwrap_or(0)
+    };
+    n("exec-harness-failure") + n("exec-nondeterministic") > 0
 }

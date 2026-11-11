@@ -31,10 +31,30 @@ is_allowed() {
   return 1
 }
 
+# harness/scripts and tools/semdiff/exec run under `node` with no worktree node_modules
+# (land). A quoted `@lwc/<pkg>` specifier is a load. `=== '@lwc/ssr-runtime'` is a resolver
+# naming the specifier, not importing it.
+bare_lwc_scope() {
+  case "$1" in
+    harness/scripts/*|tools/semdiff/exec/*) ;;
+    *) return 1 ;;
+  esac
+  case "$1" in
+    *.mjs|*.cjs|*.js|*.ts|*.mts|*.cts) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+line_loads_bare_lwc() {
+  local stripped
+  stripped="$(printf '%s\n' "$1" | sed -E "s/(===|!==|==|!=)[[:space:]]*['\"]@lwc\/[A-Za-z0-9_.\/-]+['\"]//g")"
+  grep -qE "['\"]@lwc/[A-Za-z0-9_./-]+['\"]" <<< "$stripped"
+}
+
 scan() {
   local root="$1" allowfile="$2"
   load_allow "$allowfile" || return 2
-  local hits="" rel f rc=0
+  local hits="" bare="" rel f hit rc=0
   local list
   list="$(mktemp)"
   if ! "$runner/tracked-files.sh" "$root" crates tools harness scripts >"$list"; then
@@ -51,13 +71,27 @@ scan() {
       hits+="$rel"$'\n'
       hits+="$(grep -n -F '/workspace/' "$f" | sed "s|^|$rel:|")"$'\n'
     fi
+    if bare_lwc_scope "$rel"; then
+      while IFS= read -r hit; do
+        [ -n "$hit" ] || continue
+        if line_loads_bare_lwc "$hit"; then
+          bare+="$rel:$hit"$'\n'
+        fi
+      done < <(grep -nE "['\"]@lwc/[A-Za-z0-9_./-]+['\"]" "$f" || true)
+    fi
   done < "$list"
   rm -f "$list"
   if [ -n "$hits" ]; then
     echo "!! workspace-path-scan: literal /workspace/ path outside the allowlist (resolve through harness/scripts/oracle-root.mjs / LWC_ORACLE, or add a path-exact allowlist row with a reason if the file is genuinely box-only):" >&2
     printf '%s' "$hits" >&2
-    return 1
+    rc=1
   fi
+  if [ -n "$bare" ]; then
+    echo "!! workspace-path-scan: bare '@lwc/' import under harness/scripts or tools/semdiff/exec (load the oracle dist by absolute path from LWC_ORACLE; a land worktree has no node_modules):" >&2
+    printf '%s' "$bare" >&2
+    rc=1
+  fi
+  [ "$rc" -eq 0 ] || return "$rc"
   echo "workspace-path-scan: clean"
   return 0
 }
@@ -93,6 +127,18 @@ self_test() {
   rc=0
   "$t/scripts/workspace-path-scan.sh" "$t" >/dev/null 2>&1 || rc=$?
   if [ "$rc" -eq 0 ]; then echo "ok   untracked .oracle plant is ignored"; else echo "FAIL untracked .oracle plant is ignored -> rc $rc"; fail=1; fi
+  mkdir -p "$t/harness/scripts" "$t/tools/semdiff/exec"
+  printf '%s\n' "const compiler = createRequire(import.meta.url)(\`\${oracleRoot()}/packages/@lwc/compiler/dist/index.cjs\`);" > "$t/harness/scripts/ok.ts"
+  printf '%s\n' "if (spec === '@lwc/ssr-runtime') return { url, shortCircuit: true };" > "$t/tools/semdiff/exec/hook.mjs"
+  git -C "$t" add harness/scripts/ok.ts tools/semdiff/exec/hook.mjs
+  rc=0
+  "$t/scripts/workspace-path-scan.sh" "$t" >/dev/null 2>&1 || rc=$?
+  if [ "$rc" -eq 0 ]; then echo "ok   absolute oracle path and specifier compare pass"; else echo "FAIL absolute oracle path and specifier compare pass -> rc $rc"; fail=1; fi
+  printf '%s\n' "const js = await import('@lwc/compiler');" > "$t/harness/scripts/bad.ts"
+  git -C "$t" add harness/scripts/bad.ts
+  rc=0
+  "$t/scripts/workspace-path-scan.sh" "$t" >/dev/null 2>&1 || rc=$?
+  if [ "$rc" -eq 1 ]; then echo "ok   bare @lwc import fails"; else echo "FAIL bare @lwc import fails -> rc $rc"; fail=1; fi
   return $fail
 }
 

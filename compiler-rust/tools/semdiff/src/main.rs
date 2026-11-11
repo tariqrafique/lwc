@@ -112,10 +112,16 @@ fn run(args: &[String]) -> Result<ExitCode, InternalError> {
             None => (std::env::temp_dir().join(format!("semdiff-exec-{}", std::process::id())), false),
         };
         let jobs = exec_jobs.unwrap_or_else(|| std::thread::available_parallelism().map_or(1, |n| n.get()));
-        // The runner reaches the oracle through harness/src/ssrRender.ts `LWC` (a fixed path; ORACLE_DIR is derived
-        // from it by build.rs), so preflight checks exactly that checkout; an override would check one tree, run another.
+        // Corpus `ssr-compiler` selects the SSR observer. Every other corpus, including
+        // `template-diag-codegen-only`, stays on the CSR runner.
         let oracle_dir = PathBuf::from(exec::ORACLE_DIR);
-        let cfg = exec::ExecCfg { seed: exec_seed, jobs, oracle_dir, work: work.clone() };
+        let engine = exec::engine_for_corpus(&m.corpus);
+        let ssr = if engine == exec::ExecEngine::Ssr {
+            exec::load_ssr_meta(&manifest)?
+        } else {
+            std::collections::BTreeMap::new()
+        };
+        let cfg = exec::ExecCfg { seed: exec_seed, jobs, oracle_dir, work: work.clone(), engine, ssr };
         let env = exec::preflight(&cfg)?;
         let s = summarize_with(&m, &map, &reg.sha256, Some((&cfg, env)));
         if !keep {
@@ -158,7 +164,9 @@ fn run(args: &[String]) -> Result<ExitCode, InternalError> {
     for f in &fails {
         println!("semdiff gate FAIL: {f}");
     }
-    Ok(if fails.is_empty() { ExitCode::SUCCESS } else { ExitCode::from(1) })
+    // Malformed SSR traces and runner failures are protocol errors: exit 2 after the summary is written.
+    let protocol = exec_on && m.corpus == exec::SSR_CORPUS && exec::ssr_protocol_failure(&summary);
+    Ok(if protocol { ExitCode::from(2) } else if fails.is_empty() { ExitCode::SUCCESS } else { ExitCode::from(1) })
 }
 
 /// The registry validator as a command, for coverage-gate.mjs (AB-L0030). Same code as `run`: [`Registry::check`]

@@ -411,11 +411,39 @@ fn classify_all(m: &Manifest, exec: Option<&exec::ExecCfg>) -> (Vec<Verdict>, Va
     let todo: Vec<usize> = (0..verdicts.len()).filter(|i| exec_eligible(&verdicts[*i])).collect();
     let results = exec::par_map(&todo, cfg.jobs, |_, &i| {
         let c = &m.cases[i];
-        let mut input = exec::generate(cfg.seed, &c.id, &c.oracle, &c.rust);
-        input.observe_rewrite(verdicts[i].reason, &verdicts[i].json["first_diff"]);
-        let out = exec::run_case(&exec::case_dir(&cfg.work, i), &input.json, &c.oracle, &c.rust);
-        let d = exec::decide(&input, out);
-        (input, d)
+        if cfg.engine == exec::ExecEngine::Ssr {
+            let meta = cfg.ssr.get(&c.id).expect("ssr meta checked before classify");
+            match exec::generate_ssr(cfg.seed, &c.id, &c.oracle, &c.rust, meta) {
+                Ok(mut input) => {
+                    input.observe_rewrite(verdicts[i].reason, &verdicts[i].json["first_diff"]);
+                    let runtime = exec::ssr_runtime_path(&cfg.oracle_dir, &meta.runtime_kind);
+                    let out = exec::run_case_ssr(&exec::case_dir(&cfg.work, i), &input.json, &c.oracle, &c.rust, &runtime);
+                    let d = exec::decide(&input, out);
+                    (input, d)
+                }
+                Err(e) => {
+                    let input = exec::InputSet {
+                        json: json!({"schema": exec::INPUT_SCHEMA, "engine": "ssr-runtime", "seed": cfg.seed, "steps": []}),
+                        o: exec::analyze(&c.oracle),
+                        r: exec::analyze(&c.rust),
+                        slots: BTreeSet::new(),
+                        events: BTreeSet::new(),
+                        gaps: BTreeSet::new(),
+                        rewrite_reason: verdicts[i].reason,
+                        rewrite_first_diff: verdicts[i].json["first_diff"].clone(),
+                        engine: exec::ExecEngine::Ssr,
+                    };
+                    let d = exec::decide(&input, exec::Outcome::HarnessFailure(format!("ssr input: {e}")));
+                    (input, d)
+                }
+            }
+        } else {
+            let mut input = exec::generate(cfg.seed, &c.id, &c.oracle, &c.rust);
+            input.observe_rewrite(verdicts[i].reason, &verdicts[i].json["first_diff"]);
+            let out = exec::run_case(&exec::case_dir(&cfg.work, i), &input.json, &c.oracle, &c.rust);
+            let d = exec::decide(&input, out);
+            (input, d)
+        }
     });
     for (&i, (input, d)) in todo.iter().zip(&results) {
         let v = &mut verdicts[i];
@@ -443,7 +471,23 @@ pub fn summarize_with(
     let mut by_reason: BTreeMap<&str, u64> = BTreeMap::new();
     let mut records = Vec::with_capacity(m.cases.len());
     let (mut applied, mut mapped_unused) = (0u64, Vec::new());
-    let (verdicts, ran) = classify_all(m, exec.as_ref().map(|(c, _)| *c));
+    let (verdicts, ran) = {
+        if let Some(cfg) = exec.as_ref().map(|(c, _)| *c) {
+            if cfg.engine == exec::ExecEngine::Ssr {
+                if cfg.ssr.len() != m.cases.len() {
+                    return ie(format!("ssr meta has {} cases, manifest has {}", cfg.ssr.len(), m.cases.len()));
+                }
+                for c in &m.cases {
+                    if !cfg.ssr.contains_key(&c.id) {
+                        return ie(format!("ssr meta missing for {}", c.id));
+                    }
+                }
+            } else if !cfg.ssr.is_empty() {
+                return ie("ssr meta was supplied for a non-ssr corpus");
+            }
+        }
+        classify_all(m, exec.as_ref().map(|(c, _)| *c))
+    };
     let exec_json = match (exec, ran) {
         (Some((_, Value::Object(mut env))), Value::Object(r)) => {
             env.extend(r);

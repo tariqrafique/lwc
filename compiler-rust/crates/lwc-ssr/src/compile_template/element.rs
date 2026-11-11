@@ -107,8 +107,19 @@ fn reorder<'a>(attrs: &'a [Attribute], props: &'a [Property]) -> Vec<AttrOrProp<
 
 const SCOPE_TEST: &str = "hasScopedStylesheets || hasScopedStaticStylesheets(Cmp)";
 
-/// yieldAttrOrPropLiteralValue (bStringLiteralYield is folded at compile time except for `class`,
-/// whose scope-token suffix is a runtime decision).
+/// element.ts `bStringLiteralYield`. The block is not a yield, so `optimizeAdjacentYieldStmts`
+/// leaves it between the tag's yields. Boolean literals are a bare `` yield ` ${name}` `` and do merge.
+fn string_literal_attr_block(name: &str, val: &str, o: TemplateOptions) -> String {
+    format!(
+        "{{ const attrName = {name}; const attrValue = {val}; const shouldRenderScopeToken = attrName === 'class' && ({SCOPE_TEST}); const suffix = shouldRenderScopeToken ? ' ' + stylesheetScopeToken : ''; {open} if (attrValue !== '' || shouldRenderScopeToken) {{ {close} }} }}",
+        name = js_str(name),
+        val = js_str(val),
+        open = o.y("' ' + attrName"),
+        close = o.y("'=\"' + attrValue + suffix + '\"'"),
+    )
+}
+
+/// yieldAttrOrPropLiteralValue.
 fn literal_value(name: &str, v: &LiteralValue, o: TemplateOptions) -> Vec<String> {
     match v {
         LiteralValue::String(s) => {
@@ -118,14 +129,7 @@ fn literal_value(name: &str, v: &LiteralValue, o: TemplateOptions) -> Vec<String
                 "spellcheck" => (s.to_lowercase() != "false").to_string(),
                 _ => s.clone(),
             };
-            if name == "class" {
-                vec![format!("{{ const shouldRenderScopeToken = {SCOPE_TEST}; const suffix = shouldRenderScopeToken ? ' ' + stylesheetScopeToken : ''; {} {} }}",
-                    o.y(&js_str(" class")), o.y(&format!("'=\"' + {} + suffix + '\"'", js_str(&val))))]
-            } else if val.is_empty() {
-                vec![o.y(&js_str(&format!(" {name}")))]
-            } else {
-                vec![o.y(&js_str(&format!(" {name}=\"{val}\"")))]
-            }
+            vec![string_literal_attr_block(name, &val, o)]
         }
         LiteralValue::Bool(_) => if name == "class" { vec![] } else { vec![o.y(&js_str(&format!(" {name}")))] },
     }

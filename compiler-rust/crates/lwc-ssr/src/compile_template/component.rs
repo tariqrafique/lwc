@@ -91,6 +91,8 @@ fn slotted_content(name: &str, loc: &SourceLocation, children_all: &[ChildNode],
     cx.reset_top = true;
     emit_children(&slottable, o, &mut shadow_body, cx, sc)?;
     cx.reset_top = false;
+    // slotted-content.ts getShadowSlottedContent optimizes before the fn is hoisted.
+    let shadow_body = super::yield_opt::optimize_yields(shadow_body, o.mode);
     let light = light_slotted_content(&slottable, o, cx, sc)?;
     let scoped = scoped_slotted_content(&original_children_scoped(children_all), o, cx, sc)?;
     cx.slotted = prev;
@@ -194,6 +196,8 @@ fn light_slotted_content(roots: &[ChildNode], o: TemplateOptions, cx: &mut Cx, s
                     let mut body = Vec::new();
                     emit_children(&tree, o, &mut body, cx, sc)?;
                     cx.slotted = prev;
+                    // getLightSlottedContent optimizes each slot's statements before addSlottedContent.
+                    let body = super::yield_opt::optimize_yields(body, o.mode);
                     res.push(add_slotted(o, &slot_name, None, body, "lightSlottedContentMap"));
                 }
                 _ => {}
@@ -222,6 +226,7 @@ fn scoped_slotted_content(frags: &[&ScopedSlotFragment], o: TemplateOptions, cx:
         let mut body = Vec::new();
         emit_children(&f.children, o, &mut body, cx, sc)?;
         cx.slotted = prev; sc.pop();
+        let body = super::yield_opt::optimize_yields(body, o.mode);
         Ok(add_slotted(o, &name, Some(&var), body, "scopedSlottedContentMap"))
     }).collect()
 }
@@ -315,7 +320,7 @@ mod tests {
         println!("{code}");
         assert!(code.contains("const lightSlottedContentMap = Object.create(null);"), "{code}");
         assert!(code.contains("const scopedSlottedContentMap = null;"), "{code}");
-        assert!(code.contains("addSlottedContent('footer' ?? \"\", function __lwcGenerateSlottedContent(contextfulParent, slotAttributeValue) { let __lwcYield = ''; __lwcYield += '<div';"), "{code}");
+        assert!(code.contains("addSlottedContent('footer' ?? \"\", function __lwcGenerateSlottedContent(contextfulParent, slotAttributeValue) { let __lwcYield = ''; __lwcYield += '<div' + "), "{code}");
         // Default light slot: text goes to '' slot. Shadow fn still gets all non-scoped children (with slot attr kept).
         assert!(code.contains("addSlottedContent('' ?? \"\""), "{code}");
         assert!(code.contains("<div") && code.contains("__lwcGenerateShadowSlottedContent_xFoo_0"), "{code}");

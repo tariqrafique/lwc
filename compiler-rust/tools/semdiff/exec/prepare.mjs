@@ -11,7 +11,7 @@ import { LWC } from '../../../harness/src/ssrRender.ts';
 
 const dir = process.argv[2];
 const input = JSON.parse(fs.readFileSync(path.join(dir, 'input.json'), 'utf8'));
-const { transformSync } = createRequire(`${LWC}/rollup-plugin/package.json`)('@lwc/compiler');
+const { transformSync } = createRequire(import.meta.url)(`${LWC}/compiler/dist/index.cjs`);
 
 const IDENT = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
 function componentSource() {

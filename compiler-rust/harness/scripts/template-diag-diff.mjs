@@ -346,7 +346,7 @@ async function worker(side, casesFile, from, to, outFile, napiPath) {
     const lines = fs.readFileSync(casesFile, 'utf8').split('\n');
     // The oracle module: a load failure is recorded per case as oracle-error:load (not a worker abort).
     let oracle = null, loadErr = null;
-    try { oracle = req(process.env.TDD_ORACLE_DIST ?? (side === 'js' ? `${LWC}/packages/@lwc/template-compiler/dist/index.cjs` : '@lwc/compiler')); }
+    try { oracle = req(process.env.TDD_ORACLE_DIST ?? (side === 'js' ? `${LWC}/packages/@lwc/template-compiler/dist/index.cjs` : `${LWC}/packages/@lwc/compiler/dist/index.cjs`)); }
     catch (e) { loadErr = e; }
     const inject = process.env.TDD_ORACLE_INJECT === 'throw'
         ? () => { throw new TypeError('TDD_ORACLE_INJECT: injected non-CompilerError'); } : null;

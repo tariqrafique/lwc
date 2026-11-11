@@ -2,6 +2,7 @@
 pub mod slot;
 pub mod component;
 pub(crate) mod element;
+mod yield_opt;
 use element::ElView;
 use lwc_shared::template_ir::{ChildNode, ElementDirective, ElseBranch, Expression, LiteralValue, Root, RootDirective, TextValue};
 use lwc_shared::{CompileError, SsrMode};
@@ -73,7 +74,10 @@ pub fn compile_cx(root: &Root, mut opts: TemplateOptions) -> Result<Cx, CompileE
     let mut cx = Cx::default();
     let mut out = Vec::new();
     emit_children(&root.children, opts, &mut out, &mut cx, &mut Vec::new())?;
-    cx.body = out; Ok(cx)
+    // index.ts optimizes hoisted template statements together with the body. Hoisted
+    // lines are const declarations; the body's adjacent yields are what collapse.
+    cx.body = yield_opt::optimize_yields(out, opts.mode);
+    Ok(cx)
 }
 
 /// Full sync ESM module for a template.
@@ -187,9 +191,14 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
             ChildNode::Comment(c) if o.preserve_comments => out.push(o.y(&js_str(&format!("<!--{}-->", c.value)))),
             // legacyIf.ts
             ChildNode::If(f) => {
+                // legacyIf.ts optimizes the block before the if is built, so a later
+                // failed collapse still keeps the merged body.
                 let c = expr(&f.condition, sc)?;
+                let mut inner = Vec::new();
+                emit_children(&f.children, o, &mut inner, cx, sc)?;
+                let inner = yield_opt::optimize_yields(inner, o.mode);
                 out.push(if f.modifier == "true" { format!("if ({c}) {{") } else { format!("if (!{c}) {{") });
-                emit_children(&f.children, o, out, cx, sc)?;
+                out.extend(inner);
                 out.push("}".into());
             }
             // lwcIf.ts (bookends suppressed when cx.slotted)
@@ -206,8 +215,11 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
                 let idx = f.index.as_ref().map_or("__unused__".to_string(), |i| i.name.clone());
                 out.push(format!("for (let [{idx}, {}] of Object.entries({it} ?? {{}})) {{", f.item.name));
                 let n = sc.len(); sc.push(f.item.name.clone()); sc.push(idx);
-                emit_children(&f.children, o, out, cx, sc)?;
+                let mut inner = Vec::new();
+                emit_children(&f.children, o, &mut inner, cx, sc)?;
                 sc.truncate(n);
+                // for-each.ts optimizes the loop body before it is placed in the for.
+                out.extend(yield_opt::optimize_yields(inner, o.mode));
                 out.push("}".into());
             }
             // for-of.ts: `for (let it of toIteratorDirective(expr ?? []))`. A bare Identifier is always
@@ -217,8 +229,11 @@ fn emit_child(sib: &[ChildNode], i: usize, n: &ChildNode, o: TemplateOptions, ou
                 let it = match &f.expression { Expression::Identifier(i) => format!("instance.{}", i.name), e => expr(e, sc)? };
                 out.push(format!("for (let {} of toIteratorDirective({it} ?? [])) {{", f.iterator.name));
                 sc.push(f.iterator.name.clone());
-                emit_children(&f.children, o, out, cx, sc)?;
+                let mut inner = Vec::new();
+                emit_children(&f.children, o, &mut inner, cx, sc)?;
                 sc.pop();
+                // for-of.ts optimizes the loop body before it is placed in the for.
+                out.extend(yield_opt::optimize_yields(inner, o.mode));
                 out.push("}".into());
             }
             ChildNode::Slot(s) => crate::compile_template::slot::emit_slot(s, o, out, cx, sc)?,
@@ -248,12 +263,20 @@ fn emit_bookended(children: &[ChildNode], o: TemplateOptions, out: &mut Vec<Stri
     Ok(())
 }
 
+/// lwcIf.ts `bBlockStatement` runs `optimizeAdjacentYieldStmts` on the bookended branch.
+fn emit_optimized_branch(children: &[ChildNode], o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
+    let mut inner = Vec::new();
+    emit_bookended(children, o, &mut inner, cx, sc)?;
+    out.extend(yield_opt::optimize_yields(inner, o.mode));
+    Ok(())
+}
+
 fn emit_if_chain(cond: &Expression, children: &[ChildNode], else_: Option<&ElseBranch>, o: TemplateOptions, out: &mut Vec<String>, cx: &mut Cx, sc: &mut Vec<String>) -> Emit {
     out.push(format!("if ({}) {{", expr(cond, sc)?));
-    emit_bookended(children, o, out, cx, sc)?;
+    emit_optimized_branch(children, o, out, cx, sc)?;
     match else_ {
         None => out.push("}".into()),
-        Some(ElseBranch::Else(e)) => { out.push("} else {".into()); emit_bookended(&e.children, o, out, cx, sc)?; out.push("}".into()); }
+        Some(ElseBranch::Else(e)) => { out.push("} else {".into()); emit_optimized_branch(&e.children, o, out, cx, sc)?; out.push("}".into()); }
         Some(ElseBranch::Elseif(e)) => {
             let start = out.len();
             emit_if_chain(&e.condition, &e.children, e.else_.as_deref(), o, out, cx, sc)?;
@@ -373,9 +396,13 @@ mod tests {
     fn static_element() {
         let root = Root { children: vec![el("div", vec![("class", lit("x"))], vec![text(TextValue::Literal("hi".into()))])], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
-        assert_eq!(body[0], "__lwcYield += '<div';");
-        assert!(body[2].contains("__lwcYield += '=\"' + 'x' + suffix + '\"';"), "{body:?}");
-        assert_eq!(&body[3..], &["__lwcYield += '>';", "__lwcYield += renderTextContent(normalizeTextContent('hi'));", "__lwcYield += '</div>';"]);
+        // bStringLiteralYield is a block, so it splits the element. The open tag still
+        // swallows the slot ternary; the close tag swallows the text.
+        assert_eq!(body, vec![
+            "__lwcYield += '<div' + (slotAttributeValue ? ` slot=\"${slotAttributeValue}\"` : '');".to_string(),
+            "{ const attrName = 'class'; const attrValue = 'x'; const shouldRenderScopeToken = attrName === 'class' && (hasScopedStylesheets || hasScopedStaticStylesheets(Cmp)); const suffix = shouldRenderScopeToken ? ' ' + stylesheetScopeToken : ''; __lwcYield += ' ' + attrName; if (attrValue !== '' || shouldRenderScopeToken) { __lwcYield += '=\"' + attrValue + suffix + '\"'; } }".into(),
+            "__lwcYield += '>' + renderTextContent(normalizeTextContent('hi')) + '</div>';".into(),
+        ]);
     }
     #[test]
     fn dynamic_attr() {
@@ -390,10 +417,12 @@ mod tests {
     fn void_no_close() {
         let root = Root { children: vec![el("img", vec![("src", lit("a\"b"))], vec![]), el("br", vec![], vec![])], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
-        // element.ts: literal values are yielded verbatim; void elements end with `>` and no close tag.
-        assert_eq!(body[3], "__lwcYield += ' src=\"a\"b\"';");
-        assert_eq!(body[4], "__lwcYield += '>';");
-        assert_eq!(body.last().unwrap(), "__lwcYield += '>';");
+        // The src literal is a bStringLiteralYield block, so it is not part of the tag yield.
+        // The `>` after that block still merges with the following `<br>`.
+        assert_eq!(body.len(), 3, "{body:?}");
+        assert!(body[0].starts_with("__lwcYield += '<img' + "), "{body:?}");
+        assert!(body[1].contains("const attrName = 'src'") && body[1].contains("const attrValue = 'a\"b'"), "{body:?}");
+        assert!(body[2].starts_with("__lwcYield += '><br' + "), "{body:?}");
         assert!(!body.join("").contains("</"), "{body:?}");
     }
     fn id(n: &str) -> Expression<'static> { Expression::Identifier(Identifier { name: n.into() }) }
@@ -412,12 +441,13 @@ mod tests {
     #[test]
     fn if_true_text() {
         let root = Root { children: vec![legacy_if("true")], directives: vec![], location: el_at() };
-        assert_eq!(compile_body(&root, TemplateOptions::default()).unwrap().0, vec!["if (instance.show) {", "__lwcYield += renderTextContent(normalizeTextContent('hi'));", "}"]);
+        // No alternate: optimizeIfStatement yields `test ? cons : ''`.
+        assert_eq!(compile_body(&root, TemplateOptions::default()).unwrap().0, vec!["__lwcYield += (instance.show ? renderTextContent(normalizeTextContent('hi')) : '');"]);
     }
     #[test]
     fn if_false() {
         let root = Root { children: vec![legacy_if("false")], directives: vec![], location: el_at() };
-        assert_eq!(compile_body(&root, TemplateOptions::default()).unwrap().0[0], "if (!instance.show) {");
+        assert_eq!(compile_body(&root, TemplateOptions::default()).unwrap().0, vec!["__lwcYield += (!instance.show ? renderTextContent(normalizeTextContent('hi')) : '');"]);
     }
     #[test]
     fn lwc_if_chain() {
@@ -427,9 +457,10 @@ mod tests {
             else_: Some(Box::new(ElseBranch::Elseif(ElseifBlock { condition: id("b"), children: t("B"), location: AT, directive_location: AT,
                 else_: Some(Box::new(ElseBranch::Else(ElseBlock { children: t("C"), location: AT, directive_location: AT }))) }))) })], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
-        let bk = "__lwcYield += '<!---->';";
-        let r = |s: &str| format!("__lwcYield += renderTextContent(normalizeTextContent('{s}'));");
-        assert_eq!(body, vec!["if (instance.a) {".into(), bk.into(), r("A"), bk.into(), "} else if (instance.b) {".into(), bk.into(), r("B"), bk.into(), "} else {".into(), bk.into(), r("C"), bk.into(), "}".into()]);
+        // else-if does not collapse (the alternate is an if). Each branch was optimized
+        // at construction, so the bookends and the text are one yield per branch.
+        let r = |s: &str| format!("__lwcYield += '<!---->' + renderTextContent(normalizeTextContent('{s}')) + '<!---->';");
+        assert_eq!(body, vec!["if (instance.a) {".into(), r("A"), "} else if (instance.b) {".into(), r("B"), "} else {".into(), r("C"), "}".into()]);
     }
     fn mem(o: &str, p: &str) -> Expression<'static> { Expression::Member(lwc_shared::template_ir::MemberExpression { object: Box::new(id(o)), property: Box::new(id(p)), computed: false }) }
     fn for_each(coll: Expression<'static>, item: &str, index: Option<&str>, children: Vec<ChildNode<'static>>) -> ChildNode<'static> {
@@ -443,8 +474,8 @@ mod tests {
         let root = Root { children: vec![for_each(id("items"), "item", None, vec![li, tv(mem("item", "name")), tv(id("other"))])], directives: vec![], location: el_at() };
         let (body, _) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(body[0], "for (let [__unused__, item] of Object.entries(instance.items ?? {})) {");
-        assert!(body[4].contains("let attrValue = item.id;"), "{body:?}");
-        assert!(body.contains(&"__lwcYield += renderTextContent(normalizeTextContent(item.name) + normalizeTextContent(instance.other));".to_string()), "{body:?}");
+        assert!(body[2].contains("let attrValue = item.id;"), "{body:?}");
+        assert!(body.contains(&"__lwcYield += '></li>' + renderTextContent(normalizeTextContent(item.name) + normalizeTextContent(instance.other));".to_string()), "{body:?}");
         assert_eq!(body.last().unwrap(), "}");
         assert!(!body.join("\n").contains("instance.item."), "{body:?}");
     }
@@ -515,6 +546,34 @@ mod tests {
         assert!(joined.contains("instance.a"), "{body:?}");
         assert!(joined.contains("b: instance.c") || joined.contains("b:instance.c"), "{body:?}");
         assert!(!joined.contains("a: instance.a"), "SSR no longer expands shorthand: {body:?}");
+    }
+    #[test]
+    fn adjacent_static_elements_are_one_yield() {
+        let root = Root { children: vec![el("div", vec![], vec![]), el("span", vec![], vec![])], directives: vec![], location: el_at() };
+        let (body, _) = compile_body(&root, TemplateOptions { mode: lwc_shared::SsrMode::AsyncYield, ..Default::default() }).unwrap();
+        assert_eq!(body.len(), 1, "{body:?}");
+        assert!(body[0].starts_with("yield '<div' + "), "{body:?}");
+        // Right-spine literal concat joins the close of one element to the open of the next.
+        assert!(body[0].contains("</div><span"), "{body:?}");
+        assert!(body[0].ends_with("</span>';"), "{body:?}");
+    }
+    #[test]
+    fn async_yield_host_element_read_stays_inside_the_span_yield() {
+        // Fixture this-dot-host-element: `<span>{test}</span>` and `get test() { return this.hostElement.tagName }`.
+        // ssr-runtime throws TypeError('this.hostElement is not supported in this environment') while the
+        // yield argument is evaluated. Sync and async already match because both sides throw from the render
+        // call. asyncYield must not yield `<span` before that read, or a chunk is emitted and the traces diverge.
+        let root = Root {
+            children: vec![el("span", vec![], vec![text(TextValue::Expression(id("test")))])],
+            directives: vec![],
+            location: el_at(),
+        };
+        let (body, _) = compile_body(&root, TemplateOptions { mode: lwc_shared::SsrMode::AsyncYield, ..Default::default() }).unwrap();
+        let yields: Vec<&String> = body.iter().filter(|l| l.starts_with("yield")).collect();
+        assert_eq!(yields.len(), 1, "{body:?}");
+        let y = yields[0];
+        assert!(y.contains("<span") && y.contains("normalizeTextContent(instance.test)") && y.contains("</span>"), "{y}");
+        assert!(!body.iter().any(|l| l == "yield '<span';"), "{body:?}");
     }
     #[test]
     fn complex_default_arrow_param_is_1189() {

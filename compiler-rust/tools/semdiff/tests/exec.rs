@@ -79,7 +79,7 @@ fn key(name: &str) -> String {
 }
 
 fn cfg(work: &Path) -> ExecCfg {
-    ExecCfg { seed: 1, jobs: 1, oracle_dir: PathBuf::from(exec::ORACLE_DIR), work: work.to_path_buf() }
+    ExecCfg::csr(1, 1, PathBuf::from(exec::ORACLE_DIR), work.to_path_buf())
 }
 
 /// Generate, run, decide one pair; returns (decision, input set json, oracle trace, rust trace).

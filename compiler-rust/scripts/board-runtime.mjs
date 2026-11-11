@@ -237,10 +237,20 @@ function compose(thisLogPath, prevTxt, outPath, ranList, repo) {
       if (kl) out.push(kl);
     }
   }
-  const extras = ["semantic-diff", "shim-check:", "shim-registry:", "ssr-compile-js-scanners:", "option-gate:", "golden-io-guard:"];
+  const extras = ["semantic-diff-ssr", "semantic-diff", "shim-check:", "shim-registry:", "ssr-compile-js-scanners:", "option-gate:", "golden-io-guard:"];
+  const linesOf = (text) => text.split(/\n/);
+  const matchExtra = (text, key) => {
+    for (const line of linesOf(text)) {
+      if (!line.startsWith(key)) continue;
+      // `semantic-diff` is a prefix of `semantic-diff-ssr`; keep the H-1 line on its own key.
+      if (key === "semantic-diff" && line.startsWith("semantic-diff-ssr")) continue;
+      return line;
+    }
+    return undefined;
+  };
   for (const key of extras) {
-    const fromThis = thisTail.split(/\n/).find((l) => l.startsWith(key));
-    const fromPrev = prevTail.split(/\n/).find((l) => l.startsWith(key));
+    const fromThis = matchExtra(thisTail, key);
+    const fromPrev = matchExtra(prevTail, key);
     // gates always run on this board.sh invocation (even with zero suites)
     const line = fromThis || fromPrev;
     if (line) out.push(line);

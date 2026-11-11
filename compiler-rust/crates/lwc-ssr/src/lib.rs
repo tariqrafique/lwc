@@ -229,7 +229,9 @@ mod transform_tests {
         let c = code("<svg><!--c--></svg>", false);
         assert!(c.contains("'/>'") && !c.contains("'</svg>'"), "{c}");
         let c = code("<svg><!--c--></svg>", true);
-        assert!(c.contains("'<!--c-->'") && c.contains("'</svg>'"), "{c}");
+        // The preserved comment is a yield between the open and close tags, so shared.ts
+        // folds it onto the right spine: one literal `'><!--c--></svg>'`, not a self-close.
+        assert!(c.contains("'><!--c--></svg>'") && !c.contains("'/>'"), "{c}");
         // element.ts:256 tests `node.children.length` (comments count), so lwc:inner-html is not rendered;
         // the parser allows it (parser/index.ts:1775 effectiveChildren drops non-preserved comments).
         let c = code("<div lwc:inner-html={h}><!--c--></div>", false);
@@ -251,9 +253,10 @@ mod transform_tests {
         let c = code("<x-d><template lwc:if={t}>a<!--c-->b</template></x-d>", false);
         let light = &c[c.find("lightSlottedContentMap = Object.create(null);").expect(&c)..];
         assert!(light.contains("normalizeTextContent('b')") && !light.contains("normalizeTextContent('a')"), "{c}");
-        // lwcIf.ts: the if/else chain is built by the parser across the comment.
+        // lwcIf.ts: the if/else chain is built by the parser across the comment, then
+        // optimizeIfStatement collapses the two single-yield branches into one ternary.
         let c = code("<template lwc:if={f}>A</template><!--c--><template lwc:else>B</template>", false);
-        assert!(c.contains("if (instance.f) {") && c.contains("} else {"), "{c}");
+        assert!(c.contains("(instance.f ? '<!---->' + renderTextContent(normalizeTextContent('A')) + '<!---->' : '<!---->' + renderTextContent(normalizeTextContent('B')) + '<!---->')"), "{c}");
     }
 
     /// ir-to-es.ts defaultTransformer: a `<template lwc:slot-data>` that is not a direct component child (here

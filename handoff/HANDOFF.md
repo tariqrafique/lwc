@@ -1,16 +1,16 @@
-# LWC → Rust migration: handoff (refreshed 2026-11-10 15:30 PST)
+# LWC → Rust migration: handoff (refreshed 2026-11-10 16:01 PST)
 
 Work is on main or committed branches; all of it is in the bundles.
 
 ## What's here
-- `lwc-compiler-rust.bundle`: full history of the Rust workspace, main @ a9ee6d9 (all refs, including bot/ssr-pair).
-- `notes.bundle`: notes repo HEAD @ 58b42e6.
+- `lwc-compiler-rust.bundle`: full history of the Rust workspace, main @ 6026c08 (all refs, including bot/* branches).
+- `notes.bundle`: notes repo HEAD @ 36b3bcf.
 - `notes/`: plain copies of OWNERS.tsv, arch-board/, lwc-rust-migrate/ (PLAN.md, decisions.tsv), state/.
 
 ## Ground truth
 - Oracle: salesforce/lwc 9.5.3 @ b9e8007 (clean). Branch base is upstream-b9e8007.
-- Main @ a9ee6d9 is UNMEASURED unless it equals the official board commit a9ee6d9.
-- `compiler-rust/` = official board 9faa91fecea7 @ a9ee6d9 (see compiler-rust/OFFICIAL_BOARD.txt).
+- Main @ 6026c08 is UNMEASURED unless it equals the official board commit 6026c08.
+- `compiler-rust/` = official board 5e80e0ff4f72 @ 6026c08 (see compiler-rust/OFFICIAL_BOARD.txt).
 - Plan of record: notes/lwc-rust-migrate/PLAN.md. No GitHub Actions, no PRs (D-0279/D-0280).
 
 ## Restore
