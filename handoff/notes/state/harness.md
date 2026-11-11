@@ -613,3 +613,35 @@ FAIL unlisted box-config dependency:
 !! LAND REFUSED: golden-gate: goldens != fresh JS-oracle recording
 ```
 - Did not fix. Removed /workspace/wt/style-gaps and local bot/style-gaps without --force. Did not run the post-land SLDS pin check, footer-gating plants, or official board (land never succeeded).
+
+## 2026-11-10 19:38 PST (America/Los_Angeles)
+- Step A (main-first golden-gate style-upstream loop) DID NOT LAND. Main remains **5f8f04ea04a2b201ea084bab7640822493c28c09**. Step B (gate agent/style-gaps f8c6a15) was not started because A never moved main. No TSV, no official board, no GitHub writes. Did not edit or delete agent/style-gaps. Did not land c97526e. agent-inflight was left in place through A and removed at the end of this stop.
+- Branch hunk (98313d7..f8c6a15 `harness/scripts/golden-gate.sh`) is only the recording loop line: `for t in style js js-eval template js-options template-options ssr_dynamic_imports style-api template-api ssr_render_api` → same list plus `style-upstream`. Candidate commit **b0e6f1550f119b40e085e42a121c1d15aff54fee** on bot/golden-gate-mainfirst made that loop line byte-identical and put an absent-file skip inside `run()` (the branch does not touch `run()`, so the hunk does not overlap).
+- Plants (not committed): absent test — `GOLDEN_GATE_PROGRESS` line `== 19:33:26 sync test/style-upstream.behavior.test.ts skipped (absent test/style-upstream.behavior.test.ts)`; `golden-gate: 4624 goldens == fresh JS-oracle recording`; rc=0 (19:32:23–19:34:50 America/Los_Angeles). Present plant (throwaway /tmp/gg-plant-present at b0e6f15, `git checkout f8c6a15 --` test + 11 goldens, not committed): progress `== 19:35:56 sync test/style-upstream.behavior.test.ts` (not skipped); `golden-gate: 4635 goldens == fresh JS-oracle recording`; GOLDEN_GATE_KEEP listed all 11 style-upstream files; rc=0 (19:34:59–19:37:23). Present plant reset --hard to b0e6f15 and worktree removed without --force.
+- Rebase dry-run of f8c6a15 onto b0e6f15 in /tmp/style-gaps-rebase-dry: no conflicts. range-diff: `1: 9083868 ! 1: da5467b` with the `harness/scripts/golden-gate.sh` loop hunk collapsed (already on the candidate); `2: c97526e = 2: bb79d89`; `3: f8c6a15 = 3: f52b42f`. Dry-run worktree removed without --force. Rebased first commit had no remaining golden-gate.sh diff vs b0e6f15; the file still contained the loop + absent-file guard.
+- Land: `(cd /workspace/wt/golden-gate-mainfirst && scripts/land.sh)` rc=1 (log /workspace/scratch/harness/golden-gate-mainfirst-land.log). LAND_START=2026-11-10T19:37:32-08:00 LAND_END=2026-11-10T19:37:38-08:00 elapsed=6s. `rust-test-inputs --decide skip`; `land-self-tests: none selected`. Then:
+```
+FAIL stale allowlist BOX_CONFIG_DEPENDENT row(s):
+  scripts/napi-css-errors.sh	/workspace/.cargo/config.toml
+  scripts/napi-css-errors.sh	/workspace/.cargo/parse5-url-rewrite.gitconfig
+  scripts/napi-css-errors.sh	CARGO_HOME
+  scripts/napi-css-errors.sh	~/.gitconfig
+!! LAND REFUSED: land-main-refs check failed (rc=1)
+```
+- Cause: 80a77df added those four rows to land-main-refs.tsv, but `scripts/napi-css-errors.sh` is still absent on main. check-land-main-refs accepts incoming-only unused rows for an absent file, and refuses the same rows when they exist in both MAIN and incoming tables (`unused BOX_CONFIG_DEPENDENT row for an absent file in both tables fails`). Did not fix (would have meant adding the agent file or dropping the allowlist rows). Removed /workspace/wt/golden-gate-mainfirst and bot/golden-gate-mainfirst without --force.
+
+## 2026-11-10 19:45 PST (America/Los_Angeles)
+- Step A (main-first golden-gate + orphan WARN + board print) DID NOT LAND. Main remains **5f8f04ea04a2b201ea084bab7640822493c28c09**. Step B was not started. No TSV, no official board, no GitHub writes. Did not edit or delete agent/style-gaps. Did not land c97526e.
+- Candidate commits on bot/mainfirst2 (now deleted): **5520db27** (cherry-pick of b0e6f15: golden-gate loop line byte-identical to f8c6a15 plus absent-file skip in `run()`); **a3e088cb15e6c71f895eaae7cf4c569db9ab0505** (check-land-main-refs: unused BOX_CONFIG_DEPENDENT rows whose script is absent on both main and incoming print `WARN orphan allowlist BOX_CONFIG_DEPENDENT row(s) (script absent on main and incoming):` and do not fail; a present unused script still FAILs; new `scripts/print-orphan-allowlist-warns.sh` plus official-board.sh hooks after `official: src=` and in board.txt assembly — not in the branch's `for _r in ... style-upstream` hunk).
+- Plants (not committed), all against the candidate tree: (1) real napi rows, script absent, `check --check` rc=0 and WARN naming the four `scripts/napi-css-errors.sh` deps; (2) extra unused `scripts/lint-shell-pipes.sh CARGO_HOME` on both tables rc=1 `FAIL stale allowlist BOX_CONFIG_DEPENDENT row(s):` / `scripts/lint-shell-pipes.sh	CARGO_HOME`; (3) overlay adding `cat ~/.gitconfig` to lint-shell-pipes.sh rc=1 `FAIL unlisted box-config dependency:` / `scripts/lint-shell-pipes.sh	~/.gitconfig`; (4) `print-orphan-allowlist-warns.sh` printed the same four WARN rows, rc=0.
+- Rebase dry-run of f8c6a15 onto a3e088c in /tmp/style-gaps-rebase-dry2: no conflicts. range-diff: `1: 9083868 ! 1: 661444a` with the golden-gate.sh loop hunk collapsed; `2: c97526e = 2: 9dbbf1f`; `3: f8c6a15 = 3: 63b5169`. official-board.sh did not conflict. Dry-run worktree removed without --force.
+- Land: `(cd /workspace/wt/mainfirst2 && scripts/land.sh)` rc=1 (log /workspace/scratch/harness/mainfirst2-land.log). LAND_START=2026-11-10T19:42:53-08:00 LAND_END=2026-11-10T19:44:30-08:00 elapsed=97s. Incoming self-tests passed, including `ok   unused BOX_CONFIG_DEPENDENT row for an absent file in both tables warns` (91s). Production check is `main_run` of MAIN's checker (land.sh:151–161, D-0274: MAIN's checker + MAIN's table judge the branch). MAIN at 5f8f04e still FAILs those unused rows:
+```
+FAIL stale allowlist BOX_CONFIG_DEPENDENT row(s):
+  scripts/napi-css-errors.sh	/workspace/.cargo/config.toml
+  scripts/napi-css-errors.sh	/workspace/.cargo/parse5-url-rewrite.gitconfig
+  scripts/napi-css-errors.sh	CARGO_HOME
+  scripts/napi-css-errors.sh	~/.gitconfig
+!! LAND REFUSED: land-main-refs check failed (rc=1)
+```
+- Did not fix (would have meant adding napi-css-errors.sh so MAIN's old checker saw used rows, or dropping the allowlist rows). Catch-22: the WARN change cannot take effect during its own land because land.sh always runs MAIN's checker. Removed /workspace/wt/mainfirst2 and bot/mainfirst2 without --force.
