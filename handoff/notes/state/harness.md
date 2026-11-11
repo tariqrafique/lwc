@@ -685,3 +685,10 @@ style-corpus     integration-wtr=206/206 integration-wdio=7/7 integration-types=
 napi-css-errors     2/2 (lwc-compiler-napi single_errors_match_shipped, css-1009 css-1009-host-context)
 ```
 - Diff vs 5aafe4b7f269 (csr-steps, VALID, napi=c542fed8bbad): header commit/src/napi/date changed; napi sha256 line c542fed8bbad → 4f2941c0e296 (snap path and timestamp also changed); new `style-upstream         Tests  12 passed (12)`; option-gate counts unchanged (61/61) but decisions path is the new snap; new style-corpus and napi-css-errors footer lines above. All other suite rows identical (same pass counts).
+
+## 2026-11-10 8:53 PM PST: D-0286 one-pass lands on main
+- Plain main commits (D-0287 spirit, per Migrate): 4bd18a3 (D-0286), 123512b (export CORPUS/SSR_RUNTIME to golden recordings), ee92647 (pipefail-safe greps). Main ee92647a2767.
+- Official board 37036c11d866 VALID, FULL cold, 501s, napi 4f2941c0e296; all rows identical to edcfde44d1b8. Two earlier attempts rc=2 (4bd18a3 SSR_RUNTIME not exported; 123512b C8 lint-shell-pipes).
+- Design: gate code from main; registries judged main ∪ incoming (scripts/registry-union.sh); removal/loosen needs `# D-NNNN: remove|loosen <key>`; golden set from board-rows.sh (22 recordings / 23 rows); stale/orphan on union (WARN stopgap removed; official board keeps orphan scan line); run-portable-board.sh uses snapshot path (temp CARGO_TARGET_DIR, logs outside snap, hash before/after, exit 4).
+- Proof: test-one-pass-land.sh rc=0, test-board-footers rc=0 (portable mutation plant). Gap: no end-to-end land.sh of a fixture branch; next agent branch adding a row is the live proof.
+- Standing rule: never message Tariq; message Migrate only for decisions/blockers; record lands/boards here.

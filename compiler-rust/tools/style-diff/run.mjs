@@ -130,7 +130,7 @@ function cargoMessageExecutable(stdout, name) {
 }
 function cargoTargetDirectory(root, env) {
   if (env.CARGO_TARGET_DIR) return path.resolve(root, env.CARGO_TARGET_DIR);
-  const r = spawnSync('cargo', ['metadata', '--format-version=1', '--no-deps'], {
+  const r = spawnSync('cargo', ['metadata', '--format-version=1', '--no-deps', '--locked'], {
     cwd: root, env, encoding: 'utf8',
   });
   if (r.status === 0) {

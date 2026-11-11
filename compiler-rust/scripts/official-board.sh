@@ -330,8 +330,12 @@ fi
 if [ $# -eq 0 ]; then
   {
     printf 'row\tstatus\tsource_board_id\n'
+    # shellcheck source=registry-union.sh
+    source "$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/registry-union.sh"
+    # D-0286: provenance rows come from the boarded tree's board-rows.sh, not a hand-kept list.
     # shellcheck disable=SC2086
-    for _r in style js js-eval template ssr ssr-async ssr-asyncYield ssr-render ssr-render-async ssr-render-asyncYield csr-render csr-render-template template-renderer js-options js-api template-options ssr_dynamic_imports style-api template-api ssr_render_api template-diag template-diag-napi style-upstream; do
+    while IFS= read -r _r; do
+      [ -n "$_r" ] || continue
       _st=carried
       for _x in ${BOARD_ROWS:-}; do
         if [ "$_x" = "$_r" ]; then _st=rerun; break; fi
@@ -340,7 +344,7 @@ if [ $# -eq 0 ]; then
       if [ "$_st" = carried ]; then printf '%s\t%s\t%s\n' "$_r" carried "${BOARD_PREV_SRC:-}"
       else printf '%s\trerun\t\n' "$_r"
       fi
-    done
+    done < <(extract_board_rows "$ws/harness/board-rows.sh")
   } > "$snap/row-provenance.tsv"
 fi
 if [ "$rc" -eq 0 ] && [ $# -eq 0 ] && [ "${BOARD_COLD:-0}" = 1 ] && [ -n "${BOARD_PREV_COMMIT:-}" ] && [ -n "${BOARD_PREV_BOARD_TXT:-}" ] && [ -x "$_rt" ]; then

@@ -5,14 +5,31 @@
 # Fails (exit 1) on: any recording run exiting non-zero (vitest load/collect error, test failure), a differing golden,
 # or a different golden FILE SET (a committed golden the recording did not produce, or vice versa). Committed goldens are
 # never copied into the scratch tree, so they can never be compared against themselves (AB-0003). Never touches <harness>/goldens.
-# Usage: scripts/golden-gate.sh [harness-dir]   (default: this harness). Slow (JS backend, all rows): run in background.
+# Usage: scripts/golden-gate.sh [--plan] [harness-dir]   (default: this harness).
+# Recording set is every vitest row in board-rows.sh (D-0286): main UNION the
+# harness copy's additions. --plan prints the set and checks removals/loosening
+# without recording. Slow full run (JS backend, all rows): run in background.
 set -euo pipefail
+here="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=../../scripts/registry-union.sh
+source "$here/../../scripts/registry-union.sh"
+plan_only=0
+if [ "${1:-}" = --plan ]; then plan_only=1; shift; fi
 # shellcheck source=oracle-root.sh
-source "$(cd "$(dirname "$0")" && pwd)/oracle-root.sh"
+source "$here/oracle-root.sh"
 ORACLE="$(oracle_root)" || exit 2
 export LWC_ORACLE="$ORACLE" LWC_ROOT="$ORACLE" PATH="$ORACLE/node_modules/.bin:$PATH"
 "$(dirname "$0")/ensure-deps.sh"
-h="$(cd "${1:-$(dirname "$0")/..}" && pwd)"
+h="$(cd "${1:-$here/..}" && pwd)"
+main_rows_file="$here/../board-rows.sh"
+branch_rows_file="$h/board-rows.sh"
+recording_rows="$(union_board_rows "$main_rows_file" "$branch_rows_file")" || { echo "!! GOLDEN GATE FAILED: board-rows registry union rejected (uncited removal or DIAG loosening)"; exit 1; }
+recording_plan="$(while IFS= read -r _r; do [ -n "$_r" ] || continue; board_row_golden_records "$_r"; done <<< "$recording_rows" | sort -u)"
+if [ "$plan_only" -eq 1 ]; then
+  printf '%s\n' "$recording_plan"
+  echo "golden-gate: plan $(printf '%s\n' "$recording_plan" | grep -c . || true) unique recording(s) from $(printf '%s\n' "$recording_rows" | grep -c . || true) board-rows"
+  exit 0
+fi
 tmp="$(mktemp -d /tmp/lwc-golden-gate.XXXXXX)"; trap 'rm -rf "$tmp"' EXIT
 prog="${GOLDEN_GATE_PROGRESS:-$tmp/progress}"
 mkdir -p "$tmp/harness"
@@ -26,28 +43,25 @@ export LWC_COMPILER_BACKEND=js UPDATE_GOLDENS=1 PATH="$ORACLE/node_modules/.bin:
 unset LWC_COMPILER_NAPI_PATH
 recfail=()
 run() { local mode="$1" rc=0; shift
-  # Absent test files are a no-op so a new loop entry (style-upstream) can land before its test.
-  local a
-  for a in "$@"; do
-    case "$a" in
-      test/*)
-        if [ ! -f "$a" ]; then
-          echo "== $(date +%T) $mode $* skipped (absent $a)" >> "$prog"
-          return 0
-        fi
-        ;;
-    esac
-  done
   echo "== $(date +%T) $mode $*" >> "$prog"
   SSR_MODE="$mode" "$ORACLE/node_modules/.bin/vitest" run "$@" --pool=threads --testTimeout=30000 --reporter=dot >>"$tmp/rec.log" 2>&1 || rc=$?
   [ "$rc" -eq 0 ] || recfail+=("${CORPUS:+CORPUS=$CORPUS }${SSR_RUNTIME:+SSR_RUNTIME=$SSR_RUNTIME }SSR_MODE=$mode $* (rc=$rc)"); }
-for t in style js js-eval template js-options template-options ssr_dynamic_imports style-api template-api ssr_render_api style-upstream; do
-  run sync "test/$t.behavior.test.ts"; done
-for m in sync async asyncYield; do run "$m" test/ssr.behavior.test.ts; run "$m" test/ssr.render.test.ts; done
-# ssr-render/<mode>.src.json goldens (SSR_RUNTIME=src, the ssr-runtime TS source) are committed too: record them, so no golden is ever un-gated.
-for m in sync async asyncYield; do SSR_RUNTIME=src run "$m" test/ssr.render.test.ts; done
-CORPUS=ssr run sync test/csr.render.test.ts
-CORPUS=template run sync test/csr.render.test.ts
+while IFS= read -r _pline || [ -n "${_pline:-}" ]; do
+  [ -n "$_pline" ] || continue
+  _mode="${_pline%%$'\t'*}"
+  _rest="${_pline#*$'\t'}"
+  _test="${_rest%%$'\t'*}"
+  _env="${_rest#*$'\t'}"
+  # Prefix-assign so the env is exported for `run` and its vitest child
+  # (same as the old `SSR_RUNTIME=src run ...` / `CORPUS=ssr run ...`).
+  case "$_env" in
+    '') run "$_mode" "$_test" ;;
+    CORPUS=ssr) CORPUS=ssr run "$_mode" "$_test" ;;
+    CORPUS=template) CORPUS=template run "$_mode" "$_test" ;;
+    SSR_RUNTIME=src) SSR_RUNTIME=src run "$_mode" "$_test" ;;
+    *) echo "!! GOLDEN GATE FAILED: unexpected recording env '$_env'"; exit 1 ;;
+  esac
+done <<< "$recording_plan"
 if [ ${#recfail[@]} -gt 0 ]; then
   keep="$(mktemp -d /tmp/golden-gate-fail.XXXXXX)"; cp "$tmp/rec.log" "$keep/"
   echo "!! GOLDEN GATE FAILED: ${#recfail[@]} JS-oracle recording run(s) failed (load error or test failure; log $keep/rec.log):"

@@ -11,9 +11,14 @@
 #   --self-test <root> --main-table FILE --incoming-table FILE
 #   --check <land.sh> <incoming-tree> --main-table FILE --incoming-table FILE
 # Missing table is rc 2. Unlisted/stale/forbidden token is rc 1.
+# D-0286: allowlist is main UNION incoming additions. Removals and loosening
+# require `# D-NNNN: remove|loosen <key>` in the incoming table. Stale/orphan
+# checks run against the incoming (post-land) tree.
 set -euo pipefail
 
 SELF="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=registry-union.sh
+source "$SELF/registry-union.sh"
 VALID_MAIN='MAIN_SCRIPT_ON_BRANCH_INPUT|MAIN_DATA_AS_BASE'
 VALID_BOX='BOX_CONFIG_DEPENDENT'
 VALID_REGION='REGION_SHA256'
@@ -147,15 +152,15 @@ checker_pattern_line() {
   local lineno="$1" trimmed="$2" h
   h="$(checker_pattern_hash "$trimmed")"
   case "${lineno}:$h" in
-    107:4f77354fccb9e915e5e471db68895c3bfeb2707f3e82948896cb56e297ccfb90) return 0 ;;
-    108:fe15827a8eddb63d8e0cf3ea0884d08be3ceea8e9157735ba5b2ba0484748f5c) return 0 ;;
-    165:20c9dcb6900672c4ee8d5378023c11ec303611effea4c0fd096b4b6c984689f7) return 0 ;;
-    179:571741e090d15d1bb4eb057c77e529c67290bcb3a7dbc3bd6fba859cc325a24d) return 0 ;;
-    193:ba2487fb82150f052ad96187d720f4b65ed622d3812894187251d77e11d32870) return 0 ;;
-    196:275cbbf897792c8aed826a04d73ed1782497da80adf1d9bdd6a019db398165f3) return 0 ;;
-    229:11e000b74cd0855afb7084752a66ca34d330259be540a73b091c2ce7a4fc494b) return 0 ;;
-    241:3ab8eb07c657c005d1be2d9b2792b0b685e6d55e9e20c4b0a51242e46885e02e) return 0 ;;
-    243:4e0af068b291f6f1b76988de0697f5462c64352c92cdfe6daf1c994500b2d87d) return 0 ;;
+    112:4f77354fccb9e915e5e471db68895c3bfeb2707f3e82948896cb56e297ccfb90) return 0 ;;
+    113:fe15827a8eddb63d8e0cf3ea0884d08be3ceea8e9157735ba5b2ba0484748f5c) return 0 ;;
+    170:20c9dcb6900672c4ee8d5378023c11ec303611effea4c0fd096b4b6c984689f7) return 0 ;;
+    184:571741e090d15d1bb4eb057c77e529c67290bcb3a7dbc3bd6fba859cc325a24d) return 0 ;;
+    198:ba2487fb82150f052ad96187d720f4b65ed622d3812894187251d77e11d32870) return 0 ;;
+    201:275cbbf897792c8aed826a04d73ed1782497da80adf1d9bdd6a019db398165f3) return 0 ;;
+    234:11e000b74cd0855afb7084752a66ca34d330259be540a73b091c2ce7a4fc494b) return 0 ;;
+    246:3ab8eb07c657c005d1be2d9b2792b0b685e6d55e9e20c4b0a51242e46885e02e) return 0 ;;
+    248:4e0af068b291f6f1b76988de0697f5462c64352c92cdfe6daf1c994500b2d87d) return 0 ;;
   esac
   return 1
 }
@@ -651,12 +656,25 @@ check() {
   dups="$(awk -F'\t' -v ok="$VALID_MAIN" '$2 ~ "^("ok")$" {print $1}' <<< "$rows" | sort | uniq -d)"
   [ -z "$dups" ] || { echo "FAIL allowlist duplicate MAIN_* path(s): $dups"; fail=1; }
 
-  local listed listed_in listed_both miss extra
+  local listed listed_in listed_union removed miss extra _rk _rp
   listed="$(awk -F'\t' -v ok="$VALID_MAIN" '$2 ~ "^("ok")$" {print $1 "\t" $2}' <<< "$rows" | sort -u)"
   listed_in="$(awk -F'\t' -v ok="$VALID_MAIN" '$2 ~ "^("ok")$" {print $1 "\t" $2}' "$incoming_table" | sort -u)"
-  listed_both="$(comm -12 <(printf '%s\n' "$listed") <(printf '%s\n' "$listed_in"))"
-  miss="$(comm -13 <(printf '%s\n' "$listed") <(printf '%s\n' "$found_classes"))"
-  extra="$(comm -23 <(printf '%s\n' "$listed_both") <(printf '%s\n' "$found_classes"))"
+  listed_union="$(printf '%s\n%s\n' "$listed" "$listed_in" | sed '/^$/d' | sort -u)"
+  removed="$(comm -23 <(printf '%s\n' "$listed") <(printf '%s\n' "$listed_in"))"
+  if [ -n "$removed" ]; then
+    while IFS= read -r _rk || [ -n "${_rk:-}" ]; do
+      [ -n "$_rk" ] || continue
+      _rp="${_rk%%$'\t'*}"
+      if registry_cited "$incoming_table" remove "$_rp" || registry_cited "$incoming_table" remove "$_rk"; then
+        listed_union="$(printf '%s\n' "$listed_union" | grep -Fvx -- "$_rk" || true)"
+      else
+        echo "FAIL allowlist MAIN_* removal without D-id cite (# D-NNNN: remove $_rp): $_rk"
+        fail=1
+      fi
+    done <<< "$removed"
+  fi
+  miss="$(comm -13 <(printf '%s\n' "$listed_union") <(printf '%s\n' "$found_classes"))"
+  extra="$(comm -23 <(printf '%s\n' "$listed_union") <(printf '%s\n' "$found_classes"))"
   [ -z "$miss" ] || { echo "FAIL unlisted helper arg(s):"; printf '%s\n' "$miss" | sed 's/^/  /'; fail=1; }
   [ -z "$extra" ] || { echo "FAIL stale allowlist MAIN_* row(s):"; printf '%s\n' "$extra" | sed 's/^/  /'; fail=1; }
 
@@ -706,40 +724,50 @@ check() {
   done < <(collect_js_rels_cached "$root")
 
   box_found="$(printf '%s' "$box_found" | sort -u)"
-  local box_listed box_listed_in box_listed_both
+  local box_listed box_listed_in box_listed_union box_removed _main_pol _in_pol _mp _mpol _mkey _ip _rd
   box_listed="$(awk -F'\t' -v ok="$VALID_BOX" '$2==ok {print $1 "\t" $3}' <<< "$rows" | sort -u)"
   box_listed_in="$(awk -F'\t' -v ok="$VALID_BOX" '$2==ok {print $1 "\t" $3}' "$incoming_table" | sort -u)"
-  box_listed_both="$(comm -12 <(printf '%s\n' "$box_listed") <(printf '%s\n' "$box_listed_in"))"
+  box_listed_union="$(printf '%s\n%s\n' "$box_listed" "$box_listed_in" | sed '/^$/d' | sort -u)"
+  box_removed="$(comm -23 <(printf '%s\n' "$box_listed") <(printf '%s\n' "$box_listed_in"))"
+  if [ -n "$box_removed" ]; then
+    while IFS= read -r _rk || [ -n "${_rk:-}" ]; do
+      [ -n "$_rk" ] || continue
+      _rp="${_rk%%$'\t'*}"
+      _rd="${_rk#*$'\t'}"
+      if registry_cited "$incoming_table" remove "$_rp $_rd" || registry_cited "$incoming_table" remove "$_rp"; then
+        box_listed_union="$(printf '%s\n' "$box_listed_union" | grep -Fvx -- "$_rk" || true)"
+      else
+        echo "FAIL allowlist BOX_CONFIG_DEPENDENT removal without D-id cite (# D-NNNN: remove $_rp $_rd): $_rk"
+        fail=1
+      fi
+    done <<< "$box_removed"
+  fi
+  # Loosening: required -> absent_ok for a key present on both sides.
+  _main_pol="$(awk -F'\t' -v ok="$VALID_BOX" '$2==ok {print $1 "\t" $3 "\t" $4}' <<< "$rows" | sort -u)"
+  _in_pol="$(awk -F'\t' -v ok="$VALID_BOX" '$2==ok {print $1 "\t" $3 "\t" $4}' "$incoming_table" | sort -u)"
+  while IFS= read -r _mp || [ -n "${_mp:-}" ]; do
+    [ -n "$_mp" ] || continue
+    _mpol="$(printf '%s\n' "$_mp" | awk -F'\t' '{print $3}')"
+    _mkey="$(printf '%s\n' "$_mp" | awk -F'\t' '{print $1 "\t" $2}')"
+    _ip="$(printf '%s\n' "$_in_pol" | awk -F'\t' -v k="$_mkey" '($1 "\t" $2) == k {print $3; exit}')"
+    [ -n "$_ip" ] || continue
+    if [ "$_mpol" = required ] && [ "$_ip" = absent_ok ]; then
+      _rp="$(printf '%s\n' "$_mkey" | awk -F'\t' '{print $1}')"
+      _rd="$(printf '%s\n' "$_mkey" | awk -F'\t' '{print $2}')"
+      if ! registry_cited "$incoming_table" loosen "$_rp $_rd" && ! registry_cited "$incoming_table" loosen "$_rp"; then
+        echo "FAIL allowlist BOX_CONFIG_DEPENDENT loosening without D-id cite (# D-NNNN: loosen $_rp $_rd): $_mkey"
+        fail=1
+      fi
+    fi
+  done <<< "$_main_pol"
 
-  miss="$(comm -13 <(printf '%s\n' "$box_listed") <(printf '%s\n' "$box_found"))"
-  extra="$(comm -23 <(printf '%s\n' "$box_listed_both") <(printf '%s\n' "$box_found"))"
+  miss="$(comm -13 <(printf '%s\n' "$box_listed_union") <(printf '%s\n' "$box_found"))"
+  extra="$(comm -23 <(printf '%s\n' "$box_listed_union") <(printf '%s\n' "$box_found"))"
   [ -z "$miss" ] || { echo "FAIL unlisted box-config dependency:"; printf '%s\n' "$miss" | sed 's/^/  /'; fail=1; }
   if [ -n "$extra" ]; then
-    local orphans="" stale="" line rel f
-    while IFS= read -r line || [ -n "$line" ]; do
-      [ -n "$line" ] || continue
-      rel="${line%%$'\t'*}"
-      f="$(resolve_file "$rel" "$overlay" "$root")"
-      if [ -n "${f:-}" ] && [ -f "$f" ]; then
-        stale+="$line"$'\n'
-        continue
-      fi
-      if git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1 \
-         && git -C "$root" cat-file -e "main:$rel" 2>/dev/null; then
-        stale+="$line"$'\n'
-        continue
-      fi
-      orphans+="$line"$'\n'
-    done <<< "$extra"
-    if [ -n "$orphans" ]; then
-      echo "WARN orphan allowlist BOX_CONFIG_DEPENDENT row(s) (script absent on main and incoming):"
-      printf '%s' "$orphans" | sed 's/^/  /'
-    fi
-    if [ -n "$stale" ]; then
-      echo "FAIL stale allowlist BOX_CONFIG_DEPENDENT row(s):"
-      printf '%s' "$stale" | sed 's/^/  /'
-      fail=1
-    fi
+    echo "FAIL stale allowlist BOX_CONFIG_DEPENDENT row(s):"
+    printf '%s\n' "$extra" | sed 's/^/  /'
+    fail=1
   fi
 
   if [ "$fail" -eq 0 ]; then
@@ -912,9 +940,11 @@ self_test() {
   cp "$allow" "$T/in.stale/scripts/land-main-refs.tsv"
   printf 'scripts/gone.sh\tMAIN_SCRIPT_ON_BRANCH_INPUT\t-\t-\n' >> "$T/in.stale/scripts/land-main-refs.tsv"
   if chk "$land" "$allow" "$root" "$T/in.stale" >"$T/out.stale" 2>&1; then
-    echo "ok   incoming-only unused MAIN_* row is accepted"
+    echo "FAIL incoming-only unused MAIN_* row was accepted"; sed 's/^/       /' "$T/out.stale"; fail=1
+  elif grep -q 'stale allowlist MAIN_' "$T/out.stale" && grep -q 'scripts/gone.sh' "$T/out.stale"; then
+    echo "ok   incoming-only unused MAIN_* row fails (stale on post-land tree)"
   else
-    echo "FAIL incoming-only unused MAIN_* row should be accepted"; sed 's/^/       /' "$T/out.stale"; fail=1
+    echo "FAIL incoming-only unused MAIN_*: want stale gone.sh"; sed 's/^/       /' "$T/out.stale"; fail=1
   fi
 
   mkdir -p "$T/in.bothstale/scripts"
@@ -932,9 +962,19 @@ self_test() {
   cp "$allow" "$T/allow.mainextra"
   printf 'scripts/gone.sh\tMAIN_SCRIPT_ON_BRANCH_INPUT\t-\t-\n' >> "$T/allow.mainextra"
   if chk "$land" "$T/allow.mainextra" "$root" >"$T/out.mainextra" 2>&1; then
-    echo "ok   MAIN table extra row dropped from incoming is accepted"
+    echo "FAIL MAIN extra MAIN_* row dropped from incoming was accepted"; sed 's/^/       /' "$T/out.mainextra"; fail=1
+  elif grep -q 'removal without D-id' "$T/out.mainextra" && grep -q 'scripts/gone.sh' "$T/out.mainextra"; then
+    echo "ok   MAIN extra MAIN_* row dropped from incoming fails without a D-id cite"
   else
-    echo "FAIL MAIN extra / incoming dropped should be accepted"; sed 's/^/       /' "$T/out.mainextra"; fail=1
+    echo "FAIL MAIN extra drop: want removal without D-id cite"; sed 's/^/       /' "$T/out.mainextra"; fail=1
+  fi
+  mkdir -p "$T/in.mainextracite/scripts"
+  cp "$allow" "$T/in.mainextracite/scripts/land-main-refs.tsv"
+  printf '%s\n' '# D-0286: remove scripts/gone.sh' >> "$T/in.mainextracite/scripts/land-main-refs.tsv"
+  if chk "$land" "$T/allow.mainextra" "$root" "$T/in.mainextracite" >"$T/out.mainextracite" 2>&1; then
+    echo "ok   MAIN extra MAIN_* row dropped with a D-id cite is accepted"
+  else
+    echo "FAIL MAIN extra drop with D-id cite should pass"; sed 's/^/       /' "$T/out.mainextracite"; fail=1
   fi
 
   cp "$root/scripts/lint-shell-pipes.sh" "$T/overlay/scripts/lint-shell-pipes.sh"
@@ -961,9 +1001,11 @@ self_test() {
   cp "$allow" "$T/in.boxstale/scripts/land-main-refs.tsv"
   printf 'scripts/lint-shell-pipes.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/in.boxstale/scripts/land-main-refs.tsv"
   if chk "$land" "$allow" "$root" "$T/in.boxstale" >"$T/out.boxstale" 2>&1; then
-    echo "ok   incoming-only unused BOX_CONFIG_DEPENDENT row is accepted"
+    echo "FAIL incoming-only unused BOX_CONFIG_DEPENDENT row was accepted"; sed 's/^/       /' "$T/out.boxstale"; fail=1
+  elif grep -q 'stale allowlist BOX_CONFIG' "$T/out.boxstale" && grep -q 'lint-shell-pipes.sh' "$T/out.boxstale"; then
+    echo "ok   incoming-only unused BOX_CONFIG_DEPENDENT row fails (stale on post-land tree)"
   else
-    echo "FAIL incoming-only unused BOX_CONFIG_DEPENDENT row should be accepted"; sed 's/^/       /' "$T/out.boxstale"; fail=1
+    echo "FAIL incoming-only unused BOX: want stale lint-shell-pipes.sh"; sed 's/^/       /' "$T/out.boxstale"; fail=1
   fi
 
   mkdir -p "$T/in.boxboth/scripts"
@@ -981,18 +1023,30 @@ self_test() {
   cp "$allow" "$T/allow.boxmainextra"
   printf 'scripts/lint-shell-pipes.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/allow.boxmainextra"
   if chk "$land" "$T/allow.boxmainextra" "$root" >"$T/out.boxmainextra" 2>&1; then
-    echo "ok   MAIN table extra BOX_CONFIG_DEPENDENT row dropped from incoming is accepted"
+    echo "FAIL MAIN extra BOX_CONFIG_DEPENDENT row dropped from incoming was accepted"; sed 's/^/       /' "$T/out.boxmainextra"; fail=1
+  elif grep -q 'removal without D-id' "$T/out.boxmainextra" && grep -q 'lint-shell-pipes.sh' "$T/out.boxmainextra"; then
+    echo "ok   MAIN extra BOX_CONFIG_DEPENDENT row dropped from incoming fails without a D-id cite"
   else
-    echo "FAIL MAIN extra BOX / incoming dropped should be accepted"; sed 's/^/       /' "$T/out.boxmainextra"; fail=1
+    echo "FAIL MAIN extra BOX drop: want removal without D-id cite"; sed 's/^/       /' "$T/out.boxmainextra"; fail=1
+  fi
+  mkdir -p "$T/in.boxmainextracite/scripts"
+  cp "$allow" "$T/in.boxmainextracite/scripts/land-main-refs.tsv"
+  printf '%s\n' '# D-0286: remove scripts/lint-shell-pipes.sh CARGO_HOME' >> "$T/in.boxmainextracite/scripts/land-main-refs.tsv"
+  if chk "$land" "$T/allow.boxmainextra" "$root" "$T/in.boxmainextracite" >"$T/out.boxmainextracite" 2>&1; then
+    echo "ok   MAIN extra BOX_CONFIG_DEPENDENT row dropped with a D-id cite is accepted"
+  else
+    echo "FAIL MAIN extra BOX drop with D-id cite should pass"; sed 's/^/       /' "$T/out.boxmainextracite"; fail=1
   fi
 
   mkdir -p "$T/in.boxabsent/scripts"
   cp "$allow" "$T/in.boxabsent/scripts/land-main-refs.tsv"
   printf 'scripts/not-yet-on-main.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/in.boxabsent/scripts/land-main-refs.tsv"
   if chk "$land" "$allow" "$root" "$T/in.boxabsent" >"$T/out.boxabsent" 2>&1; then
-    echo "ok   incoming-only BOX_CONFIG_DEPENDENT row for an absent file is accepted"
+    echo "FAIL incoming-only absent-file BOX_CONFIG row was accepted"; sed 's/^/       /' "$T/out.boxabsent"; fail=1
+  elif grep -q 'stale allowlist BOX_CONFIG' "$T/out.boxabsent" && grep -q 'not-yet-on-main.sh' "$T/out.boxabsent"; then
+    echo "ok   incoming-only BOX_CONFIG_DEPENDENT row for an absent file fails (orphan on post-land tree)"
   else
-    echo "FAIL incoming-only absent-file BOX_CONFIG row should be accepted"; sed 's/^/       /' "$T/out.boxabsent"; fail=1
+    echo "FAIL incoming-only absent-file BOX: want stale not-yet-on-main.sh"; sed 's/^/       /' "$T/out.boxabsent"; fail=1
   fi
 
   mkdir -p "$T/in.boxbothabsent/scripts"
@@ -1000,14 +1054,11 @@ self_test() {
   printf 'scripts/not-yet-on-main.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/allow.boxbothabsent"
   cp "$T/allow.boxbothabsent" "$T/in.boxbothabsent/scripts/land-main-refs.tsv"
   if chk "$land" "$T/allow.boxbothabsent" "$root" "$T/in.boxbothabsent" >"$T/out.boxbothabsent" 2>&1; then
-    if grep -q 'WARN orphan allowlist BOX_CONFIG' "$T/out.boxbothabsent" && grep -q 'not-yet-on-main.sh' "$T/out.boxbothabsent" \
-       && ! grep -q 'FAIL stale allowlist BOX_CONFIG' "$T/out.boxbothabsent"; then
-      echo "ok   unused BOX_CONFIG_DEPENDENT row for an absent file in both tables warns"
-    else
-      echo "FAIL unused absent-file BOX in both: want WARN orphan, rc 0"; sed 's/^/       /' "$T/out.boxbothabsent"; fail=1
-    fi
+    echo "FAIL unused absent-file BOX_CONFIG row in both tables was accepted"; sed 's/^/       /' "$T/out.boxbothabsent"; fail=1
+  elif grep -q 'stale allowlist BOX_CONFIG' "$T/out.boxbothabsent" && grep -q 'not-yet-on-main.sh' "$T/out.boxbothabsent"; then
+    echo "ok   unused BOX_CONFIG_DEPENDENT row for an absent file in both tables fails (stale, no WARN)"
   else
-    echo "FAIL unused BOX_CONFIG_DEPENDENT row for an absent file in both tables should warn (rc 0)"; sed 's/^/       /' "$T/out.boxbothabsent"; fail=1
+    echo "FAIL unused absent-file BOX in both: want stale not-yet-on-main.sh"; sed 's/^/       /' "$T/out.boxbothabsent"; fail=1
   fi
 
   # Same file as $allow and incoming (how --self-test's live check calls check).
@@ -1039,7 +1090,8 @@ self_test() {
   git -C "$T/dirtymain" show HEAD:scripts/land-main-refs.tsv > "$T/from-git.tsv"
   mkdir -p "$T/in.dirtywt/scripts"
   cp "$allow" "$T/in.dirtywt/scripts/land-main-refs.tsv"
-  printf 'scripts/not-yet-on-main.sh\tBOX_CONFIG_DEPENDENT\tCARGO_HOME\trequired\n' >> "$T/in.dirtywt/scripts/land-main-refs.tsv"
+  # Incoming matches git-show HEAD. The unused extra row lives only in dirtymain's
+  # working tree; an incoming-only unused row is itself stale (D-0286).
   if check "$land" "$T/from-git.tsv" "$root" "$T/in.dirtywt/scripts/land-main-refs.tsv" "$T/in.dirtywt" >"$T/out.dirtywt" 2>&1; then
     echo "ok   dirty MAIN working-tree table is ignored (git show HEAD used)"
   else

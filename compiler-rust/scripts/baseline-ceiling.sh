@@ -23,6 +23,8 @@ done_rc=; T=
 trap 'rc=$?; [ -z "$T" ] || rm -rf "$T"; if [ "$rc" != "${done_rc:-unset}" ]; then echo "!! baseline-ceiling: aborted (rc=$rc): treated as rc 2 (cannot run; never raise-acceptable)" >&2; exit 2; fi' EXIT
 fin() { done_rc="$1"; exit "$1"; }
 set -euo pipefail
+# shellcheck source=registry-union.sh
+source "$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/registry-union.sh"
 P=harness/board-baseline.tsv
 here="$(cd "$(dirname "$0")" && pwd)"
 MJS="$here/../harness/scripts/board-baseline.mjs"
@@ -52,5 +54,32 @@ blob branch "$head" "$T/branch.tsv"; hb=$have
 [ $hb -eq 1 ] || { echo "!! baseline-ceiling: branch commit ${head:0:12} has no $P (deleted or renamed): refused (rc 2, never raise-acceptable)" >&2; fin 2; }
 [ $hm -eq 1 ] || { echo "!! baseline-ceiling: pre-land commit ${base:0:12} has no $P: refused (rc 2, never raise-acceptable)" >&2; fin 2; }
 cand="$T/branch.tsv"; [ -z "$measured" ] || { cand="$measured"; echo "baseline-ceiling: judging the MEASURED run $measured against pre-land ${base:0:12}"; }
-crc=0; node "$MJS" ceiling "$cand" "$T/main.tsv" ${csout:+"$csout"} || crc=$?
+# D-0286: a cited removal (# D-NNNN: remove <row>) drops that row from the
+# pre-land side so ceiling does not require it on the branch.
+_main_rows="$(baseline_row_names "$T/main.tsv")"
+_branch_rows="$(baseline_row_names "$cand")"
+_cited=""
+while IFS= read -r _br || [ -n "${_br:-}" ]; do
+  [ -n "$_br" ] || continue
+  if ! grep -Fqx -- "$_br" <<< "$_branch_rows"; then
+    if registry_cited "$cand" remove "$_br"; then
+      _cited+="$_br"$'\n'
+    else
+      echo "FAIL board-baseline removal without D-id cite (# D-NNNN: remove $_br): $_br" >&2
+      fin 1
+    fi
+  fi
+done <<< "$_main_rows"
+if [ -n "$_cited" ]; then
+  awk -F '\t' -v cited="$_cited" '
+    BEGIN { n=split(cited, a, "\n"); for (i=1;i<=n;i++) if (a[i] != "") drop[a[i]]=1 }
+    NF && $1 !~ /^#/ && $1 != "board-baseline/v2" && ($1 in drop) { next }
+    { print }
+  ' "$T/main.tsv" > "$T/main.filtered.tsv"
+  mv "$T/main.filtered.tsv" "$T/main.tsv"
+fi
+# Cite comments (# D-NNNN: remove <row>) are not baseline fields; strip them for mjs.
+awk '/^# D-[0-9]{4}: / { next } { print }' "$cand" > "$T/branch.for-mjs.tsv"
+awk '/^# D-[0-9]{4}: / { next } { print }' "$T/main.tsv" > "$T/main.for-mjs.tsv"
+crc=0; node "$MJS" ceiling "$T/branch.for-mjs.tsv" "$T/main.for-mjs.tsv" ${csout:+"$csout"} || crc=$?
 case $crc in 0) fin 0;; 3) fin 1;; *) echo "!! baseline-ceiling: board-baseline.mjs ceiling rc=$crc" >&2; fin 2;; esac

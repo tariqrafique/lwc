@@ -83,4 +83,35 @@ else
   fail=1
 fi
 
+
+# D-0286: portable board snapshots HEAD and fails if a footer writes into the snap.
+P="$T/portable"
+mkdir -p "$P/harness/scripts" "$P/scripts"
+cp "$PB" "$P/scripts/run-portable-board.sh"
+cat > "$P/harness/scripts/oracle-root.sh" << 'STUB'
+oracle_root() { echo /tmp/oracle-stub; }
+style_corpus_root() { echo /tmp/style-stub; }
+notes_decisions_path() { echo /tmp/notes-stub; }
+STUB
+cat > "$P/scripts/run-board.sh" << 'STUB'
+#!/usr/bin/env bash
+set -euo pipefail
+ws="$1"
+printf 'planted-footer\n' > "$ws/injected-from-footer"
+exit 0
+STUB
+chmod +x "$P/scripts/run-board.sh" "$P/scripts/run-portable-board.sh"
+git init -q "$P"
+git -C "$P" config user.email plant@test
+git -C "$P" config user.name plant
+git -C "$P" add harness/scripts/oracle-root.sh scripts/run-portable-board.sh scripts/run-board.sh
+git -C "$P" commit -q -m plant
+prc=0
+"$P/scripts/run-portable-board.sh" >"$T/portable.out" 2>&1 || prc=$?
+if [ "$prc" -eq 4 ] && grep -q 'snapshot mutated during run' "$T/portable.out"; then
+  echo "ok   portable board fails when a footer writes into the snapshot"
+else
+  echo "FAIL portable mutation plant rc=$prc (want 4 / snapshot mutated)"; sed 's/^/       /' "$T/portable.out"; fail=1
+fi
+
 exit $fail

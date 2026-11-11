@@ -57,3 +57,11 @@ test-rust-test-inputs	scripts/test-rust-test-inputs.sh	scripts/rust-test-inputs.
 test-rust-test-inputs	scripts/test-rust-test-inputs.sh	scripts/rust-test-inputs.py
 test-rust-test-inputs	scripts/test-rust-test-inputs.sh	scripts/rust-test-inputs.tsv
 test-rust-test-inputs	scripts/test-rust-test-inputs.sh	scripts/land.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/test-one-pass-land.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/registry-union.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	harness/board-rows.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	harness/scripts/golden-gate.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/check-land-main-refs.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/land-main-refs.tsv
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/baseline-ceiling.sh
+test-one-pass-land	scripts/test-one-pass-land.sh	scripts/run-portable-board.sh

@@ -10,6 +10,7 @@ scripts/official-board.sh	box-only official board default inputs and publish des
 scripts/publish-official.sh	box-only official push dest
 scripts/land-main-refs.tsv	box-config table: cargo config and parse5 url-rewrite paths
 scripts/check-land-main-refs.sh	validates the box-config table
+scripts/test-one-pass-land.sh	D-0286 one-pass fixture plants box-config allowlist rows
 scripts/box-parse5-git/gitconfig-includeIf.fragment	box-only parse5 git rewrite
 scripts/box-parse5-git/cargo-config.toml	box-only parse5 cargo rewrite
 scripts/box-parse5-git/apply.sh	box-only parse5 rewrite installer

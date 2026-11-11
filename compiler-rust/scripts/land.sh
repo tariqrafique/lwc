@@ -310,7 +310,7 @@ if grep -qE '^harness/(test|src)/' <<< "$changed"; then
 fi
 # JS-oracle goldens are produced by harness/test + src + fixtures, not by every
 # file under harness/scripts/ (ssr-emit-pairs and similar do not change them).
-if grep -qE '^harness/(goldens|test|src|fixtures)/|^harness/scripts/(golden-|ensure-deps\.|oracle-root\.|ts-hooks\.|ts-register\.)|^harness/vitest\.(config|board\.config)\.ts$' <<< "$changed"; then
+if grep -qE '^harness/(goldens|test|src|fixtures)/|^harness/board-rows\.sh$|^harness/scripts/(golden-|ensure-deps\.|oracle-root\.|ts-hooks\.|ts-register\.)|^harness/vitest\.(config|board\.config)\.ts$' <<< "$changed"; then
   _phase golden-gate
   main_run harness/scripts/ensure-deps.sh "$wt/harness" || die "harness deps missing"
   main_run harness/scripts/golden-gate.sh "$wt/harness" || die "golden-gate: goldens != fresh JS-oracle recording"
