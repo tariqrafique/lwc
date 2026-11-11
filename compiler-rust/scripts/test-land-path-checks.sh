@@ -40,25 +40,16 @@ grep -q 'plant-lint ran as c8' "$tmp/plant.log" || bad "c8 entry did not run pla
 ok "a lint added to the list runs on both land and c8 entry points"
 rm -f "$here/../scripts/_plant-land-path-lint.sh"
 
-# 3. land.sh self-test trigger regex: extra ')' made it match nothing; the fixed
-#    pattern must match scripts/land.sh and the new helper/tests.
-ext="$(python3 - <<'PY' "$repo/scripts/land.sh"
-import re, pathlib, sys
-text = pathlib.Path(sys.argv[1]).read_text()
-m = re.search(r"grep -qE '([^']+)' <<< \"\$changed\"", text)
-if not m:
-    sys.exit(2)
-print(m.group(1))
-PY
-)" || bad "could not extract land.sh trigger regex"
-[ -n "${ext:-}" ] || bad "empty trigger regex"
-grep -q 'land-path-checks' <<< "$ext" || bad "fixed regex should list land-path-checks"
-# planted extra paren: the fixed regex must not end with ))$ 
-grep -qE '\)\)$' <<< "$ext" && bad "trigger regex still ends with extra )  (never matches)"
-grep -qE "$ext" <<< 'scripts/land.sh' || bad "fixed regex does not match scripts/land.sh"
-grep -qE "$ext" <<< 'scripts/land-path-checks.sh' || bad "fixed regex does not match scripts/land-path-checks.sh"
-grep -qE "$ext" <<< 'scripts/test-land-path-checks.sh' || bad "fixed regex does not match scripts/test-land-path-checks.sh"
-ok "land.sh self-test trigger regex matches land.sh and the shared-list paths"
+# 3. land.sh selects self-tests from scripts/land-self-tests.tsv (not a single
+#    catch-all regex). The mapping plant lives in test-land-self-tests.sh; here
+#    we only check that this shared-list test is still on the map and that
+#    land.sh invokes the runner.
+grep -q 'run-land-self-tests.sh' "$repo/scripts/land.sh" || bad "land.sh does not invoke run-land-self-tests.sh"
+grep -qE '^test-land-path-checks	' "$here/land-self-tests.tsv" || bad "map missing test-land-path-checks"
+grep -q $'\tscripts/land-path-checks.sh$' "$here/land-self-tests.tsv" || bad "map missing scripts/land-path-checks.sh"
+grep -q $'\tscripts/test-land-path-checks.sh$' "$here/land-self-tests.tsv" || bad "map missing scripts/test-land-path-checks.sh"
+grep -q $'\tscripts/land.sh$' "$here/land-self-tests.tsv" || bad "map missing scripts/land.sh coverage"
+ok "land.sh uses the mapped runner and the map covers land-path-checks"
 
 # 4. both entry points actually call the shared driver.
 grep -q 'land-path-checks.sh' "$here/c8-checks.sh" || bad "c8-checks.sh does not invoke land-path-checks.sh"

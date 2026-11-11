@@ -86,6 +86,7 @@ comments/error-not-on-root	true	compile-error	compile-error
 comments/error-not-on-root-multiple-directives	true	compile-error	compile-error
 comments/preserve-html-comments-option	true	ok	ok
 comments/slots	true	ok	ok
+csr-steps/scoped-style	true	ok	ok
 directive-dynamic/invalid-config	true	compile-error	compile-error
 directive-dynamic/invalid-native-element	true	compile-error	compile-error
 directive-dynamic/invalid-type	true	compile-error	compile-error

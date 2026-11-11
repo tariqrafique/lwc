@@ -6,7 +6,9 @@
 jsdom (`createElement('fixture-test', { is })`, props, `document.body.appendChild`, three macrotask flushes), and
 serializes the DOM byte-exact. Shadow roots (open or closed, captured from `attachShadow`) are inlined as the first
 child `<template shadowrootmode="open|closed"[ shadowrootdelegatesfocus]>`; `<style>` nodes the engine adds to
-`document.head` (light-DOM / global styles) are recorded separately as `head`. The result is compared to goldens
+`document.head` (light-DOM / global styles) are recorded separately as `head`. After that first-mount record the
+runner applies a deterministic step list derived from the fixture (see below), flushing three macrotasks after
+every step, then unmounts as before so `disconnectedCallback` still runs. The result is compared to goldens
 recorded from the JS backend.
 
 Run from harness/ with `PATH=$LWC_ORACLE/node_modules/.bin:$PATH`:
@@ -24,23 +26,66 @@ Env vars:
 - UPDATE_GOLDENS=1: re-record `goldens/csr-render/{ssr-fixtures,template-fixtures}.json` (JS backend only).
 
 Corpora:
-- A, ssr-fixtures (387): `@lwc/ssr-compiler/src/__tests__/fixtures/**/config.json`, with `entry`, `props` and
+- A, ssr-fixtures (392 = 387 oracle + 5 harness): `@lwc/ssr-compiler/src/__tests__/fixtures/**/config.json`, with `entry`, `props` and
   `experimentalComplexExpressions` from config.json and the same plugin options as upstream fixtures.spec.ts
   (enableDynamicComponents, enableLwcOn, experimentalDynamicDirective, modules dir, dynamicImports loader), minus
-  ssrMode. Compile errors throw on any rollup warning except CIRCULAR_DEPENDENCY, as upstream does.
-- B, template-fixtures (567): every `@lwc/template-compiler/src/__tests__/fixtures/**/actual.html`, compiled with
-  exactly the template.behavior call `transform(src, '<name>.html', { namespace: 'x', name, ...config.json })` as the
-  template of `x/<name>`, a minimal `LightningElement` (`static renderMode = 'light'` when the root template has
-  `lwc:render-mode="light"`). Any other `ns/name` it imports is an empty stub component. Template warnings are
-  recorded as `warnings` rather than failing the bundle. Render errors from props the minimal component doesn't
-  define (for example `Cannot read properties of undefined`) are expected, deterministic data.
+  ssrMode, plus `harness/fixtures/ssr/**/config.json` (rel paths under that root, prefixed `csr-steps/`). Compile
+  errors throw on any rollup warning except CIRCULAR_DEPENDENCY, as upstream does.
+- B, template-fixtures (568 = 567 oracle + 1 harness): every `@lwc/template-compiler/src/__tests__/fixtures/**/actual.html`,
+  plus `harness/fixtures/template/**/actual.html`, compiled with exactly the template.behavior call
+  `transform(src, '<name>.html', { namespace: 'x', name, ...config.json })` as the template of `x/<name>`, a minimal
+  `LightningElement` (`static renderMode = 'light'` when the root template has `lwc:render-mode="light"`). A sibling
+  `actual.css` (harness fixtures only; the oracle set has none) is the component stylesheet. Any other `ns/name` it
+  imports is an empty stub component. Template warnings are recorded as `warnings` rather than failing the bundle.
+  Render errors from props the minimal component doesn't define (for example `Cannot read properties of undefined`)
+  are expected, deterministic data.
 
 Golden entry per fixture: `{ status: ok | compile-error | render-error | excluded, html, head?, error?, errors?,
-logs?, warnings?, reason?, note? }`. `error` is the compile (bundle) error message. `errors` holds thrown
-`createElement` / mount errors, window `error` events and unhandled rejections during the fixture. `logs` holds the
-engine's console output. Nothing is skipped: unrenderable fixtures record their error text. Error stacks are dropped,
-the scratch dir becomes `<out>`, and engine-dom's global VM counter in messages (`[object:vm X (#)]`) is normalized,
-because it depends on how many components rendered earlier in the run.
+logs?, steps?, warnings?, reason?, note? }`. `error` is the compile (bundle) error message. `errors` holds thrown
+`createElement` / mount errors, window `error` events and unhandled rejections during first mount and the unmount
+that follows the steps (step failures stay on the step). `logs` holds console output from those same windows,
+including `debug` and `trace`. `steps` is omitted when the fixture drives no step class. Nothing is skipped:
+unrenderable fixtures record their error text. Error stacks are dropped, the scratch dir becomes `<out>`, and
+engine-dom's global VM counter in messages (`[object:vm X (#)]`) is normalized, because it depends on how many
+components rendered earlier in the run.
+
+## Step protocol
+
+`src/csrSteps.ts` (`analyzeFixture`, `installStepRuntime`, `actStep`, `observeStep`, `instrumentCsrBundle`) derives
+the plan from the fixture's JS, HTML, and `config.json` props — for corpus B, from the virtual component source
+`templateComponentSource` actually emits. Generation order is stable: prop, event, list, dynamic, slot, lifecycle.
+A class with nothing to drive contributes no steps.
+
+Each step observation is `{ id, class, html, head?, errors?, logs?, note?, handlers?, ids?, slotchange?, lifecycle? }`.
+`html` / `head` use the same serializer as first mount. Throws are `name: message`.
+
+1. **prop** — each root `@api` / `@track` field and each `config.json` prop key, except a field that is an
+   `lwc:is` / `lwc:dynamic` binding. The value is a deterministic alternate (arrays of length ≥ 2 reverse; shorter
+   arrays gain `'step'`; strings gain `·`; numbers `+ 1`; booleans flip; objects gain `__step`). Writes go to the
+   component instance so `@track` setters run. Id `prop:<kind>:<name>`.
+2. **event** — types from `onfoo={...}`, `on:foo={...}`, `lwc:on={'foo'}`, and `addEventListener('foo')`.
+   `EventTarget.prototype.addEventListener` is wrapped (and `removeEventListener` maps the wrapper back) so a
+   dispatch records whether that listener fired and whether it threw. Id `event:<type>`.
+3. **list** — `for:each` / `iterator:<name>` bindings that are a root field or a config prop. Three steps: reorder
+   (reverse, or append `'step-reorder'` when shorter than 2), insert (`'step-insert'` or a cloned last object),
+   remove (drop the last item). Node identity is a monotonic stamp in a `WeakMap`, assigned inside the patched
+   `document.createElement`, `document.createElementNS`, and `Node.prototype.cloneNode` (the clone and its
+   descendants), reset at the start of each `render()`. The step's `ids` map is tree path → stamp (`s/` crosses a
+   shadow root). Stamps are not written into attributes, so first-mount `html` does not change just to carry them.
+4. **dynamic** — `lwc:is` / `lwc:dynamic` identifier. Phase A reassigns the current constructor; phase B assigns
+   another root field whose initializer is an identifier (only when the source has one — a single-ctor corpus
+   fixture does not invent a second); then `null`.
+5. **slot** — when any template contains `<slot`. Light-DOM children of the host: add `slot-add`, remove it,
+   replace `slot-old` with `slot-new`. `slotchange` fires (and throws) are counted from a harness listener on each
+   `<slot>` plus the fixture's own listener wrapper.
+6. **lifecycle** — when the source declares `constructor`, `connectedCallback`, `render`, `renderedCallback`,
+   `disconnectedCallback`, or `errorCallback`. `registerComponent` in the bundle is routed through a tracer that
+   wraps those methods (return values unchanged) and subclasses the component so `constructor` is recorded without
+   renaming the class (`name` and statics are copied). The observation lists `{ hook, id }` in order (`c1`, `c2`,
+   …). `disconnectedCallback` is appended from the existing unmount after the steps.
+
+The bookkeeping test titles stay `finds 387 ssr fixtures` and `finds 567 template fixtures` (board case ids). They
+assert both the oracle count and `expectCount`. Harness fixtures live only under `harness/fixtures/`.
 
 Per-run output: `.csr-render-out/<backend>-<CORPUS>/report-<corpus>.json` (one row per fixture, with got/want for
 mismatches; `ssrExpectedMatch` says whether the CSR DOM, run through formatHTML, equals upstream's SSR expected.html.

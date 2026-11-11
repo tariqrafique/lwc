@@ -105,6 +105,11 @@ context-simple-setter	true	ok	ok
 context-slotted/light	true	ok	ok
 context-slotted/scoped	true	ok	ok
 context-slotted/shadow	true	ok	ok
+csr-steps/dynamic-ctor	true	ok	ok
+csr-steps/events	true	ok	ok
+csr-steps/keyed-state	true	ok	ok
+csr-steps/lifecycle	true	ok	ok
+csr-steps/slot-change	true	ok	ok
 custom-styles-with-newlines	true	ok	ok
 decorator-api	true	ok	ok
 deeply-nested	true	ok	ok

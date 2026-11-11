@@ -482,6 +482,10 @@
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><x-child><template shadowrootmode=\"open\"></template><!-- HTML comment inside slot --><p>slot content</p></x-child></template></fixture-test>"
  },
+ "csr-steps/scoped-style": {
+  "status": "ok",
+  "html": "<fixture-test class=\"lwc-6ps1h31fiib-host\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.label {color: rgb(1, 2, 3);}:host {display: block;}</style><style type=\"text/css\" data-rendered-by-lwc=\"\">.label.lwc-6ps1h31fiib {color: rgb(1, 2, 3);}:host {display: block;}</style><p class=\"label lwc-6ps1h31fiib\">styled</p></template></fixture-test>"
+ },
  "directive-dynamic/invalid-config": {
   "status": "compile-error",
   "error": "LWC1128: Invalid lwc:dynamic usage. The LWC dynamic directive must be enabled in order to use this feature."
@@ -558,6 +562,18 @@
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
   "logs": [
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
+  ],
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
   ]
  },
  "directive-for-each/error-invalid-for-each-only": {
@@ -666,7 +682,19 @@
  },
  "directive-if/dynamic-component": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ]
  },
  "directive-if/error-invalid-expression": {
   "status": "compile-error",
@@ -924,6 +952,38 @@
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
   "errors": [
    "uncaught: TypeError: Cannot read properties of undefined (reading 'if')"
+  ],
+  "steps": [
+   {
+    "id": "dynamic:ctor1:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor1:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor2:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor2:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor3:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor3:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
   ]
  },
  "directive-lwc-if-else/dynamic/if": {
@@ -1116,6 +1176,32 @@
  "directive-lwc-if-else/slots/duplicate-slots-warning/not-in-same-condition-tree": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><!----><slot name=\"outside-slot\"></slot><!----></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><!----><slot name=\"outside-slot\"></slot><!----></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><!----><slot name=\"outside-slot\"></slot><!----></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><!----><slot name=\"outside-slot\"></slot><!----></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/not-in-same-condition-tree/not-in-same-condition-tree.html (18:13): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"outside-slot\")."
   ]
@@ -1123,6 +1209,32 @@
  "directive-lwc-if-else/slots/duplicate-slots-warning/same-branch-condition-tree": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><!---->Alternative Text<!----></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><!---->Alternative Text<!----></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><!---->Alternative Text<!----></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><!---->Alternative Text<!----></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/same-branch-condition-tree/same-branch-condition-tree.html (5:13): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"nested-slot\")."
   ]
@@ -1130,6 +1242,32 @@
  "directive-lwc-if-else/slots/duplicate-slots-warning/simple": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><div><div><slot name=\"conditional-slot\"></slot></div></div><div>Separator</div><div><slot name=\"conditional-slot\"></slot></div></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div><div><slot name=\"conditional-slot\"></slot></div></div><div>Separator</div><div><slot name=\"conditional-slot\"></slot></div></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div><div><slot name=\"conditional-slot\"></slot></div></div><div>Separator</div><div><slot name=\"conditional-slot\"></slot></div></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div><div><slot name=\"conditional-slot\"></slot></div></div><div>Separator</div><div><slot name=\"conditional-slot\"></slot></div></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/simple/simple.html (9:9): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"conditional-slot\")."
   ]
@@ -1140,11 +1278,63 @@
  },
  "directive-lwc-if-else/slots/valid-duplicate-slot-names/complex": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"outer-slot\"></slot><!----><slot name=\"conditional-slot\"></slot><slot name=\"nested-slot\"></slot><!----></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"outer-slot\"></slot><!----><slot name=\"conditional-slot\"></slot><slot name=\"nested-slot\"></slot><!----></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"outer-slot\"></slot><!----><slot name=\"conditional-slot\"></slot><slot name=\"nested-slot\"></slot><!----></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"outer-slot\"></slot><!----><slot name=\"conditional-slot\"></slot><slot name=\"nested-slot\"></slot><!----></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"outer-slot\"></slot><!----><slot name=\"conditional-slot\"></slot><slot name=\"nested-slot\"></slot><!----></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "directive-lwc-if-else/slots/valid-duplicate-slot-names/simple": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><!----><slot name=\"conditional-slot\"></slot><!----></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><!----><slot name=\"conditional-slot\"></slot><!----></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><!----><slot name=\"conditional-slot\"></slot><!----></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><!----><slot name=\"conditional-slot\"></slot><!----></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><!----><slot name=\"conditional-slot\"></slot><!----></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "directive-lwc-if-else/static-content-optimization": {
   "status": "ok",
@@ -1164,7 +1354,19 @@
  },
  "directive-on/dynamic-component": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:Ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:Ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ]
  },
  "directive-on/inside-loop-global-var": {
   "status": "ok",
@@ -1194,7 +1396,19 @@
  },
  "directive-ref/dynamic-components": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ]
  },
  "directive-ref/dynamic-ref": {
   "status": "ok",
@@ -1245,11 +1459,49 @@
  },
  "directive-render-mode/template": {
   "status": "ok",
-  "html": "<fixture-test><p>Root</p><!---->Default<!----><!---->Named<!----><!---->Forwarded<!----></fixture-test>"
+  "html": "<fixture-test><p>Root</p><!---->Default<!----><!---->Named<!----><!---->Forwarded<!----></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><p>Root</p><!---->Default<!----><!---->Named<!----><!---->Forwarded<!----><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><p>Root</p><!---->Default<!----><!---->Named<!----><!---->Forwarded<!----></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><p>Root</p><!---->Default<!----><!---->Named<!----><!---->Forwarded<!----><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "directive-spread/dynamic-components": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ]
  },
  "directive-spread/invalid-not-expression": {
   "status": "compile-error",
@@ -1258,6 +1510,18 @@
  "directive-spread/no-renderer-hook": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:dynamicCtor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:dynamicCtor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/no-renderer-hook/no-renderer-hook.html (3:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
@@ -1292,23 +1556,105 @@
  },
  "dynamic-components/valid/attributes": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+    "handlers": []
+   },
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ]
  },
  "dynamic-components/valid/basic": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ]
  },
  "dynamic-components/valid/children": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ]
  },
  "dynamic-components/valid/nested": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+    "handlers": []
+   },
+   {
+    "id": "dynamic:ctor1:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor1:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor2:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor2:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ]
  },
  "dynamic-components/valid/properties": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ]
  },
  "dynamic-components/valid/siblings": {
   "status": "render-error",
@@ -1319,7 +1665,25 @@
  },
  "events/component": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><section><ns-foo><template shadowrootmode=\"open\"></template></ns-foo></section></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><section><ns-foo><template shadowrootmode=\"open\"></template></ns-foo></section></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:foo",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><ns-foo><template shadowrootmode=\"open\"></template></ns-foo></section></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'foo' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "foo",
+      "path": "s/0/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'foo' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "events/error-component-handler-name": {
   "status": "compile-error",
@@ -1335,23 +1699,193 @@
  },
  "events/multiple/non-static-optimized": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><button></button></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><button></button></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><button></button></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   },
+   {
+    "id": "event:touchend",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><button></button></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'touchend' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "touchend",
+      "path": "s/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'touchend' on [object:vm LightningElement (#)]."
+     }
+    ]
+   },
+   {
+    "id": "event:touchstart",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><button></button></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'touchstart' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "touchstart",
+      "path": "s/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'touchstart' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "events/multiple/static-optimized": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><button></button></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><button></button></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><button></button></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   },
+   {
+    "id": "event:touchend",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><button></button></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'touchend' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "touchend",
+      "path": "s/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'touchend' on [object:vm LightningElement (#)]."
+     }
+    ]
+   },
+   {
+    "id": "event:touchstart",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><button></button></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'touchstart' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "touchstart",
+      "path": "s/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'touchstart' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "events/non-static": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><div><button></button></div></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><div><button></button></div></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div><button></button></div></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "events/static": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><div><button></button></div></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><div><button></button></div></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div><button></button></div></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "events/tag": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><section><div>x</div><div>x</div></section></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><section><div>x</div><div>x</div></section></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><div>x</div><div>x</div></section></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   },
+   {
+    "id": "event:press",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><div>x</div><div>x</div></section></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'press' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "press",
+      "path": "s/0/1",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'press' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "events/type-invalid": {
   "status": "compile-error",
@@ -1359,7 +1893,64 @@
  },
  "events/type-valid": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><div>Click</div><div>Click</div><div>Click</div><div>Click</div></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><div>Click</div><div>Click</div><div>Click</div><div>Click</div></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:a123",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div>Click</div><div>Click</div><div>Click</div><div>Click</div></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'a123' on [object:vm LightningElement (#)].",
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'a123' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "a123",
+      "path": "s/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'a123' on [object:vm LightningElement (#)]."
+     },
+     {
+      "type": "a123",
+      "path": "s/3",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'a123' on [object:vm LightningElement (#)]."
+     }
+    ]
+   },
+   {
+    "id": "event:foo_",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div>Click</div><div>Click</div><div>Click</div><div>Click</div></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'foo_' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "foo_",
+      "path": "s/2",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'foo_' on [object:vm LightningElement (#)]."
+     }
+    ]
+   },
+   {
+    "id": "event:foo_bar",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div>Click</div><div>Click</div><div>Click</div><div>Click</div></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'foo_bar' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "foo_bar",
+      "path": "s/1",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'foo_bar' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "expression-complex/compatibility/base/html-entities/experimental-complex-expressions-true": {
   "status": "ok",
@@ -1973,6 +2564,32 @@
  "parsing-errors/duplicate-default-slot": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot><slot></slot></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot><slot></slot></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot><slot></slot></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot><slot></slot></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/duplicate-default-slot/duplicate-default-slot.html (3:5): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (default)."
   ]
@@ -1980,6 +2597,32 @@
  "parsing-errors/duplicate-named-slot": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"foo\"></slot><slot name=\"foo\"></slot></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"foo\"></slot><slot name=\"foo\"></slot></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"foo\"></slot><slot name=\"foo\"></slot></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"foo\"></slot><slot name=\"foo\"></slot></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/duplicate-named-slot/duplicate-named-slot.html (3:5): @lwc/rollup-plugin: LWC1137: Invalid duplicate slot (name=\"foo\")."
   ]
@@ -2035,6 +2678,14 @@
  "parsing-errors/invalid-template-attribute/enableStrictTemplateSyntax-flag-disabled/invalid-attribute": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:foo",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+    "handlers": []
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/invalid-attribute/invalid-attribute.html (2:5): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: onfoo. For more information, please visit https://sfdc.co/template-directives",
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/invalid-attribute/invalid-attribute.html (2:5): @lwc/rollup-plugin: LWC1153: Non-root template elements must contain valid LWC template directive attributes. Otherwise, the template and its children will be ignored. For more information please visit https://sfdc.co/template-directives"
@@ -2054,6 +2705,14 @@
   "logs": [
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
   ],
+  "steps": [
+   {
+    "id": "event:foo",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section></section></template></fixture-test>",
+    "handlers": []
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/mixed-valid-invalid-attributes/mixed-valid-invalid-attributes.html (4:9): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: onfoo. For more information, please visit https://sfdc.co/template-directives"
   ]
@@ -2063,6 +2722,14 @@
   "html": "<fixture-test><template shadowrootmode=\"open\"><section></section></template></fixture-test>",
   "logs": [
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
+  ],
+  "steps": [
+   {
+    "id": "event:foo",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section></section></template></fixture-test>",
+    "handlers": []
+   }
   ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/nested-invalid-attributes/nested-invalid-attributes.html (3:9): @lwc/rollup-plugin: LWC1145: Invalid attributes detected on template. The following attributes are not supported on template tags in LWC: onfoo. For more information, please visit https://sfdc.co/template-directives",
@@ -2084,6 +2751,32 @@
   "logs": [
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
   ],
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/named-slot-in-iterator/named-slot-in-iterator.html (4:7): @lwc/rollup-plugin: LWC1138: Invalid slot (name=\"james\"). A slot cannot appear inside of an iterator."
   ]
@@ -2101,6 +2794,32 @@
   "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
   "logs": [
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
+  ],
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
   ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/slot-in-iterator/slot-in-iterator.html (4:7): @lwc/rollup-plugin: LWC1138: Invalid slot (default). A slot cannot appear inside of an iterator."
@@ -2184,6 +2903,30 @@
   "html": "<fixture-test><template shadowrootmode=\"open\"><button>New</button><ul></ul></template></fixture-test>",
   "logs": [
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
+  ],
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><button>New</button><ul></ul></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   },
+   {
+    "id": "event:touchstart",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><button>New</button><ul></ul></template></fixture-test>",
+    "handlers": []
+   }
   ]
  },
  "regression/invalid-closing-style-tag": {
@@ -2207,7 +2950,33 @@
  },
  "regression/slot-name-with-dash": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"secret-slot\"><p>Test slot content</p></slot></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"secret-slot\"><p>Test slot content</p></slot></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"secret-slot\"><p>Test slot content</p></slot></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"secret-slot\"><p>Test slot content</p></slot></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot name=\"secret-slot\"><p>Test slot content</p></slot></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "regression/static-id-in-iteration": {
   "status": "ok",
@@ -2235,6 +3004,28 @@
  "renderer-hooks/config/disallowed-on-custom-element": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template></x-foo></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template></x-foo></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template></x-foo></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:dynamicCtor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template></x-foo></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:dynamicCtor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template></x-foo></template></fixture-test>"
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/disallowed-on-custom-element/disallowed-on-custom-element.html (6:5): @lwc/rollup-plugin: LWC1187: The lwc:dynamic directive is deprecated and will be removed in a future release. Please use lwc:is instead."
   ]
@@ -2319,29 +3110,185 @@
  },
  "scoped-slots/child-default-slot": {
   "status": "ok",
-  "html": "<fixture-test><!----><!----></fixture-test>"
+  "html": "<fixture-test><!----><!----></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "scoped-slots/child-default-slot-api-version-59": {
   "status": "ok",
-  "html": "<fixture-test></fixture-test>"
+  "html": "<fixture-test></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "scoped-slots/child-default-slot-content": {
   "status": "ok",
-  "html": "<fixture-test><!---->Foo <!----></fixture-test>"
+  "html": "<fixture-test><!---->Foo <!----></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><!---->Foo <!----><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><!---->Foo <!----></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><!---->Foo <!----><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "scoped-slots/child-mixed-slot": {
   "status": "ok",
-  "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>"
+  "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "scoped-slots/child-named-slot": {
   "status": "ok",
-  "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>"
+  "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "scoped-slots/child-with-foreach": {
   "status": "ok",
   "html": "<fixture-test></fixture-test>",
   "logs": [
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm _Class (#)]. It must be an array-like object.\n"
+  ],
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
   ]
  },
  "scoped-slots/if-block/invalid/duplicate-default-slot-after": {
@@ -2358,11 +3305,63 @@
  },
  "scoped-slots/if-block/valid/mixed-slot-types": {
   "status": "ok",
-  "html": "<fixture-test></fixture-test>"
+  "html": "<fixture-test></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "scoped-slots/if-block/valid/same-slot-types": {
   "status": "ok",
-  "html": "<fixture-test></fixture-test>"
+  "html": "<fixture-test></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "scoped-slots/invalid/slot-bind/binding-not-expression": {
   "status": "compile-error",
@@ -2493,7 +3492,53 @@
  },
  "scoped-slots/slot-content-with-directives/valid/dynamic-components/child": {
   "status": "ok",
-  "html": "<fixture-test><!----><!----></fixture-test>"
+  "html": "<fixture-test><!----><!----></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor1:A",
+    "class": "dynamic",
+    "html": "<fixture-test><!----><!----></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor1:null",
+    "class": "dynamic",
+    "html": "<fixture-test><!----><!----></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor2:A",
+    "class": "dynamic",
+    "html": "<fixture-test><!----><!----></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor2:null",
+    "class": "dynamic",
+    "html": "<fixture-test><!----><!----></fixture-test>"
+   },
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "scoped-slots/slot-content-with-directives/valid/dynamic-components/parent": {
   "status": "ok",
@@ -2518,7 +3563,33 @@
  },
  "scoped-slots/slots-sharing-bindings": {
   "status": "ok",
-  "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>"
+  "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "scoped-slots/text-non-direct-child": {
   "status": "ok",
@@ -2540,39 +3611,299 @@
  },
  "slots/component-definition": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><slot></slot></x-foo></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><slot></slot></x-foo></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><slot></slot></x-foo></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><slot></slot></x-foo></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><slot></slot></x-foo></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
+  ]
  },
  "slots/definition": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot><p>Default slot content</p></slot></section></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot><p>Default slot content</p></slot></section></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot><p>Default slot content</p></slot></section></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot><p>Default slot content</p></slot></section></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot><p>Default slot content</p></slot></section></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
+  ]
  },
  "slots/definition-sibiling-slot": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot name=\"other\"><p>Default slot other content</p></slot><slot><p>Default slot content</p></slot></section></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot name=\"other\"><p>Default slot other content</p></slot><slot><p>Default slot content</p></slot></section></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot name=\"other\"><p>Default slot other content</p></slot><slot><p>Default slot content</p></slot></section></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot name=\"other\"><p>Default slot other content</p></slot><slot><p>Default slot content</p></slot></section></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot name=\"other\"><p>Default slot other content</p></slot><slot><p>Default slot content</p></slot></section></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
+  ]
  },
  "slots/definition-sibling-static": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><section><p>Sibling</p><slot><p>Default slot content</p></slot></section></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><section><p>Sibling</p><slot><p>Default slot content</p></slot></section></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><p>Sibling</p><slot><p>Default slot content</p></slot></section></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><p>Sibling</p><slot><p>Default slot content</p></slot></section></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><p>Sibling</p><slot><p>Default slot content</p></slot></section></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
+  ]
  },
  "slots/dynamic-components/content": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot></template></fixture-test>"
+   },
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
+  ]
  },
  "slots/dynamic-components/definition": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "slots/dynamic-components/light-dom/content": {
   "status": "ok",
-  "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>"
+  "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>"
+   },
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><!----><!----><!----><!----><!----><!----><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "slots/dynamic-components/light-dom/definition": {
   "status": "ok",
-  "html": "<fixture-test></fixture-test>"
+  "html": "<fixture-test></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test></fixture-test>"
+   },
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "slots/dynamic-components/usage": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>",
+  "steps": [
+   {
+    "id": "dynamic:ctor:A",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   },
+   {
+    "id": "dynamic:ctor:null",
+    "class": "dynamic",
+    "html": "<fixture-test><template shadowrootmode=\"open\"></template></fixture-test>"
+   }
+  ]
  },
  "slots/dynamic-name": {
   "status": "ok",
@@ -2596,6 +3927,32 @@
  "slots/ignored/grandparent-slot": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><slot></slot></x-foo></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><slot></slot></x-foo></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><slot></slot></x-foo></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-foo><template shadowrootmode=\"open\"></template><slot></slot></x-foo></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/grandparent-slot/grandparent-slot.html (5:15): @lwc/rollup-plugin: LWC1201: The slot attribute in <span> will be ignored due to its ancestor <slot>. It must be a direct child of the containing component."
   ]
@@ -2610,6 +3967,32 @@
  "slots/ignored/parent-slot": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><x-inner><template shadowrootmode=\"open\"></template><slot><span slot=\"foo\">I am the foo slot</span></slot></x-inner></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-inner><template shadowrootmode=\"open\"></template><slot><span slot=\"foo\">I am the foo slot</span></slot></x-inner></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-inner><template shadowrootmode=\"open\"></template><slot><span slot=\"foo\">I am the foo slot</span></slot></x-inner></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><x-inner><template shadowrootmode=\"open\"></template><slot><span slot=\"foo\">I am the foo slot</span></slot></x-inner></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/parent-slot/parent-slot.html (4:19): @lwc/rollup-plugin: LWC1201: The slot attribute in <span> will be ignored due to its ancestor <slot>. It must be a direct child of the containing component."
   ]
@@ -2624,7 +4007,33 @@
  },
  "slots/mixed-1": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><section><p>Before header</p><slot name=\"header\">Default header</slot><p>In</p><p>between</p><slot><p>Default body</p></slot><slot name=\"footer\"><p>Default footer</p></slot></section></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><section><p>Before header</p><slot name=\"header\">Default header</slot><p>In</p><p>between</p><slot><p>Default body</p></slot><slot name=\"footer\"><p>Default footer</p></slot></section></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><p>Before header</p><slot name=\"header\">Default header</slot><p>In</p><p>between</p><slot><p>Default body</p></slot><slot name=\"footer\"><p>Default footer</p></slot></section></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><p>Before header</p><slot name=\"header\">Default header</slot><p>In</p><p>between</p><slot><p>Default body</p></slot><slot name=\"footer\"><p>Default footer</p></slot></section></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><p>Before header</p><slot name=\"header\">Default header</slot><p>In</p><p>between</p><slot><p>Default body</p></slot><slot name=\"footer\"><p>Default footer</p></slot></section></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
+  ]
  },
  "slots/no-slot": {
   "status": "ok",
@@ -2647,7 +4056,33 @@
  },
  "slots/usage-named": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot name=\"test\"><p>Test slot content</p></slot></section></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot name=\"test\"><p>Test slot content</p></slot></section></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot name=\"test\"><p>Test slot content</p></slot></section></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot name=\"test\"><p>Test slot content</p></slot></section></template></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><section><slot name=\"test\"><p>Test slot content</p></slot></section></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 0
+    }
+   }
+  ]
  },
  "static-content/attr-escaping": {
   "status": "ok",
@@ -2682,7 +4117,32 @@
  },
  "static-content/deep-data": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><div><div></div><div><div><div></div><div></div><div></div><div></div><div></div></div></div><div></div><div></div><div></div><div></div><div></div></div></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><div><div></div><div><div><div></div><div></div><div></div><div></div><div></div></div></div><div></div><div></div><div></div><div></div><div></div></div></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div><div></div><div><div><div></div><div></div><div></div><div></div><div></div></div></div><div></div><div></div><div></div><div></div><div></div></div></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)].",
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0/1/0/1",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     },
+     {
+      "type": "click",
+      "path": "s/0/3",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "static-content/deep-data-attrs-only": {
   "status": "ok",
@@ -2690,7 +4150,32 @@
  },
  "static-content/deep-data-combined": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><div><div></div><div><div><div>dynamic text </div></div></div><div>dynamic text </div></div></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><div><div></div><div><div><div>dynamic text </div></div></div><div>dynamic text </div></div></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div><div></div><div><div><div>dynamic text </div></div></div><div>dynamic text </div></div></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)].",
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0/1/0/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     },
+     {
+      "type": "click",
+      "path": "s/0/2",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "static-content/deep-data-ref-only": {
   "status": "ok",
@@ -2713,11 +4198,63 @@
   "logs": [
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n",
    "error: [LWC error]: Invalid template iteration for value `undefined` in [object:vm LightningElement (#)]. It must be an array-like object.\n"
+  ],
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot><slot name=\"foo\"></slot></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot><slot name=\"foo\"></slot></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot></slot><slot name=\"foo\"></slot></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
   ]
  },
  "static-content/key-invalid-in-slot": {
   "status": "ok",
   "html": "<fixture-test><template shadowrootmode=\"open\"><slot><div>Default fallback</div></slot><slot name=\"foo\"><div>Named fallback</div></slot></template></fixture-test>",
+  "steps": [
+   {
+    "id": "slot:add",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot><div>Default fallback</div></slot><slot name=\"foo\"><div>Named fallback</div></slot></template><span data-csr-step=\"slot-add\">slot-add</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:remove",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot><div>Default fallback</div></slot><slot name=\"foo\"><div>Named fallback</div></slot></template></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   },
+   {
+    "id": "slot:replace",
+    "class": "slot",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><slot><div>Default fallback</div></slot><slot name=\"foo\"><div>Named fallback</div></slot></template><span data-csr-step=\"slot-new\">slot-new</span></fixture-test>",
+    "slotchange": {
+     "fires": 1
+    }
+   }
+  ],
   "warnings": [
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/key-invalid-in-slot/key-invalid-in-slot.html (3:14): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC.",
    "[plugin rollup-plugin-lwc-compiler] /virtual-csr/x/key-invalid-in-slot/key-invalid-in-slot.html (6:14): @lwc/rollup-plugin: LWC1149: Invalid key attribute on element <div>. The key attribute should be applied to an element with for:each or iterator:*, or to a direct child of a <template> element with for:each or iterator:*. This key will be ignored, and may throw an error in future versions of LWC."
@@ -2765,7 +4302,32 @@
  },
  "static-content/preserve-comments-off-with-parts": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><div><button data-id=\"foo\">foo</button><button data-id=\"bar\">bar</button></div></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><div><button data-id=\"foo\">foo</button><button data-id=\"bar\">bar</button></div></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div><button data-id=\"foo\">foo</button><button data-id=\"bar\">bar</button></div></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)].",
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     },
+     {
+      "type": "click",
+      "path": "s/0/1",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "static-content/preserve-comments-on": {
   "status": "ok",
@@ -2773,11 +4335,54 @@
  },
  "static-content/preserve-comments-on-with-parts": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><div><!-- comment --><button data-id=\"foo\">foo</button><!-- comment --><button data-id=\"bar\">bar</button></div></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><div><!-- comment --><button data-id=\"foo\">foo</button><!-- comment --><button data-id=\"bar\">bar</button></div></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div><!-- comment --><button data-id=\"foo\">foo</button><!-- comment --><button data-id=\"bar\">bar</button></div></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)].",
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0/1",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     },
+     {
+      "type": "click",
+      "path": "s/0/3",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "static-content/shallow-data": {
   "status": "ok",
-  "html": "<fixture-test><template shadowrootmode=\"open\"><div></div></template></fixture-test>"
+  "html": "<fixture-test><template shadowrootmode=\"open\"><div></div></template></fixture-test>",
+  "steps": [
+   {
+    "id": "event:click",
+    "class": "event",
+    "html": "<fixture-test><template shadowrootmode=\"open\"><div></div></template></fixture-test>",
+    "errors": [
+     "uncaught: Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+    ],
+    "handlers": [
+     {
+      "type": "click",
+      "path": "s/0",
+      "fired": true,
+      "threw": "Error: Assert Violation: Invalid event handler for event 'click' on [object:vm LightningElement (#)]."
+     }
+    ]
+   }
+  ]
  },
  "static-content/svg": {
   "status": "ok",

@@ -1,5 +1,5 @@
-official board  commit=6026c083e93c  src=5e80e0ff4f72  napi=c542fed8bbad  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-10T15:41:35-08:00
-napi sha256:c542fed8bbad  pinned=/tmp/lwc-board-snap.4t6wKt/repo/harness/.pins/lwc-compiler-napi.c542fed8bbad.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-10T15:38:38-08:00
+official board  commit=bcabc2ed8d09  src=5aafe4b7f269  napi=c542fed8bbad  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-10T17:11:02-08:00
+napi sha256:c542fed8bbad  pinned=/tmp/lwc-board-snap.WSbiyE/repo/harness/.pins/lwc-compiler-napi.c542fed8bbad.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-10T17:07:51-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -11,8 +11,8 @@ ssr-render             Tests  389 passed (389)
 ssr-render-async       Tests  389 passed (389)
 known-limitation: ssr-render-async scope-token (D-0242) both backends render [object Promise]
 ssr-render-asyncYield  Tests  389 passed (389)
-csr-render             Tests  390 passed (390)
-csr-render-template    Tests  570 passed (570)
+csr-render             Tests  395 passed (395)
+csr-render-template    Tests  571 passed (571)
 template-renderer      Tests  568 passed (568)
 js-options             Tests  302 passed | 1239 skipped (1541)
 js-api                 Tests  1239 passed | 302 skipped (1541)
@@ -28,8 +28,8 @@ semantic-diff-ssr  printer-equal=18  static-observed-differs=3  exec-static-comm
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.4t6wKt/notes/decisions.tsv]
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.WSbiyE/notes/decisions.tsv]
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
 style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)
-csr-clusters[ssr]: pass 387 fail 0
-csr-clusters[template]: pass 567 fail 0
+csr-clusters[ssr]: pass 392 fail 0
+csr-clusters[template]: pass 568 fail 0

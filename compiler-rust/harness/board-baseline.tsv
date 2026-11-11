@@ -3155,7 +3155,7 @@ ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/method
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/static-field
 ssr-render-asyncYield	passed	ssr render [rust/asyncYield/dist] wire/static-method
 ssr-render-asyncYield	passed	ssr render: stray rejections every unhandled rejection is an error some fixture expects
-csr-render	counts	390 0 0
+csr-render	counts	395 0 0
 csr-render	passed	csr render ssr [rust] adjacent-text-nodes/preserve-comments-off/comments-at-end
 csr-render	passed	csr render ssr [rust] adjacent-text-nodes/preserve-comments-off/comments-then-element
 csr-render	passed	csr render ssr [rust] adjacent-text-nodes/preserve-comments-off/deep
@@ -3263,6 +3263,11 @@ csr-render	passed	csr render ssr [rust] context-simple-setter
 csr-render	passed	csr render ssr [rust] context-slotted/light
 csr-render	passed	csr render ssr [rust] context-slotted/scoped
 csr-render	passed	csr render ssr [rust] context-slotted/shadow
+csr-render	passed	csr render ssr [rust] csr-steps/dynamic-ctor
+csr-render	passed	csr render ssr [rust] csr-steps/events
+csr-render	passed	csr render ssr [rust] csr-steps/keyed-state
+csr-render	passed	csr render ssr [rust] csr-steps/lifecycle
+csr-render	passed	csr render ssr [rust] csr-steps/slot-change
 csr-render	passed	csr render ssr [rust] custom-styles-with-newlines
 csr-render	passed	csr render ssr [rust] decorator-api
 csr-render	passed	csr render ssr [rust] deeply-nested
@@ -3546,7 +3551,7 @@ csr-render	passed	csr render ssr [rust] wire/method
 csr-render	passed	csr render ssr [rust] wire/static-field
 csr-render	passed	csr render ssr [rust] wire/static-method
 csr-render	passed	csr render: stray errors no error escaped fixture attribution
-csr-render-template	counts	570 0 0
+csr-render-template	counts	571 0 0
 csr-render-template	passed	csr render template [rust] adjacent-text-and-comments/non-static-optimized/no-preserve-comments
 csr-render-template	passed	csr render template [rust] adjacent-text-and-comments/non-static-optimized/preserve-comments
 csr-render-template	passed	csr render template [rust] adjacent-text-and-comments/static-optimized/no-preserve-comments
@@ -3635,6 +3640,7 @@ csr-render-template	passed	csr render template [rust] comments/error-not-on-root
 csr-render-template	passed	csr render template [rust] comments/error-not-on-root-multiple-directives
 csr-render-template	passed	csr render template [rust] comments/preserve-html-comments-option
 csr-render-template	passed	csr render template [rust] comments/slots
+csr-render-template	passed	csr render template [rust] csr-steps/scoped-style
 csr-render-template	passed	csr render template [rust] directive-dynamic/invalid-config
 csr-render-template	passed	csr render template [rust] directive-dynamic/invalid-native-element
 csr-render-template	passed	csr render template [rust] directive-dynamic/invalid-type

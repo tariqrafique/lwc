@@ -321,6 +321,88 @@ forbidden_js_cargo_lines() {
 }
 
 
+# Scan-result cache: --self-test calls check() once per plant (~70x).
+# Files that resolve to $_CLMR_STABLE_ROOT/<rel> are unchanged across plants
+# and are keyed by kind+rel (no per-lookup stat). Overlay / copied land.sh
+# paths miss and are scanned directly — same coverage as an uncached scan.
+_CLMR_CACHE_DIR="${_CLMR_CACHE_DIR:-$(mktemp -d /tmp/clmr-scan.XXXXXX)}"
+_clmr_stable() {
+  local file="$1" rel="$2"
+  [ -n "${_CLMR_STABLE_ROOT:-}" ] || return 1
+  [ "$file" = "$_CLMR_STABLE_ROOT/$rel" ]
+}
+
+_clmr_store() {
+  local kind="$1" rel="$2" data="$3"
+  printf '%s' "$data" > "$_CLMR_CACHE_DIR/${kind}__${rel//\//_}"
+}
+
+collect_sh_rels_cached() {
+  local root="$1" cf out
+  cf="$_CLMR_CACHE_DIR/rels-sh__${root//\//_}"
+  if [ -f "$cf" ]; then cat "$cf"; return 0; fi
+  out="$(collect_sh_rels "$root")" || return $?
+  printf '%s\n' "$out" > "$cf"
+  printf '%s\n' "$out"
+}
+
+collect_js_rels_cached() {
+  local root="$1" cf out
+  cf="$_CLMR_CACHE_DIR/rels-js__${root//\//_}"
+  if [ -f "$cf" ]; then cat "$cf"; return 0; fi
+  out="$(collect_js_rels "$root")" || return $?
+  printf '%s\n' "$out" > "$cf"
+  printf '%s\n' "$out"
+}
+
+# Each of these writes $_CLMR_OUT (no command-substitution fork on a hit).
+_clmr_load() {
+  local kind="$1" rel="$2" cf
+  cf="$_CLMR_CACHE_DIR/${kind}__${rel//\//_}"
+  _CLMR_OUT=""
+  if [ -f "$cf" ]; then
+    IFS= read -r -d '' _CLMR_OUT < "$cf" || true
+    return 0
+  fi
+  return 1
+}
+
+forbidden_cargo_lines_cached() {
+  local file="$1" rel="${2:-}"
+  _CLMR_OUT=""
+  if _clmr_stable "$file" "$rel"; then
+    _clmr_load shscan "$rel" && return 0
+    _CLMR_OUT="$(forbidden_cargo_lines "$file" "$rel")"
+    _clmr_store shscan "$rel" "$_CLMR_OUT"
+    return 0
+  fi
+  _CLMR_OUT="$(forbidden_cargo_lines "$file" "$rel")"
+}
+
+forbidden_js_cargo_lines_cached() {
+  local file="$1" rel="${2:-}"
+  _CLMR_OUT=""
+  if _clmr_stable "$file" "$rel"; then
+    _clmr_load jsscan "$rel" && return 0
+    _CLMR_OUT="$(forbidden_js_cargo_lines "$file")"
+    _clmr_store jsscan "$rel" "$_CLMR_OUT"
+    return 0
+  fi
+  _CLMR_OUT="$(forbidden_js_cargo_lines "$file")"
+}
+
+extract_box_deps_for_cached() {
+  local file="$1" rel="${2:-}" rc
+  _CLMR_OUT=""
+  if _clmr_stable "$file" "$rel"; then
+    _clmr_load box "$rel" && return 0
+    _CLMR_OUT="$(extract_box_deps_for "$file")" || { rc=$?; return "$rc"; }
+    _clmr_store box "$rel" "$_CLMR_OUT"
+    return 0
+  fi
+  _CLMR_OUT="$(extract_box_deps_for "$file")" || return $?
+}
+
 load_allowlist() {
   local file="$1"
   [ -f "$file" ] || { echo "check-land-main-refs: no allowlist at $file" >&2; return 2; }
@@ -422,14 +504,15 @@ write_self_test_plant_allow() {
       f="$root/$rel"
     fi
     [ -f "$f" ] || continue
-    deps="$(extract_box_deps_for "$f")" || return 2
+    extract_box_deps_for_cached "$f" "$rel" || return 2
+    deps="$_CLMR_OUT"
     [ -n "$deps" ] || continue
     while IFS= read -r d; do
       [ -n "$d" ] || continue
       box_found+="$rel"$'	'"$d"$'
 '
     done <<< "$deps"
-  done < <(collect_sh_rels "$root")
+  done < <(collect_sh_rels_cached "$root")
   box_found="$(printf '%s' "$box_found" | sort -u)"
   awk -F'	' -v okm="$VALID_MAIN" -v okb="$VALID_BOX" \
       -v foundm="$found_classes" -v foundb="$box_found" '
@@ -447,6 +530,7 @@ write_self_test_plant_allow() {
 check() {
   local land="$1" main_table="$2" root="$3" incoming_table="$4" overlay="${5:-}"
   local fail=0
+  _CLMR_STABLE_ROOT="$root"
   [ -f "$land" ] || { echo "check-land-main-refs: no land.sh at $land" >&2; return 2; }
   local rows
   [ -n "${main_table:-}" ] && [ -f "$main_table" ] || { echo "check-land-main-refs: no MAIN allowlist at ${main_table:-<empty>}" >&2; return 2; }
@@ -586,7 +670,8 @@ check() {
       f="$(resolve_file "$rel" "$overlay" "$root")"
     fi
     [ -n "${f:-}" ] && [ -f "$f" ] || continue
-    token_hits="$(forbidden_cargo_lines "$f" "$rel")"
+    forbidden_cargo_lines_cached "$f" "$rel"
+    token_hits="$_CLMR_OUT"
     if [ -n "$token_hits" ]; then
       echo "FAIL bare unlocked-build token(s) in $rel (must use the locked wrapper):"
       printf '%s\n' "$token_hits" | sed 's/^/  /'
@@ -595,25 +680,27 @@ check() {
     case "$rel" in
       scripts/check-land-main-refs.sh|scripts/test-*.sh) continue ;;
     esac
-    deps="$(extract_box_deps_for "$f")" || return 2
+    extract_box_deps_for_cached "$f" "$rel" || return 2
+    deps="$_CLMR_OUT"
     [ -n "$deps" ] || continue
     while IFS= read -r d; do
       [ -n "$d" ] || continue
       box_found+="$rel"$'\t'"$d"$'\n'
     done <<< "$deps"
-  done < <(collect_sh_rels "$root")
+  done < <(collect_sh_rels_cached "$root")
 
   while IFS= read -r rel; do
     [ -n "$rel" ] || continue
     f="$(resolve_file "$rel" "$overlay" "$root")"
     [ -n "${f:-}" ] && [ -f "$f" ] || continue
-    token_hits="$(forbidden_js_cargo_lines "$f")"
+    forbidden_js_cargo_lines_cached "$f" "$rel"
+    token_hits="$_CLMR_OUT"
     if [ -n "$token_hits" ]; then
       echo "FAIL unlocked JS c"'argo'" spawn(s) in $rel (must pass --locked):"
       printf '%s\n' "$token_hits" | sed 's/^/  /'
       fail=1
     fi
-  done < <(collect_js_rels "$root")
+  done < <(collect_js_rels_cached "$root")
 
   box_found="$(printf '%s' "$box_found" | sort -u)"
   local box_listed box_listed_in box_listed_both

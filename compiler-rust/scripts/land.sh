@@ -103,26 +103,51 @@ _ck="$(printf '%s%s' "$_lk" "$_tk" | sha256sum | cut -c1-16)"
 export CARGO_TARGET_DIR="/workspace/cache/lwc-target/$_ck"
 mkdir -p "$CARGO_TARGET_DIR"
 echo "land: CARGO_TARGET_DIR=$CARGO_TARGET_DIR (lock+toolchain $_ck)"
-cargo_locked check --workspace --all-targets || die "workspace check failed"
-cargo_locked test --workspace || die "workspace test failed"   # all crates: dependents of a changed crate too
-crates_changed=; if grep -q '^crates/\|^Cargo\.' <<< "$changed"; then crates_changed=1; fi
-# napi release build gates the landing (before the fast-forward). The official board
-# (built from the landed sha) is the land's board (D-0282). The live install from main stays post-merge.
-cargo_locked build -p lwc-compiler-napi --release || die "napi release build failed"
+_phase() { echo "land-phase: $1 $(date '+%Y-%m-%dT%H:%M:%S%z')"; }
+# Rust tests read non-Rust files (e.g. exec_ssr.rs spawns ssr-emit-pairs.ts).
+# scripts/rust-test-inputs.tsv is the derived set; --decide is workspace | packages -p … | skip.
+crates_changed=
+_rust_decision="$(printf '%s\n' "$changed" | scripts/rust-test-inputs.sh --decide)" \
+  || die "rust-test-inputs --decide failed"
+echo "land: rust-test-inputs --decide $_rust_decision"
+case "$_rust_decision" in
+  workspace)
+    crates_changed=1
+    _phase workspace-check
+    cargo_locked check --workspace --all-targets || die "workspace check failed"
+    _phase workspace-test
+    cargo_locked test --workspace || die "workspace test failed"   # all crates: dependents of a changed crate too
+    # napi release build gates the landing (before the fast-forward). The official board
+    # (built from the landed sha) is the land's board (D-0282). The live install from main stays post-merge.
+    _phase napi-release
+    cargo_locked build -p lwc-compiler-napi --release || die "napi release build failed"
+    ;;
+  packages\ *)
+    _phase workspace-test
+    # Word-split the -p flags. JS-only inputs do not rebuild napi.
+    cargo_locked test ${_rust_decision#packages } || die "workspace test failed"
+    ;;
+  skip)
+    echo "land: no rust sources or rust-test inputs changed; skipping workspace check/test and napi release build"
+    ;;
+  *)
+    die "rust-test-inputs --decide produced '$_rust_decision'"
+    ;;
+esac
 # CARGO_TARGET_DIR above writes the .so outside the worktree. test-board-ratchet
 # (and anything else that looks at target/release) still expects the worktree path.
 _napi_so="$CARGO_TARGET_DIR/release/liblwc_compiler_napi.so"
-[ -f "$_napi_so" ] || die "napi release build produced no $_napi_so"
-mkdir -p "$wt/target/release"
-ln -f "$_napi_so" "$wt/target/release/liblwc_compiler_napi.so" 2>/dev/null   || cp -f "$_napi_so" "$wt/target/release/liblwc_compiler_napi.so"
-echo "land: napi so $_napi_so -> $wt/target/release/liblwc_compiler_napi.so"
-if grep -qE '^(scripts/(land|land-agent-branch|test-land-agent-branch|test-land-classify|parse5-pin-check|test-parse5-pin|test-shim-registry|lint-shell-pipes|lint-no-stripped-compare|check-land-main-refs|cargo-locked|ratchet-ceiling|baseline-ceiling|test-board-ratchet|land-path-checks|test-land-path-checks)\.sh|scripts/land-main-refs\.tsv|scripts/land-path-checks\.tsv|harness/(scripts/shim-gate\.mjs|scripts/board-baseline\.mjs|shim-registry\.tsv|board\.sh|board-rows\.sh|vitest\.config\.ts|vitest\.board\.config\.ts)|harness/test/.*([Ss]etup|globalSetup).*)$' <<< "$changed"; then
-  scripts/test-land-classify.sh || die "test-land-classify / parse5-pin / lint-shell-pipes / ratchet-ceiling / shim-registry / main-refs self-test failed"
-  # test-board-ratchet is an e2e board proof and needs the napi binary land just built
-  # (harness/lwc-compiler-napi.node or target/release/liblwc_compiler_napi.so). It is
-  # not part of test-land-classify, so a scratch tree without napi can still classify.
-  scripts/test-board-ratchet.sh || die "test-board-ratchet failed: needs napi from the release build above (harness/lwc-compiler-napi.node or target/release/liblwc_compiler_napi.so)"
+if [ -n "$crates_changed" ]; then
+  [ -f "$_napi_so" ] || die "napi release build produced no $_napi_so"
 fi
+if [ -f "$_napi_so" ]; then
+  mkdir -p "$wt/target/release"
+  ln -f "$_napi_so" "$wt/target/release/liblwc_compiler_napi.so" 2>/dev/null   || cp -f "$_napi_so" "$wt/target/release/liblwc_compiler_napi.so"
+  echo "land: napi so $_napi_so -> $wt/target/release/liblwc_compiler_napi.so"
+fi
+# Path-mapped self-tests (scripts/land-self-tests.tsv). Independent names run in parallel.
+_phase self-tests
+printf '%s\n' "$changed" | scripts/run-land-self-tests.sh --from-stdin || die "land self-tests failed"
 # Unconditional (D-0274(5)/AB-L0079): MAIN's checker + MAIN's table judge the branch land.sh.
 # A branch cannot widen the table in the same landing. Missing MAIN table is rc 2.
 # MAIN table is git show of the sha being landed onto, never MAIN's working tree.
@@ -140,6 +165,7 @@ if grep -qE '^scripts/(official-board|publish-official|notes-precheck|test-notes
 # D-0282: shared list (land-path-checks.tsv) also run by c8-checks.sh.
 # Baseline-Raise + Case-Set stay inline below (land-only review trailers).
 # shim-gate stays next to those so SHIM_OWNERS still comes from MAIN via main_run.
+_phase path-checks
 main_run scripts/land-path-checks.sh --root "$wt" --git "$wt" --base "$base" --head "$head" --from-land \
   || die "land-path-checks failed (rc=$?)"
 # Unconditional (AB-X0010): ratchets only go down; every raise is refused here (needs its own reviewed id + dedicated main edit).
@@ -282,7 +308,10 @@ fi
 if grep -qE '^harness/(test|src)/' <<< "$changed"; then
   main_run harness/scripts/golden-io-guard.sh "$wt/harness" || die "golden-I/O guard: only harness/src/optionRows.ts may write goldens or read UPDATE_GOLDENS"
 fi
-if grep -qE '^harness/(goldens|test|src|fixtures|scripts)/' <<< "$changed"; then
+# JS-oracle goldens are produced by harness/test + src + fixtures, not by every
+# file under harness/scripts/ (ssr-emit-pairs and similar do not change them).
+if grep -qE '^harness/(goldens|test|src|fixtures)/|^harness/scripts/(golden-|ensure-deps\.|oracle-root\.|ts-hooks\.|ts-register\.)|^harness/vitest\.(config|board\.config)\.ts$' <<< "$changed"; then
+  _phase golden-gate
   main_run harness/scripts/ensure-deps.sh "$wt/harness" || die "harness deps missing"
   main_run harness/scripts/golden-gate.sh "$wt/harness" || die "golden-gate: goldens != fresh JS-oracle recording"
 fi

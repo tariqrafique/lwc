@@ -17,8 +17,12 @@ import { existsUp, listFixtures, FIXTURES_ROOT } from '../src/ssrRender';
 import { UPDATE, readGolden, writeGolden } from '../src/optionRows';
 import {
     ENGINE_DOM_ESM, TEMPLATE_FIXTURES_ROOT, bundleSsrFixtureCsr, bundleTemplateFixtureCsr, describeValue,
-    listTemplateFixtures, readTemplateFixture, serializeNode, trackShadowRoots,
+    listTemplateFixtures, readTemplateFixture, serializeNode, templateComponentSource, trackShadowRoots,
 } from '../src/csrRender';
+import {
+    actStep, analyzeFixture, installStepRuntime, instrumentCsrBundle, lifecycleTrace, observeStep, stampNode,
+    readSsrSources, traceLength, type FixtureSources, type StepSpec,
+} from '../src/csrSteps';
 import { formatHTML } from '/workspace/lwc/scripts/test-utils/format-html';
 // Must be the same file as csrRender.ts ENGINE_DOM_ESM (the bundles' `lwc` path) so there is ONE engine instance.
 // Static literal: vite's client (jsdom) transform does not resolve a non-literal dynamic import of this path.
@@ -37,7 +41,14 @@ fs.mkdirSync(OUT, { recursive: true });
 const GOLDEN_DIR = path.resolve(here, '../goldens/csr-render');
 
 type Status = 'ok' | 'compile-error' | 'render-error' | 'excluded';
-interface Observed { status: Status; warnings?: string[]; html?: string; head?: string; error?: string; errors?: string[]; logs?: string[]; reason?: string; note?: string }
+interface StepObserved {
+    id: string; class: StepSpec['class']; html: string; head?: string; errors?: string[]; logs?: string[]; note?: string;
+    handlers?: { type: string; path: string; fired: boolean; threw?: string }[];
+    ids?: Record<string, number>;
+    slotchange?: { fires: number; threw?: string[] };
+    lifecycle?: { hook: string; id: string; threw?: string; error?: string }[];
+}
+interface Observed { status: Status; warnings?: string[]; html?: string; head?: string; error?: string; errors?: string[]; logs?: string[]; steps?: StepObserved[]; reason?: string; note?: string }
 type Golden = Record<string, Observed>;
 const loadGolden = (f: string): Golden => (UPDATE ? {} : readGolden(f));   // missing golden file = failure, never {}
 // Scratch paths, and engine-dom's global VM counter in dev messages (`[object:vm Ctor (1211)]`), which depends on how
@@ -76,57 +87,130 @@ afterAll(() => {
 });
 
 const tick = () => new Promise((r) => setTimeout(r, 0));
+const CONSOLE_METHODS = ['error', 'warn', 'info', 'log', 'debug', 'trace'] as const;
 
-/** Import the bundle, mount it, flush, serialize, unmount. Every error/console line is captured, never thrown. */
-async function render(code: string, rel: string, props: Record<string, unknown>): Promise<Observed> {
+function snapDom(headBefore: Set<Node>): { html: string; head: string } {
+    const html = Array.from(document.body.childNodes, serializeNode).join('');
+    const head = Array.from(document.head.childNodes).filter((n) => !headBefore.has(n)).map(serializeNode).join('');
+    return { html, head };
+}
+
+function stepRecord(spec: StepSpec, html: string, head: string, errors: string[], logs: string[], extra: ReturnType<typeof observeStep>): StepObserved {
+    const rec: StepObserved = { id: spec.id, class: spec.class, html: norm(html) };
+    if (head) rec.head = norm(head);
+    if (errors.length) rec.errors = errors.map(norm);
+    if (logs.length) rec.logs = logs.map(norm);
+    if (extra.note) rec.note = norm(extra.note);
+    if (extra.handlers) rec.handlers = extra.handlers.map((h) => ({ ...h, ...(h.threw ? { threw: norm(h.threw) } : {}) }));
+    if (extra.ids) rec.ids = extra.ids;
+    if (extra.slotchange) rec.slotchange = { fires: extra.slotchange.fires, ...(extra.slotchange.threw?.length ? { threw: extra.slotchange.threw.map(norm) } : {}) };
+    if (extra.lifecycle) rec.lifecycle = extra.lifecycle.map((e) => ({ ...e, ...(e.threw ? { threw: norm(e.threw) } : {}), ...(e.error ? { error: norm(e.error) } : {}) }));
+    return rec;
+}
+
+/** Import the bundle, mount it, flush, run derived steps, unmount. Every error/console line is captured, never thrown. */
+async function render(code: string, rel: string, props: Record<string, unknown>, sources: FixtureSources): Promise<Observed> {
     const file = path.join(OUT, rel, 'compiled-csr.mjs');
     fs.mkdirSync(path.dirname(file), { recursive: true });
-    fs.writeFileSync(file, code);
+    fs.writeFileSync(file, instrumentCsrBundle(code));
+    const plan = analyzeFixture(sources);
     const errors: string[] = (currentErrors = []);
     const logs: string[] = [];
-    const methods = ['error', 'warn', 'info', 'log'] as const;
-    const saved = methods.map((m) => console[m]);
-    methods.forEach((m) => { console[m] = (...a: unknown[]) => { logs.push(`${m}: ${a.map(describeValue).join(' ')}`); }; });
+    const saved = CONSOLE_METHODS.map((m) => console[m]);
+    let logSink = logs;
+    CONSOLE_METHODS.forEach((m) => { console[m] = (...a: unknown[]) => { logSink.push(`${m}: ${a.map(describeValue).join(' ')}`); }; });
+    // The suite-level rejection / window-error handlers read `currentErrors`, which is pointed at the step sink
+    // for the duration of each step and back at the mount list for unmount.
     const headBefore = new Set(Array.from(document.head.childNodes));
+    const runtime = installStepRuntime();
     let html = '';
     let head = '';
+    const steps: StepObserved[] = [];
+    let firstErrors: string[] = [];
+    let firstLogs: string[] = [];
     try {
         let elm: HTMLElement | undefined;
         try {
             const Component = (await import(/* @vite-ignore */ file)).default;
             elm = lwc.createElement('fixture-test', { is: Component });
+            stampNode(elm!);
             for (const [k, v] of Object.entries(props)) (elm as any)[k] = v;
             document.body.appendChild(elm!);
         } catch (e) { errors.push(`render: ${describeValue(e)}`); }
         for (let i = 0; i < 3; i++) await tick();
-        html = Array.from(document.body.childNodes, serializeNode).join('');
-        head = Array.from(document.head.childNodes).filter((n) => !headBefore.has(n)).map(serializeNode).join('');
+        ({ html, head } = snapDom(headBefore));
+        // First-mount errors/logs stop here. Step traffic stays on the step records; unmount is appended after the steps
+        // so a disconnect log (lifecycle-disconnected-callback) stays on the first-mount record.
+        firstErrors = errors.slice();
+        firstLogs = logs.slice();
+        let life: StepObserved | undefined;
+        if (elm) {
+            for (const spec of plan) {
+                const stepErrors: string[] = [];
+                const stepLogs: string[] = [];
+                currentErrors = stepErrors;
+                logSink = stepLogs;
+                const note = actStep(elm, spec);
+                for (let i = 0; i < 3; i++) await tick();
+                const dom = snapDom(headBefore);
+                const rec = stepRecord(spec, dom.html, dom.head, stepErrors, stepLogs, observeStep(elm, spec, note));
+                steps.push(rec);
+                if (spec.class === 'lifecycle') life = rec;
+            }
+        }
+        currentErrors = errors;
+        logSink = logs;
+        const traceAtUnmount = traceLength();
         try { if (elm?.parentNode) elm.parentNode.removeChild(elm); } catch (e) { errors.push(`disconnect: ${describeValue(e)}`); }
         await tick();
+        if (life) {
+            const more = lifecycleTrace().slice(traceAtUnmount);
+            if (more.length) life.lifecycle = [...(life.lifecycle ?? []), ...more.map((e) => ({ ...e, ...(e.threw ? { threw: norm(e.threw) } : {}), ...(e.error ? { error: norm(e.error) } : {}) }))];
+        }
     } finally {
-        methods.forEach((m, i) => { console[m] = saved[i]; });
+        CONSOLE_METHODS.forEach((m, i) => { console[m] = saved[i]; });
         currentErrors = null;
+        runtime.restore();
         document.body.textContent = '';
     }
+    const unmountErrors = errors.slice(firstErrors.length);
+    const unmountLogs = logs.slice(firstLogs.length);
+    const allErrors = [...firstErrors, ...unmountErrors];
+    const allLogs = [...firstLogs, ...unmountLogs];
     return {
-        status: errors.length ? 'render-error' : 'ok',
+        status: allErrors.length ? 'render-error' : 'ok',
         html: norm(html),
         ...(head ? { head: norm(head) } : {}),
-        ...(errors.length ? { errors: errors.map(norm) } : {}),
-        ...(logs.length ? { logs: logs.map(norm) } : {}),
+        ...(allErrors.length ? { errors: allErrors.map(norm) } : {}),
+        ...(allLogs.length ? { logs: allLogs.map(norm) } : {}),
+        ...(steps.length ? { steps } : {}),
     };
 }
 
-interface Corpus { key: 'ssr' | 'template'; file: string; expectCount: number; cases: { rel: string; exclude?: string; run: () => Promise<Observed> }[] }
+interface Corpus { key: 'ssr' | 'template'; file: string; expectCount: number; oracleCount: number; cases: { rel: string; exclude?: string; run: () => Promise<Observed> }[] }
+
+const HARNESS_SSR_ROOT = path.resolve(here, '../fixtures/ssr');
+const HARNESS_TEMPLATE_ROOT = path.resolve(here, '../fixtures/template');
+// Titles are the D-0255 case ids. expectCount tracks the corpus (oracle + harness fixtures); the title stays put
+// so adding fixtures does not drop `finds 387` / `finds 567` from the board universe.
+const FIND_TITLE = { ssr: 'finds 387 ssr fixtures', template: 'finds 567 template fixtures' } as const;
+
+function ssrDirs(): { dir: string; rel: string; oracle: boolean }[] {
+    const oracle = listFixtures().map((dir) => ({ dir, rel: path.relative(FIXTURES_ROOT, dir), oracle: true }));
+    const harness = fs.existsSync(HARNESS_SSR_ROOT)
+        ? listFixtures(HARNESS_SSR_ROOT).map((dir) => ({ dir, rel: path.relative(HARNESS_SSR_ROOT, dir), oracle: false }))
+        : [];
+    return [...oracle, ...harness].sort((a, b) => a.rel.localeCompare(b.rel));
+}
 
 function ssrCorpus(): Corpus {
-    const dirs = listFixtures();
+    const dirs = ssrDirs();
     return {
-        key: 'ssr', file: 'ssr-fixtures.json', expectCount: 387,
-        cases: dirs.map((dirname) => {
-            const rel = path.relative(FIXTURES_ROOT, dirname);
+        key: 'ssr', file: 'ssr-fixtures.json', expectCount: 392, oracleCount: 387,
+        cases: dirs.map(({ dir: dirname, rel, oracle }) => {
             // Upstream `.skip` markers (testFixtureDir existsUp) are honored; `.only` has no meaning in a parity board.
-            const exclude = existsUp(dirname, '.skip') ? 'upstream .skip marker (ssr-compiler testFixtureDir)' : undefined;
+            // existsUp walks to `__tests__` and would not terminate on a harness path, so only oracle dirs use it.
+            const exclude = oracle && existsUp(dirname, '.skip') ? 'upstream .skip marker (ssr-compiler testFixtureDir)' : undefined;
             return {
                 rel, exclude,
                 run: async () => {
@@ -138,7 +222,7 @@ function ssrCorpus(): Corpus {
                         compileErrors.set(rel, { ...observeError(e), message: norm(String(e?.message ?? e)) });
                         return { status: 'compile-error' as const, error: norm(String(e?.message ?? e)) };
                     }
-                    const obs = await render(code, rel, config?.props ?? {});
+                    const obs = await render(code, rel, config?.props ?? {}, readSsrSources(dirname, config.entry, config?.props ?? {}));
                     // Diagnostic only (report.json, not pass/fail): does the CSR DOM equal upstream's SSR expected.html?
                     // Upstream formatHTML throws on some unbalanced markup; that counts as no match.
                     try {
@@ -156,12 +240,20 @@ const ssrMatch: Record<string, boolean> = {};
 // Structured compile error per fixture (name/filename/line/column) for src/compareError.ts's parser-error policy.
 const compileErrors = new Map<string, ErrorObservation>();
 
+function templateDirs(): { dir: string; root: string; oracle: boolean }[] {
+    const oracle = listTemplateFixtures().map((dir) => ({ dir, root: TEMPLATE_FIXTURES_ROOT, oracle: true }));
+    const harness = fs.existsSync(HARNESS_TEMPLATE_ROOT)
+        ? listTemplateFixtures(HARNESS_TEMPLATE_ROOT).map((dir) => ({ dir, root: HARNESS_TEMPLATE_ROOT, oracle: false }))
+        : [];
+    return [...oracle, ...harness];
+}
+
 function templateCorpus(): Corpus {
     return {
-        key: 'template', file: 'template-fixtures.json', expectCount: 567,
-        cases: listTemplateFixtures().map((dir) => {
-            const fx = readTemplateFixture(dir);
-            const exclude = existsUp(dir, '.skip') ? 'upstream .skip marker (template-compiler testFixtureDir)' : undefined;
+        key: 'template', file: 'template-fixtures.json', expectCount: 568, oracleCount: 567,
+        cases: templateDirs().map(({ dir, root, oracle }) => {
+            const fx = readTemplateFixture(dir, root);
+            const exclude = oracle && existsUp(dir, '.skip') ? 'upstream .skip marker (template-compiler testFixtureDir)' : undefined;
             return {
                 rel: fx.rel, exclude,
                 run: async () => {
@@ -179,7 +271,9 @@ function templateCorpus(): Corpus {
                         compileErrors.set(fx.rel, { ...observeError(e), message: norm(String(e?.message ?? e)) });
                         return { status: 'compile-error' as const, error: norm(String(e?.message ?? e)), ...extra() };
                     }
-                    return { ...(await render(code, fx.rel, {})), ...extra() };
+                    const rootJs = templateComponentSource(fx.light);
+                    const sources: FixtureSources = { js: [rootJs], html: [fx.src], rootJs, props: {} };
+                    return { ...(await render(code, fx.rel, {}, sources)), ...extra() };
                 },
             };
         }),
@@ -196,7 +290,10 @@ for (const corpus of corpora) {
     const recorded: Golden = {};
     const rows: (typeof reportRows)[string] = (reportRows[corpus.key] = []);
     describe(`csr render ${corpus.key} [${BACKEND_ID}]`, () => {
-        it(`finds ${corpus.expectCount} ${corpus.key} fixtures`, () => expect(corpus.cases.length).toBe(corpus.expectCount));
+        it(FIND_TITLE[corpus.key], () => {
+            expect(corpus.cases.filter((c) => !c.rel.startsWith('csr-steps/')).length).toBe(corpus.oracleCount);
+            expect(corpus.cases.length).toBe(corpus.expectCount);
+        });
         if (!UPDATE) {
             it('golden covers exactly the corpus', () => expect(Object.keys(golden).sort()).toEqual(corpus.cases.map((c) => c.rel).sort()));
         }

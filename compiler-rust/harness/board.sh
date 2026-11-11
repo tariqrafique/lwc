@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Land self-tests covering this file: test-board-ratchet (see scripts/land-self-tests.tsv). A board.sh-only land should select that test and skip rust rebuilds.
 # Official board: pin ONE immutable napi binary for the whole run, log its hash.
 # Usage: ./board.sh [check] [--root=<tree>] [suite ...]   (default: all rows below)
 #        ./board.sh check [--root=<tree>]   full run, set-equality judge only; BOARD_RATCHET_UPDATE refused

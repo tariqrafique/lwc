@@ -1,0 +1,6 @@
+{
+    "entry": "x/keyed-state",
+    "props": {
+        "items": ["a", "b", "c"]
+    }
+}

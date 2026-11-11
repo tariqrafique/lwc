@@ -36,7 +36,12 @@ const TRANSFORM_OPTION_KEYS = new Set([
     'ssrMode', 'experimentalErrorRecoveryMode', 'componentFeatureFlagModulePath', 'enablePrivateMethods',
 ]);
 
-export interface TemplateFixture { rel: string; name: string; src: string; cfg: Record<string, unknown>; droppedKeys: string[]; light: boolean }
+export interface TemplateFixture { rel: string; name: string; src: string; css?: string; cfg: Record<string, unknown>; droppedKeys: string[]; light: boolean }
+
+/** Component class source corpus B actually compiles. Shared with step analysis so the plan matches the bundle. */
+export function templateComponentSource(light: boolean): string {
+    return `import { LightningElement } from 'lwc';\nexport default class extends LightningElement {${light ? "\n    static renderMode = 'light';" : ''}\n}\n`;
+}
 
 export function listTemplateFixtures(root = TEMPLATE_FIXTURES_ROOT): string[] {
     const out: string[] = [];
@@ -58,9 +63,12 @@ export function readTemplateFixture(dir: string, root = TEMPLATE_FIXTURES_ROOT):
     const droppedKeys: string[] = [];
     for (const [k, v] of Object.entries(raw)) (TRANSFORM_OPTION_KEYS.has(k) ? ((cfg[k] = v), 0) : droppedKeys.push(k));
     const src = fs.readFileSync(path.join(dir, 'actual.html'), 'utf8');
+    const cssPath = path.join(dir, 'actual.css');
+    // Only harness fixtures ship actual.css. Oracle template fixtures have none, so their bundles stay stylesheet-less.
+    const css = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : undefined;
     // Pair light-DOM root templates with a light-DOM component; otherwise the engine rejects the pairing outright.
     const light = /^\s*(?:<!--[\s\S]*?-->\s*)*<template\b[^>]*\blwc:render-mode\s*=\s*["']?light\b/.test(src);
-    return { rel: path.relative(root, dir), name: path.basename(dir), src, cfg, droppedKeys, light };
+    return { rel: path.relative(root, dir), name: path.basename(dir), src, ...(css !== undefined ? { css } : {}), cfg, droppedKeys, light };
 }
 
 const VROOT = '/virtual-csr';
@@ -74,9 +82,14 @@ const STUB_ROOT = '/virtual-csr-stub';
 export function bundleTemplateFixtureCsr(backend: CompilerBackend, fx: TemplateFixture, onWarning: (message: string) => void) {
     const dir = `${VROOT}/x/${fx.name}`;
     const files: Record<string, string> = {
-        [`${dir}/${fx.name}.js`]: `import { LightningElement } from 'lwc';\nexport default class extends LightningElement {${fx.light ? "\n    static renderMode = 'light';" : ''}\n}\n`,
+        [`${dir}/${fx.name}.js`]: templateComponentSource(fx.light),
         [`${dir}/${fx.name}.html`]: fx.src,
     };
+    if (fx.css !== undefined) {
+        files[`${dir}/${fx.name}.css`] = fx.css;
+        // The template always imports `./<name>.scoped.css?scoped=true`. Supplying it makes the scope token real.
+        files[`${dir}/${fx.name}.scoped.css`] = fx.css;
+    }
     const htmlId = `${dir}/${fx.name}.html`;
     const seam: CompilerBackend = {
         id: backend.id,
@@ -90,11 +103,12 @@ export function bundleTemplateFixtureCsr(backend: CompilerBackend, fx: TemplateF
         resolveId(importee: string, importer?: string) {
             if (importee in files) return importee;
             if (importer && importer.startsWith(VROOT) && importee.startsWith('.')) {
-                const p = path.posix.resolve(path.posix.dirname(importer.split('?')[0]), importee);
-                if (p in files) return p;
+                const [spec, query] = importee.split('?');
+                const p = path.posix.resolve(path.posix.dirname(importer.split('?')[0]), spec);
+                if (p in files) return query ? `${p}?${query}` : p;
             }
         },
-        load: (id: string) => files[id],
+        load: (id: string) => files[id.split('?')[0]],
     };
     const childStubs = {
         name: 'csr-child-stubs',
@@ -129,6 +143,11 @@ const escAttr = (s: string) => s.replace(/&/g, '&amp;').replace(/\u00a0/g, '&nbs
 const shadowRoots = new WeakMap<Element, ShadowRoot>();
 const delegatesFocus = new WeakSet<ShadowRoot>();
 let tracking = false;
+/** Shadow root captured by `trackShadowRoots`, else the native open-shadow getter (engine keeps its own attachShadow). */
+export function capturedShadowRoot(el: Element): ShadowRoot | null {
+    return shadowRoots.get(el) ?? (get(el, 'shadowRoot') as ShadowRoot | null);
+}
+
 export function trackShadowRoots(): void {
     if (tracking) return;
     tracking = true;
