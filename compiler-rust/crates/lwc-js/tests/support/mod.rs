@@ -44,9 +44,19 @@ impl From<TransformError> for Thrown {
     }
 }
 
+fn dispatch(
+    src: &str,
+    filename: &str,
+    o: &CompileOptions,
+) -> Result<lwc_shared::CompileResult, TransformError> {
+    lwc_compiler::dispatch(
+        src,
+        filename,
+        &lwc_compiler::normalize_compile_options(o).expect("test CompileOptions should validate"),
+    )
+}
+
 /// `transformSync(src, filename, o)`'s thrown error.
 pub fn thrown(src: &str, filename: &str, o: &CompileOptions) -> Thrown {
-    lwc_compiler::dispatch(src, filename, o)
-        .expect_err("should fail")
-        .into()
+    dispatch(src, filename, o).expect_err("should fail").into()
 }

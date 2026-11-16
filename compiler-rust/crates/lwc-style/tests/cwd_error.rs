@@ -26,7 +26,14 @@ fn deleted_cwd_throws_like_node() {
             ..Default::default()
         };
         for src in ["a{}", "a{"] {
-            let e = compiler(lwc_compiler::dispatch(src, "x.css", &opts).expect_err(src));
+            let e = compiler(
+                lwc_compiler::dispatch(
+                    src,
+                    "x.css",
+                    &lwc_compiler::normalize_compile_options(&opts).expect("test options"),
+                )
+                .expect_err(src),
+            );
             assert_eq!(
                 e.message, "Error: LWC1009: ENOENT: no such file or directory, uv_cwd",
                 "{src} recovery={recovery}"
@@ -40,7 +47,14 @@ fn deleted_cwd_throws_like_node() {
         transform("", "x.css", &opts).unwrap().code,
         "export default undefined"
     );
-    let e = compiler(lwc_compiler::dispatch("a{", "/abs/x.css", &opts).expect_err("unclosed"));
+    let e = compiler(
+        lwc_compiler::dispatch(
+            "a{",
+            "/abs/x.css",
+            &lwc_compiler::normalize_compile_options(&opts).expect("test options"),
+        )
+        .expect_err("unclosed"),
+    );
     assert_eq!(
         e.message,
         "CssSyntaxError: LWC1009: /abs/x.css:1:1: Unclosed block"

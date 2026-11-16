@@ -234,6 +234,18 @@ pub struct JsCompileResult {
     pub css_scope_tokens: Option<Vec<String>>,
     pub warnings: Option<Vec<JsDiagnostic>>,
     pub error: Option<JsCompileError>,
+    /// D-0205: ordered `log` / `incrementCounter` calls. The loader replays them and strips this field.
+    #[napi(js_name = "instrumentationEvents")]
+    pub instrumentation_events: Option<Vec<JsInstrumentationEvent>>,
+    /// D-0212: `console.warn` texts. The loader prints them and strips this field.
+    pub deprecations: Option<Vec<String>>,
+}
+
+#[napi(object)]
+pub struct JsInstrumentationEvent {
+    pub kind: String,
+    pub metric: Option<String>,
+    pub diagnostic: Option<JsDiagnostic>,
 }
 
 /// The JSON map string from the compiler -> a JS object (`null` when absent).
@@ -242,27 +254,95 @@ fn map_value(map: Option<&str>) -> serde_json::Value {
         .unwrap_or(serde_json::Value::Null)
 }
 
+thread_local! {
+    static NAPI_RECORDER: std::cell::RefCell<Option<std::sync::Arc<lwc_shared::InstrumentationRecorder>>> =
+        const { std::cell::RefCell::new(None) };
+}
+
+fn take_recorded_events() -> Option<Vec<JsInstrumentationEvent>> {
+    let rec = NAPI_RECORDER.with(|c| c.borrow_mut().take())?;
+    let events: Vec<JsInstrumentationEvent> = rec
+        .take()
+        .into_iter()
+        .map(|e| match e {
+            lwc_shared::InstrumentationEvent::IncrementCounter(m) => JsInstrumentationEvent {
+                kind: "incrementCounter".into(),
+                metric: Some(m.js_value().to_string()),
+                diagnostic: None,
+            },
+            lwc_shared::InstrumentationEvent::Log(d) => JsInstrumentationEvent {
+                kind: "log".into(),
+                metric: None,
+                diagnostic: Some(to_js_diagnostic(d)),
+            },
+        })
+        .collect();
+    if events.is_empty() {
+        None
+    } else {
+        Some(events)
+    }
+}
+
+fn attach_side_channels(
+    mut r: JsCompileResult,
+    deprecations: Vec<lwc_shared::DeprecationId>,
+) -> JsCompileResult {
+    r.instrumentation_events = take_recorded_events();
+    r.deprecations = if deprecations.is_empty() {
+        None
+    } else {
+        Some(
+            deprecations
+                .into_iter()
+                .map(|d| d.message().to_string())
+                .collect(),
+        )
+    };
+    r
+}
+
 /// Deserialize only. All validation lives in `lwc_compiler::validate_incoming`.
 /// `Err(napi)` = malformed JSON or an unknown key (D-0203, `deny_unknown_fields`).
 /// `Ok(Err(compile))` = LWC validation error (LWC1021 / LWC1023).
 fn to_compile_options(
     options: serde_json::Value,
-) -> Result<std::result::Result<lwc_shared::CompileOptions, lwc_shared::CompileError>> {
+) -> Result<std::result::Result<lwc_compiler::NormalizedTransformOptions, lwc_shared::CompileError>>
+{
     if options.is_null() {
-        return Ok(lwc_compiler::validate_incoming(None, &js_string(&options))
-            .map(lwc_compiler::NormalizedTransformOptions::into_compile_options));
+        NAPI_RECORDER.with(|c| *c.borrow_mut() = None);
+        return Ok(lwc_compiler::validate_incoming(None, &js_string(&options)));
     }
+    // `Option<Value>` maps JSON null to None, so read ssrMode off the raw object to
+    // distinguish omitted (default sync) from explicit null (asyncYield path, emit null).
+    let ssr_mode_raw = options.get("ssrMode").cloned();
+    let inst_present = options.get("instrumentation").is_some_and(|v| !v.is_null());
     let wire: JsCompileOptions = serde_json::from_value(options).map_err(|e| {
         napi::Error::new(
             napi::Status::InvalidArg,
             format!("invalid compile options: {e}"),
         )
     })?;
-    let raw = wire_to_transform(wire);
-    Ok(
-        lwc_compiler::validate_incoming(Some(&raw), &js_string(&serde_json::Value::Null))
-            .map(lwc_compiler::NormalizedTransformOptions::into_compile_options),
-    )
+    let mut raw = wire_to_transform(wire);
+    if let Some(v) = ssr_mode_raw {
+        raw.ssr_mode = match v {
+            serde_json::Value::String(s) => Some(lwc_compiler::SsrModeInput::Text(s)),
+            other => Some(lwc_compiler::SsrModeInput::NonString(other.to_string())),
+        };
+    }
+    if inst_present && raw.instrumentation.is_none() {
+        // A JS InstrumentationObject cannot cross JSON; attach a recorder so events can
+        // be returned for the loader to replay (D-0205 / G2b).
+        let rec = std::sync::Arc::new(lwc_shared::InstrumentationRecorder::default());
+        raw.instrumentation = Some(lwc_shared::InstrumentationHandle(rec.clone()));
+        NAPI_RECORDER.with(|c| *c.borrow_mut() = Some(rec));
+    } else {
+        NAPI_RECORDER.with(|c| *c.borrow_mut() = None);
+    }
+    Ok(lwc_compiler::validate_incoming(
+        Some(&raw),
+        &js_string(&serde_json::Value::Null),
+    ))
 }
 
 /// Map the wire struct onto [`lwc_compiler::TransformOptions`]. No defaults, no type checks, no LWC codes.
@@ -276,9 +356,9 @@ fn wire_to_transform(options: JsCompileOptions) -> lwc_compiler::TransformOption
         Some(_) => Some(lwc_compiler::ApiVersionInput::NonNumber),
     };
     let ssr_mode = match options.ssr_mode {
-        None | Some(V::Null) => None,
+        None => None,
         Some(V::String(s)) => Some(lwc_compiler::SsrModeInput::Text(s)),
-        Some(_) => Some(lwc_compiler::SsrModeInput::NonString),
+        Some(v) => Some(lwc_compiler::SsrModeInput::NonString(v.to_string())),
     };
     lwc_compiler::TransformOptions {
         name: options.name,
@@ -300,7 +380,7 @@ fn wire_to_transform(options: JsCompileOptions) -> lwc_compiler::TransformOption
         component_feature_flag_module_path: options.component_feature_flag_module_path,
         enable_lightning_web_security_transforms: options.enable_lightning_web_security_transforms,
         is_explicit_import: options.is_explicit_import,
-        // A JS InstrumentationObject cannot be represented in JSON; the key is accepted and dropped.
+        // Callbacks cannot cross JSON; `to_compile_options` attaches a recorder when the key is present.
         instrumentation: None,
         dynamic_imports: options
             .dynamic_imports
@@ -483,7 +563,8 @@ mod tests {
     fn defaults_come_from_lwc_shared() {
         let o = to_compile_options(json!({"name": "a", "namespace": "x"}))
             .unwrap()
-            .unwrap();
+            .unwrap()
+            .into_compile_options();
         assert_eq!(
             o,
             lwc_shared::CompileOptions {
@@ -503,7 +584,8 @@ mod tests {
             json!({"name": "a", "namespace": "x", "dynamicImports": {"loader": "l"}}),
         )
         .unwrap()
-        .unwrap();
+        .unwrap()
+        .into_compile_options();
         assert!(o.dynamic_import_strict_specifier);
     }
 
@@ -514,7 +596,7 @@ mod tests {
             "outputConfig": {"sourcemap": "inline", "minify": false},
             "customRendererConfig": {"directives": ["dom"], "elements": [{"tagName": "svg", "namespace": "ns", "attributes": ["href"]}]},
             "stylesheetConfig": {"customProperties": {"resolution": {"type": "module", "name": "@x/r"}}}
-        })).unwrap().unwrap();
+        })).unwrap().unwrap().into_compile_options();
         assert!(o.is_explicit_import && o.enable_lightning_web_security_transforms);
         assert_eq!(o.sourcemap, lwc_shared::Sourcemap::Inline);
         let c = o.custom_renderer_config.unwrap();
@@ -540,7 +622,8 @@ mod tests {
             json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": true}}),
         )
         .unwrap()
-        .unwrap();
+        .unwrap()
+        .into_compile_options();
         assert_eq!(o.sourcemap, lwc_shared::Sourcemap::On);
     }
 
@@ -649,12 +732,12 @@ mod tests {
             to_compile_options(json!({"name": "a", "namespace": "x", "apiVersion": 60.5}))
                 .unwrap()
                 .unwrap();
-        assert_eq!(snapped.api_version, Some(60));
+        assert_eq!(snapped.api_version, 60);
         let snapped =
             to_compile_options(json!({"name": "a", "namespace": "x", "apiVersion": 63.9}))
                 .unwrap()
                 .unwrap();
-        assert_eq!(snapped.api_version, Some(63));
+        assert_eq!(snapped.api_version, 63);
         assert!(
             err(json!({"name": "a", "namespace": "x", "notARealOption": true}))
                 .contains("notARealOption")
@@ -702,7 +785,7 @@ mod tests {
                 .unwrap();
             assert_eq!(
                 o.api_version,
-                Some(lwc_shared::api_version::HIGHEST_API_VERSION),
+                lwc_shared::api_version::HIGHEST_API_VERSION,
                 "{v}"
             );
         }
@@ -710,16 +793,46 @@ mod tests {
 
     #[test]
     fn unknown_ssr_mode_is_not_a_seam_error() {
-        for v in [json!("bogus"), json!(1), serde_json::Value::Null] {
-            let o = to_compile_options(json!({"name": "a", "namespace": "x", "ssrMode": v}))
-                .unwrap()
-                .unwrap();
-            assert_eq!(o.ssr_mode, lwc_shared::SsrMode::Sync, "{v}");
-        }
+        let o = to_compile_options(json!({"name": "a", "namespace": "x", "ssrMode": "bogus"}))
+            .unwrap()
+            .unwrap();
+        assert_eq!(o.ssr_mode, lwc_shared::SsrMode::AsyncYield);
+        assert_eq!(o.ssr_mode_emit.as_deref(), Some(r#""bogus""#));
+        let o = to_compile_options(json!({"name": "a", "namespace": "x", "ssrMode": 1}))
+            .unwrap()
+            .unwrap();
+        assert_eq!(o.ssr_mode, lwc_shared::SsrMode::AsyncYield);
+        assert_eq!(o.ssr_mode_emit.as_deref(), Some("1"));
+        let o = to_compile_options(
+            json!({"name": "a", "namespace": "x", "ssrMode": serde_json::Value::Null}),
+        )
+        .unwrap()
+        .unwrap();
+        assert_eq!(o.ssr_mode, lwc_shared::SsrMode::AsyncYield);
+        assert_eq!(o.ssr_mode_emit.as_deref(), Some("null"));
         let o = to_compile_options(json!({"name": "a", "namespace": "x", "ssrMode": "asyncYield"}))
             .unwrap()
             .unwrap();
         assert_eq!(o.ssr_mode, lwc_shared::SsrMode::AsyncYield);
+        assert_eq!(o.ssr_mode_emit, None);
+    }
+
+    #[test]
+    fn instrumentation_key_attaches_a_recorder() {
+        let o = to_compile_options(json!({"name": "a", "namespace": "x", "instrumentation": {}}))
+            .unwrap()
+            .unwrap();
+        assert!(
+            o.instrumentation.is_some(),
+            "a present instrumentation key must attach a recorder (D-0205)"
+        );
+        let o = to_compile_options(json!({"name": "a", "namespace": "x"}))
+            .unwrap()
+            .unwrap();
+        assert!(
+            o.instrumentation.is_none(),
+            "an omitted key must not invent a recorder"
+        );
     }
 }
 
@@ -731,8 +844,14 @@ pub fn transform(
 ) -> Result<JsCompileResult> {
     let o = match to_compile_options(options)? {
         Ok(o) => o,
-        Err(e) => return Ok(errors::options_error(e)),
+        Err(e) => {
+            return Ok(attach_side_channels(
+                errors::options_error(e),
+                lwc_compiler::take_validation_deprecations(),
+            ));
+        }
     };
+    let deprecations = o.deprecations.clone();
     Ok(match errors::compile(&src, &filename, &o) {
         Ok(r) => {
             let warnings = if r.warnings.is_empty() {
@@ -740,14 +859,19 @@ pub fn transform(
             } else {
                 Some(r.warnings.into_iter().map(to_js_diagnostic).collect())
             };
-            JsCompileResult {
-                code: r.code,
-                map: map_value(r.map.as_deref()),
-                css_scope_tokens: r.css_scope_tokens,
-                warnings,
-                error: None,
-            }
+            attach_side_channels(
+                JsCompileResult {
+                    code: r.code,
+                    map: map_value(r.map.as_deref()),
+                    css_scope_tokens: r.css_scope_tokens,
+                    warnings,
+                    error: None,
+                    instrumentation_events: None,
+                    deprecations: None,
+                },
+                deprecations,
+            )
         }
-        Err(e) => e,
+        Err(e) => attach_side_channels(e, deprecations),
     })
 }

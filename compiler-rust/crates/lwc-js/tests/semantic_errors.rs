@@ -136,25 +136,29 @@ type Observed = Option<(Option<u32>, String, Option<String>, Option<(u32, u32, u
 
 /// Through the @lwc/compiler JS facade. `None`: compiled; else (code, message, filename, Position).
 fn observe(src: &str, recover: bool) -> Observed {
-    lwc_compiler::dispatch(src, "foo.js", &opts(recover))
-        .err()
-        .map(|e| {
-            let t = support::Thrown::from(e);
-            let first = t.errors.first();
-            let loc = first.and_then(|d| d.location).map(|l| {
-                (
-                    l.line,
-                    l.column,
-                    l.index.expect("a parse error location is a Babel Position"),
-                )
-            });
+    lwc_compiler::dispatch(
+        src,
+        "foo.js",
+        &lwc_compiler::normalize_compile_options(&opts(recover)).expect("test options"),
+    )
+    .err()
+    .map(|e| {
+        let t = support::Thrown::from(e);
+        let first = t.errors.first();
+        let loc = first.and_then(|d| d.location).map(|l| {
             (
-                t.code(),
-                t.message,
-                first.and_then(|d| d.filename.clone()),
-                loc,
+                l.line,
+                l.column,
+                l.index.expect("a parse error location is a Babel Position"),
             )
-        })
+        });
+        (
+            t.code(),
+            t.message,
+            first.and_then(|d| d.filename.clone()),
+            loc,
+        )
+    })
 }
 
 fn want_loc(w: &Value) -> Option<(u32, u32, u32)> {

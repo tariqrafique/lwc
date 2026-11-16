@@ -30,7 +30,7 @@ fn decorator_outcomes_match_shipped() {
         let r = lwc_compiler::dispatch(
             c["src"].as_str().unwrap(),
             c["filename"].as_str().unwrap(),
-            &o,
+            &lwc_compiler::normalize_compile_options(&o).expect("test options"),
         )
         .map_err(support::Thrown::from);
         let want = &c["shipped"];

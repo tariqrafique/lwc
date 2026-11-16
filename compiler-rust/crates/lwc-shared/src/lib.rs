@@ -304,6 +304,11 @@ pub struct CompileOptions {
     pub target_ssr: bool,
     /// SSR compilation mode (only read when `target_ssr`).
     pub ssr_mode: SsrMode,
+    /// JS literal emitted as `compilationMode` (`b.literal(compilationMode)` in
+    /// generate-markup.ts). `None` means emit `ssr_mode.js_value()` as a string.
+    /// Unknown or non-string modes set this so codegen can stay on the asyncYield
+    /// path while the raw value is emitted (G1a).
+    pub ssr_mode_emit: Option<String>,
     // --- JS path (`@lwc/compiler` DEFAULT_OPTIONS) ---
     pub enable_private_methods: bool,
     pub enable_lightning_web_security_transforms: bool,
@@ -352,6 +357,7 @@ impl Default for CompileOptions {
             api_version: None,
             target_ssr: false,
             ssr_mode: SsrMode::Sync,
+            ssr_mode_emit: None,
             enable_private_methods: false,
             enable_lightning_web_security_transforms: false,
             experimental_error_recovery_mode: false,

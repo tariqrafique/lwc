@@ -9,7 +9,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use lwc_shared::errors::CompilerValidationErrors;
 use lwc_shared::{
     CompileError, CompileOptions, CompilerDiagnostic, CustomPropertiesResolution,
-    CustomRendererConfig, InstrumentationHandle, ProducerPosition, Sourcemap, SsrMode,
+    CustomRendererConfig, DeprecationId, InstrumentationHandle, ProducerPosition, Sourcemap,
+    SsrMode,
 };
 
 /// JSON names of [`TransformOptions`] (camelCase, `targetSSR` kept as upstream spells it).
@@ -118,12 +119,15 @@ pub enum ApiVersionInput {
 }
 
 /// `ssrMode` as received. Upstream does not validate `CompilationMode` at runtime;
-/// unknown values are not a compiler error. [`validate_transform_options`] maps a
-/// known name and defaults anything else (including a non-string) to sync.
+/// unknown values are not a compiler error. Known `"sync"` / `"async"` / `"asyncYield"`
+/// select that codegen path; anything else keeps the asyncYield shape and is emitted
+/// as the raw value (`ssr-compiler` compile-js/index.ts:436, generate-markup.ts:75).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SsrModeInput {
     Text(String),
-    NonString,
+    /// JSON `null`, a number, bool, object, or array. The string holds the JS/JSON literal to emit
+    /// (`null`, `1`, `true`, `{}`, ...).
+    NonString(String),
 }
 
 /// `StylesheetConfig` (options.ts:64).
@@ -185,7 +189,10 @@ pub struct TransformOptions {
 
 /// `NormalizedTransformOptions` (options.ts:167): defaults filled, nested configs always present,
 /// `apiVersion` always a known version number.
+/// The private `_validated` token is so only [`validate_transform_options`] can construct this
+/// type (G1b); it is not a `#[non_exhaustive]` stability marker.
 #[derive(Debug, Clone)]
+#[allow(clippy::manual_non_exhaustive)]
 pub struct NormalizedTransformOptions {
     pub name: String,
     pub namespace: String,
@@ -197,6 +204,12 @@ pub struct NormalizedTransformOptions {
     pub enable_lightning_web_security_transforms: bool,
     pub target_ssr: bool,
     pub ssr_mode: SsrMode,
+    /// JS literal for `compilationMode` when it is not a known mode name; `None` emits `ssr_mode`.
+    pub ssr_mode_emit: Option<String>,
+    /// `console.warn` texts validateOptions would print, in source order (D-0212 / G4b).
+    pub deprecations: Vec<DeprecationId>,
+    /// Private token: only [`validate_transform_options`] can construct this type (G1b).
+    _validated: (),
     pub experimental_error_recovery_mode: bool,
     pub component_feature_flag_module_path: String,
     pub stylesheet_resolution: CustomPropertiesResolution,
@@ -225,6 +238,7 @@ impl NormalizedTransformOptions {
             api_version: Some(self.api_version),
             target_ssr: self.target_ssr,
             ssr_mode: self.ssr_mode,
+            ssr_mode_emit: self.ssr_mode_emit,
             enable_private_methods: self.enable_private_methods,
             enable_lightning_web_security_transforms: self.enable_lightning_web_security_transforms,
             experimental_error_recovery_mode: self.experimental_error_recovery_mode,
@@ -254,8 +268,29 @@ impl NormalizedTransformOptions {
 /// once-per-process gate upstream keeps in the options module. Minify is not latched.
 static STYLESHEET_WARNED: AtomicBool = AtomicBool::new(false);
 
+thread_local! {
+    static LAST_DEPRECATIONS: std::cell::RefCell<Vec<DeprecationId>> =
+        const { std::cell::RefCell::new(Vec::new()) };
+}
+
 fn take_stylesheet_warn(present: bool, latch: &AtomicBool) -> bool {
     present && !latch.swap(true, Ordering::Relaxed)
+}
+
+fn record_deprecations(d: Vec<DeprecationId>) {
+    LAST_DEPRECATIONS.with(|c| *c.borrow_mut() = d);
+}
+
+/// Deprecations recorded by the most recent [`validate_transform_options`] / [`validate_incoming`]
+/// on this thread, including when validation returns `Err` (stylesheet may already have fired;
+/// minify has not, matching `validateOutputConfig` throwing before the minify warn).
+pub fn take_validation_deprecations() -> Vec<DeprecationId> {
+    LAST_DEPRECATIONS.with(|c| std::mem::take(&mut *c.borrow_mut()))
+}
+
+#[cfg(test)]
+pub(crate) fn reset_stylesheet_warn_latch_for_tests() {
+    STYLESHEET_WARNED.store(false, Ordering::Relaxed);
 }
 
 /// `validateTransformOptions`.
@@ -263,17 +298,31 @@ pub fn validate_transform_options(
     options: &TransformOptions,
 ) -> Result<NormalizedTransformOptions, CompileError> {
     // validateOptions: stylesheet warn (once), then outputConfig (sourcemap throws before minify warn).
-    // D-0212: the loader prints DeprecationId::message(); do not compute it here. The latch matches upstream.
-    let _ = take_stylesheet_warn(options.stylesheet_config.is_some(), &STYLESHEET_WARNED);
+    // D-0212: the JS loader prints each [`DeprecationId::message`]. Collect them here so the
+    // latch result is not discarded (G4b); upstream is options.ts:188-216 @ b9e8007.
+    let mut deprecations = Vec::new();
+    if take_stylesheet_warn(options.stylesheet_config.is_some(), &STYLESHEET_WARNED) {
+        deprecations.push(DeprecationId::StylesheetConfig);
+    }
     let sourcemap = match options.output_config.as_ref() {
         None => DEFAULT_OUTPUT_SOURCEMAP,
         Some(config) => match config.sourcemap.clone() {
             None => DEFAULT_OUTPUT_SOURCEMAP,
             Some(SourcemapInput::Bool(b)) => Sourcemap::from_bool(b),
             Some(SourcemapInput::Text(s)) if s == "inline" => Sourcemap::Inline,
-            Some(SourcemapInput::Text(s)) => return Err(invalid_sourcemap(&s)),
+            Some(SourcemapInput::Text(s)) => {
+                record_deprecations(deprecations);
+                return Err(invalid_sourcemap(&s));
+            }
         },
     };
+    if options
+        .output_config
+        .as_ref()
+        .is_some_and(|c| c.minify_present)
+    {
+        deprecations.push(DeprecationId::OutputConfigMinify);
+    }
 
     let stylesheet_resolution = options
         .stylesheet_config
@@ -297,10 +346,16 @@ pub fn validate_transform_options(
         }
         Some(ApiVersionInput::Number(n)) => lwc_shared::api_version::get_api_version_from_f64(n),
     };
-    let ssr_mode = match options.ssr_mode.as_ref() {
-        None => DEFAULT_SSR_MODE,
-        Some(SsrModeInput::Text(s)) => SsrMode::from_js(s).unwrap_or(DEFAULT_SSR_MODE),
-        Some(SsrModeInput::NonString) => DEFAULT_SSR_MODE,
+    let (ssr_mode, ssr_mode_emit) = match options.ssr_mode.as_ref() {
+        None => (DEFAULT_SSR_MODE, None),
+        Some(SsrModeInput::Text(s)) => match SsrMode::from_js(s) {
+            Some(m) => (m, None),
+            None => (
+                SsrMode::AsyncYield,
+                Some(serde_json::to_string(s).expect("string is valid JSON")),
+            ),
+        },
+        Some(SsrModeInput::NonString(literal)) => (SsrMode::AsyncYield, Some(literal.clone())),
     };
 
     Ok(NormalizedTransformOptions {
@@ -326,6 +381,12 @@ pub fn validate_transform_options(
             .unwrap_or(DEFAULT_ENABLE_LIGHTNING_WEB_SECURITY_TRANSFORMS),
         target_ssr: options.target_ssr.unwrap_or(DEFAULT_TARGET_SSR),
         ssr_mode,
+        ssr_mode_emit,
+        deprecations: {
+            record_deprecations(deprecations.clone());
+            deprecations
+        },
+        _validated: (),
         experimental_error_recovery_mode: options
             .experimental_error_recovery_mode
             .unwrap_or(DEFAULT_EXPERIMENTAL_ERROR_RECOVERY_MODE),
@@ -449,7 +510,13 @@ impl TransformOptions {
             instrumentation: o.instrumentation.clone(),
             api_version: o.api_version.map(|v| ApiVersionInput::Number(v as f64)),
             target_ssr: Some(o.target_ssr),
-            ssr_mode: Some(SsrModeInput::Text(o.ssr_mode.js_value().to_string())),
+            ssr_mode: match &o.ssr_mode_emit {
+                None => Some(SsrModeInput::Text(o.ssr_mode.js_value().to_string())),
+                Some(lit) => match serde_json::from_str::<String>(lit) {
+                    Ok(text) => Some(SsrModeInput::Text(text)),
+                    Err(_) => Some(SsrModeInput::NonString(lit.clone())),
+                },
+            },
             experimental_error_recovery_mode: Some(o.experimental_error_recovery_mode),
             component_feature_flag_module_path: Some(o.component_feature_flag_module_path.clone()),
             enable_private_methods: Some(o.enable_private_methods),
@@ -461,6 +528,9 @@ impl TransformOptions {
 mod tests {
     use super::*;
     use lwc_shared::DeprecationId;
+    use std::sync::Mutex;
+
+    static WARN_TEST_LOCK: Mutex<()> = Mutex::new(());
 
     #[test]
     fn rust_option_keys_json_is_the_schema() {
@@ -552,22 +622,61 @@ mod tests {
     }
 
     #[test]
-    fn unknown_ssr_mode_defaults_to_sync_and_is_not_an_error() {
+    fn unknown_ssr_mode_keeps_async_yield_path_and_raw_emit() {
         let mut o = bare();
         o.ssr_mode = Some(SsrModeInput::Text("bogus".into()));
-        assert_eq!(
-            validate_transform_options(&o).unwrap().ssr_mode,
-            SsrMode::Sync
-        );
-        o.ssr_mode = Some(SsrModeInput::NonString);
-        assert_eq!(
-            validate_transform_options(&o).unwrap().ssr_mode,
-            SsrMode::Sync
-        );
+        let n = validate_transform_options(&o).unwrap();
+        assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
+        assert_eq!(n.ssr_mode_emit.as_deref(), Some(r#""bogus""#));
+        o.ssr_mode = Some(SsrModeInput::NonString("null".into()));
+        let n = validate_transform_options(&o).unwrap();
+        assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
+        assert_eq!(n.ssr_mode_emit.as_deref(), Some("null"));
         o.ssr_mode = Some(SsrModeInput::Text("asyncYield".into()));
+        let n = validate_transform_options(&o).unwrap();
+        assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
+        assert_eq!(n.ssr_mode_emit, None);
+        o.ssr_mode = Some(SsrModeInput::Text("sync".into()));
+        let n = validate_transform_options(&o).unwrap();
+        assert_eq!(n.ssr_mode, SsrMode::Sync);
+        assert_eq!(n.ssr_mode_emit, None);
+    }
+
+    #[test]
+    fn stylesheet_deprecation_is_collected_once_and_minify_every_time() {
+        // Process latch is shared; hold it for the whole assertion so a parallel
+        // test cannot consume the first-warn slot.
+        let _guard = WARN_TEST_LOCK.lock().unwrap();
+        reset_stylesheet_warn_latch_for_tests();
+        let mut o = bare();
+        o.stylesheet_config = Some(StylesheetConfig {
+            custom_properties: None,
+        });
+        let n = validate_transform_options(&o).unwrap();
+        assert_eq!(n.deprecations, vec![DeprecationId::StylesheetConfig]);
+        let n = validate_transform_options(&o).unwrap();
+        assert!(n.deprecations.is_empty(), "{:?}", n.deprecations);
+        o.output_config = Some(OutputConfig {
+            sourcemap: None,
+            minify_present: true,
+        });
+        let n = validate_transform_options(&o).unwrap();
+        assert_eq!(n.deprecations, vec![DeprecationId::OutputConfigMinify]);
+        let n = validate_transform_options(&o).unwrap();
+        assert_eq!(n.deprecations, vec![DeprecationId::OutputConfigMinify]);
+        // Invalid sourcemap throws after the stylesheet latch and before minify.
+        reset_stylesheet_warn_latch_for_tests();
+        o.stylesheet_config = Some(StylesheetConfig {
+            custom_properties: None,
+        });
+        o.output_config = Some(OutputConfig {
+            sourcemap: Some(SourcemapInput::Text("nope".into())),
+            minify_present: true,
+        });
+        assert!(validate_transform_options(&o).is_err());
         assert_eq!(
-            validate_transform_options(&o).unwrap().ssr_mode,
-            SsrMode::AsyncYield
+            take_validation_deprecations(),
+            vec![DeprecationId::StylesheetConfig]
         );
     }
 

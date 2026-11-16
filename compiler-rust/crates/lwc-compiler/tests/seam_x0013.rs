@@ -57,9 +57,12 @@ fn oracle(target_ssr: bool) -> String {
 
 /// The facade's error (what napi serializes field for field) in the oracle's shape.
 fn ours(target_ssr: bool) -> String {
-    let TransformError::Compiler(e) =
-        lwc_compiler::dispatch(SRC, "foo.js", &opts(target_ssr)).unwrap_err()
-    else {
+    let TransformError::Compiler(e) = lwc_compiler::dispatch(
+        SRC,
+        "foo.js",
+        &lwc_compiler::normalize_compile_options(&opts(target_ssr)).expect("test options"),
+    )
+    .unwrap_err() else {
         panic!("not a CompilerError")
     };
     let l = e.location.expect("location");

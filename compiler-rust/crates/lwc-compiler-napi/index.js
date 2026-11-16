@@ -1,6 +1,7 @@
-// lwc-compiler-rs ESM loader. Loads the native binary and re-exports it; no compile logic, no option
-// inspection, no environment overrides (AB-D0005). Order: sibling .node, then the per-triple package.
-// tests/loader_guard.rs enforces: no environment access, no option-key literals.
+// lwc-compiler-rs ESM loader. Loads the native binary and re-exports it; no compile logic
+// (AB-D0005). Option decisions belong to Rust. The wrapper only (1) replays D-0205
+// instrumentation events the native collected into the caller's callbacks, and (2) prints
+// D-0212 deprecation messages Rust already decided to emit. No ThreadsafeFunction.
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
@@ -39,5 +40,36 @@ function load() {
 
 const binding = load();
 
-// S1: the native exports as-is (S3 renames to transformSync + async transform).
-export const transform = binding.transform;
+function replayAndStrip(result, instrumentation) {
+    if (!result || typeof result !== 'object') return result;
+    const events = result.instrumentationEvents;
+    if (events && instrumentation && typeof instrumentation === 'object') {
+        for (const ev of events) {
+            if (ev && ev.kind === 'incrementCounter' && typeof instrumentation.incrementCounter === 'function') {
+                instrumentation.incrementCounter(ev.metric);
+            } else if (ev && ev.kind === 'log' && typeof instrumentation.log === 'function') {
+                instrumentation.log(ev.diagnostic);
+            }
+        }
+    }
+    if (Object.prototype.hasOwnProperty.call(result, 'instrumentationEvents')) {
+        delete result.instrumentationEvents;
+    }
+    const deprecations = result.deprecations;
+    if (Array.isArray(deprecations)) {
+        for (const message of deprecations) {
+            console.warn(message);
+        }
+    }
+    if (Object.prototype.hasOwnProperty.call(result, 'deprecations')) {
+        delete result.deprecations;
+    }
+    return result;
+}
+
+// S1: wrap the native export so events and deprecations surface the way upstream does.
+export function transform(src, filename, options) {
+    const instrumentation =
+        options !== null && typeof options === 'object' ? options.instrumentation : undefined;
+    return replayAndStrip(binding.transform(src, filename, options), instrumentation);
+}

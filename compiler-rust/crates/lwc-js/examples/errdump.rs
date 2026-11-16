@@ -41,7 +41,11 @@ fn main() {
         }
     }
     // The error `transformSync` throws (the lwc-compiler JS facade): one CompilerError, or the aggregate's.
-    match lwc_compiler::dispatch(&src, &file, &o) {
+    match lwc_compiler::dispatch(
+        &src,
+        &file,
+        &lwc_compiler::normalize_compile_options(&o).expect("options"),
+    ) {
         Ok(_) => println!("\"NO ERROR\""),
         Err(e) => {
             let (message, errors) = match e {

@@ -11,8 +11,9 @@ mod transformers;
 pub use options::{
     ApiVersionInput, CustomProperties, DynamicImportConfig, NormalizedTransformOptions,
     OPTION_KEYS, OutputConfig, SourcemapInput, SsrModeInput, StylesheetConfig, TransformOptions,
-    missing_options_error, option_schema_document, prepare_compile_options, validate_incoming,
-    validate_transform_options, validated_compile_options,
+    missing_options_error, option_schema_document, prepare_compile_options,
+    take_validation_deprecations, validate_incoming, validate_transform_options,
+    validated_compile_options,
 };
 
 pub trait CompilerBackend {
@@ -35,18 +36,28 @@ impl CompilerBackend for RustBackend {
         filename: &str,
         options: &CompileOptions,
     ) -> Result<CompileResult, TransformError> {
-        dispatch(src, filename, options)
+        let options = normalize_compile_options(options).map_err(options_error)?;
+        dispatch(src, filename, &options)
     }
 }
 
+/// Flattened [`CompileOptions`] -> the validated type [`dispatch`] accepts. One validate.
+pub fn normalize_compile_options(
+    options: &CompileOptions,
+) -> Result<NormalizedTransformOptions, lwc_shared::CompileError> {
+    validate_transform_options(&TransformOptions::from_compile(options))
+}
+
+/// Compile after options have already been validated. The type is
+/// [`NormalizedTransformOptions`], which only [`validate_transform_options`] /
+/// [`validate_incoming`] can construct, so an unvalidated [`CompileOptions`]
+/// cannot be passed (G1b).
 pub fn dispatch(
     src: &str,
     filename: &str,
-    options: &CompileOptions,
+    options: &NormalizedTransformOptions,
 ) -> Result<CompileResult, TransformError> {
-    // AB-0008: Rust callers validate too. napi deserializes into TransformOptions and uses
-    // `validated_compile_options` before this (invalid sourcemap never becomes a CompileOptions).
-    let options = prepare_compile_options(options).map_err(options_error)?;
+    let options = options.clone().into_compile_options();
     transformers::transform_file(src, filename, &options)
 }
 
@@ -235,6 +246,19 @@ fn template_diagnostics(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Test helper: validate once, then call the public [`super::dispatch`].
+    fn dispatch(
+        src: &str,
+        filename: &str,
+        o: &CompileOptions,
+    ) -> Result<CompileResult, TransformError> {
+        super::dispatch(
+            src,
+            filename,
+            &normalize_compile_options(o).expect("test CompileOptions should validate"),
+        )
+    }
 
     fn compiler(e: TransformError) -> CompilerError {
         match e {

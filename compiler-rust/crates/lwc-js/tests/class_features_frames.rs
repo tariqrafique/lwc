@@ -24,7 +24,7 @@ fn observe(c: &Value) -> Value {
     match lwc_compiler::dispatch(
         c["src"].as_str().unwrap(),
         c["filename"].as_str().unwrap(),
-        &o,
+        &lwc_compiler::normalize_compile_options(&o).expect("test options"),
     ) {
         Ok(_) => json!("ok"),
         Err(e) => {

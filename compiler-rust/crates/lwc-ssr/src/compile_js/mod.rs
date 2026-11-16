@@ -912,7 +912,10 @@ fn add_generate_markup_function(
         lit(&tag),
         props.join(", "),
         wire_adapters_plumbing(wire_adapters),
-        lit(options.ssr_mode.js_value()),
+        options
+            .ssr_mode_emit
+            .clone()
+            .unwrap_or_else(|| lit(options.ssr_mode.js_value())),
     );
     out
 }

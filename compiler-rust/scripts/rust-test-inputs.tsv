@@ -5,10 +5,13 @@
 crates/lwc-compiler-napi/	lwc-compiler-napi
 crates/lwc-compiler-napi/index.js	lwc-compiler-napi
 crates/lwc-compiler-napi/src/	lwc-compiler-napi
+crates/lwc-compiler-napi/src/errors.rs	lwc-compiler
 crates/lwc-compiler-napi/src/lib.rs	lwc-compiler
 crates/lwc-compiler-napi/src/lib.rs	lwc-compiler-napi
 crates/lwc-compiler-napi/tests/fixtures/aggregate-shipped.json	lwc-compiler-napi
 crates/lwc-compiler-napi/tests/fixtures/single-error-shipped.json	lwc-compiler-napi
+crates/lwc-compiler/	lwc-compiler
+crates/lwc-compiler/src/	lwc-compiler
 crates/lwc-compiler/src/options.rs	lwc-compiler
 crates/lwc-js/	lwc-js
 crates/lwc-js/src/	lwc-js

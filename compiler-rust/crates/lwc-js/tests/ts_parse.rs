@@ -83,7 +83,8 @@ fn observe(c: &Value) -> Option<(Option<u32>, String, Option<(u32, u32, u32)>)> 
     let r = lwc_compiler::dispatch(
         c["src"].as_str().unwrap(),
         c["filename"].as_str().unwrap(),
-        &opts(c["recover"].as_bool().unwrap()),
+        &lwc_compiler::normalize_compile_options(&opts(c["recover"].as_bool().unwrap()))
+            .expect("test options"),
     );
     r.err().map(|e| {
         let t = support::Thrown::from(e);
@@ -239,7 +240,12 @@ fn d0245_recovery_mode_ts_interface_is_lwc1007_not_ok() {
     const ID: &str = "interface.ts-rec";
     const SRC: &str = "import { LightningElement, api } from 'lwc';\ninterface A { x: number }\nexport default class Foo extends LightningElement {}";
     let e = support::Thrown::from(
-        lwc_compiler::dispatch(SRC, "foo.ts", &opts(true)).expect_err("D-0245: we throw"),
+        lwc_compiler::dispatch(
+            SRC,
+            "foo.ts",
+            &lwc_compiler::normalize_compile_options(&opts(true)).expect("test options"),
+        )
+        .expect_err("D-0245: we throw"),
     );
     assert_eq!(e.name, None, "single CompilerError, not an aggregate");
     assert_eq!(e.code(), Some(1007));

@@ -138,7 +138,11 @@ fn run_dir(
                 ..Default::default()
             };
             let facade = match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                lwc_compiler::dispatch(&src, "x.css", &opts)
+                lwc_compiler::dispatch(
+                    &src,
+                    "x.css",
+                    &lwc_compiler::normalize_compile_options(&opts).expect("test options"),
+                )
             })) {
                 Ok(Err(e)) => compiler_err_json(&e),
                 Ok(Ok(_)) => json!("compiled"),

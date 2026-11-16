@@ -13,9 +13,10 @@
 //!   (a `CompilerError`) -> `TransformError::Compiler`; a plain `Error` -> `TransformError::Unnormalized`.
 //! Byte-level spec: tests/fixtures/{single-error-shipped,aggregate-shipped}.json.
 use crate::{JsAggregateEntry, JsCompileError, JsCompileResult};
+use lwc_compiler::NormalizedTransformOptions;
 use lwc_shared::{
-    CompileError, CompileOptions, CompileResult, CompilerAggregateError, CompilerError,
-    TransformError, UnnormalizedError,
+    CompileError, CompileResult, CompilerAggregateError, CompilerError, TransformError,
+    UnnormalizedError,
 };
 use napi::bindgen_prelude::Either;
 
@@ -23,7 +24,7 @@ use napi::bindgen_prelude::Either;
 pub(crate) fn compile(
     src: &str,
     filename: &str,
-    o: &CompileOptions,
+    o: &NormalizedTransformOptions,
 ) -> Result<CompileResult, JsCompileResult> {
     lwc_compiler::dispatch(src, filename, o).map_err(|e| result(serialize(e)))
 }
@@ -33,14 +34,20 @@ pub(crate) fn options_error(e: CompileError) -> JsCompileResult {
     result(serialize(lwc_compiler::options_error(e)))
 }
 
-fn result(error: JsCompileError) -> JsCompileResult {
+fn result_fields(error: Option<JsCompileError>) -> JsCompileResult {
     JsCompileResult {
         code: String::new(),
         map: serde_json::Value::Null,
         css_scope_tokens: None,
         warnings: None,
-        error: Some(error),
+        error,
+        instrumentation_events: None,
+        deprecations: None,
     }
+}
+
+fn result(error: JsCompileError) -> JsCompileResult {
+    result_fields(Some(error))
 }
 
 fn serialize(e: TransformError) -> JsCompileError {
@@ -115,7 +122,7 @@ mod tests {
     const SINGLE: &str = include_str!("../tests/fixtures/single-error-shipped.json");
     const AGGREGATE: &str = include_str!("../tests/fixtures/aggregate-shipped.json");
 
-    fn opts(extra: Option<&Value>) -> Result<CompileOptions, CompileError> {
+    fn opts(extra: Option<&Value>) -> Result<NormalizedTransformOptions, CompileError> {
         let mut o = json!({"name": "foo", "namespace": "x"});
         for (k, v) in extra.and_then(Value::as_object).into_iter().flatten() {
             o[k] = v.clone();

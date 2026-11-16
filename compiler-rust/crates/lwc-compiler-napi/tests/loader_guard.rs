@@ -1,6 +1,7 @@
-//! Gate G2 (ship-packaging-plan.md §8, AB-D0005 #5): the ESM loader `index.js` only loads the binary and
-//! re-exports it. It must not read the environment and must not mention any compile option key; option
-//! decisions belong to Rust.
+//! Gate G2 (ship-packaging-plan.md §8, AB-D0005 #5): the ESM loader `index.js` only loads the binary
+//! and wraps `transform`. It must not read the environment and must not mention compile option keys
+//! other than the D-0205 replay keys (`instrumentation`, `log`, `incrementCounter`); option
+//! decisions belong to Rust. Deprecation *messages* are opaque strings from Rust (D-0212).
 //!
 //! Key set source (S1): the serde option structs in `src/lib.rs` (every `Deserialize` struct/enum field,
 //! camelCased per `rename_all`, honouring `#[serde(rename)]` and `tag`), plus the instrumentation
@@ -9,6 +10,9 @@ use std::collections::BTreeSet;
 
 /// Option keys that are JS-only (callbacks), so not in the serde structs (D-0205).
 const NON_SERDE_KEYS: [&str; 3] = ["instrumentation", "log", "incrementCounter"];
+
+/// The loader may mention these keys only to extract callbacks and replay events (G2b).
+const REPLAY_KEYS: &[&str] = &["instrumentation", "log", "incrementCounter"];
 
 fn camel(s: &str) -> String {
     let mut out = String::new();
@@ -215,9 +219,27 @@ fn guard_detects_planted_violations() {
 #[test]
 fn index_js_has_no_env_access_and_no_option_keys() {
     let js = std::fs::read_to_string(lwc_shared::cargo_manifest_dir!().join("index.js")).unwrap();
-    let v = violations(&js, &option_keys());
+    let mut keys = option_keys();
+    for k in REPLAY_KEYS {
+        keys.remove(*k);
+    }
+    let v = violations(&js, &keys);
     assert!(
         v.is_empty(),
         "index.js must not inspect options or the environment (AB-D0005 #5): {v:?}"
+    );
+    // G2b / D-0205: the wrapper must replay collected events into the caller's callbacks.
+    let code = code_only(&js);
+    assert!(
+        code.contains("instrumentationEvents") && code.contains("incrementCounter"),
+        "index.js must replay instrumentation events (D-0205)"
+    );
+    assert!(
+        !code.contains("ThreadsafeFunction"),
+        "D-0205: replay events in-process; do not use a ThreadsafeFunction"
+    );
+    assert!(
+        code.contains("console.warn") && code.contains("deprecations"),
+        "index.js must print Rust-decided deprecation messages (D-0212 / G4b)"
     );
 }
