@@ -1,6 +1,9 @@
 // Row `template-options`: compiler options on the template (and CSS) path not varied by the `template` row.
 //   edd/<v>   experimentalDynamicDirective {omitted,false,true} × every template fixture using lwc:dynamic (fixture cfg
 //             value removed) + upstream transform-html.spec lwc:dynamic snippet
+//   inst/<shape>/<recovery>/<snippet>  instrumentation (AB-0008 G2b): real callbacks and non-callable shapes
+//             (src/instrumentationObserve.ts) × metric snippets (lwc:spread, lwc:render-mode, lwc:dynamic) × erm
+//   inst/real/fixture/<rel>  real callbacks × every template fixture using lwc:spread / lwc:render-mode / lwc:dynamic
 //   erm/<v>   experimentalErrorRecoveryMode {true,false,omitted} × upstream transform-html.spec experimentalErrorRecoveryMode
 //             cases (valid, 3 invalid directives, custom element) + transform-css.spec `<` case
 // Goldens: goldens/template-options, JS oracle only (UPDATE_GOLDENS=1, JS backend).
@@ -10,6 +13,7 @@ import { describe, it, beforeAll, expect } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { checkGolden, findFiles, errorObservation, errorMultiset } from '../src/optionRows';
 import { observeTemplate, TEMPLATE_ROOT } from '../src/templateObserve';
+import { INSTRUMENTATION_SHAPES, observeInstrumented } from '../src/instrumentationObserve';
 
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/template-options');
 const DYNAMIC = findFiles(TEMPLATE_ROOT, 'actual.html').filter((f) => /lwc:dynamic\b/.test(fs.readFileSync(f, 'utf8'))).map((f) => path.relative(TEMPLATE_ROOT, path.dirname(f)));
@@ -75,5 +79,34 @@ describe('template-options: erm', () => {
             }
             checkGolden(GOLDEN_DIR, `erm/${label}/css/lt`, observed);
         });
+    }
+});
+
+// AB-0008 G2b: the template metrics (parser/index.ts:898 render-mode, :1106 dynamic; codegen/index.ts:605 spread).
+const INST_SNIPPETS: Record<string, string> = {
+    spread: '<template><div lwc:spread={p}></div><x-a lwc:spread={q}></x-a></template>',
+    'render-mode': '<template lwc:render-mode="light"><div></div></template>',
+    dynamic: SPEC_DYNAMIC,
+    mixed: '<template lwc:render-mode="light"><x-a lwc:dynamic={c}></x-a><div lwc:spread={p}></div><x-b lwc:dynamic={d}></x-b></template>',
+    'parse-error-then-spread': '<template><div lwc:spread={p}></div><div lwc:invalid-directive="x"></div></template>',
+    plain: '<template><div>hi</div></template>',
+};
+const INST_FIXTURES = findFiles(TEMPLATE_ROOT, 'actual.html').filter((f) => /lwc:(spread|render-mode|dynamic)\b/.test(fs.readFileSync(f, 'utf8'))).map((f) => path.relative(TEMPLATE_ROOT, path.dirname(f)));
+describe('template-options: inst', () => {
+    for (const [shape, make] of Object.entries(INSTRUMENTATION_SHAPES)) {
+        for (const [label, erm] of [['erm-false', false], ['erm-true', true]] as const) {
+            for (const [name, src] of Object.entries(INST_SNIPPETS)) {
+                const key = `inst/${shape}/${label}/${name}`;
+                it(key, () => checkGolden(GOLDEN_DIR, key, observeInstrumented(backend, src, 'foo.html',
+                    { namespace: 'x', name: 'foo', experimentalDynamicDirective: true, experimentalErrorRecoveryMode: erm }, make)));
+            }
+        }
+    }
+    it('finds 53 metric fixtures', () => expect(INST_FIXTURES.length).toBe(53));
+    for (const rel of INST_FIXTURES) {
+        const name = path.basename(rel);
+        it(`inst/real/fixture/${rel}`, () => checkGolden(GOLDEN_DIR, `inst/real/fixture/${rel}`,
+            observeInstrumented(backend, fs.readFileSync(path.join(TEMPLATE_ROOT, rel, 'actual.html'), 'utf8'), `${name}.html`,
+                { namespace: 'x', name, ...cfgOf(rel) }, INSTRUMENTATION_SHAPES.real)));
     }
 });

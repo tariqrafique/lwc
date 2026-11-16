@@ -52,6 +52,9 @@ pub(crate) struct Ctx<'a> {
     exprs: expression_complex::ExprCache<'a>,
     /// TS `ctx.instrumentation`.
     instrumentation: Option<lwc_shared::InstrumentationHandle>,
+    /// TS `ctx.instrumentation?.incrementCounter(m)` threw (no callable `incrementCounter`). The TypeError
+    /// escapes every `withErrorRecovery`, so the parse ends with [`internal_failure`] (G2b).
+    counter_threw: std::cell::Cell<Option<InternalError>>,
     /// Template source as UTF-16 code units (parse5 offsets index this); see [`raw_attr`] / [`raw_source`].
     src16: Vec<u16>,
     /// TS `seenIds` (1042).
@@ -146,8 +149,12 @@ impl<'a> Ctx<'a> {
         expression_complex::build(self.alloc, raw, location).map(Expression::Complex)
     }
     fn count(&self, m: lwc_shared::CompilerMetric) {
-        if let Some(i) = &self.instrumentation {
-            i.increment_counter(m);
+        if let Some(i) = &self.instrumentation
+            && self.counter_threw.get().is_none()
+            && i.increment_counter(m).is_err()
+        {
+            self.counter_threw
+                .set(Some(InternalError(PARSER_COUNTER_NOT_A_FUNCTION)));
         }
     }
     fn push(&mut self, d: CompilerDiagnostic) {
@@ -1885,6 +1892,7 @@ pub fn parse_template<'a>(
             && !config.experimental_complex_expressions,
         exprs: expression_complex::ExprCache::new(),
         instrumentation: config.instrumentation.clone(),
+        counter_threw: std::cell::Cell::new(None),
         src16: source.encode_utf16().collect(),
         seen_ids: HashSet::new(),
         scopes: Vec::new(),
@@ -1903,11 +1911,6 @@ pub fn parse_template<'a>(
         }
         Err(e) => return internal_failure(e),
     };
-    // TS parseRoot → applyLwcRenderModeDirective: counted once a valid lwc:render-mode is applied.
-    if matches!(&tb.data, NodeData::Element { attrs, .. } if attrs.iter().any(|a| a.name == "lwc:render-mode" && (a.value == "light" || a.value == "shadow")))
-    {
-        cx.count(lwc_shared::CompilerMetric::LwcRenderModeDirective);
-    }
     // TS ParserCtx: `preserveComments = root lwc:preserve-comments directive ?? config.preserveHtmlComments`
     // (root_errors already rejected a non-boolean value, so presence means true).
     let preserved;
@@ -1938,7 +1941,11 @@ pub fn parse_template<'a>(
             directives.push(RootDirective::PreserveComments(true));
         }
     }
-    match lower_children(&kids, config, &mut cx) {
+    let lowered = lower_children(&kids, config, &mut cx);
+    if let Some(e) = cx.counter_threw.get() {
+        return internal_failure(e);
+    }
+    match lowered {
         Ok(children) => TemplateParseResult {
             root: Some(Root {
                 location,
@@ -1950,6 +1957,10 @@ pub fn parse_template<'a>(
         Err(e) => internal_failure(e),
     }
 }
+
+/// parser/index.ts:898 / :1106 `ctx.instrumentation?.incrementCounter(...)` with no callable `incrementCounter`.
+const PARSER_COUNTER_NOT_A_FUNCTION: &str =
+    "ctx.instrumentation?.incrementCounter is not a function";
 
 /// An internal error ends the parse: `compile` reports it as its only diagnostic and there is no root.
 fn internal_failure<'a>(e: InternalError) -> TemplateParseResult<'a> {

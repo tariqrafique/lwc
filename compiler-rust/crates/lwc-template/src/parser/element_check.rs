@@ -1120,6 +1120,12 @@ pub(super) fn root_errors(
                 d.push(ParserDiagnostics::LWC_RENDER_MODE_INVALID_VALUE.generate(&[], l));
                 return Ok(None);
             }
+            // TS applyLwcRenderModeDirective (index.ts:898): counted once the value is valid, before the
+            // preserve-comments directive and validateRoot can throw.
+            d.count(lwc_shared::CompilerMetric::LwcRenderModeDirective);
+            if let Some(e) = d.counter_threw.get() {
+                return Err(e);
+            }
         }
         if let Some(p) = pick(&mut pas, |x| x == "lwc:preserve-comments") {
             if *p.value() != Av::Bool {

@@ -1,0 +1,18 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1080
+  ],
+  "line": 1,
+  "errors": [
+    1080
+  ],
+  "message": "LWC1080: Root template has unknown or disallowed attributes: lwc:slot-bind"
+}

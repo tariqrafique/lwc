@@ -130,7 +130,7 @@ out.good = cap(() => transformSync(src, file, base));
     let mut o = bare();
     o.api_version = Some(ApiVersionInput::NonNumber);
     assert_eq!(
-        validate_transform_options(&o).unwrap().api_version,
+        validate_transform_options(&o).unwrap().api_version(),
         lwc_shared::api_version::HIGHEST_API_VERSION
     );
 }
@@ -158,12 +158,15 @@ out.good = cap(() => transformSync(src, file, base));
     let mut o = bare();
     o.ssr_mode = Some(SsrModeInput::Text("bogus".into()));
     let n = validate_transform_options(&o).unwrap();
-    assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
-    assert_eq!(n.ssr_mode_emit.as_deref(), Some(r#""bogus""#));
-    o.ssr_mode = Some(SsrModeInput::NonString("null".into()));
+    assert_eq!(n.ssr_mode(), SsrMode::AsyncYield);
+    assert_eq!(
+        n.ssr_mode_literal(),
+        &lwc_shared::SsrModeLiteral::Str("bogus".into())
+    );
+    o.ssr_mode = Some(SsrModeInput::NonString(serde_json::Value::Null));
     let n = validate_transform_options(&o).unwrap();
-    assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
-    assert_eq!(n.ssr_mode_emit.as_deref(), Some("null"));
+    assert_eq!(n.ssr_mode(), SsrMode::AsyncYield);
+    assert_eq!(n.ssr_mode_literal(), &lwc_shared::SsrModeLiteral::Null);
 }
 
 #[test]
@@ -240,7 +243,10 @@ console.log(JSON.stringify(out));
         ("bogus", Some(SsrModeInput::Text("bogus".into()))),
         ("asyncYield", Some(SsrModeInput::Text("asyncYield".into()))),
         ("sync", Some(SsrModeInput::Text("sync".into()))),
-        ("nil", Some(SsrModeInput::NonString("null".into()))),
+        (
+            "nil",
+            Some(SsrModeInput::NonString(serde_json::Value::Null)),
+        ),
     ] {
         let got_js = rust(mode.clone(), "x/widget/widget.js", js);
         let got_html = rust(mode, "x/widget/widget.html", html);

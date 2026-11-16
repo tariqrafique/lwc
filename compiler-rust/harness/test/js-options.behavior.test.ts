@@ -8,6 +8,10 @@
 //   explicit      isExplicitImport true × full corpus
 //   sourcemap/<v> outputConfig.sourcemap {omitted,false,true,'inline','invalid',{},123} × spec snippet + 2 fixtures
 //   epm/<v>       enablePrivateMethods {omitted,false,true} × the #method fixtures + spec snippet
+//   inst/<shape>/<case>  instrumentation (AB-0008 G2b): real callbacks and non-callable shapes
+//                 (src/instrumentationObserve.ts) × spec instrumentation snippet + dynamic-imports fixtures (loader set)
+//   ssrmode/<v>   targetSSR ssrMode {unknown string, null, number, boolean, {}, {a:1}, [], [1]} × spec component
+//                 (generate-markup.ts:75 b.literal: objects/arrays throw a plain Error; G1a-r)
 //   dyn/<v>       dynamicImports {omitted, strictSpecifier omitted, strictSpecifier false} × dynamic-imports fixtures
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,6 +20,7 @@ import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalJsModule } from '../src/evalJs';
 import { checkGolden, errorObservation, findFiles, apiLabel, apiOpt, type ApiCell } from '../src/optionRows';
 import { oracleRoot } from '../src/oracleRoot';
+import { INSTRUMENTATION_SHAPES, observeInstrumented } from '../src/instrumentationObserve';
 
 const ROOT = `${oracleRoot()}/packages/@lwc/babel-plugin-component/src/__tests__/fixtures`;
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/js-options');
@@ -168,5 +173,43 @@ describe('js-options: dyn', () => {
         for (const rel of DYN_FIXTURES) {
             it(`dyn/${label}/${rel}`, () => checkGolden(GOLDEN_DIR, `dyn/${label}/${rel}`, observe(readFx(rel, 'actual.js'), 'test.js', f(baseOpts(rel)))));
         }
+    }
+});
+
+// AB-0008 G2b: babel-plugin-component utils.ts:155 (CompilerMetrics.DynamicImportTransform), transform-javascript.spec `instrumentation`.
+const SPEC_INST = `
+            export async function test() {
+                const x = await import("foo");
+                const y = await import("bar");
+                const z = await import("baz");
+                return x + y + z + "yay";
+            }
+        `;
+describe('js-options: inst', () => {
+    const loader = { loader: '@custom/loader', strictSpecifier: true };
+    for (const [shape, make] of Object.entries(INSTRUMENTATION_SHAPES)) {
+        it(`inst/${shape}/spec/instrumentation`, () => checkGolden(GOLDEN_DIR, `inst/${shape}/spec/instrumentation`,
+            observeInstrumented(backend, SPEC_INST, 'foo.js', { namespace: 'x', name: 'foo', dynamicImports: loader }, make)));
+        it(`inst/${shape}/spec/strict-error-first`, () => checkGolden(GOLDEN_DIR, `inst/${shape}/spec/strict-error-first`,
+            observeInstrumented(backend, 'export const a = () => import(x);', 'foo.js', { namespace: 'x', name: 'foo', dynamicImports: loader }, make)));
+        for (const rel of DYN_FIXTURES) {
+            const o = baseOpts(rel) as any;
+            const opts = { ...o, dynamicImports: { strictSpecifier: false, ...(o.dynamicImports ?? {}), loader: o.dynamicImports?.loader || '@custom/loader' } };
+            it(`inst/${shape}/${rel}`, () => checkGolden(GOLDEN_DIR, `inst/${shape}/${rel}`, observeInstrumented(backend, readFx(rel, 'actual.js'), 'test.js', opts, make)));
+        }
+    }
+});
+
+describe('js-options: ssrmode', () => {
+    const values: Array<[string, unknown]> = [['bogus', 'bogus'], ['null', null], ['number', 1], ['negative', -2.5], ['boolean', true], ['empty-object', {}], ['object', { a: 1 }], ['empty-array', []], ['array', [1, 'x']]];
+    for (const [label, v] of values) {
+        it(`ssrmode/${label}`, () => checkGolden(GOLDEN_DIR, `ssrmode/${label}`, (() => {
+            try {
+                const r = backend.transform(SPEC.component, 'foo.js', { namespace: 'x', name: 'foo', targetSSR: true, ssrMode: v } as any);
+                return { ok: true, mode: /__setStaticInternals\(.*, ([^,]*), __lwcTmpl\);/.exec(r.code)?.[1] ?? null };
+            } catch (e: any) {
+                return { ...errorObservation(e), message: String(e?.message) };
+            }
+        })()));
     }
 });

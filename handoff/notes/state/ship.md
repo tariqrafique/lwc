@@ -1,5 +1,5 @@
 # state/ship.md
-Updated: 2026-11-09 12:48 PST by ship. PARKED per D-0276 — successor: LWC Worker (28881e7c) owns packaging, CI, CUTOVER.md. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-15 22:11 PST by ship. PARKED per D-0276 — successor: LWC Worker (28881e7c) owns packaging, CI, CUTOVER.md. Read PLAN.md first; this file holds only this bot's working state.
 
 ## FINAL HANDOFF (D-0276, 2026-11-09 12:49 PST) — ship parked, lands nothing further
 - Unlanded work: NONE. bot/ship @ eac1ae9 (= S5 land; main has moved on to f679437). Worktree /workspace/wt/ship clean (only gitignored built .node). No stashes, no in-flight processes, no pending AB-L reviews, no owed REWORKs.
@@ -47,3 +47,50 @@ Updated: 2026-11-09 12:48 PST by ship. PARKED per D-0276 — successor: LWC Work
 
 ## Open questions for Migrate
 - none. Routed by Migrate: H1-H7/P1-P2 -> harness, J1-J3 -> js-style (AggregateError only where upstream throws multiple), parse5 dep + instrumentation sites -> template. D-0220: glibc floor 2.28 both Linux triples (amends D-0213).
+
+## 15(b) — consumer port (2026-11-15 21:49 PST, harness)
+
+Compile-ready on the box-local clone. No rust main land (and none queued that 15(b) requires). Parent lands item 14, then AB-0008 r3, then item 15; this tree is never pushed and is not read by the board (D-0202). JS compiler packages were not deleted; CUTOVER verify was not run (held until item 14 lands).
+
+- Clone: `/workspace/wt/lwc-consumers` is a standalone git clone of `/workspace/lwc` (origin fetch=`/workspace/lwc`, push=`no-push`), not a linked worktree of lwc-compiler-rust. Branch `ship/consumers`. Base `b9e8007`. Port commit **2dcd877117a26** (harness, local only).
+- Adapter: new workspace package `packages/lwc-compiler-rs` re-exports the Rust napi ESM loader at `../../../../lwc-compiler-rust/crates/lwc-compiler-napi/index.js`. The loader's `transform` is already synchronous; the adapter also exports `transformSync` as the same function (S3 rename/AsyncTask not landed; not required to compile). Typings are hand-written (`TransformResult` + `CompilerDiagnostic` from `@lwc/errors`). A direct `file:` dependency on the napi package was rejected: yarn 1 resolves its unpublished `optionalDependencies` (`lwc-compiler-rs-<triple>@0.1.0`) even with `--ignore-optional`.
+- Native binary: copied `harness/lwc-compiler-napi.node` (sha12 0d497682f3bb, from main a492147e1) to `crates/lwc-compiler-napi/lwc-compiler.linux-x64-gnu.node` (gitignored). Oracle `/workspace/lwc` was not modified.
+- D1: `@lwc/rollup-plugin` now imports `{ transformSync } from 'lwc-compiler-rs'` (`src/index.ts`, `package.json` dep `lwc-compiler-rs@0.1.0`). Type-only `StylesheetConfig` / `DynamicImportConfig` still come from `@lwc/compiler` (package kept).
+- D4: `@lwc/ssr-runtime/src/__tests__/styles.spec.ts` calls rust `transform` on `test-component.css` with `{ name, namespace, scopedStyles }` instead of `@lwc/style-compiler`.
+- D5: dropped `dynamicImports.strict` in `integration-wtr/configs/plugins/serve-integration.js` and `serve-hydration.js`; `loader` kept. (Not required to compile.)
+- Held: D7 barrel deletes / JS package deletes; D8 docs; CUTOVER verify (`yarn test`, grep that JS compiler imports are gone). `packages/lwc/compiler.js` still re-exports `@lwc/compiler`.
+- Evidence (America/Los_Angeles, UTC-8):
+  - `yarn install --ignore-scripts` rc 0 in 17s. Log: `/workspace/scratch/harness/ship-15b-yarn-install.log`.
+  - Adapter smoke: `transform === transformSync`, `transformSync('<template><p>{x}</p></template>', 'foo.html', {name:'foo',namespace:'x'})` returns code-len=837. Log: `ship-15b-adapter-smoke.log`.
+  - First `yarn build` failed in 22s on `@lwc/rollup-plugin` (TS2345: `warnings?: unknown[]` ↛ `CompilerDiagnostic`). After tightening the adapter d.ts, `nx build @lwc/rollup-plugin` rc 0 in 3s (`ship-15b-rollup-plugin-build.log`).
+  - Full `yarn build` (nx 21 projects, excludes perf-benchmarks and integration-wdio) rc 0 in 5s (17/21 cache hits after the first pass). Log: `/workspace/scratch/harness/ship-15b-yarn-build.log`.
+- Nothing in lwc-compiler-rust needs to land for this compile. Optional later (not 15(b) blockers): S3 `transformSync` + async `transform` on the official loader; S2 generated typings; D7 barrel repoint after deletes are allowed.
+
+- **Rename (D-0291), 2026-11-15 22:06 PST:** consumers commit **e5c7433** on top of 2dcd877 (local only; push=no-push).
+  - `packages/lwc-compiler-rs` moved to `packages/@lwc/rust-compiler` (name `@lwc/rust-compiler`, private), covered by the `packages/@lwc/*` workspace glob. The explicit workspace entry was dropped.
+  - The adapter's loader path gained one `../`.
+  - rollup-plugin (`src/index.ts` + dependency) and ssr-runtime (`styles.spec.ts` + devDependency) now import `@lwc/rust-compiler`.
+  - `yarn install --ignore-scripts --frozen-lockfile` rc 0, with yarn.lock unchanged (`ship-15a-consumers-yarn-install.log`). `yarn build --skip-nx-cache` rc 0 for 21 projects in 20s (`ship-15a-consumers-yarn-build.log`).
+  - No `lwc-compiler-rs` left in the tree (excluding node_modules and dist), and the oracle is clean at b9e8007.
+
+## 15(a) — macOS/Windows napi build plan without Actions (updated 2026-11-15 22:10 PST, harness)
+- **READY TO LAND, NOT LANDED** (Worker sequences: item 14, AB-0008 r3, then item 15). Branch bot/harness-ship15a @ **09dc452** (29d8142 → 093969c → 09dc452, base main a492147); worktree /workspace/wt/harness-ship15a (target/ 2.4G kept for --verify-only; disk 38G free).
+- Files: new scripts/build-napi-cross.sh, scripts/napi-triples.tsv, scripts/test-napi-loader-resolution.mjs, scripts/macho-codesign-check.py, docs/napi-cross-build.md. Edited:
+  - crates/lwc-compiler-napi/{index.js, package.json, npm/linux-x64-gnu/package.json}: the rename plus win32-arm64;
+  - scripts/ssr-oracle-gate.sh: tarball glob → `lwc-rust-compiler-<triple>-*.tgz` (C8 helper);
+  - scripts/land-main-refs.tsv: +4 BOX_CONFIG_DEPENDENT rows for build-napi-cross.sh.
+- Overlap risk: r3 edits napi lib.rs, and the napi crate's index.js/package.json are touched here. If r3 also touches index.js, rebase this branch onto main after r3 lands.
+- Rulings applied:
+  - D-0290: six triples; win32-arm64-msvc is shipped in tsv, SUPPORTED, optionalDependencies and napi.triples.
+  - D-0291: cargo-xwin is the win32 release path (no opt-in gate). The name is `@lwc/rust-compiler` + `@lwc/rust-compiler-<triple>`. No publish.
+  - O3: packaging runs `llvm-strip -x` on darwin, keeps `symbols/<t>/*.node.unstripped` (same LC_UUID; MANIFEST.tsv role not-packed), and checks exports, the arm64 ad-hoc signature (page-hash checker; rcodesign 0.29.0 re-sign fallback, not needed), and that each tarball holds only package.json + .node.
+- Linux evidence (logs /workspace/scratch/harness/ship-15a-r2-*.log; out dir copied to ship-15a-out/):
+  - all 6 triples built and verified (r2-build.log);
+  - darwin-arm64 15497696 → 13598848 bytes, darwin-x64 15417656 → 13534600; arm64 signature 3295/3295 pages ok, rechecked inside the tarball;
+  - loader test 32/32; mutations M1-M6 all caught (r2-mutations.log);
+  - npm offline install of `@lwc/rust-compiler` + linux-x64 compiles .html/.js/.css, and the missing-package error names `@lwc/rust-compiler` (r2-npm-install.log);
+  - lint-shell-pipes and land-path-checks --lints-only clean;
+  - `run-land-self-tests.sh --all` rc 0 (r2-selftests-all.log). The first run failed only on the missing land-main-refs rows, which 09dc452 fixed.
+- The darwin size gap after stripping (~13.5 MB vs ~6 MB) is code, not symbols (`__text` 6.7 MB, `__const` 3.7 MB), likely zig's Mach-O linker doing less dead-stripping than ld64. Building with ld64 on a Mac would settle it; open.
+- Needs real hardware: darwin-arm64/x64 and win32-x64/arm64 runtime load + fixtures (docs §4). linux-arm64 runtime and the glibc-2.17 runtime aren't proven either.
+- Box tools: zig 0.13.0 (~/.local/bin), cargo-zigbuild 0.24.1, cargo-xwin 0.23.1, rcodesign 0.29.0, 6 rustup targets + llvm-tools on 1.99.1.

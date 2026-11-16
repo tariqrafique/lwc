@@ -216,9 +216,32 @@ fn guard_detects_planted_violations() {
     );
 }
 
+/// The shipped JS: the loader and the binding wrapper it (and the harness backend) uses.
+const SHIPPED_JS: &[&str] = &["index.js", "wrap.js"];
+
+#[test]
+fn shipped_js_is_the_package_files() {
+    let pkg: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(lwc_shared::cargo_manifest_dir!().join("package.json")).unwrap(),
+    )
+    .unwrap();
+    let files: Vec<&str> = pkg["files"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter_map(|f| f.as_str())
+        .filter(|f| f.ends_with(".js"))
+        .collect();
+    assert_eq!(files, SHIPPED_JS, "every packaged .js must be guarded");
+}
+
 #[test]
 fn index_js_has_no_env_access_and_no_option_keys() {
-    let js = std::fs::read_to_string(lwc_shared::cargo_manifest_dir!().join("index.js")).unwrap();
+    let js = SHIPPED_JS
+        .iter()
+        .map(|f| std::fs::read_to_string(lwc_shared::cargo_manifest_dir!().join(f)).unwrap())
+        .collect::<Vec<_>>()
+        .join("\n");
     let mut keys = option_keys();
     for k in REPLAY_KEYS {
         keys.remove(*k);
@@ -228,12 +251,9 @@ fn index_js_has_no_env_access_and_no_option_keys() {
         v.is_empty(),
         "index.js must not inspect options or the environment (AB-D0005 #5): {v:?}"
     );
-    // G2b / D-0205: the wrapper must replay collected events into the caller's callbacks.
+    // G2b / D-0205: replaying collected events into real callbacks is a behavior test, the harness
+    // `template-options: inst` / `js-options: inst` rows (oracle call sequence through wrap.js).
     let code = code_only(&js);
-    assert!(
-        code.contains("instrumentationEvents") && code.contains("incrementCounter"),
-        "index.js must replay instrumentation events (D-0205)"
-    );
     assert!(
         !code.contains("ThreadsafeFunction"),
         "D-0205: replay events in-process; do not use a ThreadsafeFunction"
@@ -242,4 +262,22 @@ fn index_js_has_no_env_access_and_no_option_keys() {
         code.contains("console.warn") && code.contains("deprecations"),
         "index.js must print Rust-decided deprecation messages (D-0212 / G4b)"
     );
+}
+
+/// AB-0008 G2b: the harness Rust backend runs the shipped wrapper through a byte-identical copy (land
+/// self-tests run the harness from a harness-only tree, so it cannot import across `crates/`).
+#[test]
+fn harness_copy_is_byte_identical() {
+    let dir = lwc_shared::cargo_manifest_dir!();
+    for (shipped, copy) in [
+        ("wrap.js", "../../harness/src/napiWrap.js"),
+        ("wrap.d.ts", "../../harness/src/napiWrap.d.ts"),
+    ] {
+        let a = std::fs::read(dir.join(shipped)).unwrap();
+        let b = std::fs::read(dir.join(copy)).unwrap_or_else(|e| panic!("{copy}: {e}"));
+        assert!(
+            a == b,
+            "{copy} must equal crates/lwc-compiler-napi/{shipped} byte for byte"
+        );
+    }
 }

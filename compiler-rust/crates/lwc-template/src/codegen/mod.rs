@@ -114,6 +114,9 @@ impl ApiHelper {
     }
 }
 
+/// codegen/index.ts:605 `instrumentation?.incrementCounter(...)` with no callable `incrementCounter`.
+const CODEGEN_COUNTER_NOT_A_FUNCTION: &str = "instrumentation?.incrementCounter is not a function";
+
 struct Gen<'a> {
     alloc: &'a Allocator,
     key: u32,
@@ -134,6 +137,8 @@ struct Gen<'a> {
     scope_frag: bool,
     apis: Vec<ApiHelper>,
     memo: u32,
+    /// TS `state.config.instrumentation` (codegen/index.ts:605 lwc:spread metric).
+    instrumentation: Option<lwc_shared::InstrumentationHandle>,
 }
 
 impl<'a> Gen<'a> {
@@ -654,7 +659,12 @@ impl<'a> Gen<'a> {
             entries.push(Field::Kv("innerHTML".into(), x));
         }
         if let Some(e) = spread {
+            // codegen/index.ts:603-605: spread goes last, then `instrumentation?.incrementCounter(...)`.
             entries.push(Field::Spread(self.expr_at(e, nest_indent)?));
+            if let Some(i) = &self.instrumentation {
+                i.increment_counter(lwc_shared::CompilerMetric::LwcSpreadDirective)
+                    .map_err(|_| InternalError::new(CODEGEN_COUNTER_NOT_A_FUNCTION))?;
+            }
         }
         if !entries.is_empty() {
             data.push(Field::Kv(
@@ -1875,6 +1885,7 @@ pub fn generate(
         synthetic: false,
         scope_frag: has_id_attribute(&root.children),
         apis: Vec::new(),
+        instrumentation: config.instrumentation.clone(),
         memo: 0,
     };
     // TS CodeGen.isSyntheticShadow.

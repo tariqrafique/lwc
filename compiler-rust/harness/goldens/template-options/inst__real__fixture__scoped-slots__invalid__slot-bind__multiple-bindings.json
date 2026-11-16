@@ -1,0 +1,13 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1058
+  ],
+  "line": 5,
+  "errors": [
+    1058
+  ],
+  "message": "LWC1058: Invalid HTML syntax: duplicate-attribute. For more information, please visit https://html.spec.whatwg.org/multipage/parsing.html#parse-error-duplicate-attribute"
+}

@@ -3,6 +3,9 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+// The shipped binding wrapper (index.js uses the same one): strips the instrumentation callbacks before
+// the serde boundary, replays the collected events and prints deprecations (AB-0008 G2b, D-0205).
+import { wrapBinding } from './napiWrap.js';
 
 export interface CompileOptions {
     name: string;
@@ -68,7 +71,7 @@ export type NapiCompileError = {
 };
 
 type NativeAddon = {
-    transform(src: string, filename: string, options: Record<string, unknown>): {
+    transform(src: string, filename: string, options: Record<string, unknown>, callbacks?: { log: boolean; incrementCounter: boolean }): {
         code?: string | null;
         map?: string | null;
         cssScopeTokens?: string[];
@@ -122,11 +125,7 @@ function assertShape(v: unknown, shape: Shape, where: string): void {
 }
 function assertKnownKeys(options: Record<string, unknown>): void {
     for (const k of Object.keys(options)) {
-        if (k === 'instrumentation' && options[k] != null) {
-            // Genuine TransformOptions key, but a JS callback object can't cross the JSON napi seam (Rust consumers
-            // use lwc_shared::CompileOptions::instrumentation). Dropping it would silently lose metrics.
-            throw new Error('rust backend: compile option "instrumentation" (JS callbacks) is not supported over the napi seam');
-        }
+        // instrumentation: forwarded as-is; wrapBinding strips the callbacks before the JSON seam (G2b).
         if (k === 'instrumentation') continue;
         if (!(RUST_OPTION_KEYS as readonly string[]).includes(k)) throw new Error(`rust backend: unsupported compile option "${k}" (not forwarded by the Rust seam)`);
         if (k in NESTED_SHAPES) assertShape(options[k], NESTED_SHAPES[k], k);
@@ -161,7 +160,7 @@ export function errorFromNapi(ne: NapiCompileError): Error {
 
 export class RustCompilerBackend implements CompilerBackend {
     readonly id = 'rust';
-    private native = loadNative();
+    private native = wrapBinding(loadNative()) as Pick<NativeAddon, 'transform'>;
     transform(src: string, filename: string, options: CompileOptions): CompileResult {
         assertKnownKeys(options);
         const {
@@ -169,6 +168,7 @@ export class RustCompilerBackend implements CompilerBackend {
             apiVersion, targetSSR, ssrMode, experimentalErrorRecoveryMode, enablePrivateMethods,
             experimentalComplexExpressions, preserveHtmlComments, enableStaticContentOptimization, enableDynamicComponents, enableLwcOn, experimentalDynamicDirective, enableSyntheticElementInternals, componentFeatureFlagModulePath,
             dynamicImports, enableLightningWebSecurityTransforms, isExplicitImport, outputConfig, customRendererConfig, stylesheetConfig,
+            instrumentation,
         } = options as any;
         const dropNulls = (o: any) => (o && typeof o === 'object' ? Object.fromEntries(Object.entries(o).filter(([, v]) => v != null)) : o);
         const raw: Record<string, unknown> = {
@@ -180,9 +180,11 @@ export class RustCompilerBackend implements CompilerBackend {
             outputConfig: dropNulls(outputConfig),
             customRendererConfig,
             stylesheetConfig,
+            instrumentation,
         };
         // napi Option<T> rejects null (e.g. fixture apiVersion: null) — treat null as unset like JS defaults.
-        for (const k of Object.keys(raw)) if (raw[k] == null) delete raw[k];
+        // Except `ssrMode: null`: upstream emits it as the literal `null` (napi reads the raw key, AB-0008 G1a-r).
+        for (const k of Object.keys(raw)) if (raw[k] === undefined || (raw[k] === null && k !== 'ssrMode')) delete raw[k];
         const r = this.native.transform(src, filename, raw);
         if (r.error) {
             throw errorFromNapi(r.error);

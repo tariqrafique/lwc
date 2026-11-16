@@ -1,0 +1,13 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1176
+  ],
+  "line": 2,
+  "errors": [
+    1176
+  ],
+  "message": "LWC1176: lwc:slot-data directive can be used on <template> elements only."
+}

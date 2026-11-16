@@ -1,0 +1,13 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1127
+  ],
+  "line": 1,
+  "errors": [
+    1127
+  ],
+  "message": "LWC1127: Invalid directive \"lwc:invalid-directive\" on element <div>."
+}

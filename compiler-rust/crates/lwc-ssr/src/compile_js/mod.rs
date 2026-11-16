@@ -893,8 +893,9 @@ fn add_generate_markup_function(
     wire_adapters: &[WireAdapter],
     filename: &str,
     options: &CompileOptions,
-) -> String {
+) -> Result<String, CompileError> {
     let lit = |s: &str| string_literal(s.encode_utf16());
+    let compilation_mode = compilation_mode_literal(options, filename)?;
     let stem = module_stem(filename, &options.name);
     let tag = generate_custom_element_tag_name(&options.namespace, &options.name);
     let props: Vec<String> = public_properties.iter().map(|p| lit(p)).collect();
@@ -912,12 +913,42 @@ fn add_generate_markup_function(
         lit(&tag),
         props.join(", "),
         wire_adapters_plumbing(wire_adapters),
-        options
-            .ssr_mode_emit
-            .clone()
-            .unwrap_or_else(|| lit(options.ssr_mode.js_value())),
+        compilation_mode,
     );
-    out
+    Ok(out)
+}
+
+/// generate-markup.ts:75 `b.literal(compilationMode)`. estree-toolkit asserts the value is a
+/// string, number, bigint, boolean or null; anything else throws a plain Error (no LWC code; the
+/// SSR path of @lwc/compiler does not wrap it). astring prints the literal as `JSON.stringify(value)`.
+/// Divergence (logged, AB-0008 r3): the message's `JSON.stringify` of an object follows serde_json key
+/// order (sorted) and float spelling, not JS insertion order.
+fn compilation_mode_literal(
+    options: &CompileOptions,
+    filename: &str,
+) -> Result<String, CompileError> {
+    use lwc_shared::{NotALiteralKind, SsrModeLiteral as L};
+    match &options.ssr_mode_literal {
+        L::Mode => Ok(string_literal(options.ssr_mode.js_value().encode_utf16())),
+        L::Str(s) => Ok(string_literal(s.encode_utf16())),
+        L::Null => Ok("null".into()),
+        L::Bool(b) => Ok(b.to_string()),
+        L::Number(f) if *f < 0.0 => Ok(format!("-{}", js_number(-f))),
+        L::Number(f) => Ok(js_number(*f)),
+        L::NotALiteral { kind, json } => {
+            // estree-toolkit `meaningfulType`: `array` for arrays, else `typeof`.
+            let kind = match kind {
+                NotALiteralKind::Array => "array",
+                NotALiteralKind::Object => "object",
+            };
+            Err(CompileError::new(
+                format!(
+                    "Expected the value to be one of `[\"string\",\"number\",\"bigint\",\"boolean\",\"null\"]` but got a `{kind}`. The value is {json}."
+                ),
+                filename,
+            ))
+        }
+    }
 }
 
 /// Sync-only compileComponentForSSR: index.ts `compileJS` after the traverse.
@@ -960,12 +991,61 @@ pub fn compile_component_for_ssr(
         &wire_adapters,
         filename,
         options,
-    )))
+    )?))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// G1a-r: the raw ssrMode renders as astring's `JSON.stringify(value)`; an object or array throws
+    /// estree-toolkit's plain Error (oracle b9e8007: `ssrMode: {a:1}` / `[]` on a component .js).
+    #[test]
+    fn raw_ssr_mode_renders_or_throws_like_b_literal() {
+        use lwc_shared::{NotALiteralKind, SsrModeLiteral as L};
+        let src = "import { LightningElement } from 'lwc';\nexport default class A extends LightningElement {}\n";
+        let run = |v: lwc_shared::SsrModeLiteral| {
+            let opts = CompileOptions {
+                name: "a".into(),
+                namespace: "x".into(),
+                target_ssr: true,
+                ssr_mode: lwc_shared::SsrMode::AsyncYield,
+                ssr_mode_literal: v,
+                ..Default::default()
+            };
+            compile_component_for_ssr(src, "x/a/a.js", &opts)
+        };
+        for (v, want) in [
+            (L::Str("zz".into()), "\"zz\""),
+            (L::Null, "null"),
+            (L::Number(1.0), "1"),
+            (L::Number(-2.5), "-2.5"),
+            (L::Bool(true), "true"),
+        ] {
+            let code = run(v).unwrap().code;
+            assert!(
+                code.contains(&format!(", {want}, __lwcTmpl);")),
+                "{want}: {code}"
+            );
+        }
+        for (v, kind, shown) in [
+            (NotALiteralKind::Object, "object", "{}"),
+            (NotALiteralKind::Object, "object", "{\"a\":1}"),
+            (NotALiteralKind::Array, "array", "[]"),
+        ] {
+            let e = run(L::NotALiteral {
+                kind: v,
+                json: shown.into(),
+            })
+            .unwrap_err();
+            assert_eq!(
+                e.message,
+                format!(
+                    "Expected the value to be one of `[\"string\",\"number\",\"bigint\",\"boolean\",\"null\"]` but got a `{kind}`. The value is {shown}."
+                )
+            );
+        }
+    }
 
     #[test]
     fn text_static_js() {

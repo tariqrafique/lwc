@@ -9,8 +9,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use lwc_shared::errors::CompilerValidationErrors;
 use lwc_shared::{
     CompileError, CompileOptions, CompilerDiagnostic, CustomPropertiesResolution,
-    CustomRendererConfig, DeprecationId, InstrumentationHandle, ProducerPosition, Sourcemap,
-    SsrMode,
+    CustomRendererConfig, DeprecationId, InstrumentationHandle, NotALiteralKind, ProducerPosition,
+    Sourcemap, SsrMode, SsrModeLiteral,
 };
 
 /// JSON names of [`TransformOptions`] (camelCase, `targetSSR` kept as upstream spells it).
@@ -125,9 +125,9 @@ pub enum ApiVersionInput {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SsrModeInput {
     Text(String),
-    /// JSON `null`, a number, bool, object, or array. The string holds the JS/JSON literal to emit
-    /// (`null`, `1`, `true`, `{}`, ...).
-    NonString(String),
+    /// JSON `null`, a number, bool, object, or array, as received (codegen renders it; an object or
+    /// array throws where upstream's `b.literal` does).
+    NonString(serde_json::Value),
 }
 
 /// `StylesheetConfig` (options.ts:64).
@@ -189,42 +189,166 @@ pub struct TransformOptions {
 
 /// `NormalizedTransformOptions` (options.ts:167): defaults filled, nested configs always present,
 /// `apiVersion` always a known version number.
-/// The private `_validated` token is so only [`validate_transform_options`] can construct this
-/// type (G1b); it is not a `#[non_exhaustive]` stability marker.
+/// Every field is private, so only [`validate_transform_options`] constructs a value and nothing can
+/// change it after validation (G1b / G1b-r); read it through the accessors.
+///
+/// A validated value cannot be changed:
+/// ```compile_fail
+/// fn f(o: &mut lwc_compiler::NormalizedTransformOptions) {
+///     o.target_ssr = true;
+/// }
+/// ```
+/// nor built outside the validator:
+/// ```compile_fail
+/// let _ = lwc_compiler::NormalizedTransformOptions { target_ssr: true, ..todo!() };
+/// ```
+/// and [`crate::dispatch`] does not take unvalidated options:
+/// ```compile_fail
+/// let o = lwc_compiler::CompileOptions::default();
+/// let _ = lwc_compiler::dispatch("", "a.js", &o);
+/// ```
 #[derive(Debug, Clone)]
-#[allow(clippy::manual_non_exhaustive)]
 pub struct NormalizedTransformOptions {
-    pub name: String,
-    pub namespace: String,
-    pub is_explicit_import: bool,
-    pub preserve_html_comments: bool,
-    pub enable_static_content_optimization: bool,
-    pub experimental_complex_expressions: bool,
-    pub disable_synthetic_shadow_support: bool,
-    pub enable_lightning_web_security_transforms: bool,
-    pub target_ssr: bool,
-    pub ssr_mode: SsrMode,
-    /// JS literal for `compilationMode` when it is not a known mode name; `None` emits `ssr_mode`.
-    pub ssr_mode_emit: Option<String>,
+    name: String,
+    namespace: String,
+    is_explicit_import: bool,
+    preserve_html_comments: bool,
+    enable_static_content_optimization: bool,
+    experimental_complex_expressions: bool,
+    disable_synthetic_shadow_support: bool,
+    enable_lightning_web_security_transforms: bool,
+    target_ssr: bool,
+    ssr_mode: SsrMode,
+    /// What codegen emits as `compilationMode` (G1a-r: a typed value, not JS text).
+    ssr_mode_literal: SsrModeLiteral,
     /// `console.warn` texts validateOptions would print, in source order (D-0212 / G4b).
-    pub deprecations: Vec<DeprecationId>,
-    /// Private token: only [`validate_transform_options`] can construct this type (G1b).
-    _validated: (),
-    pub experimental_error_recovery_mode: bool,
-    pub component_feature_flag_module_path: String,
-    pub stylesheet_resolution: CustomPropertiesResolution,
-    pub sourcemap: Sourcemap,
-    pub dynamic_import_loader: String,
-    pub dynamic_import_strict_specifier: bool,
-    pub api_version: u32,
-    pub scoped_styles: Option<bool>,
-    pub custom_renderer_config: Option<CustomRendererConfig>,
-    pub enable_lwc_on: Option<bool>,
-    pub enable_dynamic_components: Option<bool>,
-    pub enable_synthetic_element_internals: bool,
-    pub experimental_dynamic_directive: Option<bool>,
-    pub instrumentation: Option<InstrumentationHandle>,
-    pub enable_private_methods: bool,
+    deprecations: Vec<DeprecationId>,
+    experimental_error_recovery_mode: bool,
+    component_feature_flag_module_path: String,
+    stylesheet_resolution: CustomPropertiesResolution,
+    sourcemap: Sourcemap,
+    dynamic_import_loader: String,
+    dynamic_import_strict_specifier: bool,
+    api_version: u32,
+    scoped_styles: Option<bool>,
+    custom_renderer_config: Option<CustomRendererConfig>,
+    enable_lwc_on: Option<bool>,
+    enable_dynamic_components: Option<bool>,
+    enable_synthetic_element_internals: bool,
+    experimental_dynamic_directive: Option<bool>,
+    instrumentation: Option<InstrumentationHandle>,
+    enable_private_methods: bool,
+}
+
+/// Read-only view (G1b-r): validated options cannot be changed after [`validate_transform_options`].
+impl NormalizedTransformOptions {
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn namespace(&self) -> &str {
+        &self.namespace
+    }
+
+    pub fn is_explicit_import(&self) -> bool {
+        self.is_explicit_import
+    }
+
+    pub fn preserve_html_comments(&self) -> bool {
+        self.preserve_html_comments
+    }
+
+    pub fn enable_static_content_optimization(&self) -> bool {
+        self.enable_static_content_optimization
+    }
+
+    pub fn experimental_complex_expressions(&self) -> bool {
+        self.experimental_complex_expressions
+    }
+
+    pub fn disable_synthetic_shadow_support(&self) -> bool {
+        self.disable_synthetic_shadow_support
+    }
+
+    pub fn enable_lightning_web_security_transforms(&self) -> bool {
+        self.enable_lightning_web_security_transforms
+    }
+
+    pub fn target_ssr(&self) -> bool {
+        self.target_ssr
+    }
+
+    pub fn ssr_mode(&self) -> SsrMode {
+        self.ssr_mode
+    }
+
+    pub fn ssr_mode_literal(&self) -> &SsrModeLiteral {
+        &self.ssr_mode_literal
+    }
+
+    pub fn deprecations(&self) -> &[DeprecationId] {
+        &self.deprecations
+    }
+
+    pub fn experimental_error_recovery_mode(&self) -> bool {
+        self.experimental_error_recovery_mode
+    }
+
+    pub fn component_feature_flag_module_path(&self) -> &str {
+        &self.component_feature_flag_module_path
+    }
+
+    pub fn stylesheet_resolution(&self) -> &CustomPropertiesResolution {
+        &self.stylesheet_resolution
+    }
+
+    pub fn sourcemap(&self) -> Sourcemap {
+        self.sourcemap
+    }
+
+    pub fn dynamic_import_loader(&self) -> &str {
+        &self.dynamic_import_loader
+    }
+
+    pub fn dynamic_import_strict_specifier(&self) -> bool {
+        self.dynamic_import_strict_specifier
+    }
+
+    pub fn api_version(&self) -> u32 {
+        self.api_version
+    }
+
+    pub fn scoped_styles(&self) -> Option<bool> {
+        self.scoped_styles
+    }
+
+    pub fn custom_renderer_config(&self) -> Option<&CustomRendererConfig> {
+        self.custom_renderer_config.as_ref()
+    }
+
+    pub fn enable_lwc_on(&self) -> Option<bool> {
+        self.enable_lwc_on
+    }
+
+    pub fn enable_dynamic_components(&self) -> Option<bool> {
+        self.enable_dynamic_components
+    }
+
+    pub fn enable_synthetic_element_internals(&self) -> bool {
+        self.enable_synthetic_element_internals
+    }
+
+    pub fn experimental_dynamic_directive(&self) -> Option<bool> {
+        self.experimental_dynamic_directive
+    }
+
+    pub fn instrumentation(&self) -> Option<&InstrumentationHandle> {
+        self.instrumentation.as_ref()
+    }
+
+    pub fn enable_private_methods(&self) -> bool {
+        self.enable_private_methods
+    }
 }
 
 impl NormalizedTransformOptions {
@@ -238,7 +362,7 @@ impl NormalizedTransformOptions {
             api_version: Some(self.api_version),
             target_ssr: self.target_ssr,
             ssr_mode: self.ssr_mode,
-            ssr_mode_emit: self.ssr_mode_emit,
+            ssr_mode_literal: self.ssr_mode_literal,
             enable_private_methods: self.enable_private_methods,
             enable_lightning_web_security_transforms: self.enable_lightning_web_security_transforms,
             experimental_error_recovery_mode: self.experimental_error_recovery_mode,
@@ -346,16 +470,13 @@ pub fn validate_transform_options(
         }
         Some(ApiVersionInput::Number(n)) => lwc_shared::api_version::get_api_version_from_f64(n),
     };
-    let (ssr_mode, ssr_mode_emit) = match options.ssr_mode.as_ref() {
-        None => (DEFAULT_SSR_MODE, None),
+    let (ssr_mode, ssr_mode_literal) = match options.ssr_mode.as_ref() {
+        None => (DEFAULT_SSR_MODE, SsrModeLiteral::Mode),
         Some(SsrModeInput::Text(s)) => match SsrMode::from_js(s) {
-            Some(m) => (m, None),
-            None => (
-                SsrMode::AsyncYield,
-                Some(serde_json::to_string(s).expect("string is valid JSON")),
-            ),
+            Some(m) => (m, SsrModeLiteral::Mode),
+            None => (SsrMode::AsyncYield, SsrModeLiteral::Str(s.clone())),
         },
-        Some(SsrModeInput::NonString(literal)) => (SsrMode::AsyncYield, Some(literal.clone())),
+        Some(SsrModeInput::NonString(v)) => (SsrMode::AsyncYield, raw_ssr_mode_literal(v)),
     };
 
     Ok(NormalizedTransformOptions {
@@ -381,12 +502,11 @@ pub fn validate_transform_options(
             .unwrap_or(DEFAULT_ENABLE_LIGHTNING_WEB_SECURITY_TRANSFORMS),
         target_ssr: options.target_ssr.unwrap_or(DEFAULT_TARGET_SSR),
         ssr_mode,
-        ssr_mode_emit,
+        ssr_mode_literal,
         deprecations: {
             record_deprecations(deprecations.clone());
             deprecations
         },
-        _validated: (),
         experimental_error_recovery_mode: options
             .experimental_error_recovery_mode
             .unwrap_or(DEFAULT_EXPERIMENTAL_ERROR_RECOVERY_MODE),
@@ -412,11 +532,23 @@ pub fn validate_transform_options(
     })
 }
 
-/// Validate and flatten. Callers of [`crate::dispatch`] go through this too.
-pub fn validated_compile_options(
-    options: &TransformOptions,
-) -> Result<CompileOptions, CompileError> {
-    Ok(validate_transform_options(options)?.into_compile_options())
+/// A non-string `ssrMode` as the typed literal codegen renders (`b.literal(compilationMode)`).
+fn raw_ssr_mode_literal(v: &serde_json::Value) -> SsrModeLiteral {
+    use serde_json::Value as V;
+    match v {
+        V::Null => SsrModeLiteral::Null,
+        V::Bool(b) => SsrModeLiteral::Bool(*b),
+        V::Number(n) => SsrModeLiteral::Number(n.as_f64().unwrap_or(f64::NAN)),
+        V::String(s) => SsrModeLiteral::Str(s.clone()),
+        V::Array(_) => SsrModeLiteral::NotALiteral {
+            kind: NotALiteralKind::Array,
+            json: v.to_string(),
+        },
+        V::Object(_) => SsrModeLiteral::NotALiteral {
+            kind: NotALiteralKind::Object,
+            json: v.to_string(),
+        },
+    }
 }
 
 /// One validate entry the napi seam calls after deserializing (or when there is no object).
@@ -434,11 +566,6 @@ pub fn validate_incoming(
         None => Err(missing_options_error(received)),
         Some(o) => validate_transform_options(o),
     }
-}
-
-/// `CompileOptions` as the options object `dispatch` already holds, then the same validator.
-pub fn prepare_compile_options(options: &CompileOptions) -> Result<CompileOptions, CompileError> {
-    validated_compile_options(&TransformOptions::from_compile(options))
 }
 
 /// LWC1023 `MISSING_OPTIONS_OBJECT` (`received` is JS `String(options)`).
@@ -510,13 +637,16 @@ impl TransformOptions {
             instrumentation: o.instrumentation.clone(),
             api_version: o.api_version.map(|v| ApiVersionInput::Number(v as f64)),
             target_ssr: Some(o.target_ssr),
-            ssr_mode: match &o.ssr_mode_emit {
-                None => Some(SsrModeInput::Text(o.ssr_mode.js_value().to_string())),
-                Some(lit) => match serde_json::from_str::<String>(lit) {
-                    Ok(text) => Some(SsrModeInput::Text(text)),
-                    Err(_) => Some(SsrModeInput::NonString(lit.clone())),
-                },
-            },
+            ssr_mode: Some(match &o.ssr_mode_literal {
+                SsrModeLiteral::Mode => SsrModeInput::Text(o.ssr_mode.js_value().to_string()),
+                SsrModeLiteral::Str(text) => SsrModeInput::Text(text.clone()),
+                SsrModeLiteral::Null => SsrModeInput::NonString(serde_json::Value::Null),
+                SsrModeLiteral::Bool(b) => SsrModeInput::NonString((*b).into()),
+                SsrModeLiteral::Number(n) => SsrModeInput::NonString((*n).into()),
+                SsrModeLiteral::NotALiteral { json, .. } => SsrModeInput::NonString(
+                    serde_json::from_str(json).expect("NotALiteral json is serde_json text"),
+                ),
+            }),
             experimental_error_recovery_mode: Some(o.experimental_error_recovery_mode),
             component_feature_flag_module_path: Some(o.component_feature_flag_module_path.clone()),
             enable_private_methods: Some(o.enable_private_methods),
@@ -627,19 +757,28 @@ mod tests {
         o.ssr_mode = Some(SsrModeInput::Text("bogus".into()));
         let n = validate_transform_options(&o).unwrap();
         assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
-        assert_eq!(n.ssr_mode_emit.as_deref(), Some(r#""bogus""#));
-        o.ssr_mode = Some(SsrModeInput::NonString("null".into()));
+        assert_eq!(n.ssr_mode_literal, SsrModeLiteral::Str("bogus".into()));
+        o.ssr_mode = Some(SsrModeInput::NonString(serde_json::Value::Null));
         let n = validate_transform_options(&o).unwrap();
         assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
-        assert_eq!(n.ssr_mode_emit.as_deref(), Some("null"));
+        assert_eq!(n.ssr_mode_literal, SsrModeLiteral::Null);
+        o.ssr_mode = Some(SsrModeInput::NonString(serde_json::json!({"b": [1]})));
+        let n = validate_transform_options(&o).unwrap();
+        assert_eq!(
+            n.ssr_mode_literal,
+            SsrModeLiteral::NotALiteral {
+                kind: NotALiteralKind::Object,
+                json: r#"{"b":[1]}"#.into()
+            }
+        );
         o.ssr_mode = Some(SsrModeInput::Text("asyncYield".into()));
         let n = validate_transform_options(&o).unwrap();
         assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
-        assert_eq!(n.ssr_mode_emit, None);
+        assert_eq!(n.ssr_mode_literal, SsrModeLiteral::Mode);
         o.ssr_mode = Some(SsrModeInput::Text("sync".into()));
         let n = validate_transform_options(&o).unwrap();
         assert_eq!(n.ssr_mode, SsrMode::Sync);
-        assert_eq!(n.ssr_mode_emit, None);
+        assert_eq!(n.ssr_mode_literal, SsrModeLiteral::Mode);
     }
 
     #[test]

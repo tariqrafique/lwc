@@ -1,0 +1,13 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1130
+  ],
+  "line": 2,
+  "errors": [
+    1130
+  ],
+  "message": "LWC1130: Invalid lwc:dynamic usage on element \"<x-foo>\". The directive binding must be an expression."
+}

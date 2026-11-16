@@ -1,0 +1,13 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1128
+  ],
+  "line": 2,
+  "errors": [
+    1128
+  ],
+  "message": "LWC1128: Invalid lwc:dynamic usage. The LWC dynamic directive must be enabled in order to use this feature."
+}

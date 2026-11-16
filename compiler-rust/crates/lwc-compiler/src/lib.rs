@@ -11,9 +11,8 @@ mod transformers;
 pub use options::{
     ApiVersionInput, CustomProperties, DynamicImportConfig, NormalizedTransformOptions,
     OPTION_KEYS, OutputConfig, SourcemapInput, SsrModeInput, StylesheetConfig, TransformOptions,
-    missing_options_error, option_schema_document, prepare_compile_options,
-    take_validation_deprecations, validate_incoming, validate_transform_options,
-    validated_compile_options,
+    missing_options_error, option_schema_document, take_validation_deprecations, validate_incoming,
+    validate_transform_options,
 };
 
 pub trait CompilerBackend {

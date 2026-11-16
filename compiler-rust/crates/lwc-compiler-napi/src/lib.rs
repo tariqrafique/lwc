@@ -37,7 +37,8 @@ pub struct JsCompileOptions {
     pub component_feature_flag_module_path: Option<String>,
     pub dynamic_imports: Option<JsDynamicImports>,
     pub enable_lightning_web_security_transforms: Option<bool>,
-    /// Accepted so it is not an unknown key (D-0203). A JS callback cannot cross JSON; dropped here.
+    /// Presence only (D-0203 / D-0205): the loader replaces the callback object with a JSON placeholder
+    /// before serde and passes which callbacks are functions as [`JsInstrumentationCallbacks`].
     pub instrumentation: Option<serde_json::Value>,
     pub is_explicit_import: Option<bool>,
     pub output_config: Option<JsOutputConfig>,
@@ -244,6 +245,16 @@ pub struct JsCompileResult {
     pub deprecations: Option<Vec<String>>,
 }
 
+/// `typeof instrumentation.log / .incrementCounter === 'function'`, from the loader (`wrap.js`), which
+/// strips the callbacks before the serde boundary (G2b). Absent (a direct JSON caller) means neither is
+/// a function: JSON cannot carry one.
+#[napi(object)]
+pub struct JsInstrumentationCallbacks {
+    pub log: bool,
+    #[napi(js_name = "incrementCounter")]
+    pub increment_counter: bool,
+}
+
 #[napi(object)]
 pub struct JsInstrumentationEvent {
     pub kind: String,
@@ -308,8 +319,9 @@ fn attach_side_channels(
 /// Deserialize only. All validation lives in `lwc_compiler::validate_incoming`.
 /// `Err(napi)` = malformed JSON or an unknown key (D-0203, `deny_unknown_fields`).
 /// `Ok(Err(compile))` = LWC validation error (LWC1021 / LWC1023).
-fn to_compile_options(
+fn to_compile_options_with(
     options: serde_json::Value,
+    callbacks: Option<&JsInstrumentationCallbacks>,
 ) -> Result<std::result::Result<lwc_compiler::NormalizedTransformOptions, lwc_shared::CompileError>>
 {
     if options.is_null() {
@@ -330,13 +342,16 @@ fn to_compile_options(
     if let Some(v) = ssr_mode_raw {
         raw.ssr_mode = match v {
             serde_json::Value::String(s) => Some(lwc_compiler::SsrModeInput::Text(s)),
-            other => Some(lwc_compiler::SsrModeInput::NonString(other.to_string())),
+            other => Some(lwc_compiler::SsrModeInput::NonString(other)),
         };
     }
     if inst_present && raw.instrumentation.is_none() {
-        // A JS InstrumentationObject cannot cross JSON; attach a recorder so events can
-        // be returned for the loader to replay (D-0205 / G2b).
-        let rec = std::sync::Arc::new(lwc_shared::InstrumentationRecorder::default());
+        // A JS InstrumentationObject cannot cross JSON; attach a recorder so events can be
+        // returned for the loader to replay (D-0205 / G2b). With no callable `incrementCounter`
+        // the first metric fails where upstream's `instrumentation?.incrementCounter` throws.
+        let rec = std::sync::Arc::new(lwc_shared::InstrumentationRecorder::for_js(
+            callbacks.is_some_and(|c| c.increment_counter),
+        ));
         raw.instrumentation = Some(lwc_shared::InstrumentationHandle(rec.clone()));
         NAPI_RECORDER.with(|c| *c.borrow_mut() = Some(rec));
     } else {
@@ -346,6 +361,15 @@ fn to_compile_options(
         Some(&raw),
         &js_string(&serde_json::Value::Null),
     ))
+}
+
+/// [`to_compile_options_with`] for a direct JSON caller (no loader, so no callable callbacks).
+#[cfg(test)]
+fn to_compile_options(
+    options: serde_json::Value,
+) -> Result<std::result::Result<lwc_compiler::NormalizedTransformOptions, lwc_shared::CompileError>>
+{
+    to_compile_options_with(options, None)
 }
 
 /// Map the wire struct onto [`lwc_compiler::TransformOptions`]. No defaults, no type checks, no LWC codes.
@@ -361,7 +385,7 @@ fn wire_to_transform(options: JsCompileOptions) -> lwc_compiler::TransformOption
     let ssr_mode = match options.ssr_mode {
         None => None,
         Some(V::String(s)) => Some(lwc_compiler::SsrModeInput::Text(s)),
-        Some(v) => Some(lwc_compiler::SsrModeInput::NonString(v.to_string())),
+        Some(v) => Some(lwc_compiler::SsrModeInput::NonString(v)),
     };
     lwc_compiler::TransformOptions {
         name: options.name,
@@ -735,12 +759,12 @@ mod tests {
             to_compile_options(json!({"name": "a", "namespace": "x", "apiVersion": 60.5}))
                 .unwrap()
                 .unwrap();
-        assert_eq!(snapped.api_version, 60);
+        assert_eq!(snapped.api_version(), 60);
         let snapped =
             to_compile_options(json!({"name": "a", "namespace": "x", "apiVersion": 63.9}))
                 .unwrap()
                 .unwrap();
-        assert_eq!(snapped.api_version, 63);
+        assert_eq!(snapped.api_version(), 63);
         assert!(
             err(json!({"name": "a", "namespace": "x", "notARealOption": true}))
                 .contains("notARealOption")
@@ -787,7 +811,7 @@ mod tests {
                 .unwrap()
                 .unwrap();
             assert_eq!(
-                o.api_version,
+                o.api_version(),
                 lwc_shared::api_version::HIGHEST_API_VERSION,
                 "{v}"
             );
@@ -799,25 +823,31 @@ mod tests {
         let o = to_compile_options(json!({"name": "a", "namespace": "x", "ssrMode": "bogus"}))
             .unwrap()
             .unwrap();
-        assert_eq!(o.ssr_mode, lwc_shared::SsrMode::AsyncYield);
-        assert_eq!(o.ssr_mode_emit.as_deref(), Some(r#""bogus""#));
+        assert_eq!(o.ssr_mode(), lwc_shared::SsrMode::AsyncYield);
+        assert_eq!(
+            o.ssr_mode_literal(),
+            &lwc_shared::SsrModeLiteral::Str("bogus".into())
+        );
         let o = to_compile_options(json!({"name": "a", "namespace": "x", "ssrMode": 1}))
             .unwrap()
             .unwrap();
-        assert_eq!(o.ssr_mode, lwc_shared::SsrMode::AsyncYield);
-        assert_eq!(o.ssr_mode_emit.as_deref(), Some("1"));
+        assert_eq!(o.ssr_mode(), lwc_shared::SsrMode::AsyncYield);
+        assert_eq!(
+            o.ssr_mode_literal(),
+            &lwc_shared::SsrModeLiteral::Number(1.0)
+        );
         let o = to_compile_options(
             json!({"name": "a", "namespace": "x", "ssrMode": serde_json::Value::Null}),
         )
         .unwrap()
         .unwrap();
-        assert_eq!(o.ssr_mode, lwc_shared::SsrMode::AsyncYield);
-        assert_eq!(o.ssr_mode_emit.as_deref(), Some("null"));
+        assert_eq!(o.ssr_mode(), lwc_shared::SsrMode::AsyncYield);
+        assert_eq!(o.ssr_mode_literal(), &lwc_shared::SsrModeLiteral::Null);
         let o = to_compile_options(json!({"name": "a", "namespace": "x", "ssrMode": "asyncYield"}))
             .unwrap()
             .unwrap();
-        assert_eq!(o.ssr_mode, lwc_shared::SsrMode::AsyncYield);
-        assert_eq!(o.ssr_mode_emit, None);
+        assert_eq!(o.ssr_mode(), lwc_shared::SsrMode::AsyncYield);
+        assert_eq!(o.ssr_mode_literal(), &lwc_shared::SsrModeLiteral::Mode);
     }
 
     #[test]
@@ -826,26 +856,59 @@ mod tests {
             .unwrap()
             .unwrap();
         assert!(
-            o.instrumentation.is_some(),
+            o.instrumentation().is_some(),
             "a present instrumentation key must attach a recorder (D-0205)"
         );
         let o = to_compile_options(json!({"name": "a", "namespace": "x"}))
             .unwrap()
             .unwrap();
         assert!(
-            o.instrumentation.is_none(),
+            o.instrumentation().is_none(),
             "an omitted key must not invent a recorder"
+        );
+    }
+
+    /// G2b: `instrumentation:{}` (no callable incrementCounter) fails at the first metric with the
+    /// oracle's error (upstream 1052 "...incrementCounter is not a function"); callable records it.
+    #[test]
+    fn missing_increment_counter_throws_at_first_metric() {
+        let spread = "<template><div lwc:spread={p}></div></template>";
+        let opts = || json!({"name": "a", "namespace": "x", "instrumentation": {}});
+        let o = to_compile_options(opts()).unwrap().unwrap();
+        let e = errors::compile(spread, "a.html", &o).expect_err("must throw");
+        let e = e.error.expect("error");
+        assert_eq!(e.code, Some(1052));
+        assert_eq!(
+            e.message,
+            "Unexpected compilation error: LWC1052: Error parsing attribute: instrumentation?.incrementCounter is not a function"
+        );
+        let cb = JsInstrumentationCallbacks {
+            log: true,
+            increment_counter: true,
+        };
+        let o = to_compile_options_with(opts(), Some(&cb)).unwrap().unwrap();
+        assert!(
+            errors::compile(spread, "a.html", &o).is_ok(),
+            "callable counter compiles"
+        );
+        let events = take_recorded_events().expect("events");
+        assert_eq!(events.len(), 1);
+        assert_eq!(
+            events[0].metric.as_deref(),
+            Some(lwc_shared::CompilerMetric::LwcSpreadDirective.js_value())
         );
     }
 }
 
+/// `callbacks`: see [`JsInstrumentationCallbacks`] (the loader passes it when `instrumentation` is set).
 #[napi]
 pub fn transform(
     src: String,
     filename: String,
     options: serde_json::Value,
+    callbacks: Option<JsInstrumentationCallbacks>,
 ) -> Result<JsCompileResult> {
-    let o = match to_compile_options(options)? {
+    let o = match to_compile_options_with(options, callbacks.as_ref())? {
         Ok(o) => o,
         Err(e) => {
             return Ok(attach_side_channels(
@@ -854,7 +917,7 @@ pub fn transform(
             ));
         }
     };
-    let deprecations = o.deprecations.clone();
+    let deprecations = o.deprecations().to_vec();
     Ok(match errors::compile(&src, &filename, &o) {
         Ok(r) => {
             let warnings = if r.warnings.is_empty() {

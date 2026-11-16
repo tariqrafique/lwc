@@ -4,12 +4,16 @@
 .gitignore	repo-tracked
 crates/lwc-compiler-napi/	lwc-compiler-napi
 crates/lwc-compiler-napi/index.js	lwc-compiler-napi
+crates/lwc-compiler-napi/package.json	lwc-compiler-napi
 crates/lwc-compiler-napi/src/	lwc-compiler-napi
 crates/lwc-compiler-napi/src/errors.rs	lwc-compiler
 crates/lwc-compiler-napi/src/lib.rs	lwc-compiler
 crates/lwc-compiler-napi/src/lib.rs	lwc-compiler-napi
 crates/lwc-compiler-napi/tests/fixtures/aggregate-shipped.json	lwc-compiler-napi
 crates/lwc-compiler-napi/tests/fixtures/single-error-shipped.json	lwc-compiler-napi
+crates/lwc-compiler-napi/wrap.js	lwc-compiler
+crates/lwc-compiler-napi/wrap.js	lwc-compiler-napi
+crates/lwc-compiler-napi/wrap.js	semdiff
 crates/lwc-compiler/	lwc-compiler
 crates/lwc-compiler/src/	lwc-compiler
 crates/lwc-compiler/src/options.rs	lwc-compiler
@@ -64,3 +68,7 @@ tools/semdiff/	semdiff
 tools/semdiff/decisions.tsv	semdiff
 tools/semdiff/exec/	semdiff
 tools/semdiff/rules/rt-1.toml	semdiff
+harness/src/napiWrap.d.ts	lwc-compiler-napi
+harness/src/napiWrap.js	lwc-compiler
+harness/src/napiWrap.js	lwc-compiler-napi
+harness/src/napiWrap.js	semdiff

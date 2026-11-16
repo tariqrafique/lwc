@@ -1,0 +1,22 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ],
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1171
+  ],
+  "line": 2,
+  "errors": [
+    1171
+  ],
+  "message": "LWC1171: Invalid lwc:slot-bind usage on element <div>. The directive can be used on a <slot> element only."
+}

@@ -76,9 +76,9 @@
   "also": "js/style rows via fixture cfg"
  },
  "compiler.instrumentation": {
-  "unit": "instrumentation_counters_reach_template_and_js",
-  "crate": "lwc-compiler",
-  "also": "JS callback can't cross napi: backend.ts throws if set (fail closed)"
+  "row": "template-options",
+  "via": "inst/{real,counter-only,empty,log-only,counter-not-a-function,primitive,null} x erm x metric snippets + 53 metric fixtures (real callbacks through wrap.js, oracle call sequence; AB-0008 G2b)",
+  "also": "js-options inst/ (dynamic-import-transform); unit instrumentation_counters_reach_template_and_js"
  },
  "compiler.isExplicitImport": {
   "row": "js-options",

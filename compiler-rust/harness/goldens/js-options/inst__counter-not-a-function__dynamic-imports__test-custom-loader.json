@@ -1,0 +1,13 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1007
+  ],
+  "line": null,
+  "errors": [
+    1007
+  ],
+  "message": "TypeError: LWC1007: test.js: state.opts.instrumentation?.incrementCounter is not a function"
+}

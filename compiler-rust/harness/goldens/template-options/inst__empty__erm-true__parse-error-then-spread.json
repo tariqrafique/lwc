@@ -1,0 +1,29 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1127
+  ],
+  "line": null,
+  "aggregate": {
+    "message": "",
+    "code": null,
+    "errors": [
+      {
+        "code": 1127,
+        "message": "LWC1127: Invalid directive \"lwc:invalid-directive\" on element <div>.",
+        "location": {
+          "line": 1,
+          "column": 37,
+          "start": 36,
+          "length": 37
+        }
+      }
+    ]
+  },
+  "errors": [
+    1127
+  ],
+  "message": ""
+}

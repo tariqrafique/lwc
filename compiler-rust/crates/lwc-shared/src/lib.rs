@@ -21,8 +21,8 @@ pub use errors::{
     normalize_to_compiler_error,
 };
 pub use instrumentation::{
-    CompilerMetric, DeprecationId, Instrumentation, InstrumentationEvent, InstrumentationHandle,
-    InstrumentationRecorder,
+    CompilerMetric, CounterNotCallable, DeprecationId, Instrumentation, InstrumentationEvent,
+    InstrumentationHandle, InstrumentationRecorder,
 };
 pub use location::{DiagnosticLocation, LineIndex};
 pub mod js;
@@ -217,6 +217,50 @@ impl SsrMode {
     }
 }
 
+/// `ssrMode` as `@lwc/ssr-compiler` emits it (`b.literal(compilationMode)`, generate-markup.ts:75).
+/// Typed, not JS text: codegen renders it (G1a-r).
+#[derive(Debug, Clone, Default)]
+pub enum SsrModeLiteral {
+    /// A known mode name: emit [`CompileOptions::ssr_mode`]'s `js_value()`.
+    #[default]
+    Mode,
+    /// Not a known mode name, as received: an unknown string, `null`, a boolean or a number.
+    Str(String),
+    Null,
+    Bool(bool),
+    Number(f64),
+    /// An object or array: estree-toolkit's `b.literal` assertion throws. `json` is the value's
+    /// `JSON.stringify` text, which upstream's error message shows.
+    NotALiteral {
+        kind: NotALiteralKind,
+        json: String,
+    },
+}
+
+/// estree-toolkit `meaningfulType` of a value `b.literal` rejects.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum NotALiteralKind {
+    Object,
+    Array,
+}
+
+impl PartialEq for SsrModeLiteral {
+    fn eq(&self, o: &Self) -> bool {
+        match (self, o) {
+            (Self::Mode, Self::Mode) | (Self::Null, Self::Null) => true,
+            (Self::Str(a), Self::Str(b)) => a == b,
+            (Self::Bool(a), Self::Bool(b)) => a == b,
+            // Bit equality: JSON never carries NaN, and it keeps `Eq` lawful.
+            (Self::Number(a), Self::Number(b)) => a.to_bits() == b.to_bits(),
+            (Self::NotALiteral { kind: a, json: x }, Self::NotALiteral { kind: b, json: y }) => {
+                a == b && x == y
+            }
+            _ => false,
+        }
+    }
+}
+impl Eq for SsrModeLiteral {}
+
 /// `@lwc/compiler` `outputConfig.sourcemap` (`false | true | 'inline'`, default false).
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum Sourcemap {
@@ -303,11 +347,10 @@ pub struct CompileOptions {
     pub target_ssr: bool,
     /// SSR compilation mode (only read when `target_ssr`).
     pub ssr_mode: SsrMode,
-    /// JS literal emitted as `compilationMode` (`b.literal(compilationMode)` in
-    /// generate-markup.ts). `None` means emit `ssr_mode.js_value()` as a string.
-    /// Unknown or non-string modes set this so codegen can stay on the asyncYield
-    /// path while the raw value is emitted (G1a).
-    pub ssr_mode_emit: Option<String>,
+    /// The value emitted as `compilationMode` (`b.literal(compilationMode)`, generate-markup.ts:75).
+    /// Unknown or non-string modes keep `ssr_mode` on the asyncYield path while the raw value is
+    /// emitted (G1a / G1a-r); codegen renders it, nothing here is JS text.
+    pub ssr_mode_literal: SsrModeLiteral,
     // --- JS path (`@lwc/compiler` DEFAULT_OPTIONS) ---
     pub enable_private_methods: bool,
     pub enable_lightning_web_security_transforms: bool,
@@ -356,7 +399,7 @@ impl Default for CompileOptions {
             api_version: None,
             target_ssr: false,
             ssr_mode: SsrMode::Sync,
-            ssr_mode_emit: None,
+            ssr_mode_literal: SsrModeLiteral::Mode,
             enable_private_methods: false,
             enable_lightning_web_security_transforms: false,
             experimental_error_recovery_mode: false,

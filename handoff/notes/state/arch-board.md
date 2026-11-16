@@ -38,3 +38,43 @@ Updated: 2026-11-09 by LWC Arch Board. Mode: **milestone-only (D-0276)**. Idle u
 ## Notes
 - Board files: arch-board/{reviews.tsv, ARCHITECTURE.md, COVERAGE.tsv, proposals/}. Commit with `bin/notes-commit arch-board`.
 - Routines: none.
+
+## AB-0008/AB-0009 closure review (2026-11-11; main 5087f1b+60d8098, board ca2ab905b502 VALID)
+- AB-0009: CLOSED. Dispatch mirrors transformer.ts:96-122, including .mts, with Path::extension (matches extname on 18 inputs). LWC1005 comes from the generated table, and the x.mts and x.txt tests exist.
+- AB-0008: OPEN. These gaps block closure:
+  G1. napi still validates. Move the null-options LWC1023 (lib.rs:267-271), the apiVersion type check (de_api_version :243-257) and the ssrMode enum reject into options.rs. The ssrMode reject has no upstream equivalent, so either drop it or log it as a decision. napi should deserialize and call validate once; today it validates twice, at lib.rs:49.
+  G2. There is still more than one key source. csrRender.ts:30-37 TRANSFORM_OPTION_KEYS must read rust-option-keys.json. `instrumentation` is in upstream options.ts but not in OPTION_KEYS, so add it or log the divergence.
+  G3. The nested key test only checks wire ⊆ schema. It must be equality.
+  G4. Delete the dead code: the discarded `let _text = …message()` (options.rs:250,:262; under D-0212, don't compute it) and the unused `_filename` (napi lib.rs:265).
+- Carry-forward (non-blocking): the template-diag driver clamp (main.rs:25) should call lwc-shared get_api_version_from_f64. The mts oracle test accepts an extra trailing newline; normalize it explicitly and name it under D-0196. The enable_synthetic_element_internals and enable_private_methods unwrap_or(false) defaults differ from upstream's undefined; confirm there is no observable runtime difference.
+
+## AB-0008 recheck (2026-11-15; main acc5297+84d8a6b, board 78636d164fd6 VALID: option-gate 61/61, js 174/174)
+- G2 (key list derived, instrumentation listed), G3 (nested equality, with a plant) and G4 (_text, _filename) are fixed. AB-0008 stays OPEN on these gaps:
+  G1a. ssrMode: options.rs:302-303 `from_js(s).unwrap_or(DEFAULT_SSR_MODE)` turns an unknown value into sync. Upstream passes the mode through: anything other than sync or async keeps the asyncYield shape (ssr-compiler compile-js/index.ts:436, compile-template/index.ts:167) and emits the raw string. Pick one of two shapes: (i) mirror upstream, where the IR carries the raw mode and the SSR codegen branches exactly as upstream does; or (ii) a migrate-authored decision that rejects unknown modes in options.rs with a coded error. Either way, add an SSR oracle test for `bogus` and `null`. The only test now, validate_upstream.rs:135, is CSR-only.
+  G1b. Double validation: napi transform (:726-735) validates once, then lwc_compiler::dispatch validates again via prepare_compile_options (lib.rs:49). Give dispatch a validated type (NormalizedTransformOptions) so a second validate can't type-check. Fix the stale comment at lib.rs:47-48.
+  G2b. instrumentation is listed but napi drops it silently (`instrumentation: None`, :304), and only the harness throws. D-0205 is lwc-bots-authored, not migrate. Either reject a non-null value in options.rs with a coded error, or get a migrate decision and implement the replay.
+  G4b. options.rs:267 discards the stylesheet-warn latch result with `let _ =`, and nothing reads it. Surface the warning or delete the latch.
+- Accepted: a non-number apiVersion becomes latest, as upstream (napi NaN to latest). Carry-forwards are unchanged: the driver clamp, the mts trailing newline, and the unwrap_or(false) defaults.
+
+
+## AB-0008 recheck r2 (2026-11-15; main da7aa28..a492147, board b52f488b4470 VALID: option-gate 61/61, js 174/174, template-diag-napi mismatches 0)
+- Fixed: G1a (unknown or non-string ssrMode becomes AsyncYield and the raw value is emitted; the JS and HTML groups match the oracle; the SSR test is validate_upstream.rs:170), G1b (dispatch takes &NormalizedTransformOptions at lib.rs:55-62; the napi path validates once), G4b (options.rs:303-306 adds DeprecationId::StylesheetConfig, and index.js calls console.warn; text and count match the oracle).
+- a492147, the clippy::manual_non_exhaustive allow: LEGITIMATE. The private `_validated: ()` field limits construction to the validator inside the crate, which #[non_exhaustive] cannot do because it only blocks other crates. Carry-forward: switch it to #[expect(..., reason=...)].
+- AB-0008 stays OPEN on:
+  - G2b (instrumentation is unreachable from JS):
+    - The napi transform takes `options: serde_json::Value` (napi lib.rs:314/342). A real `instrumentation:{log(){},incrementCounter(){}}` throws InvalidArg at the boundary, so the replay in napi lib.rs:320,333-341 and index.js replayAndStrip never runs.
+    - Tests pass only on non-function shapes: napi lib.rs:821 `{}`, validate_upstream.rs:284 on the Rust API, loader_guard.rs:234 by string grep. backend.ts:125-128 still rejects instrumentation, so the board never exercises it.
+    - Metric parity is partial: Rust has no emit site for `lwc-spread-directive`. Upstream emits it at template-compiler codegen/index.ts:605; Rust has only the enum variant at generated.rs:12.
+    - `instrumentation:{}` throws LWC1052 in the oracle, but Rust accepts it.
+    - D-0205 is lwc-bots-authored. No migrate decision covers the replay.
+    - Required, one of:
+      - (i) Reject a non-undefined instrumentation at the napi seam with a coded error, delete the recorder and replayAndStrip, and add a decision row.
+      - (ii) Make a migrate decision, then: index.js strips the callbacks before the serde boundary and replays them; emit lwc-spread-directive at the template codegen site; give `{}` LWC1052 parity; add a node test that passes real callbacks and asserts the metric sequence against the oracle; and delete the backend.ts:125-128 reject so the board runs it.
+  - G1b-r (the validated type is not sealed):
+    - All fields of NormalizedTransformOptions are pub (options.rs:197-227), so a validated value can be mutated after validation. Required: private fields with read accessors, or pub(crate).
+    - validated_compile_options (options.rs:416) and prepare_compile_options (:440) are exported with zero callers. Required: delete them.
+  - G1a-r (raw JS text in a pub field): `ssr_mode_emit` is raw JS text in pub CompileOptions (options.rs:208, lwc-shared lib.rs:311) that lwc-ssr compile_js/mod.rs:916 splices in. Required: a typed value (for example `enum SsrModeLiteral { Mode(SsrMode), Raw(serde_json::Value) }`) that codegen renders. Fold in `ssrMode:{}` on .js, which throws in the oracle but emits `{}` in Rust: match the throw or log it as a divergence.
+- Carry-forward (not blocking):
+  - `stylesheetConfig:null` and `outputConfig.minify:null` warn in the oracle but not in Rust, because null becomes None on the wire.
+  - dispatch_type.rs, loader_guard.rs:234 and validate_upstream.rs:419-460 are source-text tests. Replace them with behavior tests when touched.
+  - serde_json moved to runtime dependencies of lwc-compiler (fine).

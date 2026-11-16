@@ -1,0 +1,14 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "dynamic-import-transform"
+    ],
+    [
+      "incrementCounter",
+      "dynamic-import-transform"
+    ]
+  ],
+  "ok": true,
+  "warnings": []
+}

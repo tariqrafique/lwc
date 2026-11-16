@@ -12,7 +12,9 @@
   },
   "files": [
     "index.js",
-    "index.d.ts"
+    "index.d.ts",
+    "wrap.js",
+    "wrap.d.ts"
   ],
   "engines": {
     "node": ">=20"
