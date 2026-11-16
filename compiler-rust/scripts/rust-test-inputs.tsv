@@ -13,6 +13,7 @@ crates/lwc-compiler/src/options.rs	lwc-compiler
 crates/lwc-js/	lwc-js
 crates/lwc-js/src/	lwc-js
 crates/lwc-js/src/helpers.rs	lwc-js
+crates/lwc-js/tests/fixtures/	lwc-js
 crates/lwc-js/tests/fixtures/class-features-shipped.json	lwc-js
 crates/lwc-js/tests/fixtures/decorators-not-enabled-shipped.json	lwc-js
 crates/lwc-js/tests/fixtures/semantic-errors-shipped.json	lwc-js

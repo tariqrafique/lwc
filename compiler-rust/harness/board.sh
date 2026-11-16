@@ -581,10 +581,12 @@ done
 # template-diag-ssr inside the row loop. They still print the footer lines.
 shimgate=0; SHIM_REPO_ROOT="$repo" SHIM_OWNERS="$here/../OWNERS" SHIM_REGISTRY="${SHIM_REGISTRY:-$testdir/shim-registry.tsv}" SHIM_ALLOWLIST="${SHIM_ALLOWLIST:-$testdir/shim-allowlist.tsv}" node "$here/scripts/shim-gate.mjs" || shimgate=1
 gate=0; option_gate || gate=1
-# Coverage gate (v2 spec): report-only unless COVGATE_STRICT=1. Same ROWS the option gate saw.
+# Coverage gate (v2 spec): strict unless COVGATE_STRICT=0. Same ROWS the option gate saw.
 covgate=0
+_cov_strict=
+if [ "${COVGATE_STRICT:-1}" != 0 ]; then _cov_strict=--strict; fi
 COVGATE_DIAG="$DIAG" COVGATE_RATCHET="${RATCHET_FILE:-}" SEMDIFF_BIN="${SEMDIFF_BIN:-}" \
-  node "$here/scripts/coverage-gate.mjs" ${COVGATE_STRICT:+--strict} "${ROWS[*]}" || covgate=1
+  node "$here/scripts/coverage-gate.mjs" $_cov_strict "${ROWS[*]}" || covgate=1
 gioguard=0; "$here/scripts/golden-io-guard.sh" "$testdir" || gioguard=1
 # Construct the tag spell from parts so this file has no raw tag-open sequence (registry scanner).
 _shim_tok=SHIM; _shim_lit="${_shim_tok}("

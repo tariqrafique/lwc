@@ -166,8 +166,12 @@ impl<'n> CheckedAttr<'n> {
     pub(super) fn loc(&self) -> &SourceLocation {
         &self.loc
     }
-    fn expr(&self) -> bool {
-        matches!(self.value, Av::Expr(_))
+    /// TS `ast.isExpression`: a `{…}` whose complex parse is an acorn Literal is not an expression.
+    fn ast_expr(&self, d: &Ctx) -> bool {
+        match &self.value {
+            Av::Expr(src) => !d.literal_attr(src),
+            _ => false,
+        }
     }
 }
 
@@ -195,18 +199,31 @@ pub(super) struct ElementCheck<'n> {
     /// / `validate::multiple_if`).
     if_warns: Vec<CompilerDiagnostic>,
     key_warn: Option<CompilerDiagnostic>,
+    /// TS validateElement 1123. Emitted even when validateAttributes throws afterwards.
+    unknown_tag: Option<CompilerDiagnostic>,
+    /// parseIf / parseForEach / parseForOf pushed the directive before a later throw.
+    pub if_kept: bool,
+    pub for_kept: bool,
     /// Every checked attribute with its normalized value (a normalize throw drops the element, so an
     /// `ElementCheck` always has them all).
     pub attrs: Vec<CheckedAttr<'n>>,
 }
 
+impl<'n> ElementCheck<'n> {
+    pub(super) fn take_attr_warns(&mut self) -> Vec<CompilerDiagnostic> {
+        std::mem::take(&mut self.attr_warns)
+    }
+}
+
 /// A throw before TS parseBaseElement created the element: the element and its subtree are dropped.
 pub(super) struct Dropped<'n> {
     pub diag: CompilerDiagnostic,
-    /// Some: TS parseIfBlock / parseElseifBlock / parseElseBlock had already pushed the (empty) block into
-    /// the parent and updated the sibling if-chain. Directives are parsed after every attribute was
-    /// normalized, so these are all the element's attributes, for picking its lwc role.
+    /// Some: a directive node was already pushed, so the empty shell stays in the parent.
     pub lwc_parsed: Option<Vec<CheckedAttr<'n>>>,
+    /// TS parseIf pushed the If before the throw.
+    pub if_kept: bool,
+    /// TS parseForEach / parseForOf pushed the loop before the throw.
+    pub for_kept: bool,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -239,6 +256,9 @@ pub(super) fn element_errors<'n>(
         attr_warns: Vec::new(),
         if_warns: Vec::new(),
         key_warn: None,
+        unknown_tag: None,
+        if_kept: false,
+        for_kept: false,
         attrs: Vec::new(),
     };
     let r = check(tag, ns, attrs, n, cfg, d, &mut out)?;
@@ -265,11 +285,19 @@ pub(super) fn element_errors<'n>(
             for w in std::mem::take(&mut out.attr_warns) {
                 d.push(w);
             }
+            if matches!(out.stage, Stage::Applied)
+                && let Some(w) = out.unknown_tag.take()
+            {
+                d.push(w);
+            }
             match out.stage {
                 Stage::NotCreated => {
                     return Ok(Err(Dropped {
                         diag: e,
-                        lwc_parsed: out.lwc_parsed.then_some(out.attrs),
+                        lwc_parsed: (out.lwc_parsed || out.if_kept || out.for_kept)
+                            .then_some(out.attrs),
+                        if_kept: out.if_kept,
+                        for_kept: out.for_kept,
                     }));
                 }
                 Stage::Created => {
@@ -280,9 +308,7 @@ pub(super) fn element_errors<'n>(
             }
         }
         Ok(()) => {
-            for w in std::mem::take(&mut out.attr_warns) {
-                d.push(w);
-            }
+            // 1057 stays on `attr_warns` so lowering can emit it after 1149.
         }
     }
     Ok(Ok(out))
@@ -350,7 +376,7 @@ fn check_parsed(
     let has = |pas: &Vec<CheckedAttr<'_>>, name: &str| pas.iter().any(|p| p.attr().name == name);
     let lwc_if = pick(&mut pas, |x| x == "lwc:if");
     if let Some(p) = &lwc_if {
-        if !p.expr() {
+        if !p.ast_expr(d) {
             return e(
                 &ParserDiagnostics::IF_BLOCK_DIRECTIVE_SHOULD_BE_EXPRESSION,
                 &[],
@@ -371,7 +397,7 @@ fn check_parsed(
                 &l,
             );
         }
-        if !p.expr() {
+        if !p.ast_expr(d) {
             return e(
                 &ParserDiagnostics::ELSEIF_BLOCK_DIRECTIVE_SHOULD_BE_EXPRESSION,
                 &[],
@@ -431,7 +457,7 @@ fn check_parsed(
     );
     match (&fe, &fi) {
         (Some(fe), Some(fi)) => {
-            if !fe.expr() {
+            if !fe.ast_expr(d) {
                 return e(
                     &ParserDiagnostics::FOR_EACH_DIRECTIVE_SHOULD_BE_EXPRESSION,
                     &[],
@@ -460,6 +486,7 @@ fn check_parsed(
             }
             d.add_scope_node(ScopeNode::ForEach(index.clone()));
             out.for_each = Some(index);
+            out.for_kept = true;
         }
         (None, None) => {}
         _ => {
@@ -478,7 +505,7 @@ fn check_parsed(
                 &l,
             );
         }
-        if !it.expr() {
+        if !it.ast_expr(d) {
             return e(
                 &ParserDiagnostics::DIRECTIVE_SHOULD_BE_EXPRESSION,
                 &[&it.attr().name],
@@ -488,6 +515,7 @@ fn check_parsed(
         let name = it.attr().name.split(':').nth(1).unwrap_or("");
         identifier(name, it.loc())?;
         out.for_of = Some(name.to_string());
+        out.for_kept = true;
         d.add_scope_node(ScopeNode::ForOf(name.to_string()));
     }
     let mut ifs = Vec::new();
@@ -506,7 +534,7 @@ fn check_parsed(
                 &l,
             );
         }
-        if !p.expr() {
+        if !p.ast_expr(d) {
             return e(
                 &ParserDiagnostics::IF_DIRECTIVE_SHOULD_BE_EXPRESSION,
                 &[],
@@ -518,6 +546,7 @@ fn check_parsed(
             return e(&ParserDiagnostics::UNEXPECTED_IF_MODIFIER, &[m], p.loc());
         }
         d.add_scope_node(ScopeNode::If);
+        out.if_kept = true;
     }
     let sd = pas
         .iter()
@@ -636,7 +665,7 @@ fn check_parsed(
             }
         }
         if let Some(p) = pas.iter().find(|p| p.attr().name == "name") {
-            if p.expr() {
+            if p.ast_expr(d) {
                 return e(
                     &ParserDiagnostics::NAME_ON_SLOT_CANNOT_BE_EXPRESSION,
                     &[],
@@ -687,12 +716,19 @@ fn check_parsed(
 
     // parseBaseElement: the element now exists in its parent.
     out.stage = Stage::Created;
-    d.add_scope_node(ScopeNode::Base);
+    let base_kind = match kind {
+        Kind::Slot => BaseKind::Slot,
+        Kind::Component => BaseKind::Component,
+        Kind::External => BaseKind::External,
+        Kind::LwcComponent => BaseKind::LwcComponent,
+        Kind::Element => BaseKind::Element,
+    };
+    d.add_scope_node(ScopeNode::Base(base_kind, tag.to_string()));
     out.created_warn = validate::unknown_lwc_tag(tag, &l, d);
     // applyHandlers.
     let mut handlers = 0;
     while let Some(h) = pick(&mut pas, |x| x.starts_with("on")) {
-        if !h.expr() {
+        if !h.ast_expr(d) {
             return e(
                 &ParserDiagnostics::EVENT_HANDLER_SHOULD_BE_EXPRESSION,
                 &[],
@@ -720,6 +756,13 @@ fn check_parsed(
                 k.loc(),
             );
         };
+        if d.literal_attr(src) {
+            return e(
+                &ParserDiagnostics::KEY_ATTRIBUTE_SHOULD_BE_EXPRESSION,
+                &[],
+                k.loc(),
+            );
+        }
         // TS checks the parsed key's shape (t.isMemberExpression / t.isIdentifier), computed or not:
         // `it[index]` references the iterator index wherever computed members parse (legacy computed or
         // complex expressions; elsewhere normalize already rejected them).
@@ -795,7 +838,7 @@ fn check_parsed(
                 &l,
             );
         }
-        if !p.expr() {
+        if !p.ast_expr(d) {
             return e(
                 &ParserDiagnostics::INVALID_LWC_DYNAMIC_LITERAL_PROP,
                 &[&tagb],
@@ -885,7 +928,7 @@ fn check_parsed(
         }
     }
     if let Some(p) = pick(&mut pas, |x| x == "lwc:spread") {
-        if !p.expr() {
+        if !p.ast_expr(d) {
             return e(
                 &ParserDiagnostics::INVALID_LWC_SPREAD_LITERAL_PROP,
                 &[&tagb],
@@ -897,7 +940,7 @@ fn check_parsed(
         if !cfg.enable_lwc_on {
             return e(&ParserDiagnostics::INVALID_LWC_ON_OPTS, &[], &l);
         }
-        if !p.expr() {
+        if !p.ast_expr(d) {
             return e(
                 &ParserDiagnostics::INVALID_LWC_ON_LITERAL_PROP,
                 &[&tagb],
@@ -920,7 +963,7 @@ fn check_parsed(
                 &l,
             );
         }
-        if !p.expr() {
+        if !p.ast_expr(d) {
             return e(
                 &ParserDiagnostics::INVALID_LWC_SLOT_BIND_LITERAL_PROP,
                 &[&tagb],
@@ -998,6 +1041,8 @@ fn check_parsed(
             &l,
         );
     }
+    // validateElement 1123 runs before validateAttributes, so a later tabindex throw still warns.
+    out.unknown_tag = validate::unknown_html_tag(tag, &l);
 
     // validateAttributes / validateProperties.
     for p in &pas {
@@ -1005,7 +1050,7 @@ fn check_parsed(
             return e(&ParserDiagnostics::IS_ATTRIBUTE_NOT_SUPPORTED, &[], &l);
         }
         if p.attr().name == "tabindex"
-            && !p.expr()
+            && !p.ast_expr(d)
             && !matches!(p.value(), Av::Str(s) if s == "0" || s == "-1")
         {
             return e(&ParserDiagnostics::INVALID_TABINDEX_ATTRIBUTE, &[], &l);

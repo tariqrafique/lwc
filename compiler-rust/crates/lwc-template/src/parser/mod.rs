@@ -38,9 +38,6 @@ pub(crate) struct Ctx<'a> {
     in_loop: bool,
     /// Nearest rendered element/slot ancestor, reset at components (TS `validateSlotAttribute`).
     slot_ancestor: Option<String>,
-    /// TS parseScopedSlotFragment 1178: the nearest ancestor, skipping lwc:if/elseif/else blocks,
-    /// is a Component or `lwc:component`.
-    slot_data_parent_ok: bool,
     /// TS `seenScopedSlots` (not if-context aware).
     seen_scoped_slots: HashSet<String>,
     /// Root `lwc:render-mode="light"`.
@@ -101,6 +98,16 @@ impl From<InternalError> for Throw<'_> {
 /// One parse5 child lowered (TS parseElement / parseTextNode / parseComment).
 type Parsed<'a> = Result<Option<Lowered<'a>>, Throw<'a>>;
 
+/// Which base element a scope node is. TS `isComponent` / `isLwcComponent` / `isBaseElement`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) enum BaseKind {
+    Element,
+    Component,
+    Slot,
+    External,
+    LwcComponent,
+}
+
 /// A node in a TS element scope (only what the ancestor queries look at).
 #[derive(Debug, Clone, PartialEq)]
 pub(super) enum ScopeNode {
@@ -113,8 +120,8 @@ pub(super) enum ScopeNode {
     ForOf(String),
     If,
     ScopedSlotFragment,
-    /// A base element (Element / Component / Slot / ExternalComponent / LwcComponent).
-    Base,
+    /// A base element. The name is `parentNode.name` for LWC1144.
+    Base(BaseKind, String),
 }
 
 /// The current node of an open if-chain (TS `ifContext.currentNode`).
@@ -161,11 +168,42 @@ impl<'a> Ctx<'a> {
                 return Some(t);
             }
             match i.checked_sub(1).map(|j| flat[j]) {
-                Some(p) if *p != ScopeNode::Base => {}
-                _ => return None,
+                Some(ScopeNode::Base(_, _)) | None => return None,
+                Some(_) => {}
             }
         }
         None
+    }
+
+    /// TS `findAncestor(isBaseElement, () => false)?.name`. Only the last flattened scope node is
+    /// tested. A throw skips `endElementScope`, so that node can be a sibling whose parse threw
+    /// after `parseBaseElement`. A non-base tail yields the default name `template`.
+    fn recovery_parent_name(&self) -> Option<String> {
+        match self.scopes.iter().flatten().next_back() {
+            Some(ScopeNode::Base(_, name)) => Some(name.clone()),
+            _ => None,
+        }
+    }
+
+    /// A complex `{…}` whose root is an acorn Literal. TS `ast.isExpression` is false for those.
+    pub(super) fn literal_attr(&self, src: &str) -> bool {
+        self.exprs
+            .get(src)
+            .is_some_and(|s| expression_complex::is_estree_literal(s.ast))
+    }
+
+    /// TS `findAncestor(isComponentOrLwcComponent, ({ current }) => isConditionalBlock(current))`.
+    /// lwc:if / lwc:elseif / lwc:else are transparent. if:*, for:each, a leaked non-conditional
+    /// scope, and a scoped-slot fragment are not.
+    pub(super) fn slot_data_parent_ok(&self) -> bool {
+        for node in self.scopes.iter().flatten().rev() {
+            match node {
+                ScopeNode::Base(BaseKind::Component | BaseKind::LwcComponent, _) => return true,
+                ScopeNode::IfBlock | ScopeNode::ElseifBlock | ScopeNode::ElseBlock => {}
+                _ => return false,
+            }
+        }
+        false
     }
     /// TS getForOfParent: the iterator name.
     pub(super) fn for_of_parent(&self) -> Option<String> {
@@ -936,20 +974,17 @@ fn lower_attr<'a>(
 fn if_directive<'a>(
     p: &mut ParsedAttribute,
     n: &NodeRef,
-    d: &Ctx,
+    d: &Ctx<'a>,
 ) -> Located<Option<(String, Expression<'a>, SourceLocation)>> {
     let Some(a) = p.pick_all_prefix("if:").first().copied() else {
         return Ok(None);
     };
-    // TODO: diagnostic for non-identifier values.
-    let Some(e) = braced_chain(&a.value, d.legacy_computed) else {
-        return Ok(None);
-    };
-    Ok(Some((
-        a.name["if:".len()..].to_string(),
-        e,
-        attr_loc(n, &a.name, d)?,
-    )))
+    // TS parseIf keeps any `isExpression` value. `{x()}` and `{x[0]}` are complex expressions;
+    // dropping them made the template directive-less (1153). A literal `{true}` is not an
+    // expression; element_check already threw 1054.
+    let l = attr_loc(n, &a.name, d)?;
+    let e = condition_expr(&a.value, l, d)?;
+    Ok(Some((a.name["if:".len()..].to_string(), e, l)))
 }
 
 enum Lwc<'a> {
@@ -1139,21 +1174,45 @@ fn lower_one<'a>(
             let span = loc(&el.location);
             // TS parseElement throws (withErrorRecovery): the element and its subtree are dropped.
             validate::html_recovery(n, d);
-            let pre =
+            let mut pre =
                 element_check::element_errors(tag_name, namespace_uri, &qualified, n, cfg, d)?;
             // TS parseAttributes: the one ParsedAttribute every directive parser picks from, over the
             // pre-pass (attribute, normalized value) pairs. Built only when there are pairs to pick from
             // (AB-X0017 follow-up: no dead unwrap_or_default over a missing lwc_parsed).
-            let chk = match &pre {
+            let chk = match &mut pre {
                 Ok(chk) => chk,
-                // TS parseIfBlock/parseElseifBlock/parseElseBlock push the (empty) block into the parent and
-                // update the sibling if-chain before a later throw drops the element.
+                // TS pushes the If / For / lwc:if node before parseBaseElement. A later throw leaves
+                // that empty directive in the parent, so lwc:dom / lwc:inner-html still see content.
                 Err(e) => {
                     let kept = if let Some(attrs) = e.lwc_parsed.as_deref() {
                         let mut parsed = ParsedAttribute::new(attrs);
+                        let lwc = lwc_directive(&mut parsed, n, d)?;
+                        let lp = if e.for_kept {
+                            loop_directive(&mut parsed, n, d)?
+                        } else {
+                            None
+                        };
+                        let dir = if e.if_kept {
+                            if_directive(&mut parsed, n, d)?
+                        } else {
+                            None
+                        };
+                        let mut content = Vec::new();
+                        if let Some((modifier, condition, directive_location)) = dir {
+                            content = vec![ChildNode::If(If {
+                                modifier,
+                                condition,
+                                children: content,
+                                location: span,
+                                directive_location,
+                            })];
+                        }
+                        if let Some(l) = lp {
+                            content = vec![wrap_loop(l, content, span)];
+                        }
                         Some(Lowered {
-                            content: Vec::new(),
-                            lwc: lwc_directive(&mut parsed, n, d)?,
+                            content,
+                            lwc,
                             location: span,
                         })
                     } else {
@@ -1166,6 +1225,7 @@ fn lower_one<'a>(
                     .into());
                 }
             };
+            let mut attr_warns = chk.take_attr_warns();
             let mut parsed = ParsedAttribute::new(&chk.attrs);
             // A childless (post-creation throw) element: TS runs no further checks on it.
             let threw = chk.thrown.is_some();
@@ -1177,7 +1237,19 @@ fn lower_one<'a>(
             }
             let attrs: &[parse5::Attribute] = if chk.bare { &[] } else { &qualified };
             if tag_name != "template" && !threw {
-                validate::non_template_element(tag_name, namespace_uri, attrs, n, cfg, d)?;
+                validate::non_template_element(
+                    tag_name,
+                    namespace_uri,
+                    attrs,
+                    n,
+                    cfg,
+                    d,
+                    std::mem::take(&mut attr_warns),
+                )?;
+            } else if !threw {
+                for w in attr_warns.drain(..) {
+                    d.push(w);
+                }
             }
             let lp = loop_directive(&mut parsed, n, d)?;
             let dir = if_directive(&mut parsed, n, d)?;
@@ -1215,14 +1287,8 @@ fn lower_one<'a>(
                     None => child_nodes.clone(),
                 };
                 d.in_loop = lp.is_some();
-                // lwc:if/elseif/else blocks are transparent for the slot-data parent check; for:each / if:* are not.
-                let prev_sd = d.slot_data_parent_ok;
-                if dir.is_some() || lp.is_some() {
-                    d.slot_data_parent_ok = false;
-                }
                 let prev_parent = std::mem::replace(&mut d.parent_loc, el);
                 let children = lower_children(&kids, cfg, d);
-                d.slot_data_parent_ok = prev_sd;
                 d.parent_loc = prev_parent;
                 let mut children = children?;
                 // TS validateChildren throws after the children were parsed: the node stays in the tree.
@@ -1324,12 +1390,6 @@ fn lower_one<'a>(
                 Some(tag_name.clone())
             };
             let prev_anc = std::mem::replace(&mut d.slot_ancestor, anc);
-            let is_cmp_parent =
-                tag_name == "lwc:component" || (is_comp && tag_name != "slot" && !external);
-            let prev_sd = std::mem::replace(
-                &mut d.slot_data_parent_ok,
-                is_cmp_parent && dir.is_none() && lp.is_none(),
-            );
             let prev_parent = std::mem::replace(&mut d.parent_loc, el);
             let children = if threw {
                 Ok(Vec::new())
@@ -1337,7 +1397,6 @@ fn lower_one<'a>(
                 lower_children(child_nodes, cfg, d)
             };
             d.slot_ancestor = prev_anc;
-            d.slot_data_parent_ok = prev_sd;
             d.parent_loc = prev_parent;
             let children = children?;
             // TS validateChildren: lwc:dom / lwc:inner-html elements must be empty; `effectiveChildren`
@@ -1527,11 +1586,9 @@ fn scoped_slot_fragment<'a>(
         Some(c) => c.borrow().child_nodes().cloned().unwrap_or_default(),
         None => child_nodes.to_vec(),
     };
-    let prev_sd = std::mem::replace(&mut d.slot_data_parent_ok, false);
     let prev_in = std::mem::replace(&mut d.in_slot_fragment, true);
     let prev_parent = std::mem::replace(&mut d.parent_loc, el);
     let children = lower_children(&kids, cfg, d);
-    d.slot_data_parent_ok = prev_sd;
     d.in_slot_fragment = prev_in;
     d.parent_loc = prev_parent;
     let children = children?;
@@ -1579,12 +1636,12 @@ fn continue_marker() -> Option<i32> {
 fn with_error_recovery<'a>(
     d: &mut Ctx<'a>,
     f: impl FnOnce(&mut Ctx<'a>) -> Parsed<'a>,
-) -> Located<Option<Lowered<'a>>> {
+) -> Located<(Option<Lowered<'a>>, bool)> {
     match f(d) {
-        Ok(l) => Ok(l),
+        Ok(l) => Ok((l, false)),
         Err(Throw::Recovered(Thrown { diag, kept })) => {
             d.push(diag);
-            Ok(kept)
+            Ok((kept, true))
         }
         Err(Throw::Internal(e)) => Err(e),
     }
@@ -1612,20 +1669,26 @@ fn lower_children<'a>(
             _ => None,
         };
         if role == Some(2) {
-            lowered.extend(with_error_recovery(d, |d| lower_one(n, cfg, d, in_loop))?);
+            let (ws, _) = with_error_recovery(d, |d| lower_one(n, cfg, d, in_loop))?;
+            lowered.extend(ws);
             continue;
         }
-        if let Some((base, union)) = chain.as_mut() {
-            union.extend(d.seen_slots.iter().cloned());
-            if role == Some(1) {
-                d.seen_slots = base.clone();
-            } else {
-                d.seen_slots = union.clone();
-                chain = None;
-            }
-        }
+        // Slot names inside an open lwc:if chain live in the branch set. TS `endIfChain` merges
+        // that set into the parent only after a successful parse of a non-If/Elseif node (a
+        // terminal `lwc:else` included). A throw skips the merge, so the next sibling must not
+        // see those names. Snapshot and restore on throw.
+        let saved_slots = d.seen_slots.clone();
+        let saved_chain = chain.clone();
+        let saved_if = d.chain;
         if role == Some(0) {
+            if let Some((_, mut union)) = chain.take() {
+                union.extend(d.seen_slots.iter().cloned());
+                d.seen_slots = union;
+            }
             chain = Some((d.seen_slots.clone(), d.seen_slots.clone()));
+        } else if let Some((base, union)) = chain.as_mut() {
+            union.extend(d.seen_slots.iter().cloned());
+            d.seen_slots = base.clone();
         }
         let is_elem = matches!(&n.borrow().data, NodeData::Element { .. });
         let is_comment = matches!(&n.borrow().data, NodeData::Comment { .. });
@@ -1633,7 +1696,7 @@ fn lower_children<'a>(
         // endElementScope(); then an open chain ends unless node is an If/Elseif block. A throw skips the
         // pop and the chain bookkeeping, leaking the element's scope. Non-whitespace text or a preserved
         // comment ends the chain.
-        let lowered_one = with_error_recovery(d, |d| {
+        let (lowered_one, threw) = with_error_recovery(d, |d| {
             if is_elem {
                 d.scopes.push(Vec::new());
                 let l = lower_one(n, cfg, d, in_loop)?;
@@ -1651,6 +1714,29 @@ fn lower_children<'a>(
             }
             Ok(l)
         })?;
+        if threw {
+            // A throw does not undo addSeenSlot. Only undo the pre-parse chain switch, and
+            // keep names this element recorded before it threw (slot+key="k" is still seen).
+            if saved_chain.is_some() || role == Some(0) {
+                let added: HashSet<String> =
+                    d.seen_slots.difference(&saved_slots).cloned().collect();
+                d.seen_slots = saved_slots.clone();
+                d.seen_slots.extend(added);
+                chain = saved_chain;
+            }
+            // parseIfBlock begins the chain before a later directive on the same element throws
+            // (1162). That chain stays open: endIfChain is skipped. Keep a slot scope for it.
+            if saved_if.is_none() && d.chain.is_some() && chain.is_none() {
+                chain = Some((d.seen_slots.clone(), d.seen_slots.clone()));
+            }
+        } else if d.chain.is_none() && chain.is_some() && (saved_if.is_some() || role == Some(0)) {
+            // endElementScope returned a non-If/Elseif node, so TS endIfChain ran. A leaked
+            // child scope makes that pop return nothing and the chain stays open.
+            if let Some((_, mut union)) = chain.take() {
+                union.extend(d.seen_slots.iter().cloned());
+                d.seen_slots = union;
+            }
+        }
         if let Some(l) = lowered_one {
             lowered.push(l);
         }
@@ -1792,7 +1878,6 @@ pub fn parse_template<'a>(
         seen_slots: HashSet::new(),
         in_loop: false,
         slot_ancestor: None,
-        slot_data_parent_ok: false,
         seen_scoped_slots: HashSet::new(),
         light,
         in_slot_fragment: false,

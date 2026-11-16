@@ -145,6 +145,7 @@ pub(super) fn non_template_element(
     n: &NodeRef,
     cfg: &NormalizedConfig,
     d: &mut Ctx,
+    attr_warns: Vec<CompilerDiagnostic>,
 ) -> Located<()> {
     if let Some(sd) = attrs.iter().find(|a| a.name == "lwc:slot-data") {
         d.push(
@@ -163,6 +164,10 @@ pub(super) fn non_template_element(
         d.push(
             ParserDiagnostics::KEY_SHOULD_BE_IN_ITERATION.generate(&[tag], attr_loc(n, "key", d)?),
         );
+    }
+    // TS applyKey (1149) runs before applyAttributes (1057).
+    for w in attr_warns {
+        d.push(w);
     }
     dynamic_directive(tag, attrs, n, d, cfg.experimental_dynamic_directive);
     // TS applyLwcSlotBindDirective runs after the lwc:dynamic/lwc:is directives.
@@ -274,7 +279,7 @@ pub(super) fn scoped_slot_data(
         );
         return None;
     }
-    if !d.slot_data_parent_ok {
+    if !d.slot_data_parent_ok() {
         out.push(ParserDiagnostics::INVALID_PARENT_OF_LWC_SLOT_DATA.generate(&[], l.clone()));
         return None;
     }
@@ -408,23 +413,16 @@ fn is_event_handler_name(name: &str) -> bool {
 }
 
 /// TS parseElementLocation: 1144 (location-less warning) for an element parse5 inserted while recovering.
-/// TS names `ctx.findAncestor(isBaseElement, () => false)?.name ?? 'template'`: only the last node of the enclosing
-/// element scope is tested, i.e. the parent's `element ?? directive`. That is a base element exactly when the parse5
-/// parent is a non-`<template>` element (its own For/If directives sit *above* it); a `<template>` parent yields a
-/// Root / If / For / scoped-slot node, and children of `<template>` content have the content fragment as parse5
-/// parent. A parent whose parseElement threw never parses children, so it never reaches here.
+/// The parent name is `findAncestor(isBaseElement, () => false)?.name ?? 'template'`. Only the last
+/// flattened scope node is tested. A throw skips `endElementScope`, so a sibling that threw after
+/// `parseBaseElement` is still the ancestor when the recovered element is parsed.
 pub(super) fn html_recovery(n: &NodeRef, d: &mut Ctx) {
     let b = n.borrow();
     if b.source_code_location_ref().is_some() {
         return;
     }
     let Some(tag) = b.tag_name() else { return };
-    let parent = b.parent().and_then(|p| {
-        p.borrow()
-            .tag_name()
-            .filter(|t| *t != "template")
-            .map(str::to_string)
-    });
+    let parent = d.recovery_parent_name();
     d.push(
         ParserDiagnostics::INVALID_HTML_RECOVERY
             .generate_normalized(&[tag, parent.as_deref().unwrap_or("template")], None),

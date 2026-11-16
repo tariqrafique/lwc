@@ -9,7 +9,7 @@
 # the board on a mismatch. See board.sh.
 ROWS=(style js js-eval template ssr ssr-async ssr-asyncYield ssr-render ssr-render-async ssr-render-asyncYield csr-render csr-render-template template-renderer js-options js-api template-options ssr_dynamic_imports style-api template-api ssr_render_api template-diag template-diag-napi style-upstream lbc template-diag-semdiff template-diag-ssr template-diag-style template-diag-realgate template-diag-napierrors upstream-cmp js-transform-corpus unported-specs)
 # Diagnostic-only rows (Migrate 2026-11-01): never gate. SSR gates on ssr-render* only.
-DIAG=" ssr ssr-async ssr-asyncYield template template-diag template-diag-napi "  # template = compile-observation; gates via csr-render-template
+DIAG=" ssr ssr-async ssr-asyncYield template "  # template = compile-observation; gates via csr-render-template. template-diag/-napi left DIAG once mismatches are 0 so the mutation cells can gate (item 12).
 BOARD_ROWS_HARNESS="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Option-inventory gate (scripts/option-gate.mjs next to this file). Inputs via env: CRATES_ROOT, OPTGATE_INVENTORY.
 option_gate() { OPTGATE_DIAG="$DIAG" node "$BOARD_ROWS_HARNESS/scripts/option-gate.mjs" "${ROWS[*]}"; }

@@ -36,14 +36,14 @@ pub use template_ir::*;
 /// `env!("CARGO_MANIFEST_DIR")` is baked into the binary at rustc time. Shared
 /// `CARGO_TARGET_DIR` reuses that binary in a later checkout whose path differs
 /// (official snaps are fresh `/tmp/lwc-board-snap.*`), so tests and cfg(test)
-/// lib code must read the runtime value cargo sets. Fall back to `env!` only
-/// when the process was not launched by cargo.
+/// lib code must read the runtime value cargo test sets for the current tree.
 #[macro_export]
 macro_rules! cargo_manifest_dir {
     () => {{
-        std::env::var_os("CARGO_MANIFEST_DIR")
-            .map(std::path::PathBuf::from)
-            .unwrap_or_else(|| std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")))
+        std::path::PathBuf::from(
+            std::env::var("CARGO_MANIFEST_DIR")
+                .expect("CARGO_MANIFEST_DIR (cargo test sets this for the current worktree)"),
+        )
     }};
 }
 

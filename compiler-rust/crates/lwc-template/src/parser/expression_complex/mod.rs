@@ -18,6 +18,20 @@ pub(crate) struct ExprSlot<'a> {
     pub source: &'a str,
 }
 
+/// TS `ast.isExpression` is false for an acorn `Literal`. oxc splits those nodes; a template
+/// literal stays an expression.
+pub(crate) fn is_estree_literal(e: &Expression) -> bool {
+    matches!(
+        e,
+        Expression::BooleanLiteral(_)
+            | Expression::NullLiteral(_)
+            | Expression::NumericLiteral(_)
+            | Expression::StringLiteral(_)
+            | Expression::BigIntLiteral(_)
+            | Expression::RegExpLiteral(_)
+    )
+}
+
 /// `body` is the text between the braces. Spans on `expr` index `body`; the slot's spans index `body.trim()`,
 /// which is what [`build`] stores as `ComplexExpression.source`.
 pub(crate) fn slot_of<'a>(

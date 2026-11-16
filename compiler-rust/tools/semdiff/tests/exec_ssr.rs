@@ -20,7 +20,7 @@ fn scratch(name: &str) -> PathBuf {
 }
 
 fn repo() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..")
+    PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR")).join("../..")
 }
 
 fn meta(mode: &str, props: Value) -> SsrMeta {

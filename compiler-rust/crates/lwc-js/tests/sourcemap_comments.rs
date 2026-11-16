@@ -14,10 +14,11 @@ fn opts() -> CompileOptions {
 }
 
 fn fixture(name: &str) -> String {
-    std::fs::read_to_string(format!(
-        "{}/tests/fixtures/{name}.js",
-        env!("CARGO_MANIFEST_DIR")
-    ))
+    std::fs::read_to_string(
+        lwc_shared::cargo_manifest_dir!()
+            .join("tests/fixtures")
+            .join(format!("{name}.js")),
+    )
     .unwrap()
 }
 
