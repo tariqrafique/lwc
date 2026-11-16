@@ -525,13 +525,6 @@ impl Codegen<'_> {
 
     pub(crate) fn print_comments_at(&mut self, start: u32) {
         if let Some(comments) = self.get_comments(start) {
-            // Babel's first leading line comment breaks off a line that already
-            // has code (`default: // 'other'` lands above the consequent).
-            if self.last_byte().is_some_and(|b| b != b'\n')
-                && comments.first().is_some_and(|c| c.is_line())
-            {
-                self.print_hard_newline();
-            }
             self.print_comments(&comments);
         }
     }
