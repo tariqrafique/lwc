@@ -44,6 +44,22 @@ struct Lower<'s> {
     rendered: Vec<(u32, u32)>,
     /// Class and class-statement ends. Inserts there sort later-pass first inside a rendered slice.
     ends: HashSet<u32>,
+    /// Source comments. Class-field leading and inner comments move onto the init
+    /// (Babel `inheritPropComments`); a trailing comment follows the next element.
+    cmts: Vec<Cmt>,
+    /// Trailing comment of a field, waiting to lead the next lowered field.
+    carry: String,
+}
+
+/// Trailing comment text for the constructor, plus the source spans it came from.
+type FieldTrail = (String, Vec<(u32, u32)>);
+
+/// A source comment. `trailing` is oxc's token-relative position.
+struct Cmt {
+    start: u32,
+    end: u32,
+    attached: u32,
+    trailing: bool,
 }
 
 impl<'s> Lower<'s> {
@@ -201,8 +217,13 @@ impl<'s> Lower<'s> {
         };
         // anonymous class declarations (only `export default class {}`) cannot carry trailing statics
         let lower_static = decl.is_some() && class.id.is_some() || !is_decl;
+        self.carry.clear();
         let mut inits = Vec::new();
         let mut statics = Vec::new();
+        // Trailing comment of the last instance field when nothing real remains before it
+        // (`class C { x = 1; // t }` → `} // t` on the constructor). Babel drops that
+        // comment when the last field is static.
+        let mut ctor_trail = String::new();
         let mut keys = Vec::new(); // `_k = k`
         let mut alias_needed = false;
         // Private fields may have named an anonymous `const C = class` in `prior` (` C` at `class`.len()).
@@ -214,7 +235,7 @@ impl<'s> Lower<'s> {
         let own = if renamed { None } else { own_owned.as_deref() };
         let uid_base = if renamed { None } else { own };
         let mut alias: Option<String> = None;
-        let mut pending_static: Vec<(String, usize, bool)> = Vec::new(); // suffix, element index, private
+        let mut pending_static: Vec<(String, usize, bool, String)> = Vec::new(); // suffix, element index, private, leading comments
         for (el_idx, el) in class.body.body.iter().enumerate() {
             let ClassElement::PropertyDefinition(p) = el else {
                 continue;
@@ -259,7 +280,23 @@ impl<'s> Lower<'s> {
                     }
                 }
             };
-            self.edits.push(Edit::replace(p.span.start, p.span.end, ""));
+            let (lead, trail_out) = self.field_comments(class, el_idx, p, lower_static);
+            if let Some((piece, spans)) = trail_out {
+                ctor_trail = piece;
+                let line = sole_field_line(self.src, p.span.start);
+                if let Some((ls, le)) = line {
+                    self.edits.push(Edit::replace(ls, le, String::new()));
+                } else {
+                    self.edits
+                        .push(Edit::replace(p.span.start, p.span.end, String::new()));
+                    for (s, e) in spans {
+                        self.edits.push(Edit::replace(s, e, String::new()));
+                    }
+                }
+            } else {
+                self.edits
+                    .push(Edit::replace(p.span.start, p.span.end, String::new()));
+            }
             if p.r#static {
                 if let Some(v) = &p.value {
                     let mut r = Refs::new(own);
@@ -268,16 +305,14 @@ impl<'s> Lower<'s> {
                         alias_needed = true;
                     }
                 }
-                pending_static.push((suffix, el_idx, private));
+                pending_static.push((suffix, el_idx, private, lead));
             } else {
-                let value = p
-                    .value
-                    .as_ref()
-                    .map_or("void 0".to_string(), |v| self.render_expr(v));
+                let (mid, value) = self.field_value(p);
                 inits.push(if private {
-                    format!("Object.defineProperty(this, {suffix}, {{\nwritable: true,\nvalue: {value}\n}});")
+                    let value = value_after_eq(&mid, &value);
+                    format!("{lead}Object.defineProperty(this, {suffix}, {{\nwritable: true,\nvalue:{value}\n}});")
                 } else {
-                    format!("this{suffix} = {value};")
+                    format!("{lead}this{suffix}{mid}{value};")
                 });
             }
         }
@@ -314,7 +349,7 @@ impl<'s> Lower<'s> {
             self.hoist_var(a.clone());
             alias = Some(a);
         }
-        for (suffix, el_idx, private) in pending_static {
+        for (suffix, el_idx, private, lead) in pending_static {
             let ClassElement::PropertyDefinition(p) = &class.body.body[el_idx] else {
                 continue;
             };
@@ -342,10 +377,15 @@ impl<'s> Lower<'s> {
                         .expect("lwc-js edits never partially overlap")
                 }
             };
+            let mid = match &p.value {
+                Some(v) => self.slice_span(p.key.span().end, v.span().start),
+                None => " = ".to_string(),
+            };
             statics.push(if private {
-                format!("Object.defineProperty({reference}, {suffix}, {{\nwritable: true,\nvalue: {value}\n}})")
+                let value = value_after_eq(&mid, &value);
+                format!("{lead}Object.defineProperty({reference}, {suffix}, {{\nwritable: true,\nvalue:{value}\n}})")
             } else {
-                format!("{reference}{suffix} = {value}")
+                format!("{lead}{reference}{suffix}{mid}{value}")
             });
         }
         // instance initializers -> constructor
@@ -380,12 +420,19 @@ impl<'s> Lower<'s> {
                     });
                     let at = after_super.unwrap_or(b.span.start + 1);
                     self.edits.push(Edit::insert(at, format!("\n{body}\n")));
+                    if !ctor_trail.is_empty()
+                        && let Some(m) = ctor
+                    {
+                        self.edits.push(Edit::insert(m.span.end, ctor_trail));
+                    }
                 }
                 None => {
                     let text = if class.heritage.is_some() {
-                        format!("constructor(...args) {{{hoist} super(...args);\n{body}\n}}\n")
+                        format!(
+                            "constructor(...args) {{{hoist} super(...args);\n{body}\n}}{ctor_trail}"
+                        )
                     } else {
-                        format!("constructor() {{{hoist}\n{body}\n}}\n")
+                        format!("constructor() {{{hoist}\n{body}\n}}{ctor_trail}")
                     };
                     self.edits
                         .push(Edit::insert(class.body.span.start + 1, text));
@@ -457,6 +504,104 @@ impl<'s> Lower<'s> {
                 _ => {}
             }
         }
+    }
+
+    /// Leading comments of this field, and where its trailing comment goes.
+    ///
+    /// Babel's `inheritPropComments` copies leading and inner comments onto the
+    /// init. A trailing comment moves to the next lowered field when that field
+    /// is the next element (`x = 1; // a` then `y = 2` → the comment leads
+    /// `this.y`). Otherwise it stays in the class, except the last instance
+    /// field of a class whose other elements were all fields: that one is
+    /// `} // t` on the constructor. A last static field's trailing comment is
+    /// dropped, which is what the class-properties plugin does.
+    fn field_comments(
+        &mut self,
+        class: &Class<'_>,
+        idx: usize,
+        p: &PropertyDefinition<'_>,
+        lower_static: bool,
+    ) -> (String, Option<FieldTrail>) {
+        let mut lead = std::mem::take(&mut self.carry);
+        let mut moved = Vec::new();
+        for i in 0..self.cmts.len() {
+            let c = &self.cmts[i];
+            let before_key = c.start >= p.span.start && c.end <= p.key.span().start;
+            let leads_field = !c.trailing && c.attached == p.span.start;
+            if leads_field || before_key {
+                lead.push_str(&comment_prefix(&self.src[c.start as usize..c.end as usize]));
+                if leads_field {
+                    moved.push((c.start, c.end));
+                }
+            }
+        }
+        for (s, e) in moved {
+            self.edits.push(Edit::replace(s, e, String::new()));
+        }
+        let trailing: Vec<(u32, u32)> = self
+            .cmts
+            .iter()
+            .filter(|c| c.trailing && (c.attached == p.span.end || c.start >= p.span.end))
+            .filter(|c| {
+                // Only the comments that sit before the next element, so a later
+                // field's trailing comment is not claimed here.
+                class
+                    .body
+                    .body
+                    .get(idx + 1)
+                    .is_none_or(|el| c.start < el.span().start)
+            })
+            .map(|c| (c.start, c.end))
+            .collect();
+        let next_lowered = class
+            .body
+            .body
+            .get(idx + 1)
+            .is_some_and(|el| element_lowered(el, lower_static));
+        let ctor = if next_lowered {
+            for (s, e) in trailing {
+                self.carry
+                    .push_str(&comment_prefix(&self.src[s as usize..e as usize]));
+                self.edits.push(Edit::replace(s, e, String::new()));
+            }
+            None
+        } else if class.body.body.get(idx + 1).is_some() {
+            None
+        } else if p.r#static {
+            for (s, e) in trailing {
+                self.edits.push(Edit::replace(s, e, String::new()));
+            }
+            None
+        } else if class.body.body[..idx]
+            .iter()
+            .any(|el| !element_lowered(el, lower_static))
+        {
+            None
+        } else {
+            let mut piece = String::new();
+            let mut spans = Vec::new();
+            for (s, e) in trailing {
+                piece.push(' ');
+                piece.push_str(self.src[s as usize..e as usize].trim_end());
+                spans.push((s, e));
+            }
+            if piece.is_empty() {
+                None
+            } else {
+                Some((piece, spans))
+            }
+        };
+        (lead, ctor)
+    }
+
+    /// Source between the key and the value (comments included) and the value text.
+    fn field_value(&mut self, p: &PropertyDefinition<'_>) -> (String, String) {
+        let Some(v) = &p.value else {
+            return (" = ".to_string(), "void 0".to_string());
+        };
+        let mid = self.slice_span(p.key.span().end, v.span().start);
+        let value = self.render_expr(v);
+        (mid, value)
     }
 
     /// Text of `e` after private-field edits and after lowering any class nested in it.
@@ -569,6 +714,17 @@ pub fn run_after(
         seen: std::collections::HashSet::new(),
         rendered: Vec::new(),
         ends: HashSet::new(),
+        cmts: program
+            .comments
+            .iter()
+            .map(|c| Cmt {
+                start: c.span.start,
+                end: c.span.end,
+                attached: c.attached_to,
+                trailing: c.is_trailing(),
+            })
+            .collect(),
+        carry: String::new(),
     };
     l.visit_program(program);
     let rendered = l.rendered;
@@ -582,6 +738,52 @@ pub(crate) fn edit_rendered_into(start: u32, end: u32, e: &Edit) -> bool {
     let inside = e.start >= start && e.end <= end && !(e.start == start && e.end == end);
     let boundary_insert = e.start == e.end && e.start >= start && e.start <= end;
     inside || boundary_insert
+}
+
+/// The field's line when `{` and `}` are not on it, including the trailing newline.
+fn sole_field_line(src: &str, pos: u32) -> Option<(u32, u32)> {
+    let b = src.as_bytes();
+    let pos = pos as usize;
+    let start = b[..pos]
+        .iter()
+        .rposition(|&c| c == b'\n')
+        .map_or(0, |i| i + 1);
+    let end = b[pos..]
+        .iter()
+        .position(|&c| c == b'\n')
+        .map_or(b.len(), |i| pos + i + 1);
+    let line = &src[start..end];
+    if line.contains('{') || line.contains('}') {
+        None
+    } else {
+        Some((start as u32, end as u32))
+    }
+}
+
+fn element_lowered(el: &ClassElement<'_>, lower_static: bool) -> bool {
+    let ClassElement::PropertyDefinition(p) = el else {
+        return false;
+    };
+    if p.r#type == PropertyDefinitionType::TSAbstractPropertyDefinition || p.declare {
+        return false;
+    }
+    !(p.r#static && !lower_static)
+}
+
+fn comment_prefix(text: &str) -> String {
+    if text.starts_with("//") {
+        format!("{text}\n")
+    } else {
+        format!("{text} ")
+    }
+}
+
+/// Comments between `=` and the value stay on the defineProperty `value:`.
+fn value_after_eq(mid: &str, value: &str) -> String {
+    match mid.rfind('=') {
+        Some(i) => format!("{}{value}", &mid[i + 1..]),
+        None => value.to_string(),
+    }
 }
 
 fn hoist_text(lets: &[String], vars: &[String]) -> String {

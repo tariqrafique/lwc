@@ -104,7 +104,11 @@ impl<'a> SourcemapBuilder<'a> {
         let original_name = self.original_name(span, name);
         // The token name should be original name.
         // If it hasn't changed, name should be `None` to reduce `SourceMap` size.
-        let token_name = if original_name == Some(name) { None } else { original_name };
+        let token_name = if original_name == Some(name) {
+            None
+        } else {
+            original_name
+        };
         self.add_source_mapping(output, span.start, token_name);
     }
 
@@ -132,7 +136,8 @@ impl<'a> SourcemapBuilder<'a> {
             span.end,
             self.original_source.len()
         );
-        self.original_source.get(span.start as usize..span.end as usize)
+        self.original_source
+            .get(span.start as usize..span.end as usize)
     }
 
     pub fn add_source_mapping(&mut self, output: &[u8], position: u32, name: Option<&'a str>) {
@@ -512,7 +517,10 @@ impl<'a> SourcemapBuilder<'a> {
             break;
         }
 
-        LineOffsetTables { lines, column_offsets }
+        LineOffsetTables {
+            lines,
+            column_offsets,
+        }
     }
 }
 
@@ -548,8 +556,14 @@ mod test {
         assert_mapping("a\ra", &[(0, 0, 0), (1, 0, 1), (2, 1, 0), (3, 1, 1)]);
 
         assert_mapping("\r\n", &[(0, 0, 0), (1, 0, 1), (2, 1, 0)]);
-        assert_mapping("\r\n\r\n", &[(0, 0, 0), (1, 0, 1), (2, 1, 0), (3, 1, 1), (4, 2, 0)]);
-        assert_mapping("a\r\na", &[(0, 0, 0), (1, 0, 1), (2, 0, 2), (3, 1, 0), (4, 1, 1)]);
+        assert_mapping(
+            "\r\n\r\n",
+            &[(0, 0, 0), (1, 0, 1), (2, 1, 0), (3, 1, 1), (4, 2, 0)],
+        );
+        assert_mapping(
+            "a\r\na",
+            &[(0, 0, 0), (1, 0, 1), (2, 0, 2), (3, 1, 0), (4, 1, 1)],
+        );
     }
 
     #[test]
@@ -561,14 +575,23 @@ mod test {
         assert_mapping("\nÖ", &[(0, 0, 0), (1, 1, 0), (3, 1, 1)]);
         assert_mapping("\nÖÖ", &[(0, 0, 0), (1, 1, 0), (3, 1, 1), (5, 1, 2)]);
         assert_mapping("Ö\nÖ", &[(0, 0, 0), (2, 0, 1), (3, 1, 0), (5, 1, 1)]);
-        assert_mapping("\nÖÖ\n", &[(0, 0, 0), (1, 1, 0), (3, 1, 1), (5, 1, 2), (6, 2, 0)]);
+        assert_mapping(
+            "\nÖÖ\n",
+            &[(0, 0, 0), (1, 1, 0), (3, 1, 1), (5, 1, 2), (6, 2, 0)],
+        );
         assert_mapping("Ö\ra", &[(0, 0, 0), (2, 0, 1), (3, 1, 0), (4, 1, 1)]);
-        assert_mapping("Ö\r\na", &[(0, 0, 0), (2, 0, 1), (3, 0, 2), (4, 1, 0), (5, 1, 1)]);
+        assert_mapping(
+            "Ö\r\na",
+            &[(0, 0, 0), (2, 0, 1), (3, 0, 2), (4, 1, 0), (5, 1, 1)],
+        );
     }
 
     #[test]
     fn builder_with_unordered_position() {
-        assert_mapping("\na\nb", &[(4, 2, 1), (0, 0, 0), (1, 1, 0), (2, 1, 1), (3, 2, 0)]);
+        assert_mapping(
+            "\na\nb",
+            &[(4, 2, 1), (0, 0, 0), (1, 1, 0), (2, 1, 1), (3, 2, 0)],
+        );
     }
 
     fn assert_mapping(source: &str, mappings: &[(u32, u32, u32)]) {
@@ -748,7 +771,11 @@ mod test {
         #[expect(clippy::cast_possible_truncation)]
         for (pos, (expected_line, expected_col)) in MAPPINGS.iter().copied().enumerate() {
             let (line, col) = builder.search_original_line_and_column(pos as u32);
-            assert_eq!((line, col), (expected_line, expected_col), "Mismatch at position {pos}");
+            assert_eq!(
+                (line, col),
+                (expected_line, expected_col),
+                "Mismatch at position {pos}"
+            );
         }
     }
 
@@ -759,7 +786,11 @@ mod test {
         #[expect(clippy::cast_possible_truncation)]
         for (pos, (expected_line, expected_col)) in MAPPINGS.iter().copied().enumerate().rev() {
             let (line, col) = builder.search_original_line_and_column(pos as u32);
-            assert_eq!((line, col), (expected_line, expected_col), "Mismatch at position {pos}");
+            assert_eq!(
+                (line, col),
+                (expected_line, expected_col),
+                "Mismatch at position {pos}"
+            );
         }
     }
 
@@ -772,7 +803,11 @@ mod test {
         for pos in indexes {
             let (expected_line, expected_col) = MAPPINGS[pos as usize];
             let (line, col) = builder.search_original_line_and_column(pos);
-            assert_eq!((line, col), (expected_line, expected_col), "Mismatch at position {pos}");
+            assert_eq!(
+                (line, col),
+                (expected_line, expected_col),
+                "Mismatch at position {pos}"
+            );
         }
     }
 }

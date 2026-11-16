@@ -82,7 +82,12 @@ impl Codegen<'_> {
         // Loop through bytes, looking for any which need to be escaped.
         // String is written to buffer in chunks.
         let bytes = s.as_bytes().iter();
-        let mut state = PrintStringState { chunk_start: bytes.ptr(), bytes, quote, allow_backtick };
+        let mut state = PrintStringState {
+            chunk_start: bytes.ptr(),
+            bytes,
+            quote,
+            allow_backtick,
+        };
 
         // With `ascii_only`, every non-ASCII lead byte routes to a handler that escapes it.
         // Otherwise only a string with a lone surrogate needs a handler for 0xED,
@@ -249,7 +254,11 @@ impl PrintStringState<'_> {
     /// is inlined, to create a fast path for when `quote` is `Some`.
     #[inline]
     fn calculate_quote(&mut self, codegen: &mut Codegen) -> Quote {
-        if let Some(quote) = self.quote { quote } else { self.calculate_quote_impl(codegen) }
+        if let Some(quote) = self.quote {
+            quote
+        } else {
+            self.calculate_quote_impl(codegen)
+        }
     }
 
     fn calculate_quote_impl(&mut self, codegen: &mut Codegen) -> Quote {
@@ -326,7 +335,11 @@ impl PrintStringState<'_> {
         }
 
         // Prefer double quote over single quote if cost is the same
-        if single_cost < 0 { Quote::Single } else { Quote::Double }
+        if single_cost < 0 {
+            Quote::Single
+        } else {
+            Quote::Double
+        }
     }
 }
 
