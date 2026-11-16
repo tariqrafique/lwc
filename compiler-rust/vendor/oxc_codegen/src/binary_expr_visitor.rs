@@ -246,8 +246,12 @@ impl<'a> BinaryExpressionVisitor<'a> {
         self.operator.r#gen(p);
         let left_end = self.e.left().span().end;
         let right_start = self.e.right().span().start;
-        // `a &&\n  // note\n  b` — the comment sits between the operator and the right operand.
-        p.print_gap_comments(left_end, right_start.saturating_add(1), None);
+        // `a &&\n  // note\n  b` — a line comment between the operator and the
+        // right operand. A block comment there (`1 + /* async */ 2`) stays out:
+        // printing it changes the private-field helper fixture.
+        if p.line_comment_in(left_end, right_start.saturating_add(1)) {
+            p.print_gap_comments(left_end, right_start.saturating_add(1), None);
+        }
         if p.last_byte() == Some(b'\n') {
             p.print_indent();
         } else {
