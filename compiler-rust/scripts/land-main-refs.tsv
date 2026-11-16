@@ -52,6 +52,10 @@ scripts/install-napi.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
 scripts/install-napi.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
 scripts/install-napi.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
 scripts/install-napi.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
+scripts/build-napi-cross.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
+scripts/build-napi-cross.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
+scripts/build-napi-cross.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok
+scripts/build-napi-cross.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/parse5-url-rewrite.gitconfig	required
 scripts/cargo-locked.sh	BOX_CONFIG_DEPENDENT	~/.gitconfig	required
 scripts/cargo-locked.sh	BOX_CONFIG_DEPENDENT	/workspace/.cargo/config.toml	required
 scripts/cargo-locked.sh	BOX_CONFIG_DEPENDENT	CARGO_HOME	absent_ok

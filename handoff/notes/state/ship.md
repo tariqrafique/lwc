@@ -1,5 +1,5 @@
 # state/ship.md
-Updated: 2026-11-15 22:11 PST by ship. PARKED per D-0276 — successor: LWC Worker (28881e7c) owns packaging, CI, CUTOVER.md. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-15 23:32 PST by ship. PARKED per D-0276 — successor: LWC Worker (28881e7c) owns packaging, CI, CUTOVER.md. Read PLAN.md first; this file holds only this bot's working state.
 
 ## FINAL HANDOFF (D-0276, 2026-11-09 12:49 PST) — ship parked, lands nothing further
 - Unlanded work: NONE. bot/ship @ eac1ae9 (= S5 land; main has moved on to f679437). Worktree /workspace/wt/ship clean (only gitignored built .node). No stashes, no in-flight processes, no pending AB-L reviews, no owed REWORKs.
@@ -73,13 +73,14 @@ Compile-ready on the box-local clone. No rust main land (and none queued that 15
   - `yarn install --ignore-scripts --frozen-lockfile` rc 0, with yarn.lock unchanged (`ship-15a-consumers-yarn-install.log`). `yarn build --skip-nx-cache` rc 0 for 21 projects in 20s (`ship-15a-consumers-yarn-build.log`).
   - No `lwc-compiler-rs` left in the tree (excluding node_modules and dist), and the oracle is clean at b9e8007.
 
-## 15(a) — macOS/Windows napi build plan without Actions (updated 2026-11-15 22:10 PST, harness)
-- **READY TO LAND, NOT LANDED** (Worker sequences: item 14, AB-0008 r3, then item 15). Branch bot/harness-ship15a @ **09dc452** (29d8142 → 093969c → 09dc452, base main a492147); worktree /workspace/wt/harness-ship15a (target/ 2.4G kept for --verify-only; disk 38G free).
+## 15(a) — macOS/Windows napi build plan without Actions (updated 2026-11-15 23:32 PST, harness)
+- **LANDED** main **f549579f5888** (f549579f5888701f565263d1fb70e92f79b3a07f, 23:16 PST; 4 commits 8bf6db304, 4cff0c9f3, 008d7adcc, 2f67bc3c9 + land.sh decisions-snapshot follow-on f549579f5). Rebased onto 4b53e18d42d1 (AB-0008 r3); index.js conflict resolved as r3 wrap.js version + only D-0290 SUPPORTED win32-arm64 + D-0291 rename. 2f67bc3c9: loader test copies package.json `files` (wrap.js) into each case. Post-rebase: loader test, linux-x64 build + offline npm smoke (spread template emits [["c","lwc-spread-directive"]] == oracle via installed wrap.js), lint-shell-pipes, land-path-checks --lints-only, self-tests --all (137s) green; land.sh rc 0 in 147s (first attempt killed by tool timeout in preflight, nothing landed).
+- Official board **12b7d5d72e23 VALID** (rc 0, FULL, prev ae879939adbf, napi e51b6b7d2a64 unchanged, 12m22s). Every row identical to ae879939adbf; only diffs are header commit/src/timestamps, coverage-gate notes sha (207c0b42ef70→fa1c03fc3459, same matrix and counts) and lint-shell-pipes file count 68→69 (new build-napi-cross.sh). csr-ssr/csr-template tsv byte-identical. Log scratch/harness/ship15a-board.log.
+- Worktree /workspace/wt/harness-ship15a removed (no --force) after deleting its 2.3G target/; local branch bot/harness-ship15a deleted.
 - Files: new scripts/build-napi-cross.sh, scripts/napi-triples.tsv, scripts/test-napi-loader-resolution.mjs, scripts/macho-codesign-check.py, docs/napi-cross-build.md. Edited:
   - crates/lwc-compiler-napi/{index.js, package.json, npm/linux-x64-gnu/package.json}: the rename plus win32-arm64;
   - scripts/ssr-oracle-gate.sh: tarball glob → `lwc-rust-compiler-<triple>-*.tgz` (C8 helper);
   - scripts/land-main-refs.tsv: +4 BOX_CONFIG_DEPENDENT rows for build-napi-cross.sh.
-- Overlap risk: r3 edits napi lib.rs, and the napi crate's index.js/package.json are touched here. If r3 also touches index.js, rebase this branch onto main after r3 lands.
 - Rulings applied:
   - D-0290: six triples; win32-arm64-msvc is shipped in tsv, SUPPORTED, optionalDependencies and napi.triples.
   - D-0291: cargo-xwin is the win32 release path (no opt-in gate). The name is `@lwc/rust-compiler` + `@lwc/rust-compiler-<triple>`. No publish.

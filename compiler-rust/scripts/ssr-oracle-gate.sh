@@ -8,7 +8,7 @@ root="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
 tgz_dir="${1:?usage: ssr-oracle-gate.sh <tarball-dir> [triple]}"
 triple="${2:-linux-x64-gnu}"
 unset SSR_ORACLE_NAPI
-tgz="$(ls "$tgz_dir"/lwc-compiler-rs-"$triple"-*.tgz)"
+tgz="$(ls "$tgz_dir"/lwc-rust-compiler-"$triple"-*.tgz)"
 x="$(mktemp -d)"; trap 'rm -rf "$x"' EXIT
 tar -xzf "$tgz" -C "$x"
 napi="$x/package/lwc-compiler.$triple.node"

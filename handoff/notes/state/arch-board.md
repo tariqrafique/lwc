@@ -78,3 +78,31 @@ Updated: 2026-11-09 by LWC Arch Board. Mode: **milestone-only (D-0276)**. Idle u
   - `stylesheetConfig:null` and `outputConfig.minify:null` warn in the oracle but not in Rust, because null becomes None on the wire.
   - dispatch_type.rs, loader_guard.rs:234 and validate_upstream.rs:419-460 are source-text tests. Replace them with behavior tests when touched.
   - serde_json moved to runtime dependencies of lwc-compiler (fine).
+
+## AB-0008 recheck r3 (2026-11-15; main 4b53e18 = d52bdba+2cb9072, board ae879939adbf VALID: js 174/174, option-gate 61/61, template-diag-napi mismatches 0, template-options 205/205)
+- G1b-r: CLOSED.
+  - Fields are private with read-only accessors (options.rs:211-352), and the validator at options.rs:482 is the only constructor.
+  - Three compile_fail doctests cover changing a field, building a struct literal, and passing CompileOptions to dispatch.
+  - The dead exports are deleted, and dispatch_type.rs is now a behavior test.
+- G1a-r: CLOSED.
+  - SsrModeLiteral (lwc-shared lib.rs:221-245) is rendered at lwc-ssr compile_js/mod.rs:930-951, and ssr_mode_emit is gone.
+  - The matrix matches the oracle, including the `{}`/`[]`/`{a:1}` error.
+  - The clippy allow is gone because the lint no longer fires (better than #[expect]). The clippy baseline went from 135 to 134.
+- G2b(ii): the design is approved. Callbacks are stripped in wrap.js and replayed. The spread emit at lwc-template codegen/mod.rs:660-667 mirrors upstream codegen/index.ts:602-605. The metric sequence matches the oracle on 10 inputs, and the odd shapes match on code and message. AB-0008 stays OPEN on:
+  - G2b-1 (no gate):
+    - The 58 new `js-options: inst|ssrmode` cases never run on the board.
+    - The filters at board.sh:515-516 only match `lws|explicit|sourcemap|epm|dyn` and `api`. board.txt:17 shows 302 passed and 1297 skipped, against 1239 skipped before.
+    - Required: the board runs them. Better, the filter is derived from the describe list, or skipped js-options cases fail the board, so a new describe can't be silently skipped.
+  - G2b-2 (unlogged divergence):
+    - With a callback that throws, the oracle throws a coded LWC1052/LWC1007 during the compile. Rust throws a plain uncoded error after the compile succeeds, because the replay runs after the compile.
+    - Required: a migrate-authored divergence row with inputs, or replay errors wrapped in the oracle's coded error. Inputs for the row: spread.html, and dynamic import with `incrementCounter(){throw}`.
+  - G2b-3 (second copy):
+    - harness/src/napiWrap.js is a byte copy of crates/lwc-compiler-napi/wrap.js, kept equal by a test at loader_guard.rs:270.
+    - Required: the harness imports the crate's wrap.js. Delete the copy and the equality test.
+- Note: D-0009 and D-0205 are both lwc-bots-authored (b4a69e6, a1d3e3a). The migrate authority for (ii) is PLAN.md notes 44977cf.
+- Carry-forward (not blocking):
+  - The harness has two cwd normalizations (instrumentationObserve.ts:25 strips the cwd; compareError.ts:63 maps it to `<cwd>/`). Unify them.
+  - `expect(INST_FIXTURES.length).toBe(53)` is a count lock.
+  - `stylesheetConfig:null` and `outputConfig.minify:null` warn in the oracle but not in Rust; `outputConfig:null` throws in the oracle but succeeds in Rust.
+  - lwc-compiler-napi errors.rs:14 and :28 have clippy warnings.
+  - The JS syntax-error column differs: 1:49 in the oracle, 1:51 in Rust (unrelated to AB-0008).

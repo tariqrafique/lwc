@@ -1,8 +1,8 @@
 {
-  "name": "lwc-compiler-rs-linux-x64-gnu",
+  "name": "@lwc/rust-compiler-linux-x64-gnu",
   "version": "0.1.0",
   "private": true,
-  "description": "linux-x64-gnu native binary for lwc-compiler-rs. Not published (D-0202).",
+  "description": "linux-x64-gnu native binary for @lwc/rust-compiler. Not published (D-0202).",
   "os": [
     "linux"
   ],

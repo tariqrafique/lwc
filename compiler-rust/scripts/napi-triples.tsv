@@ -1,0 +1,12 @@
+# Item 15(a): one table for every napi triple. Read by scripts/build-napi-cross.sh and
+# scripts/test-napi-loader-resolution.mjs (which also asserts it equals index.js SUPPORTED and
+# package.json optionalDependencies / napi.triples for the shipped rows).
+# status: shipped = in the package (D-0213 five + win32-arm64-msvc by D-0290); probe = built and verified, not shipped (needs a D-id).
+# min_os: glibc floor of the .node for linux (zig suffix), MACOSX_DEPLOYMENT_TARGET for darwin, - for win32.
+# npm_triple	rust_target	tool	os	cpu	libc	min_os	status
+linux-x64-gnu	x86_64-unknown-linux-gnu	zigbuild	linux	x64	glibc	2.17	shipped
+linux-arm64-gnu	aarch64-unknown-linux-gnu	zigbuild	linux	arm64	glibc	2.17	shipped
+darwin-x64	x86_64-apple-darwin	zigbuild	darwin	x64	-	10.15	shipped
+darwin-arm64	aarch64-apple-darwin	zigbuild	darwin	arm64	-	11.0	shipped
+win32-x64-msvc	x86_64-pc-windows-msvc	xwin	win32	x64	-	-	shipped
+win32-arm64-msvc	aarch64-pc-windows-msvc	xwin	win32	arm64	-	-	shipped

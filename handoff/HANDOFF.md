@@ -1,6 +1,6 @@
 # Handoff
 
-Updated 2026-11-15 23:07 PST. main 4b53e18d42d1, official board ae879939adbf (VALID), notes 2f45593. Plan of record: notes/PLAN.md.
+Updated 2026-11-15 23:33 PST. main f549579f5888, official board 12b7d5d72e23 (VALID), notes 83c5d2f. Plan of record: notes/PLAN.md.
 
 # LWC → Rust migration: handoff (refreshed 2026-11-10 23:58 PST)
 
