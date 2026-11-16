@@ -56,7 +56,7 @@ fn table_lists_both_rules_applied() {
     assert_ne!(rule_table_version(), "rt-1");
     assert_eq!(
         rule_table_version(),
-        "rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-INERT-LINE-COMMENT-1@1+R-NUMERIC-SPELLING-1@1+R-OBJECT-LAST-KEY-1@1+R-OBJECT-SHORTHAND-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1"
+        "rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-INERT-LINE-COMMENT-1@1+R-OBJECT-LAST-KEY-1@1+R-OBJECT-SHORTHAND-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1"
     );
     for prefix in ["R-ASI-SEMI", "R-TRAILING-COMMA"] {
         let meta = semdiff::rules::table()
@@ -363,38 +363,6 @@ fn arrow_parens_do_not_hide_a_different_parameter_list() {
     let a = "const f = type => type;\n";
     let b = "const f = (type) => type;\n";
     equiv(a, b, &force);
-}
-
-#[test]
-fn numeric_spelling_with_the_same_value_is_unobservable() {
-    let id = tag("R-NUMERIC-SPELLING");
-    let force = [id.as_str()];
-    for (a, b) in [
-        ("const n = 1000;\n", "const n = 1e3;\n"),
-        ("const n = 0.5;\n", "const n = .5;\n"),
-    ] {
-        let v = compare_forcing_rules(a, b, &force);
-        assert_eq!(
-            (v.class, v.reason.as_str()),
-            (Class::EquivalentByRewrite, "printer-equal"),
-            "{}",
-            v.json
-        );
-        assert!(
-            applied_forced(a, b, &force).iter().any(|t| t == &id),
-            "{a} vs {b}: {}",
-            v.json
-        );
-    }
-}
-
-#[test]
-fn a_different_number_is_observed() {
-    let id = tag("R-NUMERIC-SPELLING");
-    let force = [id.as_str()];
-    not_equiv("const n = 1000;\n", "const n = 1001;\n", &force);
-    not_equiv("const n = 1e309;\n", "const n = 1e310;\n", &force);
-    not_equiv("const n = 1000;\n", "const n = \"1000\";\n", &force);
 }
 
 #[test]

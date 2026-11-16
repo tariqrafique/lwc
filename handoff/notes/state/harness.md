@@ -948,3 +948,9 @@ napi-css-errors     2/2 (lwc-compiler-napi single_errors_match_shipped, css-1009
   - Gap 1: skip-union.mjs (self-test 12/12) + board.sh gate; plant in test-board-ratchet (unrouted case -> rc 1). self-tests --all ok. Gap 3: harness/src/napiWrap.js + loader_guard equality test deleted; Rust backend loads crates/lwc-compiler-napi/wrap.js (probe-verified).
   - Carry-forward: SSR (targetSSR) rethrows a thrown counter value uncoded (pre-existing, same with instrumentation:{}), not fixed. Deprecation console.warn prints after the native call (oracle: before compile). Thrown objects carrying lwcCode/code/level keys are treated as plain Errors. D-0205 wording ("Rust collects events... loader replays") is stale vs the synchronous design (Migrate to amend).
   - Checks: fmt ok, cargo test --workspace --locked 706/0, rust-test-inputs ok, node options 1986/1986 rust+js, full harness rust 18132 passed/8 skipped. Worktree removed (no --force), local branch deleted. Logs scratch/harness/ab-0008-r4-*.log.
+
+## 2026-11-16 01:20 PST — item 16 landed (agent/pretty-literals)
+- Tip f3dcc0a (base b7f0b1130711) rebased onto 45d13cfe31b8; rebase applied cleanly (scripts/rust-test-inputs.tsv auto-merged to main's side + the agent's single row `crates/lwc-js/tests/fixtures/literals.js	lwc-js`; no manual resolution needed). `--check` ran in land.sh.
+- Main f847d2d07921 (incl. decisions snapshot refresh to notes@857e0fc8864d).
+- Official board abda6df3bc80 VALID (napi 6900c468b745). vs e0252ee27381: new pretty-equal row 1141/1560 identical (allowlist 419); R-NUMERIC-SPELLING-1 retired from semdiff rt; all other rows equal.
+- TSV line appended; agent-inflight removed. Next: AB-0008 r5 (D-0293).

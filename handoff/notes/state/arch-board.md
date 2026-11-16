@@ -106,3 +106,36 @@ Updated: 2026-11-09 by LWC Arch Board. Mode: **milestone-only (D-0276)**. Idle u
   - `stylesheetConfig:null` and `outputConfig.minify:null` warn in the oracle but not in Rust; `outputConfig:null` throws in the oracle but succeeds in Rust.
   - lwc-compiler-napi errors.rs:14 and :28 have clippy warnings.
   - The JS syntax-error column differs: 1:49 in the oracle, 1:51 in Rust (unrelated to AB-0008).
+
+## AB-0008 recheck r4 (2026-11-16; main 45d13cf, board e0252ee27381 VALID: js-options 438+1239 skipped (1677), skip-union 0 skipped in every row, template-options 309, template-diag-napi mismatches 0, clippy 134/134)
+- r3-1 (board coverage): CLOSED.
+  - The filter is a complement (board.sh:516), and the skip-union gate is at board.sh:580-593.
+  - Plants: a new describe runs; `it.skip` makes BOARD FAILED; an unprefixed describe makes BOARD FAILED.
+- r3-3 (wrapper copy): CLOSED. backend.ts:10-14 requires the crate's wrap.js, and the copy and its equality test are gone.
+- r3-2 (synchronous coded throws): CLOSED for CSR.
+  - Callbacks run through napi_call_function on the calling thread (napi instrumentation.rs:126-140), and the replay is deleted.
+  - Against the oracle: 10/10 metric sequences, 20/20 throw cases and 40/40 odd-shape cases match.
+  - D-0293 (fd4d191) is migrate-authored.
+- The three divergences in notes c187146 are AB-0008 scope: all three were introduced by AB-0008 commits (d52bdba, 0d4c9bd). AB-0008 stays OPEN until r5 lands these:
+  - D1, deprecation warn order:
+    - The oracle warns at validation, before the compile (@lwc/compiler options.ts:185-219). wrap.js:9-21 prints only after native transform returns, so the counter fires first.
+    - Required: emit deprecations at the validation point, in upstream order. The Rust validator calls a warn sink synchronously before dispatch, through the same calling-thread mechanism as instrumentation. Delete the post-return printDeprecations.
+    - Test: the warn-vs-counter call order against the oracle.
+  - D2, targetSSR rethrow:
+    - lwc-template parser/mod.rs:1808-1826 applies the template-compiler's compile-level catch inside parse_template. Upstream parse() (template-compiler index.ts:33-38) has no catch; only compile() catches it (:64-79).
+    - Required: move the catch to the compile entry only, so lwc-ssr (lib.rs:94-112) gets the raw thrown value, as ssr-compiler compile-template/index.ts:83-95 does.
+    - Test: a throwing counter under targetSSR with lwc:render-mode, using Error, string, undefined and `{}`.
+  - D3, lossy thrown value:
+    - napi instrumentation.rs:173-201 reduces any thrown value to {name,message} (lwc-shared instrumentation mod.rs:41-51), so lwcCode, code and level are lost.
+    - Required: carry the thrown value's lwcCode, code and level. Port getCodeFromError (@lwc/errors utils.ts:88-95) and convertErrorToDiagnostic (errors.ts:200-215) once into lwc-shared, used by both template_catch (:69-71) and babel_catch (:93-94).
+    - Harness: add coded throwing shapes (lwcCode, code, `level:0`), and run the throwing matrix under targetSSR as well.
+  - Subtract in r5 (dead paths):
+    - Delete JsCallbacks::log and the end() rethrow (instrumentation.rs:77-94, :258-278), which can't be reached.
+    - Delete the error-dropping `let _ =` increment_counter (:237-239); production code goes through try_ only.
+    - InstrumentationRecorder is a public type that only tests use (lwc-shared instrumentation/mod.rs:123-147). Delete it, or make it cfg(test) in the test crate.
+- Carry-forward (not blocking):
+  - The LWC1007 message uses an absolute path in the oracle but `foo.js` in Rust.
+  - `stylesheetConfig:null` and `outputConfig.minify:null` warn in the oracle but not in Rust.
+  - `outputConfig:null` throws in the oracle but succeeds in Rust.
+  - The D-0205 row (decisions.tsv:206) still has the replay wording. It's superseded by D-0293; mark it amended.
+  - The harness still has two cwd normalizations.

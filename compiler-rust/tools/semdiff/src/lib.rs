@@ -2,7 +2,7 @@
 //!
 //! Rule table file `rt-1` (D-0258, AB-L0088): token-spelling rules and AST normalizations. A PENDING rule loads
 //! but does not apply (AB-D0003). R-ASI-SEMI-1 and R-TRAILING-COMMA-1 are enabled (`arch_review = "AB-L0064"`).
-//! R-IMPORT-MERGE-1, R-HOIST-DECL-1, R-ARROW-PAREN-1, R-NUMERIC-SPELLING-1, R-REDUNDANT-PAREN-1, and
+//! R-IMPORT-MERGE-1, R-HOIST-DECL-1, R-ARROW-PAREN-1, R-REDUNDANT-PAREN-1, and
 //! R-COMMENT-STAR-SPACE-1 are enabled (`arch_review = "AB-L0088"`). The applied-set identity names every
 //! applied rule. A pair is EQUIVALENT-BY-REWRITE when:
 //!   1. both texts parse as ES modules with oxc and no diagnostics;
@@ -11,7 +11,7 @@
 //!   4. the token streams match token by token: same kind and same source spelling, except that string-literal tokens
 //!      compare by decoded value (WTF-8, lossless). An approved D-0258 rule may skip one trailing comma or an ASI vs
 //!      explicit `;` (only after steps 2–3, so an AST difference never reaches them). ContentEq and the printer both
-//!      drop more spelling than D-0196 lists as unobservable (numeric-literal spelling, identifier escapes,
+//!      drop more spelling than D-0196 lists as unobservable (identifier escapes,
 //!      member form); the default remains observed;
 //!   5. the comment texts, in source order, are identical (comments are observable via Function#toString).
 //!

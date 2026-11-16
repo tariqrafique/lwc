@@ -5,7 +5,7 @@ import { LightningElement } from "lwc";
 class Test extends LightningElement {
 	constructor(...args) {
 		super(...args);
-		this.title = "hi";
+		this.title = 'hi';
 		this.plain = 1;
 		this._v = void 0;
 	}

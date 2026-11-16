@@ -107,7 +107,8 @@ fn verdict_is_byte_reproducible_and_versioned() {
 #[test]
 fn negative_unlisted_spelling_is_observed() {
     for (a, b) in [
-        ("const a = 0x10;", "const a = 16;"), // hex spelling stays observed (R-NUMERIC-SPELLING-1 is decimal only)
+        ("const a = 0x10;", "const a = 16;"), // numeric spelling is observed (D-0292; R-NUMERIC-SPELLING-1 retired)
+        ("const n = 1000;", "const n = 1e3;"),
         ("const \\u0061 = 1;", "const a = 1;"), // identifier escape (not string escape spelling)
     ] {
         assert_eq!(

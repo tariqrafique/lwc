@@ -19,6 +19,9 @@ source "$root/harness/scripts/oracle-root.sh"
 export LWC_ORACLE="$(oracle_root)"
 export LWC_ROOT="$LWC_ORACLE"
 export STYLE_CORPUS="$(style_corpus_root)"
+export SAMPLE_CORPUS="${SAMPLE_CORPUS:-$root/.oracle/sample-corpus}"
+export PRETTIER_ROOT="${PRETTIER_ROOT:-$root/.oracle/prettier/3.9.9}"
+"$runner/fetch-sample-corpus.sh" || { echo "!! run-portable-board: sample corpus fetch failed" >&2; exit 2; }
 # Snapshot only when notes are absent: the resolver prefers the box notes checkout when present.
 reg="$(notes_decisions_path)"
 export SEMDIFF_REGISTRY="$reg" OPTGATE_DECISIONS="$reg"

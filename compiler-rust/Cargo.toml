@@ -12,3 +12,10 @@ oxc_parser = "0.156"
 oxc_ast_visit = "0.156"
 oxc_ecmascript = "0.156"
 oxc_syntax = "0.156"
+
+# oxc_codegen 0.156 has `raw` on number, string, and BigInt literals but no codegen
+# option that prints it (only `Context::TYPESCRIPT` reads number `raw`). D-0292
+# vendors that exact crate and prints source `raw` when not minifying.
+# See vendor/oxc_codegen/PATCH.md.
+[patch.crates-io]
+oxc_codegen = { path = "vendor/oxc_codegen" }

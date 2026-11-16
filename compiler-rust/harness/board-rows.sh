@@ -7,7 +7,7 @@
 # existing non-vitest row shape (baseline counts only; golden-gate does not record
 # them). They are not in DIAG. Each one runs a JS-oracle vs Rust compare and fails
 # the board on a mismatch. See board.sh.
-ROWS=(style js js-eval template ssr ssr-async ssr-asyncYield ssr-render ssr-render-async ssr-render-asyncYield csr-render csr-render-template template-renderer js-options js-api template-options ssr_dynamic_imports style-api template-api ssr_render_api template-diag template-diag-napi style-upstream lbc template-diag-semdiff template-diag-ssr template-diag-style template-diag-realgate template-diag-napierrors upstream-cmp js-transform-corpus unported-specs)
+ROWS=(style js js-eval template ssr ssr-async ssr-asyncYield ssr-render ssr-render-async ssr-render-asyncYield csr-render csr-render-template template-renderer js-options js-api template-options ssr_dynamic_imports style-api template-api ssr_render_api template-diag template-diag-napi style-upstream lbc template-diag-semdiff template-diag-ssr template-diag-style template-diag-realgate template-diag-napierrors upstream-cmp js-transform-corpus unported-specs pretty-equal)
 # Diagnostic-only rows (Migrate 2026-11-01): never gate. SSR gates on ssr-render* only.
 DIAG=" ssr ssr-async ssr-asyncYield template "  # template = compile-observation; gates via csr-render-template. template-diag/-napi left DIAG once mismatches are 0 so the mutation cells can gate (item 12).
 BOARD_ROWS_HARNESS="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

@@ -1,7 +1,7 @@
 import { registerDecorators as _registerDecorators } from "lwc";
 import _tmpl from "./test.html";
 import { registerComponent as _registerComponent } from "lwc";
-import { LightningElement } from "lwc";
+import { LightningElement } from 'lwc';
 class Test extends LightningElement {
 	constructor(...args) {
 		super(...args);

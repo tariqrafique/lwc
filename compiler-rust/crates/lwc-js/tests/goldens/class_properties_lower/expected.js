@@ -3,12 +3,12 @@ function _classPrivateFieldLooseKey(e) { return "__private_" + id++ + "_" + e; }
 import { registerDecorators as _registerDecorators } from "lwc";
 import _tmpl from "./test.html";
 import { registerComponent as _registerComponent } from "lwc";
-import { LightningElement } from "lwc";
+import { LightningElement } from 'lwc';
 var _p = /*#__PURE__*/ _classPrivateFieldLooseKey("p");
 class Plain {
 	constructor() {
 		this.a = 1;
-		this["b" + 1] = 2;
+		this['b' + 1] = 2;
 		Object.defineProperty(this, _p, {
 			writable: true,
 			value: 4
@@ -20,7 +20,7 @@ class Test extends LightningElement {
 	constructor() {
 		super();
 		this.count = 0;
-		this["quoted"] = "q";
+		this['quoted'] = 'q';
 		this.inner = class {
 			constructor() {
 				this.z = 9;

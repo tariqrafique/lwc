@@ -100,7 +100,13 @@ ws="$1"
 printf 'planted-footer\n' > "$ws/injected-from-footer"
 exit 0
 STUB
-chmod +x "$P/scripts/run-board.sh" "$P/scripts/run-portable-board.sh"
+# The plant repo has no external inputs. The fetch is not what this plant
+# measures; a no-op keeps the snapshot-mutation check reachable.
+cat > "$P/scripts/fetch-sample-corpus.sh" << 'STUB'
+#!/usr/bin/env bash
+exit 0
+STUB
+chmod +x "$P/scripts/run-board.sh" "$P/scripts/run-portable-board.sh" "$P/scripts/fetch-sample-corpus.sh"
 git init -q "$P"
 git -C "$P" config user.email plant@test
 git -C "$P" config user.name plant

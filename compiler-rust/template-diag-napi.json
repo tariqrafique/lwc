@@ -1,12 +1,12 @@
 {
  "schema": "template-diag-diff/v2",
  "meta": {
-  "generated": "2026-11-16T08:50:39.309Z",
-  "elapsedMs": 8406,
+  "generated": "2026-11-16T09:14:48.333Z",
+  "elapsedMs": 8357,
   "engine": "napi",
   "rust": {
-   "napi": "/tmp/lwc-board-snap.ulGetY/repo/harness/.pins/lwc-compiler-napi.1cf7f73a767b.node",
-   "sha256": "1cf7f73a767b"
+   "napi": "/tmp/lwc-board-snap.29F8qy/repo/harness/.pins/lwc-compiler-napi.6900c468b745.node",
+   "sha256": "6900c468b745"
   },
   "oracle": {
    "repo": "/workspace/lwc",
@@ -21,17 +21,17 @@
    "mode": "exact-bytes+semdiff",
    "semdiff": {
     "bin": {
-     "path": "/workspace/cache/lwc-target/e9fa67832b3bd2f6/release/semdiff",
-     "sha256": "c82ecf1ca4e7"
+     "path": "/workspace/cache/lwc-target/3c73406d3391d988/release/semdiff",
+     "sha256": "68e0e3f021a1"
     },
     "registry": {
-     "path": "/tmp/lwc-board-snap.ulGetY/notes/decisions.tsv",
-     "sha256": "01a7212b7ada9926921bc989620e9bc53556180ea806b8c02ad33c93b675b163"
+     "path": "/tmp/lwc-board-snap.29F8qy/notes/decisions.tsv",
+     "sha256": "cdfa6b353bde9b25e91490421daed3137b56e1f3d1c243ffc4d7fc144e64e895"
     },
     "observationModel": "D-0196",
-    "ruleTableVersion": "rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-INERT-LINE-COMMENT-1@1+R-NUMERIC-SPELLING-1@1+R-OBJECT-LAST-KEY-1@1+R-OBJECT-SHORTHAND-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1",
+    "ruleTableVersion": "rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-COMMENT-STAR-SPACE-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-INERT-LINE-COMMENT-1@1+R-OBJECT-LAST-KEY-1@1+R-OBJECT-SHORTHAND-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1",
     "manifestSha256": "2a7f5edbd7a23c1bd362dbb29858bc416c1f8c9b3b3fa17efd9e9808848eb65f",
-    "summarySha256": "55107db78ac8",
+    "summarySha256": "aadbdc57c90f",
     "totals": {
      "cases": 16780,
      "crash": 0,

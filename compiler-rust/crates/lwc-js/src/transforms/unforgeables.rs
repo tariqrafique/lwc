@@ -173,7 +173,13 @@ impl<'s> Unforgeables<'s> {
 
     /// How the full-file codegen prints `e` (source text when the span still matches, AST otherwise).
     fn gen_expr(&self, e: &Expression<'_>) -> String {
-        let mut c = Codegen::new().with_source_text(self.src);
+        // Emission, not the minified equality print below: keep source literal spelling.
+        let mut c = Codegen::new()
+            .with_options(oxc::codegen::CodegenOptions {
+                preserve_raw_literals: true,
+                ..oxc::codegen::CodegenOptions::default()
+            })
+            .with_source_text(self.src);
         c.print_expression(e);
         c.into_source_text()
     }
@@ -260,6 +266,8 @@ impl<'s> Unforgeables<'s> {
     }
 
     fn equals(&self, a: &[&Expression<'_>]) -> bool {
+        // Equality only. Minify stays off `preserve_raw_literals`, so `1000` and `1e3`
+        // still compare equal. Emission goes through `gen_expr`, which keeps source raw.
         let print = |e: &Expression<'_>| {
             let mut c = Codegen::new().with_options(CodegenOptions {
                 comments: oxc::codegen::CommentOptions::disabled(),

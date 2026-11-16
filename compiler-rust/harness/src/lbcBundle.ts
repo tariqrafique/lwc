@@ -261,6 +261,9 @@ export function bundleLbcComponent(backend: CompilerBackend, bundle: LbcBundle, 
                 return null;
             }
             if (!importee || importee.startsWith('.') || importee.startsWith('/') || importee.startsWith('\0')) return null;
+            // lightning/Name → empty component stub. @salesforce/label|apex|schema|…
+            // is not a component id, so it uses the generic module stub below.
+            // Both backends load the same stub.
             if (/^[A-Za-z][\w-]*\/[\w.-]+$/.test(importee)) return `/virtual-lbc-stub/${importee}.js`;
             return `/virtual-lbc-mod/${encodeURIComponent(importee)}.js`;
         },

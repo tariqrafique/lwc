@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 
 const BOX_DEFAULT = '/workspace/lwc';
 const BOX_NOTES = '/workspace/notes/lwc-rust-migrate/decisions.tsv';
+const BOX_SAMPLE = '/workspace/sample-corpus';
+const BOX_PRETTIER = '/workspace/prettier/3.9.9';
 export const ORACLE_PATH_TOKEN = '<ORACLE_ROOT>';
 
 export function oracleRoot() {
@@ -30,6 +32,32 @@ export function styleCorpusRoot() {
   }
   if (fs.existsSync('/workspace/style-corpus')) return '/workspace/style-corpus';
   throw new Error('STYLE_CORPUS is unset and /workspace/style-corpus is absent; run scripts/fetch-style-corpus.sh');
+}
+
+/** Pinned sample corpora (lwc-recipes, ebikes-lwc, dreamhouse-lwc). Fetched by scripts/fetch-sample-corpus.sh. */
+export function sampleCorpusRoot() {
+  const raw = process.env.SAMPLE_CORPUS;
+  if (raw !== undefined && raw !== '') {
+    const p = path.resolve(raw);
+    if (!fs.existsSync(p)) throw new Error(`SAMPLE_CORPUS=${p} does not exist`);
+    return p;
+  }
+  if (fs.existsSync(BOX_SAMPLE)) return BOX_SAMPLE;
+  throw new Error('SAMPLE_CORPUS is unset and the sample corpus is absent; run scripts/fetch-sample-corpus.sh');
+}
+
+/** Pinned Prettier 3.9.9 package root (package.json + index.mjs). */
+export function prettierRoot() {
+  const raw = process.env.PRETTIER_ROOT;
+  if (raw !== undefined && raw !== '') {
+    const p = path.resolve(raw);
+    if (!fs.existsSync(path.join(p, 'package.json'))) {
+      throw new Error(`PRETTIER_ROOT=${p} has no package.json`);
+    }
+    return p;
+  }
+  if (fs.existsSync(path.join(BOX_PRETTIER, 'package.json'))) return BOX_PRETTIER;
+  throw new Error('PRETTIER_ROOT is unset and the pinned prettier tree is absent; run scripts/fetch-sample-corpus.sh');
 }
 
 /** Rewrite the real oracle prefix to <ORACLE_ROOT>, a token real output cannot contain. */
@@ -70,6 +98,12 @@ if (process.argv[1] && path.resolve(process.argv[1]) === here) {
       case 'style_corpus_root':
         out = styleCorpusRoot();
         break;
+      case 'sample_corpus_root':
+        out = sampleCorpusRoot();
+        break;
+      case 'prettier_root':
+        out = prettierRoot();
+        break;
       case 'notes_decisions_path':
         out = notesDecisionsPath();
         break;
@@ -80,7 +114,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === here) {
         out = canonOraclePath(rest.join(' '));
         break;
       default:
-        console.error('usage: oracle-root.mjs oracle_root|style_corpus_root|notes_decisions_path|oracle_pin <file>|canon_oracle_path <text>');
+        console.error('usage: oracle-root.mjs oracle_root|style_corpus_root|sample_corpus_root|prettier_root|notes_decisions_path|oracle_pin <file>|canon_oracle_path <text>');
         process.exit(2);
     }
     process.stdout.write(`${out}\n`);

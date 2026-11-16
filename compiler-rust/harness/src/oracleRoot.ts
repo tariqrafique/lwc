@@ -2,6 +2,8 @@
 export {
     oracleRoot,
     styleCorpusRoot,
+    sampleCorpusRoot,
+    prettierRoot,
     canonOraclePath,
     notesDecisionsPath,
     oraclePin,

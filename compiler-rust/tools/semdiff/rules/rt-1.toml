@@ -65,18 +65,6 @@ positive_tests = "tools/semdiff/tests/rules.rs::arrow_parens_around_one_binding_
 negative_tests = "tools/semdiff/tests/rules.rs::arrow_parens_do_not_hide_a_different_parameter_list"
 
 [[rule]]
-id = "R-NUMERIC-SPELLING-1"
-rev = 1
-kind = "token-spelling"
-decision = "D-0196"
-arch_review = "AB-L0088"
-justification = "Two finite decimal number tokens with the same value and the same sign of zero are the same number. 1000 and 1e3, and 0.5 and .5, are that case. 1000 and 1001 are not. Hex, binary, and octal spellings stay observed. Non-finite spellings are not equated."
-preconditions = "The token check runs only after codegen matches and content_eq holds, so the AST values already match. This rule only skips Kind::Decimal, Kind::Float, and the exponential kinds."
-eval_order_argument = "The number value is unchanged. No other token is skipped."
-positive_tests = "tools/semdiff/tests/rules.rs::numeric_spelling_with_the_same_value_is_unobservable"
-negative_tests = "tools/semdiff/tests/rules.rs::a_different_number_is_observed"
-
-[[rule]]
 id = "R-REDUNDANT-PAREN-1"
 rev = 1
 kind = "ast-normalize"

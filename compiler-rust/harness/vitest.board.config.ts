@@ -8,6 +8,8 @@ const GLOBAL_SETUP: string[] = [];
 
 const oracle = process.env.LWC_ORACLE;
 if (!oracle) throw new Error('LWC_ORACLE is unset; export it via harness/scripts/oracle-root.mjs');
+const fsAllow = [oracle];
+if (process.env.PRETTIER_ROOT) fsAllow.push(process.env.PRETTIER_ROOT);
 
 export default defineConfig({
   resolve: {
@@ -16,7 +18,7 @@ export default defineConfig({
   },
   // lbc loads engine-dom and ssr-runtime by absolute path from oracleRoot().
   // Those files sit outside this root; Vite must be allowed to read them.
-  server: { fs: { allow: [oracle] } },
+  server: { fs: { allow: fsAllow } },
   // cwd is the tree-under-test's harness/ (board.sh cds there). Do not pin this
   // file's directory — that would run MAIN's tests when land uses MAIN's --config.
   root: process.cwd(),

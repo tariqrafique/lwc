@@ -19890,3 +19890,5 @@ unported-specs	passed	unported-specs template-index/static-off
 unported-specs	passed	unported-specs template-index/static-on
 unported-specs	passed	unported-specs transform/returns-code
 unported-specs	passed	unported-specs warnings/empty-namespace
+pretty-equal	counts	1 0 0
+pretty-equal	passed	pretty-equal census

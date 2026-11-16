@@ -1,6 +1,8 @@
 import { defineConfig } from 'vitest/config';
 const oracle = process.env.LWC_ORACLE;
 if (!oracle) throw new Error('LWC_ORACLE is unset; export it via harness/scripts/oracle-root.mjs');
+const fsAllow = [oracle];
+if (process.env.PRETTIER_ROOT) fsAllow.push(process.env.PRETTIER_ROOT);
 
 export default defineConfig({
   resolve: {
@@ -9,6 +11,6 @@ export default defineConfig({
   },
   // lbc loads engine-dom and ssr-runtime by absolute path from oracleRoot().
   // Those files sit outside this root; Vite must be allowed to read them.
-  server: { fs: { allow: [oracle] } },
+  server: { fs: { allow: fsAllow } },
   test: { include: ['test/**/*.test.ts'] },
 });

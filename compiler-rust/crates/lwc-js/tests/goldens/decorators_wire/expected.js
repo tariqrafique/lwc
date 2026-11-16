@@ -2,7 +2,7 @@ import { registerDecorators as _registerDecorators } from "lwc";
 import _tmpl from "./test.html";
 import { registerComponent as _registerComponent } from "lwc";
 import { LightningElement } from "lwc";
-import { getRecord } from "lightning/uiRecordApi";
+import { getRecord } from 'lightning/uiRecordApi';
 class Test extends LightningElement {
 	constructor(...args) {
 		super(...args);
@@ -22,7 +22,7 @@ _registerDecorators(Test, { wire: {
 			let v1 = $cmp.a;
 			let v2 = $cmp["a"];
 			return {
-				fields: ["Account.Name"],
+				fields: ['Account.Name'],
 				recordId: $cmp.recordId,
 				deep: v1 != null && (v1 = v1.b) != null ? v1.c : undefined,
 				odd: v2 != null ? v2["b-c"] : undefined

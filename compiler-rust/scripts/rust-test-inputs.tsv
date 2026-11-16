@@ -68,3 +68,4 @@ tools/semdiff/	semdiff
 tools/semdiff/decisions.tsv	semdiff
 tools/semdiff/exec/	semdiff
 tools/semdiff/rules/rt-1.toml	semdiff
+crates/lwc-js/tests/fixtures/literals.js	lwc-js

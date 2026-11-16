@@ -169,7 +169,6 @@ pub struct Enable {
     pub import_merge: bool,
     pub hoist: bool,
     pub arrow_paren: bool,
-    pub numeric: bool,
     pub redundant_paren: bool,
     pub comment_star: bool,
     pub var_literal: bool,
@@ -198,7 +197,6 @@ pub fn enabled() -> Enable {
         import_merge: applied(rules, "R-IMPORT-MERGE"),
         hoist: applied(rules, "R-HOIST-DECL"),
         arrow_paren: applied(rules, "R-ARROW-PAREN"),
-        numeric: applied(rules, "R-NUMERIC-SPELLING"),
         redundant_paren: applied(rules, "R-REDUNDANT-PAREN"),
         comment_star: applied(rules, "R-COMMENT-STAR-SPACE"),
         var_literal: applied(rules, "R-VAR-LITERAL-IMPORT"),
@@ -216,7 +214,6 @@ pub fn enable_forcing(force: &[&str]) -> Enable {
         import_merge: forced(rules, "R-IMPORT-MERGE", force),
         hoist: forced(rules, "R-HOIST-DECL", force),
         arrow_paren: forced(rules, "R-ARROW-PAREN", force),
-        numeric: forced(rules, "R-NUMERIC-SPELLING", force),
         redundant_paren: forced(rules, "R-REDUNDANT-PAREN", force),
         comment_star: forced(rules, "R-COMMENT-STAR-SPACE", force),
         var_literal: forced(rules, "R-VAR-LITERAL-IMPORT", force),
@@ -448,12 +445,6 @@ fn first_token_diff_with(
                         continue;
                     }
                 }
-                if en.numeric && same_number(a.get(i), b.get(j)) {
-                    note(applied, tagged_starting("R-NUMERIC-SPELLING"));
-                    i += 1;
-                    j += 1;
-                    continue;
-                }
                 return Some(
                     json!({"coords": "tokens", "index": i.max(j), "oracle": clip(a.get(i)), "rust": clip(b.get(j))}),
                 );
@@ -486,40 +477,6 @@ fn align_arrow_paren(a: &[Tok], i: usize, b: &[Tok], j: usize) -> Option<(usize,
         return Some((i + 1, j + 3));
     }
     None
-}
-
-/// Same finite number, including sign of zero. `1000` and `1e3` match. `1000` and `1001` do not.
-/// Non-finite values do not match (`1e309` and `1e310` are both infinities).
-fn same_number(x: Option<&Tok>, y: Option<&Tok>) -> bool {
-    let (Some(x), Some(y)) = (x, y) else {
-        return false;
-    };
-    if !is_decimal_number(x.kind) || !is_decimal_number(y.kind) || x.text == y.text {
-        return false;
-    }
-    let (Ok(a), Ok(b)) = (parse_js_number(&x.text), parse_js_number(&y.text)) else {
-        return false;
-    };
-    a.is_finite() && b.is_finite() && a == b && a.is_sign_negative() == b.is_sign_negative()
-}
-
-/// Decimal spellings only. `0b` / `0o` / `0x` stay observed (arch probe `num` / `num-75`).
-fn is_decimal_number(kind: Kind) -> bool {
-    matches!(
-        kind,
-        Kind::Decimal | Kind::Float | Kind::PositiveExponential | Kind::NegativeExponential
-    )
-}
-
-fn parse_js_number(s: &str) -> Result<f64, ()> {
-    let t = s.replace('_', "");
-    if t.len() > 2 {
-        let p = t.as_bytes()[1];
-        if t.as_bytes()[0] == b'0' && matches!(p, b'x' | b'X' | b'b' | b'B' | b'o' | b'O') {
-            return Err(());
-        }
-    }
-    t.parse::<f64>().map_err(|_| ())
 }
 
 #[cfg(test)]

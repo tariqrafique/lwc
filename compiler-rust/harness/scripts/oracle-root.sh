@@ -7,6 +7,12 @@ oracle_root() {
 style_corpus_root() {
   node "$_ORACLE_ROOT_MJS" style_corpus_root
 }
+sample_corpus_root() {
+  node "$_ORACLE_ROOT_MJS" sample_corpus_root
+}
+prettier_root() {
+  node "$_ORACLE_ROOT_MJS" prettier_root
+}
 notes_decisions_path() {
   node "$_ORACLE_ROOT_MJS" notes_decisions_path
 }

@@ -510,7 +510,7 @@ for s in "${suites[@]}"; do
   esac
   out="$logdir/board-$s-$hash.out"
   test="test/$s.behavior.test.ts"; mode=sync; extra=(); row_timeout=5000
-  unset LBC_SUMMARY
+  unset LBC_SUMMARY PRETTY_EQUAL_SUMMARY
   case "$s" in
     js-api) test=test/js-options.behavior.test.ts; extra=(-t '^js-options: api ');;
     js-options) extra=(-t '^js-options: (?!api )');;   # AB-0008 r4: every describe but js-api's, so a new one runs; skip-union below gates it
@@ -523,6 +523,7 @@ for s in "${suites[@]}"; do
     lbc) row_timeout=20000; LBC_SUMMARY="$logdir/lbc-summary.txt"; export LBC_SUMMARY; rm -f "$LBC_SUMMARY";;
     upstream-cmp) row_timeout=20000; UPSTREAM_CMP_SUMMARY="$logdir/upstream-cmp-summary.txt"; export UPSTREAM_CMP_SUMMARY; rm -f "$UPSTREAM_CMP_SUMMARY";;
     js-transform-corpus) row_timeout=20000;;
+    pretty-equal) row_timeout=900000; PRETTY_EQUAL_SUMMARY="$logdir/pretty-equal-summary.txt"; export PRETTY_EQUAL_SUMMARY; rm -f "$PRETTY_EQUAL_SUMMARY";;
   esac
   json="$logdir/board-$s-$hash.json"; rm -f "$json"; pat=""; [ ${#extra[@]} -eq 0 ] || pat="${extra[1]}"   # extra is (-t <pattern>) or empty
   vrc=0; SSR_MODE="$mode" run_isolated_vitest "$out" "$json" "$test" "${extra[@]}" || vrc=$?
@@ -539,6 +540,13 @@ for s in "${suites[@]}"; do
       rowfail+=("lbc: missing exclusion summary (${LBC_SUMMARY:-unset})")
     else
       cat -- "$LBC_SUMMARY"
+    fi
+  fi
+  if [ "$s" = pretty-equal ]; then
+    if [ ! -s "${PRETTY_EQUAL_SUMMARY:-}" ]; then
+      rowfail+=("pretty-equal: missing summary (${PRETTY_EQUAL_SUMMARY:-unset})")
+    else
+      cat -- "$PRETTY_EQUAL_SUMMARY"
     fi
   fi
   if [ "$s" = upstream-cmp ]; then

@@ -85,6 +85,10 @@ official_override_names() {
   _ext="${EXT_INPUTS_ROOT:-$OFFICIAL_DEFAULT_EXT_INPUTS}"
   _style_default="$_ext/style-corpus"
   [ -n "${STYLE_CORPUS:-}" ] && [ "$STYLE_CORPUS" != "$_style_default" ] && printf '%s\n' STYLE_CORPUS
+  _sample_default="$_ext/sample-corpus"
+  [ -n "${SAMPLE_CORPUS:-}" ] && [ "$SAMPLE_CORPUS" != "$_sample_default" ] && printf '%s\n' SAMPLE_CORPUS
+  _prettier_default="$_ext/prettier/3.9.9"
+  [ -n "${PRETTIER_ROOT:-}" ] && [ "$PRETTIER_ROOT" != "$_prettier_default" ] && printf '%s\n' PRETTIER_ROOT
   return 0
 }
 official_refuse_overrides_unless_no_publish() {
@@ -104,7 +108,9 @@ official_resolve_inputs() {
   EXT_INPUTS_ROOT="${EXT_INPUTS_ROOT:-$OFFICIAL_DEFAULT_EXT_INPUTS}"
   LWC_ORACLE="${LWC_ORACLE:-$OFFICIAL_DEFAULT_ORACLE}"
   STYLE_CORPUS="${STYLE_CORPUS:-$EXT_INPUTS_ROOT/style-corpus}"
-  export MAIN NOTES P5 EXT_INPUTS_ROOT LWC_ORACLE LWC_ROOT="$LWC_ORACLE" PARSE5_DIR="$P5" STYLE_CORPUS
+  SAMPLE_CORPUS="${SAMPLE_CORPUS:-$EXT_INPUTS_ROOT/sample-corpus}"
+  PRETTIER_ROOT="${PRETTIER_ROOT:-$EXT_INPUTS_ROOT/prettier/3.9.9}"
+  export MAIN NOTES P5 EXT_INPUTS_ROOT LWC_ORACLE LWC_ROOT="$LWC_ORACLE" PARSE5_DIR="$P5" STYLE_CORPUS SAMPLE_CORPUS PRETTIER_ROOT
 }
 # <<< official-input-pins
 # >>> lock-format (exercised by scripts/test-notes-precheck.sh)
@@ -229,6 +235,8 @@ srchash() { srcfiles | sha256sum | cut -c1-12; }
 h0="$(srcfiles | tee "$snap/srcfiles.before" | sha256sum | cut -c1-12)"
 lock="$hs/external-inputs.lock"
 [ -f "$lock" ] || { echo "!! BOARD INVALID: missing harness/external-inputs.lock at $commit" >&2; exit 4; }
+_fetch="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)/fetch-sample-corpus.sh"
+"$_fetch" --lock "$lock" || { echo "!! BOARD INVALID: sample corpus / prettier fetch failed" >&2; exit 4; }
 mapfile -t EXT_INPUTS < <(grep -v '^#' "$lock" | sed '/^$/d' | cut -f1)
 [ ${#EXT_INPUTS[@]} -gt 0 ] || { echo "!! BOARD INVALID: external-inputs.lock lists no inputs" >&2; exit 4; }
 verify_external_inputs_lock "$lock" || exit 4
