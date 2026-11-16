@@ -10,6 +10,10 @@
 //   inst/ssr/<shape>/<snippet>, inst/ssr-throw-<value>/<snippet>  targetSSR: the parse has no catch, so the
 //             thrown value reaches the caller unchanged (AB-0008 r5 D2) × the parser metric snippets
 //   warn/<case>  console.warn (outputConfig.minify deprecation) vs counter call order (AB-0008 r5 D1)
+//   warn/warn-throws-<value>/<snippet>  console.warn throws: validation stops, nothing compiles, the value is
+//             rethrown as is (carry-forward #10 a)
+//   null/<case>  explicit null vs omitted/undefined for stylesheetConfig, outputConfig, outputConfig.minify
+//             (carry-forward #10 c); file order matters for the once-per-process stylesheetConfig warn
 //   erm/<v>   experimentalErrorRecoveryMode {true,false,omitted} × upstream transform-html.spec experimentalErrorRecoveryMode
 //             cases (valid, 3 invalid directives, custom element) + transform-css.spec `<` case
 // Goldens: goldens/template-options, JS oracle only (UPDATE_GOLDENS=1, JS backend).
@@ -20,7 +24,8 @@ import { getBackend, type CompilerBackend } from '../src/backend';
 import { checkGolden, findFiles, errorObservation, errorMultiset } from '../src/optionRows';
 import { observeTemplate, TEMPLATE_ROOT } from '../src/templateObserve';
 import {
-    CODED_THROWING_SHAPES, INSTRUMENTATION_SHAPES, THROWING_SHAPES, observeInstrumented, observeRethrow, observeWarnOrder,
+    CODED_THROWING_SHAPES, INSTRUMENTATION_SHAPES, THROWING_SHAPES, THROWING_WARNS, observeInstrumented, observeRethrow,
+    observeWarnOrder, observeWarnThrow,
 } from '../src/instrumentationObserve';
 
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/template-options');
@@ -167,4 +172,34 @@ describe('template-options: warn', () => {
     it('warn/minify-invalid-sourcemap/render-mode', () => checkGolden(GOLDEN_DIR, 'warn/minify-invalid-sourcemap/render-mode',
         observeWarnOrder(backend, INST_SNIPPETS['render-mode'], 'spread.html',
             { ...minify, outputConfig: { minify: true, sourcemap: 'bogus' } }, INSTRUMENTATION_SHAPES.real)));
+    // Carry-forward #10 (a): a throwing console.warn aborts at validation (no counter call, raw value rethrown).
+    for (const [value, make] of Object.entries(THROWING_WARNS)) {
+        for (const name of ['spread', 'render-mode', 'mixed']) {
+            it(`warn/warn-throws-${value}/${name}`, () => checkGolden(GOLDEN_DIR, `warn/warn-throws-${value}/${name}`,
+                observeWarnThrow(backend, INST_SNIPPETS[name], 'spread.html', minify, make)));
+        }
+        it(`warn/warn-throws-${value}/ssr-render-mode`, () => checkGolden(GOLDEN_DIR, `warn/warn-throws-${value}/ssr-render-mode`,
+            observeWarnThrow(backend, INST_SNIPPETS['render-mode'], 'spread.html', { ...minify, targetSSR: true }, make)));
+    }
+});
+
+// Carry-forward #10 (c): upstream checks `!isUndefined` (options.ts:189, :198, :215), so an explicit null is passed:
+// stylesheetConfig null warns (once per process, so `undefined` goes first and the repeat shows the latch),
+// outputConfig null throws reading `sourcemap`, outputConfig.minify null warns. Omitted and undefined do nothing.
+describe('template-options: null', () => {
+    const base = { namespace: 'x', name: 'spread', experimentalDynamicDirective: true };
+    const cases: Array<[string, Record<string, unknown>]> = [
+        ['undefined', { stylesheetConfig: undefined, outputConfig: { minify: undefined, sourcemap: undefined } }],
+        ['output-config-undefined', { outputConfig: undefined }],
+        ['stylesheet-config', { stylesheetConfig: null }],
+        ['stylesheet-config-latched', { stylesheetConfig: null }],
+        ['output-config', { outputConfig: null }],
+        ['output-config-ssr', { outputConfig: null, targetSSR: true }],
+        ['minify', { outputConfig: { minify: null } }],
+        ['minify-invalid-sourcemap', { outputConfig: { minify: null, sourcemap: 'bogus' } }],
+    ];
+    for (const [label, opts] of cases) {
+        it(`null/${label}/render-mode`, () => checkGolden(GOLDEN_DIR, `null/${label}/render-mode`,
+            observeWarnOrder(backend, INST_SNIPPETS['render-mode'], 'spread.html', { ...base, ...opts }, INSTRUMENTATION_SHAPES.real)));
+    }
 });

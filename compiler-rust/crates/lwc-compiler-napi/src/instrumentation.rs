@@ -330,9 +330,10 @@ impl lwc_shared::Instrumentation for JsCallbacks {
     }
 }
 
-/// The loader's `warn(message)` (wrap.js: upstream's `console.warn`), called by the validator. The first
-/// throw stops further warns and is rethrown before anything is compiled, as upstream's would leave
-/// `validateTransformOptions`.
+/// The loader's `warn(message)` (wrap.js: upstream's `console.warn`), called by the validator. A throw
+/// is returned to the validator as `Err`, which stops validation there, so nothing is compiled and no
+/// counter fires (upstream's throw leaves `validateTransformOptions`, options.ts:185-219); `transform`
+/// then rethrows the raw value it keeps.
 pub(crate) struct JsWarn {
     js: Js,
     f: Option<sys::napi_value>,
@@ -350,15 +351,15 @@ impl JsWarn {
         Self { js, f, threw: None }
     }
 
-    pub(crate) fn warn(&mut self, d: DeprecationId) {
-        let Some(f) = self.f else { return };
-        if self.threw.is_some() {
-            return;
-        }
+    pub(crate) fn warn(&mut self, d: DeprecationId) -> Result<(), lwc_shared::Rethrow> {
+        let Some(f) = self.f else { return Ok(()) };
         let js = self.js;
-        if let Err(v) = js.call(js.undefined(), f, js.string(d.message())) {
-            self.threw = Some(RawValue(v));
-        }
+        js.call(js.undefined(), f, js.string(d.message()))
+            .map(|_| ())
+            .map_err(|v| {
+                self.threw = Some(RawValue(v));
+                lwc_shared::Rethrow::Value(js.thrown(v))
+            })
     }
 
     /// The value a warn threw, if any.

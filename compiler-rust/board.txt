@@ -1,5 +1,5 @@
-official board  commit=8ab375354301  src=475fc6bc0c9a  napi=5f1b2d0ef37d  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-16T02:55:38-08:00
-napi sha256:5f1b2d0ef37d  pinned=/tmp/lwc-board-snap.r7tFvY/repo/harness/.pins/lwc-compiler-napi.5f1b2d0ef37d.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-16T02:49:22-08:00
+official board  commit=b0b786d5c61d  src=05b3d3b6d929  napi=241d6ba2575f  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-16T04:04:37-08:00
+napi sha256:241d6ba2575f  pinned=/tmp/lwc-board-snap.UExxvy/repo/harness/.pins/lwc-compiler-napi.241d6ba2575f.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-16T03:58:35-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -14,9 +14,9 @@ ssr-render-asyncYield  Tests  389 passed (389)
 csr-render             Tests  395 passed (395)
 csr-render-template    Tests  571 passed (571)
 template-renderer      Tests  568 passed (568)
-js-options             Tests  448 passed | 1239 skipped (1687)
-js-api                 Tests  1239 passed | 448 skipped (1687)
-template-options       Tests  406 passed (406)
+js-options             Tests  451 passed | 1239 skipped (1690)
+js-api                 Tests  1239 passed | 451 skipped (1690)
+template-options       Tests  426 passed (426)
 ssr_dynamic_imports    Tests  16 passed (16)
 style-api              Tests  829 passed (829)
 template-api           Tests  5671 passed (5671)
@@ -62,12 +62,12 @@ pretty-equal corpus NPSP 49/122
 pretty-equal corpus revenue-cloud-foundations 15/50
 pretty-equal corpus visualforce-to-lwc 53/55
 pretty-equal both-fail 3
-js-options skip-union: 1687 cases, 0 skipped in every row (js-options js-api)
+js-options skip-union: 1690 cases, 0 skipped in every row (js-options js-api)
 shim-check: template-gap=0  parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.r7tFvY/notes/decisions.tsv]
-coverage-gate: notes 2b553fe9a4ce matrix 0e37f14933c6 strict: 24 sources x 8 stages = 192 cells, 98 covered (declared gating), 0 diagnostic-only, 0 gap, 76 na, 18 dec, 0 invalid
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.UExxvy/notes/decisions.tsv]
+coverage-gate: notes f871e86a7fd5 matrix 0e37f14933c6 strict: 24 sources x 8 stages = 192 cells, 98 covered (declared gating), 0 diagnostic-only, 0 gap, 76 na, 18 dec, 0 invalid
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
 style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)
 csr-clusters[ssr]: pass 392 fail 0

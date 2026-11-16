@@ -182,21 +182,27 @@ export class RustCompilerBackend implements CompilerBackend {
             dynamicImports, enableLightningWebSecurityTransforms, isExplicitImport, outputConfig, customRendererConfig, stylesheetConfig,
             instrumentation,
         } = options as any;
-        const dropNulls = (o: any) => (o && typeof o === 'object' ? Object.fromEntries(Object.entries(o).filter(([, v]) => v != null)) : o);
+        // `keep`: keys whose explicit null upstream reads as passed (`!isUndefined`), so it must reach Rust.
+        const dropNulls = (o: any, keep: string[] = []) => (o && typeof o === 'object'
+            ? Object.fromEntries(Object.entries(o).filter(([k, v]) => v !== undefined && (v !== null || keep.includes(k))))
+            : o);
         const raw: Record<string, unknown> = {
             name, namespace, scopedStyles, disableSyntheticShadowSupport,
             apiVersion, targetSSR, ssrMode, experimentalErrorRecoveryMode, enablePrivateMethods,
             experimentalComplexExpressions, preserveHtmlComments, enableStaticContentOptimization, enableDynamicComponents, enableLwcOn, experimentalDynamicDirective, enableSyntheticElementInternals, componentFeatureFlagModulePath,
             dynamicImports: dropNulls(dynamicImports),
             enableLightningWebSecurityTransforms, isExplicitImport,
-            outputConfig: dropNulls(outputConfig),
+            outputConfig: dropNulls(outputConfig, ['minify']),
             customRendererConfig,
             stylesheetConfig,
             instrumentation,
         };
         // napi Option<T> rejects null (e.g. fixture apiVersion: null) — treat null as unset like JS defaults.
-        // Except `ssrMode: null`: upstream emits it as the literal `null` (napi reads the raw key, AB-0008 G1a-r).
-        for (const k of Object.keys(raw)) if (raw[k] === undefined || (raw[k] === null && k !== 'ssrMode')) delete raw[k];
+        // Except `ssrMode: null`: upstream emits it as the literal `null` (napi reads the raw key, AB-0008 G1a-r),
+        // and `stylesheetConfig: null` / `outputConfig: null` (and `outputConfig.minify: null` above), which
+        // upstream's `!isUndefined` checks count as passed (options.ts:189, :198, :215; carry-forward #10 c).
+        const KEEP_NULL = ['ssrMode', 'stylesheetConfig', 'outputConfig'];
+        for (const k of Object.keys(raw)) if (raw[k] === undefined || (raw[k] === null && !KEEP_NULL.includes(k))) delete raw[k];
         const r = this.native.transform(src, filename, raw);
         if (r.error) {
             throw errorFromNapi(r.error);

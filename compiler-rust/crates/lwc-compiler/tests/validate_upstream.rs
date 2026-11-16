@@ -84,7 +84,10 @@ out.missing = cap(() => transformSync(src, file));
             "LWC1023: Expected options object, received \"undefined\"."
         );
     }
-    let e = validate_incoming(None, "undefined", &mut |_| {}).unwrap_err();
+    let e = validate_incoming(None, "undefined", &mut |_| Ok(())).unwrap_err();
+    let lwc_compiler::OptionsError::Invalid(e) = e else {
+        panic!("expected invariant")
+    };
     assert_eq!(e.diagnostics[0].code, Some(1023));
     assert_eq!(e.message, want["undefined"]["message"].as_str().unwrap());
 }
@@ -103,7 +106,10 @@ fn js_null_options_is_typeerror_on_the_oracle_and_lwc1023_on_the_json_seam() {
     );
     // The JSON napi seam cannot distinguish JS null from undefined (both are JSON null),
     // so we emit LWC1023 with received "null" rather than a typeless TypeError.
-    let e = validate_incoming(None, "null", &mut |_| {}).unwrap_err();
+    let e = validate_incoming(None, "null", &mut |_| Ok(())).unwrap_err();
+    let lwc_compiler::OptionsError::Invalid(e) = e else {
+        panic!("expected invariant")
+    };
     assert_eq!(e.diagnostics[0].code, Some(1023));
     assert_eq!(
         e.message,
@@ -130,7 +136,7 @@ out.good = cap(() => transformSync(src, file, base));
     let mut o = bare();
     o.api_version = Some(ApiVersionInput::NonNumber);
     assert_eq!(
-        validate_transform_options(&o, &mut |_| {})
+        validate_transform_options(&o, &mut |_| Ok(()))
             .unwrap()
             .api_version(),
         lwc_shared::api_version::HIGHEST_API_VERSION
@@ -159,14 +165,14 @@ out.good = cap(() => transformSync(src, file, base));
     }
     let mut o = bare();
     o.ssr_mode = Some(SsrModeInput::Text("bogus".into()));
-    let n = validate_transform_options(&o, &mut |_| {}).unwrap();
+    let n = validate_transform_options(&o, &mut |_| Ok(())).unwrap();
     assert_eq!(n.ssr_mode(), SsrMode::AsyncYield);
     assert_eq!(
         n.ssr_mode_literal(),
         &lwc_shared::SsrModeLiteral::Str("bogus".into())
     );
     o.ssr_mode = Some(SsrModeInput::NonString(serde_json::Value::Null));
-    let n = validate_transform_options(&o, &mut |_| {}).unwrap();
+    let n = validate_transform_options(&o, &mut |_| Ok(())).unwrap();
     assert_eq!(n.ssr_mode(), SsrMode::AsyncYield);
     assert_eq!(n.ssr_mode_literal(), &lwc_shared::SsrModeLiteral::Null);
 }
@@ -225,7 +231,7 @@ console.log(JSON.stringify(out));
         o.namespace = "x".into();
         o.target_ssr = Some(true);
         o.ssr_mode = mode;
-        let n = validate_transform_options(&o, &mut |_| {}).unwrap();
+        let n = validate_transform_options(&o, &mut |_| Ok(())).unwrap();
         dispatch(src, file, &n).unwrap().code
     };
     // Printer whitespace already differs from astring; compare the mode literal and the
@@ -392,7 +398,8 @@ console.log(JSON.stringify(out));
         o.instrumentation = Some(InstrumentationHandle(events.clone()));
         tweak(&mut o);
         let n = validate_transform_options(&o, &mut |d: DeprecationId| {
-            events.push(format!("warn:{}", d.message()))
+            events.push(format!("warn:{}", d.message()));
+            Ok(())
         })
         .unwrap();
         dispatch(src, file, &n).unwrap();
@@ -405,10 +412,13 @@ console.log(JSON.stringify(out));
         });
     };
     let minify = |o: &mut TransformOptions| {
-        o.output_config = Some(OutputConfig {
-            sourcemap: None,
-            minify_present: true,
-        });
+        o.output_config = Some(
+            OutputConfig {
+                sourcemap: None,
+                minify_present: true,
+            }
+            .into(),
+        );
     };
     let rust_js = rust_events(js_src, "foo.js", di);
     let rust_html = rust_events(html_src, "foo.html", |o| {

@@ -1,0 +1,9 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "TypeError",
+  "codes": [],
+  "line": null,
+  "errors": [],
+  "message": "Cannot read properties of null (reading 'sourcemap')"
+}

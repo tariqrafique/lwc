@@ -12,10 +12,13 @@ fn minify_options() -> TransformOptions {
     });
     // The minify deprecation warns on every validate (not latched), so a second validate inside
     // dispatch would warn again.
-    o.output_config = Some(OutputConfig {
-        sourcemap: None,
-        minify_present: true,
-    });
+    o.output_config = Some(
+        OutputConfig {
+            sourcemap: None,
+            minify_present: true,
+        }
+        .into(),
+    );
     o
 }
 
@@ -24,7 +27,11 @@ fn minify_options() -> TransformOptions {
 #[ignore = "child of dispatch_does_not_validate_a_second_time"]
 fn child_dispatch_validated_minify_options() {
     let mut warned = Vec::new();
-    let n = validate_transform_options(&minify_options(), &mut |d| warned.push(d)).unwrap();
+    let n = validate_transform_options(&minify_options(), &mut |d| {
+        warned.push(d);
+        Ok(())
+    })
+    .unwrap();
     assert_eq!(warned, [DeprecationId::OutputConfigMinify]);
     dispatch("export const a = 1;\n", "a.js", &n).unwrap();
 }

@@ -13,6 +13,8 @@
 //   inst/throw-<value>/<case>  incrementCounter throws <value> (G2b r4) × spec snippet + dynamic-imports fixtures
 //   inst/throw-coded-<value>/spec/instrumentation  a thrown object with lwcCode / code / level (AB-0008 r5 D3)
 //   warn/<case>  console.warn (outputConfig.minify deprecation) vs counter call order (AB-0008 r5 D1)
+//   warn/warn-throws-<value>/spec/instrumentation  console.warn throws: validation stops before the compile
+//             (carry-forward #10 a)
 //   ssrmode/<v>   targetSSR ssrMode {unknown string, null, number, boolean, {}, {a:1}, [], [1]} × spec component
 //                 (generate-markup.ts:75 b.literal: objects/arrays throw a plain Error; G1a-r)
 //   dyn/<v>       dynamicImports {omitted, strictSpecifier omitted, strictSpecifier false} × dynamic-imports fixtures
@@ -24,7 +26,8 @@ import { evalJsModule } from '../src/evalJs';
 import { checkGolden, errorObservation, findFiles, apiLabel, apiOpt, type ApiCell } from '../src/optionRows';
 import { oracleRoot } from '../src/oracleRoot';
 import {
-    CODED_THROWING_SHAPES, INSTRUMENTATION_SHAPES, THROWING_SHAPES, observeInstrumented, observeWarnOrder,
+    CODED_THROWING_SHAPES, INSTRUMENTATION_SHAPES, THROWING_SHAPES, THROWING_WARNS, observeInstrumented, observeWarnOrder,
+    observeWarnThrow,
 } from '../src/instrumentationObserve';
 
 const ROOT = `${oracleRoot()}/packages/@lwc/babel-plugin-component/src/__tests__/fixtures`;
@@ -231,6 +234,10 @@ describe('js-options: warn', () => {
         observeWarnOrder(backend, SPEC_INST, 'foo.js', opts, INSTRUMENTATION_SHAPES.real)));
     it('warn/minify-throw/spec/instrumentation', () => checkGolden(GOLDEN_DIR, 'warn/minify-throw/spec/instrumentation',
         observeWarnOrder(backend, SPEC_INST, 'foo.js', opts, THROWING_SHAPES.error)));
+    for (const [value, make] of Object.entries(THROWING_WARNS)) {
+        it(`warn/warn-throws-${value}/spec/instrumentation`, () => checkGolden(GOLDEN_DIR, `warn/warn-throws-${value}/spec/instrumentation`,
+            observeWarnThrow(backend, SPEC_INST, 'foo.js', opts, make)));
+    }
 });
 
 describe('js-options: ssrmode', () => {

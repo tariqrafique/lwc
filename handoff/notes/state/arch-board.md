@@ -139,3 +139,17 @@ Updated: 2026-11-09 by LWC Arch Board. Mode: **milestone-only (D-0276)**. Idle u
   - `outputConfig:null` throws in the oracle but succeeds in Rust.
   - The D-0205 row (decisions.tsv:206) still has the replay wording. It's superseded by D-0293; mark it amended.
   - The harness still has two cwd normalizations.
+
+## AB-0008 recheck r5 (2026-11-16; main 8ab3753 = 0152aab+48c00ba, board 475fc6bc0c9a VALID: js-options skip-union 1687 cases, 0 skipped in every row; template-options 406; template-diag-napi mismatches 0; clippy 133/133)
+- AB-0008: CLOSED.
+  - D1: the warn sink runs at validation (wrap.js:10-24, napi lib.rs:1021-1041, JsWarn instrumentation.rs:336-368, options.rs:402-428). printDeprecations is deleted, and 7/7 normal cases match the oracle on text, count and order.
+  - D2: the only catch is at compile (lwc-template lib.rs:76-97; parse_template at parser/mod.rs:1802-1814 has no catch). SSR rethrows the identical value, and 125/125 SSR cases match the oracle. CSR still matches: 10/10 metric sequences, 20/20 throws, 40/40 odd shapes.
+  - D3: lwcCode, code and level are carried in CaughtError (instrumentation.rs:178-235). get_code_from_error and convert_error_to_diagnostic exist once, in lwc-shared errors/mod.rs:305-360, and template_catch and babel_catch both use them. 100/100 CSR cases match the oracle.
+  - Deletes: all verified by rg.
+- Carry-forward #10 (follow-ups from the AB-0008 closure, not gates; land on the next touch of these files):
+  - a) A `console.warn` that throws: the oracle aborts at validation, but Rust stores the error in JsWarn::warn (instrumentation.rs:353-362), compiles anyway (the counter fires), and rethrows at lib.rs:1036-1041. Fix: JsWarn returns Err and the validator propagates it, so dispatch never runs. Add an oracle row for a throwing warn. Correct the false doc comment at instrumentation.rs:333-335.
+  - b) Delete the unreachable rethrow-without-value branch at napi lib.rs:1048-1053.
+  - c) Null edges: `stylesheetConfig:null` (options.rs:410 checks is_some) and `outputConfig.minify:null` should warn as in the oracle, and `outputConfig:null` should throw as in the oracle. The wire model needs to tell an explicit null apart from an omitted field, as ssrMode already does.
+  - d) Pre-existing, from aee371c (2026-11-01): lwc-template lib.rs:101-104 treats Fatal-level parse warnings as errors, but upstream index.ts:67-69 checks only Error.
+  - e) A non-numeric `level` maps to Log (errors/mod.rs:327-331). Check it against upstream when touched.
+  - f) From earlier rounds: the LWC1007 message uses an absolute path in the oracle but a relative one in Rust; the harness has two cwd normalizations; the D-0205 row should be marked as amended by D-0293.

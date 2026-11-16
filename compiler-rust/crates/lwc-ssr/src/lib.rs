@@ -214,7 +214,7 @@ mod transform_tests {
         );
         assert_eq!(
             run(CounterError::NotCallable),
-            SsrError::Rethrow(Rethrow::NotAFunction(
+            SsrError::Rethrow(Rethrow::TypeError(
                 "ctx.instrumentation?.incrementCounter is not a function"
             ))
         );
