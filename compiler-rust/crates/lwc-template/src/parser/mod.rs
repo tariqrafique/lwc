@@ -288,15 +288,10 @@ impl InternalError {
     /// `normalizeToDiagnostic(GENERIC_PARSING_ERROR, error)` prefixed `Unexpected compilation error: `, with
     /// no location.
     pub(crate) fn diagnostic(self) -> CompilerDiagnostic {
-        Self::diagnostic_of(self.0)
-    }
-
-    /// [`Self::diagnostic`] for a runtime message (a thrown JS value's `String(e.message)`).
-    pub(crate) fn diagnostic_of(msg: &str) -> CompilerDiagnostic {
         let info = &ParserDiagnostics::GENERIC_PARSING_ERROR;
         let message = format!(
             "Unexpected compilation error: {}",
-            lwc_shared::generate_error_message(info, Some(&[msg]))
+            lwc_shared::generate_error_message(info, Some(&[self.0]))
         );
         CompilerDiagnostic::new(Some(info.code), message, info.level, None, None)
     }
@@ -1802,27 +1797,24 @@ fn lower_children<'a>(
 }
 
 /// Parses `source`; complex expression ASTs are allocated in `alloc`, which the IR borrows.
-/// `Err`: an instrumentation callback's throw that escapes the template compiler
-/// ([`lwc_shared::TemplateCatch::Escapes`]).
+/// `Err`: an instrumentation callback's throw, unchanged: upstream `parseTemplate` has no catch (only
+/// template-compiler `compile` catches it, index.ts:64-79; `parse`, index.ts:33-38, lets it escape).
 pub fn parse_template<'a>(
     alloc: &'a oxc_allocator::Allocator,
     source: &str,
     config: &NormalizedConfig,
-) -> Result<TemplateParseResult<'a>, crate::ConfigError> {
+) -> Result<TemplateParseResult<'a>, lwc_shared::CounterError> {
     let mut counter = None;
     let r = parse_template_inner(alloc, source, config, &mut counter);
-    let Some(c) = counter else { return Ok(r) };
-    match c.template_catch(PARSER_COUNTER_NOT_A_FUNCTION) {
-        lwc_shared::TemplateCatch::Generic(m) => Ok(TemplateParseResult {
-            root: None,
-            warnings: vec![InternalError::diagnostic_of(&m)],
-        }),
-        lwc_shared::TemplateCatch::Escapes { name, message } => Err(crate::ConfigError {
-            message,
-            name: Some(name),
-        }),
+    match counter {
+        Some(c) => Err(c),
+        None => Ok(r),
     }
 }
+
+/// parser/index.ts:898 / :1106 `ctx.instrumentation?.incrementCounter(...)` with no callable `incrementCounter`.
+pub(crate) const PARSER_COUNTER_NOT_A_FUNCTION: &str =
+    "ctx.instrumentation?.incrementCounter is not a function";
 
 /// [`parse_template`]; a counter throw is moved into `counter` and the returned result is discarded.
 fn parse_template_inner<'a>(
@@ -1990,10 +1982,6 @@ fn parse_template_inner<'a>(
         Err(e) => internal_failure(e),
     }
 }
-
-/// parser/index.ts:898 / :1106 `ctx.instrumentation?.incrementCounter(...)` with no callable `incrementCounter`.
-const PARSER_COUNTER_NOT_A_FUNCTION: &str =
-    "ctx.instrumentation?.incrementCounter is not a function";
 
 /// An internal error ends the parse: `compile` reports it as its only diagnostic and there is no root.
 fn internal_failure<'a>(e: InternalError) -> TemplateParseResult<'a> {

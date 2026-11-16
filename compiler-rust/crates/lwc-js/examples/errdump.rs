@@ -39,6 +39,7 @@ fn main() {
                 lwc_shared::TransformError::Compiler(e) => (e.message.clone(), vec![e]),
                 lwc_shared::TransformError::Aggregate(a) => (a.message, a.errors),
                 lwc_shared::TransformError::Unnormalized(e) => (e.message, vec![]),
+                lwc_shared::TransformError::Rethrow(r) => (format!("{r:?}"), vec![]),
             };
             let loc = |d: &lwc_shared::CompilerError| match d.location {
                 Some(l) => format!(

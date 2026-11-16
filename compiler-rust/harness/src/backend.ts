@@ -4,9 +4,10 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 // The shipped binding wrapper, loaded from the crate (index.js uses the same file): passes the
-// instrumentation object beside the JSON options so the native calls it during the compile, and prints
-// deprecations (AB-0008 G2b, D-0205). Required lazily by the Rust backend only: the JS-oracle golden
-// recording (golden-gate) runs on a copy of harness/ alone, without crates/.
+// instrumentation object and `console.warn` beside the JSON options; the native calls the counters during
+// the compile and the warn while validating (AB-0008 G2b / r5, D-0293, D-0212).
+// Required lazily by the Rust backend only: the JS-oracle golden recording (golden-gate) runs on a
+// copy of harness/ alone, without crates/.
 type WrapBinding = typeof import('../../crates/lwc-compiler-napi/wrap.js').wrapBinding;
 function wrapBinding(binding: NativeAddon): ReturnType<WrapBinding> {
     const req = createRequire(import.meta.url);
@@ -78,7 +79,7 @@ export type NapiCompileError = {
 };
 
 type NativeAddon = {
-    transform(src: string, filename: string, options: Record<string, unknown>, instrumentation?: unknown): {
+    transform(src: string, filename: string, options: Record<string, unknown>, instrumentation: unknown, warn: (message: string) => void): {
         code?: string | null;
         map?: string | null;
         cssScopeTokens?: string[];
@@ -145,6 +146,7 @@ function assertKnownKeys(options: Record<string, unknown>): void {
  * - Location comes ONLY from `location`. Own `line` / `column` / `name` / `loc` are not on the type and
  *   are never consulted, so a diagnostic without `location` is not silently given one.
  * - AggregateError `name` and `errors` come from the AggregateError constructor.
+ * - `level` / `url` are copied as napi serialized them (CompilerError own keys).
  */
 export function errorFromNapi(ne: NapiCompileError): Error {
     const subs = Array.isArray(ne.errors)
@@ -162,6 +164,9 @@ export function errorFromNapi(ne: NapiCompileError): Error {
     if (ne.code != null) err.code = ne.code;
     if (ne.location != null) err.location = ne.location;
     if (ne.filename != null) err.filename = ne.filename;
+    // CompilerError's own `level` / `url`, like the aggregate members (AB-0008 r5 D3: a thrown value's level).
+    if (ne.level != null) err.level = ne.level;
+    if (ne.url != null) err.url = ne.url;
     return err;
 }
 

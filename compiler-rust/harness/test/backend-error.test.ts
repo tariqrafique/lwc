@@ -22,6 +22,14 @@ describe('errorFromNapi (D-0239/D-0241)', () => {
         expect(observeError(err)).toMatchObject({ line: 2, column: 6, code: 1061, filename: 'a.js' });
     });
 
+    it('keeps level and url (AB-0008 r5 D3)', () => {
+        const err: any = errorFromNapi({ message: 'm', code: 1234, level: 0, url: 'u' });
+        expect(err.level).toBe(0);
+        expect(err.url).toBe('u');
+        const bare: any = errorFromNapi({ message: 'm' });
+        expect('level' in bare).toBe(false);
+    });
+
     it('does not invent location from own line/column when location is absent', () => {
         // Runtime may still carry transitional own keys until JS Style deletes them; type omits them.
         const ne = {

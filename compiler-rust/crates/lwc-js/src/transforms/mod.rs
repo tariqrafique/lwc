@@ -51,18 +51,19 @@ pub fn run(
         .iter()
         .find(|(_, e)| !o.experimental_error_recovery_mode || !e.is_unframed_lwc())
         .map(|(k, _)| *k);
-    if let Some((k, e)) = dynamic_imports::count(&found.counted, stop_at, o, filename) {
-        let at = all.partition_point(|(j, _)| *j <= k);
-        all.insert(at, (k, e));
+    // A count fires only before `stop_at` (the first throw that ends the traversal), so a counter throw ends
+    // it first; LWC errors recovery mode collected before it are dropped with the traversal, as shipped
+    // surfaces a Babel-internal throw alone.
+    if let Some(e) = dynamic_imports::count(&found.counted, stop_at, o, filename) {
+        return Err(JsError::Caught(Box::new(e)));
     }
     if !all.is_empty() {
         let mut errs: Vec<CompileError> = all.into_iter().map(|(_, e)| e).collect();
         if !o.experimental_error_recovery_mode {
             return Err(errs.swap_remove(0).into());
         }
-        // A Babel-internal throw (class-features `Decorators are not enabled.`, a missing
-        // `incrementCounter`) aborts the traversal: shipped surfaces it alone, never inside the recovery
-        // aggregate.
+        // A Babel-internal throw (class-features `Decorators are not enabled.`) aborts the traversal:
+        // shipped surfaces it alone, never inside the recovery aggregate.
         if let Some(i) = errs.iter().position(|e| !e.is_unframed_lwc()) {
             return Err(errs.swap_remove(i).into());
         }

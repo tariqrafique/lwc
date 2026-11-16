@@ -1,0 +1,21 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ],
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ]
+  ],
+  "ok": false,
+  "callbackThrew": true,
+  "identical": true,
+  "type": "object",
+  "name": "Error",
+  "message": "second",
+  "lwcCode": null,
+  "code": null,
+  "level": null
+}

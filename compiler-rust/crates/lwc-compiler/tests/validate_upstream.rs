@@ -1,12 +1,12 @@
 //! G1: validation outcomes match @lwc/compiler 9.5.3 @ b9e8007.
 //! Null / non-number apiVersion / unknown ssrMode are compared against live `transformSync`.
 use lwc_compiler::{
-    ApiVersionInput, DynamicImportConfig, SsrModeInput, TransformOptions, dispatch,
+    ApiVersionInput, DynamicImportConfig, OutputConfig, SsrModeInput, TransformOptions, dispatch,
     validate_incoming, validate_transform_options,
 };
 use lwc_shared::{
-    CompileOptions, CompilerMetric, InstrumentationEvent, InstrumentationHandle,
-    InstrumentationRecorder, SsrMode,
+    CompileOptions, CompilerMetric, CounterError, DeprecationId, Instrumentation,
+    InstrumentationHandle, SsrMode,
 };
 
 fn bare() -> TransformOptions {
@@ -84,7 +84,7 @@ out.missing = cap(() => transformSync(src, file));
             "LWC1023: Expected options object, received \"undefined\"."
         );
     }
-    let e = validate_incoming(None, "undefined").unwrap_err();
+    let e = validate_incoming(None, "undefined", &mut |_| {}).unwrap_err();
     assert_eq!(e.diagnostics[0].code, Some(1023));
     assert_eq!(e.message, want["undefined"]["message"].as_str().unwrap());
 }
@@ -103,7 +103,7 @@ fn js_null_options_is_typeerror_on_the_oracle_and_lwc1023_on_the_json_seam() {
     );
     // The JSON napi seam cannot distinguish JS null from undefined (both are JSON null),
     // so we emit LWC1023 with received "null" rather than a typeless TypeError.
-    let e = validate_incoming(None, "null").unwrap_err();
+    let e = validate_incoming(None, "null", &mut |_| {}).unwrap_err();
     assert_eq!(e.diagnostics[0].code, Some(1023));
     assert_eq!(
         e.message,
@@ -130,7 +130,9 @@ out.good = cap(() => transformSync(src, file, base));
     let mut o = bare();
     o.api_version = Some(ApiVersionInput::NonNumber);
     assert_eq!(
-        validate_transform_options(&o).unwrap().api_version(),
+        validate_transform_options(&o, &mut |_| {})
+            .unwrap()
+            .api_version(),
         lwc_shared::api_version::HIGHEST_API_VERSION
     );
 }
@@ -157,14 +159,14 @@ out.good = cap(() => transformSync(src, file, base));
     }
     let mut o = bare();
     o.ssr_mode = Some(SsrModeInput::Text("bogus".into()));
-    let n = validate_transform_options(&o).unwrap();
+    let n = validate_transform_options(&o, &mut |_| {}).unwrap();
     assert_eq!(n.ssr_mode(), SsrMode::AsyncYield);
     assert_eq!(
         n.ssr_mode_literal(),
         &lwc_shared::SsrModeLiteral::Str("bogus".into())
     );
     o.ssr_mode = Some(SsrModeInput::NonString(serde_json::Value::Null));
-    let n = validate_transform_options(&o).unwrap();
+    let n = validate_transform_options(&o, &mut |_| {}).unwrap();
     assert_eq!(n.ssr_mode(), SsrMode::AsyncYield);
     assert_eq!(n.ssr_mode_literal(), &lwc_shared::SsrModeLiteral::Null);
 }
@@ -223,7 +225,7 @@ console.log(JSON.stringify(out));
         o.namespace = "x".into();
         o.target_ssr = Some(true);
         o.ssr_mode = mode;
-        let n = validate_transform_options(&o).unwrap();
+        let n = validate_transform_options(&o, &mut |_| {}).unwrap();
         dispatch(src, file, &n).unwrap().code
     };
     // Printer whitespace already differs from astring; compare the mode literal and the
@@ -286,6 +288,25 @@ console.log(JSON.stringify(out));
     );
 }
 
+/// Every observable call in order: the deprecation warns (the validator's sink) and the counter calls.
+#[derive(Default)]
+struct Events(std::sync::Mutex<Vec<String>>);
+
+impl Events {
+    fn push(&self, e: String) {
+        self.0.lock().unwrap().push(e);
+    }
+}
+
+impl Instrumentation for Events {
+    fn increment_counter(&self, m: CompilerMetric) -> Result<(), CounterError> {
+        self.push(format!("incrementCounter:{}", m.js_value()));
+        Ok(())
+    }
+}
+
+/// D1 (AB-0008 r5) and G2b: the call order of `console.warn` (options.ts:185-219, at validation) and
+/// `incrementCounter` (during the compile) matches live `transformSync`.
 #[test]
 fn instrumentation_event_sequence_matches_oracle_for_js_and_template() {
     let root = lwc_shared::oracle_root();
@@ -318,20 +339,30 @@ fn instrumentation_event_sequence_matches_oracle_for_js_and_template() {
 const {{ transformSync }} = require(process.env.LWC_ORACLE + '/packages/@lwc/compiler/dist/index.cjs');
 function collect(src, file, extra) {{
   const events = [];
-  transformSync(src, file, {{
-    name: 'a',
-    namespace: 'x',
-    instrumentation: {{
-      log: (d) => events.push({{ kind: 'log', message: d && (d.message || String(d)) }}),
-      incrementCounter: (m) => events.push({{ kind: 'incrementCounter', metric: m }}),
-    }},
-    ...extra,
-  }});
+  const warn = console.warn;
+  console.warn = (m) => events.push({{ kind: 'warn', message: m }});
+  try {{
+    transformSync(src, file, {{
+      name: 'a',
+      namespace: 'x',
+      instrumentation: {{
+        log: (d) => events.push({{ kind: 'log', message: d && (d.message || String(d)) }}),
+        incrementCounter: (m) => events.push({{ kind: 'incrementCounter', metric: m }}),
+      }},
+      ...extra,
+    }});
+  }} finally {{
+    console.warn = warn;
+  }}
   return events;
 }}
+const di = {{ dynamicImports: {{ loader: '@custom/loader', strictSpecifier: true }} }};
+const minify = {{ outputConfig: {{ minify: true }} }};
 const out = {{
-  js: collect({js}, 'foo.js', {{ dynamicImports: {{ loader: '@custom/loader', strictSpecifier: true }} }}),
+  js: collect({js}, 'foo.js', di),
   html: collect({html}, 'foo.html', {{ experimentalDynamicDirective: true }}),
+  js_warn: collect({js}, 'foo.js', {{ ...di, ...minify }}),
+  html_warn: collect({html}, 'foo.html', {{ experimentalDynamicDirective: true, ...minify }}),
 }};
 console.log(JSON.stringify(out));
 "#,
@@ -356,30 +387,40 @@ console.log(JSON.stringify(out));
         file: &str,
         tweak: impl FnOnce(&mut TransformOptions),
     ) -> Vec<String> {
-        let rec = std::sync::Arc::new(InstrumentationRecorder::default());
+        let events = std::sync::Arc::new(Events::default());
         let mut o = bare();
-        o.instrumentation = Some(InstrumentationHandle(rec.clone()));
+        o.instrumentation = Some(InstrumentationHandle(events.clone()));
         tweak(&mut o);
-        let n = validate_transform_options(&o).unwrap();
+        let n = validate_transform_options(&o, &mut |d: DeprecationId| {
+            events.push(format!("warn:{}", d.message()))
+        })
+        .unwrap();
         dispatch(src, file, &n).unwrap();
-        rec.take()
-            .into_iter()
-            .map(|e| match e {
-                InstrumentationEvent::IncrementCounter(m) => {
-                    format!("incrementCounter:{}", m.js_value())
-                }
-                InstrumentationEvent::Log(d) => format!("log:{}", d.message),
-            })
-            .collect()
+        std::mem::take(&mut *events.0.lock().unwrap())
     }
-    let rust_js = rust_events(js_src, "foo.js", |o| {
+    let di = |o: &mut TransformOptions| {
         o.dynamic_imports = Some(DynamicImportConfig {
             loader: Some("@custom/loader".into()),
             strict_specifier: Some(true),
         });
-    });
+    };
+    let minify = |o: &mut TransformOptions| {
+        o.output_config = Some(OutputConfig {
+            sourcemap: None,
+            minify_present: true,
+        });
+    };
+    let rust_js = rust_events(js_src, "foo.js", di);
     let rust_html = rust_events(html_src, "foo.html", |o| {
         o.experimental_dynamic_directive = Some(true);
+    });
+    let rust_js_warn = rust_events(js_src, "foo.js", |o| {
+        di(o);
+        minify(o);
+    });
+    let rust_html_warn = rust_events(html_src, "foo.html", |o| {
+        o.experimental_dynamic_directive = Some(true);
+        minify(o);
     });
     let fmt = |arr: &serde_json::Value| -> Vec<String> {
         arr.as_array()
@@ -399,6 +440,19 @@ console.log(JSON.stringify(out));
     };
     assert_eq!(rust_js, fmt(&want["js"]), "js events vs oracle");
     assert_eq!(rust_html, fmt(&want["html"]), "template events vs oracle");
+    assert_eq!(
+        rust_js_warn,
+        fmt(&want["js_warn"]),
+        "js warn/counter order vs oracle"
+    );
+    assert_eq!(
+        rust_html_warn,
+        fmt(&want["html_warn"]),
+        "template warn/counter order vs oracle"
+    );
+    let minify_warn = format!("warn:{}", DeprecationId::OutputConfigMinify.message());
+    assert_eq!(rust_js_warn.first(), Some(&minify_warn));
+    assert_eq!(rust_html_warn.first(), Some(&minify_warn));
     assert_eq!(
         rust_js,
         vec![

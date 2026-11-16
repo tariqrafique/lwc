@@ -1,0 +1,30 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1234
+  ],
+  "line": null,
+  "aggregate": {
+    "message": "",
+    "code": null,
+    "errors": [
+      {
+        "code": 1234,
+        "message": "Unexpected compilation error: m",
+        "location": null
+      }
+    ]
+  },
+  "errors": [
+    1234
+  ],
+  "message": "",
+  "level": null
+}

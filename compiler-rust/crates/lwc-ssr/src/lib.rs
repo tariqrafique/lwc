@@ -47,6 +47,21 @@ pub fn compile_component_for_ssr(
     compile_js::compile_component_for_ssr(src, filename, options)
 }
 
+/// What the SSR facade throws: the SSR compiler's own error, or an instrumentation callback's throw from
+/// the template parse, unchanged (compile-template/index.ts:83-95 calls template-compiler `parse`, which
+/// has no catch, and @lwc/compiler does not normalize SSR errors).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SsrError {
+    Compile(CompileError),
+    Rethrow(lwc_shared::Rethrow),
+}
+
+impl From<CompileError> for SsrError {
+    fn from(e: CompileError) -> Self {
+        SsrError::Compile(e)
+    }
+}
+
 /// Facade entry: `@lwc/compiler` `targetSSR` path.
 /// - `.html` → parse with `lwc-template` then `compile_template_for_ssr`
 /// - `.js`/`.ts` → `compile_component_for_ssr`
@@ -54,14 +69,14 @@ pub fn transform(
     src: &str,
     filename: &str,
     options: &CompileOptions,
-) -> Result<CompileResult, CompileError> {
+) -> Result<CompileResult, SsrError> {
     let ext = filename.rsplit('.').next().unwrap_or("");
     match ext {
         "html" => transform_html(src, filename, options),
         "js" | "ts" | "mjs" | "jsx" | "tsx" | "mts" => {
-            compile_component_for_ssr(src, filename, options)
+            Ok(compile_component_for_ssr(src, filename, options)?)
         }
-        _ => Err(CompileError::not_implemented("lwc-ssr", filename)),
+        _ => Err(CompileError::not_implemented("lwc-ssr", filename).into()),
     }
 }
 
@@ -69,7 +84,7 @@ fn transform_html(
     src: &str,
     filename: &str,
     options: &CompileOptions,
-) -> Result<CompileResult, CompileError> {
+) -> Result<CompileResult, SsrError> {
     let config = lwc_template::Config {
         name: Some(options.name.clone()).filter(|s| !s.is_empty()),
         namespace: Some(options.namespace.clone()).filter(|s| !s.is_empty()),
@@ -91,12 +106,17 @@ fn transform_html(
     // Complex-expression gating (experimentalComplexExpressions + apiVersion ENABLE_COMPLEX_TEMPLATE_EXPRESSIONS)
     // and lwc:preserve-comments both come from lwc-template via `config` / Root.directives.
     let alloc = lwc_template::Allocator::default();
-    let parsing = lwc_template::parse(&alloc, src, config).map_err(|e| CompileError {
-        message: e.message,
-        filename: Some(filename.into()),
-        diagnostics: vec![],
-        name: e.name.map(str::to_string),
-        position: lwc_shared::ProducerPosition::Diagnostics,
+    let parsing = lwc_template::parse(&alloc, src, config).map_err(|e| match e {
+        lwc_template::ParseError::Config(e) => SsrError::Compile(CompileError {
+            message: e.message,
+            filename: Some(filename.into()),
+            diagnostics: vec![],
+            name: e.name.map(str::to_string),
+            position: lwc_shared::ProducerPosition::Diagnostics,
+        }),
+        lwc_template::ParseError::Counter(c) => {
+            SsrError::Rethrow(c.rethrow(lwc_template::PARSER_COUNTER_NOT_A_FUNCTION))
+        }
     })?;
 
     // template-compiler parser/index.ts parse(): any Error-level diagnostic from parseHTML (parse5 errors →
@@ -109,7 +129,8 @@ fn transform_html(
             diagnostics: parsing.warnings,
             name: None,
             position: lwc_shared::ProducerPosition::Diagnostics,
-        });
+        }
+        .into());
     };
 
     // index.ts: `preserveComments: !!root.directives.find(PreserveComments)?.value` (not the option).
@@ -145,6 +166,59 @@ fn transform_html(
 #[cfg(test)]
 mod transform_tests {
     use super::*;
+
+    fn compile_error(e: SsrError) -> CompileError {
+        match e {
+            SsrError::Compile(e) => e,
+            o => panic!("expected a compile error: {o:?}"),
+        }
+    }
+
+    /// D2: a counter throw in the SSR template parse leaves `transform` unchanged (no catch); the
+    /// not-callable case is the parser call's own TypeError.
+    #[test]
+    fn counter_throw_is_rethrown_unchanged() {
+        use lwc_shared::{
+            CaughtError, CompilerMetric, CounterError, Instrumentation, InstrumentationHandle,
+            Rethrow, ThrownValue,
+        };
+        struct Throws(CounterError);
+        impl Instrumentation for Throws {
+            fn increment_counter(&self, _: CompilerMetric) -> Result<(), CounterError> {
+                Err(self.0.clone())
+            }
+        }
+        let run = |c: CounterError| {
+            let opts = CompileOptions {
+                name: "c".into(),
+                namespace: "x".into(),
+                target_ssr: true,
+                instrumentation: Some(InstrumentationHandle::new(Throws(c))),
+                ..Default::default()
+            };
+            transform(
+                "<template lwc:render-mode=\"light\"><div></div></template>",
+                "x/c/c.html",
+                &opts,
+            )
+            .unwrap_err()
+        };
+        let v = ThrownValue::Object(Box::new(CaughtError::plain("Error", "boom")));
+        assert_eq!(
+            run(CounterError::Threw(v.clone())),
+            SsrError::Rethrow(Rethrow::Value(v))
+        );
+        assert_eq!(
+            run(CounterError::Threw(ThrownValue::Nullish("undefined"))),
+            SsrError::Rethrow(Rethrow::Value(ThrownValue::Nullish("undefined")))
+        );
+        assert_eq!(
+            run(CounterError::NotCallable),
+            SsrError::Rethrow(Rethrow::NotAFunction(
+                "ctx.instrumentation?.incrementCounter is not a function"
+            ))
+        );
+    }
 
     #[test]
     fn transform_html_text_static() {
@@ -214,7 +288,7 @@ mod transform_tests {
             target_ssr: true,
             ..Default::default()
         };
-        let err = |src: &str| transform(src, "x/c/c.html", &opts).expect_err(src);
+        let err = |src: &str| compile_error(transform(src, "x/c/c.html", &opts).expect_err(src));
         for (src, msg) in [
             (
                 "<template><div inner-h-t-m-l=\"x\">o</div></template>",
@@ -362,7 +436,8 @@ mod transform_tests {
         };
         let src = "<template><x-child><template lwc:if={a}><span>A</span></template><template lwc:elseif={b}>\
             <template lwc:slot-data=\"data\"><span>{data.id}</span></template></template></x-child></template>";
-        let e = transform(src, "x/c/c.html", &opts).expect_err("nested lwc:slot-data");
+        let e =
+            compile_error(transform(src, "x/c/c.html", &opts).expect_err("nested lwc:slot-data"));
         assert_eq!(
             e.message,
             "Unimplemented IR node: { type: 'ScopedSlotFragment' }"

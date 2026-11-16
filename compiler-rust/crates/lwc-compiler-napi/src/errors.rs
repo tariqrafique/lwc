@@ -25,8 +25,29 @@ pub(crate) fn compile(
     src: &str,
     filename: &str,
     o: &NormalizedTransformOptions,
-) -> Result<CompileResult, JsCompileResult> {
-    lwc_compiler::dispatch(src, filename, o).map_err(|e| result(serialize(e)))
+) -> Result<CompileResult, Failure> {
+    lwc_compiler::dispatch(src, filename, o).map_err(|e| match e {
+        TransformError::Rethrow(r) => Failure::Rethrow(r),
+        e => Failure::Result(Box::new(result(serialize(e)))),
+    })
+}
+
+/// A failed compile: the `{ error }` result (boxed: the error path), or a value `transform` rethrows
+/// unchanged.
+pub(crate) enum Failure {
+    Result(Box<JsCompileResult>),
+    Rethrow(lwc_shared::Rethrow),
+}
+
+impl Failure {
+    /// The `{ error }` result (tests).
+    #[cfg(test)]
+    pub(crate) fn result(self) -> JsCompileResult {
+        match self {
+            Failure::Result(r) => *r,
+            Failure::Rethrow(r) => panic!("expected an {{ error }} result, got a rethrow: {r:?}"),
+        }
+    }
 }
 
 /// An options validation error (`to_compile_options`), surfaced by `lwc_compiler::options_error`.
@@ -41,7 +62,6 @@ fn result_fields(error: Option<JsCompileError>) -> JsCompileResult {
         css_scope_tokens: None,
         warnings: None,
         error,
-        deprecations: None,
     }
 }
 
@@ -54,6 +74,8 @@ fn serialize(e: TransformError) -> JsCompileError {
         TransformError::Compiler(e) => compiler_error(e),
         TransformError::Aggregate(a) => aggregate(a),
         TransformError::Unnormalized(e) => unnormalized(e),
+        // compile() hands it to `transform`, which throws it.
+        TransformError::Rethrow(r) => unreachable!("rethrown, not serialized: {r:?}"),
     }
 }
 
@@ -132,7 +154,10 @@ mod tests {
     fn js_error(src: &str, filename: &str, extra: Option<&Value>) -> JsCompileError {
         match opts(extra) {
             Err(e) => options_error(e),
-            Ok(o) => compile(src, filename, &o).expect_err("case must fail"),
+            Ok(o) => match compile(src, filename, &o) {
+                Ok(_) => panic!("case must fail"),
+                Err(f) => f.result(),
+            },
         }
         .error
         .unwrap()

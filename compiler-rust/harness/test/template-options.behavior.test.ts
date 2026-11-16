@@ -5,6 +5,11 @@
 //             (src/instrumentationObserve.ts) × metric snippets (lwc:spread, lwc:render-mode, lwc:dynamic) × erm
 //   inst/real/fixture/<rel>  real callbacks × every template fixture using lwc:spread / lwc:render-mode / lwc:dynamic
 //   inst/throw-<value>/<recovery>/<snippet>  incrementCounter throws <value> (AB-0008 G2b r4) × 4 metric snippets × erm
+//   inst/throw-coded-<value>/<recovery>/<snippet>  a thrown object with lwcCode / code / level (AB-0008 r5 D3),
+//             observed with levels and messages
+//   inst/ssr/<shape>/<snippet>, inst/ssr-throw-<value>/<snippet>  targetSSR: the parse has no catch, so the
+//             thrown value reaches the caller unchanged (AB-0008 r5 D2) × the parser metric snippets
+//   warn/<case>  console.warn (outputConfig.minify deprecation) vs counter call order (AB-0008 r5 D1)
 //   erm/<v>   experimentalErrorRecoveryMode {true,false,omitted} × upstream transform-html.spec experimentalErrorRecoveryMode
 //             cases (valid, 3 invalid directives, custom element) + transform-css.spec `<` case
 // Goldens: goldens/template-options, JS oracle only (UPDATE_GOLDENS=1, JS backend).
@@ -14,7 +19,9 @@ import { describe, it, beforeAll, expect } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { checkGolden, findFiles, errorObservation, errorMultiset } from '../src/optionRows';
 import { observeTemplate, TEMPLATE_ROOT } from '../src/templateObserve';
-import { INSTRUMENTATION_SHAPES, THROWING_SHAPES, observeInstrumented } from '../src/instrumentationObserve';
+import {
+    CODED_THROWING_SHAPES, INSTRUMENTATION_SHAPES, THROWING_SHAPES, observeInstrumented, observeRethrow, observeWarnOrder,
+} from '../src/instrumentationObserve';
 
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/template-options');
 const DYNAMIC = findFiles(TEMPLATE_ROOT, 'actual.html').filter((f) => /lwc:dynamic\b/.test(fs.readFileSync(f, 'utf8'))).map((f) => path.relative(TEMPLATE_ROOT, path.dirname(f)));
@@ -113,6 +120,28 @@ describe('template-options: inst', () => {
             }
         }
     }
+    // r5 D3: coded thrown objects through the template-compiler catch (getCodeFromError, convertErrorToDiagnostic).
+    for (const [shape, make] of Object.entries(CODED_THROWING_SHAPES)) {
+        for (const [label, erm] of [['erm-false', false], ['erm-true', true]] as const) {
+            for (const name of ['spread', 'render-mode']) {
+                const key = `inst/throw-coded-${shape}/${label}/${name}`;
+                it(key, () => checkGolden(GOLDEN_DIR, key, observeInstrumented(backend, INST_SNIPPETS[name], 'spread.html',
+                    { namespace: 'x', name: 'spread', experimentalDynamicDirective: true, experimentalErrorRecoveryMode: erm }, make, { detail: true })));
+            }
+        }
+    }
+    // r5 D2: targetSSR (only the parser metrics run; SSR has its own codegen).
+    const ssrOpts = { namespace: 'x', name: 'spread', targetSSR: true, experimentalDynamicDirective: true };
+    for (const name of ['render-mode', 'dynamic']) {
+        for (const [shape, make] of Object.entries(INSTRUMENTATION_SHAPES)) {
+            const key = `inst/ssr/${shape}/${name}`;
+            it(key, () => checkGolden(GOLDEN_DIR, key, observeRethrow(backend, INST_SNIPPETS[name], 'spread.html', ssrOpts, make)));
+        }
+        for (const [shape, make] of Object.entries({ ...THROWING_SHAPES, ...CODED_THROWING_SHAPES })) {
+            const key = `inst/ssr-throw-${shape}/${name}`;
+            it(key, () => checkGolden(GOLDEN_DIR, key, observeRethrow(backend, INST_SNIPPETS[name], 'spread.html', ssrOpts, make)));
+        }
+    }
     it('finds 53 metric fixtures', () => expect(INST_FIXTURES.length).toBe(53));
     for (const rel of INST_FIXTURES) {
         const name = path.basename(rel);
@@ -120,4 +149,22 @@ describe('template-options: inst', () => {
             observeInstrumented(backend, fs.readFileSync(path.join(TEMPLATE_ROOT, rel, 'actual.html'), 'utf8'), `${name}.html`,
                 { namespace: 'x', name, ...cfgOf(rel) }, INSTRUMENTATION_SHAPES.real)));
     }
+});
+
+// AB-0008 r5 D1: the outputConfig.minify deprecation warns on every call (no latch), at validation.
+describe('template-options: warn', () => {
+    const minify = { namespace: 'x', name: 'spread', experimentalDynamicDirective: true, outputConfig: { minify: true } };
+    for (const name of ['spread', 'render-mode', 'mixed']) {
+        it(`warn/minify/${name}`, () => checkGolden(GOLDEN_DIR, `warn/minify/${name}`,
+            observeWarnOrder(backend, INST_SNIPPETS[name], 'spread.html', minify, INSTRUMENTATION_SHAPES.real)));
+        it(`warn/minify-throw/${name}`, () => checkGolden(GOLDEN_DIR, `warn/minify-throw/${name}`,
+            observeWarnOrder(backend, INST_SNIPPETS[name], 'spread.html', minify, THROWING_SHAPES.error)));
+    }
+    for (const name of ['render-mode', 'dynamic']) {
+        it(`warn/minify-ssr/${name}`, () => checkGolden(GOLDEN_DIR, `warn/minify-ssr/${name}`,
+            observeWarnOrder(backend, INST_SNIPPETS[name], 'spread.html', { ...minify, targetSSR: true }, INSTRUMENTATION_SHAPES.real)));
+    }
+    it('warn/minify-invalid-sourcemap/render-mode', () => checkGolden(GOLDEN_DIR, 'warn/minify-invalid-sourcemap/render-mode',
+        observeWarnOrder(backend, INST_SNIPPETS['render-mode'], 'spread.html',
+            { ...minify, outputConfig: { minify: true, sourcemap: 'bogus' } }, INSTRUMENTATION_SHAPES.real)));
 });

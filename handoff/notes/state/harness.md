@@ -954,3 +954,7 @@ napi-css-errors     2/2 (lwc-compiler-napi single_errors_match_shipped, css-1009
 - Main f847d2d07921 (incl. decisions snapshot refresh to notes@857e0fc8864d).
 - Official board abda6df3bc80 VALID (napi 6900c468b745). vs e0252ee27381: new pretty-equal row 1141/1560 identical (allowlist 419); R-NUMERIC-SPELLING-1 retired from semdiff rt; all other rows equal.
 - TSV line appended; agent-inflight removed. Next: AB-0008 r5 (D-0293).
+
+## 2026-11-16 03:00 PST — AB-0008 r5 landed
+- Commits 0152aab (D1 warn sink at validation before dispatch, printDeprecations deleted; D2 catch at compile entry only, SSR gets raw throw; D3 lwcCode/code/level carried via lwc_shared::errors::{get_code_from_error, convert_error_to_diagnostic}; dead JsCallbacks::log / end rethrow / `let _` increment_counter / pub InstrumentationRecorder deleted; clippy baseline 134->133) + 48c00ba (ratchet reseed) + 8ab3753 (decisions snapshot).
+- Official board 475fc6bc0c9a VALID on main 8ab375354301. vs abda6df3bc80: js-options 448/1687 (+10), js-api 1239 passed / 448 skipped, template-options 406 (+97), skip-union 1687 cases 0 skipped-in-all; all other rows equal.

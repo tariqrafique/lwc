@@ -48,6 +48,10 @@ pub enum JsError {
     /// Recovery mode: `result.metadata.lwcErrors`, unframed `LWC####: msg` diagnostics whose filename
     /// is Babel's resolved `file.opts.filename`.
     LwcErrors(Vec<CompilerDiagnostic>),
+    /// An instrumentation callback's throw as it leaves Babel's transform catch (message prefixed, `code`
+    /// defaulted; [`lwc_shared::CounterError::babel_catch`]): its own `lwcCode`, `code` and `level` reach
+    /// javascript.ts `normalizeToCompilerError`.
+    Caught(Box<lwc_shared::CaughtError>),
 }
 
 impl From<CompileError> for JsError {
@@ -74,6 +78,7 @@ impl std::fmt::Display for JsError {
                 .collect::<Vec<_>>()
                 .join("\n")
                 .fmt(f),
+            JsError::Caught(e) => write!(f, "{}: {}", e.name, e.message),
         }
     }
 }
@@ -569,6 +574,7 @@ fn unrename_locations(e: JsError, origin: Origin<'_>) -> JsError {
             unrename_diagnostics(&mut ds, origin);
             JsError::LwcErrors(ds)
         }
+        e @ JsError::Caught(_) => e,
     }
 }
 

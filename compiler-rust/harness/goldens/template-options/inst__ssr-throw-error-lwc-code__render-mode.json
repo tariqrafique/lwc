@@ -1,0 +1,17 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "callbackThrew": true,
+  "identical": true,
+  "type": "object",
+  "name": "Error",
+  "message": "e",
+  "lwcCode": 1100,
+  "code": null,
+  "level": null
+}

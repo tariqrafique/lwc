@@ -40,6 +40,7 @@ impl From<TransformError> for Thrown {
                 errors: a.errors,
             },
             TransformError::Unnormalized(e) => panic!("JS errors are normalized: {e:?}"),
+            TransformError::Rethrow(r) => panic!("CSR JS errors are normalized: {r:?}"),
         }
     }
 }

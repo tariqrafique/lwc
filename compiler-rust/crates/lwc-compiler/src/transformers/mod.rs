@@ -14,12 +14,12 @@ pub(crate) fn transform_file(
     match extension(filename) {
         Some("css") => super::transform_style(src, filename, options),
         // HTML: SSR vs CSR. SSR errors stay unnormalized (transformer.ts:98-99).
-        Some("html") if options.target_ssr => {
-            lwc_ssr::transform(src, filename, options).map_err(super::unnormalized)
-        }
+        Some("html") if options.target_ssr => lwc_ssr::transform(src, filename, options)
+            .map_err(|e| super::ssr_error(e, super::unnormalized)),
         Some("html") => super::transform_template(src, filename, options),
         Some("tsx" | "jsx" | "ts" | "js" | "mts" | "mjs") if options.target_ssr => {
-            lwc_ssr::transform(src, filename, options).map_err(super::ssr_js_error)
+            lwc_ssr::transform(src, filename, options)
+                .map_err(|e| super::ssr_error(e, super::ssr_js_error))
         }
         Some("tsx" | "jsx" | "ts" | "js" | "mts" | "mjs") => {
             super::transform_javascript(src, filename, options)

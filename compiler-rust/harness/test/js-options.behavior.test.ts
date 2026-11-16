@@ -11,6 +11,8 @@
 //   inst/<shape>/<case>  instrumentation (AB-0008 G2b): real callbacks and non-callable shapes
 //                 (src/instrumentationObserve.ts) × spec instrumentation snippet + dynamic-imports fixtures (loader set)
 //   inst/throw-<value>/<case>  incrementCounter throws <value> (G2b r4) × spec snippet + dynamic-imports fixtures
+//   inst/throw-coded-<value>/spec/instrumentation  a thrown object with lwcCode / code / level (AB-0008 r5 D3)
+//   warn/<case>  console.warn (outputConfig.minify deprecation) vs counter call order (AB-0008 r5 D1)
 //   ssrmode/<v>   targetSSR ssrMode {unknown string, null, number, boolean, {}, {a:1}, [], [1]} × spec component
 //                 (generate-markup.ts:75 b.literal: objects/arrays throw a plain Error; G1a-r)
 //   dyn/<v>       dynamicImports {omitted, strictSpecifier omitted, strictSpecifier false} × dynamic-imports fixtures
@@ -21,7 +23,9 @@ import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalJsModule } from '../src/evalJs';
 import { checkGolden, errorObservation, findFiles, apiLabel, apiOpt, type ApiCell } from '../src/optionRows';
 import { oracleRoot } from '../src/oracleRoot';
-import { INSTRUMENTATION_SHAPES, THROWING_SHAPES, observeInstrumented } from '../src/instrumentationObserve';
+import {
+    CODED_THROWING_SHAPES, INSTRUMENTATION_SHAPES, THROWING_SHAPES, observeInstrumented, observeWarnOrder,
+} from '../src/instrumentationObserve';
 
 const ROOT = `${oracleRoot()}/packages/@lwc/babel-plugin-component/src/__tests__/fixtures`;
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/js-options');
@@ -209,6 +213,24 @@ describe('js-options: inst', () => {
             it(`inst/throw-${shape}/${rel}`, () => checkGolden(GOLDEN_DIR, `inst/throw-${shape}/${rel}`, observeInstrumented(backend, readFx(rel, 'actual.js'), 'test.js', opts, make)));
         }
     }
+});
+
+// AB-0008 r5 D3: coded thrown objects through Babel's catch and javascript.ts normalizeToCompilerError.
+describe('js-options: inst-coded', () => {
+    const loader = { loader: '@custom/loader', strictSpecifier: true };
+    for (const [shape, make] of Object.entries(CODED_THROWING_SHAPES)) {
+        it(`inst/throw-coded-${shape}/spec/instrumentation`, () => checkGolden(GOLDEN_DIR, `inst/throw-coded-${shape}/spec/instrumentation`,
+            observeInstrumented(backend, SPEC_INST, 'foo.js', { namespace: 'x', name: 'foo', dynamicImports: loader }, make, { detail: true })));
+    }
+});
+
+// AB-0008 r5 D1: the outputConfig.minify deprecation warns at validation, before the first counter call.
+describe('js-options: warn', () => {
+    const opts = { namespace: 'x', name: 'foo', dynamicImports: { loader: '@custom/loader', strictSpecifier: true }, outputConfig: { minify: true } };
+    it('warn/minify/spec/instrumentation', () => checkGolden(GOLDEN_DIR, 'warn/minify/spec/instrumentation',
+        observeWarnOrder(backend, SPEC_INST, 'foo.js', opts, INSTRUMENTATION_SHAPES.real)));
+    it('warn/minify-throw/spec/instrumentation', () => checkGolden(GOLDEN_DIR, 'warn/minify-throw/spec/instrumentation',
+        observeWarnOrder(backend, SPEC_INST, 'foo.js', opts, THROWING_SHAPES.error)));
 });
 
 describe('js-options: ssrmode', () => {

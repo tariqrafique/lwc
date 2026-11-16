@@ -240,8 +240,6 @@ pub struct JsCompileResult {
     pub css_scope_tokens: Option<Vec<String>>,
     pub warnings: Option<Vec<JsDiagnostic>>,
     pub error: Option<JsCompileError>,
-    /// D-0212: `console.warn` texts. The loader prints them and strips this field.
-    pub deprecations: Option<Vec<String>>,
 }
 
 /// The JSON map string from the compiler -> a JS object (`null` when absent).
@@ -250,33 +248,22 @@ fn map_value(map: Option<&str>) -> serde_json::Value {
         .unwrap_or(serde_json::Value::Null)
 }
 
-fn attach_side_channels(
-    mut r: JsCompileResult,
-    deprecations: Vec<lwc_shared::DeprecationId>,
-) -> JsCompileResult {
-    r.deprecations = if deprecations.is_empty() {
-        None
-    } else {
-        Some(
-            deprecations
-                .into_iter()
-                .map(|d| d.message().to_string())
-                .collect(),
-        )
-    };
-    r
-}
-
-/// Deserialize only. All validation lives in `lwc_compiler::validate_incoming`.
+/// Deserialize only. All validation lives in `lwc_compiler::validate_incoming`, which calls `warn`
+/// (upstream's `console.warn`) with each deprecation while validating.
 /// `Err(napi)` = malformed JSON or an unknown key (D-0203, `deny_unknown_fields`).
 /// `Ok(Err(compile))` = LWC validation error (LWC1021 / LWC1023).
 fn to_compile_options_with(
     options: serde_json::Value,
     callbacks: Option<lwc_shared::InstrumentationHandle>,
+    warn: &mut dyn FnMut(lwc_shared::DeprecationId),
 ) -> Result<std::result::Result<lwc_compiler::NormalizedTransformOptions, lwc_shared::CompileError>>
 {
     if options.is_null() {
-        return Ok(lwc_compiler::validate_incoming(None, &js_string(&options)));
+        return Ok(lwc_compiler::validate_incoming(
+            None,
+            &js_string(&options),
+            warn,
+        ));
     }
     // `Option<Value>` maps JSON null to None, so read ssrMode off the raw object to
     // distinguish omitted (default sync) from explicit null (asyncYield path, emit null).
@@ -306,16 +293,17 @@ fn to_compile_options_with(
     Ok(lwc_compiler::validate_incoming(
         Some(&raw),
         &js_string(&serde_json::Value::Null),
+        warn,
     ))
 }
 
-/// [`to_compile_options_with`] for a direct JSON caller (no loader, so no callable callbacks).
+/// [`to_compile_options_with`] for a direct JSON caller (no loader, so no callable callbacks or warn).
 #[cfg(test)]
 fn to_compile_options(
     options: serde_json::Value,
 ) -> Result<std::result::Result<lwc_compiler::NormalizedTransformOptions, lwc_shared::CompileError>>
 {
-    to_compile_options_with(options, None)
+    to_compile_options_with(options, None, &mut |_| {})
 }
 
 /// Map the wire struct onto [`lwc_compiler::TransformOptions`]. No defaults, no type checks, no LWC codes.
@@ -353,7 +341,8 @@ fn wire_to_transform(options: JsCompileOptions) -> lwc_compiler::TransformOption
         component_feature_flag_module_path: options.component_feature_flag_module_path,
         enable_lightning_web_security_transforms: options.enable_lightning_web_security_transforms,
         is_explicit_import: options.is_explicit_import,
-        // Callbacks cannot cross JSON; `to_compile_options` attaches a recorder when the key is present.
+        // Callbacks cannot cross JSON; `to_compile_options_with` attaches the caller's object (or
+        // NotCallable) when the key is present.
         instrumentation: None,
         dynamic_imports: options
             .dynamic_imports
@@ -814,6 +803,56 @@ mod tests {
         );
     }
 
+    /// The `{ error }` of a compile that must fail with one.
+    fn compile_error(
+        src: &str,
+        file: &str,
+        o: &lwc_compiler::NormalizedTransformOptions,
+    ) -> JsCompileError {
+        match errors::compile(src, file, o) {
+            Ok(_) => panic!("must throw"),
+            Err(f) => f.result().error.expect("error"),
+        }
+    }
+
+    /// Records counter calls (test-only `Instrumentation`).
+    #[derive(Default)]
+    struct Rec(std::sync::Mutex<Vec<lwc_shared::CompilerMetric>>);
+    impl lwc_shared::Instrumentation for Rec {
+        fn increment_counter(
+            &self,
+            m: lwc_shared::CompilerMetric,
+        ) -> std::result::Result<(), lwc_shared::CounterError> {
+            self.0.lock().unwrap().push(m);
+            Ok(())
+        }
+    }
+
+    /// Throws this value from every counter call.
+    struct Throws(lwc_shared::ThrownValue);
+    impl lwc_shared::Instrumentation for Throws {
+        fn increment_counter(
+            &self,
+            _: lwc_shared::CompilerMetric,
+        ) -> std::result::Result<(), lwc_shared::CounterError> {
+            Err(lwc_shared::CounterError::Threw(self.0.clone()))
+        }
+    }
+
+    fn throwing_options(
+        extra: serde_json::Value,
+        v: lwc_shared::ThrownValue,
+    ) -> lwc_compiler::NormalizedTransformOptions {
+        let mut opts = json!({"name": "a", "namespace": "x", "instrumentation": {}});
+        for (k, x) in extra.as_object().unwrap() {
+            opts[k] = x.clone();
+        }
+        let h = lwc_shared::InstrumentationHandle::new(Throws(v));
+        to_compile_options_with(opts, Some(h), &mut |_| {})
+            .unwrap()
+            .unwrap()
+    }
+
     /// G2b: `instrumentation:{}` (no callable incrementCounter) fails at the first metric with the
     /// oracle's error (upstream 1052 "...incrementCounter is not a function"); a callable one is called.
     #[test]
@@ -821,25 +860,24 @@ mod tests {
         let spread = "<template><div lwc:spread={p}></div></template>";
         let opts = || json!({"name": "a", "namespace": "x", "instrumentation": {}});
         let o = to_compile_options(opts()).unwrap().unwrap();
-        let e = errors::compile(spread, "a.html", &o).expect_err("must throw");
-        let e = e.error.expect("error");
+        let e = compile_error(spread, "a.html", &o);
         assert_eq!(e.code, Some(1052));
         assert_eq!(
             e.message,
             "Unexpected compilation error: LWC1052: Error parsing attribute: instrumentation?.incrementCounter is not a function"
         );
-        let rec = std::sync::Arc::new(lwc_shared::InstrumentationRecorder::default());
+        let rec = std::sync::Arc::new(Rec::default());
         let h = lwc_shared::InstrumentationHandle(rec.clone());
-        let o = to_compile_options_with(opts(), Some(h)).unwrap().unwrap();
+        let o = to_compile_options_with(opts(), Some(h), &mut |_| {})
+            .unwrap()
+            .unwrap();
         assert!(
             errors::compile(spread, "a.html", &o).is_ok(),
             "callable counter compiles"
         );
         assert_eq!(
-            rec.take(),
-            vec![lwc_shared::InstrumentationEvent::IncrementCounter(
-                lwc_shared::CompilerMetric::LwcSpreadDirective
-            )]
+            *rec.0.lock().unwrap(),
+            vec![lwc_shared::CompilerMetric::LwcSpreadDirective]
         );
     }
 
@@ -848,32 +886,14 @@ mod tests {
     /// LWC1008 TypeError when the catch itself throws on a primitive, LWC1007 from Babel's catch.
     #[test]
     fn throwing_counter_is_the_oracle_coded_error() {
-        struct Throws(lwc_shared::ThrownValue);
-        impl lwc_shared::Instrumentation for Throws {
-            fn increment_counter(&self, _: lwc_shared::CompilerMetric) {}
-            fn try_increment_counter(
-                &self,
-                _: lwc_shared::CompilerMetric,
-            ) -> std::result::Result<(), lwc_shared::CounterError> {
-                Err(lwc_shared::CounterError::Threw(self.0.clone()))
-            }
-        }
         let run = |src: &str, file: &str, extra: serde_json::Value, v: lwc_shared::ThrownValue| {
-            let mut opts = json!({"name": "a", "namespace": "x", "instrumentation": {}});
-            for (k, x) in extra.as_object().unwrap() {
-                opts[k] = x.clone();
-            }
-            let h = lwc_shared::InstrumentationHandle::new(Throws(v));
-            let o = to_compile_options_with(opts, Some(h)).unwrap().unwrap();
-            let e = errors::compile(src, file, &o)
-                .expect_err("must throw")
-                .error
-                .unwrap();
+            let e = compile_error(src, file, &throwing_options(extra, v));
             (e.code, e.message)
         };
-        let boom = || lwc_shared::ThrownValue::Object {
-            name: "Error".into(),
-            message: "boom".into(),
+        let boom = || {
+            lwc_shared::ThrownValue::Object(Box::new(lwc_shared::CaughtError::plain(
+                "Error", "boom",
+            )))
         };
         let strboom = || lwc_shared::ThrownValue::Primitive {
             type_of: "string",
@@ -912,11 +932,91 @@ mod tests {
             )
         );
     }
+
+    /// D3 (AB-0008 r5): a thrown object's own lwcCode / code / level reach upstream's catch
+    /// (getCodeFromError, convertErrorToDiagnostic). Oracle: scratch/harness/ab-0008-r5-oracle.log.
+    #[test]
+    fn coded_throws_keep_lwc_code_code_and_level() {
+        use lwc_shared::{CaughtError, DiagnosticLevel, JsLevel, JsProp, ThrownValue};
+        let obj = |f: fn(&mut CaughtError)| {
+            let mut e = CaughtError {
+                name: "undefined".into(),
+                ..CaughtError::plain("", "m")
+            };
+            f(&mut e);
+            ThrownValue::Object(Box::new(e))
+        };
+        let lwc = obj(|e| e.lwc_code = JsProp::Number(1234));
+        let code = obj(|e| e.code = JsProp::Number(1234));
+        let level0 = obj(|e| e.level = JsLevel::Level(DiagnosticLevel::Fatal));
+        let rm = r#"<template lwc:render-mode="light"><div></div></template>"#;
+        let html = |v| {
+            let e = compile_error(rm, "a.html", &throwing_options(json!({}), v));
+            (e.code, e.message, e.level)
+        };
+        assert_eq!(
+            html(lwc.clone()),
+            (
+                Some(1234),
+                "Unexpected compilation error: m".into(),
+                Some(1)
+            )
+        );
+        assert_eq!(
+            html(code.clone()),
+            (
+                Some(1234),
+                "Unexpected compilation error: LWC1052: Error parsing attribute: m".into(),
+                Some(1)
+            )
+        );
+        // A Fatal diagnostic is neither thrown nor returned by template.ts: the compile succeeds, empty.
+        let r = errors::compile(rm, "a.html", &throwing_options(json!({}), level0.clone()))
+            .ok()
+            .expect("level 0 is dropped");
+        assert_eq!((r.code.as_str(), r.warnings.len()), ("", 0));
+        let dyn_js = r#"export function f(){ return import("x"); }"#;
+        let di = json!({"dynamicImports": {"loader": "myLoader"}});
+        let js = |v| {
+            let e = compile_error(dyn_js, "dyn.js", &throwing_options(di.clone(), v));
+            (e.code, e.message, e.level)
+        };
+        assert_eq!(
+            js(lwc),
+            (Some(1234), "undefined: dyn.js: m".into(), Some(1))
+        );
+        assert_eq!(
+            js(code),
+            (Some(1234), "undefined: LWC1007: dyn.js: m".into(), Some(1))
+        );
+        assert_eq!(
+            js(level0),
+            (Some(1007), "undefined: LWC1007: dyn.js: m".into(), Some(0))
+        );
+    }
+
+    /// D2 (AB-0008 r5): under targetSSR the template parse has no catch, so the counter throw is
+    /// rethrown (not a `{ error }` result).
+    #[test]
+    fn ssr_counter_throw_is_rethrown() {
+        let rm = r#"<template lwc:render-mode="light"><div></div></template>"#;
+        let v = lwc_shared::ThrownValue::Nullish("undefined");
+        let o = throwing_options(json!({"targetSSR": true}), v.clone());
+        match errors::compile(rm, "a.html", &o) {
+            Err(errors::Failure::Rethrow(r)) => assert_eq!(r, lwc_shared::Rethrow::Value(v)),
+            _ => panic!("expected a rethrow"),
+        }
+    }
 }
 
 /// `instrumentation`: the caller's `InstrumentationObject` (the loader passes it when the option is set
 /// and replaces it in `options` with a JSON placeholder). Its callbacks are called synchronously on this
-/// thread during the compile (G2b r4; no ThreadsafeFunction, no replay).
+/// thread during the compile (D-0293; no ThreadsafeFunction, no replay). `warn`: the loader's
+/// `console.warn`, called with each deprecation while the options are validated, before the compile
+/// (options.ts:185-219, D-0212).
+///
+/// Throws, unchanged, a value `warn` threw, and a counter throw no upstream catch touches (targetSSR
+/// template parse); every other error is the `{ error }` result.
 #[napi]
 pub fn transform(
     env: Env,
@@ -924,6 +1024,7 @@ pub fn transform(
     filename: String,
     options: serde_json::Value,
     instrumentation: Option<napi::JsUnknown>,
+    warn: Option<napi::JsUnknown>,
 ) -> Result<JsCompileResult> {
     let callbacks = instrumentation
         .map(|v| instrumentation::JsCallbacks::new(env, v))
@@ -931,12 +1032,27 @@ pub fn transform(
     let handle = callbacks
         .as_ref()
         .map(|c| lwc_shared::InstrumentationHandle(c.clone()));
-    let r = transform_with(&src, &filename, options, handle);
-    if let Some(c) = callbacks {
-        // The handles are only valid during this call; a `log` throw is rethrown as-is.
-        c.end()?;
+    let mut warn = instrumentation::JsWarn::new(env, warn);
+    let r = transform_with(&src, &filename, options, handle, &mut |d| warn.warn(d));
+    // The handles are only valid during this call.
+    let threw = callbacks.and_then(|c| c.end());
+    if let Some(v) = warn.threw() {
+        return Err(instrumentation::throw_raw(env, v));
     }
-    r
+    match r? {
+        Ok(r) => Ok(r),
+        Err(lwc_shared::Rethrow::NotAFunction(message)) => {
+            env.throw_type_error(message, None)?;
+            Err(napi::Error::new(napi::Status::PendingException, message))
+        }
+        Err(lwc_shared::Rethrow::Value(v)) => match threw {
+            Some(raw) => Err(instrumentation::throw_raw(env, raw)),
+            // Only a JS callback throws over napi; keep the reduced value visible if that ever breaks.
+            None => Err(napi::Error::from_reason(format!(
+                "lwc-compiler-napi: rethrow without the thrown value: {v:?}"
+            ))),
+        },
+    }
 }
 
 fn transform_with(
@@ -944,17 +1060,13 @@ fn transform_with(
     filename: &str,
     options: serde_json::Value,
     callbacks: Option<lwc_shared::InstrumentationHandle>,
-) -> Result<JsCompileResult> {
-    let o = match to_compile_options_with(options, callbacks)? {
+    warn: &mut dyn FnMut(lwc_shared::DeprecationId),
+) -> Result<std::result::Result<JsCompileResult, lwc_shared::Rethrow>> {
+    // Ok(Ok): the result `transform` returns; Ok(Err): the value it rethrows; Err: a napi error.
+    let o = match to_compile_options_with(options, callbacks, warn)? {
         Ok(o) => o,
-        Err(e) => {
-            return Ok(attach_side_channels(
-                errors::options_error(e),
-                lwc_compiler::take_validation_deprecations(),
-            ));
-        }
+        Err(e) => return Ok(Ok(errors::options_error(e))),
     };
-    let deprecations = o.deprecations().to_vec();
     Ok(match errors::compile(src, filename, &o) {
         Ok(r) => {
             let warnings = if r.warnings.is_empty() {
@@ -962,18 +1074,15 @@ fn transform_with(
             } else {
                 Some(r.warnings.into_iter().map(to_js_diagnostic).collect())
             };
-            attach_side_channels(
-                JsCompileResult {
-                    code: r.code,
-                    map: map_value(r.map.as_deref()),
-                    css_scope_tokens: r.css_scope_tokens,
-                    warnings,
-                    error: None,
-                    deprecations: None,
-                },
-                deprecations,
-            )
+            Ok(JsCompileResult {
+                code: r.code,
+                map: map_value(r.map.as_deref()),
+                css_scope_tokens: r.css_scope_tokens,
+                warnings,
+                error: None,
+            })
         }
-        Err(e) => attach_side_channels(e, deprecations),
+        Err(errors::Failure::Result(e)) => Ok(*e),
+        Err(errors::Failure::Rethrow(r)) => Err(r),
     })
 }

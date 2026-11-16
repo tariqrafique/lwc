@@ -46,14 +46,28 @@ pub struct TemplateCompileResult {
     pub css_scope_tokens: Vec<String>,
 }
 
+/// What template-compiler `parse` (index.ts:33-38) throws: an invalid config, or an instrumentation
+/// callback's throw, unchanged (no catch; ssr-compiler rethrows it as-is).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ParseError {
+    Config(ConfigError),
+    /// The counter call threw; [`lwc_shared::CounterError::rethrow`] with [`PARSER_COUNTER_NOT_A_FUNCTION`]
+    /// is the value that escapes.
+    Counter(lwc_shared::CounterError),
+}
+
+/// The `TypeError` text of the parser's `ctx.instrumentation?.incrementCounter(...)` with no callable
+/// `incrementCounter` (parser/index.ts:898 / :1106).
+pub const PARSER_COUNTER_NOT_A_FUNCTION: &str = parser::PARSER_COUNTER_NOT_A_FUNCTION;
+
 /// Parse HTML markup into an AST (no codegen). Complex expression ASTs are allocated in `alloc`.
 pub fn parse<'a>(
     alloc: &'a Allocator,
     source: &str,
     config: Config,
-) -> Result<TemplateParseResult<'a>, ConfigError> {
-    let options = config.normalize()?;
-    parser::parse_template(alloc, source, &options)
+) -> Result<TemplateParseResult<'a>, ParseError> {
+    let options = config.normalize().map_err(ParseError::Config)?;
+    parser::parse_template(alloc, source, &options).map_err(ParseError::Counter)
 }
 
 /// Compile an LWC template to ESM source consumable by the engine.
@@ -72,7 +86,17 @@ pub fn compile(
     );
     // The compile entry owns the arena; the IR never outlives this call or leaves its thread.
     let alloc = Allocator::default();
-    let parsing = parser::parse_template(&alloc, source, &options)?;
+    // index.ts:64-79: the catch is here, around parseTemplate and generate, and nowhere below.
+    let parsing = match parser::parse_template(&alloc, source, &options) {
+        Ok(p) => p,
+        Err(c) => {
+            return Ok(TemplateCompileResult {
+                code: String::new(),
+                warnings: vec![compile_catch(&c, parser::PARSER_COUNTER_NOT_A_FUNCTION)?],
+                css_scope_tokens: tokens.css_scope_tokens,
+            });
+        }
+    };
 
     let has_error = parsing
         .warnings
@@ -117,17 +141,24 @@ fn codegen_catch(e: codegen::CodegenError) -> Result<CompilerDiagnostic, ConfigE
         }
         codegen::CodegenError::Internal(e) => e.diagnostic(),
         codegen::CodegenError::Counter(c) => {
-            match c.template_catch(codegen::CODEGEN_COUNTER_NOT_A_FUNCTION) {
-                lwc_shared::TemplateCatch::Generic(m) => parser::InternalError::diagnostic_of(&m),
-                lwc_shared::TemplateCatch::Escapes { name, message } => {
-                    return Err(ConfigError {
-                        message,
-                        name: Some(name),
-                    });
-                }
-            }
+            compile_catch(&c, codegen::CODEGEN_COUNTER_NOT_A_FUNCTION)?
         }
     })
+}
+
+/// `index.ts:76-79` on an instrumentation callback's throw (parse or codegen): the diagnostic upstream's
+/// `normalizeToDiagnostic` builds from the thrown value; `Err` when that catch itself throws.
+fn compile_catch(
+    c: &lwc_shared::CounterError,
+    not_a_function: &str,
+) -> Result<CompilerDiagnostic, ConfigError> {
+    match c.template_catch(not_a_function) {
+        lwc_shared::TemplateCatch::Diagnostic(d) => Ok(d),
+        lwc_shared::TemplateCatch::Escapes { name, message } => Err(ConfigError {
+            message,
+            name: Some(name),
+        }),
+    }
 }
 
 #[cfg(test)]
@@ -135,7 +166,7 @@ mod tests {
     use super::*;
 
     /// [`super::parse`] in a leaked per-test arena.
-    fn parse(source: &str, config: Config) -> Result<TemplateParseResult<'static>, ConfigError> {
+    fn parse(source: &str, config: Config) -> Result<TemplateParseResult<'static>, ParseError> {
         super::parse(Box::leak(Box::default()), source, config)
     }
 
@@ -1249,8 +1280,9 @@ mod tests {
         #[derive(Default)]
         struct Rec(Mutex<Vec<CompilerMetric>>);
         impl Instrumentation for Rec {
-            fn increment_counter(&self, m: CompilerMetric) {
+            fn increment_counter(&self, m: CompilerMetric) -> Result<(), lwc_shared::CounterError> {
                 self.0.lock().unwrap().push(m);
+                Ok(())
             }
         }
         let rec = std::sync::Arc::new(Rec::default());
@@ -1272,6 +1304,47 @@ mod tests {
                 CompilerMetric::LwcRenderModeDirective,
                 CompilerMetric::LwcDynamicDirective
             ]
+        );
+    }
+
+    /// D2 (template-compiler index.ts:33-38 vs :64-79): `parse` lets a counter throw escape unchanged;
+    /// only `compile` catches it, as LWC1052 for an Error.
+    #[test]
+    fn counter_throw_escapes_parse_and_is_caught_by_compile() {
+        use lwc_shared::{
+            CaughtError, CompilerMetric, CounterError, Instrumentation, InstrumentationHandle,
+            ThrownValue,
+        };
+        struct Throws;
+        impl Instrumentation for Throws {
+            fn increment_counter(&self, _: CompilerMetric) -> Result<(), CounterError> {
+                Err(CounterError::Threw(ThrownValue::Object(Box::new(
+                    CaughtError::plain("Error", "boom"),
+                ))))
+            }
+        }
+        let cfg = || Config {
+            instrumentation: Some(InstrumentationHandle::new(Throws)),
+            ..Default::default()
+        };
+        let src = "<template lwc:render-mode=\"light\"><div></div></template>";
+        assert_eq!(
+            parse(src, cfg()).unwrap_err(),
+            ParseError::Counter(CounterError::Threw(ThrownValue::Object(Box::new(
+                CaughtError::plain("Error", "boom")
+            ))))
+        );
+        let r = compile(src, "x.html", cfg()).unwrap();
+        assert!(r.code.is_empty());
+        assert_eq!(
+            r.warnings
+                .iter()
+                .map(|w| (w.code, w.message.as_str()))
+                .collect::<Vec<_>>(),
+            vec![(
+                Some(1052),
+                "Unexpected compilation error: LWC1052: Error parsing attribute: boom"
+            )]
         );
     }
 

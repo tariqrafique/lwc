@@ -221,8 +221,6 @@ pub struct NormalizedTransformOptions {
     ssr_mode: SsrMode,
     /// What codegen emits as `compilationMode` (G1a-r: a typed value, not JS text).
     ssr_mode_literal: SsrModeLiteral,
-    /// `console.warn` texts validateOptions would print, in source order (D-0212 / G4b).
-    deprecations: Vec<DeprecationId>,
     experimental_error_recovery_mode: bool,
     component_feature_flag_module_path: String,
     stylesheet_resolution: CustomPropertiesResolution,
@@ -284,10 +282,6 @@ impl NormalizedTransformOptions {
 
     pub fn ssr_mode_literal(&self) -> &SsrModeLiteral {
         &self.ssr_mode_literal
-    }
-
-    pub fn deprecations(&self) -> &[DeprecationId] {
-        &self.deprecations
     }
 
     pub fn experimental_error_recovery_mode(&self) -> bool {
@@ -387,29 +381,12 @@ impl NormalizedTransformOptions {
     }
 }
 
-/// Process latch for the stylesheetConfig deprecation (`alreadyWarnedOnStylesheetConfig`).
-/// D-0212 / D-0250: the JS loader emits [`DeprecationId::message`]; this latch is the
-/// once-per-process gate upstream keeps in the options module. Minify is not latched.
+/// Process latch for the stylesheetConfig deprecation (`alreadyWarnedOnStylesheetConfig`), the
+/// once-per-process gate upstream keeps in the options module (D-0250). Minify is not latched.
 static STYLESHEET_WARNED: AtomicBool = AtomicBool::new(false);
-
-thread_local! {
-    static LAST_DEPRECATIONS: std::cell::RefCell<Vec<DeprecationId>> =
-        const { std::cell::RefCell::new(Vec::new()) };
-}
 
 fn take_stylesheet_warn(present: bool, latch: &AtomicBool) -> bool {
     present && !latch.swap(true, Ordering::Relaxed)
-}
-
-fn record_deprecations(d: Vec<DeprecationId>) {
-    LAST_DEPRECATIONS.with(|c| *c.borrow_mut() = d);
-}
-
-/// Deprecations recorded by the most recent [`validate_transform_options`] / [`validate_incoming`]
-/// on this thread, including when validation returns `Err` (stylesheet may already have fired;
-/// minify has not, matching `validateOutputConfig` throwing before the minify warn).
-pub fn take_validation_deprecations() -> Vec<DeprecationId> {
-    LAST_DEPRECATIONS.with(|c| std::mem::take(&mut *c.borrow_mut()))
 }
 
 #[cfg(test)]
@@ -417,16 +394,21 @@ pub(crate) fn reset_stylesheet_warn_latch_for_tests() {
     STYLESHEET_WARNED.store(false, Ordering::Relaxed);
 }
 
-/// `validateTransformOptions`.
+/// Upstream's `console.warn` for a Rust caller with no sink of its own: standard error.
+pub fn warn_to_stderr(d: DeprecationId) {
+    eprintln!("{}", d.message());
+}
+
+/// `validateTransformOptions`. `warn` is upstream's `console.warn` (options.ts:185-219, D-0212 / D-0250):
+/// called synchronously with each deprecation, in upstream order, while validating, so before anything is
+/// compiled (an instrumentation counter fires only later, during the compile).
 pub fn validate_transform_options(
     options: &TransformOptions,
+    warn: &mut dyn FnMut(DeprecationId),
 ) -> Result<NormalizedTransformOptions, CompileError> {
     // validateOptions: stylesheet warn (once), then outputConfig (sourcemap throws before minify warn).
-    // D-0212: the JS loader prints each [`DeprecationId::message`]. Collect them here so the
-    // latch result is not discarded (G4b); upstream is options.ts:188-216 @ b9e8007.
-    let mut deprecations = Vec::new();
     if take_stylesheet_warn(options.stylesheet_config.is_some(), &STYLESHEET_WARNED) {
-        deprecations.push(DeprecationId::StylesheetConfig);
+        warn(DeprecationId::StylesheetConfig);
     }
     let sourcemap = match options.output_config.as_ref() {
         None => DEFAULT_OUTPUT_SOURCEMAP,
@@ -434,10 +416,7 @@ pub fn validate_transform_options(
             None => DEFAULT_OUTPUT_SOURCEMAP,
             Some(SourcemapInput::Bool(b)) => Sourcemap::from_bool(b),
             Some(SourcemapInput::Text(s)) if s == "inline" => Sourcemap::Inline,
-            Some(SourcemapInput::Text(s)) => {
-                record_deprecations(deprecations);
-                return Err(invalid_sourcemap(&s));
-            }
+            Some(SourcemapInput::Text(s)) => return Err(invalid_sourcemap(&s)),
         },
     };
     if options
@@ -445,7 +424,7 @@ pub fn validate_transform_options(
         .as_ref()
         .is_some_and(|c| c.minify_present)
     {
-        deprecations.push(DeprecationId::OutputConfigMinify);
+        warn(DeprecationId::OutputConfigMinify);
     }
 
     let stylesheet_resolution = options
@@ -503,10 +482,6 @@ pub fn validate_transform_options(
         target_ssr: options.target_ssr.unwrap_or(DEFAULT_TARGET_SSR),
         ssr_mode,
         ssr_mode_literal,
-        deprecations: {
-            record_deprecations(deprecations.clone());
-            deprecations
-        },
         experimental_error_recovery_mode: options
             .experimental_error_recovery_mode
             .unwrap_or(DEFAULT_EXPERIMENTAL_ERROR_RECOVERY_MODE),
@@ -561,10 +536,11 @@ fn raw_ssr_mode_literal(v: &serde_json::Value) -> SsrModeLiteral {
 pub fn validate_incoming(
     options: Option<&TransformOptions>,
     received: &str,
+    warn: &mut dyn FnMut(DeprecationId),
 ) -> Result<NormalizedTransformOptions, CompileError> {
     match options {
         None => Err(missing_options_error(received)),
-        Some(o) => validate_transform_options(o),
+        Some(o) => validate_transform_options(o, warn),
     }
 }
 
@@ -678,6 +654,10 @@ mod tests {
         assert!(!DeprecationId::OutputConfigMinify.once_per_process());
     }
 
+    fn validate(o: &TransformOptions) -> Result<NormalizedTransformOptions, CompileError> {
+        validate_transform_options(o, &mut |_| {})
+    }
+
     fn bare() -> TransformOptions {
         TransformOptions::from_compile(&CompileOptions {
             name: "a".into(),
@@ -690,13 +670,13 @@ mod tests {
     fn api_version_float_snaps_like_upstream() {
         let mut o = bare();
         o.api_version = Some(ApiVersionInput::Number(60.5));
-        assert_eq!(validate_transform_options(&o).unwrap().api_version, 60);
+        assert_eq!(validate(&o).unwrap().api_version, 60);
         o.api_version = Some(ApiVersionInput::Number(63.9));
-        assert_eq!(validate_transform_options(&o).unwrap().api_version, 63);
+        assert_eq!(validate(&o).unwrap().api_version, 63);
         o.api_version = None;
-        assert_eq!(validate_transform_options(&o).unwrap().api_version, 66);
+        assert_eq!(validate(&o).unwrap().api_version, 66);
         o.api_version = Some(ApiVersionInput::Number(57.0));
-        assert_eq!(validate_transform_options(&o).unwrap().api_version, 58);
+        assert_eq!(validate(&o).unwrap().api_version, 58);
     }
 
     #[test]
@@ -706,7 +686,7 @@ mod tests {
             sourcemap: Some(SourcemapInput::Text("foo".into())),
             minify_present: true,
         });
-        let e = validate_transform_options(&o).unwrap_err();
+        let e = validate(&o).unwrap_err();
         assert_eq!(e.diagnostics[0].code, Some(1021));
         assert_eq!(
             e.message,
@@ -723,7 +703,7 @@ mod tests {
 
     #[test]
     fn defaults_match_default_options() {
-        let n = validate_transform_options(&bare()).unwrap();
+        let n = validate(&bare()).unwrap();
         assert!(!n.is_explicit_import);
         assert!(!n.preserve_html_comments);
         assert!(n.enable_static_content_optimization);
@@ -746,7 +726,7 @@ mod tests {
         let mut o = bare();
         o.api_version = Some(ApiVersionInput::NonNumber);
         assert_eq!(
-            validate_transform_options(&o).unwrap().api_version,
+            validate(&o).unwrap().api_version,
             lwc_shared::api_version::HIGHEST_API_VERSION
         );
     }
@@ -755,15 +735,15 @@ mod tests {
     fn unknown_ssr_mode_keeps_async_yield_path_and_raw_emit() {
         let mut o = bare();
         o.ssr_mode = Some(SsrModeInput::Text("bogus".into()));
-        let n = validate_transform_options(&o).unwrap();
+        let n = validate(&o).unwrap();
         assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
         assert_eq!(n.ssr_mode_literal, SsrModeLiteral::Str("bogus".into()));
         o.ssr_mode = Some(SsrModeInput::NonString(serde_json::Value::Null));
-        let n = validate_transform_options(&o).unwrap();
+        let n = validate(&o).unwrap();
         assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
         assert_eq!(n.ssr_mode_literal, SsrModeLiteral::Null);
         o.ssr_mode = Some(SsrModeInput::NonString(serde_json::json!({"b": [1]})));
-        let n = validate_transform_options(&o).unwrap();
+        let n = validate(&o).unwrap();
         assert_eq!(
             n.ssr_mode_literal,
             SsrModeLiteral::NotALiteral {
@@ -772,62 +752,56 @@ mod tests {
             }
         );
         o.ssr_mode = Some(SsrModeInput::Text("asyncYield".into()));
-        let n = validate_transform_options(&o).unwrap();
+        let n = validate(&o).unwrap();
         assert_eq!(n.ssr_mode, SsrMode::AsyncYield);
         assert_eq!(n.ssr_mode_literal, SsrModeLiteral::Mode);
         o.ssr_mode = Some(SsrModeInput::Text("sync".into()));
-        let n = validate_transform_options(&o).unwrap();
+        let n = validate(&o).unwrap();
         assert_eq!(n.ssr_mode, SsrMode::Sync);
         assert_eq!(n.ssr_mode_literal, SsrModeLiteral::Mode);
     }
 
     #[test]
-    fn stylesheet_deprecation_is_collected_once_and_minify_every_time() {
+    fn stylesheet_deprecation_warns_once_and_minify_every_time() {
         // Process latch is shared; hold it for the whole assertion so a parallel
         // test cannot consume the first-warn slot.
         let _guard = WARN_TEST_LOCK.lock().unwrap();
         reset_stylesheet_warn_latch_for_tests();
+        let warned = |o: &TransformOptions| {
+            let mut w = Vec::new();
+            let r = validate_transform_options(o, &mut |d| w.push(d));
+            (r.is_ok(), w)
+        };
         let mut o = bare();
         o.stylesheet_config = Some(StylesheetConfig {
             custom_properties: None,
         });
-        let n = validate_transform_options(&o).unwrap();
-        assert_eq!(n.deprecations, vec![DeprecationId::StylesheetConfig]);
-        let n = validate_transform_options(&o).unwrap();
-        assert!(n.deprecations.is_empty(), "{:?}", n.deprecations);
+        assert_eq!(warned(&o), (true, vec![DeprecationId::StylesheetConfig]));
+        assert_eq!(warned(&o), (true, vec![]));
         o.output_config = Some(OutputConfig {
             sourcemap: None,
             minify_present: true,
         });
-        let n = validate_transform_options(&o).unwrap();
-        assert_eq!(n.deprecations, vec![DeprecationId::OutputConfigMinify]);
-        let n = validate_transform_options(&o).unwrap();
-        assert_eq!(n.deprecations, vec![DeprecationId::OutputConfigMinify]);
-        // Invalid sourcemap throws after the stylesheet latch and before minify.
+        assert_eq!(warned(&o), (true, vec![DeprecationId::OutputConfigMinify]));
+        assert_eq!(warned(&o), (true, vec![DeprecationId::OutputConfigMinify]));
+        // Invalid sourcemap throws after the stylesheet warn and before minify.
         reset_stylesheet_warn_latch_for_tests();
-        o.stylesheet_config = Some(StylesheetConfig {
-            custom_properties: None,
-        });
         o.output_config = Some(OutputConfig {
             sourcemap: Some(SourcemapInput::Text("nope".into())),
             minify_present: true,
         });
-        assert!(validate_transform_options(&o).is_err());
-        assert_eq!(
-            take_validation_deprecations(),
-            vec![DeprecationId::StylesheetConfig]
-        );
+        assert_eq!(warned(&o), (false, vec![DeprecationId::StylesheetConfig]));
     }
 
     #[test]
     fn validate_incoming_none_is_lwc1023_with_received() {
-        let e = validate_incoming(None, "null").unwrap_err();
+        let e = validate_incoming(None, "null", &mut |_| {}).unwrap_err();
         assert_eq!(e.diagnostics[0].code, Some(1023));
         assert_eq!(
             e.message,
             "LWC1023: Expected options object, received \"null\"."
         );
-        let e = validate_incoming(None, "undefined").unwrap_err();
+        let e = validate_incoming(None, "undefined", &mut |_| {}).unwrap_err();
         assert_eq!(
             e.message,
             "LWC1023: Expected options object, received \"undefined\"."

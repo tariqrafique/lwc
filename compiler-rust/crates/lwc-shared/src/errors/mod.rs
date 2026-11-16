@@ -197,49 +197,176 @@ pub enum TransformError {
     Compiler(CompilerError),
     Aggregate(CompilerAggregateError),
     Unnormalized(UnnormalizedError),
+    /// An instrumentation callback's throw that no catch touched (the SSR template parse): the binding
+    /// rethrows the caller's original value.
+    Rethrow(crate::instrumentation::Rethrow),
 }
 
-/// `normalizeToCompilerError(fallback, e, { filename })` for a non-`CompilerError` `e` (a typed
-/// `CompilerError` never reaches a facade's `catch` in Rust). `e` is the thrown JS error as `catch (e)` sees
-/// it: `e.name` = `name` (`None` = `"Error"`), `e.message` = `message`, `e.lwcCode` = the first diagnostic's
-/// code, `e.location` / `e.loc` = its location (the diagnostic's `location`). A raw
-/// `CssSyntaxError` ([`ProducerPosition::Raw`]) has no diagnostic; its line/column are that variant.
-/// - code: `e.lwcCode || fallback.code`; message: `${e.name}: ` + (`e.message` when it has an lwcCode, else
-///   `generateErrorMessage(fallback, [e.message])`);
-/// - level: `fallback.level` (a raw JS error has no `level`); url: `fallback.url`;
-/// - filename: `filename || e.filename`; location: as above.
+/// A code-like property of a caught JS value (`error.lwcCode`, `error.code`) as `@lwc/errors` tests it:
+/// `error.x && typeof error.x === 'number'` takes the code; any truthy value counts for `error.lwcCode ?`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum JsProp {
+    /// Absent or falsy (`undefined`, `null`, `0`, `NaN`, `''`, `false`, `0n`).
+    Falsy,
+    /// A truthy number that is a valid diagnostic code.
+    Number(u32),
+    /// A non-empty string (Babel's `BABEL_TRANSFORM_ERROR`, a caller's `'X'`).
+    Text(String),
+    /// Any other truthy value. A truthy number that is not a `u32` (`1.5`, `-1`) lands here: its code is
+    /// not representable in a diagnostic, so the fallback code is used (divergence for such codes only).
+    OtherTruthy,
+}
+
+impl JsProp {
+    fn truthy(&self) -> bool {
+        !matches!(self, JsProp::Falsy)
+    }
+    fn number(&self) -> Option<u32> {
+        match self {
+            JsProp::Number(n) => Some(*n),
+            _ => None,
+        }
+    }
+}
+
+/// `'level' in error ? error.level : <absent>` on a caught JS object.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum JsLevel {
+    Absent,
+    /// A `DiagnosticLevel` number (`0..=3`).
+    Level(DiagnosticLevel),
+    /// Present but not a `DiagnosticLevel` number. Upstream's facades compare it with `===` against
+    /// Error / Warning only, so it behaves as an unused level; it is carried as [`DiagnosticLevel::Log`].
+    Other,
+}
+
+/// What `@lwc/errors` (`getCodeFromError`, `convertErrorToDiagnostic`, `normalizeToCompilerError`) reads off
+/// a caught value that is not a `CompilerError`: a Rust producer's [`CompileError`]
+/// ([`CaughtError::from_compile_error`]) or a JS value an instrumentation callback threw.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CaughtError {
+    /// `${error.name}` (`"undefined"` when absent).
+    pub name: String,
+    /// `error.message` as a template argument / prefix sees it (`String(error.message)`).
+    pub message: String,
+    pub lwc_code: JsProp,
+    pub code: JsProp,
+    pub level: JsLevel,
+    /// `error.filename` (a JS-thrown value's own `filename` / `fileName` / `file` is not carried).
+    pub filename: Option<String>,
+    /// `error.location` / `error.loc` (a JS-thrown value's own location is not carried).
+    pub location: Option<DiagnosticLocation>,
+}
+
+impl CaughtError {
+    /// A plain JS error (`new TypeError(message)`): no code, level, filename or location.
+    pub fn plain(name: &str, message: &str) -> Self {
+        Self {
+            name: name.into(),
+            message: message.into(),
+            lwc_code: JsProp::Falsy,
+            code: JsProp::Falsy,
+            level: JsLevel::Absent,
+            filename: None,
+            location: None,
+        }
+    }
+
+    /// A Rust producer's error as `catch (e)` sees it: `e.name` = `name` (`None` = `"Error"`), `e.message` =
+    /// `message`, `e.lwcCode` = the first diagnostic's code, `e.location` / `e.loc` = its location (the
+    /// diagnostic's `location`). A raw `CssSyntaxError` ([`ProducerPosition::Raw`]) has no diagnostic; its
+    /// line/column are that variant. No `code` (Babel's are strings) and no `level`.
+    pub fn from_compile_error(e: CompileError) -> Self {
+        let first = e.diagnostics.first();
+        let location = match e.position {
+            ProducerPosition::Raw { line, column } => {
+                line.zip(column).map(|(line, column)| DiagnosticLocation {
+                    line,
+                    column,
+                    ..Default::default()
+                })
+            }
+            ProducerPosition::Diagnostics => first.and_then(|d| d.location),
+        };
+        Self {
+            lwc_code: first
+                .and_then(|d| d.code)
+                .map_or(JsProp::Falsy, JsProp::Number),
+            location,
+            name: e.name.unwrap_or_else(|| "Error".into()),
+            message: e.message,
+            code: JsProp::Falsy,
+            level: JsLevel::Absent,
+            filename: e.filename,
+        }
+    }
+}
+
+/// `getCodeFromError` (@lwc/errors compiler/utils.ts:88-95).
+pub fn get_code_from_error(error: &CaughtError) -> Option<u32> {
+    error.lwc_code.number().or_else(|| error.code.number())
+}
+
+/// `convertErrorToDiagnostic(error, fallbackErrorInfo, origin)` (@lwc/errors compiler/errors.ts:200-215; no
+/// strict override, origin = `{ filename }` or none):
+/// - code: `getCodeFromError(error) || fallback.code`;
+/// - message: `error.lwcCode ? error.message : generateErrorMessage(fallback, [error.message])`;
+/// - level: `'level' in error ? error.level : fallback.level`;
+/// - filename: `origin.filename || error.filename`; location: `error.location || error.loc`.
+pub fn convert_error_to_diagnostic(
+    error: &CaughtError,
+    fallback: &LwcErrorInfo,
+    origin_filename: Option<&str>,
+) -> CompilerDiagnostic {
+    let message = if error.lwc_code.truthy() {
+        error.message.clone()
+    } else {
+        generate_error_message(fallback, Some(&[error.message.as_str()]))
+    };
+    let level = match error.level {
+        JsLevel::Absent => fallback.level,
+        JsLevel::Level(l) => l,
+        JsLevel::Other => DiagnosticLevel::Log,
+    };
+    CompilerDiagnostic::new(
+        Some(get_code_from_error(error).unwrap_or(fallback.code)),
+        message,
+        level,
+        origin_filename
+            .filter(|f| !f.is_empty())
+            .map(str::to_string)
+            .or_else(|| error.filename.clone()),
+        error.location,
+    )
+}
+
+/// `normalizeToCompilerError(fallback, e, { filename })` for a non-`CompilerError` `e` (@lwc/errors
+/// compiler/errors.ts:128-157): [`convert_error_to_diagnostic`], message `${e.name}: ${message}`, url
+/// `fallback.url` (`e.url` is not carried).
+pub fn normalize_caught_to_compiler_error(
+    fallback: &LwcErrorInfo,
+    e: &CaughtError,
+    filename: Option<&str>,
+) -> CompilerError {
+    let d = convert_error_to_diagnostic(e, fallback, filename);
+    CompilerError {
+        code: d.code,
+        message: format!("{}: {}", e.name, d.message),
+        filename: d.filename,
+        location: d.location,
+        level: d.level,
+        url: fallback.url.unwrap_or("").to_string(),
+    }
+}
+
+/// [`normalize_caught_to_compiler_error`] for a Rust producer's error (a typed `CompilerError` never
+/// reaches a facade's `catch` in Rust); see [`CaughtError::from_compile_error`].
 pub fn normalize_to_compiler_error(
     fallback: &LwcErrorInfo,
     e: CompileError,
     filename: Option<&str>,
 ) -> CompilerError {
-    let first = e.diagnostics.first();
-    let lwc_code = first.and_then(|d| d.code);
-    let body = match lwc_code {
-        Some(_) => e.message.clone(),
-        None => generate_error_message(fallback, Some(&[e.message.as_str()])),
-    };
-    let location = match e.position {
-        ProducerPosition::Raw { line, column } => {
-            line.zip(column).map(|(line, column)| DiagnosticLocation {
-                line,
-                column,
-                ..Default::default()
-            })
-        }
-        ProducerPosition::Diagnostics => first.and_then(|d| d.location),
-    };
-    CompilerError {
-        code: Some(lwc_code.unwrap_or(fallback.code)),
-        message: format!("{}: {body}", e.name.as_deref().unwrap_or("Error")),
-        filename: filename
-            .filter(|f| !f.is_empty())
-            .map(str::to_string)
-            .or(e.filename),
-        location,
-        level: fallback.level,
-        url: fallback.url.unwrap_or("").to_string(),
-    }
+    normalize_caught_to_compiler_error(fallback, &CaughtError::from_compile_error(e), filename)
 }
 
 #[cfg(test)]

@@ -17,12 +17,13 @@ pub mod meta;
 pub mod namespaces;
 pub mod void_elements;
 pub use errors::{
-    CompilerAggregateError, CompilerError, ProducerPosition, TransformError, UnnormalizedError,
+    CaughtError, CompilerAggregateError, CompilerError, JsLevel, JsProp, ProducerPosition,
+    TransformError, UnnormalizedError, normalize_caught_to_compiler_error,
     normalize_to_compiler_error,
 };
 pub use instrumentation::{
-    CompilerMetric, CounterError, DeprecationId, Instrumentation, InstrumentationEvent,
-    InstrumentationHandle, InstrumentationRecorder, TemplateCatch, ThrownValue,
+    CompilerMetric, CounterError, DeprecationId, Instrumentation, InstrumentationHandle, Rethrow,
+    TemplateCatch, ThrownValue,
 };
 pub use location::{DiagnosticLocation, LineIndex};
 pub mod js;

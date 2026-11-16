@@ -3,31 +3,26 @@
 //! (`tools/gen-instrumentation/gen.mjs`); the workspace's only spelling of their strings (gate:
 //! `tests/instrumentation_gate.rs`).
 use crate::CompilerDiagnostic;
+use crate::errors::{CaughtError, JsProp, ParserDiagnostics, convert_error_to_diagnostic};
 
 // Generated (tools/*/gen.mjs, checked byte-for-byte by its --check test): rustfmt must not touch it.
 #[rustfmt::skip]
 mod generated;
 pub use generated::{CompilerMetric, DeprecationId};
 
-/// `@lwc/errors` `InstrumentationObject`. Rust consumers implement it directly. Over napi the binding
-/// implements it by calling the caller's JS callbacks synchronously, on the JS thread, during the
-/// compile (AB-0008 G2b r4; no ThreadsafeFunction), so a callback that throws stops the compile where
-/// upstream's does.
+/// `@lwc/errors` `InstrumentationObject`, as the compilers use it: they only call
+/// `instrumentation?.incrementCounter(metric)` (never `log`). Over napi the binding implements it by
+/// calling the caller's JS callback synchronously, on the JS thread, during the compile (D-0293), so a
+/// callback that throws stops the compile where upstream's does.
 pub trait Instrumentation: Send + Sync {
-    /// JS `log(errorInfo, config)`. Upstream compilers never call it today; kept for API parity.
-    fn log(&self, _diagnostic: &CompilerDiagnostic) {}
-    /// JS `incrementCounter(metric)`.
-    fn increment_counter(&self, metric: CompilerMetric);
-    /// Upstream's `instrumentation?.incrementCounter(metric)`, which can throw: the JS object has no
-    /// callable `incrementCounter`, or the callback threw. Rust implementations never fail.
-    fn try_increment_counter(&self, metric: CompilerMetric) -> Result<(), CounterError> {
-        self.increment_counter(metric);
-        Ok(())
-    }
+    /// `instrumentation?.incrementCounter(metric)`. `Err` where the JS call throws: the object has no
+    /// callable `incrementCounter`, or the callback threw. A Rust implementation returns `Ok`.
+    fn increment_counter(&self, metric: CompilerMetric) -> Result<(), CounterError>;
 }
 
-/// Upstream `instrumentation?.incrementCounter(metric)` threw. Each emit site maps it to the error
-/// upstream surfaces there ([`CounterError::template_catch`], [`CounterError::babel_catch`]).
+/// Upstream `instrumentation?.incrementCounter(metric)` threw. Each emit site maps it to what upstream
+/// surfaces there ([`CounterError::template_catch`], [`CounterError::babel_catch`],
+/// [`CounterError::rethrow`]).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum CounterError {
     /// `TypeError: ... is not a function` (`instrumentation: {}`, `incrementCounter: 1`, a primitive).
@@ -39,8 +34,9 @@ pub enum CounterError {
 /// A JS value thrown by an instrumentation callback, reduced to what upstream's catch sites read.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ThrownValue {
-    /// An object or function: `String(e.name)` and `String(e.message)` (`"undefined"` when absent).
-    Object { name: String, message: String },
+    /// An object or function: the properties `@lwc/errors` and Babel's catch read off it.
+    /// Boxed: it is the rare path, and it keeps every `Result<_, CounterError>` small.
+    Object(Box<CaughtError>),
     /// `undefined` or `null` (the JS spelling).
     Nullish(&'static str),
     /// A string, number, boolean, bigint or symbol: its `typeof` and `String(value)`.
@@ -54,21 +50,40 @@ pub enum ThrownValue {
 /// `normalizeToDiagnostic(GENERIC_PARSING_ERROR, e)`) treats a counter throw.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TemplateCatch {
-    /// Normalized: the template's only diagnostic is LWC1052 with this message argument.
-    Generic(String),
+    /// Normalized: `compile` pushes this diagnostic (prefixed `Unexpected compilation error: `).
+    Diagnostic(CompilerDiagnostic),
     /// `normalizeToDiagnostic` itself throws (it reads `e.lwcCode` and `'level' in e`), so this
     /// `TypeError` escapes the template compiler; @lwc/compiler then wraps it as LWC1008.
     Escapes { name: &'static str, message: String },
 }
 
+/// A counter throw that leaves `transformSync` untouched: ssr-compiler compile-template/index.ts:83-95
+/// calls template-compiler `parse` (index.ts:33-38), which has no catch, and no facade normalizes it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Rethrow {
+    /// The `TypeError` the call itself raised (no callable `incrementCounter`), with this message.
+    NotAFunction(&'static str),
+    /// The callback threw this value; the binding rethrows the original JS value itself.
+    Value(ThrownValue),
+}
+
+/// The `code` @babel/core's transform catch assigns when the thrown error has a falsy one.
+pub const BABEL_TRANSFORM_ERROR: &str = "BABEL_TRANSFORM_ERROR";
+
 impl CounterError {
     /// The template-compiler `compile` catch. `not_a_function` is the emit site's TypeError text.
     pub fn template_catch(&self, not_a_function: &str) -> TemplateCatch {
+        let normalized = |e: &CaughtError| {
+            let mut d =
+                convert_error_to_diagnostic(e, &ParserDiagnostics::GENERIC_PARSING_ERROR, None);
+            d.message = format!("Unexpected compilation error: {}", d.message);
+            TemplateCatch::Diagnostic(d)
+        };
         match self {
-            CounterError::NotCallable => TemplateCatch::Generic(not_a_function.to_string()),
-            CounterError::Threw(ThrownValue::Object { message, .. }) => {
-                TemplateCatch::Generic(message.clone())
+            CounterError::NotCallable => {
+                normalized(&CaughtError::plain("TypeError", not_a_function))
             }
+            CounterError::Threw(ThrownValue::Object(e)) => normalized(e),
             // getCodeFromError reads `error.lwcCode` first.
             CounterError::Threw(ThrownValue::Nullish(n)) => TemplateCatch::Escapes {
                 name: "TypeError",
@@ -82,69 +97,41 @@ impl CounterError {
         }
     }
 
-    /// The error leaving Babel when a plugin visitor's counter call throws: @babel/core's transform
-    /// catch runs `e.message = `${filename}: ${e.message}`` (strict mode), then @lwc/compiler normalizes
-    /// it as LWC1007. `not_a_function` is the emit site's TypeError text.
-    pub fn babel_catch(&self, not_a_function: &str, filename: &str) -> crate::CompileError {
+    /// The value leaving Babel when a plugin visitor's counter call throws: @babel/core's transform catch
+    /// runs `e.message = `${filename}: ${e.message}`` then `if (!e.code) e.code = "BABEL_TRANSFORM_ERROR"`
+    /// (strict mode). @lwc/compiler then normalizes it (javascript.ts:121). `not_a_function` is the emit
+    /// site's TypeError text.
+    pub fn babel_catch(&self, not_a_function: &str, filename: &str) -> CaughtError {
+        let caught = |e: &CaughtError| {
+            let mut e = e.clone();
+            e.message = format!("{filename}: {}", e.message);
+            if e.code == JsProp::Falsy {
+                e.code = JsProp::Text(BABEL_TRANSFORM_ERROR.into());
+            }
+            e
+        };
         match self {
-            CounterError::NotCallable => {
-                crate::CompileError::babel("TypeError", not_a_function, filename, None, None)
-            }
-            CounterError::Threw(ThrownValue::Object { name, message }) => {
-                crate::CompileError::babel(name, message.as_str(), filename, None, None)
-            }
+            CounterError::NotCallable => caught(&CaughtError::plain("TypeError", not_a_function)),
+            CounterError::Threw(ThrownValue::Object(e)) => caught(e),
             // Reading `e.message` on undefined / null throws from inside Babel's catch.
-            CounterError::Threw(ThrownValue::Nullish(n)) => crate::CompileError::babel_unprefixed(
+            CounterError::Threw(ThrownValue::Nullish(n)) => CaughtError::plain(
                 "TypeError",
-                format!("Cannot read properties of {n} (reading 'message')"),
-                filename,
+                &format!("Cannot read properties of {n} (reading 'message')"),
             ),
             // Assigning `e.message` on a primitive throws in strict mode.
-            CounterError::Threw(ThrownValue::Primitive { type_of, display }) => {
-                crate::CompileError::babel_unprefixed(
-                    "TypeError",
-                    format!("Cannot create property 'message' on {type_of} '{display}'"),
-                    filename,
-                )
-            }
+            CounterError::Threw(ThrownValue::Primitive { type_of, display }) => CaughtError::plain(
+                "TypeError",
+                &format!("Cannot create property 'message' on {type_of} '{display}'"),
+            ),
         }
     }
-}
 
-/// One `InstrumentationObject` call made during a compile, in call order.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum InstrumentationEvent {
-    /// `log(errorInfo, config)`.
-    Log(CompilerDiagnostic),
-    /// `incrementCounter(metric)`.
-    IncrementCounter(CompilerMetric),
-}
-
-/// An [`Instrumentation`] that records every call as an [`InstrumentationEvent`] (Rust callers and tests).
-#[derive(Debug, Default)]
-pub struct InstrumentationRecorder {
-    events: std::sync::Mutex<Vec<InstrumentationEvent>>,
-}
-
-impl InstrumentationRecorder {
-    /// The events recorded so far, in call order; leaves the recorder empty.
-    pub fn take(&self) -> Vec<InstrumentationEvent> {
-        std::mem::take(&mut *self.events.lock().unwrap_or_else(|e| e.into_inner()))
-    }
-    fn push(&self, e: InstrumentationEvent) {
-        self.events
-            .lock()
-            .unwrap_or_else(|e| e.into_inner())
-            .push(e)
-    }
-}
-
-impl Instrumentation for InstrumentationRecorder {
-    fn log(&self, d: &CompilerDiagnostic) {
-        self.push(InstrumentationEvent::Log(d.clone()))
-    }
-    fn increment_counter(&self, m: CompilerMetric) {
-        self.push(InstrumentationEvent::IncrementCounter(m))
+    /// No catch between the emit site and the caller (the SSR template parse).
+    pub fn rethrow(self, not_a_function: &'static str) -> Rethrow {
+        match self {
+            CounterError::NotCallable => Rethrow::NotAFunction(not_a_function),
+            CounterError::Threw(v) => Rethrow::Value(v),
+        }
     }
 }
 
@@ -158,10 +145,7 @@ impl InstrumentationHandle {
     }
     /// `instrumentation?.incrementCounter(metric)`: `Err` where upstream's call throws.
     pub fn increment_counter(&self, metric: CompilerMetric) -> Result<(), CounterError> {
-        self.0.try_increment_counter(metric)
-    }
-    pub fn log(&self, d: &CompilerDiagnostic) {
-        self.0.log(d)
+        self.0.increment_counter(metric)
     }
 }
 
@@ -181,6 +165,7 @@ impl Eq for InstrumentationHandle {}
 mod tests {
     use super::*;
     use crate::DiagnosticLevel;
+    use crate::errors::JsLevel;
 
     #[test]
     fn js_value_round_trips() {
@@ -190,77 +175,130 @@ mod tests {
         assert_eq!(CompilerMetric::from_js("nope"), None);
     }
 
-    #[test]
-    fn recorder_keeps_call_order_through_the_handle() {
-        let rec = std::sync::Arc::new(InstrumentationRecorder::default());
-        let h = InstrumentationHandle(rec.clone());
-        let d = CompilerDiagnostic::new(Some(1187), "m", DiagnosticLevel::Warning, None, None);
-        h.increment_counter(CompilerMetric::LwcRenderModeDirective)
-            .unwrap();
-        h.log(&d);
-        h.increment_counter(CompilerMetric::LwcDynamicDirective)
-            .unwrap();
-        assert_eq!(
-            rec.take(),
-            vec![
-                InstrumentationEvent::IncrementCounter(CompilerMetric::LwcRenderModeDirective),
-                InstrumentationEvent::Log(d),
-                InstrumentationEvent::IncrementCounter(CompilerMetric::LwcDynamicDirective),
-            ]
-        );
-        assert!(rec.take().is_empty());
+    fn object(message: &str) -> CaughtError {
+        CaughtError::plain("Error", message)
     }
 
-    /// Oracle (scratch/harness/ab-0008-r4-oracle2.log): what each catch site makes of a thrown value.
+    /// Oracle (scratch/harness/ab-0008-r4-oracle2.log, ab-0008-r5-oracle.log): what each catch site makes
+    /// of a thrown value.
     #[test]
     fn counter_throw_maps_to_upstream_catch_sites() {
-        let obj = CounterError::Threw(ThrownValue::Object {
-            name: "Error".into(),
-            message: "boom".into(),
-        });
-        let s = |v: &str| v.to_string();
+        let obj = CounterError::Threw(ThrownValue::Object(Box::new(object("boom"))));
         let prim = |t, d: &str| {
             CounterError::Threw(ThrownValue::Primitive {
                 type_of: t,
                 display: d.into(),
             })
         };
-        assert_eq!(obj.template_catch("nf"), TemplateCatch::Generic(s("boom")));
+        let diag = |c: &CounterError| match c.template_catch("nf") {
+            TemplateCatch::Diagnostic(d) => (d.code, d.message, d.level),
+            o => panic!("{o:?}"),
+        };
         assert_eq!(
-            CounterError::NotCallable.template_catch("nf"),
-            TemplateCatch::Generic(s("nf"))
+            diag(&obj),
+            (
+                Some(1052),
+                "Unexpected compilation error: LWC1052: Error parsing attribute: boom".into(),
+                DiagnosticLevel::Error
+            )
+        );
+        assert_eq!(
+            diag(&CounterError::NotCallable).1,
+            "Unexpected compilation error: LWC1052: Error parsing attribute: nf"
         );
         assert_eq!(
             CounterError::Threw(ThrownValue::Nullish("null")).template_catch("nf"),
             TemplateCatch::Escapes {
                 name: "TypeError",
-                message: s("Cannot read properties of null (reading 'lwcCode')")
+                message: "Cannot read properties of null (reading 'lwcCode')".into()
             }
         );
         assert_eq!(
             prim("string", "strboom").template_catch("nf"),
             TemplateCatch::Escapes {
                 name: "TypeError",
-                message: s("Cannot use 'in' operator to search for 'level' in strboom")
+                message: "Cannot use 'in' operator to search for 'level' in strboom".into()
             }
         );
         let e = obj.babel_catch("nf", "a.js");
         assert_eq!(
-            (e.name.as_deref(), e.message.as_str()),
-            (Some("Error"), "a.js: boom")
+            (e.name.as_str(), e.message.as_str(), &e.code),
+            (
+                "Error",
+                "a.js: boom",
+                &JsProp::Text(BABEL_TRANSFORM_ERROR.into())
+            )
         );
         let e = prim("bigint", "10").babel_catch("nf", "a.js");
         assert_eq!(
-            (e.name.as_deref(), e.message.as_str()),
+            (e.name.as_str(), e.message.as_str(), &e.code),
             (
-                Some("TypeError"),
-                "Cannot create property 'message' on bigint '10'"
+                "TypeError",
+                "Cannot create property 'message' on bigint '10'",
+                &JsProp::Falsy
             )
         );
         let e = CounterError::Threw(ThrownValue::Nullish("undefined")).babel_catch("nf", "a.js");
         assert_eq!(
             e.message,
             "Cannot read properties of undefined (reading 'message')"
+        );
+        assert_eq!(
+            CounterError::NotCallable.rethrow("nf"),
+            Rethrow::NotAFunction("nf")
+        );
+    }
+
+    /// The template catch on coded thrown objects (oracle: scratch/harness/ab-0008-r5-oracle.log, CSR-rm rows).
+    #[test]
+    fn template_catch_reads_lwc_code_code_and_level() {
+        let diag = |e: CaughtError| match CounterError::Threw(ThrownValue::Object(Box::new(e)))
+            .template_catch("nf")
+        {
+            TemplateCatch::Diagnostic(d) => (d.code, d.message, d.level),
+            o => panic!("{o:?}"),
+        };
+        let lwc = CaughtError {
+            lwc_code: JsProp::Number(1234),
+            ..object("m")
+        };
+        assert_eq!(
+            diag(lwc),
+            (
+                Some(1234),
+                "Unexpected compilation error: m".into(),
+                DiagnosticLevel::Error
+            )
+        );
+        let code = CaughtError {
+            code: JsProp::Number(1234),
+            ..object("m")
+        };
+        assert_eq!(
+            diag(code),
+            (
+                Some(1234),
+                "Unexpected compilation error: LWC1052: Error parsing attribute: m".into(),
+                DiagnosticLevel::Error
+            )
+        );
+        let level0 = CaughtError {
+            level: JsLevel::Level(DiagnosticLevel::Fatal),
+            ..object("m")
+        };
+        assert_eq!(diag(level0).2, DiagnosticLevel::Fatal);
+        // A truthy non-number lwcCode keeps the raw message but not the code.
+        let lwc_str = CaughtError {
+            lwc_code: JsProp::Text("x".into()),
+            ..object("m")
+        };
+        assert_eq!(
+            diag(lwc_str),
+            (
+                Some(1052),
+                "Unexpected compilation error: m".into(),
+                DiagnosticLevel::Error
+            )
         );
     }
 }

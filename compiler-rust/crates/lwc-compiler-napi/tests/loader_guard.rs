@@ -1,7 +1,8 @@
 //! Gate G2 (ship-packaging-plan.md §8, AB-D0005 #5): the ESM loader `index.js` only loads the binary
 //! and wraps `transform`. It must not read the environment and must not mention compile option keys
 //! other than the D-0205 seam key (`instrumentation`, moved beside the options); option
-//! decisions belong to Rust. Deprecation *messages* are opaque strings from Rust (D-0212).
+//! decisions belong to Rust. Deprecation *messages* are opaque strings from Rust (D-0212), passed to the
+//! loader's `warn` while Rust validates.
 //!
 //! Key set source (S1): the serde option structs in `src/lib.rs` (every `Deserialize` struct/enum field,
 //! camelCased per `rename_all`, honouring `#[serde(rename)]` and `tag`), plus the instrumentation
@@ -258,8 +259,6 @@ fn index_js_has_no_env_access_and_no_option_keys() {
         !code.contains("ThreadsafeFunction"),
         "D-0205: call the callbacks synchronously in-process; do not use a ThreadsafeFunction"
     );
-    assert!(
-        code.contains("console.warn") && code.contains("deprecations"),
-        "index.js must print Rust-decided deprecation messages (D-0212 / G4b)"
-    );
+    // D-0212 / AB-0008 r5 D1: the warn order against upstream (console.warn at validation, before the
+    // counters) is the behavior row `template-options: warn` / `js-options: warn`.
 }

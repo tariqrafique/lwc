@@ -67,6 +67,7 @@ fn compiler_err_json(e: &TransformError) -> Value {
         }
         TransformError::Compiler(e) => one(e),
         TransformError::Unnormalized(e) => panic!("style errors are normalized: {e:?}"),
+        TransformError::Rethrow(r) => panic!("style errors are normalized: {r:?}"),
     }
 }
 

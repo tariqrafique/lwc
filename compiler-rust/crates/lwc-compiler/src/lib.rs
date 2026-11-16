@@ -3,7 +3,8 @@
 use lwc_shared::errors::TransformerErrors;
 pub use lwc_shared::{CompileError, CompileOptions, CompileResult, TransformError};
 use lwc_shared::{
-    CompilerAggregateError, CompilerError, DiagnosticLevel, normalize_to_compiler_error,
+    CompilerAggregateError, CompilerError, DiagnosticLevel, normalize_caught_to_compiler_error,
+    normalize_to_compiler_error,
 };
 
 mod options;
@@ -11,8 +12,8 @@ mod transformers;
 pub use options::{
     ApiVersionInput, CustomProperties, DynamicImportConfig, NormalizedTransformOptions,
     OPTION_KEYS, OutputConfig, SourcemapInput, SsrModeInput, StylesheetConfig, TransformOptions,
-    missing_options_error, option_schema_document, take_validation_deprecations, validate_incoming,
-    validate_transform_options,
+    missing_options_error, option_schema_document, validate_incoming, validate_transform_options,
+    warn_to_stderr,
 };
 
 pub trait CompilerBackend {
@@ -40,11 +41,15 @@ impl CompilerBackend for RustBackend {
     }
 }
 
-/// Flattened [`CompileOptions`] -> the validated type [`dispatch`] accepts. One validate.
+/// Flattened [`CompileOptions`] -> the validated type [`dispatch`] accepts. One validate; deprecation
+/// warnings go to standard error, where upstream's `console.warn` writes ([`warn_to_stderr`]).
 pub fn normalize_compile_options(
     options: &CompileOptions,
 ) -> Result<NormalizedTransformOptions, lwc_shared::CompileError> {
-    validate_transform_options(&TransformOptions::from_compile(options))
+    validate_transform_options(
+        &TransformOptions::from_compile(options),
+        &mut warn_to_stderr,
+    )
 }
 
 /// Compile after options have already been validated. The type is
@@ -62,6 +67,18 @@ pub fn dispatch(
 
 fn unnormalized(e: CompileError) -> TransformError {
     TransformError::Unnormalized(e.into())
+}
+
+/// An SSR throw: the SSR compiler's own error (`compile_error` maps it), or an instrumentation callback's
+/// throw, which leaves transformSync unchanged (transformer.ts:98-99, :113-114 have no catch).
+fn ssr_error(
+    e: lwc_ssr::SsrError,
+    compile_error: fn(CompileError) -> TransformError,
+) -> TransformError {
+    match e {
+        lwc_ssr::SsrError::Compile(e) => compile_error(e),
+        lwc_ssr::SsrError::Rethrow(r) => TransformError::Rethrow(r),
+    }
 }
 
 /// @lwc/ssr-compiler compile-js: every coded error is compile-js/errors.ts:21-40 `generateError(node, info, ..args)`
@@ -142,6 +159,26 @@ fn transform_javascript(
                 TransformerErrors::JS_TRANSFORMER_ERROR
             };
             TransformError::Compiler(normalize_to_compiler_error(&info, error, Some(filename)))
+        }
+        // The decorator sniff reads the caught value's own `code` (Babel set `BABEL_TRANSFORM_ERROR` only
+        // when it was falsy) and message.
+        lwc_js::JsError::Caught(e) => {
+            let decorator = e.code
+                == lwc_shared::JsProp::Text(
+                    lwc_shared::instrumentation::BABEL_TRANSFORM_ERROR.into(),
+                )
+                && e.message.contains("Decorators are not enabled.")
+                && mentions_lwc_decorator(&e.message);
+            let info = if decorator {
+                TransformerErrors::JS_TRANSFORMER_DECORATOR_ERROR
+            } else {
+                TransformerErrors::JS_TRANSFORMER_ERROR
+            };
+            TransformError::Compiler(normalize_caught_to_compiler_error(
+                &info,
+                &e,
+                Some(filename),
+            ))
         }
         lwc_js::JsError::LwcErrors(ds) => TransformError::Aggregate(CompilerAggregateError {
             errors: ds
@@ -679,8 +716,9 @@ for (const recovery of [false, true]) for (const set of JSON.parse(process.argv[
         #[derive(Default)]
         struct Rec(Mutex<Vec<CompilerMetric>>);
         impl Instrumentation for Rec {
-            fn increment_counter(&self, m: CompilerMetric) {
+            fn increment_counter(&self, m: CompilerMetric) -> Result<(), lwc_shared::CounterError> {
                 self.0.lock().unwrap().push(m);
+                Ok(())
             }
         }
         let rec = Arc::new(Rec::default());
