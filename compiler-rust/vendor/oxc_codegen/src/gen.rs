@@ -596,8 +596,14 @@ impl Gen for SwitchCase<'_> {
         }
         p.print_colon();
 
-        // Force multi-line if an orphan comment is pending; the inline path skips the flush.
-        let single_line = self.consequent.len() == 1
+        // `case 1: foo(); // c` — Babel hangs `// c` on the case, after the body
+        // has wrapped, so the comment is the next line (`break; // c` too).
+        let deferred = self
+            .consequent
+            .last()
+            .and_then(|stmt| p.take_trailing_line_comments(stmt.span().end));
+        let single_line = deferred.is_none()
+            && self.consequent.len() == 1
             && !p.has_orphan_comments_before(self.consequent[0].span().start);
         if single_line {
             p.print_body(&self.consequent[0], ctx);
@@ -608,6 +614,10 @@ impl Gen for SwitchCase<'_> {
         p.indent();
         p.print_stmts_with_orphan_flush(&self.consequent, self.span.end, 0, ctx);
         p.dedent();
+        if let Some(comments) = deferred {
+            p.print_comments(&comments);
+            p.clear_pending_indent_space();
+        }
     }
 }
 
@@ -1646,11 +1656,19 @@ impl GenExpr for StaticMemberExpression<'_> {
             Precedence::Postfix,
             ctx.intersection(Context::FORBID_CALL),
         );
+        // `obj\n\n// note\n.then` — the comment sits between the object and `.`.
+        let broke = p.print_gap_comments(self.object.span().end, self.property.span().start, None);
+        if broke && p.last_byte() != Some(b'\n') {
+            p.print_soft_newline();
+        }
         if self.optional {
             p.print_ascii_byte(b'?');
         } else if p.need_space_before_dot == p.code_len() {
             // `0.toExponential()` is invalid, add a space before the dot, `0 .toExponential()` is valid
             p.print_hard_space();
+        }
+        if p.last_byte() == Some(b'\n') {
+            p.print_indent();
         }
         p.print_ascii_byte(b'.');
         self.property.print(p, ctx);
@@ -1755,24 +1773,46 @@ impl Gen for ArrayExpression<'_> {
 
         if let Some((first, others)) = self.elements.split_first() {
             let mut item = first;
-            if self.elements.len() > 2 {
+            // A comment between two elements (`[a,\n// n\nb]`) is a line break.
+            let multiline = self.elements.len() > 2
+                || (self.elements.len() > 1
+                    && p.find_byte(self.span.start, self.span.end, b'\n').is_some());
+            if multiline {
                 // 3 or more elements, each on its own line
                 p.indent();
                 p.print_soft_newline();
+                p.print_comments_at(item.span().start);
                 p.print_indent();
                 item.print(p, ctx);
 
                 for item_ref in others {
-                    p.print_gap_comments(
-                        item.span().end,
-                        item_ref.span().start,
-                        Some(item_ref.span().start),
-                    );
+                    let prev = item.span().end;
+                    let next = item_ref.span().start;
+                    match p.find_byte(prev, next, b',') {
+                        Some(comma) => {
+                            p.print_gap_comments(prev, comma, None);
+                            p.clear_pending_indent_space();
+                            p.print_comma();
+                            // `}, // note` with the next element on a later line.
+                            if p.find_byte(comma + 1, next, b'\n').is_some()
+                                && p.last_byte() != Some(b'\n')
+                            {
+                                p.print_soft_newline();
+                            }
+                            p.print_gap_comments(comma + 1, next, Some(next));
+                        }
+                        None => {
+                            p.print_gap_comments(prev, next, Some(next));
+                            p.clear_pending_indent_space();
+                            p.print_comma();
+                        }
+                    }
                     p.clear_pending_indent_space();
                     item = item_ref;
-
-                    p.print_comma();
-                    p.print_soft_newline();
+                    p.print_comments_at(item.span().start);
+                    if p.last_byte() != Some(b'\n') {
+                        p.print_soft_newline();
+                    }
                     p.print_indent();
 
                     item.print(p, ctx);

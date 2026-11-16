@@ -1180,9 +1180,15 @@ fn decorator_line(src: &str, start: u32, end: u32) -> (u32, u32) {
     if (end as usize) < line_end as usize {
         rest.push_str(&src[end as usize..line_end as usize]);
     }
-    if rest.chars().all(char::is_whitespace) {
+    // `@api // note` on its own line: Babel drops the comment with the decorator.
+    let trimmed = rest.trim();
+    if trimmed.is_empty() || trimmed.starts_with("//") || is_whole_block_comment(trimmed) {
         (line_start, line_end)
     } else {
         (start, end)
     }
+}
+
+fn is_whole_block_comment(s: &str) -> bool {
+    s.len() >= 4 && s.starts_with("/*") && s.ends_with("*/") && !s[2..s.len() - 2].contains('\n')
 }

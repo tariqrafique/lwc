@@ -1,7 +1,6 @@
 import { registerDecorators as _registerDecorators } from "lwc";
 import _tmpl from "./test.html";
-import { registerComponent as _registerComponent } from "lwc";
-import { LightningElement } from "lwc";
+import { LightningElement, registerComponent as _registerComponent } from "lwc";
 import { getRecord } from 'lightning/uiRecordApi';
 class Test extends LightningElement {
 	constructor(...args) {

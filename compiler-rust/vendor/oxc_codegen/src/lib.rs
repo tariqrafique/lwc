@@ -1026,11 +1026,44 @@ impl<'a> Codegen<'a> {
         let Some((first, rest)) = items.split_first() else {
             return;
         };
+        let mut prev = first.span().end;
         first.print(self, ctx);
         for item in rest {
-            self.print_comma();
-            self.print_soft_space();
+            let next = item.span().start;
+            // `label, // note` then the next argument. The comment is after the comma.
+            match self.find_byte(prev, next, b',') {
+                Some(comma) => {
+                    self.print_gap_comments(prev, comma, None);
+                    self.clear_pending_indent_space();
+                    self.print_comma();
+                    // Break before a comment only. A newline with no comment
+                    // (`var a = 1,\n  b = 2`) stays a space, which is what the
+                    // rest of the pipeline reprints.
+                    let after = self.take_comments_between(comma + 1, next, Some(next));
+                    if !after.is_empty()
+                        && self.find_byte(comma + 1, next, b'\n').is_some()
+                        && self.last_byte() != Some(b'\n')
+                    {
+                        self.print_soft_newline();
+                    }
+                    if !after.is_empty() {
+                        self.print_comments(&after);
+                    }
+                }
+                None => {
+                    self.print_comma();
+                    self.print_gap_comments(prev, next, Some(next));
+                }
+            }
+            self.clear_pending_indent_space();
+            self.print_comments_at(next);
+            if self.last_byte() == Some(b'\n') {
+                self.print_indent();
+            } else {
+                self.print_soft_space();
+            }
             item.print(self, ctx);
+            prev = item.span().end;
         }
     }
 
@@ -1058,7 +1091,14 @@ impl<'a> Codegen<'a> {
                 .any(|item| self.has_comment(item.span().start));
 
         if has_comment {
-            self.indent();
+            // `foo(a // c` stays on the `(` line. Only a leading comment on the
+            // first argument (`foo(\n  // c\n  a`) indents the list.
+            let break_open = arguments
+                .first()
+                .is_some_and(|item| self.has_comment(item.span().start));
+            if break_open {
+                self.indent();
+            }
             self.print_list_with_comments(arguments, ctx);
             if let Some(last) = arguments.last() {
                 self.print_gap_comments(
@@ -1068,13 +1108,17 @@ impl<'a> Codegen<'a> {
                 );
             }
             // Handle `/* comment */);`
-            if !has_comment_before_right_paren
-                || (span.end > 0 && !self.print_expr_comments(span.end - 1))
-            {
+            let printed_paren_comments =
+                has_comment_before_right_paren && self.print_expr_comments(span.end - 1);
+            if !printed_paren_comments && self.last_byte() != Some(b'\n') {
                 self.print_soft_newline();
             }
-            self.dedent();
-            self.print_indent();
+            if break_open {
+                self.dedent();
+            }
+            if self.last_byte() == Some(b'\n') {
+                self.print_indent();
+            }
         } else {
             self.print_list(arguments, ctx);
             // D-0292: `foo(1 // c)` — the comment trails the argument, not `)`.
@@ -1101,20 +1145,45 @@ impl<'a> Codegen<'a> {
         };
         if self.print_expr_comments(first.span().start) {
             self.print_indent();
-        } else {
-            self.print_soft_newline();
+        } else if self.last_byte() == Some(b'\n') {
             self.print_indent();
         }
+        let mut prev = first.span().end;
         first.print(self, ctx);
         for item in rest {
-            self.print_comma();
-            if self.print_expr_comments(item.span().start) {
+            let next = item.span().start;
+            match self.find_byte(prev, next, b',') {
+                Some(comma) => {
+                    self.print_gap_comments(prev, comma, None);
+                    self.clear_pending_indent_space();
+                    self.print_comma();
+                    // Break before a comment only. A newline with no comment
+                    // (`var a = 1,\n  b = 2`) stays a space, which is what the
+                    // rest of the pipeline reprints.
+                    let after = self.take_comments_between(comma + 1, next, Some(next));
+                    if !after.is_empty()
+                        && self.find_byte(comma + 1, next, b'\n').is_some()
+                        && self.last_byte() != Some(b'\n')
+                    {
+                        self.print_soft_newline();
+                    }
+                    if !after.is_empty() {
+                        self.print_comments(&after);
+                    }
+                }
+                None => {
+                    self.print_comma();
+                }
+            }
+            self.clear_pending_indent_space();
+            if self.print_expr_comments(item.span().start) || self.last_byte() == Some(b'\n') {
                 self.print_indent();
             } else {
                 self.print_soft_newline();
                 self.print_indent();
             }
             item.print(self, ctx);
+            prev = item.span().end;
         }
     }
 

@@ -111,7 +111,18 @@ fn object_and_array_inner_comments() {
     check("const o = {\n  a: 1, // n\n  b: 2\n};\n");
     check("foo({\n  a: 1, // n\n  b: 2\n});\n");
     check("if (\n  a\n  // &&\n  // b\n) {}\n");
+    check(
+        "function f(d) {\n  switch (d) {\n    case 'onetime': d.setFullYear(1); break; // effectively infinite\n    case 'month':\n    default: d.setMonth(1); break;\n  }\n}\n",
+    );
+    check(
+        "function f() {\n  const closeModal = new CustomEvent('closemodal'//, {\n  //     detail: {\n  //         value: 1,\n  //     }\n  // }\n  );\n}\n",
+    );
+    check(
+        "function f() {\n    /* CODE NOT CURRENTLY IN USE \n    \n    // handleDropzoneDrop(event) {\n    // }\n\n\n    */\n}\n",
+    );
+    check("function f() {\n  foo()\n\n  // note\n  .bar;\n}\n");
     check("foo(\n  1, // c\n);\n");
+    check("function f() {\n  g(\n    label, // kept\n    other\n  );\n}\n");
 }
 
 #[test]

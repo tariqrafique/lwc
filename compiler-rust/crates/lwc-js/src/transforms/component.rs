@@ -56,12 +56,22 @@ pub fn run(
         };
         let reg = unique(src, REGISTER_COMPONENT_ID);
         let tmpl = unique(src, TEMPLATE_KEY);
+        let spec = format!("{REGISTER_COMPONENT_ID} as {reg}");
+        // The template import is a new statement at the top (ahead of a leading
+        // license comment). `registerComponent` joins the existing `lwc` import,
+        // which sits after that comment. A fresh import above the license is
+        // what makes the bundler drop the comment.
         let mut imports = format!(
-            "import {tmpl} from {};\nimport {{ {REGISTER_COMPONENT_ID} as {reg} }} from \"{LWC_PACKAGE_ALIAS}\";\n",
+            "import {tmpl} from {};\n",
             lwc_shared::js::string_literal(
                 format!("./{}.html", base_name(filename)).encode_utf16()
             )
         );
+        if !merge_lwc_specifier(edits, program, src, &spec) {
+            imports.push_str(&format!(
+                "import {{ {spec} }} from \"{LWC_PACKAGE_ALIAS}\";\n"
+            ));
+        }
         let mut props = vec![
             format!("{TEMPLATE_KEY}: {tmpl}"),
             format!(
@@ -120,4 +130,42 @@ pub fn run(
         }
         return; // only one default export per module
     }
+}
+
+/// Add `spec` to an existing `from "lwc"` import. A decorator rewrite of that
+/// import is updated in place so the two edits do not overlap.
+fn merge_lwc_specifier(
+    edits: &mut Vec<Edit>,
+    program: &Program<'_>,
+    src: &str,
+    spec: &str,
+) -> bool {
+    let Some(stmt) = program.body.iter().find_map(|s| match s {
+        Statement::ImportDeclaration(d) if d.source.value == LWC_PACKAGE_ALIAS => Some(d.as_ref()),
+        _ => None,
+    }) else {
+        return false;
+    };
+    if let Some(e) = edits
+        .iter_mut()
+        .find(|e| e.start == stmt.span.start && e.end == stmt.span.end)
+    {
+        if e.text.is_empty() {
+            e.text = format!("import {{ {spec} }} from \"{LWC_PACKAGE_ALIAS}\";");
+        } else if let Some(idx) = e.text.rfind('}') {
+            e.text.insert_str(idx, &format!(", {spec}"));
+        } else {
+            return false;
+        }
+        return true;
+    }
+    let text = &src[stmt.span.start as usize..stmt.span.end as usize];
+    let Some(rel) = text.rfind('}') else {
+        return false;
+    };
+    edits.push(Edit::insert(
+        stmt.span.start + rel as u32,
+        format!(", {spec}"),
+    ));
+    true
 }

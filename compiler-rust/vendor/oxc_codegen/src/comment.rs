@@ -16,8 +16,10 @@ type CommentList = SmallVec<[Comment; 1]>;
 pub type CommentsMap = FxHashMap</* attached_to */ u32, CommentList>;
 
 /// Whether a comment remains meaningful if its original AST anchor is removed.
-/// Babel `adjustMultilineComment`: strip up to the comment's original column
-/// of whitespace after each interior newline, then indent to `column`.
+/// Babel `adjustMultilineComment`. The strip regex is `\n\s{1,column}`, and
+/// JavaScript `\s` includes newlines, so a run of blank lines is partly
+/// consumed before the indent is put back. Trailing spaces that the strip
+/// does not eat stay.
 fn adjust_block_comment<'a>(
     raw: &'a str,
     comment: &Comment,
@@ -31,31 +33,54 @@ fn adjust_block_comment<'a>(
     if orig == 0 {
         return std::borrow::Cow::Borrowed(raw);
     }
-    let mut out = String::with_capacity(raw.len() + column);
-    for (i, line) in raw.split('\n').enumerate() {
-        if i > 0 {
-            out.push('\n');
-            let rest = strip_ws_chars(line, orig);
-            if !rest.is_empty() {
-                out.extend(std::iter::repeat_n(' ', column));
-                out.push_str(rest);
-            }
-        } else {
-            out.push_str(line);
+    let stripped = strip_babel_ws(raw, orig);
+    let mut out = String::with_capacity(stripped.len() + column * 4);
+    let mut chars = stripped.chars().peekable();
+    while let Some(c) = chars.next() {
+        out.push(c);
+        if c == '\n' && chars.peek().is_some() {
+            out.extend(std::iter::repeat_n(' ', column));
         }
     }
     std::borrow::Cow::Owned(out)
 }
 
-fn strip_ws_chars(line: &str, n: usize) -> &str {
-    let mut taken = 0usize;
-    for (i, c) in line.char_indices() {
-        if taken >= n || !matches!(c, ' ' | '\t') {
-            return &line[i..];
+/// Replace each `\n` plus 1..=`offset` following JS whitespace characters
+/// (newlines included) with a single `\n`.
+fn strip_babel_ws(raw: &str, offset: usize) -> String {
+    let mut out = String::with_capacity(raw.len());
+    let mut chars = raw.chars().peekable();
+    while let Some(c) = chars.next() {
+        if c != '\n' {
+            out.push(c);
+            continue;
         }
-        taken += 1;
+        let mut taken = 0usize;
+        let mut look = chars.clone();
+        while taken < offset {
+            match look.peek() {
+                Some(w) if is_js_ws(*w) => {
+                    look.next();
+                    taken += 1;
+                }
+                _ => break,
+            }
+        }
+        if taken > 0 {
+            for _ in 0..taken {
+                chars.next();
+            }
+        }
+        out.push('\n');
     }
-    ""
+    out
+}
+
+fn is_js_ws(c: char) -> bool {
+    matches!(
+        c,
+        ' ' | '\t' | '\n' | '\r' | '\u{000b}' | '\u{000c}' | '\u{00a0}' | '\u{feff}'
+    )
 }
 
 fn original_column(source: &str, pos: u32) -> usize {
@@ -309,6 +334,20 @@ impl Codegen<'_> {
             self.print_comments(&comments);
         }
         any
+    }
+
+    /// Trailing line comments anchored at `at`, removed so a later site can print them.
+    ///
+    /// A comment after the last statement of a `switch` case is trailing of that
+    /// statement in oxc and trailing of the case in Babel. Babel prints it after
+    /// the case body has already wrapped, so it lands on the next line.
+    pub(crate) fn take_trailing_line_comments(&mut self, at: u32) -> Option<CommentList> {
+        let list = self.take_positioned(at, false)?;
+        let (lines, rest): (Vec<_>, Vec<_>) = list.into_iter().partition(|c| c.is_line());
+        if !rest.is_empty() {
+            self.comments.entry(at).or_default().extend(rest);
+        }
+        if lines.is_empty() { None } else { Some(CommentList::from(lines)) }
     }
 
     /// Leading (`leading`) or trailing comments stored at `at`.
@@ -608,7 +647,12 @@ impl Codegen<'_> {
         };
 
         for comment in &comments {
-            self.print_hard_newline();
+            // Already at a newline: another one is a blank line Babel does not
+            // print between `// a` and the next `// b`.
+            let blank = self.source_has_blank_line_before(comment.span.start);
+            if self.last_byte() != Some(b'\n') || blank {
+                self.print_hard_newline();
+            }
             self.print_indent();
             self.print_comment(comment);
         }
