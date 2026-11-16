@@ -9,7 +9,7 @@ import path from 'node:path';
 import { URLSearchParams } from 'node:url';
 
 import pluginUtils from '@rollup/pluginutils';
-import { transformSync } from 'lwc-compiler-rs';
+import { transformSync } from '@lwc/rust-compiler';
 import { resolveModule, RegistryType } from '@lwc/module-resolver';
 import { getAPIVersionFromNumber } from '@lwc/shared';
 import type { Plugin, SourceMapInput, RollupLog } from 'rollup';

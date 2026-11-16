@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { transform } from 'lwc-compiler-rs';
+import { transform } from '@lwc/rust-compiler';
 
 import { renderStylesheets, hasScopedStaticStylesheets } from '../styles';
 import { RenderContext } from '../render';

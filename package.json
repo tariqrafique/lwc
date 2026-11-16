@@ -87,7 +87,6 @@
     "workspaces": [
         "packages/@lwc/*",
         "packages/lwc",
-        "packages/lwc-compiler-rs",
         "playground"
     ],
     "volta": {
