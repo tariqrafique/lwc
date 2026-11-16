@@ -14,6 +14,9 @@
 //             rethrown as is (carry-forward #10 a)
 //   null/<case>  explicit null vs omitted/undefined for stylesheetConfig, outputConfig, outputConfig.minify
 //             (carry-forward #10 c); file order matters for the once-per-process stylesheetConfig warn
+//   ssr-stamp/<mode>/<case>  targetSSR × ssrMode {sync,async,asyncYield} × templates: the LWC version stamp in the
+//             compiled template (compile-template/index.ts:141-150 puts it last in `__lwcTmpl`'s body; engine-core
+//             checkVersionMismatch reads it from the function's toString()) (PLAN item 18 F7)
 //   erm/<v>   experimentalErrorRecoveryMode {true,false,omitted} × upstream transform-html.spec experimentalErrorRecoveryMode
 //             cases (valid, 3 invalid directives, custom element) + transform-css.spec `<` case
 // Goldens: goldens/template-options, JS oracle only (UPDATE_GOLDENS=1, JS backend).
@@ -201,5 +204,30 @@ describe('template-options: null', () => {
     for (const [label, opts] of cases) {
         it(`null/${label}/render-mode`, () => checkGolden(GOLDEN_DIR, `null/${label}/render-mode`,
             observeWarnOrder(backend, INST_SNIPPETS['render-mode'], 'spread.html', { ...base, ...opts }, INSTRUMENTATION_SHAPES.real)));
+    }
+});
+
+// PLAN item 18 F7: the stamp count, and the lines that close `__lwcTmpl` (stamp, then `}`), trimmed so the printers'
+// indentation does not matter.
+describe('template-options: ssr-stamp', () => {
+    const templates: Record<string, string> = {
+        empty: '<template></template>',
+        text: '<template><div>hi {name}</div></template>',
+        light: '<template lwc:render-mode="light"><p>x</p></template>',
+        nested: '<template><template if:true={a}><span>a</span></template><x-child></x-child></template>',
+    };
+    for (const mode of ['sync', 'async', 'asyncYield']) {
+        for (const [name, src] of Object.entries(templates)) {
+            it(`ssr-stamp/${mode}/${name}`, () => {
+                let observed: unknown;
+                try {
+                    const code = backend.transform(src, 'stamp.html', { namespace: 'x', name: 'stamp', targetSSR: true, ssrMode: mode } as any).code;
+                    const lines = code.split('\n').map((l) => l.trim());
+                    const end = lines.findIndex((l) => l.startsWith('__lwcTmpl.'));
+                    observed = { ok: true, stamps: code.split('/*LWC compiler v').length - 1, close: end < 2 ? null : lines.slice(end - 2, end) };
+                } catch (e: any) { observed = errorObservation(e); }
+                checkGolden(GOLDEN_DIR, `ssr-stamp/${mode}/${name}`, observed);
+            });
+        }
     }
 });

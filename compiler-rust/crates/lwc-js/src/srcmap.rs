@@ -60,7 +60,8 @@ impl Chain {
     }
 
     /// Build the final map for `output` against the original `src`.
-    pub fn finish(&self, src: &str, filename: &str, output: &str) -> Option<SourceMap<'static>> {
+    /// `source_name` is the map's single `sources` entry (Babel's `sourceFileName`).
+    pub fn finish(&self, src: &str, source_name: &str, output: &str) -> Option<SourceMap<'static>> {
         if !self.enabled {
             return None;
         }
@@ -93,7 +94,7 @@ impl Chain {
         out.sort_by_key(|p| p.0);
         out.dedup_by_key(|p| p.0);
         let mut b = SourceMapBuilder::default();
-        let id = b.add_source_and_content(filename, src);
+        let id = b.add_source_and_content(source_name, src);
         for (o, i) in out {
             // Identifier fidelity (Babel maps identifiers to their own `loc` and names them): a generated identifier
             // must land on the same identifier in the source, else it is synthesized code mapped to a neighbour.

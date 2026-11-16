@@ -39,7 +39,10 @@
   "map": {
     "version": 3,
     "hasMappings": true,
-    "sourcesCount": 1
+    "sourcesCount": 1,
+    "sources": [
+      "foo.js"
+    ]
   },
   "inlineMap": null
 }

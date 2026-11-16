@@ -319,7 +319,6 @@ lbc-recipes/force-app/main/default/lwc/inputLocation	blank-line
 lbc-recipes/force-app/main/default/lwc/layout	blank-line
 lbc-recipes/force-app/main/default/lwc/layoutItem	blank-line
 lbc-recipes/force-app/main/default/lwc/outputField	comment-placement
-lbc-recipes/force-app/main/default/lwc/pillContainer	comment-added
 lbc-recipes/force-app/main/default/lwc/recordEditForm	blank-line
 lbc-recipes/force-app/main/default/lwc/recordForm	comment-placement
 lbc-recipes/force-app/main/default/lwc/relativeDateTime	blank-line
@@ -329,7 +328,6 @@ lbc-recipes/force-app/main/default/lwc/verticalNavigationItem	blank-line,comment
 lbc-recipes/force-app/main/default/lwc/verticalNavigationItemBadge	blank-line,comment-placement
 lbc-recipes/force-app/main/default/lwc/verticalNavigationItemIcon	blank-line,comment-placement
 lbc/package/src/lightning/carousel	other
-lbc/package/src/lightning/pillContainer	comment-added
 lbc/package/src/lightning/primitiveFigure	object-shorthand
 lwc-recipes/main/default/lwc/apexImperativeMethodWithComplexParams	blank-line
 lwc-recipes/main/default/lwc/datatableInlineEditWithApex	blank-line

@@ -41,6 +41,9 @@
     "present": true,
     "decodable": true,
     "version": 3,
-    "hasMappings": true
+    "hasMappings": true,
+    "sources": [
+      "foo.js"
+    ]
   }
 }

@@ -7,6 +7,10 @@
 //   lws/<b>       enableLightningWebSecurityTransforms {true,false} × spec LWS snippet + async fixtures
 //   explicit      isExplicitImport true × full corpus
 //   sourcemap/<v> outputConfig.sourcemap {omitted,false,true,'inline','invalid',{},123} × spec snippet + 2 fixtures
+//   srcname/<case>  source map `sources` for the filename forms (absolute, nested relative, dot segments, the cwd,
+//                 the cwd's parent) × outputConfig.sourcemap {true,'inline'}: Babel's basename(relative(cwd, filename))
+//                 (PLAN item 18 F6)
+//   lead/<case>   where the comments before `export default` land after registerComponent (PLAN item 18 F10)
 //   epm/<v>       enablePrivateMethods {omitted,false,true} × the #method fixtures + spec snippet
 //   inst/<shape>/<case>  instrumentation (AB-0008 G2b): real callbacks and non-callable shapes
 //                 (src/instrumentationObserve.ts) × spec instrumentation snippet + dynamic-imports fixtures (loader set)
@@ -83,13 +87,13 @@ function mapDesc(map: unknown): unknown {
     if (map === undefined) return 'undefined';
     if (map === '') return "''";
     const m = typeof map === 'string' ? JSON.parse(map) : map;
-    return { version: m.version, hasMappings: typeof m.mappings === 'string' && m.mappings.length > 0, sourcesCount: Array.isArray(m.sources) ? m.sources.length : null };
+    return { version: m.version, hasMappings: typeof m.mappings === 'string' && m.mappings.length > 0, sourcesCount: Array.isArray(m.sources) ? m.sources.length : null, sources: m.sources ?? null };
 }
 function inlineMap(code: string): unknown {
     const m = code.match(/\/\/# sourceMappingURL=data:application\/json;(?:charset=utf-8;)?base64,([A-Za-z0-9+/=]+)/);
     if (!m) return code.includes('//# sourceMappingURL=data:application/json;') ? { present: true, decodable: false } : null;
     const j = JSON.parse(Buffer.from(m[1], 'base64').toString('utf8'));
-    return { present: true, decodable: true, version: j.version, hasMappings: typeof j.mappings === 'string' && j.mappings.length > 0 };
+    return { present: true, decodable: true, version: j.version, hasMappings: typeof j.mappings === 'string' && j.mappings.length > 0, sources: j.sources ?? null };
 }
 
 let backend: CompilerBackend;
@@ -154,6 +158,56 @@ describe('js-options: sourcemap', () => {
         for (const rel of SOURCEMAP_FIXTURES) {
             it(`sourcemap/${label}/${rel}`, () => checkGolden(GOLDEN_DIR, `sourcemap/${label}/${rel}`, observe(readFx(rel, 'actual.js'), 'test.js', { ...baseOpts(rel), ...oc }, { map: true })));
         }
+    }
+});
+
+// Filenames whose observed `sources` entry does not depend on where the harness runs (the cwd-relative forms resolve
+// against it, then take the basename).
+const SRCNAMES: Array<[string, () => string]> = [
+    ['absolute', () => '/abs/dir/sub/foo.js'],
+    ['nested-relative', () => 'dir/sub/foo.js'],
+    ['dot-segments', () => './dir/../sub/./foo.js'],
+    ['bare', () => 'foo.js'],
+    ['under-cwd', () => path.join(process.cwd(), 'sub', 'foo.js')],
+    ['cwd-sibling', () => path.join(path.dirname(process.cwd()), 'foo.js')],
+];
+describe('js-options: srcname', () => {
+    for (const [label, sm] of [['true', true], ['inline', 'inline']] as const) {
+        for (const [name, filename] of SRCNAMES) {
+            it(`srcname/${label}/${name}`, () => checkGolden(GOLDEN_DIR, `srcname/${label}/${name}`, observe(SPEC.component, filename(), { namespace: 'x', name: 'foo', outputConfig: { sourcemap: sm } }, { map: true })));
+        }
+    }
+});
+
+// Comments around `export default`: Babel attaches a comment to the node before it (trailing) and after it (leading);
+// component.ts keeps the export statement's own leading comments on `export default __lwc_component_class_internal;`.
+// Observed: each marker comment and the first code line printed after it (single-line comments, so the printers'
+// block-comment indentation does not matter).
+const LEAD = {
+    'first-class': `// m1 header\n// m2 second\nexport default class Foo {\n    get y() { return 1; }\n}\n// m3 trailing\n`,
+    'first-anonymous': `// m1 header\nexport default class {\n    m() {}\n}\n`,
+    'first-identifier': `// m1 header\nexport default Foo;\n// m2 fn\nfunction Foo() {}\n`,
+    'after-import': `// m1 header\nimport { Base } from 'base';\n// m2 before export\nexport default class Foo extends Base {}\n`,
+    'after-statement': `const x = 1;\n// m1 before export\nexport default class Foo { m() { return x; } }\n`,
+    'not-registered': `// m1 header\nexport default function foo() {}\n`,
+};
+function leadObservation(code: string) {
+    const lines = code.split('\n');
+    return lines.flatMap((l, i) => {
+        const m = l.match(/\/\/ (m\d)\b/);
+        if (!m) return [];
+        const next = lines.slice(i + 1).find((n) => n.trim() !== '' && !/^\s*\/\//.test(n));
+        return [{ marker: m[1], next: (next ?? '').trim().split(/\s+/).slice(0, 3).join(' ') }];
+    });
+}
+describe('js-options: lead', () => {
+    for (const [name, src] of Object.entries(LEAD)) {
+        it(`lead/${name}`, () => {
+            let observed: unknown;
+            try { observed = { ok: true, comments: leadObservation(backend.transform(src, 'foo.js', { namespace: 'x', name: 'foo' } as any).code) }; }
+            catch (e: any) { observed = errorObservation(e); }
+            checkGolden(GOLDEN_DIR, `lead/${name}`, observed);
+        });
     }
 });
 

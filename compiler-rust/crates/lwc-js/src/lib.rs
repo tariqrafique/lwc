@@ -136,6 +136,27 @@ pub fn resolve_like_node(cwd: &std::path::Path, f: &str) -> String {
     format!("/{}", out.join("/"))
 }
 
+/// Babel's default source map `sourceFileName` (`@babel/core` normalize-opts.js):
+/// `path.basename(path.relative(cwd, filename))`. Empty when `filename` resolves to the cwd, `..` when it
+/// resolves to one of the cwd's ancestors.
+pub fn babel_source_file_name(cwd: &std::path::Path, filename: &str) -> String {
+    let from = resolve_like_node(cwd, "");
+    let to = resolve_like_node(cwd, filename);
+    let segs = |p: &str| -> Vec<String> {
+        p.split('/')
+            .filter(|s| !s.is_empty())
+            .map(str::to_string)
+            .collect()
+    };
+    let (from, to) = (segs(&from), segs(&to));
+    let common = from.iter().zip(&to).take_while(|(a, b)| a == b).count();
+    match to.get(common..).and_then(|rest| rest.last()) {
+        Some(last) => last.clone(),
+        None if common < from.len() => "..".into(),
+        None => String::new(),
+    }
+}
+
 /// oxc prints a comment that leads a statement and drops a trailing `// eslint-disable-line`.
 /// Move those directives, plus istanbul and sourceMappingURL, to the start of their line before
 /// the print parse so they are leading comments. A sourceMappingURL comment that Babel would strip
@@ -465,7 +486,8 @@ fn transform_inner(
     let (code, pieces) =
         edits::apply_mapped(&printed, stamps).expect("lwc-js edits never partially overlap");
     chain.push_edit(pieces);
-    let map = chain.finish(src, filename, &code);
+    let cwd = std::env::current_dir().unwrap_or_default();
+    let map = chain.finish(src, &babel_source_file_name(&cwd, filename), &code);
     Ok(match (options.sourcemap, map) {
         (lwc_shared::Sourcemap::Inline, Some(m)) => {
             // babel: `code + "\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,..."`

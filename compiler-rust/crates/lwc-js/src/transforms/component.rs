@@ -5,6 +5,7 @@ use lwc_shared::CompileOptions;
 use lwc_shared::api_version;
 use lwc_shared::edits::Edit;
 use oxc::ast::ast::{ExportDefaultDeclarationKind as K, Program, Statement};
+use oxc::span::GetSpan;
 
 fn base_name(filename: &str) -> &str {
     let file = filename.rsplit(['/', '\\']).next().unwrap_or(filename);
@@ -24,6 +25,19 @@ pub(crate) fn unique(src: &str, hint: &str) -> String {
         .map(|n| format!("{base}{n}"))
         .find(|c| !src.contains(c.as_str()))
         .unwrap()
+}
+
+/// Span `[first comment start, last comment end)` of the comments before `stmt` that Babel attaches only as
+/// its leading comments: `stmt` is the program's first node (no hashbang, no directive, first statement).
+fn export_only_leading_comments(program: &Program<'_>, stmt: &Statement<'_>) -> Option<(u32, u32)> {
+    let first = program.body.first()?;
+    if program.hashbang.is_some() || !program.directives.is_empty() || first.span() != stmt.span() {
+        return None;
+    }
+    let at = stmt.span().start;
+    let mut lead = program.comments.iter().filter(|c| c.span.end <= at);
+    let first = lead.next()?.span;
+    Some((first.start, lead.last().map_or(first.end, |c| c.span.end)))
 }
 
 pub fn run(
@@ -92,7 +106,22 @@ pub fn run(
             props.push(format!("{ENABLE_PRIVATE_METHODS_KEY}: true"));
         }
         let meta = format!("{{ {} }}", props.join(", "));
-        let export = format!("\nexport default {COMPONENT_CLASS_ID};");
+        // component.ts replaces only the declaration inside the ExportDefaultDeclaration, so the statement's
+        // leading comments stay on `export default __lwc_component_class_internal;`, after the hoisted class and
+        // the register call. Babel attaches a comment to both neighbours (trailing of the previous node,
+        // leading of the next), and a comment printed once stays where it was printed first: only a comment
+        // with no node before it (no directive, no hashbang, the export is the first statement) moves.
+        let lead = export_only_leading_comments(program, stmt);
+        let export = match lead {
+            Some((s, e)) => format!(
+                "\n{}\nexport default {COMPONENT_CLASS_ID};",
+                &src[s as usize..e as usize]
+            ),
+            None => format!("\nexport default {COMPONENT_CLASS_ID};"),
+        };
+        if let Some((s, e)) = lead {
+            edits.push(Edit::replace(s, e, ""));
+        }
         edits.push(Edit::insert(0, imports));
         match class_id {
             // Named class: hoist declaration in place, register by id.
