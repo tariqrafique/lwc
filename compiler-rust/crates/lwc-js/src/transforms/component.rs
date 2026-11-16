@@ -103,13 +103,14 @@ pub fn run(
             props.push(format!("{ENABLE_PRIVATE_METHODS_KEY}: true"));
         }
         let meta = format!("{{ {} }}", props.join(", "));
-        // A license comment leading the export moves with it. Babel's generator
-        // prints that comment on the rewritten `export default`, after the
-        // register call. Leaving it before the class makes the bundler keep a
-        // comment the oracle's bundle does not have there.
-        let lead = leading_of(program, src, decl.span.start);
+        // One rule for the export's leading comments. Babel prints a comment
+        // once, on the first node that owns it. A file-leading license (nothing
+        // before the export: no hashbang, no directive, the export is the first
+        // statement) moves onto the rewritten `export default`, blank line
+        // included. A comment after another statement stays there.
+        let lead = export_leading(program, src, stmt);
         if let Some((start, _)) = &lead {
-            edits.push(Edit::replace(*start, decl.span.start, String::new()));
+            edits.push(Edit::replace(*start, stmt.span().start, String::new()));
         }
         let export = match &lead {
             Some((_, text)) => format!("\n{text}export default {COMPONENT_CLASS_ID};"),
@@ -144,25 +145,22 @@ pub fn run(
     }
 }
 
-/// Source from the first leading comment of `at` through `at`, so the comment
-/// and the blank line before the keyword travel together.
-///
-/// A comment that sits after an earlier statement stays there. Babel prints it
-/// as that statement's trailing comment (`const x = 1;\n\n/* eslint */\nexport
-/// default class …`). Only a comment with nothing before it moves onto the
-/// rewritten export, which is where Babel prints a file-leading license.
-fn leading_of(program: &Program<'_>, src: &str, at: u32) -> Option<(u32, String)> {
+/// Leading comments of `stmt`, and the blank line before its keyword, when
+/// `stmt` is the program's first node. Otherwise `None`: the comment belongs
+/// to the node printed before it.
+fn export_leading(program: &Program<'_>, src: &str, stmt: &Statement<'_>) -> Option<(u32, String)> {
+    let first = program.body.first()?;
+    if program.hashbang.is_some() || !program.directives.is_empty() || first.span() != stmt.span() {
+        return None;
+    }
+    let at = stmt.span().start;
     let start = program
         .comments
         .iter()
-        .filter(|c| c.is_leading() && c.attached_to == at)
+        .filter(|c| c.is_leading() && c.attached_to == at && c.span.end <= at)
         .map(|c| c.span.start)
         .min()?;
     if start >= at {
-        return None;
-    }
-    let after_statement = program.body.iter().any(|s| s.span().end <= start);
-    if after_statement {
         return None;
     }
     Some((start, src[start as usize..at as usize].to_string()))

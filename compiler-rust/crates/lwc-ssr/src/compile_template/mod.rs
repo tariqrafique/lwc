@@ -598,6 +598,9 @@ pub fn wrap_module_with(
     if o.mode != lwc_shared::SsrMode::AsyncYield {
         c.push_str("  return __lwcYield;\n");
     }
+    // index.ts:141-150: the template function body carries `trailingComments: [LWC_VERSION_COMMENT]`;
+    // astring prints it as the body's last line (engine-core checkVersionMismatch reads it from `toString()`).
+    c.push_str(&format!("  {}\n", lwc_shared::meta::version_comment()));
     c.push_str("}\n");
     c.push_str("__lwcTmpl.hasScopedStylesheets = hasScopedStylesheets;\n");
     c.push_str("__lwcTmpl.stylesheetScopeToken = stylesheetScopeToken;\n");
@@ -665,6 +668,33 @@ mod tests {
             !code.contains("yield ") && !code.contains("async function"),
             "{code}"
         );
+    }
+    /// compile-template/index.ts:141-150: the version stamp is the last line of `__lwcTmpl`'s body, once per
+    /// template, in every mode (PLAN item 18 F7; oracle observations in harness template-options ssr-stamp).
+    #[test]
+    fn version_stamp_closes_template_body() {
+        let root = Root {
+            children: vec![],
+            directives: vec![],
+            location: el_at(),
+        };
+        for mode in [
+            lwc_shared::SsrMode::Sync,
+            lwc_shared::SsrMode::Async,
+            lwc_shared::SsrMode::AsyncYield,
+        ] {
+            let opts = crate::TemplateTransformOptions {
+                mode,
+                ..Default::default()
+            };
+            let code = crate::compile_template_for_ssr(&root, &opts).unwrap().code;
+            let stamp = lwc_shared::meta::version_comment();
+            assert_eq!(code.matches(stamp.as_str()).count(), 1, "{code}");
+            assert!(
+                code.contains(&format!("  {stamp}\n}}\n__lwcTmpl.hasScopedStylesheets")),
+                "{code}"
+            );
+        }
     }
     #[test]
     fn adjacent_text_concat_skips_comment() {

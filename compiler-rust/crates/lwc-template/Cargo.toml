@@ -13,7 +13,7 @@ oxc_parser = { workspace = true }
 oxc_span = { workspace = true }
 oxc_ecmascript = { workspace = true }
 oxc_syntax = { workspace = true }
-parse5 = { git = "https://github.com/tariqrafique/parse5-rust", rev = "e3520ba03c9af27eb8dd05d08960b094305910d8" }
+parse5 = { git = "https://github.com/tariqrafique/parse5-rust", rev = "370629a079da9a175c2acc78cf1db449f56e9642" }
 serde = { version = "1", features = ["derive"], optional = true }
 
 [features]

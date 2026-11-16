@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "comments": [
+    {
+      "marker": "m1",
+      "next": "import { Base"
+    },
+    {
+      "marker": "m2",
+      "next": "class Foo extends"
+    }
+  ]
+}

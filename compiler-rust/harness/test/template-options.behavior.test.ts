@@ -14,6 +14,12 @@
 //             rethrown as is (carry-forward #10 a)
 //   null/<case>  explicit null vs omitted/undefined for stylesheetConfig, outputConfig, outputConfig.minify
 //             (carry-forward #10 c); file order matters for the once-per-process stylesheetConfig warn
+//   ssr-stamp/<mode>/<case>  targetSSR × ssrMode {sync,async,asyncYield} × templates: the LWC version stamp in the
+//             compiled template (compile-template/index.ts:141-150 puts it last in `__lwcTmpl`'s body; engine-core
+//             checkVersionMismatch reads it from the function's toString()) (PLAN item 18 F7)
+//   parse-order/<erm>/<case>  malformed HTML mixing tokenizer, tree-construction and preprocessor parse errors: the thrown
+//             error's message + location at the default apiVersion, and the full ordered errors[] under
+//             experimentalErrorRecoveryMode (parse5 reports in occurrence order; PLAN item 18 F11, customHeaderCpe)
 //   erm/<v>   experimentalErrorRecoveryMode {true,false,omitted} × upstream transform-html.spec experimentalErrorRecoveryMode
 //             cases (valid, 3 invalid directives, custom element) + transform-css.spec `<` case
 // Goldens: goldens/template-options, JS oracle only (UPDATE_GOLDENS=1, JS backend).
@@ -22,6 +28,7 @@ import path from 'node:path';
 import { describe, it, beforeAll, expect } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { checkGolden, findFiles, errorObservation, errorMultiset } from '../src/optionRows';
+import { observeAggregate } from '../src/compareError';
 import { observeTemplate, TEMPLATE_ROOT } from '../src/templateObserve';
 import {
     CODED_THROWING_SHAPES, INSTRUMENTATION_SHAPES, THROWING_SHAPES, THROWING_WARNS, observeInstrumented, observeRethrow,
@@ -201,5 +208,76 @@ describe('template-options: null', () => {
     for (const [label, opts] of cases) {
         it(`null/${label}/render-mode`, () => checkGolden(GOLDEN_DIR, `null/${label}/render-mode`,
             observeWarnOrder(backend, INST_SNIPPETS['render-mode'], 'spread.html', { ...base, ...opts }, INSTRUMENTATION_SHAPES.real)));
+    }
+});
+
+// PLAN item 18 F7: the stamp count, and the lines that close `__lwcTmpl` (stamp, then `}`), trimmed so the printers'
+// indentation does not matter.
+describe('template-options: ssr-stamp', () => {
+    const templates: Record<string, string> = {
+        empty: '<template></template>',
+        text: '<template><div>hi {name}</div></template>',
+        light: '<template lwc:render-mode="light"><p>x</p></template>',
+        nested: '<template><template if:true={a}><span>a</span></template><x-child></x-child></template>',
+    };
+    for (const mode of ['sync', 'async', 'asyncYield']) {
+        for (const [name, src] of Object.entries(templates)) {
+            it(`ssr-stamp/${mode}/${name}`, () => {
+                let observed: unknown;
+                try {
+                    const code = backend.transform(src, 'stamp.html', { namespace: 'x', name: 'stamp', targetSSR: true, ssrMode: mode } as any).code;
+                    const lines = code.split('\n').map((l) => l.trim());
+                    const end = lines.findIndex((l) => l.startsWith('__lwcTmpl.'));
+                    observed = { ok: true, stamps: code.split('/*LWC compiler v').length - 1, close: end < 2 ? null : lines.slice(end - 2, end) };
+                } catch (e: any) { observed = errorObservation(e); }
+                checkGolden(GOLDEN_DIR, `ssr-stamp/${mode}/${name}`, observed);
+            });
+        }
+    }
+});
+
+// PLAN item 18 F11: parse5 reports preprocessor, tokenizer and tree-construction errors in occurrence order, and the
+// template compiler throws the first Error-level one (template.ts:76-86), so the order decides the thrown error.
+// Cases: an unclosed start tag before its end tag (tokenizer then tree), a control character inside an attribute
+// name (preprocessor then tokenizer), and LightningFlowComponents customHeaderCpe.html trimmed to its first element.
+describe('template-options: parse-order', () => {
+    const cases: Record<string, string> = {
+        'unclosed-start-tag': '<template><div a={b}\n</div></template>',
+        'control-char-in-attr-name': '<template><div x\u0001"y></div></template>',
+        'custom-header-cpe': [
+            '<template>',
+            `    <lightning-radio-group class='displayModeClass' name="select_displayMode" label={inputValues.displayMode.label}`,
+            '        options={displayChoicesAsOptions} value={inputValues.displayMode.value} type="radio"',
+            '        onchange={handleValueChange}',
+            '    </lightning-radio-group>',
+            '',
+            '    <lightning-input type="number" label={inputValues.orderNumber.label} name="select_orderNumber"',
+            '        value={inputValues.orderNumber.value} onchange={handleValueChange}></lightning-input>',
+            '</template>',
+            '',
+        ].join('\n'),
+    };
+    const observe = (src: string, opts: Record<string, unknown>) => {
+        try {
+            backend.transform(src, 'customHeaderCpe.html', opts as any);
+            return { ok: true };
+        } catch (e: any) {
+            const l = e?.location;
+            return {
+                ok: false,
+                name: e?.name ?? typeof e,
+                code: e?.code ?? null,
+                message: String(e?.message ?? e),
+                location: l && typeof l === 'object' ? { line: l.line ?? null, column: l.column ?? null, start: l.start ?? null, length: l.length ?? null } : null,
+                aggregate: observeAggregate(e) ?? null,
+            };
+        }
+    };
+    const ERM_CELLS: Array<[string, Record<string, unknown>]> = [['default', {}], ['erm-true', { experimentalErrorRecoveryMode: true }]];
+    for (const [label, extra] of ERM_CELLS) {
+        for (const [name, src] of Object.entries(cases)) {
+            const key = `parse-order/${label}/${name}`;
+            it(key, () => checkGolden(GOLDEN_DIR, key, observe(src, { namespace: 'x', name: 'customHeaderCpe', ...extra })));
+        }
     }
 });

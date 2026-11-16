@@ -426,3 +426,66 @@ fn resolve_matches_node_path_resolve() {
         "/abs/x/foo.js"
     );
 }
+
+/// Source map `sources`: Babel's default `sourceFileName` is `path.basename(path.relative(cwd, filename))`
+/// (@babel/core normalize-opts.js). Expected values are Node's, run with cwd `/tmp/f10` (PLAN item 18 F6).
+#[test]
+fn source_file_name_matches_babel_default() {
+    let c = std::path::Path::new("/tmp/f10");
+    for (f, want) in [
+        ("foo.js", "foo.js"),
+        ("/x/y/foo.js", "foo.js"),
+        ("./x/../foo.js", "foo.js"),
+        ("/tmp/f10", ""),
+        ("/tmp", ".."),
+        ("/", ".."),
+        ("", ""),
+        ("/tmp/f10/", ""),
+        ("sub/dir/", "dir"),
+        ("../..", ".."),
+        ("/tmp/f1/foo.js", "foo.js"),
+        ("..//b/foo.js", "foo.js"),
+        ("a\\b.js", "a\\b.js"),
+    ] {
+        assert_eq!(lwc_js::babel_source_file_name(c, f), want, "{f:?}");
+    }
+}
+
+/// component.ts keeps the ExportDefaultDeclaration's own leading comments on the rewritten export: a comment with no
+/// node before it moves below the register call, one after another node stays (Babel prints it as that node's
+/// trailing comment). Oracle observations: harness js-options `lead/*` (PLAN item 18 F10).
+#[test]
+fn export_leading_comments_follow_the_export() {
+    let line_after = |out: &str, marker: &str| -> String {
+        let mut it = out.lines().skip_while(|l| !l.contains(marker));
+        it.next()
+            .unwrap_or_else(|| panic!("{marker} missing: {out}"));
+        it.find(|l| !l.trim().is_empty() && !l.trim_start().starts_with("//"))
+            .unwrap_or_default()
+            .trim()
+            .to_string()
+    };
+    let first = t(
+        "// m1 header\n// m2 second\nexport default class Foo {}\n",
+        &opts(),
+    );
+    for m in ["m1", "m2"] {
+        assert_eq!(
+            line_after(&first, m),
+            "export default __lwc_component_class_internal;",
+            "{first}"
+        );
+    }
+    assert!(first.find("// m1").unwrap() < first.find("// m2").unwrap());
+    let anon = t("// m1 header\nexport default class {}\n", &opts());
+    assert_eq!(
+        line_after(&anon, "m1"),
+        "export default __lwc_component_class_internal;",
+        "{anon}"
+    );
+    let after = t(
+        "const x = 1;\n// m1 kept\nexport default class Foo { m() { return x; } }\n",
+        &opts(),
+    );
+    assert!(line_after(&after, "m1").starts_with("class Foo"), "{after}");
+}

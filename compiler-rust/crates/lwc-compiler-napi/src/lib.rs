@@ -511,6 +511,20 @@ mod tests {
         );
         assert_eq!(run(json!("inline")), serde_json::Value::Null);
         assert_eq!(run(json!(false)), serde_json::Value::Null);
+        // PLAN item 18 F6: an absolute filename maps to its basename (Babel's default sourceFileName), never
+        // the build path.
+        let o = to_compile_options(
+            json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": true}}),
+        )
+        .unwrap()
+        .unwrap();
+        let m = map_value(
+            lwc_compiler::dispatch(src, "/build/dir/c/a/a.js", &o)
+                .unwrap()
+                .map
+                .as_deref(),
+        );
+        assert_eq!(m["sources"], json!(["a.js"]));
     }
 
     use super::*;
