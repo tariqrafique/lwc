@@ -10,10 +10,10 @@ use lwc_shared::{
 mod options;
 mod transformers;
 pub use options::{
-    ApiVersionInput, CustomProperties, DynamicImportConfig, NormalizedTransformOptions,
-    OPTION_KEYS, OutputConfig, SourcemapInput, SsrModeInput, StylesheetConfig, TransformOptions,
-    missing_options_error, option_schema_document, validate_incoming, validate_transform_options,
-    warn_to_stderr,
+    ApiVersionInput, CustomProperties, DynamicImportConfig, NormalizedTransformOptions, Nullable,
+    OPTION_KEYS, OUTPUT_CONFIG_NULL_TYPE_ERROR, OptionsError, OutputConfig, SourcemapInput,
+    SsrModeInput, StylesheetConfig, TransformOptions, WarnSink, missing_options_error,
+    option_schema_document, validate_incoming, validate_transform_options, warn_to_stderr,
 };
 
 pub trait CompilerBackend {
@@ -45,7 +45,7 @@ impl CompilerBackend for RustBackend {
 /// warnings go to standard error, where upstream's `console.warn` writes ([`warn_to_stderr`]).
 pub fn normalize_compile_options(
     options: &CompileOptions,
-) -> Result<NormalizedTransformOptions, lwc_shared::CompileError> {
+) -> Result<NormalizedTransformOptions, OptionsError> {
     validate_transform_options(
         &TransformOptions::from_compile(options),
         &mut warn_to_stderr,
@@ -99,8 +99,13 @@ fn ssr_js_error(e: CompileError) -> TransformError {
 /// `transformSync` throws it: options.ts:206-211 `validateOutputConfig` -> `invariant(.., INVALID_SOURCEMAP_PROPERTY,
 /// [config.sourcemap])` (@lwc/errors compiler/errors.ts:109-119) -> `generateCompilerError(info, { messageArgs })`
 /// (:77-100). Code, message, level and url come from the info; with no `origin`, `filename` and `location`
-/// are `undefined` (own keys on the JS object), whatever file was being compiled.
-pub fn options_error(e: CompileError) -> TransformError {
+/// are `undefined` (own keys on the JS object), whatever file was being compiled. A JS throw out of
+/// validation ([`OptionsError::Rethrow`]: `console.warn` threw, `outputConfig: null`) is rethrown as is.
+pub fn options_error(e: impl Into<OptionsError>) -> TransformError {
+    let e = match e.into() {
+        OptionsError::Rethrow(r) => return TransformError::Rethrow(r),
+        OptionsError::Invalid(e) => e,
+    };
     let Some(d) = e.diagnostics.first() else {
         return unnormalized(e);
     };

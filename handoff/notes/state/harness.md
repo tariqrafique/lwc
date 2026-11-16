@@ -958,3 +958,7 @@ napi-css-errors     2/2 (lwc-compiler-napi single_errors_match_shipped, css-1009
 ## 2026-11-16 03:00 PST — AB-0008 r5 landed
 - Commits 0152aab (D1 warn sink at validation before dispatch, printDeprecations deleted; D2 catch at compile entry only, SSR gets raw throw; D3 lwcCode/code/level carried via lwc_shared::errors::{get_code_from_error, convert_error_to_diagnostic}; dead JsCallbacks::log / end rethrow / `let _` increment_counter / pub InstrumentationRecorder deleted; clippy baseline 134->133) + 48c00ba (ratchet reseed) + 8ab3753 (decisions snapshot).
 - Official board 475fc6bc0c9a VALID on main 8ab375354301. vs abda6df3bc80: js-options 448/1687 (+10), js-api 1239 passed / 448 skipped, template-options 406 (+97), skip-union 1687 cases 0 skipped-in-all; all other rows equal.
+
+## 2026-11-16 04:05 PST — Arch carry-forward #10 (D-0287) landed
+- Commits 5b6437e (a) warn throw aborts validation via JsWarn Err; (b) napi rethrow-without-value branch deleted; (c) Nullable<T> for stylesheetConfig/outputConfig/minify matching oracle; (d) codegen stops only on Error-level parse diagnostics (index.ts:68-72)) + 9cb6515 (reseed) + b0b786d (decisions snapshot).
+- Official board 05b3d3b6d929 VALID on main b0b786d5c61d. vs 475fc6bc0c9a: js-options 451/1690 (+3), js-api 1239 passed / 451 skipped, template-options 426 (+20), skip-union 1690 cases 0 skipped-in-all; all other rows equal; clippy 133.

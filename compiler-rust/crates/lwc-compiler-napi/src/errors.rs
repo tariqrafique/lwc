@@ -143,7 +143,9 @@ mod tests {
     const SINGLE: &str = include_str!("../tests/fixtures/single-error-shipped.json");
     const AGGREGATE: &str = include_str!("../tests/fixtures/aggregate-shipped.json");
 
-    fn opts(extra: Option<&Value>) -> Result<NormalizedTransformOptions, CompileError> {
+    fn opts(
+        extra: Option<&Value>,
+    ) -> Result<NormalizedTransformOptions, lwc_compiler::OptionsError> {
         let mut o = json!({"name": "foo", "namespace": "x"});
         for (k, v) in extra.and_then(Value::as_object).into_iter().flatten() {
             o[k] = v.clone();
@@ -153,7 +155,8 @@ mod tests {
 
     fn js_error(src: &str, filename: &str, extra: Option<&Value>) -> JsCompileError {
         match opts(extra) {
-            Err(e) => options_error(e),
+            Err(lwc_compiler::OptionsError::Invalid(e)) => options_error(e),
+            Err(e) => panic!("expected an invariant error, got {e:?}"),
             Ok(o) => match compile(src, filename, &o) {
                 Ok(_) => panic!("case must fail"),
                 Err(f) => f.result(),

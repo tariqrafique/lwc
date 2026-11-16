@@ -57,13 +57,17 @@ pub enum TemplateCatch {
     Escapes { name: &'static str, message: String },
 }
 
-/// A counter throw that leaves `transformSync` untouched: ssr-compiler compile-template/index.ts:83-95
-/// calls template-compiler `parse` (index.ts:33-38), which has no catch, and no facade normalizes it.
+/// A throw that leaves `transformSync` untouched: a counter throw under targetSSR (ssr-compiler
+/// compile-template/index.ts:83-95 calls template-compiler `parse` (index.ts:33-38), which has no catch,
+/// and no facade normalizes it), and every throw out of `validateTransformOptions` that is not an
+/// `invariant` (@lwc/compiler transformer.ts:82 runs it outside any try).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Rethrow {
-    /// The `TypeError` the call itself raised (no callable `incrementCounter`), with this message.
-    NotAFunction(&'static str),
-    /// The callback threw this value; the binding rethrows the original JS value itself.
+    /// A `TypeError` the JS engine itself raised, with this message: calling a non-callable
+    /// `incrementCounter`, or reading a property of an explicit `null` option (`outputConfig: null`).
+    TypeError(&'static str),
+    /// A caller callback (`incrementCounter`, or the loader's `console.warn`) threw this value; the
+    /// binding rethrows the original JS value itself.
     Value(ThrownValue),
 }
 
@@ -129,7 +133,7 @@ impl CounterError {
     /// No catch between the emit site and the caller (the SSR template parse).
     pub fn rethrow(self, not_a_function: &'static str) -> Rethrow {
         match self {
-            CounterError::NotCallable => Rethrow::NotAFunction(not_a_function),
+            CounterError::NotCallable => Rethrow::TypeError(not_a_function),
             CounterError::Threw(v) => Rethrow::Value(v),
         }
     }
@@ -245,7 +249,7 @@ mod tests {
         );
         assert_eq!(
             CounterError::NotCallable.rethrow("nf"),
-            Rethrow::NotAFunction("nf")
+            Rethrow::TypeError("nf")
         );
     }
 

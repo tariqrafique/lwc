@@ -10,7 +10,7 @@ use lwc_shared::errors::CompilerValidationErrors;
 use lwc_shared::{
     CompileError, CompileOptions, CompilerDiagnostic, CustomPropertiesResolution,
     CustomRendererConfig, DeprecationId, InstrumentationHandle, NotALiteralKind, ProducerPosition,
-    Sourcemap, SsrMode, SsrModeLiteral,
+    Rethrow, Sourcemap, SsrMode, SsrModeLiteral,
 };
 
 /// JSON names of [`TransformOptions`] (camelCase, `targetSSR` kept as upstream spells it).
@@ -130,6 +130,30 @@ pub enum SsrModeInput {
     NonString(serde_json::Value),
 }
 
+/// An object option as received, where JS `null` differs from omitted: upstream checks `isUndefined`
+/// (options.ts:189, :198, :215), so an explicit `null` counts as passed. Omitted is the outer `None`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Nullable<T> {
+    Null,
+    Value(T),
+}
+
+impl<T> Nullable<T> {
+    /// The value; `None` for an explicit `null`.
+    pub fn as_value(&self) -> Option<&T> {
+        match self {
+            Nullable::Null => None,
+            Nullable::Value(v) => Some(v),
+        }
+    }
+}
+
+impl<T> From<T> for Nullable<T> {
+    fn from(v: T) -> Self {
+        Nullable::Value(v)
+    }
+}
+
 /// `StylesheetConfig` (options.ts:64).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StylesheetConfig {
@@ -153,7 +177,8 @@ pub struct DynamicImportConfig {
 #[derive(Debug, Clone, PartialEq)]
 pub struct OutputConfig {
     pub sourcemap: Option<SourcemapInput>,
-    /// `true` when the key was set (any JSON value). Upstream warns and drops it.
+    /// `true` when the key was set to any value, `null` included (`!isUndefined(config.minify)`,
+    /// options.ts:215). Upstream warns and drops it.
     pub minify_present: bool,
 }
 
@@ -162,13 +187,15 @@ pub struct OutputConfig {
 pub struct TransformOptions {
     pub name: String,
     pub namespace: String,
-    pub stylesheet_config: Option<StylesheetConfig>,
+    /// `null` warns like any value (options.ts:189) and normalizes as omitted (`options.stylesheetConfig &&`).
+    pub stylesheet_config: Option<Nullable<StylesheetConfig>>,
     pub dynamic_imports: Option<DynamicImportConfig>,
     pub experimental_dynamic_directive: Option<bool>,
     pub enable_dynamic_components: Option<bool>,
     pub enable_synthetic_element_internals: Option<bool>,
     pub experimental_complex_expressions: Option<bool>,
-    pub output_config: Option<OutputConfig>,
+    /// `null` reaches `validateOutputConfig(null)` (options.ts:198-199), which throws a `TypeError`.
+    pub output_config: Option<Nullable<OutputConfig>>,
     pub is_explicit_import: Option<bool>,
     pub preserve_html_comments: Option<bool>,
     pub scoped_styles: Option<bool>,
@@ -394,42 +421,75 @@ pub(crate) fn reset_stylesheet_warn_latch_for_tests() {
     STYLESHEET_WARNED.store(false, Ordering::Relaxed);
 }
 
-/// Upstream's `console.warn` for a Rust caller with no sink of its own: standard error.
-pub fn warn_to_stderr(d: DeprecationId) {
+/// Upstream's `console.warn` for a Rust caller with no sink of its own: standard error. It never throws.
+pub fn warn_to_stderr(d: DeprecationId) -> Result<(), Rethrow> {
     eprintln!("{}", d.message());
+    Ok(())
 }
+
+/// Upstream's `console.warn` as the validator calls it. `Err` = the call threw that value: validation
+/// stops there and `transformSync` throws it, so nothing is compiled.
+pub type WarnSink<'a> = dyn FnMut(DeprecationId) -> Result<(), Rethrow> + 'a;
+
+/// How `validateTransformOptions` fails.
+#[derive(Debug, Clone, PartialEq)]
+pub enum OptionsError {
+    /// An `invariant` (LWC1021, LWC1023): a `CompilerError` (`options_error` surfaces it).
+    Invalid(CompileError),
+    /// A JS throw that leaves `transformSync` as it is (transformer.ts:82 has no catch): `console.warn`
+    /// threw ([`Rethrow::Value`]), or the `TypeError` of `validateOutputConfig(null)`.
+    Rethrow(Rethrow),
+}
+
+impl From<CompileError> for OptionsError {
+    fn from(e: CompileError) -> Self {
+        OptionsError::Invalid(e)
+    }
+}
+
+/// options.ts:207 `config.sourcemap` with `config === null`, as V8 words it.
+pub const OUTPUT_CONFIG_NULL_TYPE_ERROR: &str =
+    "Cannot read properties of null (reading 'sourcemap')";
 
 /// `validateTransformOptions`. `warn` is upstream's `console.warn` (options.ts:185-219, D-0212 / D-0250):
 /// called synchronously with each deprecation, in upstream order, while validating, so before anything is
-/// compiled (an instrumentation counter fires only later, during the compile).
+/// compiled (an instrumentation counter fires only later, during the compile). A `warn` that throws ends
+/// validation with [`OptionsError::Rethrow`], as the throw leaves upstream's `validateOptions`.
 pub fn validate_transform_options(
     options: &TransformOptions,
-    warn: &mut dyn FnMut(DeprecationId),
-) -> Result<NormalizedTransformOptions, CompileError> {
-    // validateOptions: stylesheet warn (once), then outputConfig (sourcemap throws before minify warn).
+    warn: &mut WarnSink<'_>,
+) -> Result<NormalizedTransformOptions, OptionsError> {
+    // validateOptions: stylesheet warn (once; `null` counts), then outputConfig (`null` throws reading
+    // `sourcemap`; an invalid sourcemap throws before the minify warn).
     if take_stylesheet_warn(options.stylesheet_config.is_some(), &STYLESHEET_WARNED) {
-        warn(DeprecationId::StylesheetConfig);
+        warn(DeprecationId::StylesheetConfig).map_err(OptionsError::Rethrow)?;
     }
-    let sourcemap = match options.output_config.as_ref() {
+    let output_config = match options.output_config.as_ref() {
+        None => None,
+        Some(Nullable::Null) => {
+            return Err(OptionsError::Rethrow(Rethrow::TypeError(
+                OUTPUT_CONFIG_NULL_TYPE_ERROR,
+            )));
+        }
+        Some(Nullable::Value(c)) => Some(c),
+    };
+    let sourcemap = match output_config {
         None => DEFAULT_OUTPUT_SOURCEMAP,
         Some(config) => match config.sourcemap.clone() {
             None => DEFAULT_OUTPUT_SOURCEMAP,
             Some(SourcemapInput::Bool(b)) => Sourcemap::from_bool(b),
             Some(SourcemapInput::Text(s)) if s == "inline" => Sourcemap::Inline,
-            Some(SourcemapInput::Text(s)) => return Err(invalid_sourcemap(&s)),
+            Some(SourcemapInput::Text(s)) => return Err(invalid_sourcemap(&s).into()),
         },
     };
-    if options
-        .output_config
-        .as_ref()
-        .is_some_and(|c| c.minify_present)
-    {
-        warn(DeprecationId::OutputConfigMinify);
+    if output_config.is_some_and(|c| c.minify_present) {
+        warn(DeprecationId::OutputConfigMinify).map_err(OptionsError::Rethrow)?;
     }
 
     let stylesheet_resolution = options
         .stylesheet_config
         .as_ref()
+        .and_then(Nullable::as_value)
         .and_then(|c| c.custom_properties.as_ref())
         .and_then(|c| c.resolution.clone())
         .unwrap_or(CustomPropertiesResolution::Native);
@@ -536,10 +596,10 @@ fn raw_ssr_mode_literal(v: &serde_json::Value) -> SsrModeLiteral {
 pub fn validate_incoming(
     options: Option<&TransformOptions>,
     received: &str,
-    warn: &mut dyn FnMut(DeprecationId),
-) -> Result<NormalizedTransformOptions, CompileError> {
+    warn: &mut WarnSink<'_>,
+) -> Result<NormalizedTransformOptions, OptionsError> {
     match options {
-        None => Err(missing_options_error(received)),
+        None => Err(missing_options_error(received).into()),
         Some(o) => validate_transform_options(o, warn),
     }
 }
@@ -574,11 +634,13 @@ impl TransformOptions {
     pub fn from_compile(o: &CompileOptions) -> Self {
         let stylesheet_config = match &o.stylesheet_config.custom_properties_resolution {
             CustomPropertiesResolution::Native => None,
-            CustomPropertiesResolution::Module { name } => Some(StylesheetConfig {
-                custom_properties: Some(CustomProperties {
-                    resolution: Some(CustomPropertiesResolution::Module { name: name.clone() }),
-                }),
-            }),
+            CustomPropertiesResolution::Module { name } => {
+                Some(Nullable::Value(StylesheetConfig {
+                    custom_properties: Some(CustomProperties {
+                        resolution: Some(CustomPropertiesResolution::Module { name: name.clone() }),
+                    }),
+                }))
+            }
         };
         Self {
             name: o.name.clone(),
@@ -592,14 +654,14 @@ impl TransformOptions {
             enable_dynamic_components: o.enable_dynamic_components,
             enable_synthetic_element_internals: Some(o.enable_synthetic_element_internals),
             experimental_complex_expressions: o.experimental_complex_expressions,
-            output_config: Some(OutputConfig {
+            output_config: Some(Nullable::Value(OutputConfig {
                 sourcemap: Some(match o.sourcemap {
                     Sourcemap::Off => SourcemapInput::Bool(false),
                     Sourcemap::On => SourcemapInput::Bool(true),
                     Sourcemap::Inline => SourcemapInput::Text("inline".into()),
                 }),
                 minify_present: false,
-            }),
+            })),
             is_explicit_import: Some(o.is_explicit_import),
             preserve_html_comments: o.preserve_html_comments,
             scoped_styles: o.scoped_styles,
@@ -654,8 +716,15 @@ mod tests {
         assert!(!DeprecationId::OutputConfigMinify.once_per_process());
     }
 
-    fn validate(o: &TransformOptions) -> Result<NormalizedTransformOptions, CompileError> {
-        validate_transform_options(o, &mut |_| {})
+    fn validate(o: &TransformOptions) -> Result<NormalizedTransformOptions, OptionsError> {
+        validate_transform_options(o, &mut |_| Ok(()))
+    }
+
+    fn invalid(e: OptionsError) -> CompileError {
+        match e {
+            OptionsError::Invalid(e) => e,
+            other => panic!("expected an invariant error, got {other:?}"),
+        }
     }
 
     fn bare() -> TransformOptions {
@@ -682,11 +751,14 @@ mod tests {
     #[test]
     fn invalid_sourcemap_is_lwc1021_before_minify_matters() {
         let mut o = bare();
-        o.output_config = Some(OutputConfig {
-            sourcemap: Some(SourcemapInput::Text("foo".into())),
-            minify_present: true,
-        });
-        let e = validate(&o).unwrap_err();
+        o.output_config = Some(
+            OutputConfig {
+                sourcemap: Some(SourcemapInput::Text("foo".into())),
+                minify_present: true,
+            }
+            .into(),
+        );
+        let e = invalid(validate(&o).unwrap_err());
         assert_eq!(e.diagnostics[0].code, Some(1021));
         assert_eq!(
             e.message,
@@ -769,43 +841,125 @@ mod tests {
         reset_stylesheet_warn_latch_for_tests();
         let warned = |o: &TransformOptions| {
             let mut w = Vec::new();
-            let r = validate_transform_options(o, &mut |d| w.push(d));
+            let r = validate_transform_options(o, &mut |d| {
+                w.push(d);
+                Ok(())
+            });
             (r.is_ok(), w)
         };
         let mut o = bare();
-        o.stylesheet_config = Some(StylesheetConfig {
-            custom_properties: None,
-        });
+        o.stylesheet_config = Some(
+            StylesheetConfig {
+                custom_properties: None,
+            }
+            .into(),
+        );
         assert_eq!(warned(&o), (true, vec![DeprecationId::StylesheetConfig]));
         assert_eq!(warned(&o), (true, vec![]));
-        o.output_config = Some(OutputConfig {
-            sourcemap: None,
-            minify_present: true,
-        });
+        o.output_config = Some(
+            OutputConfig {
+                sourcemap: None,
+                minify_present: true,
+            }
+            .into(),
+        );
         assert_eq!(warned(&o), (true, vec![DeprecationId::OutputConfigMinify]));
         assert_eq!(warned(&o), (true, vec![DeprecationId::OutputConfigMinify]));
         // Invalid sourcemap throws after the stylesheet warn and before minify.
         reset_stylesheet_warn_latch_for_tests();
-        o.output_config = Some(OutputConfig {
-            sourcemap: Some(SourcemapInput::Text("nope".into())),
-            minify_present: true,
-        });
+        o.output_config = Some(
+            OutputConfig {
+                sourcemap: Some(SourcemapInput::Text("nope".into())),
+                minify_present: true,
+            }
+            .into(),
+        );
         assert_eq!(warned(&o), (false, vec![DeprecationId::StylesheetConfig]));
     }
 
     #[test]
     fn validate_incoming_none_is_lwc1023_with_received() {
-        let e = validate_incoming(None, "null", &mut |_| {}).unwrap_err();
+        let e = invalid(validate_incoming(None, "null", &mut |_| Ok(())).unwrap_err());
         assert_eq!(e.diagnostics[0].code, Some(1023));
         assert_eq!(
             e.message,
             "LWC1023: Expected options object, received \"null\"."
         );
-        let e = validate_incoming(None, "undefined", &mut |_| {}).unwrap_err();
+        let e = invalid(validate_incoming(None, "undefined", &mut |_| Ok(())).unwrap_err());
         assert_eq!(
             e.message,
             "LWC1023: Expected options object, received \"undefined\"."
         );
+    }
+
+    /// Carry-forward #10 (a): a `console.warn` that throws ends `validateOptions` there (options.ts:192,
+    /// :216): the error is the thrown value, no later warn runs, and nothing is dispatched. Oracle:
+    /// harness template-options / js-options `warn/warn-throws/*`.
+    #[test]
+    fn a_throwing_warn_stops_validation() {
+        let _guard = WARN_TEST_LOCK.lock().unwrap();
+        reset_stylesheet_warn_latch_for_tests();
+        let thrown = Rethrow::Value(lwc_shared::ThrownValue::Primitive {
+            type_of: "string",
+            display: "warnboom".into(),
+        });
+        let mut o = bare();
+        o.stylesheet_config = Some(Nullable::Null);
+        o.output_config = Some(
+            OutputConfig {
+                sourcemap: None,
+                minify_present: true,
+            }
+            .into(),
+        );
+        let mut calls = Vec::new();
+        let r = validate_transform_options(&o, &mut |d| {
+            calls.push(d);
+            Err(thrown.clone())
+        });
+        assert_eq!(r.unwrap_err(), OptionsError::Rethrow(thrown.clone()));
+        assert_eq!(calls, [DeprecationId::StylesheetConfig]);
+        // Latched: the minify warn is now the first, and its throw is the result.
+        let mut calls = Vec::new();
+        let r = validate_transform_options(&o, &mut |d| {
+            calls.push(d);
+            Err(thrown.clone())
+        });
+        assert_eq!(r.unwrap_err(), OptionsError::Rethrow(thrown));
+        assert_eq!(calls, [DeprecationId::OutputConfigMinify]);
+    }
+
+    /// Carry-forward #10 (c): explicit `null` is not omitted. `stylesheetConfig: null` warns (options.ts:189
+    /// `!isUndefined`) and normalizes as omitted (:230 `options.stylesheetConfig &&`); `outputConfig: null`
+    /// throws the `TypeError` of `config.sourcemap` (:198-199, :207), after the stylesheet warn. Oracle:
+    /// harness template-options `null/*`.
+    #[test]
+    fn explicit_null_stylesheet_and_output_config_match_upstream() {
+        let _guard = WARN_TEST_LOCK.lock().unwrap();
+        reset_stylesheet_warn_latch_for_tests();
+        let mut o = bare();
+        o.stylesheet_config = Some(Nullable::Null);
+        let mut w = Vec::new();
+        let n = validate_transform_options(&o, &mut |d| {
+            w.push(d);
+            Ok(())
+        })
+        .unwrap();
+        assert_eq!(w, [DeprecationId::StylesheetConfig]);
+        assert_eq!(n.stylesheet_resolution, CustomPropertiesResolution::Native);
+
+        reset_stylesheet_warn_latch_for_tests();
+        o.output_config = Some(Nullable::Null);
+        let mut w = Vec::new();
+        let r = validate_transform_options(&o, &mut |d| {
+            w.push(d);
+            Ok(())
+        });
+        assert_eq!(
+            r.unwrap_err(),
+            OptionsError::Rethrow(Rethrow::TypeError(OUTPUT_CONFIG_NULL_TYPE_ERROR))
+        );
+        assert_eq!(w, [DeprecationId::StylesheetConfig]);
     }
 
     #[test]

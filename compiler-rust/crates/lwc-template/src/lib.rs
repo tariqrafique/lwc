@@ -98,10 +98,7 @@ pub fn compile(
         }
     };
 
-    let has_error = parsing
-        .warnings
-        .iter()
-        .any(|w| matches!(w.level, DiagnosticLevel::Error | DiagnosticLevel::Fatal));
+    let has_error = has_parsing_error(&parsing.warnings);
 
     let (code, warnings) = match &parsing.root {
         Some(root) if !has_error => match codegen::generate(root, &options, filename, &tokens) {
@@ -159,6 +156,14 @@ fn compile_catch(
             name: Some(name),
         }),
     }
+}
+
+/// template-compiler index.ts:68-72 `hasParsingError` (`warning.level === DiagnosticLevel.Error`): only an
+/// Error-level parse diagnostic stops codegen. A `Fatal`, `Warning` or `Log` one does not; upstream keeps
+/// it in `warnings` (and @lwc/compiler's template transformer then keeps only `Warning`s,
+/// transformers/template.ts:90).
+fn has_parsing_error(warnings: &[CompilerDiagnostic]) -> bool {
+    warnings.iter().any(|w| w.level == DiagnosticLevel::Error)
 }
 
 #[cfg(test)]
@@ -2740,6 +2745,72 @@ mod tests {
     /// object, so an Object.prototype key resolves to an inherited member: `<div constructor>` crashes with
     /// "Unexpected compilation error: LWC1052: Error parsing attribute: validElements.includes is not a function",
     /// `<div __proto__>` skips the 1057 warning (only 1125). Rust treats every such name like any other unknown attribute.
+    /// Carry-forward #10 (d): only an Error-level parse diagnostic stops codegen, as upstream index.ts:68-72.
+    /// Oracle: a child element's `lwc:dynamic` counter throws an @lwc/errors `CompilerError` of each level;
+    /// parser.ts:443 `withErrorRecovery` keeps it as a parse diagnostic, and template-compiler `compile`
+    /// generates code for Fatal (0) and Warning (2) but not Error (1).
+    #[test]
+    fn only_error_level_parse_diagnostics_stop_codegen_like_upstream() {
+        let root = lwc_shared::oracle_root();
+        let script = r#"
+const metric = process.env.METRIC;
+const p = process.env.LWC_ORACLE + '/packages/@lwc/';
+const { compile } = require(p + 'template-compiler');
+const { CompilerError } = require(p + 'errors');
+const src = '<template><div><x-foo lwc:dynamic={ctor}></x-foo></div></template>';
+const out = [0, 1, 2].map((level) => {
+  const instrumentation = { incrementCounter: (m) => {
+    if (m === metric) throw new CompilerError(1234, 'LWC1234: boom', undefined, undefined, level);
+  } };
+  const r = compile(src, 'foo.html', { experimentalDynamicDirective: true, instrumentation, namespace: 'x', name: 'foo' });
+  return { level, generated: r.code.length > 0, kept: r.warnings.some((w) => w.code === 1234 && w.level === level) };
+});
+console.log(JSON.stringify(out));
+"#;
+        let out = std::process::Command::new("node")
+            .args(["-e", script])
+            .env("LWC_ORACLE", &root)
+            .env(
+                "METRIC",
+                lwc_shared::CompilerMetric::LwcDynamicDirective.js_value(),
+            )
+            .output()
+            .expect("node is required for this oracle test");
+        assert!(
+            out.status.success(),
+            "{}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+        let want: serde_json::Value = serde_json::from_slice(&out.stdout).expect("oracle json");
+        let level = |n: u64| match n {
+            0 => DiagnosticLevel::Fatal,
+            1 => DiagnosticLevel::Error,
+            2 => DiagnosticLevel::Warning,
+            _ => unreachable!(),
+        };
+        let cases = want.as_array().unwrap();
+        assert_eq!(cases.len(), 3, "{want}");
+        for c in cases {
+            assert_eq!(c["kept"], true, "oracle keeps the diagnostic: {want}");
+            let d = CompilerDiagnostic::new(
+                Some(1234),
+                "LWC1234: boom",
+                level(c["level"].as_u64().unwrap()),
+                None,
+                None,
+            );
+            assert_eq!(
+                !has_parsing_error(&[d]),
+                c["generated"].as_bool().unwrap(),
+                "level {}: {want}",
+                c["level"]
+            );
+        }
+        // Fatal (0) generates upstream, Error (1) does not: the case this test exists for.
+        assert_eq!(cases[0]["generated"], true, "{want}");
+        assert_eq!(cases[1]["generated"], false, "{want}");
+    }
+
     /// The names come from node at test time; a missing node fails the test.
     #[test]
     fn prototype_keys_are_plain_unknown_attributes() {

@@ -116,6 +116,45 @@ export function observeWarnOrder(
     }
 }
 
+/** Carry-forward #10 (a): values a `console.warn` throws (one per class the rethrow must keep as is). */
+export const THROWING_WARNS: Record<string, () => unknown> = {
+    error: () => new Error('warnboom'),
+    string: () => 'warnboom',
+    undefined: () => undefined,
+};
+
+/**
+ * Carry-forward #10 (a): a `console.warn` that throws ends upstream's `validateOptions` there (options.ts:192,
+ * :216, called from transformer.ts:82 outside any try): no later warn and no counter call (nothing is
+ * compiled), and the caller gets the warn's own thrown value (`identical`).
+ */
+export function observeWarnThrow(
+    backend: CompilerBackend,
+    src: string,
+    filename: string,
+    opts: Record<string, unknown>,
+    make: () => unknown,
+) {
+    const calls: Call[] = [];
+    const warn = console.warn;
+    let threw = false;
+    let thrown: unknown;
+    console.warn = (...args: unknown[]) => {
+        calls.push(['warn', args.map(String).join(' ')]);
+        threw = true;
+        thrown = make();
+        throw thrown;
+    };
+    try {
+        const res = backend.transform(src, filename, { ...opts, instrumentation: INSTRUMENTATION_SHAPES.real(calls) } as any);
+        return { calls, ok: true, warnings: (res.warnings ?? []).map((w: any) => w.code) };
+    } catch (e: any) {
+        return { calls, ok: false, warnThrew: threw, identical: threw && e === thrown, ...thrownShape(e) };
+    } finally {
+        console.warn = warn;
+    }
+}
+
 /** A thrown value as the caller sees it, without assuming it is an Error. */
 function thrownShape(e: any) {
     if (e === null || (typeof e !== 'object' && typeof e !== 'function')) return { type: e === null ? 'null' : typeof e, value: typeof e === 'symbol' ? e.toString() : String(e) };

@@ -43,9 +43,24 @@ pub struct JsCompileOptions {
     /// before serde and passes the caller's object itself as `transform`'s 4th argument.
     pub instrumentation: Option<serde_json::Value>,
     pub is_explicit_import: Option<bool>,
-    pub output_config: Option<JsOutputConfig>,
+    /// `Some(None)`: an explicit `null`, which upstream does not treat as omitted (see [`nullable`]).
+    #[serde(default, deserialize_with = "nullable")]
+    pub output_config: Option<Option<JsOutputConfig>>,
     pub custom_renderer_config: Option<JsCustomRendererConfig>,
-    pub stylesheet_config: Option<JsStylesheetConfig>,
+    /// `Some(None)`: an explicit `null` (see [`nullable`]).
+    #[serde(default, deserialize_with = "nullable")]
+    pub stylesheet_config: Option<Option<JsStylesheetConfig>>,
+}
+
+/// A key whose explicit `null` upstream reads as passed (`!isUndefined`, options.ts:189, :198, :215):
+/// `Some(None)` for `null`, `None` (serde `default`) when omitted. A plain `Option` would map both to
+/// `None`. napi drops keys whose value is `undefined`, so omitted and `undefined` arrive alike.
+fn nullable<'de, D, T>(d: D) -> std::result::Result<Option<Option<T>>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+    T: Deserialize<'de>,
+{
+    Option::<T>::deserialize(d).map(Some)
 }
 
 /// `stylesheetConfig`: `{ customProperties?: { resolution?: {type:'native'} | {type:'module', name} } }`.
@@ -80,8 +95,9 @@ pub struct JsDynamicImports {
 #[serde(deny_unknown_fields)]
 pub struct JsOutputConfig {
     pub sourcemap: Option<JsSourcemap>,
-    /// Deprecated upstream (warns, no effect); accepted and ignored.
-    pub minify: Option<serde_json::Value>,
+    /// Deprecated upstream (warns, no effect); accepted and ignored. `null` warns too (see [`nullable`]).
+    #[serde(default, deserialize_with = "nullable")]
+    pub minify: Option<Option<serde_json::Value>>,
 }
 
 /// JS `String(value)` for a JSON value: objects `[object Object]`, arrays `join(",")` (null items empty).
@@ -251,12 +267,13 @@ fn map_value(map: Option<&str>) -> serde_json::Value {
 /// Deserialize only. All validation lives in `lwc_compiler::validate_incoming`, which calls `warn`
 /// (upstream's `console.warn`) with each deprecation while validating.
 /// `Err(napi)` = malformed JSON or an unknown key (D-0203, `deny_unknown_fields`).
-/// `Ok(Err(compile))` = LWC validation error (LWC1021 / LWC1023).
+/// `Ok(Err(options))` = an LWC validation error (LWC1021 / LWC1023), or a JS throw out of validation
+/// (`warn` threw, `outputConfig: null`).
 fn to_compile_options_with(
     options: serde_json::Value,
     callbacks: Option<lwc_shared::InstrumentationHandle>,
-    warn: &mut dyn FnMut(lwc_shared::DeprecationId),
-) -> Result<std::result::Result<lwc_compiler::NormalizedTransformOptions, lwc_shared::CompileError>>
+    warn: &mut lwc_compiler::WarnSink<'_>,
+) -> Result<std::result::Result<lwc_compiler::NormalizedTransformOptions, lwc_compiler::OptionsError>>
 {
     if options.is_null() {
         return Ok(lwc_compiler::validate_incoming(
@@ -301,9 +318,9 @@ fn to_compile_options_with(
 #[cfg(test)]
 fn to_compile_options(
     options: serde_json::Value,
-) -> Result<std::result::Result<lwc_compiler::NormalizedTransformOptions, lwc_shared::CompileError>>
+) -> Result<std::result::Result<lwc_compiler::NormalizedTransformOptions, lwc_compiler::OptionsError>>
 {
-    to_compile_options_with(options, None, &mut |_| {})
+    to_compile_options_with(options, None, &mut |_| Ok(()))
 }
 
 /// Map the wire struct onto [`lwc_compiler::TransformOptions`]. No defaults, no type checks, no LWC codes.
@@ -350,13 +367,16 @@ fn wire_to_transform(options: JsCompileOptions) -> lwc_compiler::TransformOption
                 loader: d.loader,
                 strict_specifier: d.strict_specifier,
             }),
-        output_config: options.output_config.map(|c| lwc_compiler::OutputConfig {
-            sourcemap: c.sourcemap.map(|sm| match sm {
-                JsSourcemap::Bool(b) => lwc_compiler::SourcemapInput::Bool(b),
-                JsSourcemap::Str(s) => lwc_compiler::SourcemapInput::Text(s),
-                JsSourcemap::Other(v) => lwc_compiler::SourcemapInput::Text(js_string(&v)),
+        output_config: options.output_config.map(|c| match c {
+            None => lwc_compiler::Nullable::Null,
+            Some(c) => lwc_compiler::Nullable::Value(lwc_compiler::OutputConfig {
+                sourcemap: c.sourcemap.map(|sm| match sm {
+                    JsSourcemap::Bool(b) => lwc_compiler::SourcemapInput::Bool(b),
+                    JsSourcemap::Str(s) => lwc_compiler::SourcemapInput::Text(s),
+                    JsSourcemap::Other(v) => lwc_compiler::SourcemapInput::Text(js_string(&v)),
+                }),
+                minify_present: c.minify.is_some(),
             }),
-            minify_present: c.minify.is_some(),
         }),
         custom_renderer_config: options.custom_renderer_config.map(|c| {
             lwc_shared::CustomRendererConfig {
@@ -372,9 +392,9 @@ fn wire_to_transform(options: JsCompileOptions) -> lwc_compiler::TransformOption
                     .collect(),
             }
         }),
-        stylesheet_config: options
-            .stylesheet_config
-            .map(|c| lwc_compiler::StylesheetConfig {
+        stylesheet_config: options.stylesheet_config.map(|c| match c {
+            None => lwc_compiler::Nullable::Null,
+            Some(c) => lwc_compiler::Nullable::Value(lwc_compiler::StylesheetConfig {
                 custom_properties: c.custom_properties.map(|p| lwc_compiler::CustomProperties {
                     resolution: p.resolution.map(|r| match r {
                         JsResolution::Native {} => lwc_shared::CustomPropertiesResolution::Native,
@@ -384,6 +404,7 @@ fn wire_to_transform(options: JsCompileOptions) -> lwc_compiler::TransformOption
                     }),
                 }),
             }),
+        }),
     }
 }
 
@@ -596,6 +617,74 @@ mod tests {
         assert_eq!(js_string(&serde_json::json!(42)), "42");
     }
 
+    fn invalid(e: lwc_compiler::OptionsError) -> lwc_shared::CompileError {
+        match e {
+            lwc_compiler::OptionsError::Invalid(e) => e,
+            other => panic!("expected an invariant error, got {other:?}"),
+        }
+    }
+
+    /// Carry-forward #10 (c): the wire tells an explicit `null` from an omitted key for stylesheetConfig,
+    /// outputConfig and outputConfig.minify (oracle: harness template-options `null/*`).
+    #[test]
+    fn explicit_null_is_not_omitted_on_the_wire() {
+        let wire = |v: serde_json::Value| {
+            let mut o = json!({"name": "a", "namespace": "x"});
+            o.as_object_mut()
+                .unwrap()
+                .extend(v.as_object().unwrap().clone());
+            wire_to_transform(serde_json::from_value(o).unwrap())
+        };
+        let w = wire(json!({}));
+        assert!(w.stylesheet_config.is_none() && w.output_config.is_none());
+        let w = wire(json!({"stylesheetConfig": null, "outputConfig": null}));
+        assert_eq!(w.stylesheet_config, Some(lwc_compiler::Nullable::Null));
+        assert_eq!(w.output_config, Some(lwc_compiler::Nullable::Null));
+        let minify = |v: serde_json::Value| match wire(v).output_config {
+            Some(lwc_compiler::Nullable::Value(c)) => c.minify_present,
+            other => panic!("{other:?}"),
+        };
+        assert!(!minify(json!({"outputConfig": {}})));
+        assert!(minify(json!({"outputConfig": {"minify": null}})));
+        assert!(minify(json!({"outputConfig": {"minify": false}})));
+        // `outputConfig: null` is the TypeError transformSync throws (rethrown, not an `{ error }` result).
+        assert_eq!(
+            to_compile_options(json!({"name": "a", "namespace": "x", "outputConfig": null}))
+                .unwrap()
+                .unwrap_err(),
+            lwc_compiler::OptionsError::Rethrow(lwc_shared::Rethrow::TypeError(
+                "Cannot read properties of null (reading 'sourcemap')"
+            ))
+        );
+    }
+
+    /// Carry-forward #10 (a): a warn that throws is returned to the validator, so the compile never runs
+    /// (no counter call) and the thrown value is what `transform` rethrows.
+    #[test]
+    fn a_throwing_warn_aborts_before_the_compile() {
+        let rec = std::sync::Arc::new(Rec::default());
+        let h = lwc_shared::InstrumentationHandle(rec.clone());
+        let v = lwc_shared::ThrownValue::Nullish("undefined");
+        let mut warned = Vec::new();
+        let r = transform_with(
+            r#"<template lwc:render-mode="light"><div></div></template>"#,
+            "a.html",
+            json!({"name": "a", "namespace": "x", "instrumentation": {}, "outputConfig": {"minify": true}}),
+            Some(h),
+            &mut |d| {
+                warned.push(d);
+                Err(lwc_shared::Rethrow::Value(v.clone()))
+            },
+        )
+        .unwrap();
+        assert!(matches!(r, Err(lwc_shared::Rethrow::Value(ref t)) if *t == v));
+        assert_eq!(warned, [lwc_shared::DeprecationId::OutputConfigMinify]);
+        assert!(
+            rec.0.lock().unwrap().is_empty(),
+            "no counter: nothing compiled"
+        );
+    }
+
     #[test]
     fn invalid_sourcemap_is_lwc1021() {
         for bad in [json!("foo"), json!(1)] {
@@ -604,6 +693,7 @@ mod tests {
             )
             .unwrap()
             .unwrap_err();
+            let e = invalid(e);
             assert_eq!(e.diagnostics[0].code, Some(1021));
             assert!(
                 e.message.starts_with(
@@ -644,10 +734,10 @@ mod tests {
             enable_lightning_web_security_transforms: None,
             instrumentation: None,
             is_explicit_import: None,
-            output_config: Some(JsOutputConfig {
+            output_config: Some(Some(JsOutputConfig {
                 sourcemap: Some(JsSourcemap::Str("inline".into())),
-                minify: Some(serde_json::json!(false)),
-            }),
+                minify: Some(Some(serde_json::json!(false))),
+            })),
             custom_renderer_config: Some(JsCustomRendererConfig {
                 directives: vec!["dom".into()],
                 elements: vec![JsCustomRendererElement {
@@ -656,13 +746,13 @@ mod tests {
                     attributes: Some(vec!["href".into()]),
                 }],
             }),
-            stylesheet_config: Some(JsStylesheetConfig {
+            stylesheet_config: Some(Some(JsStylesheetConfig {
                 custom_properties: Some(JsCustomProperties {
                     resolution: Some(JsResolution::Module {
                         name: "@x/r".into(),
                     }),
                 }),
-            }),
+            })),
         };
         let got = serde_json::to_value(&wire).unwrap();
         let schema: serde_json::Value =
@@ -724,9 +814,11 @@ mod tests {
 
     #[test]
     fn null_options_are_lwc1023() {
-        let e = to_compile_options(serde_json::Value::Null)
-            .unwrap()
-            .unwrap_err();
+        let e = invalid(
+            to_compile_options(serde_json::Value::Null)
+                .unwrap()
+                .unwrap_err(),
+        );
         assert_eq!(e.diagnostics[0].code, Some(1023));
         assert_eq!(
             e.message,
@@ -848,7 +940,7 @@ mod tests {
             opts[k] = x.clone();
         }
         let h = lwc_shared::InstrumentationHandle::new(Throws(v));
-        to_compile_options_with(opts, Some(h), &mut |_| {})
+        to_compile_options_with(opts, Some(h), &mut |_| Ok(()))
             .unwrap()
             .unwrap()
     }
@@ -868,7 +960,7 @@ mod tests {
         );
         let rec = std::sync::Arc::new(Rec::default());
         let h = lwc_shared::InstrumentationHandle(rec.clone());
-        let o = to_compile_options_with(opts(), Some(h), &mut |_| {})
+        let o = to_compile_options_with(opts(), Some(h), &mut |_| Ok(()))
             .unwrap()
             .unwrap();
         assert!(
@@ -1015,8 +1107,9 @@ mod tests {
 /// `console.warn`, called with each deprecation while the options are validated, before the compile
 /// (options.ts:185-219, D-0212).
 ///
-/// Throws, unchanged, a value `warn` threw, and a counter throw no upstream catch touches (targetSSR
-/// template parse); every other error is the `{ error }` result.
+/// Throws, unchanged, a value `warn` threw (validation stops there, so nothing is compiled), the
+/// `TypeError` of `outputConfig: null`, and a counter throw no upstream catch touches (targetSSR template
+/// parse); every other error is the `{ error }` result.
 #[napi]
 pub fn transform(
     env: Env,
@@ -1034,24 +1127,20 @@ pub fn transform(
         .map(|c| lwc_shared::InstrumentationHandle(c.clone()));
     let mut warn = instrumentation::JsWarn::new(env, warn);
     let r = transform_with(&src, &filename, options, handle, &mut |d| warn.warn(d));
-    // The handles are only valid during this call.
-    let threw = callbacks.and_then(|c| c.end());
-    if let Some(v) = warn.threw() {
-        return Err(instrumentation::throw_raw(env, v));
-    }
+    // The handles are only valid during this call. A warn throw ends validation before the compile, so at
+    // most one of the two holds a value.
+    let threw = callbacks.and_then(|c| c.end()).or(warn.threw());
     match r? {
         Ok(r) => Ok(r),
-        Err(lwc_shared::Rethrow::NotAFunction(message)) => {
+        Err(lwc_shared::Rethrow::TypeError(message)) => {
             env.throw_type_error(message, None)?;
             Err(napi::Error::new(napi::Status::PendingException, message))
         }
-        Err(lwc_shared::Rethrow::Value(v)) => match threw {
-            Some(raw) => Err(instrumentation::throw_raw(env, raw)),
-            // Only a JS callback throws over napi; keep the reduced value visible if that ever breaks.
-            None => Err(napi::Error::from_reason(format!(
-                "lwc-compiler-napi: rethrow without the thrown value: {v:?}"
-            ))),
-        },
+        // Only a JS callback (JsCallbacks, JsWarn) produces `Value` over napi, and each keeps the raw value.
+        Err(lwc_shared::Rethrow::Value(_)) => Err(instrumentation::throw_raw(
+            env,
+            threw.expect("a Rethrow::Value comes from a JS callback, which keeps the raw value"),
+        )),
     }
 }
 
@@ -1060,12 +1149,13 @@ fn transform_with(
     filename: &str,
     options: serde_json::Value,
     callbacks: Option<lwc_shared::InstrumentationHandle>,
-    warn: &mut dyn FnMut(lwc_shared::DeprecationId),
+    warn: &mut lwc_compiler::WarnSink<'_>,
 ) -> Result<std::result::Result<JsCompileResult, lwc_shared::Rethrow>> {
     // Ok(Ok): the result `transform` returns; Ok(Err): the value it rethrows; Err: a napi error.
     let o = match to_compile_options_with(options, callbacks, warn)? {
         Ok(o) => o,
-        Err(e) => return Ok(Ok(errors::options_error(e))),
+        Err(lwc_compiler::OptionsError::Invalid(e)) => return Ok(Ok(errors::options_error(e))),
+        Err(lwc_compiler::OptionsError::Rethrow(r)) => return Ok(Err(r)),
     };
     Ok(match errors::compile(src, filename, &o) {
         Ok(r) => {

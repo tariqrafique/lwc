@@ -4692,7 +4692,7 @@ template-renderer	passed	template behavioral svg/xlink/static-optimized/boolean-
 template-renderer	passed	template behavioral svg/xlink/static-optimized/expression-value
 template-renderer	passed	template behavioral svg/xlink/static-optimized/literal-value
 template-renderer	passed	template behavioral svg/xlink/static-optimized/literal-value-starting-with-hash
-js-options	counts	448 0 0
+js-options	counts	451 0 0
 js-options	passed	js-options: dyn dyn/dynamicImports-omitted/dynamic-imports/check-validation-for-strict
 js-options	passed	js-options: dyn dyn/dynamicImports-omitted/dynamic-imports/passthough-with-no-config
 js-options	passed	js-options: dyn dyn/dynamicImports-omitted/dynamic-imports/test-custom-loader
@@ -5141,6 +5141,9 @@ js-options	passed	js-options: ssrmode ssrmode/number
 js-options	passed	js-options: ssrmode ssrmode/object
 js-options	passed	js-options: warn warn/minify-throw/spec/instrumentation
 js-options	passed	js-options: warn warn/minify/spec/instrumentation
+js-options	passed	js-options: warn warn/warn-throws-error/spec/instrumentation
+js-options	passed	js-options: warn warn/warn-throws-string/spec/instrumentation
+js-options	passed	js-options: warn warn/warn-throws-undefined/spec/instrumentation
 js-api	counts	1239 0 0
 js-api	passed	js-options: api api/omitted/api-decorator/@api-setter-on-one-class-member-should-not-conflict-with-@api-getter-on-another
 js-api	passed	js-options: api api/omitted/api-decorator/conflicting-api-properties-with-getter-setter
@@ -6381,7 +6384,7 @@ js-api	passed	js-options: api api/v67/wire-decorator/throws-when-computed-prop-i
 js-api	passed	js-options: api api/v67/wire-decorator/throws-when-computed-prop-is-template-literal
 js-api	passed	js-options: api api/v67/wire-decorator/transforms-computed-properties
 js-api	passed	js-options: api api/v67/wire-decorator/transforms-computed-properties-const-from-obj
-template-options	counts	406 0 0
+template-options	counts	426 0 0
 template-options	passed	template-options: edd edd/false/directive-dynamic/invalid-config
 template-options	passed	template-options: edd edd/false/directive-dynamic/invalid-native-element
 template-options	passed	template-options: edd edd/false/directive-dynamic/invalid-type
@@ -6779,6 +6782,14 @@ template-options	passed	template-options: inst inst/throw-undefined/erm-true/dyn
 template-options	passed	template-options: inst inst/throw-undefined/erm-true/mixed
 template-options	passed	template-options: inst inst/throw-undefined/erm-true/render-mode
 template-options	passed	template-options: inst inst/throw-undefined/erm-true/spread
+template-options	passed	template-options: null null/minify-invalid-sourcemap/render-mode
+template-options	passed	template-options: null null/minify/render-mode
+template-options	passed	template-options: null null/output-config-ssr/render-mode
+template-options	passed	template-options: null null/output-config-undefined/render-mode
+template-options	passed	template-options: null null/output-config/render-mode
+template-options	passed	template-options: null null/stylesheet-config-latched/render-mode
+template-options	passed	template-options: null null/stylesheet-config/render-mode
+template-options	passed	template-options: null null/undefined/render-mode
 template-options	passed	template-options: warn warn/minify-invalid-sourcemap/render-mode
 template-options	passed	template-options: warn warn/minify-ssr/dynamic
 template-options	passed	template-options: warn warn/minify-ssr/render-mode
@@ -6788,6 +6799,18 @@ template-options	passed	template-options: warn warn/minify-throw/spread
 template-options	passed	template-options: warn warn/minify/mixed
 template-options	passed	template-options: warn warn/minify/render-mode
 template-options	passed	template-options: warn warn/minify/spread
+template-options	passed	template-options: warn warn/warn-throws-error/mixed
+template-options	passed	template-options: warn warn/warn-throws-error/render-mode
+template-options	passed	template-options: warn warn/warn-throws-error/spread
+template-options	passed	template-options: warn warn/warn-throws-error/ssr-render-mode
+template-options	passed	template-options: warn warn/warn-throws-string/mixed
+template-options	passed	template-options: warn warn/warn-throws-string/render-mode
+template-options	passed	template-options: warn warn/warn-throws-string/spread
+template-options	passed	template-options: warn warn/warn-throws-string/ssr-render-mode
+template-options	passed	template-options: warn warn/warn-throws-undefined/mixed
+template-options	passed	template-options: warn warn/warn-throws-undefined/render-mode
+template-options	passed	template-options: warn warn/warn-throws-undefined/spread
+template-options	passed	template-options: warn warn/warn-throws-undefined/ssr-render-mode
 ssr_dynamic_imports	counts	16 0 0
 ssr_dynamic_imports	passed	ssr dynamic imports dynamicImports-omitted/identifier
 ssr_dynamic_imports	passed	ssr dynamic imports dynamicImports-omitted/literal
