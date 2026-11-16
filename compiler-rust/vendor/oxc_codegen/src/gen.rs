@@ -2075,16 +2075,10 @@ impl Gen for ObjectProperty<'_> {
             }
         }
 
-        let mut shorthand = false;
-        if let PropertyKey::StaticIdentifier(key) = &self.key {
-            if key.name == "__proto__" {
-                shorthand = self.shorthand;
-            } else if let Expression::Identifier(ident) = self.value.without_parentheses()
-                && key.name == p.get_identifier_reference_name(ident)
-            {
-                shorthand = true;
-            }
-        }
+        // Babel prints `{a: a}` and `{a}` as written. The shorthand flag is that
+        // spelling. Inferring it from the names turns every explicit pair into
+        // shorthand.
+        let shorthand = self.shorthand;
 
         let mut computed = self.computed;
 
@@ -3531,24 +3525,8 @@ impl Gen for ObjectPattern<'_> {
 
 impl Gen for BindingProperty<'_> {
     fn r#gen(&self, p: &mut Codegen, ctx: Context) {
-        let mut shorthand = false;
-        if let PropertyKey::StaticIdentifier(key) = &self.key {
-            match &self.value {
-                BindingPattern::BindingIdentifier(ident)
-                    if key.name == p.get_binding_identifier_name(ident) =>
-                {
-                    shorthand = true;
-                }
-                BindingPattern::AssignmentPattern(assignment_pattern) => {
-                    if let BindingPattern::BindingIdentifier(ident) = &assignment_pattern.left
-                        && key.name == p.get_binding_identifier_name(ident)
-                    {
-                        shorthand = true;
-                    }
-                }
-                _ => {}
-            }
-        }
+        // `{itemIndex: itemIndex}` stays explicit. `{itemIndex}` is shorthand.
+        let shorthand = self.shorthand;
 
         if !shorthand {
             if self.computed {

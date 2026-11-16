@@ -1,8 +1,8 @@
 # LWC → Rust compiler: plan of record
 
-Owner: LWC Migrate (only Migrate edits this file). Written 2026-11-01 21:55 PST. Updated 2026-11-11 04:42 PST from official board b4b4637149dc.
+Owner: LWC Migrate (only Migrate edits this file). Written 2026-11-01 21:55 PST. Updated 2026-11-16 09:25 PST from official board 65006817bd11.
 Source of truth order: this file → `state/<bot>.md` → cited files. Chat summaries are never authoritative.
-Repos: oracle `/workspace/lwc` @ b9e8007 (9.5.3, clean); Rust main `/workspace/lwc-compiler-rust` (@ 3bca78988c75, official board b4b4637149dc);
+Repos: oracle `/workspace/lwc` @ b9e8007 (9.5.3, clean); Rust main `/workspace/lwc-compiler-rust` (@ 3e5765a9c046, official board 65006817bd11);
 notes `/workspace/notes`. Workflow: cloud agents port on `agent/*`; LWC Worker lands with `scripts/land-agent-branch.sh` and publishes the official board (`docs/WORKFLOW.md`, D-0276/D-0279/D-0281/D-0287).
 
 ## 1. Fixed direction (do not relitigate; changes need a new decisions.tsv row by Migrate)
@@ -18,9 +18,9 @@ notes `/workspace/notes`. Workflow: cloud agents port on `agent/*`; LWC Worker l
 - D-0282–D-0287: 30-minute land+official-board target, change-scoped rows, hash reuse, full cold every 5 lands or 6h (D-0282); Style item 9 was cloud work (D-0283); SD-2b asyncYield chunk boundaries and `this.hostElement` throw match the oracle (D-0284); CSR interaction steps were item 7b (D-0285); one-pass lands, registries = main ∪ incoming, removals/loosening need a D-id (D-0286); fixes to already-landed work go onto box main as plain Worker commits and iterate until the official board is VALID (D-0287). The GitHub `rust-compiler` push still waits for a VALID official board unless Tariq says otherwise.
 
 ## 2. Current official board
-Newest by `published=`: `/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official/738958401bb4/` (strict key=value manifest).
-status=VALID · producer=scripts/official-board.sh · commit=01c895620fc4 · notes_commit=fff336d5ee51 · oracle b9e8007f9810 clean · published=2026-11-16T08:19:45-08:00 (America/Los_Angeles). Item 17b landed (a7e0fbd): semantic-diff-ssr printer-equal 852 (was 740; 849 before item 17), exec-static-comments-differ 0 (was 126), static-observed-differs 240, exec-differs 0. Unchanged: pretty-equal 1418/1560 (allowlist 142), template-options 444, js-options 469/1708, template-diag 0, napi 0, coverage strict 98/0 gap/0 invalid, lbc 523/523, option-gate 61/61, js-transform-corpus 1958/1958.
-New in this board: the gating `lbc` row (`Tests  523 passed (523)`; `discovered=522 included=522 excluded=0`) and the `coverage-gate:` line (report-only: 192 cells, 26 covered, 11 diagnostic-only, 77 gap, 76 na, 2 dec, 0 invalid). Indented GAP/DIAG-ONLY cell lines are omitted here; they are in the official `board.txt`.
+Newest by `published=`: `/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official/65006817bd11/` (strict key=value manifest).
+status=VALID · producer=scripts/official-board.sh · commit=3e5765a9c046 · notes_commit=ed6a5ab792b3 · oracle b9e8007f9810 clean · parse5_rust_commit=370629a079da · published=2026-11-16T09:17:56-08:00 (America/Los_Angeles). Item 18 F5 landed (55c0fcd → main 3e5765a): pretty-equal 1555/1560 identical, allowlist 5 (was 1418, allowlist 142); classes blank-line 6, other 4, comment-added 2, comment-placement 2, comment-dropped 1; object-shorthand and duplicate-key at 0 (R-OBJECT-SHORTHAND-1, R-OBJECT-LAST-KEY-1 retired). Unchanged: semantic-diff-ssr printer-equal 852 (esc 0), template-diag 0, template-diag-napi 0, lbc 523/523, coverage strict 98 covered/0 gap/0 invalid, js-transform-corpus 1958/1958, template-options 444, js-options 469/1708, option-gate 61/61.
+Allowlisted pretty-equal cases (harness/pretty-equal-allowlist.txt @ 3e5765a): fsc_flowButtonBar, fsc_flowButtonBarCPE (blank-line); ibanComponent (blank-line, comment-dropped); datatable (comment-added, comment-placement, other); fuseBasic (other). Item 18b.
 Row lines copied verbatim from `board.txt`:
 
 ```
@@ -38,31 +38,63 @@ ssr-render-asyncYield  Tests  389 passed (389)
 csr-render             Tests  395 passed (395)
 csr-render-template    Tests  571 passed (571)
 template-renderer      Tests  568 passed (568)
-js-options             Tests  302 passed | 1239 skipped (1541)
-js-api                 Tests  1239 passed | 302 skipped (1541)
-template-options       Tests  67 passed (67)
+js-options             Tests  469 passed | 1239 skipped (1708)
+js-api                 Tests  1239 passed | 469 skipped (1708)
+template-options       Tests  444 passed (444)
 ssr_dynamic_imports    Tests  16 passed (16)
 style-api              Tests  829 passed (829)
 template-api           Tests  5671 passed (5671)
 ssr_render_api         Tests  2724 passed (2724)
-template-diag          cases 63224  clean 63116  mismatches 108 (code 2, message 21, level 0, location 0, order 4, missing-diag 50, extra-diag 31)  codegen-unclean 0 (STATIC_EQUAL 46321, REWRITE_EQUAL 16795, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
-template-diag-napi     cases 63224  clean 62027  mismatches 1197 (code 2, message 0, level 0, location 0, order 4, missing-diag 42, extra-diag 29, seam-reject 1120)  codegen-unclean 0 (STATIC_EQUAL 45675, REWRITE_EQUAL 16352, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
+template-diag          cases 63224  clean 63224  mismatches 0 (code 0, message 0, level 0, location 0, order 0, missing-diag 0, extra-diag 0)  codegen-unclean 0 (STATIC_EQUAL 46415, REWRITE_EQUAL 16809, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
+template-diag-napi     cases 63224  clean 63224  mismatches 0 (code 0, message 0, level 0, location 0, order 0, missing-diag 0, extra-diag 0, seam-reject 0)  codegen-unclean 0 (STATIC_EQUAL 46444, REWRITE_EQUAL 16780, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
 style-upstream         Tests  12 passed (12)
 lbc                    Tests  523 passed (523)
 lbc: discovered=522 included=522 excluded=0 compile-error-both=0
-semantic-diff  eq=16795 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ASI-SEMI-1@1+R-TRAILING-COMMA-1@1
-semantic-diff-ssr  printer-equal=18  static-observed-differs=3  exec-static-comments-differ=1071  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=6,sod=1,esc=357,ed=0,et=0,eu=0,ex=23  async:pe=6,sod=1,esc=357,ed=0,et=0,eu=0,ex=23  asyncYield:pe=6,sod=1,esc=357,ed=0,et=0,eu=0,ex=23  gate=ok
+semantic-diff  eq=16809 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1
+template-diag-semdiff  eq=16809 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1
+semantic-diff-ssr  printer-equal=852  static-observed-differs=240  exec-static-comments-differ=0  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  async:pe=224,sod=140,esc=0,ed=0,et=0,eu=0,ex=23  asyncYield:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  gate=ok
+template-diag-ssr  printer-equal=852  static-observed-differs=240  exec-static-comments-differ=0  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  async:pe=224,sod=140,esc=0,ed=0,et=0,eu=0,ex=23  asyncYield:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  gate=ok
+template-diag-style  integration-wtr=206/206 integration-wdio=7/7 integration-types=1/1 lbc=584/584 lbc-recipes=32/32 slds=223/223 fixture-smoke=69/69 parse-error=67/67 dedup=319 jobs=5136 fail=0 (uncapped style-diff, hash-dedup, direct oracle)
+template-diag-realgate  cases=5441 diagMismatch=0 codegenUnclean=0 crash=0 oracleError=0
+template-diag-napierrors  5/5
+upstream-cmp           Tests  1433 passed | 3 skipped (1436)
+upstream-cmp: discovered=1435 included=1432 excluded=3 compile-error-both=3
+upstream-cmp exclude integration-types/src/playground/modules/x/counter compile-error-both LWC1007
+upstream-cmp exclude integration-types/src/playground/modules/x/multiply compile-error-both LWC1007
+upstream-cmp exclude integration-types/src/playground/modules/x/ref compile-error-both LWC1007
+js-transform-corpus    Tests  1958 passed (1958)
+unported-specs         Tests  24 passed (24)
+pretty-equal           Tests  1 passed (1)
+pretty-equal: 1555/1560 identical, allowlist 5
+pretty-equal class blank-line 6
+pretty-equal class other 4
+pretty-equal class comment-added 2
+pretty-equal class comment-placement 2
+pretty-equal class comment-dropped 1
+pretty-equal corpus b2b-commerce-open-source-components 389/389
+pretty-equal corpus dreamhouse-lwc 11/11
+pretty-equal corpus ebikes-lwc 16/16
+pretty-equal corpus lbc 395/395 both-fail 1
+pretty-equal corpus lbc-recipes 126/126
+pretty-equal corpus LightningFlowComponents 245/249 both-fail 1
+pretty-equal corpus lwc-recipes 112/112 both-fail 1
+pretty-equal corpus lwc-utils 34/35
+pretty-equal corpus NPSP 122/122
+pretty-equal corpus revenue-cloud-foundations 50/50
+pretty-equal corpus visualforce-to-lwc 55/55
+pretty-equal both-fail 3
+js-options skip-union: 1708 cases, 0 skipped in every row (js-options js-api)
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.NtgUmz/notes/decisions.tsv]
-coverage-gate: notes 06afd5e9c148 matrix 121647686387 report-only: 24 sources x 8 stages = 192 cells, 26 covered (declared gating), 11 diagnostic-only, 77 gap, 76 na, 2 dec, 0 invalid
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.NLaHFR/notes/decisions.tsv]
+coverage-gate: notes ed6a5ab792b3 matrix 0e37f14933c6 strict: 24 sources x 8 stages = 192 cells, 98 covered (declared gating), 0 diagnostic-only, 0 gap, 76 na, 18 dec, 0 invalid
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
 style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)
 csr-clusters[ssr]: pass 392 fail 0
 csr-clusters[template]: pass 568 fail 0
 style-corpus     integration-wtr=206/206 integration-wdio=7/7 integration-types=1/1 lbc=584/584 lbc-recipes=32/32 slds=223/223 fixture-smoke=69/69 parse-error=67/67 dedup=319 jobs=5136 fail=0 (uncapped style-diff, hash-dedup, direct oracle)
-napi-css-errors     2/2 (lwc-compiler-napi single_errors_match_shipped, css-1009 css-1009-host-context)
+napi-css-errors     5/5 (lwc-compiler-napi single_errors_match_shipped, css-1009 css-1009-host-context)
 ```
 
 ## 3. Ownership and serial queue (D-0276, D-0281, D-0287)
@@ -97,7 +129,8 @@ Remaining queue (Worker or a cloud agent pulls the top item; Migrate reorders; f
 16. **DONE** c1a11eb..486dd84 / main f847d2d / board abda6df3bc80. **Running** pretty-equal row + literal fidelity (D-0292 F1+F2) on agent/pretty-literals. Done when: the official board has a pretty-equal row over the census corpus, ratcheted, with an allowlist that can only shrink; the literal-spelling class is at 0 (the probe matches the oracle); R-NUMERIC-SPELLING-1 is retired. Pushed agent/pretty-literals f3dcc0a (agent-reported: portable board rc 0; pretty-equal 1141/1560, allowlist 419, numeric/string spelling 0, 11 corpora including the six new ones). Queued on the Worker to land after AB-0008 r4.
 17. **DONE** d96baeb / main 133a1fd / board 82860ed098bf. Comment fidelity (F3 field comments travel with the init, F4 trailing/inner/verbatim block comments, blank line before a comment). Done when: the blank-line, comment-moved and comment-dropped classes are at 0, and R-INERT-LINE-COMMENT-1 and R-COMMENT-STAR-SPACE-1 are retired. Also: keep the tab and space indentation inside block comments verbatim (corpora example: rlmCollectionsConsole). Running: agent/comment-fidelity. Run 1 (bc-37a23467) pushed agent/comment-fidelity b96809a. Agent-reported pretty-equal is 1388/1560, up from 1141. Residuals: blank-line 37, placement 34, dropped 47, added 10, layout 2. The portable board exited 3 because notes weren't mounted (shim gate). Sent back 03:08 PST with root-cause targets per class; timebox 2h. Run 3 06:30 PST: agent/comment-fidelity 759360d, portable board 0 (agent-reported), pretty-equal 1418/1560 allowlist 142; handed to Worker to land after F11. Residual allowlisted comment cases (fsc_flowButtonBar*, ibanComponent, datatable) go to item 18 F5 cloud agent.
 17b. **DONE** 1d0db50 / main 01c8956 / board 738958401bb4. SSR comment regression from item 17: semantic-diff-ssr printer-equal must return to >=849 (exec-static-comments-differ <=17) with pretty-equal staying >=1418. Root cause: the item 17 comment rules changed SSR output where it used to match JS. Cloud, agent/ssr-comment-fidelity.
-18. Small fidelity fixes: F5 shorthand and duplicate keys as written, F6 source map sources basename, F7 SSR template stamp, F10 match the oracle's dropped header. Done when: sources match 662/662, the SSR stamp matches 662/662, and the F5 rules are retired. Also F11: on malformed HTML, the parse error must match the oracle's message and location. Example: LightningFlowComponents customHeaderCpe.html, a start tag left unclosed. JS reports unexpected-character-in-attribute-name at 5:5, Rust reports closing-of-element-with-open-child-elements at 190:1. Split 04:06 PST: F6/F7/F10/F11 go to the Worker on box main (D-0287, fixes to landed code that don't touch the printer); F5 stays as the cloud item after 17. Board 73b1a4ad868d (main 3d70193): F6/F7/F10 LANDED (0c837bd). F11 pending on Worker; F5 cloud after 17. Board f4412e929653 (main 82d68c2): F11 LANDED (5863a94, parse5-rust main 370629a, Tariq-approved FF). Only F5 remains (cloud, after 17). 08:22 PST: F5 dispatched to cloud bc-37a23467 on agent/object-shorthand, with item 17 residual comment cases (blank-line 6, added 2, placement 2, dropped 1).
+18. **DONE** 55c0fcd / main 3e5765a / board 65006817bd11. Small fidelity fixes: F5 shorthand and duplicate keys as written, F6 source map sources basename, F7 SSR template stamp, F10 match the oracle's dropped header. Done when: sources match 662/662, the SSR stamp matches 662/662, and the F5 rules are retired. Also F11: on malformed HTML, the parse error must match the oracle's message and location. Example: LightningFlowComponents customHeaderCpe.html, a start tag left unclosed. JS reports unexpected-character-in-attribute-name at 5:5, Rust reports closing-of-element-with-open-child-elements at 190:1. Split 04:06 PST: F6/F7/F10/F11 go to the Worker on box main (D-0287, fixes to landed code that don't touch the printer); F5 stays as the cloud item after 17. Board 73b1a4ad868d (main 3d70193): F6/F7/F10 LANDED (0c837bd). F11 pending on Worker; F5 cloud after 17. Board f4412e929653 (main 82d68c2): F11 LANDED (5863a94, parse5-rust main 370629a, Tariq-approved FF). Only F5 remains (cloud, after 17). 08:22 PST: F5 dispatched to cloud bc-37a23467 on agent/object-shorthand, with item 17 residual comment cases (blank-line 6, added 2, placement 2, dropped 1). F5 LANDED on board 65006817bd11.
+18b. Pretty-equal residuals to 1560/1560 with an empty allowlist (gates the JS deletes, D-0292): fsc_flowButtonBar, fsc_flowButtonBarCPE (blank-line), ibanComponent (blank-line + param comment dropped), datatable (`} //NEW` placement; also comment-added, other), fuseBasic (other). Cloud bc-37a23467 on agent/pretty-residuals, dispatched 09:21 PST. Done when: pretty-equal 1560/1560 with an empty allowlist on a VALID official board.
 19. F8 semdiff compares comments and literal spelling from the source, not via the oxc reprint. Done when: no printer-equal verdict hides a hunk.
 20. F9 option-sweep census (inline maps, LWS on, old apiVersion) plus the new external corpus. Done when: each variant is at N/N or allowlisted under a D-id, and pretty-equal is at N/N with an empty allowlist.
 

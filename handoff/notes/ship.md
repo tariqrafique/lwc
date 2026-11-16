@@ -1,5 +1,5 @@
 # state/ship.md
-Updated: 2026-11-15 21:57 PST by ship. PARKED per D-0276 — successor: LWC Worker (28881e7c) owns packaging, CI, CUTOVER.md. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-15 23:32 PST by ship. PARKED per D-0276 — successor: LWC Worker (28881e7c) owns packaging, CI, CUTOVER.md. Read PLAN.md first; this file holds only this bot's working state.
 
 ## FINAL HANDOFF (D-0276, 2026-11-09 12:49 PST) — ship parked, lands nothing further
 - Unlanded work: NONE. bot/ship @ eac1ae9 (= S5 land; main has moved on to f679437). Worktree /workspace/wt/ship clean (only gitignored built .node). No stashes, no in-flight processes, no pending AB-L reviews, no owed REWORKs.
@@ -66,13 +66,32 @@ Compile-ready on the box-local clone. No rust main land (and none queued that 15
   - Full `yarn build` (nx 21 projects, excludes perf-benchmarks and integration-wdio) rc 0 in 5s (17/21 cache hits after the first pass). Log: `/workspace/scratch/harness/ship-15b-yarn-build.log`.
 - Nothing in lwc-compiler-rust needs to land for this compile. Optional later (not 15(b) blockers): S3 `transformSync` + async `transform` on the official loader; S2 generated typings; D7 barrel repoint after deletes are allowed.
 
-## 15(a) — macOS/Windows napi build plan without Actions (2026-11-15 22:00 PST, harness)
-- READY TO LAND, NOT LANDED (Worker sequences: item 14, AB-0008 r3, then item 15). Branch bot/harness-ship15a @ 29d8142 (base main a492147), worktree /workspace/wt/harness-ship15a. Only new files: scripts/build-napi-cross.sh, scripts/napi-triples.tsv, scripts/test-napi-loader-resolution.mjs, docs/napi-cross-build.md. No crate, Cargo, .cargo or gate-table edits, so it doesn't overlap item 14 or r3 (napi lib.rs).
-- Plan (docs/napi-cross-build.md): one Linux x86_64 host builds every triple. linux uses cargo-zigbuild `.2.17`, darwin uses cargo-zigbuild with zig's libSystem stubs (minos 10.15 x64 / 11.0 arm64, no Apple SDK), and win32 uses cargo-xwin with +crt-static. All builds go through cargo_locked --locked with an unchanged-Cargo.lock check. Fail-closed verification checks format and arch, the exported napi_register_module_v1, glibc ≤2.17, minos, the arm64 ad-hoc LC_CODE_SIGNATURE, system-only dylibs, and no node.exe/VCRUNTIME/UCRT imports. Per-triple package.json is generated from the table; npm pack, no publish.
-- Linux evidence (logs /workspace/scratch/harness/ship-15a-*.log; tarballs + MANIFEST in ship-15a-out/):
-  - all 6 triples built and verified, win32-arm64 as a probe (build-final.log);
-  - loader resolution test 29/29 ok, with mutations caught (loader.log, mutations.log);
-  - npm offline install + .html/.js/.css smoke ok on linux-x64 (npm-install.log).
-- Needs real hardware: darwin-arm64/x64 and win32-x64 runtime load + fixtures (docs §4). linux-arm64 runtime and the glibc-2.17 runtime aren't proven either.
-- Open: O1 MSVC CRT/SDK license via cargo-xwin (Tariq); O2 win32-arm64 needs a D-id; O3 darwin .node is unstripped, ~15 MB; O4 package name (D-0202).
-- Before landing: `scripts/run-land-self-tests.sh --all` (new scripts/*.sh), then land.sh. Box tools are installed: zig 0.13.0 at ~/.local/bin, cargo-zigbuild 0.24.1, cargo-xwin 0.23.1, 6 rustup targets plus llvm-tools on 1.99.1.
+- **Rename (D-0291), 2026-11-15 22:06 PST:** consumers commit **e5c7433** on top of 2dcd877 (local only; push=no-push).
+  - `packages/lwc-compiler-rs` moved to `packages/@lwc/rust-compiler` (name `@lwc/rust-compiler`, private), covered by the `packages/@lwc/*` workspace glob. The explicit workspace entry was dropped.
+  - The adapter's loader path gained one `../`.
+  - rollup-plugin (`src/index.ts` + dependency) and ssr-runtime (`styles.spec.ts` + devDependency) now import `@lwc/rust-compiler`.
+  - `yarn install --ignore-scripts --frozen-lockfile` rc 0, with yarn.lock unchanged (`ship-15a-consumers-yarn-install.log`). `yarn build --skip-nx-cache` rc 0 for 21 projects in 20s (`ship-15a-consumers-yarn-build.log`).
+  - No `lwc-compiler-rs` left in the tree (excluding node_modules and dist), and the oracle is clean at b9e8007.
+
+## 15(a) — macOS/Windows napi build plan without Actions (updated 2026-11-15 23:32 PST, harness)
+- **LANDED** main **f549579f5888** (f549579f5888701f565263d1fb70e92f79b3a07f, 23:16 PST; 4 commits 8bf6db304, 4cff0c9f3, 008d7adcc, 2f67bc3c9 + land.sh decisions-snapshot follow-on f549579f5). Rebased onto 4b53e18d42d1 (AB-0008 r3); index.js conflict resolved as r3 wrap.js version + only D-0290 SUPPORTED win32-arm64 + D-0291 rename. 2f67bc3c9: loader test copies package.json `files` (wrap.js) into each case. Post-rebase: loader test, linux-x64 build + offline npm smoke (spread template emits [["c","lwc-spread-directive"]] == oracle via installed wrap.js), lint-shell-pipes, land-path-checks --lints-only, self-tests --all (137s) green; land.sh rc 0 in 147s (first attempt killed by tool timeout in preflight, nothing landed).
+- Official board **12b7d5d72e23 VALID** (rc 0, FULL, prev ae879939adbf, napi e51b6b7d2a64 unchanged, 12m22s). Every row identical to ae879939adbf; only diffs are header commit/src/timestamps, coverage-gate notes sha (207c0b42ef70→fa1c03fc3459, same matrix and counts) and lint-shell-pipes file count 68→69 (new build-napi-cross.sh). csr-ssr/csr-template tsv byte-identical. Log scratch/harness/ship15a-board.log.
+- Worktree /workspace/wt/harness-ship15a removed (no --force) after deleting its 2.3G target/; local branch bot/harness-ship15a deleted.
+- Files: new scripts/build-napi-cross.sh, scripts/napi-triples.tsv, scripts/test-napi-loader-resolution.mjs, scripts/macho-codesign-check.py, docs/napi-cross-build.md. Edited:
+  - crates/lwc-compiler-napi/{index.js, package.json, npm/linux-x64-gnu/package.json}: the rename plus win32-arm64;
+  - scripts/ssr-oracle-gate.sh: tarball glob → `lwc-rust-compiler-<triple>-*.tgz` (C8 helper);
+  - scripts/land-main-refs.tsv: +4 BOX_CONFIG_DEPENDENT rows for build-napi-cross.sh.
+- Rulings applied:
+  - D-0290: six triples; win32-arm64-msvc is shipped in tsv, SUPPORTED, optionalDependencies and napi.triples.
+  - D-0291: cargo-xwin is the win32 release path (no opt-in gate). The name is `@lwc/rust-compiler` + `@lwc/rust-compiler-<triple>`. No publish.
+  - O3: packaging runs `llvm-strip -x` on darwin, keeps `symbols/<t>/*.node.unstripped` (same LC_UUID; MANIFEST.tsv role not-packed), and checks exports, the arm64 ad-hoc signature (page-hash checker; rcodesign 0.29.0 re-sign fallback, not needed), and that each tarball holds only package.json + .node.
+- Linux evidence (logs /workspace/scratch/harness/ship-15a-r2-*.log; out dir copied to ship-15a-out/):
+  - all 6 triples built and verified (r2-build.log);
+  - darwin-arm64 15497696 → 13598848 bytes, darwin-x64 15417656 → 13534600; arm64 signature 3295/3295 pages ok, rechecked inside the tarball;
+  - loader test 32/32; mutations M1-M6 all caught (r2-mutations.log);
+  - npm offline install of `@lwc/rust-compiler` + linux-x64 compiles .html/.js/.css, and the missing-package error names `@lwc/rust-compiler` (r2-npm-install.log);
+  - lint-shell-pipes and land-path-checks --lints-only clean;
+  - `run-land-self-tests.sh --all` rc 0 (r2-selftests-all.log). The first run failed only on the missing land-main-refs rows, which 09dc452 fixed.
+- The darwin size gap after stripping (~13.5 MB vs ~6 MB) is code, not symbols (`__text` 6.7 MB, `__const` 3.7 MB), likely zig's Mach-O linker doing less dead-stripping than ld64. Building with ld64 on a Mac would settle it; open.
+- Needs real hardware: darwin-arm64/x64 and win32-x64/arm64 runtime load + fixtures (docs §4). linux-arm64 runtime and the glibc-2.17 runtime aren't proven either.
+- Box tools: zig 0.13.0 (~/.local/bin), cargo-zigbuild 0.24.1, cargo-xwin 0.23.1, rcodesign 0.29.0, 6 rustup targets + llvm-tools on 1.99.1.

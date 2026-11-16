@@ -21,6 +21,14 @@ fn round_trip_is_stable() {
 }
 
 #[test]
+fn duplicate_track_name_is_one_key() {
+    let src = "import { LightningElement, track } from 'lwc';\nexport default class T extends LightningElement {\n  @track selectedItem = 'a';\n  @track selectedItem = 'b';\n}\n";
+    let out = t(src, &opts());
+    let n = out.matches("selectedItem: 1").count();
+    assert_eq!(n, 1, "{out}");
+}
+
+#[test]
 fn registers_basic_component() {
     let out = t(BASIC, &opts());
     assert!(out.contains("import _tmpl from \"./test.html\""), "{out}");

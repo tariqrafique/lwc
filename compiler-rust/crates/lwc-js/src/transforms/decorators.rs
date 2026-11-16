@@ -606,11 +606,17 @@ impl<'s> Classes<'s, '_> {
         if !methods.is_empty() {
             list.push(format!("publicMethods: [{}]", methods.join(", ")));
         }
-        let track: Vec<_> = metas
-            .iter()
-            .filter(|m| m.name == "track")
-            .map(|m| format!("{}: 1", key(&m.prop)))
-            .collect();
+        // A repeated `@track` name is one key. Babel builds the map as an object,
+        // so the first name stays and a later one does not add a second property.
+        let mut track = Vec::new();
+        let mut seen_track = Vec::new();
+        for m in metas.iter().filter(|m| m.name == "track") {
+            if seen_track.iter().any(|n: &String| n == &m.prop) {
+                continue;
+            }
+            seen_track.push(m.prop.clone());
+            track.push(format!("{}: 1", key(&m.prop)));
+        }
         if !track.is_empty() {
             list.push(format!("track: {{ {} }}", track.join(", ")));
         }

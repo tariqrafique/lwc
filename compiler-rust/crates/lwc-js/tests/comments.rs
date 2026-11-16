@@ -187,4 +187,7 @@ fn class_field_comments_travel_with_the_init() {
     check("class C {\n  m() {\n    a;\n  } //NEW\n}\n");
     check("function f(x) {\n  switch (x) {\n    default: // 'other'\n      a;\n  }\n}\n");
     check("const x = f(a) // eslint-disable-line indent\n  ? 1\n  : 2;\n");
+    check("const a = 1;\nconst o = { a: a, b: 1 };\n");
+    check("const a = 1;\nconst o = { a, b: 1 };\n");
+    check("export const o = { a: 1, a: 2 };\n");
 }
