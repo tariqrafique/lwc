@@ -1,5 +1,5 @@
-official board  commit=3d70193801a6  src=73b1a4ad868d  napi=50087c4d957b  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-16T05:04:54-08:00
-napi sha256:50087c4d957b  pinned=/tmp/lwc-board-snap.Kb4vL3/repo/harness/.pins/lwc-compiler-napi.50087c4d957b.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-16T04:59:15-08:00
+official board  commit=82d68c2720ca  src=f4412e929653  napi=9395f928d00e  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-16T06:30:52-08:00
+napi sha256:9395f928d00e  pinned=/tmp/lwc-board-snap.heCJsP/repo/harness/.pins/lwc-compiler-napi.9395f928d00e.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-16T06:24:49-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -16,7 +16,7 @@ csr-render-template    Tests  571 passed (571)
 template-renderer      Tests  568 passed (568)
 js-options             Tests  469 passed | 1239 skipped (1708)
 js-api                 Tests  1239 passed | 469 skipped (1708)
-template-options       Tests  438 passed (438)
+template-options       Tests  444 passed (444)
 ssr_dynamic_imports    Tests  16 passed (16)
 style-api              Tests  829 passed (829)
 template-api           Tests  5671 passed (5671)
@@ -66,8 +66,8 @@ js-options skip-union: 1708 cases, 0 skipped in every row (js-options js-api)
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.Kb4vL3/notes/decisions.tsv]
-coverage-gate: notes a0a785f602f0 matrix 0e37f14933c6 strict: 24 sources x 8 stages = 192 cells, 98 covered (declared gating), 0 diagnostic-only, 0 gap, 76 na, 18 dec, 0 invalid
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.heCJsP/notes/decisions.tsv]
+coverage-gate: notes e6b754286da5 matrix 0e37f14933c6 strict: 24 sources x 8 stages = 192 cells, 98 covered (declared gating), 0 diagnostic-only, 0 gap, 76 na, 18 dec, 0 invalid
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
 style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)
 csr-clusters[ssr]: pass 392 fail 0

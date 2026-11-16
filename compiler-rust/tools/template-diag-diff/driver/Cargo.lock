@@ -464,7 +464,7 @@ dependencies = [
 [[package]]
 name = "parse5"
 version = "0.1.0"
-source = "git+https://github.com/tariqrafique/parse5-rust?rev=e3520ba03c9af27eb8dd05d08960b094305910d8#e3520ba03c9af27eb8dd05d08960b094305910d8"
+source = "git+https://github.com/tariqrafique/parse5-rust?rev=370629a079da9a175c2acc78cf1db449f56e9642#370629a079da9a175c2acc78cf1db449f56e9642"
 dependencies = [
  "entities",
  "serde",

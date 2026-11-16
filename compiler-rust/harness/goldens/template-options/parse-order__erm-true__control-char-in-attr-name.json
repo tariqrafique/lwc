@@ -1,0 +1,33 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "code": null,
+  "message": "",
+  "location": null,
+  "aggregate": {
+    "message": "",
+    "code": null,
+    "errors": [
+      {
+        "code": 1058,
+        "message": "LWC1058: Invalid HTML syntax: control-character-in-input-stream. For more information, please visit https://html.spec.whatwg.org/multipage/parsing.html#parse-error-control-character-in-input-stream",
+        "location": {
+          "line": 1,
+          "column": 17,
+          "start": 16,
+          "length": 0
+        }
+      },
+      {
+        "code": 1058,
+        "message": "LWC1058: Invalid HTML syntax: unexpected-character-in-attribute-name. For more information, please visit https://html.spec.whatwg.org/multipage/parsing.html#parse-error-unexpected-character-in-attribute-name",
+        "location": {
+          "line": 1,
+          "column": 18,
+          "start": 17,
+          "length": 0
+        }
+      }
+    ]
+  }
+}

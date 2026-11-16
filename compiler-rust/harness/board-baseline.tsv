@@ -6402,7 +6402,7 @@ js-api	passed	js-options: api api/v67/wire-decorator/throws-when-computed-prop-i
 js-api	passed	js-options: api api/v67/wire-decorator/throws-when-computed-prop-is-template-literal
 js-api	passed	js-options: api api/v67/wire-decorator/transforms-computed-properties
 js-api	passed	js-options: api api/v67/wire-decorator/transforms-computed-properties-const-from-obj
-template-options	counts	438 0 0
+template-options	counts	444 0 0
 template-options	passed	template-options: edd edd/false/directive-dynamic/invalid-config
 template-options	passed	template-options: edd edd/false/directive-dynamic/invalid-native-element
 template-options	passed	template-options: edd edd/false/directive-dynamic/invalid-type
@@ -6808,6 +6808,12 @@ template-options	passed	template-options: null null/output-config/render-mode
 template-options	passed	template-options: null null/stylesheet-config-latched/render-mode
 template-options	passed	template-options: null null/stylesheet-config/render-mode
 template-options	passed	template-options: null null/undefined/render-mode
+template-options	passed	template-options: parse-order parse-order/default/control-char-in-attr-name
+template-options	passed	template-options: parse-order parse-order/default/custom-header-cpe
+template-options	passed	template-options: parse-order parse-order/default/unclosed-start-tag
+template-options	passed	template-options: parse-order parse-order/erm-true/control-char-in-attr-name
+template-options	passed	template-options: parse-order parse-order/erm-true/custom-header-cpe
+template-options	passed	template-options: parse-order parse-order/erm-true/unclosed-start-tag
 template-options	passed	template-options: ssr-stamp ssr-stamp/async/empty
 template-options	passed	template-options: ssr-stamp ssr-stamp/async/light
 template-options	passed	template-options: ssr-stamp ssr-stamp/async/nested

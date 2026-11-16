@@ -1,0 +1,13 @@
+{
+  "ok": false,
+  "name": "Error",
+  "code": 1058,
+  "message": "LWC1058: Invalid HTML syntax: unexpected-character-in-attribute-name. For more information, please visit https://html.spec.whatwg.org/multipage/parsing.html#parse-error-unexpected-character-in-attribute-name",
+  "location": {
+    "line": 2,
+    "column": 1,
+    "start": 21,
+    "length": 0
+  },
+  "aggregate": null
+}

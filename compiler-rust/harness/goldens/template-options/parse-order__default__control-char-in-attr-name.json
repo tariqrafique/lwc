@@ -1,0 +1,13 @@
+{
+  "ok": false,
+  "name": "Error",
+  "code": 1058,
+  "message": "LWC1058: Invalid HTML syntax: control-character-in-input-stream. For more information, please visit https://html.spec.whatwg.org/multipage/parsing.html#parse-error-control-character-in-input-stream",
+  "location": {
+    "line": 1,
+    "column": 17,
+    "start": 16,
+    "length": 0
+  },
+  "aggregate": null
+}
