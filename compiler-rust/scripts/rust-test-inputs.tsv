@@ -5,9 +5,11 @@
 crates/lwc-compiler-napi/	lwc-compiler-napi
 crates/lwc-compiler-napi/index.js	lwc-compiler-napi
 crates/lwc-compiler-napi/src/	lwc-compiler-napi
+crates/lwc-compiler-napi/src/lib.rs	lwc-compiler
 crates/lwc-compiler-napi/src/lib.rs	lwc-compiler-napi
 crates/lwc-compiler-napi/tests/fixtures/aggregate-shipped.json	lwc-compiler-napi
 crates/lwc-compiler-napi/tests/fixtures/single-error-shipped.json	lwc-compiler-napi
+crates/lwc-compiler/src/options.rs	lwc-compiler
 crates/lwc-js/	lwc-js
 crates/lwc-js/src/	lwc-js
 crates/lwc-js/src/helpers.rs	lwc-js
@@ -40,11 +42,15 @@ harness/scripts/oracle-root.mjs	semdiff
 harness/scripts/ssr-emit-pairs.ts	semdiff
 harness/scripts/ts-hooks.mjs	semdiff
 harness/scripts/ts-register.mjs	semdiff
+harness/src/backend.ts	lwc-compiler
 harness/src/backend.ts	semdiff
+harness/src/csrRender.ts	lwc-compiler
+harness/src/oracleRoot.ts	lwc-compiler
 harness/src/oracleRoot.ts	semdiff
 harness/src/rust-option-keys.json	lwc-compiler
 harness/src/rust-option-keys.json	lwc-compiler-napi
 harness/src/rust-option-keys.json	semdiff
+harness/src/ssrRender.ts	lwc-compiler
 harness/src/ssrRender.ts	semdiff
 scripts/fetch-style-corpus.sh	lwc-shared
 tools/gen-error-info/gen.mjs	lwc-shared

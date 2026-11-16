@@ -18,12 +18,13 @@ pub struct JsCompileOptions {
     pub namespace: String,
     pub scoped_styles: Option<bool>,
     pub disable_synthetic_shadow_support: Option<bool>,
-    /// Any JSON number, including the apiVersion-edge floats. Snapped by `getAPIVersionFromNumber`.
-    #[serde(default, deserialize_with = "de_api_version")]
-    pub api_version: Option<f64>,
+    /// Any JSON value. Non-numbers snap to latest, matching `getAPIVersionFromNumber`.
+    #[serde(default)]
+    pub api_version: Option<serde_json::Value>,
     #[serde(rename = "targetSSR")]
     pub target_ssr: Option<bool>,
-    pub ssr_mode: Option<String>,
+    /// Any JSON value. Upstream does not validate `CompilationMode`; unknown is not an error.
+    pub ssr_mode: Option<serde_json::Value>,
     pub experimental_error_recovery_mode: Option<bool>,
     pub enable_private_methods: Option<bool>,
     pub experimental_complex_expressions: Option<bool>,
@@ -36,6 +37,8 @@ pub struct JsCompileOptions {
     pub component_feature_flag_module_path: Option<String>,
     pub dynamic_imports: Option<JsDynamicImports>,
     pub enable_lightning_web_security_transforms: Option<bool>,
+    /// Accepted so it is not an unknown key (D-0203). A JS callback cannot cross JSON; dropped here.
+    pub instrumentation: Option<serde_json::Value>,
     pub is_explicit_import: Option<bool>,
     pub output_config: Option<JsOutputConfig>,
     pub custom_renderer_config: Option<JsCustomRendererConfig>,
@@ -239,35 +242,15 @@ fn map_value(map: Option<&str>) -> serde_json::Value {
         .unwrap_or(serde_json::Value::Null)
 }
 
-/// JSON number or null/absent. Floats stay floats so `getAPIVersionFromNumber` can snap them (D-0206).
-fn de_api_version<'de, D: serde::Deserializer<'de>>(
-    d: D,
-) -> std::result::Result<Option<f64>, D::Error> {
-    let v = Option::<serde_json::Value>::deserialize(d)?;
-    match v {
-        None | Some(serde_json::Value::Null) => Ok(None),
-        Some(serde_json::Value::Number(n)) => n
-            .as_f64()
-            .map(Some)
-            .ok_or_else(|| serde::de::Error::custom("apiVersion: number out of f64 range")),
-        Some(other) => Err(serde::de::Error::custom(format!(
-            "apiVersion: expected a number, got {other}"
-        ))),
-    }
-}
-
-/// Deserialize only. Validation and defaults live in `lwc_compiler::validate_transform_options`.
-/// `Err(napi)` = malformed/unknown key or an ssrMode string upstream does not validate (D-0203 keeps
-/// unknown keys rejected; invalid ssrMode stays a seam error, not an LWC code).
+/// Deserialize only. All validation lives in `lwc_compiler::validate_incoming`.
+/// `Err(napi)` = malformed JSON or an unknown key (D-0203, `deny_unknown_fields`).
 /// `Ok(Err(compile))` = LWC validation error (LWC1021 / LWC1023).
 fn to_compile_options(
     options: serde_json::Value,
-    _filename: &str,
 ) -> Result<std::result::Result<lwc_shared::CompileOptions, lwc_shared::CompileError>> {
     if options.is_null() {
-        return Ok(Err(lwc_compiler::missing_options_error(&js_string(
-            &options,
-        ))));
+        return Ok(lwc_compiler::validate_incoming(None, &js_string(&options))
+            .map(lwc_compiler::NormalizedTransformOptions::into_compile_options));
     }
     let wire: JsCompileOptions = serde_json::from_value(options).map_err(|e| {
         napi::Error::new(
@@ -275,27 +258,34 @@ fn to_compile_options(
             format!("invalid compile options: {e}"),
         )
     })?;
-    let raw = wire_to_transform(wire)?;
-    Ok(lwc_compiler::validated_compile_options(&raw))
+    let raw = wire_to_transform(wire);
+    Ok(
+        lwc_compiler::validate_incoming(Some(&raw), &js_string(&serde_json::Value::Null))
+            .map(lwc_compiler::NormalizedTransformOptions::into_compile_options),
+    )
 }
 
-/// Map the wire struct onto [`lwc_compiler::TransformOptions`]. No defaults and no LWC codes here.
-fn wire_to_transform(options: JsCompileOptions) -> Result<lwc_compiler::TransformOptions> {
-    let ssr_mode = match options.ssr_mode.as_deref() {
-        None => None,
-        Some(m) => Some(lwc_shared::SsrMode::from_js(m).ok_or_else(|| {
-            napi::Error::new(
-                napi::Status::InvalidArg,
-                format!("Invalid ssrMode {m:?}: expected sync | async | asyncYield"),
-            )
-        })?),
+/// Map the wire struct onto [`lwc_compiler::TransformOptions`]. No defaults, no type checks, no LWC codes.
+fn wire_to_transform(options: JsCompileOptions) -> lwc_compiler::TransformOptions {
+    use serde_json::Value as V;
+    let api_version = match options.api_version {
+        None | Some(V::Null) => None,
+        Some(V::Number(n)) => Some(lwc_compiler::ApiVersionInput::Number(
+            n.as_f64().unwrap_or(f64::NAN),
+        )),
+        Some(_) => Some(lwc_compiler::ApiVersionInput::NonNumber),
     };
-    Ok(lwc_compiler::TransformOptions {
+    let ssr_mode = match options.ssr_mode {
+        None | Some(V::Null) => None,
+        Some(V::String(s)) => Some(lwc_compiler::SsrModeInput::Text(s)),
+        Some(_) => Some(lwc_compiler::SsrModeInput::NonString),
+    };
+    lwc_compiler::TransformOptions {
         name: options.name,
         namespace: options.namespace,
         scoped_styles: options.scoped_styles,
         disable_synthetic_shadow_support: options.disable_synthetic_shadow_support,
-        api_version: options.api_version,
+        api_version,
         target_ssr: options.target_ssr,
         ssr_mode,
         experimental_error_recovery_mode: options.experimental_error_recovery_mode,
@@ -310,6 +300,7 @@ fn wire_to_transform(options: JsCompileOptions) -> Result<lwc_compiler::Transfor
         component_feature_flag_module_path: options.component_feature_flag_module_path,
         enable_lightning_web_security_transforms: options.enable_lightning_web_security_transforms,
         is_explicit_import: options.is_explicit_import,
+        // A JS InstrumentationObject cannot be represented in JSON; the key is accepted and dropped.
         instrumentation: None,
         dynamic_imports: options
             .dynamic_imports
@@ -351,15 +342,57 @@ fn wire_to_transform(options: JsCompileOptions) -> Result<lwc_compiler::Transfor
                     }),
                 }),
             }),
-    })
+    }
 }
 
 #[cfg(test)]
 mod tests {
+
+    /// Nested key equality (not subset). `Err` names the path when the sets differ.
+    fn nested_keys_equal(
+        wire: &serde_json::Value,
+        schema: &serde_json::Value,
+        at: &str,
+    ) -> std::result::Result<(), String> {
+        use std::collections::BTreeSet;
+        let wire_obj = wire
+            .as_object()
+            .ok_or_else(|| format!("{at}: wire is not an object"))?;
+        let schema_obj = schema
+            .as_object()
+            .ok_or_else(|| format!("{at}: schema is not an object"))?;
+        let wk: BTreeSet<_> = wire_obj.keys().cloned().collect();
+        let sk: BTreeSet<_> = schema_obj
+            .keys()
+            .filter(|k| k.as_str() != "[]")
+            .cloned()
+            .collect();
+        if wk != sk {
+            return Err(format!(
+                "nested keys at {at} must be equal, not a subset: wire={wk:?} schema={sk:?}"
+            ));
+        }
+        for k in &sk {
+            match schema_obj.get(k).unwrap() {
+                serde_json::Value::Bool(true) => {}
+                sub if sub.get("[]").is_some() => {
+                    for (i, el) in wire_obj[k].as_array().unwrap().iter().enumerate() {
+                        nested_keys_equal(el, &sub["[]"], &format!("{at}.{k}[{i}]"))?;
+                    }
+                }
+                sub if sub.is_object() => {
+                    nested_keys_equal(&wire_obj[k], sub, &format!("{at}.{k}"))?;
+                }
+                _ => return Err(format!("{at}.{k}: bad schema")),
+            }
+        }
+        Ok(())
+    }
+
     #[test]
     fn warning_carries_js_location_shape() {
         // JS: LWC1182 "Multiple if: directives ..." warning with location {line,column,start,length}.
-        let o = to_compile_options(json!({"name": "a", "namespace": "x"}), "a.html")
+        let o = to_compile_options(json!({"name": "a", "namespace": "x"}))
             .unwrap()
             .unwrap();
         let r = lwc_compiler::dispatch(
@@ -385,7 +418,6 @@ mod tests {
         let run = |sm: serde_json::Value| {
             let o = to_compile_options(
                 json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": sm}}),
-                "a.js",
             )
             .unwrap()
             .unwrap();
@@ -422,10 +454,7 @@ mod tests {
     use serde_json::json;
 
     fn err(v: serde_json::Value) -> String {
-        to_compile_options(v, "a.js")
-            .err()
-            .expect("must reject")
-            .reason
+        to_compile_options(v).err().expect("must reject").reason
     }
 
     #[test]
@@ -452,7 +481,7 @@ mod tests {
 
     #[test]
     fn defaults_come_from_lwc_shared() {
-        let o = to_compile_options(json!({"name": "a", "namespace": "x"}), "a.js")
+        let o = to_compile_options(json!({"name": "a", "namespace": "x"}))
             .unwrap()
             .unwrap();
         assert_eq!(
@@ -472,7 +501,6 @@ mod tests {
         // dynamicImports present without strictSpecifier keeps the default (JS spreads over DEFAULT_DYNAMIC_IMPORT_CONFIG).
         let o = to_compile_options(
             json!({"name": "a", "namespace": "x", "dynamicImports": {"loader": "l"}}),
-            "a.js",
         )
         .unwrap()
         .unwrap();
@@ -486,7 +514,7 @@ mod tests {
             "outputConfig": {"sourcemap": "inline", "minify": false},
             "customRendererConfig": {"directives": ["dom"], "elements": [{"tagName": "svg", "namespace": "ns", "attributes": ["href"]}]},
             "stylesheetConfig": {"customProperties": {"resolution": {"type": "module", "name": "@x/r"}}}
-        }), "a.js").unwrap().unwrap();
+        })).unwrap().unwrap();
         assert!(o.is_explicit_import && o.enable_lightning_web_security_transforms);
         assert_eq!(o.sourcemap, lwc_shared::Sourcemap::Inline);
         let c = o.custom_renderer_config.unwrap();
@@ -510,7 +538,6 @@ mod tests {
         );
         let o = to_compile_options(
             json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": true}}),
-            "a.js",
         )
         .unwrap()
         .unwrap();
@@ -529,7 +556,6 @@ mod tests {
         for bad in [json!("foo"), json!(1)] {
             let e = to_compile_options(
                 json!({"name": "a", "namespace": "x", "outputConfig": {"sourcemap": bad}}),
-                "a.js",
             )
             .unwrap()
             .unwrap_err();
@@ -553,7 +579,7 @@ mod tests {
             namespace: "x".into(),
             scoped_styles: None,
             disable_synthetic_shadow_support: None,
-            api_version: Some(60.5),
+            api_version: Some(json!(60.5)),
             target_ssr: None,
             ssr_mode: None,
             experimental_error_recovery_mode: None,
@@ -571,6 +597,7 @@ mod tests {
                 strict_specifier: Some(true),
             }),
             enable_lightning_web_security_transforms: None,
+            instrumentation: None,
             is_explicit_import: None,
             output_config: Some(JsOutputConfig {
                 sourcemap: Some(JsSourcemap::Str("inline".into())),
@@ -615,44 +642,84 @@ mod tests {
             .map(|k| k.as_str().unwrap().to_string())
             .collect();
         assert_eq!(keys(&got), schema_keys);
-        fn subset(wire: &serde_json::Value, schema: &serde_json::Value, at: &str) {
-            let wire_obj = wire.as_object().expect(at);
-            let schema_obj = schema.as_object().expect(at);
-            for k in wire_obj.keys() {
-                assert!(schema_obj.contains_key(k), "{at}.{k} is not in the schema");
-                match schema_obj.get(k).unwrap() {
-                    serde_json::Value::Bool(true) => {}
-                    sub if sub.get("[]").is_some() => {
-                        for (i, el) in wire_obj[k].as_array().unwrap().iter().enumerate() {
-                            subset(el, &sub["[]"], &format!("{at}.{k}[{i}]"));
-                        }
-                    }
-                    sub if sub.is_object() => subset(&wire_obj[k], sub, &format!("{at}.{k}")),
-                    _ => panic!("{at}.{k}: bad schema"),
-                }
-            }
-        }
         for (k, sub) in schema["nested"].as_object().unwrap() {
-            subset(&got[k], sub, k);
+            nested_keys_equal(&got[k], sub, k).unwrap();
         }
-        let snapped = to_compile_options(
-            json!({"name": "a", "namespace": "x", "apiVersion": 60.5}),
-            "a.html",
-        )
-        .unwrap()
-        .unwrap();
+        let snapped =
+            to_compile_options(json!({"name": "a", "namespace": "x", "apiVersion": 60.5}))
+                .unwrap()
+                .unwrap();
         assert_eq!(snapped.api_version, Some(60));
-        let snapped = to_compile_options(
-            json!({"name": "a", "namespace": "x", "apiVersion": 63.9}),
-            "a.html",
-        )
-        .unwrap()
-        .unwrap();
+        let snapped =
+            to_compile_options(json!({"name": "a", "namespace": "x", "apiVersion": 63.9}))
+                .unwrap()
+                .unwrap();
         assert_eq!(snapped.api_version, Some(63));
         assert!(
             err(json!({"name": "a", "namespace": "x", "notARealOption": true}))
                 .contains("notARealOption")
         );
+    }
+
+    #[test]
+    fn nested_key_equality_catches_a_schema_key_missing_from_the_wire() {
+        use std::collections::BTreeSet;
+        // Plant: a one-sided extra schema key would pass a subset check and must fail equality.
+        let wire = serde_json::json!({"loader": true});
+        let schema = serde_json::json!({"loader": true, "strictSpecifier": true});
+        let err = nested_keys_equal(&wire, &schema, "dynamicImports").unwrap_err();
+        assert!(
+            err.contains("must be equal"),
+            "equality helper must reject a schema key missing from the wire: {err}"
+        );
+        let wk: BTreeSet<_> = wire.as_object().unwrap().keys().cloned().collect();
+        let sk: BTreeSet<_> = schema.as_object().unwrap().keys().cloned().collect();
+        assert!(wk.is_subset(&sk), "fixture: that difference is subset-only");
+    }
+
+    #[test]
+    fn null_options_are_lwc1023() {
+        let e = to_compile_options(serde_json::Value::Null)
+            .unwrap()
+            .unwrap_err();
+        assert_eq!(e.diagnostics[0].code, Some(1023));
+        assert_eq!(
+            e.message,
+            "LWC1023: Expected options object, received \"null\"."
+        );
+    }
+
+    #[test]
+    fn non_number_api_version_is_not_a_seam_error() {
+        for v in [
+            json!("60"),
+            json!({"n": 60}),
+            json!(true),
+            serde_json::Value::Null,
+        ] {
+            let o = to_compile_options(json!({"name": "a", "namespace": "x", "apiVersion": v}))
+                .unwrap()
+                .unwrap();
+            assert_eq!(
+                o.api_version,
+                Some(lwc_shared::api_version::HIGHEST_API_VERSION),
+                "{v}"
+            );
+        }
+    }
+
+    #[test]
+    fn unknown_ssr_mode_is_not_a_seam_error() {
+        for v in [json!("bogus"), json!(1), serde_json::Value::Null] {
+            let o = to_compile_options(json!({"name": "a", "namespace": "x", "ssrMode": v}))
+                .unwrap()
+                .unwrap();
+            assert_eq!(o.ssr_mode, lwc_shared::SsrMode::Sync, "{v}");
+        }
+        let o = to_compile_options(json!({"name": "a", "namespace": "x", "ssrMode": "asyncYield"}))
+            .unwrap()
+            .unwrap();
+        assert_eq!(o.ssr_mode, lwc_shared::SsrMode::AsyncYield);
     }
 }
 
@@ -662,7 +729,7 @@ pub fn transform(
     filename: String,
     options: serde_json::Value,
 ) -> Result<JsCompileResult> {
-    let o = match to_compile_options(options, &filename)? {
+    let o = match to_compile_options(options)? {
         Ok(o) => o,
         Err(e) => return Ok(errors::options_error(e)),
     };

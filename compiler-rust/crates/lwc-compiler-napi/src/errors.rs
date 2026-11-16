@@ -115,16 +115,16 @@ mod tests {
     const SINGLE: &str = include_str!("../tests/fixtures/single-error-shipped.json");
     const AGGREGATE: &str = include_str!("../tests/fixtures/aggregate-shipped.json");
 
-    fn opts(extra: Option<&Value>, filename: &str) -> Result<CompileOptions, CompileError> {
+    fn opts(extra: Option<&Value>) -> Result<CompileOptions, CompileError> {
         let mut o = json!({"name": "foo", "namespace": "x"});
         for (k, v) in extra.and_then(Value::as_object).into_iter().flatten() {
             o[k] = v.clone();
         }
-        crate::to_compile_options(o, filename).unwrap()
+        crate::to_compile_options(o).unwrap()
     }
 
     fn js_error(src: &str, filename: &str, extra: Option<&Value>) -> JsCompileError {
-        match opts(extra, filename) {
+        match opts(extra) {
             Err(e) => options_error(e),
             Ok(o) => compile(src, filename, &o).expect_err("case must fail"),
         }

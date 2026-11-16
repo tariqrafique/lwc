@@ -9,10 +9,10 @@ use lwc_shared::{
 mod options;
 mod transformers;
 pub use options::{
-    CustomProperties, DynamicImportConfig, NormalizedTransformOptions, OPTION_KEYS, OutputConfig,
-    SourcemapInput, StylesheetConfig, TransformOptions, missing_options_error,
-    option_schema_document, prepare_compile_options, validate_transform_options,
-    validated_compile_options,
+    ApiVersionInput, CustomProperties, DynamicImportConfig, NormalizedTransformOptions,
+    OPTION_KEYS, OutputConfig, SourcemapInput, SsrModeInput, StylesheetConfig, TransformOptions,
+    missing_options_error, option_schema_document, prepare_compile_options, validate_incoming,
+    validate_transform_options, validated_compile_options,
 };
 
 pub trait CompilerBackend {

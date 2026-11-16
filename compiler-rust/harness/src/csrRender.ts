@@ -5,6 +5,7 @@
 // template-suite option seam, and a deterministic DOM serializer that inlines shadow roots.
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import type { CompilerBackend, CompileOptions } from './backend';
 import { LWC, SSR_RUNTIME_ESM, bundleLwc, fixturePluginOptions } from './ssrRender';
@@ -27,14 +28,14 @@ export function bundleSsrFixtureCsr(backend: CompilerBackend, opts: { entry: str
     });
 }
 
-// Real @lwc/compiler TransformOptions keys (dist/options.d.ts @ b9e8007). The rust seam rejects anything else.
-const TRANSFORM_OPTION_KEYS = new Set([
-    'name', 'namespace', 'stylesheetConfig', 'dynamicImports', 'experimentalDynamicDirective', 'enableDynamicComponents',
-    'enableSyntheticElementInternals', 'experimentalComplexExpressions', 'outputConfig', 'isExplicitImport',
-    'preserveHtmlComments', 'scopedStyles', 'enableStaticContentOptimization', 'customRendererConfig', 'enableLwcOn',
-    'disableSyntheticShadowSupport', 'enableLightningWebSecurityTransforms', 'instrumentation', 'apiVersion', 'targetSSR',
-    'ssrMode', 'experimentalErrorRecoveryMode', 'componentFeatureFlagModulePath', 'enablePrivateMethods',
-]);
+// Derived from the one schema (crates/lwc-compiler OPTION_KEYS → rust-option-keys.json). Do not hand-maintain.
+// fileURLToPath: same reason as backend.ts (vite/jsdom rewrite of `new URL(..., import.meta.url)`).
+const TRANSFORM_OPTION_KEYS = new Set(
+    (JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'rust-option-keys.json'), 'utf8')) as { keys: string[] }).keys,
+);
+if (!TRANSFORM_OPTION_KEYS.has('instrumentation')) {
+    throw new Error('rust-option-keys.json: missing instrumentation');
+}
 
 export interface TemplateFixture { rel: string; name: string; src: string; css?: string; cfg: Record<string, unknown>; droppedKeys: string[]; light: boolean }
 

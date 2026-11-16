@@ -9,8 +9,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use lwc_shared::errors::CompilerValidationErrors;
 use lwc_shared::{
     CompileError, CompileOptions, CompilerDiagnostic, CustomPropertiesResolution,
-    CustomRendererConfig, DeprecationId, InstrumentationHandle, ProducerPosition, Sourcemap,
-    SsrMode,
+    CustomRendererConfig, InstrumentationHandle, ProducerPosition, Sourcemap, SsrMode,
 };
 
 /// JSON names of [`TransformOptions`] (camelCase, `targetSSR` kept as upstream spells it).
@@ -35,6 +34,7 @@ pub const OPTION_KEYS: &[&str] = &[
     "componentFeatureFlagModulePath",
     "dynamicImports",
     "enableLightningWebSecurityTransforms",
+    "instrumentation",
     "isExplicitImport",
     "outputConfig",
     "customRendererConfig",
@@ -108,6 +108,24 @@ pub enum SourcemapInput {
     Text(String),
 }
 
+/// `apiVersion` as received, before `getAPIVersionFromNumber`.
+/// A non-number is allowed: upstream `isNumber` is false, so it snaps to latest.
+#[derive(Debug, Clone, PartialEq)]
+pub enum ApiVersionInput {
+    Number(f64),
+    /// Any non-number JSON value (string, object, bool, array). Null/absent is `None`.
+    NonNumber,
+}
+
+/// `ssrMode` as received. Upstream does not validate `CompilationMode` at runtime;
+/// unknown values are not a compiler error. [`validate_transform_options`] maps a
+/// known name and defaults anything else (including a non-string) to sync.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SsrModeInput {
+    Text(String),
+    NonString,
+}
+
 /// `StylesheetConfig` (options.ts:64).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StylesheetConfig {
@@ -157,9 +175,9 @@ pub struct TransformOptions {
     pub enable_lightning_web_security_transforms: Option<bool>,
     pub instrumentation: Option<InstrumentationHandle>,
     /// JS `number | undefined`. Floats are normalized by `getAPIVersionFromNumber` (D-0206).
-    pub api_version: Option<f64>,
+    pub api_version: Option<ApiVersionInput>,
     pub target_ssr: Option<bool>,
-    pub ssr_mode: Option<SsrMode>,
+    pub ssr_mode: Option<SsrModeInput>,
     pub experimental_error_recovery_mode: Option<bool>,
     pub component_feature_flag_module_path: Option<String>,
     pub enable_private_methods: Option<bool>,
@@ -245,24 +263,16 @@ pub fn validate_transform_options(
     options: &TransformOptions,
 ) -> Result<NormalizedTransformOptions, CompileError> {
     // validateOptions: stylesheet warn (once), then outputConfig (sourcemap throws before minify warn).
-    // D-0212: the loader prints DeprecationId::message(); the latch matches upstream.
-    if take_stylesheet_warn(options.stylesheet_config.is_some(), &STYLESHEET_WARNED) {
-        let _text = DeprecationId::StylesheetConfig.message();
-    }
+    // D-0212: the loader prints DeprecationId::message(); do not compute it here. The latch matches upstream.
+    let _ = take_stylesheet_warn(options.stylesheet_config.is_some(), &STYLESHEET_WARNED);
     let sourcemap = match options.output_config.as_ref() {
         None => DEFAULT_OUTPUT_SOURCEMAP,
-        Some(config) => {
-            let sourcemap = match config.sourcemap.clone() {
-                None => DEFAULT_OUTPUT_SOURCEMAP,
-                Some(SourcemapInput::Bool(b)) => Sourcemap::from_bool(b),
-                Some(SourcemapInput::Text(s)) if s == "inline" => Sourcemap::Inline,
-                Some(SourcemapInput::Text(s)) => return Err(invalid_sourcemap(&s)),
-            };
-            if config.minify_present {
-                let _text = DeprecationId::OutputConfigMinify.message();
-            }
-            sourcemap
-        }
+        Some(config) => match config.sourcemap.clone() {
+            None => DEFAULT_OUTPUT_SOURCEMAP,
+            Some(SourcemapInput::Bool(b)) => Sourcemap::from_bool(b),
+            Some(SourcemapInput::Text(s)) if s == "inline" => Sourcemap::Inline,
+            Some(SourcemapInput::Text(s)) => return Err(invalid_sourcemap(&s)),
+        },
     };
 
     let stylesheet_resolution = options
@@ -282,8 +292,15 @@ pub fn validate_transform_options(
         .and_then(|d| d.strict_specifier)
         .unwrap_or(DEFAULT_DYNAMIC_IMPORT_STRICT_SPECIFIER);
     let api_version = match options.api_version {
-        None => lwc_shared::api_version::get_api_version_from_number(None),
-        Some(n) => lwc_shared::api_version::get_api_version_from_f64(n),
+        None | Some(ApiVersionInput::NonNumber) => {
+            lwc_shared::api_version::get_api_version_from_number(None)
+        }
+        Some(ApiVersionInput::Number(n)) => lwc_shared::api_version::get_api_version_from_f64(n),
+    };
+    let ssr_mode = match options.ssr_mode.as_ref() {
+        None => DEFAULT_SSR_MODE,
+        Some(SsrModeInput::Text(s)) => SsrMode::from_js(s).unwrap_or(DEFAULT_SSR_MODE),
+        Some(SsrModeInput::NonString) => DEFAULT_SSR_MODE,
     };
 
     Ok(NormalizedTransformOptions {
@@ -308,7 +325,7 @@ pub fn validate_transform_options(
             .enable_lightning_web_security_transforms
             .unwrap_or(DEFAULT_ENABLE_LIGHTNING_WEB_SECURITY_TRANSFORMS),
         target_ssr: options.target_ssr.unwrap_or(DEFAULT_TARGET_SSR),
-        ssr_mode: options.ssr_mode.unwrap_or(DEFAULT_SSR_MODE),
+        ssr_mode,
         experimental_error_recovery_mode: options
             .experimental_error_recovery_mode
             .unwrap_or(DEFAULT_EXPERIMENTAL_ERROR_RECOVERY_MODE),
@@ -339,6 +356,23 @@ pub fn validated_compile_options(
     options: &TransformOptions,
 ) -> Result<CompileOptions, CompileError> {
     Ok(validate_transform_options(options)?.into_compile_options())
+}
+
+/// One validate entry the napi seam calls after deserializing (or when there is no object).
+/// `received` is JS `String(options)` for the LWC1023 message, as upstream `invariant`.
+///
+/// Upstream only codes LWC1023 when `options` is `undefined` (`isUndefined`). JS `null`
+/// throws `TypeError: Cannot read properties of null (reading 'stylesheetConfig')`.
+/// The JSON napi seam represents both `null` and `undefined` as JSON null, so we emit
+/// LWC1023 with `received` (typically `"null"`).
+pub fn validate_incoming(
+    options: Option<&TransformOptions>,
+    received: &str,
+) -> Result<NormalizedTransformOptions, CompileError> {
+    match options {
+        None => Err(missing_options_error(received)),
+        Some(o) => validate_transform_options(o),
+    }
 }
 
 /// `CompileOptions` as the options object `dispatch` already holds, then the same validator.
@@ -413,9 +447,9 @@ impl TransformOptions {
                 o.enable_lightning_web_security_transforms,
             ),
             instrumentation: o.instrumentation.clone(),
-            api_version: o.api_version.map(|v| v as f64),
+            api_version: o.api_version.map(|v| ApiVersionInput::Number(v as f64)),
             target_ssr: Some(o.target_ssr),
-            ssr_mode: Some(o.ssr_mode),
+            ssr_mode: Some(SsrModeInput::Text(o.ssr_mode.js_value().to_string())),
             experimental_error_recovery_mode: Some(o.experimental_error_recovery_mode),
             component_feature_flag_module_path: Some(o.component_feature_flag_module_path.clone()),
             enable_private_methods: Some(o.enable_private_methods),
@@ -426,6 +460,7 @@ impl TransformOptions {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use lwc_shared::DeprecationId;
 
     #[test]
     fn rust_option_keys_json_is_the_schema() {
@@ -454,13 +489,13 @@ mod tests {
     #[test]
     fn api_version_float_snaps_like_upstream() {
         let mut o = bare();
-        o.api_version = Some(60.5);
+        o.api_version = Some(ApiVersionInput::Number(60.5));
         assert_eq!(validate_transform_options(&o).unwrap().api_version, 60);
-        o.api_version = Some(63.9);
+        o.api_version = Some(ApiVersionInput::Number(63.9));
         assert_eq!(validate_transform_options(&o).unwrap().api_version, 63);
         o.api_version = None;
         assert_eq!(validate_transform_options(&o).unwrap().api_version, 66);
-        o.api_version = Some(57.0);
+        o.api_version = Some(ApiVersionInput::Number(57.0));
         assert_eq!(validate_transform_options(&o).unwrap().api_version, 58);
     }
 
@@ -504,5 +539,55 @@ mod tests {
         assert_eq!(n.sourcemap, Sourcemap::Off);
         assert_eq!(n.stylesheet_resolution, CustomPropertiesResolution::Native);
         assert!(n.experimental_dynamic_directive.is_none());
+    }
+
+    #[test]
+    fn non_number_api_version_snaps_to_latest_like_upstream() {
+        let mut o = bare();
+        o.api_version = Some(ApiVersionInput::NonNumber);
+        assert_eq!(
+            validate_transform_options(&o).unwrap().api_version,
+            lwc_shared::api_version::HIGHEST_API_VERSION
+        );
+    }
+
+    #[test]
+    fn unknown_ssr_mode_defaults_to_sync_and_is_not_an_error() {
+        let mut o = bare();
+        o.ssr_mode = Some(SsrModeInput::Text("bogus".into()));
+        assert_eq!(
+            validate_transform_options(&o).unwrap().ssr_mode,
+            SsrMode::Sync
+        );
+        o.ssr_mode = Some(SsrModeInput::NonString);
+        assert_eq!(
+            validate_transform_options(&o).unwrap().ssr_mode,
+            SsrMode::Sync
+        );
+        o.ssr_mode = Some(SsrModeInput::Text("asyncYield".into()));
+        assert_eq!(
+            validate_transform_options(&o).unwrap().ssr_mode,
+            SsrMode::AsyncYield
+        );
+    }
+
+    #[test]
+    fn validate_incoming_none_is_lwc1023_with_received() {
+        let e = validate_incoming(None, "null").unwrap_err();
+        assert_eq!(e.diagnostics[0].code, Some(1023));
+        assert_eq!(
+            e.message,
+            "LWC1023: Expected options object, received \"null\"."
+        );
+        let e = validate_incoming(None, "undefined").unwrap_err();
+        assert_eq!(
+            e.message,
+            "LWC1023: Expected options object, received \"undefined\"."
+        );
+    }
+
+    #[test]
+    fn option_keys_include_instrumentation() {
+        assert!(OPTION_KEYS.contains(&"instrumentation"));
     }
 }

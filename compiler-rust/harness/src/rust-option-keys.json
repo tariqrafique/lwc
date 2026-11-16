@@ -19,6 +19,7 @@
     "componentFeatureFlagModulePath",
     "dynamicImports",
     "enableLightningWebSecurityTransforms",
+    "instrumentation",
     "isExplicitImport",
     "outputConfig",
     "customRendererConfig",
