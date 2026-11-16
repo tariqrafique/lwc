@@ -76,8 +76,12 @@ pub fn try_print_define_property_call(
     let Some(Argument::StringLiteral(name)) = call.arguments.get(1) else {
         return false;
     };
-    if !call.callee.is_specific_member_access("Object", "defineProperty")
-        && !call.callee.is_specific_member_access("Reflect", "defineProperty")
+    if !call
+        .callee
+        .is_specific_member_access("Object", "defineProperty")
+        && !call
+            .callee
+            .is_specific_member_access("Reflect", "defineProperty")
     {
         return false;
     }
@@ -120,7 +124,11 @@ pub fn try_print_exports_computed_target(
     {
         return false;
     }
-    member.object.print_expr(p, Precedence::Postfix, ctx.intersection(Context::FORBID_CALL));
+    member.object.print_expr(
+        p,
+        Precedence::Postfix,
+        ctx.intersection(Context::FORBID_CALL),
+    );
     if member.optional {
         p.print_str("?.");
     }

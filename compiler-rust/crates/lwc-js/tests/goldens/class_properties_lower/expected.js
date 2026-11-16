@@ -2,8 +2,7 @@ var id = 0;
 function _classPrivateFieldLooseKey(e) { return "__private_" + id++ + "_" + e; }
 import { registerDecorators as _registerDecorators } from "lwc";
 import _tmpl from "./test.html";
-import { registerComponent as _registerComponent } from "lwc";
-import { LightningElement } from 'lwc';
+import { LightningElement, registerComponent as _registerComponent } from 'lwc';
 var _p = /*#__PURE__*/ _classPrivateFieldLooseKey("p");
 class Plain {
 	constructor() {

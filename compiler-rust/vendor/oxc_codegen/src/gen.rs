@@ -116,7 +116,7 @@ impl Gen for Statement<'_> {
                 p.print_comments_at(decl.span.start);
                 p.print_indent();
                 decl.print(p, ctx);
-                p.print_semicolon_after_statement();
+                p.print_semicolon_after_statement(self.span().end);
             }
             Self::IfStatement(stmt) => stmt.print(p, ctx),
             Self::ReturnStatement(stmt) => stmt.print(p, ctx),
@@ -132,7 +132,7 @@ impl Gen for Statement<'_> {
                 }
                 p.print_indent();
                 decl.print(p, ctx);
-                p.print_soft_newline();
+                p.print_trailing_newline(self.span().end);
             }
             Self::ForStatement(stmt) => stmt.print(p, ctx),
             Self::WhileStatement(stmt) => stmt.print(p, ctx),
@@ -148,7 +148,7 @@ impl Gen for Statement<'_> {
                 p.print_comments_at(decl.span.start);
                 p.print_indent();
                 decl.print(p, ctx);
-                p.print_soft_newline();
+                p.print_trailing_newline(self.span().end);
             }
             Self::LabeledStatement(stmt) => stmt.print(p, ctx),
             Self::EmptyStatement(stmt) => stmt.print(p, ctx),
@@ -165,37 +165,37 @@ impl Gen for Statement<'_> {
                 p.print_comments_at(decl.span.start);
                 p.print_indent();
                 decl.print(p, ctx);
-                p.print_soft_newline();
+                p.print_trailing_newline(self.span().end);
             }
             Self::TSNamespaceDeclaration(decl) => {
                 p.print_comments_at(decl.span.start);
                 p.print_indent();
                 decl.print(p, ctx);
-                p.print_soft_newline();
+                p.print_trailing_newline(self.span().end);
             }
             Self::TSGlobalDeclaration(decl) => {
                 p.print_comments_at(decl.span.start);
                 p.print_indent();
                 decl.print(p, ctx);
-                p.print_soft_newline();
+                p.print_trailing_newline(self.span().end);
             }
             Self::TSTypeAliasDeclaration(decl) => {
                 p.print_indent();
                 p.print_comments_at(decl.span.start);
                 decl.print(p, ctx);
-                p.print_semicolon_after_statement();
+                p.print_semicolon_after_statement(self.span().end);
             }
             Self::TSInterfaceDeclaration(decl) => {
                 p.print_indent();
                 p.print_comments_at(decl.span.start);
                 decl.print(p, ctx);
-                p.print_soft_newline();
+                p.print_trailing_newline(self.span().end);
             }
             Self::TSEnumDeclaration(decl) => {
                 p.print_indent();
                 p.print_comments_at(decl.span.start);
                 decl.print(p, ctx);
-                p.print_soft_newline();
+                p.print_trailing_newline(self.span().end);
             }
             Self::TSExportAssignment(decl) => decl.print(p, ctx),
             Self::TSNamespaceExportDeclaration(decl) => decl.print(p, ctx),
@@ -203,7 +203,7 @@ impl Gen for Statement<'_> {
                 p.print_indent();
                 p.print_comments_at(decl.span.start);
                 decl.print(p, ctx);
-                p.print_semicolon_after_statement();
+                p.print_semicolon_after_statement(self.span().end);
             }
         }
     }
@@ -211,6 +211,12 @@ impl Gen for Statement<'_> {
 
 impl Gen for ExpressionStatement<'_> {
     fn r#gen(&self, p: &mut Codegen, _ctx: Context) {
+        // Oxc files `stmt; // note` as a leading comment of the statement. Babel
+        // prints it after the semicolon. Comments that start at or after the
+        // statement's end are that trailing note.
+        // The statement span includes the trailing comment, so compare against
+        // the expression. `console.warn(msg); // note` starts after that expression.
+        let late = p.take_leading_on_or_after(self.span.start, self.expression.span().end);
         p.print_comments_at(self.span.start);
         if !p.options.minify && (p.indent > 0 || p.print_next_indent_as_space) {
             p.print_indent();
@@ -218,34 +224,60 @@ impl Gen for ExpressionStatement<'_> {
         }
         p.start_of_stmt = p.code_len();
         p.print_expression(&self.expression);
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
+        if let Some(comments) = late {
+            p.print_comments(&comments);
+        }
     }
 }
 
 impl Gen for IfStatement<'_> {
     fn r#gen(&self, p: &mut Codegen, ctx: Context) {
-        p.print_comments_at(self.span.start);
         p.print_indent();
         print_if(self, p, ctx);
     }
 }
 
 fn print_if(if_stmt: &IfStatement<'_>, p: &mut Codegen, ctx: Context) {
+    // `} // note` is attached as a leading comment of the if even though its
+    // text starts after the consequent. Hold it so it prints on the `}` line.
+    let late = p.take_leading_on_or_after(if_stmt.span.start, if_stmt.consequent.span().end);
+    p.print_comments_at(if_stmt.span.start);
     p.print_space_before_identifier();
     p.add_source_mapping(if_stmt.span);
     p.print_str("if");
     p.print_soft_space();
     p.print_ascii_byte(b'(');
+    // `if (\n  // note\n  expr)` — the comment is between `(` and the test.
+    let test_start = if_stmt.test.span().start;
+    p.print_gap_comments(if_stmt.span.start, test_start.saturating_add(1), None);
+    if p.last_byte() == Some(b'\n') {
+        p.print_indent();
+    }
     p.print_expression(&if_stmt.test);
+    // `if (a\n  // &&\n  // b\n)` — the comments sit between the test and `)`.
+    let test_end = if_stmt.test.span().end;
+    let paren = p
+        .find_byte(test_end, if_stmt.consequent.span().start, b')')
+        .unwrap_or(test_end);
+    p.print_gap_comments(test_end, paren, None);
     p.print_ascii_byte(b')');
 
     match &if_stmt.consequent {
         Statement::BlockStatement(block) => {
             p.print_soft_space();
             p.print_block_statement(block, ctx);
-            if if_stmt.alternate.is_some() {
+            // `} // note` stays on the brace's line.
+            if let Some(comments) = &late {
+                p.print_comments(comments);
+            }
+            p.print_trailing_comments_at(if_stmt.span.end);
+            let comment_before_else = if_stmt.alternate.as_ref().is_some_and(|alt| {
+                p.line_comment_in(block.span.end, alt.span().start.saturating_add(1))
+            });
+            if if_stmt.alternate.is_some() && !comment_before_else {
                 p.print_soft_space();
-            } else {
+            } else if if_stmt.alternate.is_none() && p.last_byte() != Some(b'\n') {
                 p.print_soft_newline();
             }
         }
@@ -270,6 +302,16 @@ fn print_if(if_stmt: &IfStatement<'_>, p: &mut Codegen, ctx: Context) {
     }
     if let Some(alternate) = if_stmt.alternate.as_ref() {
         p.print_semicolon_if_needed();
+        // `}\n// note\nelse if` — the comment sits between the branches.
+        let alt_start = alternate.span().start;
+        p.print_gap_comments(
+            if_stmt.consequent.span().end,
+            alt_start.saturating_add(1),
+            None,
+        );
+        if p.last_byte() == Some(b'\n') {
+            p.print_indent();
+        }
         p.print_space_before_identifier();
         p.print_str("else");
         match alternate {
@@ -404,7 +446,9 @@ fn expr_starts_with_let(expr: &Expression) -> bool {
 /// `let[...]` is emitted as `(let)[...]` (the computed member wraps a bare `let`
 /// object), so it no longer starts with `let`.
 fn computed_object_starts_with_let(m: &ComputedMemberExpression) -> bool {
-    !m.object.get_identifier_reference().is_some_and(|r| r.name == "let")
+    !m.object
+        .get_identifier_reference()
+        .is_some_and(|r| r.name == "let")
         && expr_starts_with_let(&m.object)
 }
 
@@ -430,7 +474,8 @@ impl Gen for ForOfStatement<'_> {
         p.print_space_before_identifier();
         p.print_str("of");
         p.print_soft_space();
-        self.right.print_expr(p, Precedence::Comma, Context::empty());
+        self.right
+            .print_expr(p, Precedence::Comma, Context::empty());
         p.print_ascii_byte(b')');
         p.print_body(&self.body, ctx);
     }
@@ -505,7 +550,7 @@ impl Gen for DoWhileStatement<'_> {
         p.print_ascii_byte(b'(');
         p.print_expression(&self.test);
         p.print_ascii_byte(b')');
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -530,7 +575,7 @@ impl Gen for ContinueStatement<'_> {
             p.print_soft_space();
             label.print(p, ctx);
         }
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -545,7 +590,7 @@ impl Gen for BreakStatement<'_> {
             p.print_soft_space();
             label.print(p, ctx);
         }
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -564,6 +609,14 @@ impl Gen for SwitchStatement<'_> {
         p.print_curly_braces(self.span, self.cases.is_empty(), |p| {
             for case in &self.cases {
                 case.print(p, ctx);
+            }
+            // `default:\n// nothing\n}` — the comment sits after the last case
+            // and before `}`. An empty consequent does not own it.
+            let close = self.span.end.saturating_sub(1);
+            if let Some(last) = self.cases.last() {
+                // The comment may be anchored on `}`, so do not skip that key.
+                p.print_gap_comments(last.span.end, close.saturating_add(1), None);
+                p.print_orphan_comments_before(close.saturating_add(1));
             }
         });
         p.print_soft_newline();
@@ -587,8 +640,28 @@ impl Gen for SwitchCase<'_> {
         }
         p.print_colon();
 
-        // Force multi-line if an orphan comment is pending; the inline path skips the flush.
-        let single_line = self.consequent.len() == 1
+        // `default:\n// nothing` — no consequent. The comment is inside the case
+        // span, after the colon, and Babel prints it at the case's indent.
+        if self.consequent.is_empty() {
+            if let Some(colon) = p.find_byte(self.span.start, self.span.end, b':') {
+                p.print_gap_comments(colon + 1, self.span.end, None);
+                p.print_orphan_comments_before(self.span.end);
+            }
+            if p.last_byte() != Some(b'\n') {
+                p.print_soft_newline();
+            }
+            return;
+        }
+
+        // `case 1: foo(); // c` — Babel hangs `// c` on the case, after the body
+        // has wrapped, so the comment is the next line (`break; // c` too).
+        let deferred = self
+            .consequent
+            .last()
+            .and_then(|stmt| p.take_trailing_line_comments(stmt.span().end));
+        let single_line = deferred.is_none()
+            && self.consequent.len() == 1
+            && !p.has_leading_line_comment(self.consequent[0].span().start)
             && !p.has_orphan_comments_before(self.consequent[0].span().start);
         if single_line {
             p.print_body(&self.consequent[0], ctx);
@@ -597,8 +670,12 @@ impl Gen for SwitchCase<'_> {
 
         p.print_soft_newline();
         p.indent();
-        p.print_stmts_with_orphan_flush(&self.consequent, self.span.end, ctx);
+        p.print_stmts_with_orphan_flush(&self.consequent, self.span.end, 0, ctx);
         p.dedent();
+        if let Some(comments) = deferred {
+            p.print_comments(&comments);
+            p.clear_pending_indent_space();
+        }
     }
 }
 
@@ -613,7 +690,7 @@ impl Gen for ReturnStatement<'_> {
             p.print_soft_space();
             p.print_expression(arg);
         }
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -689,7 +766,7 @@ impl Gen for ThrowStatement<'_> {
         p.print_str("throw");
         p.print_soft_space();
         p.print_expression(&self.argument);
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -714,7 +791,7 @@ impl Gen for DebuggerStatement {
         p.print_space_before_identifier();
         p.add_source_mapping(self.span);
         p.print_str("debugger");
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -820,7 +897,11 @@ impl Gen for Function<'_> {
 impl Gen for FunctionBody<'_> {
     fn r#gen(&self, p: &mut Codegen, ctx: Context) {
         let span_end = self.span.end;
-        let comments_at_end = if span_end > 0 { p.get_comments(span_end - 1) } else { None };
+        let comments_at_end = if span_end > 0 {
+            p.get_comments(span_end - 1)
+        } else {
+            None
+        };
         let single_line = if self.is_empty() {
             !p.has_orphan_comments_before(self.span.end)
                 && comments_at_end
@@ -830,6 +911,17 @@ impl Gen for FunctionBody<'_> {
             false
         };
         p.print_curly_braces(self.span, single_line, |p| {
+            let after_open = self.span.start + 1;
+            let first = self
+                .directives
+                .first()
+                .map(|d| d.span.start)
+                .or_else(|| self.statements.first().map(|s| s.span().start));
+            if let Some(first) = first
+                && after_open < first
+            {
+                p.print_gap_comments(after_open, first, Some(first));
+            }
             p.print_directives_and_statements(
                 &self.directives,
                 &self.statements,
@@ -937,7 +1029,7 @@ impl Gen for ImportDeclaration<'_> {
                     p.print_hard_space();
                     with_clause.print(p, ctx);
                 }
-                p.print_semicolon_after_statement();
+                p.print_semicolon_after_statement(self.span().end);
                 return;
             }
 
@@ -1027,7 +1119,7 @@ impl Gen for ImportDeclaration<'_> {
             p.print_soft_space();
             with_clause.print(p, ctx);
         }
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -1103,9 +1195,9 @@ impl Gen for ExportDeclaration<'_> {
                 | Declaration::TSTypeAliasDeclaration(_)
                 | Declaration::TSImportEqualsDeclaration(_)
         ) {
-            p.print_semicolon_after_statement();
+            p.print_semicolon_after_statement(self.span().end);
         } else {
-            p.print_soft_newline();
+            p.print_trailing_newline(self.span().end);
             p.needs_semicolon = false;
         }
     }
@@ -1114,7 +1206,7 @@ impl Gen for ExportDeclaration<'_> {
 impl Gen for ExportNamedDeclaration<'_> {
     fn r#gen(&self, p: &mut Codegen, ctx: Context) {
         gen_export_specifiers(p, ctx, self.span, self.export_kind, &self.specifiers);
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -1129,7 +1221,7 @@ impl Gen for ExportFromDeclaration<'_> {
             p.print_soft_space();
             with_clause.print(p, ctx);
         }
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -1164,7 +1256,7 @@ impl Gen for TSExportAssignment<'_> {
         p.print_comments_at(self.span.start);
         p.print_str("export = ");
         self.expression.print_expr(p, Precedence::Lowest, ctx);
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -1174,7 +1266,7 @@ impl Gen for TSNamespaceExportDeclaration<'_> {
         p.print_comments_at(self.span.start);
         p.print_str("export as namespace ");
         self.id.print(p, ctx);
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -1261,7 +1353,7 @@ impl Gen for ExportAllDeclaration<'_> {
             p.print_hard_space();
             with_clause.print(p, ctx);
         }
-        p.print_semicolon_after_statement();
+        p.print_semicolon_after_statement(self.span().end);
     }
 }
 
@@ -1299,8 +1391,9 @@ impl Gen for ExportDefaultDeclarationKind<'_> {
             }
             _ => {
                 p.start_of_default_export = p.code_len();
-                self.to_expression().print_expr(p, Precedence::Comma, Context::empty());
-                p.print_semicolon_after_statement();
+                self.to_expression()
+                    .print_expr(p, Precedence::Comma, Context::empty());
+                p.print_semicolon_after_statement(self.span().end);
             }
         }
     }
@@ -1593,27 +1686,47 @@ impl GenExpr for MemberExpression<'_> {
 impl GenExpr for ComputedMemberExpression<'_> {
     fn gen_expr(&self, p: &mut Codegen, _precedence: Precedence, ctx: Context) {
         // `(let[0] = 100);` -> `(let)[0] = 100`;
-        let wrap = self.object.get_identifier_reference().is_some_and(|r| r.name == "let");
+        let wrap = self
+            .object
+            .get_identifier_reference()
+            .is_some_and(|r| r.name == "let");
         p.wrap(wrap, |p| {
-            self.object.print_expr(p, Precedence::Postfix, ctx.intersection(Context::FORBID_CALL));
+            self.object.print_expr(
+                p,
+                Precedence::Postfix,
+                ctx.intersection(Context::FORBID_CALL),
+            );
         });
         if self.optional {
             p.print_str("?.");
         }
         p.print_ascii_byte(b'[');
-        self.expression.print_expr(p, Precedence::Lowest, Context::empty());
+        self.expression
+            .print_expr(p, Precedence::Lowest, Context::empty());
         p.print_ascii_byte(b']');
     }
 }
 
 impl GenExpr for StaticMemberExpression<'_> {
     fn gen_expr(&self, p: &mut Codegen, _precedence: Precedence, ctx: Context) {
-        self.object.print_expr(p, Precedence::Postfix, ctx.intersection(Context::FORBID_CALL));
+        self.object.print_expr(
+            p,
+            Precedence::Postfix,
+            ctx.intersection(Context::FORBID_CALL),
+        );
+        // `obj\n\n// note\n.then` — the comment sits between the object and `.`.
+        let broke = p.print_gap_comments(self.object.span().end, self.property.span().start, None);
+        if broke && p.last_byte() != Some(b'\n') {
+            p.print_soft_newline();
+        }
         if self.optional {
             p.print_ascii_byte(b'?');
         } else if p.need_space_before_dot == p.code_len() {
             // `0.toExponential()` is invalid, add a space before the dot, `0 .toExponential()` is valid
             p.print_hard_space();
+        }
+        if p.last_byte() == Some(b'\n') {
+            p.print_indent();
         }
         p.print_ascii_byte(b'.');
         self.property.print(p, ctx);
@@ -1622,7 +1735,11 @@ impl GenExpr for StaticMemberExpression<'_> {
 
 impl GenExpr for PrivateFieldExpression<'_> {
     fn gen_expr(&self, p: &mut Codegen, _precedence: Precedence, ctx: Context) {
-        self.object.print_expr(p, Precedence::Postfix, ctx.intersection(Context::FORBID_CALL));
+        self.object.print_expr(
+            p,
+            Precedence::Postfix,
+            ctx.intersection(Context::FORBID_CALL),
+        );
         if self.optional {
             p.print_ascii_byte(b'?');
         }
@@ -1651,7 +1768,8 @@ impl GenExpr for CallExpression<'_> {
             } else if is_statement {
                 p.start_of_stmt = p.code_len();
             }
-            self.callee.print_expr(p, Precedence::Postfix, Context::empty());
+            self.callee
+                .print_expr(p, Precedence::Postfix, Context::empty());
             if self.optional {
                 p.print_str("?.");
             }
@@ -1663,6 +1781,8 @@ impl GenExpr for CallExpression<'_> {
             {
                 p.print_arguments(self.span, &self.arguments, ctx);
             }
+            // `f(a) // eslint-disable-line indent` — the note follows `)`.
+            p.print_trailing_comments_at(self.span.end);
         });
     }
 }
@@ -1671,7 +1791,9 @@ impl Gen for Argument<'_> {
     fn r#gen(&self, p: &mut Codegen, ctx: Context) {
         match self {
             Self::SpreadElement(elem) => elem.print(p, ctx),
-            _ => self.to_expression().print_expr(p, Precedence::Comma, Context::empty()),
+            _ => self
+                .to_expression()
+                .print_expr(p, Precedence::Comma, Context::empty()),
         }
     }
 }
@@ -1681,7 +1803,9 @@ impl Gen for ArrayExpressionElement<'_> {
         match self {
             Self::SpreadElement(elem) => elem.print(p, ctx),
             Self::Elision(_span) => {}
-            _ => self.to_expression().print_expr(p, Precedence::Comma, Context::empty()),
+            _ => self
+                .to_expression()
+                .print_expr(p, Precedence::Comma, Context::empty()),
         }
     }
 }
@@ -1690,58 +1814,77 @@ impl Gen for SpreadElement<'_> {
     fn r#gen(&self, p: &mut Codegen, _ctx: Context) {
         p.add_source_mapping(self.span);
         p.print_ellipsis();
-        self.argument.print_expr(p, Precedence::Comma, Context::empty());
+        self.argument
+            .print_expr(p, Precedence::Comma, Context::empty());
     }
 }
 
 impl Gen for ArrayExpression<'_> {
     fn r#gen(&self, p: &mut Codegen, ctx: Context) {
         p.add_source_mapping(self.span);
+        let close = self.span.end.saturating_sub(1);
+        // D-0292: `[/* e */]` and `[1 // t]` keep the comment that leads `]`.
+        let end_comments = if self.span.end > 0 {
+            p.get_comments(close)
+        } else {
+            None
+        };
         p.print_ascii_byte(b'[');
 
         if let Some((first, others)) = self.elements.split_first() {
             let mut item = first;
-            if self.elements.len() > 2 {
-                // 3 or more elements, each on its own line
-                p.indent();
-                p.print_soft_newline();
+            // Babel prints arrays on one line. A line comment inserts the newline
+            // itself; source newlines with no comment do not.
+            p.print_comments_at(item.span().start);
+            if p.last_byte() == Some(b'\n') {
                 p.print_indent();
-                item.print(p, ctx);
-
-                for item_ref in others {
-                    item = item_ref;
-
-                    p.print_comma();
-                    p.print_soft_newline();
-                    p.print_indent();
-
-                    item.print(p, ctx);
-                }
-
-                if matches!(item, ArrayExpressionElement::Elision(_)) {
-                    p.print_comma();
-                }
-
-                p.print_soft_newline();
-                p.dedent();
-                p.print_indent();
-            } else {
-                // 1 or 2 elements, on one line
-                item.print(p, ctx);
-
-                if let Some(item_ref) = others.first() {
-                    item = item_ref;
-
-                    p.print_comma();
-                    p.print_soft_space();
-
-                    item.print(p, ctx);
-                }
-
-                if matches!(item, ArrayExpressionElement::Elision(_)) {
-                    p.print_comma();
-                }
             }
+            item.print(p, ctx);
+            for item_ref in others {
+                let prev = item.span().end;
+                let next = item_ref.span().start;
+                match p.find_byte(prev, next, b',') {
+                    Some(comma) => {
+                        p.print_gap_comments(prev, comma, None);
+                        p.clear_pending_indent_space();
+                        p.print_comma();
+                        // Babel's first leading line comment always breaks, even when
+                        // the source had it on the comma's line (`}, // note`).
+                        if p.line_comment_in(comma + 1, next) && p.last_byte() != Some(b'\n') {
+                            p.print_soft_newline();
+                            p.print_indent();
+                        }
+                        p.print_gap_comments(comma + 1, next, Some(next));
+                    }
+                    None => {
+                        p.print_gap_comments(prev, next, Some(next));
+                        p.clear_pending_indent_space();
+                        p.print_comma();
+                    }
+                }
+                if p.last_byte() == Some(b'\n') {
+                    p.print_indent();
+                } else {
+                    p.print_soft_space();
+                }
+                item = item_ref;
+                p.print_comments_at(item.span().start);
+                if p.last_byte() == Some(b'\n') {
+                    p.print_indent();
+                }
+                item.print(p, ctx);
+            }
+            if matches!(item, ArrayExpressionElement::Elision(_)) {
+                p.print_comma();
+            }
+            p.print_gap_comments(item.span().end, close, Some(close));
+            if let Some(comments) = &end_comments {
+                p.print_comments(comments);
+                p.clear_pending_indent_space();
+            }
+        } else if let Some(comments) = &end_comments {
+            p.print_comments(comments);
+            p.clear_pending_indent_space();
         }
 
         p.add_source_mapping_end(self.span);
@@ -1753,7 +1896,22 @@ impl GenExpr for ObjectExpression<'_> {
     fn gen_expr(&self, p: &mut Codegen, _precedence: Precedence, ctx: Context) {
         let n = p.code_len();
         let len = self.properties.len();
-        let is_multi_line = len > 1;
+        let close = self.span.end.saturating_sub(1);
+        // D-0292: a comment before `}` (`{ a: 1 /* t */ }`, `{ /* empty */ }`) is
+        // leading on the `}`. Take it before the property loop so a gap scan
+        // does not print it twice.
+        let end_comments = if self.span.end > 0 {
+            p.get_comments(close)
+        } else {
+            None
+        };
+        let end_breaks = end_comments.as_ref().is_some_and(|cs| {
+            cs.iter()
+                .any(|c| c.preceded_by_newline() || c.followed_by_newline() || c.is_line())
+        });
+        // A comment before `}` makes Babel break the object (`{ a: 1 /* t */ }` → multiline).
+        // An empty `{/* c */}` stays one line.
+        let is_multi_line = len > 1 || (len > 0 && (end_breaks || end_comments.is_some()));
         let has_comment = p.has_comment(self.span.start);
         let wrap = has_comment || p.start_of_stmt == n || p.start_of_arrow_expr == n;
         p.wrap(wrap, |p| {
@@ -1769,15 +1927,49 @@ impl GenExpr for ObjectExpression<'_> {
                 p.indent();
             }
             for (i, item) in self.properties.iter().enumerate() {
+                if i == 0 && is_multi_line {
+                    // `{ // note` belongs inside, ahead of the first property.
+                    p.print_gap_comments(
+                        self.span.start + 1,
+                        item.span().start,
+                        Some(item.span().start),
+                    );
+                    p.clear_pending_indent_space();
+                }
                 if i != 0 {
-                    p.print_comma();
+                    let prev = self.properties[i - 1].span().end;
+                    let next = item.span().start;
+                    // `a: 1 /* mid */, b` is before the comma. `a: 1, // n` is after it.
+                    match p.find_byte(prev, next, b',') {
+                        Some(comma) => {
+                            p.print_gap_comments(prev, comma, None);
+                            p.clear_pending_indent_space();
+                            p.print_comma();
+                            // `a: 1, // n` breaks before the comment in a multiline object.
+                            if is_multi_line && p.last_byte() != Some(b'\n') {
+                                p.print_soft_newline();
+                            }
+                            p.print_gap_comments(comma + 1, next, Some(next));
+                        }
+                        None => {
+                            p.print_gap_comments(prev, next, Some(next));
+                            p.clear_pending_indent_space();
+                            p.print_comma();
+                        }
+                    }
+                    p.clear_pending_indent_space();
                 }
                 if is_multi_line {
-                    p.print_soft_newline();
+                    // A trailing line comment already ended the line (`value, // n`).
+                    if p.last_byte() != Some(b'\n') {
+                        p.print_soft_newline();
+                    }
                     p.print_comments_at(item.span().start);
                     p.print_indent();
                 } else {
-                    p.print_soft_space();
+                    if i == 0 && end_comments.is_none() {
+                        p.print_soft_space();
+                    }
                     if let Some(comments) = p.get_comments(item.span().start) {
                         p.print_comments(&comments);
                         p.consume_pending_indent_space();
@@ -1785,11 +1977,28 @@ impl GenExpr for ObjectExpression<'_> {
                 }
                 item.print(p, ctx);
             }
+            if let Some(last) = self.properties.last() {
+                p.print_gap_comments(last.span().end, close, Some(close));
+            }
+            if let Some(comments) = &end_comments {
+                let breaks = comments
+                    .iter()
+                    .any(|c| c.preceded_by_newline() || c.is_line());
+                // `{ a: 1 /* t */ }` stays on the property's line. `{ a: 1\n // tail }` breaks.
+                if is_multi_line && breaks {
+                    p.print_soft_newline();
+                    p.print_indent();
+                }
+                p.print_comments(comments);
+                p.clear_pending_indent_space();
+            }
             if is_multi_line {
-                p.print_soft_newline();
+                if p.last_byte() != Some(b'\n') {
+                    p.print_soft_newline();
+                }
                 p.dedent();
                 p.print_indent();
-            } else if len > 0 {
+            } else if len > 0 && end_comments.is_none() {
                 p.print_soft_space();
             }
             p.add_source_mapping_end(self.span);
@@ -1901,7 +2110,8 @@ impl Gen for ObjectProperty<'_> {
         }
 
         p.print_leading_comments_before_expression(&self.value);
-        self.value.print_expr(p, Precedence::Comma, Context::empty());
+        self.value
+            .print_expr(p, Precedence::Comma, Context::empty());
     }
 }
 
@@ -1911,7 +2121,9 @@ impl Gen for PropertyKey<'_> {
             Self::StaticIdentifier(ident) => ident.print(p, ctx),
             Self::PrivateIdentifier(ident) => ident.print(p, ctx),
             Self::StringLiteral(s) => p.print_string_literal(s, /* allow_backtick */ false),
-            _ => self.to_expression().print_expr(p, Precedence::Comma, Context::empty()),
+            _ => self
+                .to_expression()
+                .print_expr(p, Precedence::Comma, Context::empty()),
         }
     }
 }
@@ -1962,13 +2174,21 @@ impl GenExpr for ArrowFunctionExpression<'_> {
             }
             p.print_soft_space();
             p.print_str("=>");
-            p.print_soft_space();
             match &self.body {
                 ArrowFunctionBody::FunctionBody(b) => {
+                    p.print_soft_space();
                     b.print(p, body_ctx);
                 }
                 expression @ match_expression!(ArrowFunctionBody) => {
                     let expression = expression.to_expression();
+                    // `x =>\n  // note\n  expr` — the comment sits between `=>` and the body.
+                    let body_start = expression.span().start;
+                    p.print_gap_comments(self.params.span.end, body_start.saturating_add(1), None);
+                    if p.last_byte() == Some(b'\n') {
+                        p.print_indent();
+                    } else {
+                        p.print_soft_space();
+                    }
                     p.start_of_arrow_expr = p.code_len();
                     expression.print_expr(p, Precedence::Comma, body_ctx);
                 }
@@ -1980,7 +2200,11 @@ impl GenExpr for ArrowFunctionExpression<'_> {
 impl GenExpr for YieldExpression<'_> {
     fn gen_expr(&self, p: &mut Codegen, precedence: Precedence, ctx: Context) {
         let wrap = precedence >= Precedence::Assign;
-        let argument_ctx = if wrap { Context::empty() } else { ctx & Context::FORBID_IN };
+        let argument_ctx = if wrap {
+            Context::empty()
+        } else {
+            ctx & Context::FORBID_IN
+        };
         p.wrap(wrap, |p| {
             p.print_space_before_identifier();
             p.add_source_mapping(self.span);
@@ -2076,7 +2300,8 @@ impl GenExpr for PrivateInExpression<'_> {
             p.add_source_mapping(self.span);
             self.left.print(p, ctx);
             p.print_str(" in ");
-            self.right.print_expr(p, Precedence::Compare, Context::FORBID_IN);
+            self.right
+                .print_expr(p, Precedence::Compare, Context::FORBID_IN);
         });
     }
 }
@@ -2119,19 +2344,25 @@ impl GenExpr for ConditionalExpression<'_> {
             } else {
                 Precedence::Conditional
             };
-            self.test.print_expr(p, test_precedence, ctx & Context::FORBID_IN);
-            p.print_soft_space();
+            self.test
+                .print_expr(p, test_precedence, ctx & Context::FORBID_IN);
+            // A trailing line comment already broke the line (`f(a) // c\n? 1`).
+            if p.last_byte() != Some(b'\n') {
+                p.print_soft_space();
+            }
             p.print_ascii_byte(b'?');
             p.print_soft_space();
             // Annotation-gated (see the helper's doc): `if/else` bodies get
             // merged into consequents on mutated ASTs.
             p.print_annotation_comments_before_expression(&self.consequent);
-            self.consequent.print_expr(p, Precedence::Yield, Context::empty());
+            self.consequent
+                .print_expr(p, Precedence::Yield, Context::empty());
             p.print_soft_space();
             p.print_colon();
             p.print_soft_space();
             p.print_leading_comments_before_expression(&self.alternate);
-            self.alternate.print_expr(p, Precedence::Yield, ctx & Context::FORBID_IN);
+            self.alternate
+                .print_expr(p, Precedence::Yield, ctx & Context::FORBID_IN);
         });
     }
 }
@@ -2147,6 +2378,21 @@ impl GenExpr for AssignmentExpression<'_> {
             if !cjs_module_lexer::try_print_exports_computed_target(p, &self.left, ctx) {
                 self.left.print(p, ctx);
             }
+            // D-0292: `x /* i */ = 1` and `x = /* i */ 1`.
+            let left_end = self.left.span().end;
+            let right_start = self.right.span().start;
+            let eq = p.source_text.and_then(|src| {
+                let b = src.as_bytes();
+                let from = left_end as usize;
+                let to = (right_start as usize).min(b.len());
+                b.get(from..to)?
+                    .iter()
+                    .position(|&c| c == b'=')
+                    .map(|i| left_end + i as u32)
+            });
+            if let Some(eq) = eq {
+                p.print_gap_comments(left_end, eq, None);
+            }
             // `a! = b`: keep a separator so the non-null `!` doesn't glue to `=` as `!=`.
             if p.options.minify
                 && self.operator == AssignmentOperator::Assign
@@ -2157,7 +2403,16 @@ impl GenExpr for AssignmentExpression<'_> {
             }
             p.print_soft_space();
             p.print_str(self.operator.as_str());
-            p.print_soft_space();
+            let commented = if let Some(eq) = eq {
+                p.print_gap_comments(eq + 1, right_start, None)
+            } else {
+                false
+            };
+            p.clear_pending_indent_space();
+            // Babel prints `= /* i */1` with no space after the comment.
+            if !commented {
+                p.print_soft_space();
+            }
             self.right.print_expr(p, Precedence::Comma, ctx);
         });
     }
@@ -2172,7 +2427,8 @@ impl Gen for AssignmentTarget<'_> {
                     Self::TSTypeAssertion(_) => Precedence::Prefix,
                     _ => Precedence::Comma,
                 };
-                self.to_simple_assignment_target().print_expr(p, precedence, Context::empty());
+                self.to_simple_assignment_target()
+                    .print_expr(p, precedence, Context::empty());
             }
             match_assignment_target_pattern!(Self) => {
                 self.to_assignment_target_pattern().print(p, ctx);
@@ -2314,8 +2570,10 @@ impl Gen for AssignmentTargetPropertyProperty<'_> {
                 PropertyKey::StaticIdentifier(ident) => Some(&ident.name),
                 _ => None,
             };
-            let value_name =
-                self.binding.identifier().map(|id| p.get_identifier_reference_name(id));
+            let value_name = self
+                .binding
+                .identifier()
+                .map(|id| p.get_identifier_reference_name(id));
             match (key_name, value_name) {
                 (Some(key_name), Some(value_name)) => key_name == value_name,
                 _ => false,
@@ -2344,7 +2602,8 @@ impl Gen for AssignmentTargetPropertyProperty<'_> {
                     if self.computed {
                         p.print_ascii_byte(b'[');
                     }
-                    key.to_expression().print_expr(p, Precedence::Comma, Context::empty());
+                    key.to_expression()
+                        .print_expr(p, Precedence::Comma, Context::empty());
                     if self.computed {
                         p.print_ascii_byte(b']');
                     }
@@ -2368,7 +2627,11 @@ impl Gen for AssignmentTargetRest<'_> {
 impl GenExpr for SequenceExpression<'_> {
     fn gen_expr(&self, p: &mut Codegen, precedence: Precedence, ctx: Context) {
         p.wrap(precedence >= self.precedence(), |p| {
-            p.print_expressions(&self.expressions, Precedence::Lowest, ctx.and_forbid_call(false));
+            p.print_expressions(
+                &self.expressions,
+                Precedence::Lowest,
+                ctx.and_forbid_call(false),
+            );
         });
     }
 }
@@ -2406,7 +2669,8 @@ impl GenExpr for ImportExpression<'_> {
                 p.print_soft_newline();
                 p.print_indent();
             }
-            self.source.print_expr(p, Precedence::Comma, Context::empty());
+            self.source
+                .print_expr(p, Precedence::Comma, Context::empty());
             if let Some(options) = &self.options {
                 p.print_comma();
                 if has_comment {
@@ -2457,7 +2721,11 @@ impl GenExpr for TaggedTemplateExpression<'_> {
     fn gen_expr(&self, p: &mut Codegen, _precedence: Precedence, ctx: Context) {
         p.add_source_mapping(self.span);
         // Propagate `FORBID_CALL` to the tag so a `new` callee like `f()` wraps.
-        self.tag.print_expr(p, Precedence::Postfix, ctx.intersection(Context::FORBID_CALL));
+        self.tag.print_expr(
+            p,
+            Precedence::Postfix,
+            ctx.intersection(Context::FORBID_CALL),
+        );
         if let Some(type_parameters) = &self.type_arguments {
             type_parameters.print(p, ctx);
         }
@@ -2489,8 +2757,11 @@ impl GenExpr for ChainExpression<'_> {
     fn gen_expr(&self, p: &mut Codegen, precedence: Precedence, ctx: Context) {
         let wrap = precedence >= Precedence::Postfix || ctx.intersects(Context::FORBID_CALL);
         // Once wrapped, the inner element is in a fresh grouping; don't wrap again.
-        let (precedence, ctx) =
-            if wrap { (Precedence::Lowest, Context::empty()) } else { (precedence, ctx) };
+        let (precedence, ctx) = if wrap {
+            (Precedence::Lowest, Context::empty())
+        } else {
+            (precedence, ctx)
+        };
         p.wrap(wrap, |p| match &self.expression {
             ChainElement::CallExpression(expr) => expr.print_expr(p, precedence, ctx),
             ChainElement::TSNonNullExpression(expr) => expr.print_expr(p, precedence, ctx),
@@ -2516,7 +2787,8 @@ impl GenExpr for NewExpression<'_> {
             p.add_source_mapping(self.span);
             p.print_str("new");
             p.print_soft_space();
-            self.callee.print_expr(p, Precedence::New, Context::FORBID_CALL);
+            self.callee
+                .print_expr(p, Precedence::New, Context::FORBID_CALL);
             if let Some(type_parameters) = &self.type_arguments {
                 type_parameters.print(p, ctx);
             }
@@ -2535,7 +2807,8 @@ impl GenExpr for TSAsExpression<'_> {
         let wrap = precedence >= Precedence::Compare;
 
         p.wrap(wrap, |p| {
-            self.expression.print_expr(p, Precedence::Exponentiation, ctx);
+            self.expression
+                .print_expr(p, Precedence::Exponentiation, ctx);
             p.print_soft_space();
             p.print_space_before_identifier();
             p.print_str("as");
@@ -2554,7 +2827,8 @@ impl GenExpr for TSSatisfiesExpression<'_> {
         let wrap = precedence >= Precedence::Compare;
 
         p.wrap(wrap, |p| {
-            self.expression.print_expr(p, Precedence::Exponentiation, ctx);
+            self.expression
+                .print_expr(p, Precedence::Exponentiation, ctx);
             p.print_soft_space();
             p.print_space_before_identifier();
             p.print_str("satisfies");
@@ -2611,7 +2885,8 @@ impl GenExpr for TSTypeAssertion<'_> {
             p.print_ascii_byte(b'>');
             // The operand is a `UnaryExpression`, so print it like a unary argument
             // (`<T>-x`, not `<T>(-x)`) while still wrapping looser operands.
-            self.expression.print_expr(p, Precedence::Exponentiation, ctx);
+            self.expression
+                .print_expr(p, Precedence::Exponentiation, ctx);
         });
     }
 }
@@ -2659,7 +2934,9 @@ impl Gen for Class<'_> {
                 p.print_soft_space();
                 p.print_space_before_identifier();
                 p.print_str("extends ");
-                heritage.expression.print_expr(p, Precedence::Postfix, Context::empty());
+                heritage
+                    .expression
+                    .print_expr(p, Precedence::Postfix, Context::empty());
                 if let Some(super_type_parameters) = &heritage.type_arguments {
                     super_type_parameters.print(p, ctx);
                 }
@@ -2681,12 +2958,32 @@ impl Gen for Class<'_> {
 
 impl Gen for ClassBody<'_> {
     fn r#gen(&self, p: &mut Codegen, ctx: Context) {
-        p.print_curly_braces(self.span, self.body.is_empty(), |p| {
+        let comments_at_end = if self.span.end > 0 {
+            p.get_comments(self.span.end - 1)
+        } else {
+            None
+        };
+        let single_line = self.body.is_empty()
+            && comments_at_end
+                .as_ref()
+                .is_none_or(|comments| comments.iter().all(|c| !c.has_newlines_around()));
+        p.print_curly_braces(self.span, single_line, |p| {
             for item in &self.body {
                 p.print_semicolon_if_needed();
                 p.print_leading_comments(item.span().start);
                 p.print_indent();
                 item.print(p, ctx);
+            }
+            // D-0292: a comment after the last class element, before `}`.
+            // Indent and a blank line come from the comment itself. Indenting
+            // first leaves a tab in front of it, and the blank line is skipped.
+            if let Some(comments) = comments_at_end {
+                p.print_comments(&comments);
+                p.clear_pending_indent_space();
+                // `/*LWC compiler v9.5.3*/` sits on its own line, then `}`.
+                if !single_line && p.last_byte() != Some(b'\n') {
+                    p.print_soft_newline();
+                }
             }
         });
     }
@@ -2701,19 +2998,20 @@ impl Gen for ClassElement<'_> {
             }
             Self::MethodDefinition(elem) => {
                 elem.print(p, ctx);
-                p.print_soft_newline();
+                // `constructor() {} // trail` — the last field's trailing comment.
+                p.print_trailing_newline(elem.span.end);
             }
             Self::PropertyDefinition(elem) => {
                 elem.print(p, ctx);
-                p.print_semicolon_after_statement();
+                p.print_semicolon_after_statement(self.span().end);
             }
             Self::AccessorProperty(elem) => {
                 elem.print(p, ctx);
-                p.print_semicolon_after_statement();
+                p.print_semicolon_after_statement(self.span().end);
             }
             Self::TSIndexSignature(elem) => {
                 elem.print(p, ctx);
-                p.print_semicolon_after_statement();
+                p.print_semicolon_after_statement(self.span().end);
             }
         }
     }
@@ -2854,7 +3152,8 @@ impl Gen for JSXSpreadAttribute<'_> {
             p.print_indent();
         }
         p.print_str("...");
-        self.argument.print_expr(p, Precedence::Comma, Context::empty());
+        self.argument
+            .print_expr(p, Precedence::Comma, Context::empty());
         p.add_source_mapping_end(self.span);
         p.print_ascii_byte(b'}');
     }
@@ -2970,7 +3269,7 @@ impl Gen for StaticBlock<'_> {
         p.print_soft_space();
         let single_line = self.body.is_empty() && !p.has_orphan_comments_before(self.span.end);
         p.print_curly_braces(self.span, single_line, |p| {
-            p.print_stmts_with_orphan_flush(&self.body, self.span.end, ctx);
+            p.print_stmts_with_orphan_flush(&self.body, self.span.end, self.span.start + 1, ctx);
         });
         p.needs_semicolon = false;
     }
@@ -3178,12 +3477,18 @@ impl Gen for PrivateIdentifier<'_> {
     fn r#gen(&self, p: &mut Codegen, _ctx: Context) {
         let mangled = p.private_member_mappings.as_ref().and_then(|mappings| {
             p.current_class_ids()
-                .find_map(|class_id| mappings.get(class_id).and_then(|m| m.get(self.name.as_str())))
+                .find_map(|class_id| {
+                    mappings
+                        .get(class_id)
+                        .and_then(|m| m.get(self.name.as_str()))
+                })
                 .cloned()
         });
         // Name the mapping after what is printed, not after what the AST holds, so a mangled name
         // is recorded as a rename and an unmangled one as no rename at all
-        let name = mangled.as_ref().map_or(self.name.as_str(), |mangled| mangled.as_str());
+        let name = mangled
+            .as_ref()
+            .map_or(self.name.as_str(), |mangled| mangled.as_str());
 
         p.add_source_mapping_for_private_name(self.span, name);
         p.print_ascii_byte(b'#');
@@ -3312,7 +3617,8 @@ impl Gen for AssignmentPattern<'_> {
         p.print_soft_space();
         p.print_equal();
         p.print_soft_space();
-        self.right.print_expr(p, Precedence::Comma, Context::empty());
+        self.right
+            .print_expr(p, Precedence::Comma, Context::empty());
     }
 }
 
@@ -3338,7 +3644,8 @@ impl Gen for Decorator<'_> {
         p.print_ascii_byte(b'@');
         let wrap = need_wrap(&self.expression);
         p.wrap(wrap, |p| {
-            self.expression.print_expr(p, Precedence::Lowest, Context::empty());
+            self.expression
+                .print_expr(p, Precedence::Lowest, Context::empty());
         });
     }
 }
@@ -3437,9 +3744,12 @@ impl Gen for TSType<'_> {
 
 impl Gen for TSArrayType<'_> {
     fn r#gen(&self, p: &mut Codegen, ctx: Context) {
-        p.wrap(parenthesize_check_type_of_postfix_type(&self.element_type), |p| {
-            self.element_type.print(p, ctx);
-        });
+        p.wrap(
+            parenthesize_check_type_of_postfix_type(&self.element_type),
+            |p| {
+                self.element_type.print(p, ctx);
+            },
+        );
         p.print_str("[]");
     }
 }
@@ -3546,7 +3856,10 @@ fn type_starts_with_non_identifier(ty: &TSType) -> bool {
                 || type_starts_with_non_identifier(&arr.element_type)
         }
         TSType::TSLiteralType(lit) => {
-            matches!(&lit.literal, TSLiteral::TemplateLiteral(_) | TSLiteral::StringLiteral(_))
+            matches!(
+                &lit.literal,
+                TSLiteral::TemplateLiteral(_) | TSLiteral::StringLiteral(_)
+            )
         }
         TSType::TSUnionType(u) => u.types.first().is_some_and(type_starts_with_non_identifier),
         TSType::TSIntersectionType(i) => {
@@ -3610,9 +3923,12 @@ impl Gen for TSInferType<'_> {
 
 impl Gen for TSIndexedAccessType<'_> {
     fn r#gen(&self, p: &mut Codegen, ctx: Context) {
-        p.wrap(parenthesize_check_type_of_postfix_type(&self.object_type), |p| {
-            self.object_type.print(p, ctx);
-        });
+        p.wrap(
+            parenthesize_check_type_of_postfix_type(&self.object_type),
+            |p| {
+                self.object_type.print(p, ctx);
+            },
+        );
         p.print_ascii_byte(b'[');
         self.index_type.print(p, ctx);
         p.print_ascii_byte(b']');
@@ -4089,9 +4405,12 @@ impl Gen for TSTupleElement<'_> {
         match self {
             match_ts_type!(TSTupleElement) => self.to_ts_type().print(p, ctx),
             TSTupleElement::TSOptionalType(ts_type) => {
-                p.wrap(parenthesize_check_type_of_postfix_type(&ts_type.type_annotation), |p| {
-                    ts_type.type_annotation.print(p, ctx);
-                });
+                p.wrap(
+                    parenthesize_check_type_of_postfix_type(&ts_type.type_annotation),
+                    |p| {
+                        ts_type.type_annotation.print(p, ctx);
+                    },
+                );
                 p.print_ascii_byte(b'?');
             }
             TSTupleElement::TSRestType(ts_type) => {
@@ -4206,12 +4525,14 @@ fn is_leftmost_intrinsic_reference(ty: &TSType) -> bool {
         }
         TSType::TSArrayType(array) => is_leftmost_intrinsic_reference(&array.element_type),
         TSType::TSIndexedAccessType(access) => is_leftmost_intrinsic_reference(&access.object_type),
-        TSType::TSUnionType(union) => {
-            union.types.first().is_some_and(is_leftmost_intrinsic_reference)
-        }
-        TSType::TSIntersectionType(intersection) => {
-            intersection.types.first().is_some_and(is_leftmost_intrinsic_reference)
-        }
+        TSType::TSUnionType(union) => union
+            .types
+            .first()
+            .is_some_and(is_leftmost_intrinsic_reference),
+        TSType::TSIntersectionType(intersection) => intersection
+            .types
+            .first()
+            .is_some_and(is_leftmost_intrinsic_reference),
         TSType::TSConditionalType(conditional) => {
             is_leftmost_intrinsic_reference(&conditional.check_type)
         }

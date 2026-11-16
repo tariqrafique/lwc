@@ -258,7 +258,11 @@ impl<'a> Codegen<'a> {
     /// Pass options to the code generator.
     #[must_use]
     pub fn with_options(mut self, options: CodegenOptions) -> Self {
-        self.quote = if options.single_quote { Quote::Single } else { Quote::Double };
+        self.quote = if options.single_quote {
+            Quote::Single
+        } else {
+            Quote::Double
+        };
         self.code = CodeBuffer::with_indent(options.indent_char, options.indent_width);
         self.options = options;
         self
@@ -305,7 +309,11 @@ impl<'a> Codegen<'a> {
     /// A source map will be generated if [`CodegenOptions::source_map_path`] is set.
     #[must_use]
     pub fn build(mut self, program: &Program<'a>) -> CodegenReturn<'a> {
-        self.quote = if self.options.single_quote { Quote::Single } else { Quote::Double };
+        self.quote = if self.options.single_quote {
+            Quote::Single
+        } else {
+            Quote::Double
+        };
         self.source_text = Some(program.source_text);
         self.indent = self.options.initial_indent;
         self.code.reserve(program.source_text.len());
@@ -390,8 +398,11 @@ impl<'a> Codegen<'a> {
             let mut end = i;
             let mut escaped = false;
             if raw {
-                let backslashes =
-                    s.as_bytes()[start..i].iter().rev().take_while(|&&b| b == b'\\').count();
+                let backslashes = s.as_bytes()[start..i]
+                    .iter()
+                    .rev()
+                    .take_while(|&&b| b == b'\\')
+                    .count();
                 escaped = backslashes % 2 == 1;
                 if escaped {
                     end = i - 1;
@@ -409,7 +420,10 @@ impl<'a> Codegen<'a> {
             // contributes nothing to the cooked value either way, and keeping a continuation in
             // place means the surrounding characters still lex the same (`$\<LS>{`, `\0\<LS>1`).
             let line_continuation = escaped
-                && matches!(mode, NonAsciiEscape::TemplateRaw | NonAsciiEscape::Directive)
+                && matches!(
+                    mode,
+                    NonAsciiEscape::TemplateRaw | NonAsciiEscape::Directive
+                )
                 && matches!(ch, '\u{2028}' | '\u{2029}');
             if line_continuation {
                 self.print_str("\\\n");
@@ -499,8 +513,11 @@ impl<'a> Codegen<'a> {
                 }
 
                 // Keep backslashes which are themselves escaped.
-                let preceding_backslashes =
-                    bytes[..index].iter().rev().take_while(|&&b| b == b'\\').count();
+                let preceding_backslashes = bytes[..index]
+                    .iter()
+                    .rev()
+                    .take_while(|&&b| b == b'\\')
+                    .count();
                 if preceding_backslashes % 2 != 0 {
                     continue;
                 }
@@ -805,11 +822,23 @@ impl<'a> Codegen<'a> {
     }
 
     #[inline]
-    fn print_semicolon_after_statement(&mut self) {
+    fn print_semicolon_after_statement(&mut self, end: u32) {
         if self.options.minify {
             self.needs_semicolon = true;
         } else {
-            self.print_str(";\n");
+            self.print_ascii_byte(b';');
+            // D-0292: `stmt; // trail` is a trailing comment on the semicolon.
+            if !self.print_trailing_comments_at(end) {
+                self.print_hard_newline();
+            }
+        }
+    }
+
+    /// Same-line trailing comment after a node that does not take a semicolon
+    /// (`function f() {} // c`), then the newline the statement terminator wants.
+    fn print_trailing_newline(&mut self, end: u32) {
+        if !self.print_trailing_comments_at(end) {
+            self.print_soft_newline();
         }
     }
 
@@ -889,9 +918,23 @@ impl<'a> Codegen<'a> {
     }
 
     fn print_block_statement(&mut self, stmt: &BlockStatement<'_>, ctx: Context) {
-        let single_line = stmt.body.is_empty() && !self.has_orphan_comments_before(stmt.span.end);
+        let comments_at_end = if stmt.span.end > 0 {
+            self.get_comments(stmt.span.end - 1)
+        } else {
+            None
+        };
+        let single_line = stmt.body.is_empty()
+            && !self.has_orphan_comments_before(stmt.span.end)
+            && comments_at_end
+                .as_ref()
+                .is_none_or(|comments| comments.iter().all(|c| !c.has_newlines_around()));
         self.print_curly_braces(stmt.span, single_line, |p| {
-            p.print_stmts_with_orphan_flush(&stmt.body, stmt.span.end, ctx);
+            p.print_stmts_with_orphan_flush(&stmt.body, stmt.span.end, stmt.span.start + 1, ctx);
+            // D-0292: `if (x) { /* c */ }` and a comment after the last statement.
+            if let Some(comments) = comments_at_end {
+                p.print_comments(&comments);
+                p.clear_pending_indent_space();
+            }
         });
         self.needs_semicolon = false;
     }
@@ -901,8 +944,16 @@ impl<'a> Codegen<'a> {
         &mut self,
         stmts: &[Statement<'_>],
         scope_end: u32,
+        after_open: u32,
         ctx: Context,
     ) {
+        if let Some(first) = stmts.first()
+            && after_open > 0
+            && after_open < first.span().start
+        {
+            // `if (x) { // note` — the comment trails `{`, ahead of the first statement.
+            self.print_gap_comments(after_open, first.span().start, Some(first.span().start));
+        }
         for stmt in stmts {
             self.print_orphan_comments_before(stmt.span().start);
             self.print_semicolon_if_needed();
@@ -962,12 +1013,12 @@ impl<'a> Codegen<'a> {
                 self.print_string_literal(string, /* allow_backtick */ true);
                 self.print_ascii_byte(b')');
             }
-            self.print_semicolon_after_statement();
+            self.print_semicolon_after_statement(stmt.span.end);
         } else {
             first.print(self, ctx);
         }
 
-        self.print_stmts_with_orphan_flush(rest, scope_end, ctx);
+        self.print_stmts_with_orphan_flush(rest, scope_end, 0, ctx);
     }
 
     #[inline]
@@ -975,11 +1026,44 @@ impl<'a> Codegen<'a> {
         let Some((first, rest)) = items.split_first() else {
             return;
         };
+        let mut prev = first.span().end;
         first.print(self, ctx);
         for item in rest {
-            self.print_comma();
-            self.print_soft_space();
+            let next = item.span().start;
+            // `label, // note` then the next argument. The comment is after the comma.
+            match self.find_byte(prev, next, b',') {
+                Some(comma) => {
+                    self.print_gap_comments(prev, comma, None);
+                    self.clear_pending_indent_space();
+                    self.print_comma();
+                    // Break before a comment only. A newline with no comment
+                    // (`var a = 1,\n  b = 2`) stays a space, which is what the
+                    // rest of the pipeline reprints.
+                    let after = self.take_comments_between(comma + 1, next, Some(next));
+                    if !after.is_empty()
+                        && self.find_byte(comma + 1, next, b'\n').is_some()
+                        && self.last_byte() != Some(b'\n')
+                    {
+                        self.print_soft_newline();
+                    }
+                    if !after.is_empty() {
+                        self.print_comments(&after);
+                    }
+                }
+                None => {
+                    self.print_comma();
+                    self.print_gap_comments(prev, next, Some(next));
+                }
+            }
+            self.clear_pending_indent_space();
+            self.print_comments_at(next);
+            if self.last_byte() == Some(b'\n') {
+                self.print_indent();
+            } else {
+                self.print_soft_space();
+            }
             item.print(self, ctx);
+            prev = item.span().end;
         }
     }
 
@@ -1002,21 +1086,52 @@ impl<'a> Codegen<'a> {
         let has_comment_before_right_paren = span.end > 0 && self.has_comment(span.end - 1);
 
         let has_comment = has_comment_before_right_paren
-            || arguments.iter().any(|item| self.has_comment(item.span().start));
+            || arguments
+                .iter()
+                .any(|item| self.has_comment(item.span().start));
 
         if has_comment {
-            self.indent();
+            // `foo(a // c` stays on the `(` line. Only a leading comment on the
+            // first argument (`foo(\n  // c\n  a`) indents the list.
+            let break_open = arguments
+                .first()
+                .is_some_and(|item| self.has_comment(item.span().start));
+            if break_open {
+                self.indent();
+            }
             self.print_list_with_comments(arguments, ctx);
+            if let Some(last) = arguments.last() {
+                self.print_gap_comments(
+                    last.span().end,
+                    span.end.saturating_sub(1),
+                    Some(span.end.saturating_sub(1)),
+                );
+            }
             // Handle `/* comment */);`
-            if !has_comment_before_right_paren
-                || (span.end > 0 && !self.print_expr_comments(span.end - 1))
-            {
+            let printed_paren_comments =
+                has_comment_before_right_paren && self.print_expr_comments(span.end - 1);
+            if !printed_paren_comments && self.last_byte() != Some(b'\n') {
                 self.print_soft_newline();
             }
-            self.dedent();
-            self.print_indent();
+            if break_open {
+                self.dedent();
+            }
+            if self.last_byte() == Some(b'\n') {
+                self.print_indent();
+            }
         } else {
             self.print_list(arguments, ctx);
+            // D-0292: `foo(1 // c)` — the comment trails the argument, not `)`.
+            if let Some(last) = arguments.last() {
+                self.print_gap_comments(
+                    last.span().end,
+                    span.end.saturating_sub(1),
+                    Some(span.end.saturating_sub(1)),
+                );
+            }
+            if span.end > 0 {
+                self.print_expr_comments(span.end - 1);
+            }
         }
         // End mapping at the gen position OF `)`, not past it. Matches
         // esbuild/Babel and avoids shadowing the next AST node's start.
@@ -1030,20 +1145,45 @@ impl<'a> Codegen<'a> {
         };
         if self.print_expr_comments(first.span().start) {
             self.print_indent();
-        } else {
-            self.print_soft_newline();
+        } else if self.last_byte() == Some(b'\n') {
             self.print_indent();
         }
+        let mut prev = first.span().end;
         first.print(self, ctx);
         for item in rest {
-            self.print_comma();
-            if self.print_expr_comments(item.span().start) {
+            let next = item.span().start;
+            match self.find_byte(prev, next, b',') {
+                Some(comma) => {
+                    self.print_gap_comments(prev, comma, None);
+                    self.clear_pending_indent_space();
+                    self.print_comma();
+                    // Break before a comment only. A newline with no comment
+                    // (`var a = 1,\n  b = 2`) stays a space, which is what the
+                    // rest of the pipeline reprints.
+                    let after = self.take_comments_between(comma + 1, next, Some(next));
+                    if !after.is_empty()
+                        && self.find_byte(comma + 1, next, b'\n').is_some()
+                        && self.last_byte() != Some(b'\n')
+                    {
+                        self.print_soft_newline();
+                    }
+                    if !after.is_empty() {
+                        self.print_comments(&after);
+                    }
+                }
+                None => {
+                    self.print_comma();
+                }
+            }
+            self.clear_pending_indent_space();
+            if self.print_expr_comments(item.span().start) || self.last_byte() == Some(b'\n') {
                 self.print_indent();
             } else {
                 self.print_soft_newline();
                 self.print_indent();
             }
             item.print(self, ctx);
+            prev = item.span().end;
         }
     }
 
@@ -1220,7 +1360,12 @@ impl<'a> Codegen<'a> {
         if precedence == Precedence::Postfix
             && let Some(sourcemap_builder) = self.sourcemap_builder.as_mut()
         {
-            add_mapping(sourcemap_builder, self.code.as_bytes(), self.source_text, span);
+            add_mapping(
+                sourcemap_builder,
+                self.code.as_bytes(),
+                self.source_text,
+                span,
+            );
         }
     }
 

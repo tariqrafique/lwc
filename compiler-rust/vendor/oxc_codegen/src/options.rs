@@ -162,14 +162,24 @@ pub struct CommentOptions {
 
 impl Default for CommentOptions {
     fn default() -> Self {
-        Self { normal: true, jsdoc: true, annotation: true, legal: LegalComment::default() }
+        Self {
+            normal: true,
+            jsdoc: true,
+            annotation: true,
+            legal: LegalComment::default(),
+        }
     }
 }
 
 impl CommentOptions {
     /// Disable Comments.
     pub fn disabled() -> Self {
-        Self { normal: false, jsdoc: false, annotation: false, legal: LegalComment::None }
+        Self {
+            normal: false,
+            jsdoc: false,
+            annotation: false,
+            legal: LegalComment::None,
+        }
     }
 }
 

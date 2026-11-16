@@ -25,7 +25,7 @@ fn registers_basic_component() {
     let out = t(BASIC, &opts());
     assert!(out.contains("import _tmpl from \"./test.html\""), "{out}");
     assert!(
-        out.contains("registerComponent as _registerComponent } from \"lwc\""),
+        out.contains("LightningElement, registerComponent as _registerComponent"),
         "{out}"
     );
     assert!(

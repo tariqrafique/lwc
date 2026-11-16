@@ -1,7 +1,6 @@
 import { registerDecorators as _registerDecorators } from "lwc";
 import _tmpl from "./test.html";
-import { registerComponent as _registerComponent } from "lwc";
-import { LightningElement } from "lwc";
+import { LightningElement, registerComponent as _registerComponent } from "lwc";
 import { getRecord } from 'lightning/uiRecordApi';
 class Test extends LightningElement {
 	constructor(...args) {
@@ -13,11 +12,7 @@ class Test extends LightningElement {
 _registerDecorators(Test, { wire: {
 	record: {
 		adapter: getRecord,
-		dynamic: [
-			"recordId",
-			"deep",
-			"odd"
-		],
+		dynamic: ["recordId", "deep", "odd"],
 		config: function($cmp) {
 			let v1 = $cmp.a;
 			let v2 = $cmp["a"];

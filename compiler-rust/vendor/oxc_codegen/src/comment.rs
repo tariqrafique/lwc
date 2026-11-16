@@ -8,7 +8,6 @@ use oxc_ast::{
     ast::{Expression, Program},
 };
 use oxc_span::GetSpan;
-use oxc_syntax::line_terminator::LineTerminatorSplitter;
 
 use crate::{Codegen, LegalComment, options::CommentOptions};
 
@@ -17,6 +16,83 @@ type CommentList = SmallVec<[Comment; 1]>;
 pub type CommentsMap = FxHashMap</* attached_to */ u32, CommentList>;
 
 /// Whether a comment remains meaningful if its original AST anchor is removed.
+/// Babel `adjustMultilineComment`. The strip regex is `\n\s{1,column}`, and
+/// JavaScript `\s` includes newlines, so a run of blank lines is partly
+/// consumed before the indent is put back. Trailing spaces that the strip
+/// does not eat stay.
+fn adjust_block_comment<'a>(
+    raw: &'a str,
+    comment: &Comment,
+    source: &str,
+    column: usize,
+) -> std::borrow::Cow<'a, str> {
+    if !raw.contains('\n') {
+        return std::borrow::Cow::Borrowed(raw);
+    }
+    let orig = original_column(source, comment.span.start);
+    if orig == 0 {
+        return std::borrow::Cow::Borrowed(raw);
+    }
+    let stripped = strip_babel_ws(raw, orig);
+    let mut out = String::with_capacity(stripped.len() + column * 4);
+    let mut chars = stripped.chars().peekable();
+    while let Some(c) = chars.next() {
+        out.push(c);
+        if c == '\n' && chars.peek().is_some() {
+            out.extend(std::iter::repeat_n(' ', column));
+        }
+    }
+    std::borrow::Cow::Owned(out)
+}
+
+/// Replace each `\n` plus 1..=`offset` following JS whitespace characters
+/// (newlines included) with a single `\n`.
+fn strip_babel_ws(raw: &str, offset: usize) -> String {
+    let mut out = String::with_capacity(raw.len());
+    let mut chars = raw.chars().peekable();
+    while let Some(c) = chars.next() {
+        if c != '\n' {
+            out.push(c);
+            continue;
+        }
+        let mut taken = 0usize;
+        let mut look = chars.clone();
+        while taken < offset {
+            match look.peek() {
+                Some(w) if is_js_ws(*w) => {
+                    look.next();
+                    taken += 1;
+                }
+                _ => break,
+            }
+        }
+        if taken > 0 {
+            for _ in 0..taken {
+                chars.next();
+            }
+        }
+        out.push('\n');
+    }
+    out
+}
+
+fn is_js_ws(c: char) -> bool {
+    matches!(
+        c,
+        ' ' | '\t' | '\n' | '\r' | '\u{000b}' | '\u{000c}' | '\u{00a0}' | '\u{feff}'
+    )
+}
+
+fn original_column(source: &str, pos: u32) -> usize {
+    let b = source.as_bytes();
+    let pos = (pos as usize).min(b.len());
+    let start = b[..pos]
+        .iter()
+        .rposition(|&c| c == b'\n')
+        .map_or(0, |i| i + 1);
+    source[start..pos].chars().count()
+}
+
 fn preserve_when_orphaned(comment: &Comment) -> bool {
     comment.is_legal() || comment.is_coverage_ignore_file()
 }
@@ -87,18 +163,24 @@ impl Codegen<'_> {
             // back to the canonical literal for the dropped ones.
             if comment.is_pure() || comment.is_no_side_effects() {
                 if comment.is_leading() && self.options.print_annotation_comment() {
-                    self.annotation_comments.insert(comment.attached_to, comment.clone());
+                    self.annotation_comments
+                        .insert(comment.attached_to, comment.clone());
                 }
                 continue;
             }
 
-            let mut add = false;
-            if comment.is_leading() {
-                add = (comment.is_legal() && self.options.print_legal_comment())
+            // D-0292: trailing comments are printed too. Babel keeps a trailing
+            // comment on its token (`a = 1; // trail`) and an inner comment in the
+            // gap it came from. Both are normal comments; pure annotations stay on
+            // the annotation path above.
+            let add = if comment.is_leading() {
+                (comment.is_legal() && self.options.print_legal_comment())
                     || (comment.is_jsdoc() && self.options.print_jsdoc_comment())
                     || (comment.is_annotation() && self.options.print_annotation_comment())
-                    || (comment.is_normal() && self.options.print_normal_comment());
-            }
+                    || (comment.is_normal() && self.options.print_normal_comment())
+            } else {
+                comment.is_normal() && self.options.print_normal_comment()
+            };
 
             if add {
                 self.has_property_key_annotations |= comment.is_property_key_annotation();
@@ -107,13 +189,31 @@ impl Codegen<'_> {
                 {
                     self.orphan_comment_keys.insert(idx, comment.attached_to);
                 }
-                self.comments.entry(comment.attached_to).or_default().push(comment.clone());
+                self.comments
+                    .entry(comment.attached_to)
+                    .or_default()
+                    .push(comment.clone());
             }
         }
     }
 
     pub(crate) fn has_comment(&self, start: u32) -> bool {
         self.comments.contains_key(&start)
+    }
+
+    /// A leading line comment anchored at `at` (its text may start earlier).
+    pub(crate) fn has_leading_line_comment(&self, at: u32) -> bool {
+        self.comments.get(&at).is_some_and(|list| {
+            list.iter().any(|c| c.is_leading() && c.is_line())
+        })
+    }
+
+    /// A line comment whose text starts in `[from, to)`.
+    pub(crate) fn line_comment_in(&self, from: u32, to: u32) -> bool {
+        self.comments.values().any(|list| {
+            list.iter()
+                .any(|c| c.is_line() && c.span.start >= from && c.span.start < to)
+        })
     }
 
     /// Emit a pure / no-side-effects annotation comment for the AST node at
@@ -163,19 +263,266 @@ impl Codegen<'_> {
     }
 
     pub(crate) fn print_leading_comments(&mut self, start: u32) {
-        if let Some(comments) = self.comments.remove(&start) {
+        if let Some(comments) = self.take_positioned(start, true) {
             self.print_comments(&comments);
         }
     }
 
-    pub(crate) fn get_comments(&mut self, start: u32) -> Option<CommentList> {
+    /// Trailing comments anchored at `end` (the previous token's exclusive end).
+    /// Returns whether the printed text already ends in a newline.
+    pub(crate) fn print_trailing_comments_at(&mut self, end: u32) -> bool {
+        let Some(comments) = self.take_positioned(end, false) else {
+            return false;
+        };
+        if let Some(b) = self.last_byte()
+            && !matches!(b, b' ' | b'\t' | b'\n')
+        {
+            self.print_hard_space();
+        }
+        self.print_comments(&comments);
+        self.last_byte() == Some(b'\n')
+    }
+
+    /// Comments whose text starts in `[from, to)`.
+    ///
+    /// `keep_attached_to` leaves a comment keyed at that anchor so the node that
+    /// owns it can print it (`/* mid */` sits before the comma; the next
+    /// property's leading comment stays on the property).
+    pub(crate) fn take_comments_between(
+        &mut self,
+        from: u32,
+        to: u32,
+        keep_attached_to: Option<u32>,
+    ) -> CommentList {
+        if self.comments.is_empty() || from >= to {
+            return CommentList::new();
+        }
+        let keys: Vec<u32> = self
+            .comments
+            .iter()
+            .filter_map(|(&k, list)| {
+                if keep_attached_to == Some(k) {
+                    return None;
+                }
+                list.iter()
+                    .any(|c| c.span.start >= from && c.span.start < to)
+                    .then_some(k)
+            })
+            .collect();
+        let mut out = CommentList::new();
+        for k in keys {
+            let Some(mut list) = self.comments.remove(&k) else {
+                continue;
+            };
+            let (hit, rest): (Vec<_>, Vec<_>) = list
+                .drain(..)
+                .partition(|c| c.span.start >= from && c.span.start < to);
+            if !rest.is_empty() {
+                self.comments.insert(k, CommentList::from(rest));
+            }
+            out.extend(hit);
+        }
+        out.sort_by_key(|c| c.span.start);
+        out
+    }
+
+    /// First `byte` in the source span `[from, to)`.
+    pub(crate) fn find_byte(&self, from: u32, to: u32, byte: u8) -> Option<u32> {
+        let src = self.source_text?;
+        let start = from as usize;
+        let end = (to as usize).min(src.len());
+        if start >= end {
+            return None;
+        }
+        src[start..end].find(byte as char).map(|i| from + i as u32)
+    }
+
+    pub(crate) fn print_gap_comments(
+        &mut self,
+        from: u32,
+        to: u32,
+        keep_attached_to: Option<u32>,
+    ) -> bool {
+        let comments = self.take_comments_between(from, to, keep_attached_to);
+        let any = !comments.is_empty();
+        if any {
+            self.print_comments(&comments);
+        }
+        any
+    }
+
+    /// Trailing line comments anchored at `at`, removed so a later site can print them.
+    ///
+    /// A comment after the last statement of a `switch` case is trailing of that
+    /// statement in oxc and trailing of the case in Babel. Babel prints it after
+    /// the case body has already wrapped, so it lands on the next line.
+    pub(crate) fn take_trailing_line_comments(&mut self, at: u32) -> Option<CommentList> {
+        let list = self.take_positioned(at, false)?;
+        let (lines, rest): (Vec<_>, Vec<_>) = list.into_iter().partition(|c| c.is_line());
+        if !rest.is_empty() {
+            self.comments.entry(at).or_default().extend(rest);
+        }
+        if lines.is_empty() { None } else { Some(CommentList::from(lines)) }
+    }
+
+    /// Leading (`leading`) or trailing comments stored at `at`.
+    fn take_positioned(&mut self, at: u32, leading: bool) -> Option<CommentList> {
         if self.comments.is_empty() {
             return None;
         }
-        self.comments.remove(&start)
+        let list = self.comments.get_mut(&at)?;
+        let hit: CommentList = list
+            .iter()
+            .filter(|c| c.is_leading() == leading)
+            .cloned()
+            .collect();
+        list.retain(|c| c.is_leading() != leading);
+        if list.is_empty() {
+            self.comments.remove(&at);
+        }
+        if hit.is_empty() { None } else { Some(hit) }
+    }
+
+    pub(crate) fn get_comments(&mut self, start: u32) -> Option<CommentList> {
+        self.take_positioned(start, true)
+    }
+
+    /// One blank line in the source immediately before `pos` (the comment start).
+    /// Indent spaces on the comment's line do not count. A blank line whose only
+    /// job is to separate `{`, `(`, or `[` from the comment is not kept: Babel
+    /// prints the first comment in a block on the next line either way.
+    fn source_has_blank_line_before(&self, pos: u32) -> bool {
+        let Some(src) = self.source_text else {
+            return false;
+        };
+        let b = src.as_bytes();
+        let mut i = pos as usize;
+        if i > b.len() {
+            return false;
+        }
+        let mut newlines = 0u32;
+        while i > 0 {
+            match b[i - 1] {
+                b' ' | b'\t' | b'\r' => i -= 1,
+                b'\n' => {
+                    newlines += 1;
+                    i -= 1;
+                    if newlines == 2 {
+                        break;
+                    }
+                }
+                _ => break,
+            }
+        }
+        if newlines < 2 {
+            return false;
+        }
+        // A `{` that ends a `//` line is comment text, not a block opener.
+        // `// } else if (...) {\n\n// }` keeps the blank line, which Babel prints.
+        let line_start = b[..i].iter().rposition(|&c| c == b'\n').map_or(0, |p| p + 1);
+        let line = &b[line_start..i];
+        let trimmed = line
+            .iter()
+            .position(|&c| !matches!(c, b' ' | b'\t'))
+            .map(|p| &line[p..])
+            .unwrap_or(line);
+        if trimmed.starts_with(b"//") {
+            return true;
+        }
+        while i > 0 && matches!(b[i - 1], b' ' | b'\t' | b'\r') {
+            i -= 1;
+        }
+        !(i > 0 && matches!(b[i - 1], b'{' | b'(' | b'['))
+    }
+
+    /// One blank line in the source immediately after `pos` (the comment end).
+    fn source_has_blank_line_after(&self, pos: u32) -> bool {
+        let Some(src) = self.source_text else {
+            return false;
+        };
+        let b = src.as_bytes();
+        let mut i = pos as usize;
+        let mut newlines = 0u32;
+        while i < b.len() {
+            match b[i] {
+                b' ' | b'\t' | b'\r' => i += 1,
+                b'\n' => {
+                    newlines += 1;
+                    i += 1;
+                }
+                _ => break,
+            }
+        }
+        // Babel does not keep a blank line between a trailing comment and `}` / `]` / `)`.
+        if i < b.len() && matches!(b[i], b'}' | b']' | b')') {
+            return false;
+        }
+        newlines >= 2
+    }
+
+    /// Column Babel's generator would use here: two spaces per indent level,
+    /// plus any non-indent characters already on this line.
+    fn babel_column(&self) -> usize {
+        let bytes = self.code().as_bytes();
+        let line_start = bytes.iter().rposition(|&b| b == b'\n').map_or(0, |i| i + 1);
+        let tail = &bytes[line_start..];
+        let mut col = 0usize;
+        for &b in tail {
+            if b == b'\t' {
+                col += 2;
+            } else {
+                col += 1;
+            }
+        }
+        col
+    }
+
+    /// The current output line is empty or only the indent we just printed.
+    fn current_line_is_indent(&self) -> bool {
+        let bytes = self.code().as_bytes();
+        let line_start = bytes.iter().rposition(|&b| b == b'\n').map_or(0, |i| i + 1);
+        bytes[line_start..].iter().all(|&b| matches!(b, b' ' | b'\t'))
+    }
+
+    fn output_ends_with_blank_line(&self) -> bool {
+        let b = self.code().as_bytes();
+        let mut i = b.len();
+        while i > 0 && matches!(b[i - 1], b' ' | b'\t') {
+            i -= 1;
+        }
+        if i == 0 || b[i - 1] != b'\n' {
+            return false;
+        }
+        i -= 1;
+        while i > 0 && matches!(b[i - 1], b' ' | b'\t' | b'\r') {
+            i -= 1;
+        }
+        i > 0 && b[i - 1] == b'\n'
     }
 
     #[inline]
+    /// Leading comments anchored at `at` whose text starts at or after `end`.
+    ///
+    /// Oxc attaches `stmt; // note` to the statement's start as a leading
+    /// comment. The note belongs after the statement, where Babel prints it.
+    pub(crate) fn take_leading_on_or_after(
+        &mut self,
+        at: u32,
+        end: u32,
+    ) -> Option<CommentList> {
+        let list = self.comments.get_mut(&at)?;
+        let late: CommentList = list
+            .iter()
+            .filter(|c| c.is_leading() && c.span.start >= end)
+            .cloned()
+            .collect();
+        list.retain(|c| !(c.is_leading() && c.span.start >= end));
+        if list.is_empty() {
+            self.comments.remove(&at);
+        }
+        if late.is_empty() { None } else { Some(late) }
+    }
+
     pub(crate) fn print_comments_at(&mut self, start: u32) {
         if let Some(comments) = self.get_comments(start) {
             self.print_comments(&comments);
@@ -293,7 +640,9 @@ impl Codegen<'_> {
         let mut orphans: Vec<Comment> = Vec::new();
         let comments = &mut self.comments;
         for k in self.orphan_comment_keys.drain(..idx) {
-            let Some(entry) = comments.get_mut(&k) else { continue };
+            let Some(entry) = comments.get_mut(&k) else {
+                continue;
+            };
             debug_assert!(entry.iter().any(preserve_when_orphaned));
             entry.retain(|comment| {
                 if preserve_when_orphaned(comment) {
@@ -325,7 +674,11 @@ impl Codegen<'_> {
             return false;
         }
         // Find and remove the first key in the range.
-        let key = self.comments.keys().find(|&&k| k > start && k < end).copied();
+        let key = self
+            .comments
+            .keys()
+            .find(|&&k| k > start && k < end)
+            .copied();
         if let Some(key) = key {
             let comments = self.comments.remove(&key).unwrap();
             self.print_comments(&comments);
@@ -338,10 +691,17 @@ impl Codegen<'_> {
         if self.comments.is_empty() {
             return false;
         }
-        let Some(comments) = self.comments.remove(&start) else { return false };
+        let Some(comments) = self.comments.remove(&start) else {
+            return false;
+        };
 
         for comment in &comments {
-            self.print_hard_newline();
+            // Already at a newline: another one is a blank line Babel does not
+            // print between `// a` and the next `// b`.
+            let blank = self.source_has_blank_line_before(comment.span.start);
+            if self.last_byte() != Some(b'\n') || blank {
+                self.print_hard_newline();
+            }
             self.print_indent();
             self.print_comment(comment);
         }
@@ -354,23 +714,48 @@ impl Codegen<'_> {
         }
     }
 
-    pub(crate) fn print_comments(&mut self, comments: &[Comment]) {
-        let Some((first, rest)) = comments.split_first() else {
-            return;
-        };
-
-        if first.preceded_by_newline() {
-            // Skip printing newline if this comment is already on a newline.
+    /// Put the printer on the line a comment should occupy.
+    ///
+    /// D-0292: Babel keeps one blank line before a leading comment when the
+    /// source had one (`stmt;\n\n// c`). `preceded_by_newline` is only "not on
+    /// the same line"; the extra line is read from the source span.
+    fn prepare_comment_line(&mut self, comment: &Comment) {
+        if comment.preceded_by_newline() {
+            let blank = self.source_has_blank_line_before(comment.span.start)
+                && !self.output_ends_with_blank_line();
             if let Some(b) = self.last_byte() {
                 match b {
-                    b'\n' => self.print_indent(),
-                    b'\t' => { /* noop */ }
+                    b'\n' => {
+                        if blank {
+                            self.print_hard_newline();
+                        }
+                        self.print_indent();
+                    }
+                    // A tab we just printed as indent is the line so far. A tab
+                    // that trails a comment (`// note\t`) is not: break first.
+                    // The indent for this line was printed before the comment. A
+                    // blank line in the source still has to land above it.
+                    b'\t' | b' ' if self.current_line_is_indent() => {
+                        if blank {
+                            self.print_hard_newline();
+                            self.print_indent();
+                        }
+                    }
                     _ => {
                         self.print_hard_newline();
+                        if blank {
+                            self.print_hard_newline();
+                        }
                         self.print_indent();
                     }
                 }
             }
+        } else if let Some(b) = self.last_byte()
+            && !matches!(b, b' ' | b'\t' | b'\n' | b'(' | b'[' | b'{')
+        {
+            // `1 /* c */` and `1 // c` keep the space Babel prints. Openers stay
+            // tight: `{/* c */}`, `[/* c */]`, `function f() {/* c */}`.
+            self.print_hard_space();
         } else if !self.consume_pending_indent_space()
             && matches!(self.last_byte(), None | Some(b'\n'))
         {
@@ -379,13 +764,34 @@ impl Codegen<'_> {
             // indent injected mid-line, growing indentation on every codegen pass.
             self.print_indent();
         }
+    }
+
+    fn finish_comment(&mut self, comment: &Comment) {
+        if comment.is_line() || comment.followed_by_newline() {
+            self.print_hard_newline();
+            // A blank line between this comment and the next token.
+            if self.source_has_blank_line_after(comment.span.end)
+                && !self.output_ends_with_blank_line()
+            {
+                self.print_hard_newline();
+            }
+        } else {
+            self.print_next_indent_as_space = true;
+        }
+    }
+
+    pub(crate) fn print_comments(&mut self, comments: &[Comment]) {
+        let Some((first, rest)) = comments.split_first() else {
+            return;
+        };
+
+        self.prepare_comment_line(first);
         self.print_comment(first);
 
         if let Some((last, middle)) = rest.split_last() {
             for comment in middle {
                 if comment.preceded_by_newline() {
-                    self.print_hard_newline();
-                    self.print_indent();
+                    self.prepare_comment_line(comment);
                 } else if comment.is_legal() {
                     self.print_hard_newline();
                 } else {
@@ -395,24 +801,16 @@ impl Codegen<'_> {
             }
 
             if last.preceded_by_newline() {
-                self.print_hard_newline();
-                self.print_indent();
+                self.prepare_comment_line(last);
             } else if last.is_legal() {
                 self.print_hard_newline();
             } else {
                 self.print_soft_space();
             }
             self.print_comment(last);
-
-            if last.is_line() || last.followed_by_newline() {
-                self.print_hard_newline();
-            } else {
-                self.print_next_indent_as_space = true;
-            }
-        } else if first.is_line() || first.followed_by_newline() {
-            self.print_hard_newline();
+            self.finish_comment(last);
         } else {
-            self.print_next_indent_as_space = true;
+            self.finish_comment(first);
         }
     }
 
@@ -442,16 +840,16 @@ impl Codegen<'_> {
                 };
                 self.print_str_escaping_script_close_tag(text);
             }
+            // D-0292: Babel prints a block comment from its source text. A comment
+            // that stays at its original column is unchanged, tabs included.
+            // One that moves (a field comment carried into the constructor) has
+            // each continuation line's leading whitespace shifted by the column
+            // difference: strip up to the original start column, then indent to
+            // the column Babel would be at (two spaces per indent level).
             CommentKind::MultiLineBlock => {
-                for line in LineTerminatorSplitter::new(comment_source) {
-                    if !line.starts_with("/*") {
-                        self.print_indent();
-                    }
-                    self.print_str_escaping_script_close_tag(line.trim_start());
-                    if !line.ends_with("*/") {
-                        self.print_hard_newline();
-                    }
-                }
+                let adjusted =
+                    adjust_block_comment(comment_source, comment, source_text, self.babel_column());
+                self.print_str_escaping_script_close_tag(&adjusted);
             }
         }
     }
@@ -473,21 +871,10 @@ impl Codegen<'_> {
 
         let source_text = program.source_text;
         for comment in program.comments.iter().filter(|c| c.is_legal()) {
-            let mut text = Cow::Borrowed(comment.span.source_text(source_text));
-            if comment.is_multiline_block() {
-                let mut buffer = String::with_capacity(text.len());
-                // Print block comments with our own indentation.
-                for line in LineTerminatorSplitter::new(&text) {
-                    if !line.starts_with("/*") {
-                        buffer.push('\t');
-                    }
-                    buffer.push_str(line.trim_start());
-                    if !line.ends_with("*/") {
-                        buffer.push('\n');
-                    }
-                }
-                text = Cow::Owned(buffer);
-            }
+            let text = Cow::Borrowed(comment.span.source_text(source_text));
+            // D-0292: legal-comment dedup uses the verbatim source text, the same
+            // bytes `print_comment` emits. Re-indenting here split one comment
+            // into two once the printer stopped re-indenting.
             if set.insert(text) {
                 comments.push(comment.clone());
             }

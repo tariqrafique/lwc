@@ -649,8 +649,8 @@ impl<'s> Classes<'s, '_> {
         }
 
         for m in &metas {
-            self.edits
-                .push(Edit::replace(m.dec.span.start, m.dec.span.end, ""));
+            let (s, e) = decorator_line(self.src, m.dec.span.start, m.dec.span.end);
+            self.edits.push(Edit::replace(s, e, ""));
         }
         let meta = format!("{{ {} }}", list.join(", "));
         self.used = true;
@@ -1156,4 +1156,39 @@ pub fn run(
         ));
     }
     Ok(late)
+}
+
+/// `@api` on its own line is the whole line, newline included. Leaving the
+/// newline behind becomes a blank line Babel never prints (`// note\n@api\nget x`
+/// is `// note\nget x`). A decorator that shares its line with the member
+/// (`@api get x()`) stays a span delete.
+fn decorator_line(src: &str, start: u32, end: u32) -> (u32, u32) {
+    let b = src.as_bytes();
+    if end as usize > b.len() || start >= end {
+        return (start, end);
+    }
+    let line_start = b[..start as usize]
+        .iter()
+        .rposition(|&c| c == b'\n')
+        .map_or(0, |i| i as u32 + 1);
+    let line_end = b[end as usize..]
+        .iter()
+        .position(|&c| c == b'\n')
+        .map_or(b.len() as u32, |i| end + i as u32 + 1);
+    let mut rest = String::new();
+    rest.push_str(&src[line_start as usize..start as usize]);
+    if (end as usize) < line_end as usize {
+        rest.push_str(&src[end as usize..line_end as usize]);
+    }
+    // `@api // note` on its own line: Babel drops the comment with the decorator.
+    let trimmed = rest.trim();
+    if trimmed.is_empty() || trimmed.starts_with("//") || is_whole_block_comment(trimmed) {
+        (line_start, line_end)
+    } else {
+        (start, end)
+    }
+}
+
+fn is_whole_block_comment(s: &str) -> bool {
+    s.len() >= 4 && s.starts_with("/*") && s.ends_with("*/") && !s[2..s.len() - 2].contains('\n')
 }

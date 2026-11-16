@@ -77,18 +77,6 @@ positive_tests = "tools/semdiff/tests/rules.rs::redundant_parens_with_identical_
 negative_tests = "tools/semdiff/tests/rules.rs::parens_that_change_the_parse_are_observed"
 
 [[rule]]
-id = "R-COMMENT-STAR-SPACE-1"
-rev = 1
-kind = "comment-text"
-decision = "D-0196"
-arch_review = "AB-L0088"
-justification = "A block comment continuation line's indentation before '*' is printer whitespace. '/*\\n * Copyright\\n */' and '/*\\n* Copyright\\n */' are the same comment text. A different word, a line comment, or a dropped comment stays observed."
-preconditions = "Codegen matches and content_eq holds. Only the comment-text lists are rewritten, and only by deleting spaces and tabs between a newline and a '*' inside a block comment."
-eval_order_argument = "Comments do not run. The normalized text is the same sequence of comment bodies. A missing comment is a different list and is not skipped."
-positive_tests = "tools/semdiff/tests/rules.rs::block_comment_star_indent_is_unobservable"
-negative_tests = "tools/semdiff/tests/rules.rs::a_different_or_missing_comment_is_observed"
-
-[[rule]]
 id = "R-VAR-LITERAL-IMPORT-1"
 rev = 1
 kind = "ast-normalize"
@@ -111,18 +99,6 @@ preconditions = "Both sides parse. Only Init properties with a static identifier
 eval_order_argument = "Each kept property is still evaluated in its original order. An earlier property with the same key is evaluated and then overwritten; dropping it changes nothing a later read can see when the key is written again as data. `{a: 1, a: 2}` is not `{a: 1}`."
 positive_tests = "tools/semdiff/tests/rules.rs::duplicate_data_key_keeps_the_last_value"
 negative_tests = "tools/semdiff/tests/rules.rs::an_earlier_duplicate_value_is_not_the_result"
-
-[[rule]]
-id = "R-INERT-LINE-COMMENT-1"
-rev = 1
-kind = "comment-text"
-decision = "D-0196"
-arch_review = "AB-L0088"
-justification = "A `//` note that is not an eslint, istanbul, c8, v8, pure, or sourceMappingURL directive does not change evaluation. Those directives stay in the comment list and a missing one is still a difference. Block comments are not this rule."
-preconditions = "Codegen matches and content_eq holds. Only line comments whose body does not start with a tool directive are removed from both comment lists before the compare."
-eval_order_argument = "The removed comments are not parsed as code. A directive comment stays, so a consumer that keys off eslint-disable still sees a mismatch when one side drops it."
-positive_tests = "tools/semdiff/tests/rules.rs::an_inert_line_comment_is_unobservable"
-negative_tests = "tools/semdiff/tests/rules.rs::a_directive_line_comment_is_observed"
 
 [[rule]]
 id = "R-OBJECT-SHORTHAND-1"

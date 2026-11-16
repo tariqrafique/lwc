@@ -27,19 +27,6 @@ pub(crate) fn unique(src: &str, hint: &str) -> String {
         .unwrap()
 }
 
-/// Span `[first comment start, last comment end)` of the comments before `stmt` that Babel attaches only as
-/// its leading comments: `stmt` is the program's first node (no hashbang, no directive, first statement).
-fn export_only_leading_comments(program: &Program<'_>, stmt: &Statement<'_>) -> Option<(u32, u32)> {
-    let first = program.body.first()?;
-    if program.hashbang.is_some() || !program.directives.is_empty() || first.span() != stmt.span() {
-        return None;
-    }
-    let at = stmt.span().start;
-    let mut lead = program.comments.iter().filter(|c| c.span.end <= at);
-    let first = lead.next()?.span;
-    Some((first.start, lead.last().map_or(first.end, |c| c.span.end)))
-}
-
 pub fn run(
     program: &Program<'_>,
     src: &str,
@@ -70,12 +57,22 @@ pub fn run(
         };
         let reg = unique(src, REGISTER_COMPONENT_ID);
         let tmpl = unique(src, TEMPLATE_KEY);
+        let spec = format!("{REGISTER_COMPONENT_ID} as {reg}");
+        // The template import is a new statement at the top (ahead of a leading
+        // license comment). `registerComponent` joins the existing `lwc` import,
+        // which sits after that comment. A fresh import above the license is
+        // what makes the bundler drop the comment.
         let mut imports = format!(
-            "import {tmpl} from {};\nimport {{ {REGISTER_COMPONENT_ID} as {reg} }} from \"{LWC_PACKAGE_ALIAS}\";\n",
+            "import {tmpl} from {};\n",
             lwc_shared::js::string_literal(
                 format!("./{}.html", base_name(filename)).encode_utf16()
             )
         );
+        if !merge_lwc_specifier(edits, program, src, &spec) {
+            imports.push_str(&format!(
+                "import {{ {spec} }} from \"{LWC_PACKAGE_ALIAS}\";\n"
+            ));
+        }
         let mut props = vec![
             format!("{TEMPLATE_KEY}: {tmpl}"),
             format!(
@@ -106,22 +103,19 @@ pub fn run(
             props.push(format!("{ENABLE_PRIVATE_METHODS_KEY}: true"));
         }
         let meta = format!("{{ {} }}", props.join(", "));
-        // component.ts replaces only the declaration inside the ExportDefaultDeclaration, so the statement's
-        // leading comments stay on `export default __lwc_component_class_internal;`, after the hoisted class and
-        // the register call. Babel attaches a comment to both neighbours (trailing of the previous node,
-        // leading of the next), and a comment printed once stays where it was printed first: only a comment
-        // with no node before it (no directive, no hashbang, the export is the first statement) moves.
-        let lead = export_only_leading_comments(program, stmt);
-        let export = match lead {
-            Some((s, e)) => format!(
-                "\n{}\nexport default {COMPONENT_CLASS_ID};",
-                &src[s as usize..e as usize]
-            ),
+        // One rule for the export's leading comments. Babel prints a comment
+        // once, on the first node that owns it. A file-leading license (nothing
+        // before the export: no hashbang, no directive, the export is the first
+        // statement) moves onto the rewritten `export default`, blank line
+        // included. A comment after another statement stays there.
+        let lead = export_leading(program, src, stmt);
+        if let Some((start, _)) = &lead {
+            edits.push(Edit::replace(*start, stmt.span().start, String::new()));
+        }
+        let export = match &lead {
+            Some((_, text)) => format!("\n{text}export default {COMPONENT_CLASS_ID};"),
             None => format!("\nexport default {COMPONENT_CLASS_ID};"),
         };
-        if let Some((s, e)) = lead {
-            edits.push(Edit::replace(s, e, ""));
-        }
         edits.push(Edit::insert(0, imports));
         match class_id {
             // Named class: hoist declaration in place, register by id.
@@ -149,4 +143,63 @@ pub fn run(
         }
         return; // only one default export per module
     }
+}
+
+/// Leading comments of `stmt`, and the blank line before its keyword, when
+/// `stmt` is the program's first node. Otherwise `None`: the comment belongs
+/// to the node printed before it.
+fn export_leading(program: &Program<'_>, src: &str, stmt: &Statement<'_>) -> Option<(u32, String)> {
+    let first = program.body.first()?;
+    if program.hashbang.is_some() || !program.directives.is_empty() || first.span() != stmt.span() {
+        return None;
+    }
+    let at = stmt.span().start;
+    let start = program
+        .comments
+        .iter()
+        .filter(|c| c.is_leading() && c.attached_to == at && c.span.end <= at)
+        .map(|c| c.span.start)
+        .min()?;
+    if start >= at {
+        return None;
+    }
+    Some((start, src[start as usize..at as usize].to_string()))
+}
+
+/// Add `spec` to an existing `from "lwc"` import. A decorator rewrite of that
+/// import is updated in place so the two edits do not overlap.
+fn merge_lwc_specifier(
+    edits: &mut Vec<Edit>,
+    program: &Program<'_>,
+    src: &str,
+    spec: &str,
+) -> bool {
+    let Some(stmt) = program.body.iter().find_map(|s| match s {
+        Statement::ImportDeclaration(d) if d.source.value == LWC_PACKAGE_ALIAS => Some(d.as_ref()),
+        _ => None,
+    }) else {
+        return false;
+    };
+    if let Some(e) = edits
+        .iter_mut()
+        .find(|e| e.start == stmt.span.start && e.end == stmt.span.end)
+    {
+        if e.text.is_empty() {
+            e.text = format!("import {{ {spec} }} from \"{LWC_PACKAGE_ALIAS}\";");
+        } else if let Some(idx) = e.text.rfind('}') {
+            e.text.insert_str(idx, &format!(", {spec}"));
+        } else {
+            return false;
+        }
+        return true;
+    }
+    let text = &src[stmt.span.start as usize..stmt.span.end as usize];
+    let Some(rel) = text.rfind('}') else {
+        return false;
+    };
+    edits.push(Edit::insert(
+        stmt.span.start + rel as u32,
+        format!(", {spec}"),
+    ));
+    true
 }

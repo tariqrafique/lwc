@@ -5,6 +5,7 @@
 use std::ops::Not;
 
 use oxc_ast::ast::{BinaryExpression, Expression, LogicalExpression};
+use oxc_span::GetSpan;
 use oxc_syntax::{
     operator::{BinaryOperator, LogicalOperator},
     precedence::{GetPrecedence, Precedence},
@@ -189,12 +190,18 @@ impl<'a> BinaryExpressionVisitor<'a> {
         match self.operator {
             BinaryishOperator::Logical(LogicalOperator::Coalesce) => {
                 if let Expression::LogicalExpression(logical_expr) = e.left()
-                    && matches!(logical_expr.operator, LogicalOperator::And | LogicalOperator::Or)
+                    && matches!(
+                        logical_expr.operator,
+                        LogicalOperator::And | LogicalOperator::Or
+                    )
                 {
                     self.left_precedence = Precedence::Prefix;
                 }
                 if let Expression::LogicalExpression(logical_expr) = e.right()
-                    && matches!(logical_expr.operator, LogicalOperator::And | LogicalOperator::Or)
+                    && matches!(
+                        logical_expr.operator,
+                        LogicalOperator::And | LogicalOperator::Or
+                    )
                 {
                     self.right_precedence = Precedence::Prefix;
                 }
@@ -237,7 +244,19 @@ impl<'a> BinaryExpressionVisitor<'a> {
     pub fn visit_right_and_finish(&self, p: &mut Codegen) {
         p.print_soft_space();
         self.operator.r#gen(p);
-        p.print_soft_space();
+        let left_end = self.e.left().span().end;
+        let right_start = self.e.right().span().start;
+        // `a &&\n  // note\n  b` — a line comment between the operator and the
+        // right operand. A block comment there (`1 + /* async */ 2`) stays out:
+        // printing it changes the private-field helper fixture.
+        if p.line_comment_in(left_end, right_start.saturating_add(1)) {
+            p.print_gap_comments(left_end, right_start.saturating_add(1), None);
+        }
+        if p.last_byte() == Some(b'\n') {
+            p.print_indent();
+        } else {
+            p.print_soft_space();
+        }
         let right = self.e.right();
         if let Binaryish::Logical(e) = self.e {
             // Annotation-gated (see the helper's doc): statements get merged

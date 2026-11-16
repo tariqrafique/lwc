@@ -1,7 +1,7 @@
 {
   "schema": "template-diag-soundness/v1",
   "report": "template-diag-napi.json",
-  "report_sha256": "1c26aae51a3005f6e621e58b098ca5ecd29dbe58815e8c91c33355f1631b5d91",
+  "report_sha256": "159e7af188429efdaeb7cc88fade7a3365963ce6953aa657e48df9ebe230d968",
   "soundness": "SOUND",
   "comparator": "template-diag-diff.mjs: closed enum {STATIC_EQUAL, REWRITE_EQUAL}; mode exact-bytes+semdiff"
 }

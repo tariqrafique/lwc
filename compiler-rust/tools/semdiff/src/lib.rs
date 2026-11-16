@@ -2,8 +2,8 @@
 //!
 //! Rule table file `rt-1` (D-0258, AB-L0088): token-spelling rules and AST normalizations. A PENDING rule loads
 //! but does not apply (AB-D0003). R-ASI-SEMI-1 and R-TRAILING-COMMA-1 are enabled (`arch_review = "AB-L0064"`).
-//! R-IMPORT-MERGE-1, R-HOIST-DECL-1, R-ARROW-PAREN-1, R-REDUNDANT-PAREN-1, and
-//! R-COMMENT-STAR-SPACE-1 are enabled (`arch_review = "AB-L0088"`). The applied-set identity names every
+//! R-IMPORT-MERGE-1, R-HOIST-DECL-1, R-ARROW-PAREN-1, and R-REDUNDANT-PAREN-1 are enabled
+//! (`arch_review = "AB-L0088"`). The applied-set identity names every
 //! applied rule. A pair is EQUIVALENT-BY-REWRITE when:
 //!   1. both texts parse as ES modules with oxc and no diagnostics;
 //!   2. oxc codegen (comments off) of both ASTs is byte-identical (formatting-only differences vanish);
