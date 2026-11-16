@@ -815,6 +815,15 @@ fn index(
     if let Some(e) = v.error {
         return Err(e);
     }
+    // astring, which prints SSR modules, drops every line comment. A block comment stays
+    // (the version stamp is one). Keeping a `//` note makes the module's comment list differ
+    // from the oracle while the rendered trace stays the same.
+    for c in &ret.program.comments {
+        if c.is_line() {
+            v.edits
+                .push(Edit::replace(c.span.start, c.span.end, String::new()));
+        }
+    }
     let ComponentMetaState {
         component,
         lwc_default_export_name,
@@ -2002,6 +2011,29 @@ export { Light as default };
             ..Default::default()
         };
         assert!(compile_component_for_ssr(&src, "x/c/c.js", &opts).is_err());
+    }
+
+    /// astring prints no line comments. The version block comment still lands on the class.
+    #[test]
+    fn line_comments_are_not_printed() {
+        let out = indexed(
+            "// file note\nexport default class Foo extends LightningElement {\n  // field\n  x = 1; // trail\n}\n",
+        )
+        .1;
+        assert!(!out.contains("//"), "{out}");
+        assert!(out.contains(&version_comment()), "{out}");
+        let opts = CompileOptions {
+            name: "c".into(),
+            namespace: "x".into(),
+            ..Default::default()
+        };
+        let helper = compile_component_for_ssr(
+            "// Ref: https://github.com/salesforce/eslint-plugin-lwc/blob/x\nexport const n = 1;\n",
+            "x/c/c.js",
+            &opts,
+        )
+        .unwrap();
+        assert!(!helper.code.contains("//"), "{}", helper.code);
     }
 
     /// index.ts:136-148 / :185-197 placement, as the oracle prints it: last item of every matched
