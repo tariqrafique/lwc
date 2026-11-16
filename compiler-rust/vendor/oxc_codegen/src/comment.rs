@@ -201,6 +201,13 @@ impl Codegen<'_> {
         self.comments.contains_key(&start)
     }
 
+    /// A leading line comment anchored at `at` (its text may start earlier).
+    pub(crate) fn has_leading_line_comment(&self, at: u32) -> bool {
+        self.comments.get(&at).is_some_and(|list| {
+            list.iter().any(|c| c.is_leading() && c.is_line())
+        })
+    }
+
     /// A line comment whose text starts in `[from, to)`.
     pub(crate) fn line_comment_in(&self, from: u32, to: u32) -> bool {
         self.comments.values().any(|list| {
@@ -518,6 +525,13 @@ impl Codegen<'_> {
 
     pub(crate) fn print_comments_at(&mut self, start: u32) {
         if let Some(comments) = self.get_comments(start) {
+            // Babel's first leading line comment breaks off a line that already
+            // has code (`default: // 'other'` lands above the consequent).
+            if self.last_byte().is_some_and(|b| b != b'\n')
+                && comments.first().is_some_and(|c| c.is_line())
+            {
+                self.print_hard_newline();
+            }
             self.print_comments(&comments);
         }
     }

@@ -299,7 +299,7 @@ impl<'s> Lower<'s> {
                     }
                 }
             };
-            let (lead, trail_out, leave_leading) =
+            let (lead, trail_out, kept_leading) =
                 self.field_comments(class, el_idx, p, lower_static);
             if let Some((piece, spans)) = trail_out {
                 ctor_trail = piece;
@@ -326,10 +326,12 @@ impl<'s> Lower<'s> {
                     self.prior,
                     prev_lowered,
                 );
-                // The removed field's own line still separates a comment Babel
-                // printed with the previous method from the next member. Source
-                // locations make that one blank line (`newline(offset)`).
-                let text = if leave_leading { "\n" } else { "" };
+                // A comment that stayed in front of this field still has the
+                // field's own line between it and the next member. Babel's
+                // `newline(offset)` turns that source line into one blank line.
+                // A field with no such comment deletes its line and the blank
+                // lines that belonged only to it.
+                let text = if kept_leading { "\n" } else { "" };
                 self.edits.push(Edit::replace(s, e, text.to_string()));
             }
             if p.r#static {
@@ -597,11 +599,14 @@ impl<'s> Lower<'s> {
             _ => false,
         });
         let leave_leading = prev_survives && ctor_later;
+        let mut kept_leading = false;
         for i in 0..self.cmts.len() {
             let c = &self.cmts[i];
             let before_key = c.start >= p.span.start && c.end <= p.key.span().start;
             let leads_field = !c.trailing && c.attached == p.span.start;
             if leads_field && leave_leading {
+                // The comment stays in the class, ahead of the next member.
+                kept_leading = true;
                 continue;
             }
             if leads_field || before_key {
@@ -672,7 +677,7 @@ impl<'s> Lower<'s> {
                 Some((piece, spans))
             }
         };
-        (lead, ctor, leave_leading)
+        (lead, ctor, kept_leading)
     }
 
     /// `class C { // note` moves into the generated constructor, after `super`.

@@ -182,4 +182,8 @@ fn class_field_comments_travel_with_the_init() {
         "function f(event) {\n  let newValue = event.detail?.newValue || event.detail.value;\n\n  // *** Handle all Number attributes here\n  return newValue;\n}\n",
     );
     check("function f() {\n  a;\n  // } else if (x) {\n\n  // }\n}\n");
+    check("function f(x) {\n  switch (x) {\n    default:\n    // nothing\n  }\n}\n");
+    check("function f() {\n  a;\n} //NEW\n");
+    check("class C {\n  m() {\n    a;\n  } //NEW\n}\n");
+    check("function f(x) {\n  switch (x) {\n    default: // 'other'\n      a;\n  }\n}\n");
 }

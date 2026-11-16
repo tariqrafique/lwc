@@ -610,6 +610,14 @@ impl Gen for SwitchStatement<'_> {
             for case in &self.cases {
                 case.print(p, ctx);
             }
+            // `default:\n// nothing\n}` — the comment sits after the last case
+            // and before `}`. An empty consequent does not own it.
+            let close = self.span.end.saturating_sub(1);
+            if let Some(last) = self.cases.last() {
+                // The comment may be anchored on `}`, so do not skip that key.
+                p.print_gap_comments(last.span.end, close.saturating_add(1), None);
+                p.print_orphan_comments_before(close.saturating_add(1));
+            }
         });
         p.print_soft_newline();
         p.needs_semicolon = false;
@@ -632,6 +640,19 @@ impl Gen for SwitchCase<'_> {
         }
         p.print_colon();
 
+        // `default:\n// nothing` — no consequent. The comment is inside the case
+        // span, after the colon, and Babel prints it at the case's indent.
+        if self.consequent.is_empty() {
+            if let Some(colon) = p.find_byte(self.span.start, self.span.end, b':') {
+                p.print_gap_comments(colon + 1, self.span.end, None);
+                p.print_orphan_comments_before(self.span.end);
+            }
+            if p.last_byte() != Some(b'\n') {
+                p.print_soft_newline();
+            }
+            return;
+        }
+
         // `case 1: foo(); // c` — Babel hangs `// c` on the case, after the body
         // has wrapped, so the comment is the next line (`break; // c` too).
         let deferred = self
@@ -640,6 +661,7 @@ impl Gen for SwitchCase<'_> {
             .and_then(|stmt| p.take_trailing_line_comments(stmt.span().end));
         let single_line = deferred.is_none()
             && self.consequent.len() == 1
+            && !p.has_leading_line_comment(self.consequent[0].span().start)
             && !p.has_orphan_comments_before(self.consequent[0].span().start);
         if single_line {
             p.print_body(&self.consequent[0], ctx);

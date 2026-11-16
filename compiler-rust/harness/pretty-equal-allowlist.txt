@@ -135,7 +135,7 @@ lbc-recipes/examples/lwc/verticalRecipes	duplicate-key
 lbc-recipes/force-app/main/default/lwc/recordForm	comment-dropped
 lbc/package/src/lightning/carousel	other
 lbc/package/src/lightning/primitiveFigure	object-shorthand
-lwc-utils/utils-core/main/default/lwc/baseDatatable	blank-line,comment-dropped,object-shorthand
+lwc-utils/utils-core/main/default/lwc/baseDatatable	object-shorthand
 lwc-utils/utils-core/main/default/lwc/baseDatatableEditableCell	object-shorthand
 lwc-utils/utils-core/main/default/lwc/collectionDatatable	object-shorthand
 lwc-utils/utils-core/main/default/lwc/csvDatatable	object-shorthand
