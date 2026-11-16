@@ -661,10 +661,12 @@ impl Gen for SwitchCase<'_> {
             .last()
             .and_then(|stmt| p.take_trailing_line_comments(stmt.span().end));
         // Babel breaks before a consequent that starts on the next source line
-        // (`case 'date':\n  break`). A consequent that shares the case line stays
-        // there (`case 'onetime': d.setFullYear(1); break`).
+        // (`case 'date':\n  break`) and before a block (`case -1: {` prints the
+        // brace on the next line). A non-block consequent that shares the case
+        // line stays there (`case 'onetime': d.setFullYear(1); break`).
         let body_on_next_line = self.consequent.first().is_some_and(|stmt| {
-            p.find_byte(self.span.start, stmt.span().start, b'\n').is_some()
+            matches!(stmt, Statement::BlockStatement(_))
+                || p.find_byte(self.span.start, stmt.span().start, b'\n').is_some()
         });
         let single_line = !body_on_next_line
             && deferred.is_none()
