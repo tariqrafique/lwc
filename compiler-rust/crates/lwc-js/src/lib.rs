@@ -136,18 +136,18 @@ pub fn resolve_like_node(cwd: &std::path::Path, f: &str) -> String {
     format!("/{}", out.join("/"))
 }
 
-/// oxc prints a comment that leads a statement and drops a trailing `// eslint-disable-line`.
-/// Move those directives, plus istanbul and sourceMappingURL, to the start of their line before
-/// the print parse so they are leading comments. A sourceMappingURL comment that Babel would strip
-/// is then removed by [`drop_input_sourcemap_comments`]; one Babel keeps is printed.
+/// `// eslint-disable-line` stays on its statement: Babel prints it after the
+/// semicolon. Oxc drops a trailing `// istanbul` and a trailing
+/// `//# sourceMappingURL`, so those are hoisted to the next line where the
+/// printer keeps them. A sourceMappingURL Babel would strip is then removed by
+/// [`drop_input_sourcemap_comments`].
 fn hoist_trailing_directives(src: &str) -> Vec<edits::Edit> {
     let mut out = Vec::new();
     let mut line_start = 0u32;
     for line in src.split_inclusive('\n') {
         let body = line.trim_end_matches('\n');
         let rel = body
-            .rfind("// eslint-")
-            .or_else(|| body.rfind("// istanbul"))
+            .rfind("// istanbul")
             .or_else(|| body.rfind("//# sourceMappingURL"));
         if let Some(rel) = rel {
             let code = body[..rel].trim_end();

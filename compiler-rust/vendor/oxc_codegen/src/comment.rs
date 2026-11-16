@@ -201,6 +201,14 @@ impl Codegen<'_> {
         self.comments.contains_key(&start)
     }
 
+    /// A line comment whose text starts in `[from, to)`.
+    pub(crate) fn line_comment_in(&self, from: u32, to: u32) -> bool {
+        self.comments.values().any(|list| {
+            list.iter()
+                .any(|c| c.is_line() && c.span.start >= from && c.span.start < to)
+        })
+    }
+
     /// Emit a pure / no-side-effects annotation comment for the AST node at
     /// `start`, falling back to the canonical literal when no verbatim source
     /// can be recovered.
@@ -402,6 +410,18 @@ impl Codegen<'_> {
         if newlines < 2 {
             return false;
         }
+        // A `{` that ends a `//` line is comment text, not a block opener.
+        // `// } else if (...) {\n\n// }` keeps the blank line, which Babel prints.
+        let line_start = b[..i].iter().rposition(|&c| c == b'\n').map_or(0, |p| p + 1);
+        let line = &b[line_start..i];
+        let trimmed = line
+            .iter()
+            .position(|&c| !matches!(c, b' ' | b'\t'))
+            .map(|p| &line[p..])
+            .unwrap_or(line);
+        if trimmed.starts_with(b"//") {
+            return true;
+        }
         while i > 0 && matches!(b[i - 1], b' ' | b'\t' | b'\r') {
             i -= 1;
         }
@@ -474,6 +494,28 @@ impl Codegen<'_> {
     }
 
     #[inline]
+    /// Leading comments anchored at `at` whose text starts at or after `end`.
+    ///
+    /// Oxc attaches `stmt; // note` to the statement's start as a leading
+    /// comment. The note belongs after the statement, where Babel prints it.
+    pub(crate) fn take_leading_on_or_after(
+        &mut self,
+        at: u32,
+        end: u32,
+    ) -> Option<CommentList> {
+        let list = self.comments.get_mut(&at)?;
+        let late: CommentList = list
+            .iter()
+            .filter(|c| c.is_leading() && c.span.start >= end)
+            .cloned()
+            .collect();
+        list.retain(|c| !(c.is_leading() && c.span.start >= end));
+        if list.is_empty() {
+            self.comments.remove(&at);
+        }
+        if late.is_empty() { None } else { Some(late) }
+    }
+
     pub(crate) fn print_comments_at(&mut self, start: u32) {
         if let Some(comments) = self.get_comments(start) {
             self.print_comments(&comments);
@@ -684,7 +726,14 @@ impl Codegen<'_> {
                     }
                     // A tab we just printed as indent is the line so far. A tab
                     // that trails a comment (`// note\t`) is not: break first.
-                    b'\t' | b' ' if self.current_line_is_indent() => {}
+                    // The indent for this line was printed before the comment. A
+                    // blank line in the source still has to land above it.
+                    b'\t' | b' ' if self.current_line_is_indent() => {
+                        if blank {
+                            self.print_hard_newline();
+                            self.print_indent();
+                        }
+                    }
                     _ => {
                         self.print_hard_newline();
                         if blank {

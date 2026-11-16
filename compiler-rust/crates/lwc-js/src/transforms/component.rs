@@ -5,6 +5,7 @@ use lwc_shared::CompileOptions;
 use lwc_shared::api_version;
 use lwc_shared::edits::Edit;
 use oxc::ast::ast::{ExportDefaultDeclarationKind as K, Program, Statement};
+use oxc::span::GetSpan;
 
 fn base_name(filename: &str) -> &str {
     let file = filename.rsplit(['/', '\\']).next().unwrap_or(filename);
@@ -102,7 +103,18 @@ pub fn run(
             props.push(format!("{ENABLE_PRIVATE_METHODS_KEY}: true"));
         }
         let meta = format!("{{ {} }}", props.join(", "));
-        let export = format!("\nexport default {COMPONENT_CLASS_ID};");
+        // A license comment leading the export moves with it. Babel's generator
+        // prints that comment on the rewritten `export default`, after the
+        // register call. Leaving it before the class makes the bundler keep a
+        // comment the oracle's bundle does not have there.
+        let lead = leading_of(program, src, decl.span.start);
+        if let Some((start, _)) = &lead {
+            edits.push(Edit::replace(*start, decl.span.start, String::new()));
+        }
+        let export = match &lead {
+            Some((_, text)) => format!("\n{text}export default {COMPONENT_CLASS_ID};"),
+            None => format!("\nexport default {COMPONENT_CLASS_ID};"),
+        };
         edits.push(Edit::insert(0, imports));
         match class_id {
             // Named class: hoist declaration in place, register by id.
@@ -130,6 +142,30 @@ pub fn run(
         }
         return; // only one default export per module
     }
+}
+
+/// Source from the first leading comment of `at` through `at`, so the comment
+/// and the blank line before the keyword travel together.
+///
+/// A comment that sits after an earlier statement stays there. Babel prints it
+/// as that statement's trailing comment (`const x = 1;\n\n/* eslint */\nexport
+/// default class …`). Only a comment with nothing before it moves onto the
+/// rewritten export, which is where Babel prints a file-leading license.
+fn leading_of(program: &Program<'_>, src: &str, at: u32) -> Option<(u32, String)> {
+    let start = program
+        .comments
+        .iter()
+        .filter(|c| c.is_leading() && c.attached_to == at)
+        .map(|c| c.span.start)
+        .min()?;
+    if start >= at {
+        return None;
+    }
+    let after_statement = program.body.iter().any(|s| s.span().end <= start);
+    if after_statement {
+        return None;
+    }
+    Some((start, src[start as usize..at as usize].to_string()))
 }
 
 /// Add `spec` to an existing `from "lwc"` import. A decorator rewrite of that

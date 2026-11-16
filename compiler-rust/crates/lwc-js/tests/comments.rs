@@ -159,4 +159,27 @@ fn class_field_comments_travel_with_the_init() {
     check("class C {\n  x = 1; // a\n  static y = 2;\n}\n");
     check("class C {\n  static y = 2; // a\n  x = 1;\n}\n");
     check("class C {\n  static [name] = 'a';\n  static [parent] = 1;\n}\n");
+    // An existing constructor is printed after the method, so Babel leaves the
+    // comment on that method. A synthesized constructor would take it instead.
+    check(
+        "class C {\n  m() {}\n\n  // Row selections\n  selectedRows = [];\n  get checkboxType() {\n    return 1;\n  }\n  constructor() {}\n}\n",
+    );
+    check(
+        "if (\n  // eslint-disable-next-line no-prototype-builtins\n  node.hasOwnProperty('items') &&\n  Array.isArray(node.items)\n) {}\n",
+    );
+    check(
+        "const a = [\n  { style: 'mid', ms: 525 }, // start\n  { style: 'none', ms: 600 } // reset\n];\n",
+    );
+    check("const a = [\n  'slds-border_top',\n  'slds-border_bottom',\n  'slds-is-relative'];\n");
+    check("/*\n * Copyright\n */\n\nexport default class C {}\n");
+    check("const x = 1;\n\n/* eslint */\nexport default class C {}\n");
+    check("console.warn(msg); // eslint-disable-line no-console\n");
+    check(
+        "function f(a) {\n  if (a) {\n    return 1;\n  }\n  // note\n  else {\n    return 2;\n  }\n}\n",
+    );
+    check("function f() {\n  a;\n  // one\n  // two\n\n  // three\n}\n");
+    check(
+        "function f(event) {\n  let newValue = event.detail?.newValue || event.detail.value;\n\n  // *** Handle all Number attributes here\n  return newValue;\n}\n",
+    );
+    check("function f() {\n  a;\n  // } else if (x) {\n\n  // }\n}\n");
 }

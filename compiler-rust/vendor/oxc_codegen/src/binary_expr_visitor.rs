@@ -5,6 +5,7 @@
 use std::ops::Not;
 
 use oxc_ast::ast::{BinaryExpression, Expression, LogicalExpression};
+use oxc_span::GetSpan;
 use oxc_syntax::{
     operator::{BinaryOperator, LogicalOperator},
     precedence::{GetPrecedence, Precedence},
@@ -243,7 +244,15 @@ impl<'a> BinaryExpressionVisitor<'a> {
     pub fn visit_right_and_finish(&self, p: &mut Codegen) {
         p.print_soft_space();
         self.operator.r#gen(p);
-        p.print_soft_space();
+        let left_end = self.e.left().span().end;
+        let right_start = self.e.right().span().start;
+        // `a &&\n  // note\n  b` — the comment sits between the operator and the right operand.
+        p.print_gap_comments(left_end, right_start.saturating_add(1), None);
+        if p.last_byte() == Some(b'\n') {
+            p.print_indent();
+        } else {
+            p.print_soft_space();
+        }
         let right = self.e.right();
         if let Binaryish::Logical(e) = self.e {
             // Annotation-gated (see the helper's doc): statements get merged

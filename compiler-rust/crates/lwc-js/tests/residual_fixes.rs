@@ -2,8 +2,7 @@
 //! the oracle `@lwc/compiler` 9.5.3 output for the same input (log: semdiff-negatives-plants.log).
 //! - class_properties.rs: an anonymous class expression with instance fields reserves Babel's
 //!   `_Class` uid even though no alias is emitted, so a later class expression with statics gets `_Class2`.
-//! - lib.rs hoist_trailing_directives: a trailing `// eslint-...` or `// istanbul ...` comment after
-//!   code on the same line is kept (oxc would drop it; Babel keeps it).
+//! - a trailing `// eslint-...` or `// istanbul ...` stays on its statement, where Babel prints it.
 use lwc_shared::CompileOptions;
 
 fn code(src: &str) -> String {
@@ -53,14 +52,18 @@ fn trailing_eslint_and_istanbul_directives_are_emitted() {
     ] {
         assert!(out.contains(d), "missing {d:?} in:\n{out}");
     }
-    // Each directive still sits with its statement: it leads the line it trailed.
-    let lines: Vec<&str> = out.lines().collect();
-    let at = |s: &str| lines.iter().position(|l| l.contains(s)).unwrap();
-    assert_eq!(
-        at("// eslint-disable-line no-console") + 1,
-        at("const a = 1;"),
+    // Babel leaves an eslint directive on the statement's line. Oxc drops a
+    // trailing istanbul comment, so that one is hoisted onto the previous line.
+    assert!(
+        out.contains("const a = 1; // eslint-disable-line no-console"),
         "{out}"
     );
+    assert!(
+        out.contains("export const c = 2; // eslint-disable-line"),
+        "{out}"
+    );
+    let lines: Vec<&str> = out.lines().collect();
+    let at = |s: &str| lines.iter().position(|l| l.contains(s)).unwrap();
     assert_eq!(
         at("// istanbul ignore next") + 1,
         at("export const b = a;"),

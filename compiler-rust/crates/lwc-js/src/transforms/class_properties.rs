@@ -299,7 +299,8 @@ impl<'s> Lower<'s> {
                     }
                 }
             };
-            let (lead, trail_out) = self.field_comments(class, el_idx, p, lower_static);
+            let (lead, trail_out, leave_leading) =
+                self.field_comments(class, el_idx, p, lower_static);
             if let Some((piece, spans)) = trail_out {
                 ctor_trail = piece;
                 let line = sole_field_line(self.src, p.span.start);
@@ -325,7 +326,11 @@ impl<'s> Lower<'s> {
                     self.prior,
                     prev_lowered,
                 );
-                self.edits.push(Edit::replace(s, e, String::new()));
+                // The removed field's own line still separates a comment Babel
+                // printed with the previous method from the next member. Source
+                // locations make that one blank line (`newline(offset)`).
+                let text = if leave_leading { "\n" } else { "" };
+                self.edits.push(Edit::replace(s, e, text.to_string()));
             }
             if p.r#static {
                 if let Some(v) = &p.value {
@@ -575,14 +580,30 @@ impl<'s> Lower<'s> {
         idx: usize,
         p: &PropertyDefinition<'_>,
         lower_static: bool,
-    ) -> (String, Option<FieldTrail>) {
+    ) -> (String, Option<FieldTrail>, bool) {
         self.removed.clear();
         let mut lead = std::mem::take(&mut self.carry);
         let mut moved = Vec::new();
+        // Babel prints a comment that is both trailing of the previous method and
+        // leading of this field with whichever node is printed first. An existing
+        // constructor sits later in the class, so the method prints first and the
+        // comment stays in front of the next member. A synthesized constructor is
+        // unshifted to the top, so the comment moves onto the init instead.
+        let prev_survives = idx > 0 && !element_lowered(&class.body.body[idx - 1], lower_static);
+        let ctor_later = class.body.body.iter().any(|el| match el {
+            ClassElement::MethodDefinition(m) => {
+                m.kind == MethodDefinitionKind::Constructor && m.span.start > p.span.end
+            }
+            _ => false,
+        });
+        let leave_leading = prev_survives && ctor_later;
         for i in 0..self.cmts.len() {
             let c = &self.cmts[i];
             let before_key = c.start >= p.span.start && c.end <= p.key.span().start;
             let leads_field = !c.trailing && c.attached == p.span.start;
+            if leads_field && leave_leading {
+                continue;
+            }
             if leads_field || before_key {
                 // Babel indents a top-level class's constructor body at column 4,
                 // whatever the source indent width was. A static init is at column 0.
@@ -651,7 +672,7 @@ impl<'s> Lower<'s> {
                 Some((piece, spans))
             }
         };
-        (lead, ctor)
+        (lead, ctor, leave_leading)
     }
 
     /// `class C { // note` moves into the generated constructor, after `super`.

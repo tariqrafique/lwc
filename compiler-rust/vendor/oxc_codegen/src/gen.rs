@@ -211,6 +211,12 @@ impl Gen for Statement<'_> {
 
 impl Gen for ExpressionStatement<'_> {
     fn r#gen(&self, p: &mut Codegen, _ctx: Context) {
+        // Oxc files `stmt; // note` as a leading comment of the statement. Babel
+        // prints it after the semicolon. Comments that start at or after the
+        // statement's end are that trailing note.
+        // The statement span includes the trailing comment, so compare against
+        // the expression. `console.warn(msg); // note` starts after that expression.
+        let late = p.take_leading_on_or_after(self.span.start, self.expression.span().end);
         p.print_comments_at(self.span.start);
         if !p.options.minify && (p.indent > 0 || p.print_next_indent_as_space) {
             p.print_indent();
@@ -219,23 +225,35 @@ impl Gen for ExpressionStatement<'_> {
         p.start_of_stmt = p.code_len();
         p.print_expression(&self.expression);
         p.print_semicolon_after_statement(self.span().end);
+        if let Some(comments) = late {
+            p.print_comments(&comments);
+        }
     }
 }
 
 impl Gen for IfStatement<'_> {
     fn r#gen(&self, p: &mut Codegen, ctx: Context) {
-        p.print_comments_at(self.span.start);
         p.print_indent();
         print_if(self, p, ctx);
     }
 }
 
 fn print_if(if_stmt: &IfStatement<'_>, p: &mut Codegen, ctx: Context) {
+    // `} // note` is attached as a leading comment of the if even though its
+    // text starts after the consequent. Hold it so it prints on the `}` line.
+    let late = p.take_leading_on_or_after(if_stmt.span.start, if_stmt.consequent.span().end);
+    p.print_comments_at(if_stmt.span.start);
     p.print_space_before_identifier();
     p.add_source_mapping(if_stmt.span);
     p.print_str("if");
     p.print_soft_space();
     p.print_ascii_byte(b'(');
+    // `if (\n  // note\n  expr)` — the comment is between `(` and the test.
+    let test_start = if_stmt.test.span().start;
+    p.print_gap_comments(if_stmt.span.start, test_start.saturating_add(1), None);
+    if p.last_byte() == Some(b'\n') {
+        p.print_indent();
+    }
     p.print_expression(&if_stmt.test);
     // `if (a\n  // &&\n  // b\n)` — the comments sit between the test and `)`.
     let test_end = if_stmt.test.span().end;
@@ -249,9 +267,17 @@ fn print_if(if_stmt: &IfStatement<'_>, p: &mut Codegen, ctx: Context) {
         Statement::BlockStatement(block) => {
             p.print_soft_space();
             p.print_block_statement(block, ctx);
-            if if_stmt.alternate.is_some() {
+            // `} // note` stays on the brace's line.
+            if let Some(comments) = &late {
+                p.print_comments(comments);
+            }
+            p.print_trailing_comments_at(if_stmt.span.end);
+            let comment_before_else = if_stmt.alternate.as_ref().is_some_and(|alt| {
+                p.line_comment_in(block.span.end, alt.span().start.saturating_add(1))
+            });
+            if if_stmt.alternate.is_some() && !comment_before_else {
                 p.print_soft_space();
-            } else {
+            } else if if_stmt.alternate.is_none() && p.last_byte() != Some(b'\n') {
                 p.print_soft_newline();
             }
         }
@@ -276,6 +302,16 @@ fn print_if(if_stmt: &IfStatement<'_>, p: &mut Codegen, ctx: Context) {
     }
     if let Some(alternate) = if_stmt.alternate.as_ref() {
         p.print_semicolon_if_needed();
+        // `}\n// note\nelse if` — the comment sits between the branches.
+        let alt_start = alternate.span().start;
+        p.print_gap_comments(
+            if_stmt.consequent.span().end,
+            alt_start.saturating_add(1),
+            None,
+        );
+        if p.last_byte() == Some(b'\n') {
+            p.print_indent();
+        }
         p.print_space_before_identifier();
         p.print_str("else");
         match alternate {
@@ -1773,85 +1809,56 @@ impl Gen for ArrayExpression<'_> {
 
         if let Some((first, others)) = self.elements.split_first() {
             let mut item = first;
-            // A comment between two elements (`[a,\n// n\nb]`) is a line break.
-            let multiline = self.elements.len() > 2
-                || (self.elements.len() > 1
-                    && p.find_byte(self.span.start, self.span.end, b'\n').is_some());
-            if multiline {
-                // 3 or more elements, each on its own line
-                p.indent();
-                p.print_soft_newline();
-                p.print_comments_at(item.span().start);
+            // Babel prints arrays on one line. A line comment inserts the newline
+            // itself; source newlines with no comment do not.
+            p.print_comments_at(item.span().start);
+            if p.last_byte() == Some(b'\n') {
                 p.print_indent();
-                item.print(p, ctx);
-
-                for item_ref in others {
-                    let prev = item.span().end;
-                    let next = item_ref.span().start;
-                    match p.find_byte(prev, next, b',') {
-                        Some(comma) => {
-                            p.print_gap_comments(prev, comma, None);
-                            p.clear_pending_indent_space();
-                            p.print_comma();
-                            // `}, // note` with the next element on a later line.
-                            if p.find_byte(comma + 1, next, b'\n').is_some()
-                                && p.last_byte() != Some(b'\n')
-                            {
-                                p.print_soft_newline();
-                            }
-                            p.print_gap_comments(comma + 1, next, Some(next));
+            }
+            item.print(p, ctx);
+            for item_ref in others {
+                let prev = item.span().end;
+                let next = item_ref.span().start;
+                match p.find_byte(prev, next, b',') {
+                    Some(comma) => {
+                        p.print_gap_comments(prev, comma, None);
+                        p.clear_pending_indent_space();
+                        p.print_comma();
+                        // Babel's first leading line comment always breaks, even when
+                        // the source had it on the comma's line (`}, // note`).
+                        if p.line_comment_in(comma + 1, next) && p.last_byte() != Some(b'\n') {
+                            p.print_soft_newline();
+                            p.print_indent();
                         }
-                        None => {
-                            p.print_gap_comments(prev, next, Some(next));
-                            p.clear_pending_indent_space();
-                            p.print_comma();
-                        }
+                        p.print_gap_comments(comma + 1, next, Some(next));
                     }
-                    p.clear_pending_indent_space();
-                    item = item_ref;
-                    p.print_comments_at(item.span().start);
-                    if p.last_byte() != Some(b'\n') {
-                        p.print_soft_newline();
+                    None => {
+                        p.print_gap_comments(prev, next, Some(next));
+                        p.clear_pending_indent_space();
+                        p.print_comma();
                     }
+                }
+                if p.last_byte() == Some(b'\n') {
                     p.print_indent();
-
-                    item.print(p, ctx);
-                }
-
-                if matches!(item, ArrayExpressionElement::Elision(_)) {
-                    p.print_comma();
-                }
-
-                p.print_soft_newline();
-                p.dedent();
-                p.print_indent();
-            } else {
-                // 1 or 2 elements, on one line
-                item.print(p, ctx);
-
-                if let Some(item_ref) = others.first() {
-                    p.print_gap_comments(
-                        item.span().end,
-                        item_ref.span().start,
-                        Some(item_ref.span().start),
-                    );
-                    p.clear_pending_indent_space();
-                    item = item_ref;
-
-                    p.print_comma();
+                } else {
                     p.print_soft_space();
-
-                    item.print(p, ctx);
                 }
-
-                if matches!(item, ArrayExpressionElement::Elision(_)) {
-                    p.print_comma();
+                item = item_ref;
+                p.print_comments_at(item.span().start);
+                if p.last_byte() == Some(b'\n') {
+                    p.print_indent();
                 }
+                item.print(p, ctx);
+            }
+            if matches!(item, ArrayExpressionElement::Elision(_)) {
+                p.print_comma();
             }
             p.print_gap_comments(item.span().end, close, Some(close));
-        }
-
-        if let Some(comments) = &end_comments {
+            if let Some(comments) = &end_comments {
+                p.print_comments(comments);
+                p.clear_pending_indent_space();
+            }
+        } else if let Some(comments) = &end_comments {
             p.print_comments(comments);
             p.clear_pending_indent_space();
         }
@@ -2143,13 +2150,21 @@ impl GenExpr for ArrowFunctionExpression<'_> {
             }
             p.print_soft_space();
             p.print_str("=>");
-            p.print_soft_space();
             match &self.body {
                 ArrowFunctionBody::FunctionBody(b) => {
+                    p.print_soft_space();
                     b.print(p, body_ctx);
                 }
                 expression @ match_expression!(ArrowFunctionBody) => {
                     let expression = expression.to_expression();
+                    // `x =>\n  // note\n  expr` — the comment sits between `=>` and the body.
+                    let body_start = expression.span().start;
+                    p.print_gap_comments(self.params.span.end, body_start.saturating_add(1), None);
+                    if p.last_byte() == Some(b'\n') {
+                        p.print_indent();
+                    } else {
+                        p.print_soft_space();
+                    }
                     p.start_of_arrow_expr = p.code_len();
                     expression.print_expr(p, Precedence::Comma, body_ctx);
                 }
