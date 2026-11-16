@@ -1,5 +1,5 @@
-official board  commit=133a1fdb1494  src=82860ed098bf  napi=d12ec959040f  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-16T07:28:33-08:00
-napi sha256:d12ec959040f  pinned=/tmp/lwc-board-snap.7MGoQo/repo/harness/.pins/lwc-compiler-napi.d12ec959040f.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-16T07:22:45-08:00
+official board  commit=01c895620fc4  src=738958401bb4  napi=220cebfc4940  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-16T08:19:36-08:00
+napi sha256:220cebfc4940  pinned=/tmp/lwc-board-snap.VZIgHn/repo/harness/.pins/lwc-compiler-napi.220cebfc4940.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-16T08:14:08-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -28,8 +28,8 @@ lbc                    Tests  523 passed (523)
 lbc: discovered=522 included=522 excluded=0 compile-error-both=0
 semantic-diff  eq=16809 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-OBJECT-LAST-KEY-1@1+R-OBJECT-SHORTHAND-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1
 template-diag-semdiff  eq=16809 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-OBJECT-LAST-KEY-1@1+R-OBJECT-SHORTHAND-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1
-semantic-diff-ssr  printer-equal=740  static-observed-differs=226  exec-static-comments-differ=126  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=276,sod=46,esc=42,ed=0,et=0,eu=0,ex=23  async:pe=188,sod=134,esc=42,ed=0,et=0,eu=0,ex=23  asyncYield:pe=276,sod=46,esc=42,ed=0,et=0,eu=0,ex=23  gate=ok
-template-diag-ssr  printer-equal=740  static-observed-differs=226  exec-static-comments-differ=126  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=276,sod=46,esc=42,ed=0,et=0,eu=0,ex=23  async:pe=188,sod=134,esc=42,ed=0,et=0,eu=0,ex=23  asyncYield:pe=276,sod=46,esc=42,ed=0,et=0,eu=0,ex=23  gate=ok
+semantic-diff-ssr  printer-equal=852  static-observed-differs=240  exec-static-comments-differ=0  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  async:pe=224,sod=140,esc=0,ed=0,et=0,eu=0,ex=23  asyncYield:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  gate=ok
+template-diag-ssr  printer-equal=852  static-observed-differs=240  exec-static-comments-differ=0  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  async:pe=224,sod=140,esc=0,ed=0,et=0,eu=0,ex=23  asyncYield:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  gate=ok
 template-diag-style  integration-wtr=206/206 integration-wdio=7/7 integration-types=1/1 lbc=584/584 lbc-recipes=32/32 slds=223/223 fixture-smoke=69/69 parse-error=67/67 dedup=319 jobs=5136 fail=0 (uncapped style-diff, hash-dedup, direct oracle)
 template-diag-realgate  cases=5441 diagMismatch=0 codegenUnclean=0 crash=0 oracleError=0
 template-diag-napierrors  5/5
@@ -65,8 +65,8 @@ js-options skip-union: 1708 cases, 0 skipped in every row (js-options js-api)
 shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.7MGoQo/notes/decisions.tsv]
-coverage-gate: notes d2c93abe9620 matrix 0e37f14933c6 strict: 24 sources x 8 stages = 192 cells, 98 covered (declared gating), 0 diagnostic-only, 0 gap, 76 na, 18 dec, 0 invalid
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.VZIgHn/notes/decisions.tsv]
+coverage-gate: notes fff336d5ee51 matrix 0e37f14933c6 strict: 24 sources x 8 stages = 192 cells, 98 covered (declared gating), 0 diagnostic-only, 0 gap, 76 na, 18 dec, 0 invalid
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
 style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)
 csr-clusters[ssr]: pass 392 fail 0
