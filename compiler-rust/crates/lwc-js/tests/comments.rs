@@ -97,6 +97,7 @@ fn comment_in_an_empty_function_and_after_the_last_statement() {
     check("function f() { /* inner */ }\n");
     check("function f() {\n  stmt;\n  // after\n}\n");
     check("function g() { /* a */ /* b */ }\n");
+    check("function f() {\n  if (a) { // note\n    return 1;\n  }\n}\n");
 }
 
 #[test]
@@ -107,6 +108,9 @@ fn object_and_array_inner_comments() {
     check("const a = [\n  1, // t\n];\n");
     check("const a = [/* e */];\n");
     check("const o = { a: 1 /* mid */ , b: 2 };\n");
+    check("const o = {\n  a: 1, // n\n  b: 2\n};\n");
+    check("foo({\n  a: 1, // n\n  b: 2\n});\n");
+    check("if (\n  a\n  // &&\n  // b\n) {}\n");
     check("foo(\n  1, // c\n);\n");
 }
 
@@ -119,6 +123,8 @@ fn block_comment_text_is_verbatim() {
 #[test]
 fn class_field_comments_travel_with_the_init() {
     check("class C {\n  // field\n  x = 1;\n}\n");
+    check("class C {\n  /* block */\n  x = 1;\n}\n");
+    check("class C {\n  /* line one\n     line two */\n  x = 1;\n}\n");
     check("class C {\n  x = 1; // trail\n}\n");
     check("class C {\n  x = 1; // a\n  y = 2; // b\n}\n");
     check("class C {\n  x /* i */ = 1;\n}\n");
@@ -127,6 +133,19 @@ fn class_field_comments_travel_with_the_init() {
     check("class C {\n  static x = 1; // a\n  static y = 2; // b\n}\n");
     check("class C {\n  x = 1; // a\n  m() {}\n}\n");
     check("class C {\n  m() {}\n  x = 1; // a\n}\n");
+    check("class C {\n  x = 1;\n\n  // note\n  m() {}\n}\n");
+    check("class C {\n  lines = [1]; // keep\n  last = 1;\n\n  // defaultLine\n  m() {}\n}\n");
+    check("class C {\n\n  // note\n  m() {}\n}\n");
+    check("class C {\n  m() {}\n\n  x = 1;\n\n  // note\n  n() {}\n}\n");
+    check("class C {\n  x = 1;\n\n\n  m() {}\n}\n");
+    check("function f() {\n\n  // note\n  a;\n}\n");
+    check("class C {\n\n    x = 1;\n\n    // note\n\n    m() {}\n}\n");
+    check("class C {\n  m() {}\n\n  // kept\n}\n");
+    check("class C { // note\n  x = 1;\n}\n");
+    check("// row\t\n// next\nconst a = 1;\n");
+    check("class C {\n  m() {}\n\n  x; // note\n\n  n() {}\n}\n");
+    check("class C {\n  x = 1;\n\n  // handle\n  get y() {\n    return 1;\n  }\n}\n");
     check("class C {\n  x = 1; // a\n  static y = 2;\n}\n");
     check("class C {\n  static y = 2; // a\n  x = 1;\n}\n");
+    check("class C {\n  static [name] = 'a';\n  static [parent] = 1;\n}\n");
 }

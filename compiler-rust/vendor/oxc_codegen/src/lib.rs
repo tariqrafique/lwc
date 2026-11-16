@@ -929,7 +929,7 @@ impl<'a> Codegen<'a> {
                 .as_ref()
                 .is_none_or(|comments| comments.iter().all(|c| !c.has_newlines_around()));
         self.print_curly_braces(stmt.span, single_line, |p| {
-            p.print_stmts_with_orphan_flush(&stmt.body, stmt.span.end, ctx);
+            p.print_stmts_with_orphan_flush(&stmt.body, stmt.span.end, stmt.span.start + 1, ctx);
             // D-0292: `if (x) { /* c */ }` and a comment after the last statement.
             if let Some(comments) = comments_at_end {
                 p.print_comments(&comments);
@@ -944,8 +944,16 @@ impl<'a> Codegen<'a> {
         &mut self,
         stmts: &[Statement<'_>],
         scope_end: u32,
+        after_open: u32,
         ctx: Context,
     ) {
+        if let Some(first) = stmts.first()
+            && after_open > 0
+            && after_open < first.span().start
+        {
+            // `if (x) { // note` — the comment trails `{`, ahead of the first statement.
+            self.print_gap_comments(after_open, first.span().start, Some(first.span().start));
+        }
         for stmt in stmts {
             self.print_orphan_comments_before(stmt.span().start);
             self.print_semicolon_if_needed();
@@ -1010,7 +1018,7 @@ impl<'a> Codegen<'a> {
             first.print(self, ctx);
         }
 
-        self.print_stmts_with_orphan_flush(rest, scope_end, ctx);
+        self.print_stmts_with_orphan_flush(rest, scope_end, 0, ctx);
     }
 
     #[inline]

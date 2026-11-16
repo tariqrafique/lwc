@@ -37,9 +37,12 @@ line. Babel's generator (`retainLines` off, comments on) does not:
 - A block comment is the source text between its delimiters, tabs included.
   Re-indenting the interior is what moved the `layout` comment in
   rlmCollectionsConsole.
-- A leading comment keeps one blank line when the source had one (`stmt;\n\n// c`).
+- A comment keeps one blank line when the source had one (`stmt;\n\n// c`).
   The extra line is read from the source span, not from `preceded_by_newline`
-  (that flag is only "not on the same line").
+  (that flag is only "not on the same line"). A blank line that only separates
+  `{`, `(`, or `[` from the first comment is not kept. Blank lines that existed
+  only because a class field sat there are removed by `class_properties` before
+  this printer runs, matching Babel once that field node is gone.
 
 `build_comments` stores trailing normal comments at `attached_to`. Statement
 semicolons, function and class ends, blocks, objects, arrays, calls, and

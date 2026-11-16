@@ -49,6 +49,8 @@ struct Lower<'s> {
     cmts: Vec<Cmt>,
     /// Trailing comment of a field, waiting to lead the next lowered field.
     carry: String,
+    /// Comment spans deleted for the field currently being lowered.
+    removed: Vec<(u32, u32)>,
 }
 
 /// Trailing comment text for the constructor, plus the source spans it came from.
@@ -65,7 +67,24 @@ struct Cmt {
 impl<'s> Lower<'s> {
     /// `src[span]` with `prior` edits that lie inside it applied (boundary inserts included).
     fn slice_span(&self, start: u32, end: u32) -> String {
-        let tagged: Vec<(Edit, u8)> = self.prior.iter().cloned().map(|e| (e, 0)).collect();
+        self.slice_span_filtered(start, end, false)
+    }
+
+    /// Like [`Self::slice_span`], but an insert exactly at `end` is left for the
+    /// next node. The decorator wrap sits on the value (`_registerDecorators2(` at
+    /// `class`), and the value's own render also claims that boundary.
+    fn slice_before(&self, start: u32, end: u32) -> String {
+        self.slice_span_filtered(start, end, true)
+    }
+
+    fn slice_span_filtered(&self, start: u32, end: u32, drop_end_insert: bool) -> String {
+        let tagged: Vec<(Edit, u8)> = self
+            .prior
+            .iter()
+            .filter(|e| !(drop_end_insert && e.start == e.end && e.start == end))
+            .cloned()
+            .map(|e| (e, 0))
+            .collect();
         apply_in(self.src, &tagged, start, end, &self.ends)
     }
     fn slice(&self, s: Span) -> String {
@@ -285,6 +304,9 @@ impl<'s> Lower<'s> {
                 ctor_trail = piece;
                 let line = sole_field_line(self.src, p.span.start);
                 if let Some((ls, le)) = line {
+                    let prev_lowered =
+                        el_idx > 0 && element_lowered(&class.body.body[el_idx - 1], lower_static);
+                    let (ls, le) = extend_field_gap(self.src, ls, le, &spans, prev_lowered);
                     self.edits.push(Edit::replace(ls, le, String::new()));
                 } else {
                     self.edits
@@ -294,8 +316,16 @@ impl<'s> Lower<'s> {
                     }
                 }
             } else {
-                self.edits
-                    .push(Edit::replace(p.span.start, p.span.end, String::new()));
+                let prev_lowered =
+                    el_idx > 0 && element_lowered(&class.body.body[el_idx - 1], lower_static);
+                let (s, e) = widened_field_removal(
+                    self.src,
+                    p.span,
+                    &self.removed,
+                    self.prior,
+                    prev_lowered,
+                );
+                self.edits.push(Edit::replace(s, e, String::new()));
             }
             if p.r#static {
                 if let Some(v) = &p.value {
@@ -378,7 +408,7 @@ impl<'s> Lower<'s> {
                 }
             };
             let mid = match &p.value {
-                Some(v) => self.slice_span(p.key.span().end, v.span().start),
+                Some(v) => self.slice_before(self.after_key(p), v.span().start),
                 None => " = ".to_string(),
             };
             statics.push(if private {
@@ -427,15 +457,39 @@ impl<'s> Lower<'s> {
                     }
                 }
                 None => {
+                    let brace = self.opening_brace_comment(class);
                     let text = if class.heritage.is_some() {
                         format!(
-                            "constructor(...args) {{{hoist} super(...args);\n{body}\n}}{ctor_trail}"
+                            "constructor(...args) {{{hoist} super(...args);\n{brace}{body}\n}}{ctor_trail}\n"
                         )
                     } else {
-                        format!("constructor() {{{hoist}\n{body}\n}}{ctor_trail}")
+                        format!("constructor() {{{hoist}\n{brace}{body}\n}}{ctor_trail}\n")
                     };
-                    self.edits
-                        .push(Edit::insert(class.body.span.start + 1, text));
+                    let at = class.body.span.start + 1;
+                    let line_end = line_end(self.src.as_bytes(), class.body.span.start);
+                    // The `{ // note` line still has its newline. Replacing only a
+                    // missing newline leaves that line's newline after the constructor
+                    // and it becomes a blank line. When the first member is on a later
+                    // line, the whole tail of the `{` line is the comment we moved plus
+                    // whitespace, so take it.
+                    let first_later = class
+                        .body
+                        .body
+                        .first()
+                        .is_none_or(|el| el.span().start >= line_end);
+                    // A block comment that starts on the `{` line and continues
+                    // past it must not be cut by this replacement.
+                    let comment_crosses = self
+                        .cmts
+                        .iter()
+                        .any(|c| c.start >= at && c.start < line_end && c.end > line_end);
+                    if first_later && !comment_crosses {
+                        self.edits.push(Edit::replace(at, line_end, text));
+                    } else if self.src.as_bytes().get(at as usize) == Some(&b'\n') {
+                        self.edits.push(Edit::replace(at, at + 1, text));
+                    } else {
+                        self.edits.push(Edit::insert(at, text));
+                    }
                 }
             }
         } else {
@@ -522,6 +576,7 @@ impl<'s> Lower<'s> {
         p: &PropertyDefinition<'_>,
         lower_static: bool,
     ) -> (String, Option<FieldTrail>) {
+        self.removed.clear();
         let mut lead = std::mem::take(&mut self.carry);
         let mut moved = Vec::new();
         for i in 0..self.cmts.len() {
@@ -529,13 +584,17 @@ impl<'s> Lower<'s> {
             let before_key = c.start >= p.span.start && c.end <= p.key.span().start;
             let leads_field = !c.trailing && c.attached == p.span.start;
             if leads_field || before_key {
-                lead.push_str(&comment_prefix(&self.src[c.start as usize..c.end as usize]));
+                // Babel indents a top-level class's constructor body at column 4,
+                // whatever the source indent width was. A static init is at column 0.
+                let dest = if p.r#static { 0 } else { 4 };
+                lead.push_str(&comment_prefix(self.src, c.start, c.end, dest));
                 if leads_field {
                     moved.push((c.start, c.end));
                 }
             }
         }
         for (s, e) in moved {
+            self.removed.push((s, e));
             self.edits.push(Edit::replace(s, e, String::new()));
         }
         let trailing: Vec<(u32, u32)> = self
@@ -560,8 +619,9 @@ impl<'s> Lower<'s> {
             .is_some_and(|el| element_lowered(el, lower_static));
         let ctor = if next_lowered {
             for (s, e) in trailing {
-                self.carry
-                    .push_str(&comment_prefix(&self.src[s as usize..e as usize]));
+                let dest = if p.r#static { 0 } else { 4 };
+                self.carry.push_str(&comment_prefix(self.src, s, e, dest));
+                self.removed.push((s, e));
                 self.edits.push(Edit::replace(s, e, String::new()));
             }
             None
@@ -594,12 +654,56 @@ impl<'s> Lower<'s> {
         (lead, ctor)
     }
 
+    /// `class C { // note` moves into the generated constructor, after `super`.
+    /// A class with no fields keeps the comment in the body, ahead of the method.
+    fn opening_brace_comment(&mut self, class: &Class<'_>) -> String {
+        let open = class.body.span.start;
+        let line_end = line_end(self.src.as_bytes(), open);
+        // Only the comment between `{` and the first member. A one-line class
+        // also holds the field's own comments on that line; those stay put.
+        let first = class
+            .body
+            .body
+            .first()
+            .map(|el| el.span().start)
+            .unwrap_or(line_end);
+        let limit = first.min(line_end);
+        let mut out = String::new();
+        let mut spans = Vec::new();
+        for c in &self.cmts {
+            if c.start > open && c.end <= limit {
+                out.push_str(&comment_prefix(self.src, c.start, c.end, 4));
+                spans.push((c.start, c.end));
+            }
+        }
+        for (s, e) in spans {
+            self.edits.push(Edit::replace(s, e, String::new()));
+        }
+        out
+    }
+
+    /// Where the text between the key and the value starts.
+    ///
+    /// A computed key's span is the expression inside `[]`. The `]` is not part
+    /// of that span, and the emitted suffix already includes it (`[name]`).
+    fn after_key(&self, p: &PropertyDefinition<'_>) -> u32 {
+        let key_end = p.key.span().end;
+        if !p.computed {
+            return key_end;
+        }
+        let rest = &self.src[key_end as usize..];
+        match rest.find(']') {
+            Some(i) => key_end + i as u32 + 1,
+            None => key_end,
+        }
+    }
+
     /// Source between the key and the value (comments included) and the value text.
     fn field_value(&mut self, p: &PropertyDefinition<'_>) -> (String, String) {
         let Some(v) = &p.value else {
             return (" = ".to_string(), "void 0".to_string());
         };
-        let mid = self.slice_span(p.key.span().end, v.span().start);
+        let mid = self.slice_before(self.after_key(p), v.span().start);
         let value = self.render_expr(v);
         (mid, value)
     }
@@ -725,6 +829,7 @@ pub fn run_after(
             })
             .collect(),
         carry: String::new(),
+        removed: Vec::new(),
     };
     l.visit_program(program);
     let rendered = l.rendered;
@@ -738,6 +843,145 @@ pub(crate) fn edit_rendered_into(start: u32, end: u32, e: &Edit) -> bool {
     let inside = e.start >= start && e.end <= end && !(e.start == start && e.end == end);
     let boundary_insert = e.start == e.end && e.start >= start && e.start <= end;
     inside || boundary_insert
+}
+
+/// Drop the field's line when nothing else is on it, plus the blank lines Babel
+/// drops with the field.
+///
+/// Babel's printer keeps a blank line before a comment only when that comment
+/// is still a trailing comment of a node that survives. Removing a field does
+/// not reattach the following comment to the previous method, so the blank
+/// lines around the field disappear (`m() {}\n\n x = 1;\n\n // note` prints as
+/// `m() {}\n // note`). A blank line between two methods that both survive is
+/// not this function's concern: the printer never copies it.
+///
+/// `prev_lowered` means the previous class element is also a removed field. The
+/// gap between two removed fields belongs to the earlier field, so this one
+/// does not take it.
+fn widened_field_removal(
+    src: &str,
+    span: Span,
+    gone: &[(u32, u32)],
+    prior: &[Edit],
+    prev_lowered: bool,
+) -> (u32, u32) {
+    let b = src.as_bytes();
+    if span.end == 0 || span.end as usize > b.len() {
+        return (span.start, span.end);
+    }
+    let start = line_start(b, span.start);
+    let end = line_end(b, span.end - 1);
+    // A decorator delete on this line (`@api x; // note`) is already gone. A
+    // later `@wire` line is the next member and stays out of this deletion.
+    let mut line_gone = gone.to_vec();
+    for e in prior {
+        if e.text.is_empty() && e.end > e.start && e.end > start && e.start < end {
+            line_gone.push((e.start, e.end));
+        }
+    }
+    if !region_is_disposable(src, start, end, span.start, span.end, &line_gone) {
+        // The line keeps a comment (`x; // note`). Blank lines that sat before
+        // the field still disappear: Babel does not move them onto that comment.
+        // A field that shares the line with other code (`{ @api a; }`) is only
+        // its own span.
+        let indent_only = src[start as usize..span.start as usize]
+            .chars()
+            .all(char::is_whitespace);
+        if !indent_only || prev_lowered {
+            return (span.start, span.end);
+        }
+        let back = extend_field_gap(src, start, start, gone, false).0;
+        return (back, span.end);
+    }
+    extend_field_gap(src, start, end, gone, prev_lowered)
+}
+
+/// Expand `[start, end)` across adjacent lines that are only whitespace or
+/// comments this field is carrying away.
+fn extend_field_gap(
+    src: &str,
+    mut start: u32,
+    mut end: u32,
+    gone: &[(u32, u32)],
+    prev_lowered: bool,
+) -> (u32, u32) {
+    let b = src.as_bytes();
+    loop {
+        if start == 0 {
+            break;
+        }
+        let prev = line_start(b, start - 1);
+        if !region_is_disposable(src, prev, start, start, start, gone) {
+            break;
+        }
+        // A pure whitespace gap between two removed fields belongs to the earlier
+        // field. A comment line does not: the earlier field stops at it.
+        let whitespace = region_is_disposable(src, prev, start, start, start, &[]);
+        if whitespace && prev_lowered {
+            break;
+        }
+        start = prev;
+    }
+    loop {
+        if end as usize >= b.len() {
+            break;
+        }
+        let next = line_end(b, end);
+        if next == end || !region_is_disposable(src, end, next, end, end, gone) {
+            break;
+        }
+        end = next;
+    }
+    (start, end)
+}
+
+/// `true` when `[from, to)` is only whitespace, semicolons, and `gone` comments,
+/// ignoring `[skip_start, skip_end)`.
+fn region_is_disposable(
+    src: &str,
+    from: u32,
+    to: u32,
+    skip_start: u32,
+    skip_end: u32,
+    gone: &[(u32, u32)],
+) -> bool {
+    if from >= to {
+        return true;
+    }
+    let mut i = from;
+    while i < to {
+        if i >= skip_start && i < skip_end {
+            i = skip_end.min(to);
+            continue;
+        }
+        if let Some(&(_, ge)) = gone.iter().find(|&&(gs, ge)| i >= gs && i < ge) {
+            i = ge.min(to);
+            continue;
+        }
+        let ch = match src[i as usize..].chars().next() {
+            Some(c) => c,
+            None => break,
+        };
+        if !ch.is_whitespace() && ch != ';' {
+            return false;
+        }
+        i += ch.len_utf8() as u32;
+    }
+    true
+}
+
+fn line_start(b: &[u8], pos: u32) -> u32 {
+    b[..pos as usize]
+        .iter()
+        .rposition(|&c| c == b'\n')
+        .map_or(0, |i| i as u32 + 1)
+}
+
+fn line_end(b: &[u8], pos: u32) -> u32 {
+    b[pos as usize..]
+        .iter()
+        .position(|&c| c == b'\n')
+        .map_or(b.len() as u32, |i| pos + i as u32 + 1)
 }
 
 /// The field's line when `{` and `}` are not on it, including the trailing newline.
@@ -770,12 +1014,63 @@ fn element_lowered(el: &ClassElement<'_>, lower_static: bool) -> bool {
     !(p.r#static && !lower_static)
 }
 
-fn comment_prefix(text: &str) -> String {
-    if text.starts_with("//") {
+fn comment_prefix(src: &str, start: u32, end: u32, dest_column: usize) -> String {
+    let raw = &src[start as usize..end as usize];
+    let text = if raw.starts_with("/*") && raw.contains('\n') {
+        shift_block_comment(raw, source_column(src, start), dest_column)
+    } else {
+        raw.to_string()
+    };
+    let rest = src.get(end as usize..).unwrap_or("");
+    let followed_by_nl = text.starts_with("//")
+        || rest
+            .trim_start_matches([' ', '\t'])
+            .starts_with(['\n', '\r']);
+    if followed_by_nl {
         format!("{text}\n")
     } else {
         format!("{text} ")
     }
+}
+
+/// Babel's multiline-comment shift: drop up to `from` leading whitespace
+/// characters on each continuation line, then indent to `to`.
+fn shift_block_comment(raw: &str, from: usize, to: usize) -> String {
+    let mut out = String::with_capacity(raw.len() + to);
+    for (i, line) in raw.split('\n').enumerate() {
+        if i == 0 {
+            out.push_str(line);
+            continue;
+        }
+        out.push('\n');
+        let mut taken = 0usize;
+        let rest = line
+            .char_indices()
+            .find(|(_, c)| {
+                if taken >= from || !matches!(c, ' ' | '\t') {
+                    true
+                } else {
+                    taken += 1;
+                    false
+                }
+            })
+            .map_or("", |(i, _)| &line[i..]);
+        if !rest.is_empty() {
+            out.extend(std::iter::repeat_n(' ', to));
+            out.push_str(rest);
+        }
+    }
+    out
+}
+
+fn source_column(src: &str, pos: u32) -> usize {
+    let b = src.as_bytes();
+    let pos = (pos as usize).min(b.len());
+    let start = b[..pos]
+        .iter()
+        .rposition(|&c| c == b'\n')
+        .map_or(0, |i| i + 1);
+    src[start..pos].chars().count()
 }
 
 /// Comments between `=` and the value stay on the defineProperty `value:`.

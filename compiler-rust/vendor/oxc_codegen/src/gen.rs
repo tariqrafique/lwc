@@ -237,6 +237,12 @@ fn print_if(if_stmt: &IfStatement<'_>, p: &mut Codegen, ctx: Context) {
     p.print_soft_space();
     p.print_ascii_byte(b'(');
     p.print_expression(&if_stmt.test);
+    // `if (a\n  // &&\n  // b\n)` — the comments sit between the test and `)`.
+    let test_end = if_stmt.test.span().end;
+    let paren = p
+        .find_byte(test_end, if_stmt.consequent.span().start, b')')
+        .unwrap_or(test_end);
+    p.print_gap_comments(test_end, paren, None);
     p.print_ascii_byte(b')');
 
     match &if_stmt.consequent {
@@ -600,7 +606,7 @@ impl Gen for SwitchCase<'_> {
 
         p.print_soft_newline();
         p.indent();
-        p.print_stmts_with_orphan_flush(&self.consequent, self.span.end, ctx);
+        p.print_stmts_with_orphan_flush(&self.consequent, self.span.end, 0, ctx);
         p.dedent();
     }
 }
@@ -837,6 +843,17 @@ impl Gen for FunctionBody<'_> {
             false
         };
         p.print_curly_braces(self.span, single_line, |p| {
+            let after_open = self.span.start + 1;
+            let first = self
+                .directives
+                .first()
+                .map(|d| d.span.start)
+                .or_else(|| self.statements.first().map(|s| s.span().start));
+            if let Some(first) = first
+                && after_open < first
+            {
+                p.print_gap_comments(after_open, first, Some(first));
+            }
             p.print_directives_and_statements(
                 &self.directives,
                 &self.statements,
@@ -1839,15 +1856,43 @@ impl GenExpr for ObjectExpression<'_> {
                 p.indent();
             }
             for (i, item) in self.properties.iter().enumerate() {
+                if i == 0 && is_multi_line {
+                    // `{ // note` belongs inside, ahead of the first property.
+                    p.print_gap_comments(
+                        self.span.start + 1,
+                        item.span().start,
+                        Some(item.span().start),
+                    );
+                    p.clear_pending_indent_space();
+                }
                 if i != 0 {
                     let prev = self.properties[i - 1].span().end;
-                    // `a: 1 /* mid */, b` — the comment is not leading on `b`.
-                    p.print_gap_comments(prev, item.span().start, Some(item.span().start));
+                    let next = item.span().start;
+                    // `a: 1 /* mid */, b` is before the comma. `a: 1, // n` is after it.
+                    match p.find_byte(prev, next, b',') {
+                        Some(comma) => {
+                            p.print_gap_comments(prev, comma, None);
+                            p.clear_pending_indent_space();
+                            p.print_comma();
+                            // `a: 1, // n` breaks before the comment in a multiline object.
+                            if is_multi_line && p.last_byte() != Some(b'\n') {
+                                p.print_soft_newline();
+                            }
+                            p.print_gap_comments(comma + 1, next, Some(next));
+                        }
+                        None => {
+                            p.print_gap_comments(prev, next, Some(next));
+                            p.clear_pending_indent_space();
+                            p.print_comma();
+                        }
+                    }
                     p.clear_pending_indent_space();
-                    p.print_comma();
                 }
                 if is_multi_line {
-                    p.print_soft_newline();
+                    // A trailing line comment already ended the line (`value, // n`).
+                    if p.last_byte() != Some(b'\n') {
+                        p.print_soft_newline();
+                    }
                     p.print_comments_at(item.span().start);
                     p.print_indent();
                 } else {
@@ -2848,12 +2893,15 @@ impl Gen for ClassBody<'_> {
                 item.print(p, ctx);
             }
             // D-0292: a comment after the last class element, before `}`.
+            // Indent and a blank line come from the comment itself. Indenting
+            // first leaves a tab in front of it, and the blank line is skipped.
             if let Some(comments) = comments_at_end {
-                if !single_line {
-                    p.print_indent();
-                }
                 p.print_comments(&comments);
                 p.clear_pending_indent_space();
+                // `/*LWC compiler v9.5.3*/` sits on its own line, then `}`.
+                if !single_line && p.last_byte() != Some(b'\n') {
+                    p.print_soft_newline();
+                }
             }
         });
     }
@@ -3139,7 +3187,7 @@ impl Gen for StaticBlock<'_> {
         p.print_soft_space();
         let single_line = self.body.is_empty() && !p.has_orphan_comments_before(self.span.end);
         p.print_curly_braces(self.span, single_line, |p| {
-            p.print_stmts_with_orphan_flush(&self.body, self.span.end, ctx);
+            p.print_stmts_with_orphan_flush(&self.body, self.span.end, self.span.start + 1, ctx);
         });
         p.needs_semicolon = false;
     }

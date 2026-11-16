@@ -28,8 +28,12 @@ fn t(src: &str, o: &CompileOptions) -> String {
         .code
 }
 fn norm(src: &str) -> String {
+    // The version banner is a real comment Babel keeps inside the class. Stock
+    // codegen drops it only from some attachments; strip it so these comparisons
+    // are about the transform, not about comment retention.
+    let src = src.replace("/*LWC compiler v9.5.3*/", "");
     let alloc = Allocator::default();
-    let r = Parser::new(&alloc, src, SourceType::mjs())
+    let r = Parser::new(&alloc, &src, SourceType::mjs())
         .with_options(ParseOptions {
             preserve_parens: false,
             ..Default::default()

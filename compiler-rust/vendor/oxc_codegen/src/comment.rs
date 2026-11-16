@@ -16,6 +16,58 @@ type CommentList = SmallVec<[Comment; 1]>;
 pub type CommentsMap = FxHashMap</* attached_to */ u32, CommentList>;
 
 /// Whether a comment remains meaningful if its original AST anchor is removed.
+/// Babel `adjustMultilineComment`: strip up to the comment's original column
+/// of whitespace after each interior newline, then indent to `column`.
+fn adjust_block_comment<'a>(
+    raw: &'a str,
+    comment: &Comment,
+    source: &str,
+    column: usize,
+) -> std::borrow::Cow<'a, str> {
+    if !raw.contains('\n') {
+        return std::borrow::Cow::Borrowed(raw);
+    }
+    let orig = original_column(source, comment.span.start);
+    if orig == 0 {
+        return std::borrow::Cow::Borrowed(raw);
+    }
+    let mut out = String::with_capacity(raw.len() + column);
+    for (i, line) in raw.split('\n').enumerate() {
+        if i > 0 {
+            out.push('\n');
+            let rest = strip_ws_chars(line, orig);
+            if !rest.is_empty() {
+                out.extend(std::iter::repeat_n(' ', column));
+                out.push_str(rest);
+            }
+        } else {
+            out.push_str(line);
+        }
+    }
+    std::borrow::Cow::Owned(out)
+}
+
+fn strip_ws_chars(line: &str, n: usize) -> &str {
+    let mut taken = 0usize;
+    for (i, c) in line.char_indices() {
+        if taken >= n || !matches!(c, ' ' | '\t') {
+            return &line[i..];
+        }
+        taken += 1;
+    }
+    ""
+}
+
+fn original_column(source: &str, pos: u32) -> usize {
+    let b = source.as_bytes();
+    let pos = (pos as usize).min(b.len());
+    let start = b[..pos]
+        .iter()
+        .rposition(|&c| c == b'\n')
+        .map_or(0, |i| i + 1);
+    source[start..pos].chars().count()
+}
+
 fn preserve_when_orphaned(comment: &Comment) -> bool {
     comment.is_legal() || comment.is_coverage_ignore_file()
 }
@@ -234,6 +286,17 @@ impl Codegen<'_> {
         out
     }
 
+    /// First `byte` in the source span `[from, to)`.
+    pub(crate) fn find_byte(&self, from: u32, to: u32, byte: u8) -> Option<u32> {
+        let src = self.source_text?;
+        let start = from as usize;
+        let end = (to as usize).min(src.len());
+        if start >= end {
+            return None;
+        }
+        src[start..end].find(byte as char).map(|i| from + i as u32)
+    }
+
     pub(crate) fn print_gap_comments(
         &mut self,
         from: u32,
@@ -271,7 +334,9 @@ impl Codegen<'_> {
     }
 
     /// One blank line in the source immediately before `pos` (the comment start).
-    /// Indent spaces on the comment's line do not count.
+    /// Indent spaces on the comment's line do not count. A blank line whose only
+    /// job is to separate `{`, `(`, or `[` from the comment is not kept: Babel
+    /// prints the first comment in a block on the next line either way.
     fn source_has_blank_line_before(&self, pos: u32) -> bool {
         let Some(src) = self.source_text else {
             return false;
@@ -281,20 +346,27 @@ impl Codegen<'_> {
         if i > b.len() {
             return false;
         }
-        while i > 0 && matches!(b[i - 1], b' ' | b'\t') {
-            i -= 1;
+        let mut newlines = 0u32;
+        while i > 0 {
+            match b[i - 1] {
+                b' ' | b'\t' | b'\r' => i -= 1,
+                b'\n' => {
+                    newlines += 1;
+                    i -= 1;
+                    if newlines == 2 {
+                        break;
+                    }
+                }
+                _ => break,
+            }
         }
-        if i == 0 || b[i - 1] != b'\n' {
+        if newlines < 2 {
             return false;
-        }
-        i -= 1;
-        if i > 0 && b[i - 1] == b'\r' {
-            i -= 1;
         }
         while i > 0 && matches!(b[i - 1], b' ' | b'\t' | b'\r') {
             i -= 1;
         }
-        i > 0 && b[i - 1] == b'\n'
+        !(i > 0 && matches!(b[i - 1], b'{' | b'(' | b'['))
     }
 
     /// One blank line in the source immediately after `pos` (the comment end).
@@ -320,6 +392,30 @@ impl Codegen<'_> {
             return false;
         }
         newlines >= 2
+    }
+
+    /// Column Babel's generator would use here: two spaces per indent level,
+    /// plus any non-indent characters already on this line.
+    fn babel_column(&self) -> usize {
+        let bytes = self.code().as_bytes();
+        let line_start = bytes.iter().rposition(|&b| b == b'\n').map_or(0, |i| i + 1);
+        let tail = &bytes[line_start..];
+        let mut col = 0usize;
+        for &b in tail {
+            if b == b'\t' {
+                col += 2;
+            } else {
+                col += 1;
+            }
+        }
+        col
+    }
+
+    /// The current output line is empty or only the indent we just printed.
+    fn current_line_is_indent(&self) -> bool {
+        let bytes = self.code().as_bytes();
+        let line_start = bytes.iter().rposition(|&b| b == b'\n').map_or(0, |i| i + 1);
+        bytes[line_start..].iter().all(|&b| matches!(b, b' ' | b'\t'))
     }
 
     fn output_ends_with_blank_line(&self) -> bool {
@@ -542,7 +638,9 @@ impl Codegen<'_> {
                         }
                         self.print_indent();
                     }
-                    b'\t' => { /* already at an indent */ }
+                    // A tab we just printed as indent is the line so far. A tab
+                    // that trails a comment (`// note\t`) is not: break first.
+                    b'\t' | b' ' if self.current_line_is_indent() => {}
                     _ => {
                         self.print_hard_newline();
                         if blank {
@@ -642,11 +740,16 @@ impl Codegen<'_> {
                 };
                 self.print_str_escaping_script_close_tag(text);
             }
-            // D-0292: Babel prints the block comment's source text, tabs included.
-            // Re-indenting the interior (`trim_start` + printer indent) is what
-            // moved the rlmCollectionsConsole `layout` comment and the `*` column.
+            // D-0292: Babel prints a block comment from its source text. A comment
+            // that stays at its original column is unchanged, tabs included.
+            // One that moves (a field comment carried into the constructor) has
+            // each continuation line's leading whitespace shifted by the column
+            // difference: strip up to the original start column, then indent to
+            // the column Babel would be at (two spaces per indent level).
             CommentKind::MultiLineBlock => {
-                self.print_str_escaping_script_close_tag(comment_source);
+                let adjusted =
+                    adjust_block_comment(comment_source, comment, source_text, self.babel_column());
+                self.print_str_escaping_script_close_tag(&adjusted);
             }
         }
     }
