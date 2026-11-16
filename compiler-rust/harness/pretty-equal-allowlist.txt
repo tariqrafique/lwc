@@ -50,13 +50,13 @@ LightningFlowComponents/flow_screen_components/ObjectAndFieldPickerFSC/force-app
 LightningFlowComponents/flow_screen_components/OrderedListBoxFSC/force-app/main/default/lwc/listBox	object-shorthand
 LightningFlowComponents/flow_screen_components/QuickQuery/force-app/main/default/lwc/quickQuery	object-shorthand
 LightningFlowComponents/flow_screen_components/clipboardButton/force-app/main/default/lwc/clipboardButtonCPE	object-shorthand
-LightningFlowComponents/flow_screen_components/datatable/force-app/main/default/lwc/datatable	comment-added,comment-dropped,comment-placement,object-shorthand,other
+LightningFlowComponents/flow_screen_components/datatable/force-app/main/default/lwc/datatable	comment-added,comment-placement,object-shorthand,other
 LightningFlowComponents/flow_screen_components/datatable/force-app/main/default/lwc/ers_comboboxColumnType	object-shorthand
 LightningFlowComponents/flow_screen_components/datatable/force-app/main/default/lwc/ers_datatableCPE	object-shorthand
-LightningFlowComponents/flow_screen_components/datatableLwcFsc/force-app/main/default/lwc/datatableLwcFsc	comment-dropped,object-shorthand,other
-LightningFlowComponents/flow_screen_components/datatableLwcFsc/force-app/main/default/lwc/datatableV2	comment-dropped,object-shorthand,other
+LightningFlowComponents/flow_screen_components/datatableLwcFsc/force-app/main/default/lwc/datatableLwcFsc	object-shorthand
+LightningFlowComponents/flow_screen_components/datatableLwcFsc/force-app/main/default/lwc/datatableV2	object-shorthand
 LightningFlowComponents/flow_screen_components/datatableV2/force-app/main/default/lwc/datatableCPE	object-shorthand
-LightningFlowComponents/flow_screen_components/datatableV2/force-app/main/default/lwc/datatableV2	comment-dropped,object-shorthand,other
+LightningFlowComponents/flow_screen_components/datatableV2/force-app/main/default/lwc/datatableV2	object-shorthand
 LightningFlowComponents/flow_screen_components/dualListBoxFSC/force-app/main/default/lwc/dualListBoxCPE	object-shorthand
 LightningFlowComponents/flow_screen_components/fileUploadImproved/force-app/main/default/lwc/fileUploadImproved	object-shorthand
 LightningFlowComponents/flow_screen_components/flexcards/force-app/main/default/lwc/flowButtons	object-shorthand
@@ -132,7 +132,6 @@ b2b-commerce-open-source-components/force-app/main/default/sfdc_cms__lwc/subscri
 b2b-commerce-open-source-components/force-app/main/default/sfdc_cms__lwc/subscriptionCardV2	object-shorthand
 dreamhouse-lwc/main/default/lwc/propertyCarousel	object-shorthand
 lbc-recipes/examples/lwc/verticalRecipes	duplicate-key
-lbc-recipes/force-app/main/default/lwc/recordForm	comment-dropped
 lbc/package/src/lightning/carousel	other
 lbc/package/src/lightning/primitiveFigure	object-shorthand
 lwc-utils/utils-core/main/default/lwc/baseDatatable	object-shorthand

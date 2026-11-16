@@ -1781,6 +1781,8 @@ impl GenExpr for CallExpression<'_> {
             {
                 p.print_arguments(self.span, &self.arguments, ctx);
             }
+            // `f(a) // eslint-disable-line indent` — the note follows `)`.
+            p.print_trailing_comments_at(self.span.end);
         });
     }
 }
@@ -2344,7 +2346,10 @@ impl GenExpr for ConditionalExpression<'_> {
             };
             self.test
                 .print_expr(p, test_precedence, ctx & Context::FORBID_IN);
-            p.print_soft_space();
+            // A trailing line comment already broke the line (`f(a) // c\n? 1`).
+            if p.last_byte() != Some(b'\n') {
+                p.print_soft_space();
+            }
             p.print_ascii_byte(b'?');
             p.print_soft_space();
             // Annotation-gated (see the helper's doc): `if/else` bodies get
