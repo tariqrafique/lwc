@@ -3,6 +3,7 @@ use crate::Config;
 use crate::StyleError;
 use crate::ast::*;
 use crate::consts::*;
+use lwc_shared::js::string_literal;
 
 #[derive(Clone, Copy, PartialEq)]
 enum Kind {
@@ -210,31 +211,11 @@ fn reduce_tokens(tokens: Vec<Tok>) -> Vec<Tok> {
         .collect()
 }
 
-/// JSON.stringify for strings.
-fn js_string(s: &str) -> String {
-    let mut o = String::from("\"");
-    for c in s.chars() {
-        match c {
-            '"' => o.push_str("\\\""),
-            '\\' => o.push_str("\\\\"),
-            '\n' => o.push_str("\\n"),
-            '\r' => o.push_str("\\r"),
-            '\t' => o.push_str("\\t"),
-            '\u{8}' => o.push_str("\\b"),
-            '\u{c}' => o.push_str("\\f"),
-            c if (c as u32) < 0x20 => o.push_str(&format!("\\u{:04x}", c as u32)),
-            c => o.push(c),
-        }
-    }
-    o.push('"');
-    o
-}
-
 fn generate_expression(tokens: Vec<Tok>) -> String {
     let parts: Vec<String> = reduce_tokens(tokens)
         .into_iter()
         .map(|t| match t {
-            Tok::Text(v) => js_string(&v),
+            Tok::Text(v) => string_literal(v.encode_utf16()),
             Tok::Expr(v) => format!("({v})"),
             Tok::Ident(v) => v.to_string(),
         })

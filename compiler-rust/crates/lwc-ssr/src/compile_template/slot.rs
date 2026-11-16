@@ -2,13 +2,15 @@
 use super::{
     Cx, Emit, TemplateOptions,
     element::{self, ElView},
-    emit_children, expr, js_str,
+    emit_children, expr,
 };
+use lwc_shared::js::string_literal;
 use lwc_shared::template_ir::{
     Attribute, AttributeValue, ElementDirective, Expression, LiteralValue, Slot,
 };
 
-/// shared.ts bAttributeValue: absent -> `null`, literal string -> string, bool literal -> `''`,
+/// shared.ts bAttributeValue: absent -> `null`, literal string -> string, bool literal -> `""`
+/// (`b.literal('')`, astring `JSON.stringify`),
 /// expression -> `b.memberExpression(b.literal('instance'), expr)`, which astring prints as
 /// `("instance").<raw expr>` (a property read on the string "instance"; ported verbatim).
 pub(crate) fn attr_value(
@@ -20,8 +22,8 @@ pub(crate) fn attr_value(
         match attrs.iter().find(|a| a.name == name).map(|a| &a.value) {
             None => "null".into(),
             Some(AttributeValue::Literal(l)) => match &l.value {
-                LiteralValue::String(s) => js_str(s),
-                _ => "''".into(),
+                LiteralValue::String(s) => string_literal((s).encode_utf16()),
+                _ => string_literal("".encode_utf16()),
             },
             Some(AttributeValue::Expression(e)) => match raw_expr(e) {
                 Some(r) => format!("(\"instance\").{r}"),

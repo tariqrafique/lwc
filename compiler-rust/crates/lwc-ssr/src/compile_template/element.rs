@@ -1,8 +1,9 @@
 //! Port of transformers/element.ts (Element / ExternalComponent / the `<slot>` element of Slot), plus the
 //! @lwc/shared helpers it uses (isBooleanAttribute, isVoidElement, normalizeStyleAttributeValue,
 //! normalizeTabIndex) and shared.ts normalizeClassAttributeValue.
-use super::{Cx, Emit, TemplateOptions, add, emit_children, expr, js_str};
+use super::{Cx, Emit, TemplateOptions, add, emit_children, expr};
 use crate::runtime_abi as abi;
+use lwc_shared::js::string_literal;
 use lwc_shared::template_ir::{
     Attribute, AttributeValue, ChildNode, ElementDirective, LiteralValue, Property,
 };
@@ -116,7 +117,7 @@ pub(crate) fn normalize_tab_index_literal(s: &str) -> String {
     if js_number(s) > 0.0 {
         "0".into()
     } else {
-        js_str(s)
+        string_literal((s).encode_utf16())
     }
 }
 
@@ -167,8 +168,8 @@ const SCOPE_TEST: &str = "hasScopedStylesheets || hasScopedStaticStylesheets(Cmp
 fn string_literal_attr_block(name: &str, val: &str, o: TemplateOptions) -> String {
     format!(
         "{{ const attrName = {name}; const attrValue = {val}; const shouldRenderScopeToken = attrName === 'class' && ({SCOPE_TEST}); const suffix = shouldRenderScopeToken ? ' ' + stylesheetScopeToken : ''; {open} if (attrValue !== '' || shouldRenderScopeToken) {{ {close} }} }}",
-        name = js_str(name),
-        val = js_str(val),
+        name = string_literal((name).encode_utf16()),
+        val = string_literal((val).encode_utf16()),
         open = o.y("' ' + attrName"),
         close = o.y("'=\"' + attrValue + suffix + '\"'"),
     )
@@ -196,7 +197,7 @@ fn literal_value(name: &str, v: &LiteralValue, o: TemplateOptions) -> Vec<String
             if name == "class" {
                 vec![]
             } else {
-                vec![o.y(&js_str(&format!(" {name}")))]
+                vec![o.y(&string_literal(format!(" {name}").encode_utf16()))]
             }
         }
     }
@@ -222,7 +223,7 @@ fn dynamic_value(
     }
     Ok(format!(
         "{{ const attrName = {}; let attrValue = {v}; const isHtmlBooleanAttr = {}; if (isHtmlBooleanAttr) {{ attrValue = attrValue ? '' : undefined; }} if (attrName === 'tabindex') {{ const shouldNormalize = attrValue > 0 && typeof attrValue !== 'boolean'; attrValue = shouldNormalize ? 0 : attrValue; }} if (attrName === 'style' && (typeof attrValue !== 'string' || attrValue === '')) {{ attrValue = undefined; }} if (attrValue !== undefined && attrValue !== null) {{ {} if (attrValue !== '') {{ {} }} }} }}",
-        js_str(name),
+        string_literal((name).encode_utf16()),
         is_boolean_attribute(name, el),
         o.y("' ' + attrName"),
         o.y("`=\"${htmlEscape(String(attrValue), true)}\"`")
@@ -289,7 +290,7 @@ pub(crate) fn emit_element(
     } else if let Some(v) = inner_html {
         let e = match v {
             AttributeValue::Literal(l) => match &l.value {
-                LiteralValue::String(s) => js_str(s),
+                LiteralValue::String(s) => string_literal((s).encode_utf16()),
                 LiteralValue::Bool(b) => b.to_string(),
             },
             AttributeValue::Expression(e) => expr(e, sc)?,
@@ -300,7 +301,7 @@ pub(crate) fn emit_element(
     let foreign_self_closing = n.namespace != HTML_NAMESPACE && child.is_empty();
     let self_closing = is_void_element(n.name) || foreign_self_closing;
     add(&mut cx.imports, abi::HAS_SCOPED_STATIC_STYLESHEETS);
-    out.push(o.y(&js_str(&format!("<{}", n.name))));
+    out.push(o.y(&string_literal(format!("<{}", n.name).encode_utf16())));
     out.push(format!(
         "if (slotAttributeValue) {{ {} }}",
         o.y("` slot=\"${slotAttributeValue}\"`")
@@ -312,10 +313,12 @@ pub(crate) fn emit_element(
         ));
     }
     out.extend(attr_stmts);
-    out.push(o.y(&js_str(if foreign_self_closing { "/>" } else { ">" })));
+    out.push(o.y(&string_literal(
+        (if foreign_self_closing { "/>" } else { ">" }).encode_utf16(),
+    )));
     if !self_closing {
         out.extend(child);
-        out.push(o.y(&js_str(&format!("</{}>", n.name))));
+        out.push(o.y(&string_literal(format!("</{}>", n.name).encode_utf16())));
     }
     Ok(())
 }
@@ -338,9 +341,9 @@ mod tests {
     #[test]
     fn class_and_tabindex() {
         assert_eq!(normalize_class_attribute_value("  a \n b  "), "a b");
-        assert_eq!(normalize_tab_index_literal("-1"), "'-1'");
+        assert_eq!(normalize_tab_index_literal("-1"), "\"-1\"");
         assert_eq!(normalize_tab_index_literal("3"), "0");
-        assert_eq!(normalize_tab_index_literal("0"), "'0'");
+        assert_eq!(normalize_tab_index_literal("0"), "\"0\"");
     }
     #[test]
     fn booleans() {

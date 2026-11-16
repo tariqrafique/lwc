@@ -1,5 +1,8 @@
-//! JS string semantics shared by every crate. The single definition of JS whitespace: a guard in
-//! `tests/single_definition.rs` fails if another crate defines its own `js_ws`/`js_trim`.
+//! JS string semantics shared by every crate. The single definition of JS whitespace and of the
+//! JS string-literal quoter: `tests/single_definition.rs` fails if another crate defines its own
+//! `js_ws`/`js_trim`/`json_string`/`js_str`.
+
+use std::fmt::Write;
 
 /// JS `WhiteSpace` + `LineTerminator` (ECMA-262 §12.2/§12.3): exactly the set matched by `\s` and
 /// stripped by `String.prototype.trim`. TAB VT FF SP NBSP ZWNBSP, the `Zs` category (U+1680,
@@ -31,6 +34,42 @@ pub fn js_default_sort_cmp(a: &str, b: &str) -> std::cmp::Ordering {
     a.encode_utf16().cmp(b.encode_utf16())
 }
 
+/// One JavaScript string literal, the way astring 1.9.0 prints an ESTree `Literal` that has no
+/// `raw` (`astring@1.9.0` `dist/astring.js` `Literal`: `state.write(JSON.stringify(node.value))`).
+///
+/// That is the oracle's only generated-literal path at b9e8007:
+/// - `@lwc/template-compiler` `src/shared/estree.ts` `literal()` sets `value` and not `raw`, then
+///   `astring.generate` prints it.
+/// - `@lwc/ssr-compiler` builds holes with estree-toolkit `b.literal` (`Literal.raw` is not a
+///   builder argument) and prints with the same astring `Literal`.
+/// - `@lwc/style-compiler` `src/serialize.ts` `generateExpressionFromTokens` returns
+///   `JSON.stringify(value)` for text tokens.
+///
+/// `JSON.stringify` on a string: `"` and `\` escaped, `\b \f \n \r \t`, `\u00xx` for the other
+/// units below 0x20, a lone surrogate as lowercase `\udxxx`, and everything else — U+2028 and
+/// U+2029 included — as itself. Pass `str::encode_utf16()`, or oxc `JSStr::encode_utf16()`, so a
+/// string literal's lone surrogates survive. A source literal that already has `raw` is not this
+/// function: astring writes that `raw` unchanged (the esTemplate snippets keep their own quotes).
+pub fn string_literal(units: impl IntoIterator<Item = u16>) -> String {
+    let mut out = String::from("\"");
+    for unit in char::decode_utf16(units) {
+        match unit {
+            Ok('"') => out.push_str("\\\""),
+            Ok('\\') => out.push_str("\\\\"),
+            Ok('\u{8}') => out.push_str("\\b"),
+            Ok('\u{c}') => out.push_str("\\f"),
+            Ok('\n') => out.push_str("\\n"),
+            Ok('\r') => out.push_str("\\r"),
+            Ok('\t') => out.push_str("\\t"),
+            Ok(c) if c < ' ' => write!(out, "\\u{:04x}", c as u32).unwrap(),
+            Ok(c) => out.push(c),
+            Err(lone) => write!(out, "\\u{:04x}", lone.unpaired_surrogate()).unwrap(),
+        }
+    }
+    out.push('"');
+    out
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -56,6 +95,28 @@ mod tests {
             let s = format!("{c}x{c}");
             assert_eq!(js_trim(&s) == "x", ws, "trim U+{:04X}", c as u32);
         }
+    }
+
+    /// `JSON.stringify` short escapes, quotes, backslash, and a lone surrogate. The node corpus
+    /// in `tests/js_literal_node.rs` covers the same classes against a live `JSON.stringify`.
+    #[test]
+    fn string_literal_json_stringify_classes() {
+        assert_eq!(string_literal("a\"b\\c".encode_utf16()), "\"a\\\"b\\\\c\"");
+        assert_eq!(string_literal("\n\r\t".encode_utf16()), "\"\\n\\r\\t\"");
+        assert_eq!(string_literal("\u{8}\u{c}".encode_utf16()), "\"\\b\\f\"");
+        assert_eq!(
+            string_literal("\u{1}\u{7f}".encode_utf16()),
+            "\"\\u0001\u{7f}\""
+        );
+        assert_eq!(
+            string_literal("\u{2028}\u{2029}".encode_utf16()),
+            "\"\u{2028}\u{2029}\""
+        );
+        assert_eq!(
+            string_literal([0xd800, 0x61, 0xdfff]),
+            "\"\\ud800a\\udfff\""
+        );
+        assert_eq!(string_literal([0xd83d, 0xde00]), "\"😀\"");
     }
 
     /// node: `["\ue000", "\u{1F600}", "b", "a", "", "B"].sort()` -> `["", "B", "a", "b", "😀", "\ue000"]`.

@@ -8,7 +8,7 @@
 
 use lwc_shared::edits::{Edit, apply};
 use lwc_shared::errors::{LWCClassErrors, SsrCompilerErrors};
-use lwc_shared::js_literal::json_string;
+use lwc_shared::js::string_literal;
 use lwc_shared::meta::version_comment;
 use lwc_shared::{CompileError, CompileOptions, CompileResult};
 use oxc::allocator::Allocator;
@@ -499,7 +499,7 @@ impl Index<'_, '_> {
             let names: Vec<String> = m
                 .api_props
                 .iter()
-                .map(|p| json_string(p.encode_utf16()))
+                .map(|p| string_literal(p.encode_utf16()))
                 .collect();
             let block = format!(
                 "static {{ {REGISTER_PUBLIC_PROPERTIES}(this, [{}]); }}",
@@ -894,7 +894,7 @@ fn add_generate_markup_function(
     filename: &str,
     options: &CompileOptions,
 ) -> String {
-    let lit = |s: &str| json_string(s.encode_utf16());
+    let lit = |s: &str| string_literal(s.encode_utf16());
     let stem = module_stem(filename, &options.name);
     let tag = generate_custom_element_tag_name(&options.namespace, &options.name);
     let props: Vec<String> = public_properties.iter().map(|p| lit(p)).collect();
@@ -1719,9 +1719,9 @@ export { Light as default };
             "{c}"
         );
         assert!(c.contains("\nimport \"@lwc/ssr-runtime\";\n"), "{c}");
-        assert!(c.contains("from './c.scoped.css?scoped=true'"), "{c}");
+        assert!(c.contains("from \"./c.scoped.css?scoped=true\""), "{c}");
         assert!(c.contains("from './n.scoped.css';"), "{c}");
-        assert!(c.contains("export { createElement } from '@lwc/ssr-runtime';\nexport * from '@lwc/ssr-runtime';"), "{c}");
+        assert!(c.contains("export { createElement } from \"@lwc/ssr-runtime\";\nexport * from \"@lwc/ssr-runtime\";"), "{c}");
         assert!(
             c.contains("__setStaticInternals(C, \"x-c\", [\"x\"]"),
             "{c}"

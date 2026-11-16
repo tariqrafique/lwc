@@ -12,7 +12,6 @@ mod generated;
 mod generated_tests;
 pub mod html_attributes;
 pub mod instrumentation;
-pub mod js_literal;
 pub mod location;
 pub mod meta;
 pub mod namespaces;

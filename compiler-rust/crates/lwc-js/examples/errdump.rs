@@ -3,20 +3,7 @@ use lwc_shared::CompileOptions;
 use std::io::Read;
 
 fn q(s: &str) -> String {
-    let mut o = String::from("\"");
-    for c in s.chars() {
-        match c {
-            '"' => o.push_str("\\\""),
-            '\\' => o.push_str("\\\\"),
-            '\n' => o.push_str("\\n"),
-            '\r' => o.push_str("\\r"),
-            '\t' => o.push_str("\\t"),
-            c if (c as u32) < 0x20 => o.push_str(&format!("\\u{:04x}", c as u32)),
-            c => o.push(c),
-        }
-    }
-    o.push('"');
-    o
+    lwc_shared::js::string_literal(s.encode_utf16())
 }
 fn n(v: Option<u32>) -> String {
     v.map(|x| x.to_string()).unwrap_or("null".into())

@@ -198,8 +198,8 @@ mod transform_tests {
         }
         src.push_str("</template>\n");
         let r = transform(&src, "x/component/component.html", &opts).expect("transform");
-        assert_eq!(r.code.matches("'tabIndex'").count(), 13, "{}", r.code);
-        for v in ["'true'", "'false'", "'truthy'"] {
+        assert_eq!(r.code.matches("\"tabIndex\"").count(), 13, "{}", r.code);
+        for v in ["\"true\"", "\"false\"", "\"truthy\""] {
             assert!(r.code.contains(v), "missing {v}: {}", r.code);
         }
     }
@@ -290,12 +290,12 @@ mod transform_tests {
         };
         // element.ts:269: a foreign element self-closes when its *emitted* children are empty.
         let c = code("<svg><!--c--></svg>", false);
-        assert!(c.contains("'/>'") && !c.contains("'</svg>'"), "{c}");
+        assert!(c.contains("\"/>\"") && !c.contains("\"</svg>\""), "{c}");
         let c = code("<svg><!--c--></svg>", true);
         // The preserved comment is a yield between the open and close tags, so shared.ts
         // folds it onto the right spine: one literal `'><!--c--></svg>'`, not a self-close.
         assert!(
-            c.contains("'><!--c--></svg>'") && !c.contains("'/>'"),
+            c.contains("\"><!--c--></svg>\"") && !c.contains("\"/>\""),
             "{c}"
         );
         // element.ts:256 tests `node.children.length` (comments count), so lwc:inner-html is not rendered;
@@ -309,7 +309,7 @@ mod transform_tests {
         let c = code("{a}<!--c-->{b}", true);
         assert!(
             c.contains("renderTextContent(normalizeTextContent(instance.a))")
-                && c.contains("'<!--c-->'"),
+                && c.contains("\"<!--c-->\""),
             "{c}"
         );
         // slotted-content.ts: a comment-only child yields no shadow content and is not a light-slot leaf.
@@ -336,8 +336,8 @@ mod transform_tests {
             .find("lightSlottedContentMap = Object.create(null);")
             .expect(&c)..];
         assert!(
-            light.contains("normalizeTextContent('b')")
-                && !light.contains("normalizeTextContent('a')"),
+            light.contains("normalizeTextContent(\"b\")")
+                && !light.contains("normalizeTextContent(\"a\")"),
             "{c}"
         );
         // lwcIf.ts: the if/else chain is built by the parser across the comment, then
@@ -346,7 +346,7 @@ mod transform_tests {
             "<template lwc:if={f}>A</template><!--c--><template lwc:else>B</template>",
             false,
         );
-        assert!(c.contains("(instance.f ? '<!---->' + renderTextContent(normalizeTextContent('A')) + '<!---->' : '<!---->' + renderTextContent(normalizeTextContent('B')) + '<!---->')"), "{c}");
+        assert!(c.contains("(instance.f ? \"<!---->\" + renderTextContent(normalizeTextContent(\"A\")) + \"<!---->\" : \"<!---->\" + renderTextContent(normalizeTextContent(\"B\")) + \"<!---->\")"), "{c}");
     }
 
     /// ir-to-es.ts defaultTransformer: a `<template lwc:slot-data>` that is not a direct component child (here

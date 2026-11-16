@@ -1,10 +1,11 @@
 //! Port of transformers/component (all modes; sync/async are the transmogrified `__lwcYield +=` shapes).
 //! Slotted content follows slotted-content.ts getSlottedContent: shadow fn (hoisted), light map, scoped map.
-use super::{Cx, Emit, TemplateOptions, add, element, emit_children, expr, is_concat, js_str};
+use super::{Cx, Emit, TemplateOptions, add, element, emit_children, expr, is_concat};
 use crate::runtime_abi::{
     ADD_SLOTTED_CONTENT, LIGHTNING_ELEMENT, NORMALIZE_CLASS, NORMALIZE_TAB_INDEX,
     SYMBOL__GENERATE_MARKUP,
 };
+use lwc_shared::js::string_literal;
 use lwc_shared::template_ir::{
     Attribute, AttributeValue, ChildNode, Component, ElementDirective, Expression, LiteralValue,
     LwcComponent, Property, ScopedSlotFragment, SourceLocation,
@@ -54,7 +55,7 @@ pub(crate) fn to_property_name(name: &str) -> String {
 }
 
 /// shared.ts getChildAttrsOrProps value: class/style normalized, spellcheck -> bool, tabindex -> normalizeTabIndex;
-/// bool -> `''` for attrs, the literal for props; class with empty/bool value is omitted (`None`).
+/// bool -> `""` (`b.literal('')`) for attrs, the literal for props; class with empty/bool value is omitted (`None`).
 fn child_value(
     name: &str,
     v: &AttributeValue,
@@ -66,17 +67,19 @@ fn child_value(
     Ok(match v {
         AttributeValue::Literal(l) => match &l.value {
             LiteralValue::String(s) => Some(match name {
-                "style" => js_str(&element::normalize_style_attribute_value(s)),
+                "style" => {
+                    string_literal(element::normalize_style_attribute_value(s).encode_utf16())
+                }
                 "class" => {
                     let c = element::normalize_class_attribute_value(s);
                     if c.is_empty() {
                         return Ok(None);
                     }
-                    js_str(&c)
+                    string_literal(c.encode_utf16())
                 }
                 "spellcheck" => (s.to_lowercase() != "false").to_string(),
                 _ if lower == "tabindex" => element::normalize_tab_index_literal(s),
-                _ => js_str(s),
+                _ => string_literal((s).encode_utf16()),
             }),
             LiteralValue::Bool(b) => {
                 if name == "class" {
@@ -84,7 +87,7 @@ fn child_value(
                 } else if is_prop {
                     Some(b.to_string())
                 } else {
-                    Some("''".into())
+                    Some(string_literal("".encode_utf16()))
                 }
             }
         },
@@ -112,7 +115,7 @@ fn child_obj(
     let mut parts = Vec::new();
     for (k, v) in entries {
         if let Some(v) = child_value(k, v, is_prop, cx, sc)? {
-            parts.push(format!("{}: {v}", js_str(k)));
+            parts.push(format!("{}: {v}", string_literal((k).encode_utf16())));
         }
     }
     Ok(if parts.is_empty() {
@@ -363,7 +366,7 @@ fn light_slotted_content(
                             vec![n.clone()]
                         };
                     let slot_name = match n {
-                        ChildNode::Text(_) => "''".to_string(),
+                        ChildNode::Text(_) => string_literal("".encode_utf16()),
                         ChildNode::Element(e) => {
                             super::slot::attr_value(&e.attributes, "slot", sc)?
                         }
@@ -451,7 +454,7 @@ fn scoped_slotted_content(
             sc.push(var.clone());
             let name = match &f.slot_name {
                 AttributeValue::Literal(l) => match &l.value {
-                    LiteralValue::String(s) => js_str(s),
+                    LiteralValue::String(s) => string_literal((s).encode_utf16()),
                     LiteralValue::Bool(b) => b.to_string(),
                 },
                 AttributeValue::Expression(e) => expr(e, sc)?,
@@ -496,7 +499,10 @@ pub(crate) fn emit_component(
     out.push(format!(
         "const generateMarkup = {local}[SYMBOL__GENERATE_MARKUP];"
     ));
-    out.push(format!("const tagName = {};", js_str(&c.name)));
+    out.push(format!(
+        "const tagName = {};",
+        string_literal(c.name.encode_utf16())
+    ));
     out.push("if (generateMarkup) {".into());
     out.push(o.yd("generateMarkup(tagName, childProps, childAttrs, scopeToken, contextfulParent, renderContext, shadowSlottedContent, lightSlottedContentMap, scopedSlottedContentMap)"));
     out.push("} else {".into());
@@ -688,9 +694,9 @@ mod tests {
             code.contains("const scopedSlottedContentMap = null;"),
             "{code}"
         );
-        assert!(code.contains("addSlottedContent('footer' ?? \"\", function __lwcGenerateSlottedContent(contextfulParent, slotAttributeValue) { let __lwcYield = ''; __lwcYield += '<div' + "), "{code}");
-        // Default light slot: text goes to '' slot. Shadow fn still gets all non-scoped children (with slot attr kept).
-        assert!(code.contains("addSlottedContent('' ?? \"\""), "{code}");
+        assert!(code.contains("addSlottedContent(\"footer\" ?? \"\", function __lwcGenerateSlottedContent(contextfulParent, slotAttributeValue) { let __lwcYield = ''; __lwcYield += \"<div\" + "), "{code}");
+        // Default light slot: text goes to "" slot. Shadow fn still gets all non-scoped children (with slot attr kept).
+        assert!(code.contains("addSlottedContent(\"\" ?? \"\""), "{code}");
         assert!(
             code.contains("<div") && code.contains("__lwcGenerateShadowSlottedContent_xFoo_0"),
             "{code}"

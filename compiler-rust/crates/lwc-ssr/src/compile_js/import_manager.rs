@@ -1,7 +1,7 @@
 //! ssr-compiler estree/builders.ts `bImportDeclaration` and compile-js/imports.ts `ImportManager`,
 //! printed as source text: the imports compile-js prepends (generate-markup's `setStaticInternals`
 //! and `__lwcTmpl`, index.ts's `registerPublicProperties`, and the ImportExpression visitor's loader).
-use lwc_shared::js_literal::json_string;
+use lwc_shared::js::string_literal;
 
 /// One `bImportDeclaration` specifier: `default` local, or `imported as local`.
 pub(super) enum Spec<'a> {
@@ -24,7 +24,7 @@ pub(super) fn import_declaration(specs: &[Spec], source: &str) -> String {
     format!(
         "import {} from {};\n",
         parts.join(", "),
-        json_string(source.encode_utf16())
+        string_literal(source.encode_utf16())
     )
 }
 

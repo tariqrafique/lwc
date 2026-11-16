@@ -1,6 +1,6 @@
 //! No `Debug` formatting (`{x:?}`, `{:#?}`, …) in code that prints JavaScript: a Rust `Debug` string is not a
 //! JS literal (`"\01"`, `"\u{2028}"`, lone surrogates dropped). Print literals with
-//! `lwc_shared::js_literal::json_string`. Scans lwc-ssr `src/` and lwc-template `src/codegen/`, skipping
+//! `lwc_shared::js::string_literal`. Scans lwc-ssr `src/` and lwc-template `src/codegen/`, skipping
 //! `#[cfg(test)]` items and diagnostics that never reach the output: a placeholder on a line holding
 //! `panic!(`, `unreachable!(`, `assert!(`, `assert_eq!(`, `assert_ne!(`, `debug_assert` or `.expect(`.
 
@@ -152,7 +152,7 @@ fn no_debug_formatting_in_emit_code() {
     );
     assert!(
         ssr.is_empty(),
-        "Debug formatting in lwc-ssr emit code; use lwc_shared::js_literal::json_string:\n{}",
+        "Debug formatting in lwc-ssr emit code; use lwc_shared::js::string_literal:\n{}",
         ssr.join("\n")
     );
     assert_eq!(

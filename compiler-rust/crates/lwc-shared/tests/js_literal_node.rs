@@ -1,30 +1,55 @@
-//! `json_string` against node's `JSON.stringify` over a generated corpus of UTF-16 strings. Fails
-//! when node is missing.
+//! `string_literal` against node's `JSON.stringify` over a generated corpus of UTF-16 strings,
+//! including the D-0243 classes: lone surrogates, U+2028/U+2029, controls, quotes, and backslash.
+//! Fails when node is missing.
 
-use lwc_shared::js_literal::json_string;
+use lwc_shared::js::string_literal;
 use std::io::Write;
 use std::process::{Command, Stdio};
 
+/// The classes the quoter must match, named so a trim of the random corpus cannot drop them.
+fn required_classes() -> Vec<Vec<u16>> {
+    vec![
+        // quotes and backslash
+        vec![0x22],
+        vec![0x5c],
+        vec![0x22, 0x5c, 0x22],
+        "a\"b\\c".encode_utf16().collect(),
+        // controls: NUL, backspace, tab, LF, VT, FF, CR, other C0, DEL
+        vec![0x00],
+        vec![0x08],
+        vec![0x09],
+        vec![0x0a],
+        vec![0x0b],
+        vec![0x0c],
+        vec![0x0d],
+        vec![0x1f],
+        vec![0x7f],
+        // line and paragraph separators stay raw, matching JSON.stringify
+        vec![0x2028],
+        vec![0x2029],
+        // lone surrogates, and a well-formed pair
+        vec![0xd800],
+        vec![0xdbff],
+        vec![0xdc00],
+        vec![0xdfff],
+        vec![0xd800, 0x61, 0xdfff],
+        vec![0xd800, 0xdc00],
+        vec![0xd83d, 0xde00],
+    ]
+}
+
 fn corpus() -> Vec<Vec<u16>> {
-    let mut cases: Vec<Vec<u16>> = (0..0x80).chain(0x7f..0xa1).map(|u| vec![u]).collect();
+    let mut cases = required_classes();
+    cases.extend((0..0x80).chain(0x7f..0xa1).map(|u| vec![u]));
     let specials: &[&[u16]] = &[
-        &[0x2028],
-        &[0x2029],
         &[0xfffd],
         &[0xfeff],
-        &[0xd83d, 0xde00],
-        &[0xd800, 0xdc00],
         &[0xdbff, 0xdfff],
-        &[0xd800],
-        &[0xdbff],
-        &[0xdc00],
-        &[0xdfff],
         &[0xdc00, 0xd800],
         &[0xd800, 0xd800, 0xdc00],
         &[0xd800, 0x61],
         &[0x61, 0xdc00],
         &[0x00, 0x31],
-        &[0x22, 0x5c, 0x22],
         &[],
     ];
     cases.extend(specials.iter().map(|s| s.to_vec()));
@@ -46,9 +71,7 @@ fn corpus() -> Vec<Vec<u16>> {
     cases
 }
 
-#[test]
-fn json_string_matches_node_json_stringify() {
-    let cases = corpus();
+fn node_json_stringify(cases: &[Vec<u16>]) -> Vec<String> {
     let input: String = cases
         .iter()
         .map(|c| c.iter().map(u16::to_string).collect::<Vec<_>>().join(",") + "\n")
@@ -69,9 +92,29 @@ fn json_string_matches_node_json_stringify() {
         .unwrap();
     let out = node.wait_with_output().unwrap();
     assert!(out.status.success());
-    let expected: Vec<&str> = std::str::from_utf8(&out.stdout).unwrap().lines().collect();
+    std::str::from_utf8(&out.stdout)
+        .unwrap()
+        .lines()
+        .map(str::to_string)
+        .collect()
+}
+
+#[test]
+fn string_literal_required_classes_match_node_json_stringify() {
+    let cases = required_classes();
+    let expected = node_json_stringify(&cases);
     assert_eq!(expected.len(), cases.len());
     for (units, want) in cases.iter().zip(expected) {
-        assert_eq!(json_string(units.iter().copied()), want, "{units:x?}");
+        assert_eq!(string_literal(units.iter().copied()), want, "{units:x?}");
+    }
+}
+
+#[test]
+fn string_literal_matches_node_json_stringify() {
+    let cases = corpus();
+    let expected = node_json_stringify(&cases);
+    assert_eq!(expected.len(), cases.len());
+    for (units, want) in cases.iter().zip(expected) {
+        assert_eq!(string_literal(units.iter().copied()), want, "{units:x?}");
     }
 }

@@ -1,6 +1,7 @@
 //! compile-js/lwc-import.ts: `lwc` becomes `@lwc/ssr-runtime` on import, export-named and
 //! export-all declarations; the `LightningElement` import's local name goes on the state.
 use lwc_shared::edits::Edit;
+use lwc_shared::js::string_literal;
 use oxc::ast::ast::*;
 
 use super::ComponentMetaState;
@@ -38,12 +39,15 @@ pub(super) fn replace_lwc_export(source: &StringLiteral, src: &str, edits: &mut 
     }
 }
 
-/// The source literal rewritten to `@lwc/ssr-runtime`, keeping its quote character.
-fn runtime_source(lit: &StringLiteral, src: &str) -> Edit {
-    let q = &src[lit.span.start as usize..lit.span.start as usize + 1];
+/// The source literal rewritten to `@lwc/ssr-runtime`.
+///
+/// Upstream `replaceLwcImport` / `replaceNamedLwcExport` / `replaceAllLwcExport` replace the
+/// source with estree-toolkit `b.literal('@lwc/ssr-runtime')` (`lwc-import.ts`), which has no
+/// `raw`. astring then prints `JSON.stringify` (`string_literal`), not the quote the source used.
+fn runtime_source(lit: &StringLiteral, _src: &str) -> Edit {
     Edit::replace(
         lit.span.start,
         lit.span.end,
-        format!("{q}{RUNTIME_MODULE}{q}"),
+        string_literal(RUNTIME_MODULE.encode_utf16()),
     )
 }

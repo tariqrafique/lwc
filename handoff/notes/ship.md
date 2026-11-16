@@ -1,5 +1,5 @@
 # state/ship.md
-Updated: 2026-11-09 12:48 PST by ship. PARKED per D-0276 — successor: LWC Worker (28881e7c) owns packaging, CI, CUTOVER.md. Read PLAN.md first; this file holds only this bot's working state.
+Updated: 2026-11-15 21:57 PST by ship. PARKED per D-0276 — successor: LWC Worker (28881e7c) owns packaging, CI, CUTOVER.md. Read PLAN.md first; this file holds only this bot's working state.
 
 ## FINAL HANDOFF (D-0276, 2026-11-09 12:49 PST) — ship parked, lands nothing further
 - Unlanded work: NONE. bot/ship @ eac1ae9 (= S5 land; main has moved on to f679437). Worktree /workspace/wt/ship clean (only gitignored built .node). No stashes, no in-flight processes, no pending AB-L reviews, no owed REWORKs.
@@ -47,3 +47,32 @@ Updated: 2026-11-09 12:48 PST by ship. PARKED per D-0276 — successor: LWC Work
 
 ## Open questions for Migrate
 - none. Routed by Migrate: H1-H7/P1-P2 -> harness, J1-J3 -> js-style (AggregateError only where upstream throws multiple), parse5 dep + instrumentation sites -> template. D-0220: glibc floor 2.28 both Linux triples (amends D-0213).
+
+## 15(b) — consumer port (2026-11-15 21:49 PST, harness)
+
+Compile-ready on the box-local clone. No rust main land (and none queued that 15(b) requires). Parent lands item 14, then AB-0008 r3, then item 15; this tree is never pushed and is not read by the board (D-0202). JS compiler packages were not deleted; CUTOVER verify was not run (held until item 14 lands).
+
+- Clone: `/workspace/wt/lwc-consumers` is a standalone git clone of `/workspace/lwc` (origin fetch=`/workspace/lwc`, push=`no-push`), not a linked worktree of lwc-compiler-rust. Branch `ship/consumers`. Base `b9e8007`. Port commit **2dcd877117a26** (harness, local only).
+- Adapter: new workspace package `packages/lwc-compiler-rs` re-exports the Rust napi ESM loader at `../../../../lwc-compiler-rust/crates/lwc-compiler-napi/index.js`. The loader's `transform` is already synchronous; the adapter also exports `transformSync` as the same function (S3 rename/AsyncTask not landed; not required to compile). Typings are hand-written (`TransformResult` + `CompilerDiagnostic` from `@lwc/errors`). A direct `file:` dependency on the napi package was rejected: yarn 1 resolves its unpublished `optionalDependencies` (`lwc-compiler-rs-<triple>@0.1.0`) even with `--ignore-optional`.
+- Native binary: copied `harness/lwc-compiler-napi.node` (sha12 0d497682f3bb, from main a492147e1) to `crates/lwc-compiler-napi/lwc-compiler.linux-x64-gnu.node` (gitignored). Oracle `/workspace/lwc` was not modified.
+- D1: `@lwc/rollup-plugin` now imports `{ transformSync } from 'lwc-compiler-rs'` (`src/index.ts`, `package.json` dep `lwc-compiler-rs@0.1.0`). Type-only `StylesheetConfig` / `DynamicImportConfig` still come from `@lwc/compiler` (package kept).
+- D4: `@lwc/ssr-runtime/src/__tests__/styles.spec.ts` calls rust `transform` on `test-component.css` with `{ name, namespace, scopedStyles }` instead of `@lwc/style-compiler`.
+- D5: dropped `dynamicImports.strict` in `integration-wtr/configs/plugins/serve-integration.js` and `serve-hydration.js`; `loader` kept. (Not required to compile.)
+- Held: D7 barrel deletes / JS package deletes; D8 docs; CUTOVER verify (`yarn test`, grep that JS compiler imports are gone). `packages/lwc/compiler.js` still re-exports `@lwc/compiler`.
+- Evidence (America/Los_Angeles, UTC-8):
+  - `yarn install --ignore-scripts` rc 0 in 17s. Log: `/workspace/scratch/harness/ship-15b-yarn-install.log`.
+  - Adapter smoke: `transform === transformSync`, `transformSync('<template><p>{x}</p></template>', 'foo.html', {name:'foo',namespace:'x'})` returns code-len=837. Log: `ship-15b-adapter-smoke.log`.
+  - First `yarn build` failed in 22s on `@lwc/rollup-plugin` (TS2345: `warnings?: unknown[]` ↛ `CompilerDiagnostic`). After tightening the adapter d.ts, `nx build @lwc/rollup-plugin` rc 0 in 3s (`ship-15b-rollup-plugin-build.log`).
+  - Full `yarn build` (nx 21 projects, excludes perf-benchmarks and integration-wdio) rc 0 in 5s (17/21 cache hits after the first pass). Log: `/workspace/scratch/harness/ship-15b-yarn-build.log`.
+- Nothing in lwc-compiler-rust needs to land for this compile. Optional later (not 15(b) blockers): S3 `transformSync` + async `transform` on the official loader; S2 generated typings; D7 barrel repoint after deletes are allowed.
+
+## 15(a) — macOS/Windows napi build plan without Actions (2026-11-15 22:00 PST, harness)
+- READY TO LAND, NOT LANDED (Worker sequences: item 14, AB-0008 r3, then item 15). Branch bot/harness-ship15a @ 29d8142 (base main a492147), worktree /workspace/wt/harness-ship15a. Only new files: scripts/build-napi-cross.sh, scripts/napi-triples.tsv, scripts/test-napi-loader-resolution.mjs, docs/napi-cross-build.md. No crate, Cargo, .cargo or gate-table edits, so it doesn't overlap item 14 or r3 (napi lib.rs).
+- Plan (docs/napi-cross-build.md): one Linux x86_64 host builds every triple. linux uses cargo-zigbuild `.2.17`, darwin uses cargo-zigbuild with zig's libSystem stubs (minos 10.15 x64 / 11.0 arm64, no Apple SDK), and win32 uses cargo-xwin with +crt-static. All builds go through cargo_locked --locked with an unchanged-Cargo.lock check. Fail-closed verification checks format and arch, the exported napi_register_module_v1, glibc ≤2.17, minos, the arm64 ad-hoc LC_CODE_SIGNATURE, system-only dylibs, and no node.exe/VCRUNTIME/UCRT imports. Per-triple package.json is generated from the table; npm pack, no publish.
+- Linux evidence (logs /workspace/scratch/harness/ship-15a-*.log; tarballs + MANIFEST in ship-15a-out/):
+  - all 6 triples built and verified, win32-arm64 as a probe (build-final.log);
+  - loader resolution test 29/29 ok, with mutations caught (loader.log, mutations.log);
+  - npm offline install + .html/.js/.css smoke ok on linux-x64 (npm-install.log).
+- Needs real hardware: darwin-arm64/x64 and win32-x64 runtime load + fixtures (docs §4). linux-arm64 runtime and the glibc-2.17 runtime aren't proven either.
+- Open: O1 MSVC CRT/SDK license via cargo-xwin (Tariq); O2 win32-arm64 needs a D-id; O3 darwin .node is unstripped, ~15 MB; O4 package name (D-0202).
+- Before landing: `scripts/run-land-self-tests.sh --all` (new scripts/*.sh), then land.sh. Box tools are installed: zig 0.13.0 at ~/.local/bin, cargo-zigbuild 0.24.1, cargo-xwin 0.23.1, 6 rustup targets plus llvm-tools on 1.99.1.

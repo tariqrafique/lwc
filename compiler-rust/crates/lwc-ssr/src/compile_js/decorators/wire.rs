@@ -2,7 +2,7 @@
 //! the adapter id and config checks against the scope's bindings, the `'$prop'` config rewrite) and
 //! `bWireAdaptersPlumbing`.
 use lwc_shared::errors::DecoratorErrors;
-use lwc_shared::js_literal::json_string;
+use lwc_shared::js::string_literal;
 use lwc_shared::{CompileError, LwcErrorInfo};
 use oxc::ast::ast::{
     Argument, Decorator, Expression, IdentifierReference, ObjectExpression, ObjectPropertyKind,
@@ -194,7 +194,7 @@ impl Checker<'_> {
             };
             let chain: String = path
                 .split(|&unit| unit == DOT)
-                .map(|prop| format!("[{}]", json_string(prop.iter().copied())))
+                .map(|prop| format!("[{}]", string_literal(prop.iter().copied())))
                 .collect();
             out.push_str(&self.src[at..value.span.start as usize]);
             out.push_str("instance");

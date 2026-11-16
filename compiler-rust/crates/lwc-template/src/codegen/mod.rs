@@ -11,29 +11,10 @@ mod optimize;
 pub(crate) mod printer;
 use chunk::{Chunk, Field, group};
 use lwc_shared::api_version::{ApiFeature, is_api_feature_enabled};
-use lwc_shared::js::{js_trim, js_ws};
+use lwc_shared::js::{js_trim, js_ws, string_literal};
 use lwc_shared::style::{normalize_style_attribute_value, parse_style_text, split_important};
 use lwc_shared::template_ir::*;
 use oxc_allocator::Allocator;
-
-pub fn js_string(s: &str) -> String {
-    let mut o = String::from("\"");
-    for c in s.chars() {
-        match c {
-            '"' => o.push_str("\\\""),
-            '\\' => o.push_str("\\\\"),
-            '\n' => o.push_str("\\n"),
-            '\r' => o.push_str("\\r"),
-            '\t' => o.push_str("\\t"),
-            '\u{2028}' => o.push_str("\\u2028"),
-            '\u{2029}' => o.push_str("\\u2029"),
-            c if (c as u32) < 0x20 => o.push_str(&format!("\\x{:02x}", c as u32)),
-            c => o.push(c),
-        }
-    }
-    o.push('"');
-    o
-}
 
 /// Bind (1189) or print (invariant InternalError) failure from generate.
 #[derive(Debug)]
@@ -228,7 +209,7 @@ impl<'a> Gen<'a> {
         match v {
             AttributeValue::Literal(Literal {
                 value: LiteralValue::String(s),
-            }) => Ok(self.b().string_printed(&js_string(s))),
+            }) => Ok(self.b().string_printed(&string_literal((s).encode_utf16()))),
             AttributeValue::Literal(Literal {
                 value: LiteralValue::Bool(b),
             }) => Ok(self.b().boolean(*b)),
@@ -277,7 +258,7 @@ impl<'a> Gen<'a> {
             },
             Expression::Literal(Literal {
                 value: LiteralValue::String(s),
-            }) => Ok(self.b().string_printed(&js_string(s))),
+            }) => Ok(self.b().string_printed(&string_literal((s).encode_utf16()))),
             Expression::Literal(Literal {
                 value: LiteralValue::Bool(b),
             }) => Ok(self.b().boolean(*b)),
@@ -444,7 +425,12 @@ impl<'a> Gen<'a> {
         for d in directives {
             if let ElementDirective::Dynamic(e) = d {
                 let ctor = self.expr(e)?;
-                let mut args = vec![self.b().string_printed(&js_string(name)), ctor, data];
+                let mut args = vec![
+                    self.b()
+                        .string_printed(&string_literal((name).encode_utf16())),
+                    ctor,
+                    data,
+                ];
                 push_kids(&mut args, kids);
                 return Ok(Ok(self.call(ApiHelper::DeprecatedDynamicComponent, args)));
             }
@@ -565,7 +551,12 @@ impl<'a> Gen<'a> {
                     if let Some(v) = lit {
                         let names = parse_class_names(v)
                             .into_iter()
-                            .map(|n| Field::Kv(js_string(n), self.b().boolean(true)))
+                            .map(|n| {
+                                Field::Kv(
+                                    string_literal((n).encode_utf16()),
+                                    self.b().boolean(true),
+                                )
+                            })
                             .collect();
                         data.push(Field::Kv(
                             "classMap".into(),
@@ -584,8 +575,10 @@ impl<'a> Gen<'a> {
                             .map(|(k, v)| {
                                 let (v, important) = split_important(&v);
                                 self.b().array_inline(vec![
-                                    self.b().string_printed(&js_string(&k)),
-                                    self.b().string_printed(&js_string(js_trim(v))),
+                                    self.b().string_printed(&string_literal(k.encode_utf16())),
+                                    self.b().string_printed(&string_literal(
+                                        (js_trim(v)).encode_utf16(),
+                                    )),
                                     self.b().boolean(important),
                                 ])
                             })
@@ -599,13 +592,14 @@ impl<'a> Gen<'a> {
                 )),
                 "slot" => data.push(Field::Kv(
                     "slotAssignment".into(),
-                    self.b().string_printed(&js_string(lit.unwrap_or(""))),
+                    self.b()
+                        .string_printed(&string_literal((lit.unwrap_or("")).encode_utf16())),
                 )),
                 _ => {
                     let used = is_attribute(kind, name, &a.name);
                     let v =
                         self.compute_attr(name, ns, &a.name, &a.value, used, !cur_cr, nest_indent)?;
-                    attr_vs.push(Field::Kv(js_string(&a.name), v));
+                    attr_vs.push(Field::Kv(string_literal(a.name.encode_utf16()), v));
                 }
             }
         }
@@ -625,7 +619,7 @@ impl<'a> Gen<'a> {
             self.has_refs = true;
             data.push(Field::Kv(
                 "ref".into(),
-                self.b().string_printed(&js_string(r)),
+                self.b().string_printed(&string_literal((r).encode_utf16())),
             ));
         }
         let inner = directives.iter().find_map(|d| match d {
@@ -648,7 +642,7 @@ impl<'a> Gen<'a> {
                 !cur_cr,
                 nest_indent,
             )?;
-            entries.push(Field::Kv(js_string(&p.name), v));
+            entries.push(Field::Kv(string_literal(p.name.encode_utf16()), v));
         }
         if let Some(v) = inner {
             // A custom-renderer element gets the raw value (the renderer sanitizes).
@@ -748,9 +742,7 @@ impl<'a> Gen<'a> {
             // astring prints the string Literal with JSON.stringify.
             Some(name) => self
                 .b()
-                .string_printed(&lwc_shared::js_literal::json_string(
-                    format!("@{name}:{key}").encode_utf16(),
-                )),
+                .string_printed(&string_literal(format!("@{name}:{key}").encode_utf16())),
             None => self.b().number_printed(&key.to_string()),
         }
     }
@@ -782,7 +774,7 @@ impl<'a> Gen<'a> {
             let local = self.is_local_root(&l.handler);
             has_local |= local;
             let b = self.gen_bind(&l.handler)?;
-            let k = js_string(&l.name);
+            let k = string_literal(l.name.encode_utf16());
             match on.iter_mut().find(|e| e.0 == k) {
                 Some(e) => {
                     e.1 = b;
@@ -929,7 +921,9 @@ impl<'a> Gen<'a> {
         };
         let kids = self.child_list(el.children, ind, own_slot)?;
         // TS genElement/genCustomElement: the children argument is omitted when it is `[]`.
-        let head = self.b().string_printed(&js_string(el.name));
+        let head = self
+            .b()
+            .string_printed(&string_literal((el.name).encode_utf16()));
         Ok(Some(match c {
             ChildNode::Element(e) => match self.dynamic_ctor(&e.name, &e.directives, data, kids)? {
                 Ok(r) => r,
@@ -966,7 +960,8 @@ impl<'a> Gen<'a> {
             ChildNode::Slot(e) => self.call(
                 ApiHelper::Slot,
                 vec![
-                    self.b().string_printed(&js_string(&e.slot_name)),
+                    self.b()
+                        .string_printed(&string_literal(e.slot_name.encode_utf16())),
                     data,
                     kids,
                     self.b().ident("$slotset"),
@@ -1038,7 +1033,10 @@ impl<'a> Gen<'a> {
             // TS transformComment → api_comment (only reached when comments are preserved).
             ChildNode::Comment(cm) if self.comments => self.call(
                 ApiHelper::Comment,
-                vec![self.b().string_printed(&js_string(&cm.value))],
+                vec![
+                    self.b()
+                        .string_printed(&string_literal(cm.value.encode_utf16())),
+                ],
             ),
             ChildNode::Element(_)
             | ChildNode::LwcComponent(_)
@@ -1348,10 +1346,12 @@ impl<'a> Gen<'a> {
         let mut parts = Vec::new();
         for t in ts {
             parts.push(if let Some(s) = text_literal(t) {
-                self.b().string_printed(&js_string(s))
+                self.b().string_printed(&string_literal((s).encode_utf16()))
             } else {
                 match &t.value {
-                    TextValue::Literal(s) => self.b().string_printed(&js_string(s)),
+                    TextValue::Literal(s) => {
+                        self.b().string_printed(&string_literal((s).encode_utf16()))
+                    }
                     TextValue::Expression(e) => {
                         let x = self.expr(e)?;
                         self.call(ApiHelper::DynamicText, vec![x])
@@ -1403,7 +1403,7 @@ impl<'a> Gen<'a> {
                     let id = ser.part;
                     let text = self.concat_text(ts)?;
                     ser.parts.push((id, Vec::new(), Some(text)));
-                    format!("${{{}}}", js_string(&format!("t{id}")))
+                    format!("${{{}}}", string_literal(format!("t{id}").encode_utf16()))
                 } else {
                     ts.iter().map(|t| Self::static_text(t, parent)).collect()
                 }
@@ -1434,7 +1434,7 @@ impl<'a> Gen<'a> {
                         self.has_refs = true;
                         databag.push(Field::Kv(
                             "ref".into(),
-                            self.b().string_printed(&js_string(r)),
+                            self.b().string_printed(&string_literal((r).encode_utf16())),
                         ));
                     }
                 }
@@ -1487,11 +1487,11 @@ impl<'a> Gen<'a> {
                                     true,
                                     1,
                                 )?;
-                                attrs.push(Field::Kv(js_string(&a.name), v));
+                                attrs.push(Field::Kv(string_literal(a.name.encode_utf16()), v));
                                 format!("a{id}:{}", a.name)
                             }
                         };
-                        h.push_str(&format!("${{{}}}", js_string(&token)));
+                        h.push_str(&format!("${{{}}}", string_literal(token.encode_utf16())));
                         continue;
                     }
                     let name = tpl_escape(&a.name);
@@ -1638,9 +1638,12 @@ impl<'a> Gen<'a> {
         self.b().call_name(
             "sanitizeAttribute",
             vec![
-                self.b().string_printed(&js_string(tag)),
-                self.b().string_printed(&js_string(ns)),
-                self.b().string_printed(&js_string(attr)),
+                self.b()
+                    .string_printed(&string_literal((tag).encode_utf16())),
+                self.b()
+                    .string_printed(&string_literal((ns).encode_utf16())),
+                self.b()
+                    .string_printed(&string_literal((attr).encode_utf16())),
                 v,
             ],
         )
@@ -1663,7 +1666,7 @@ impl<'a> Gen<'a> {
                 self.bind_attr_expr(tag, ns, attr, value, used, hook, indent)
             }
             AttrValueKind::StringLiteral(s) => {
-                let lit = self.b().string_printed(&js_string(s));
+                let lit = self.b().string_printed(&string_literal((s).encode_utf16()));
                 if attr == "id" {
                     return Ok(self.scoped_id(lit));
                 }
@@ -1696,7 +1699,9 @@ impl<'a> Gen<'a> {
                     LiteralView::Number(n) => self.b().number_printed(&printer::js_number(n)),
                     LiteralView::Bool(b) => self.b().boolean(b),
                     LiteralView::Null => self.b().null(),
-                    LiteralView::String(s) => self.b().string_printed(&js_string(s)),
+                    LiteralView::String(s) => {
+                        self.b().string_printed(&string_literal((s).encode_utf16()))
+                    }
                 }
             }),
         }
@@ -1886,11 +1891,14 @@ pub fn generate(
         .unwrap_or("");
     let mut out = format!(
         "import _implicitStylesheets from {};\nimport _implicitScopedStylesheets from {};\n",
-        js_string(&format!("./{base}.css")),
-        js_string(&format!("./{base}.scoped.css?scoped=true"))
+        string_literal(format!("./{base}.css").encode_utf16()),
+        string_literal(format!("./{base}.scoped.css?scoped=true").encode_utf16())
     );
     for (b, m) in &g.imports {
-        out.push_str(&format!("import {b} from {};\n", js_string(m)));
+        out.push_str(&format!(
+            "import {b} from {};\n",
+            string_literal((m).encode_utf16())
+        ));
     }
     let mut lwc = vec!["freezeTemplate"];
     if fragments.iter().any(|(_, svg)| !svg) {
@@ -1966,7 +1974,7 @@ pub fn generate(
             "tmpl.slots = [{}];\n",
             g.slots
                 .iter()
-                .map(|s| js_string(s))
+                .map(|s| string_literal((s).encode_utf16()))
                 .collect::<Vec<_>>()
                 .join(", ")
         ));
@@ -1986,7 +1994,10 @@ pub fn generate(
     } else {
         &tokens.legacy_scope_token
     };
-    out.push_str(&format!("tmpl.stylesheetToken = {};\n", js_string(token)));
+    out.push_str(&format!(
+        "tmpl.stylesheetToken = {};\n",
+        string_literal((token).encode_utf16())
+    ));
     out.push_str("if (_implicitStylesheets) {\n  tmpl.stylesheets.push.apply(tmpl.stylesheets, _implicitStylesheets);\n}\nif (_implicitScopedStylesheets) {\n  tmpl.stylesheets.push.apply(tmpl.stylesheets, _implicitScopedStylesheets);\n}\n");
     out.push_str("freezeTemplate(tmpl);\n");
     Ok(out)

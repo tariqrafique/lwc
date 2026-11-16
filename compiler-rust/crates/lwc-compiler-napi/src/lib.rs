@@ -82,6 +82,9 @@ pub struct JsOutputConfig {
 }
 
 /// JS `String(value)` for a JSON value: objects `[object Object]`, arrays `join(",")` (null items empty).
+///
+/// This is not a JS source literal. `lwc_shared::js::string_literal` quotes source text;
+/// `String(value)` does not (D-0158).
 fn js_string(v: &serde_json::Value) -> String {
     use serde_json::Value as V;
     match v {

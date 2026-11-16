@@ -3,11 +3,12 @@
 //! `cssExplicitImports` / `staticStylesheetIds` are not cataloged: upstream only writes them (generate-markup
 //! and the rest of compile-js never read them), so they cannot reach the output.
 use lwc_shared::edits::Edit;
+use lwc_shared::js::string_literal;
 use oxc::ast::ast::*;
 
 pub(super) fn catalog_and_replace_style_imports(
     d: &ImportDeclaration,
-    src: &str,
+    _src: &str,
     edits: &mut Vec<Edit>,
 ) {
     let Some(source) = d.source.value.as_str() else {
@@ -23,11 +24,11 @@ pub(super) fn catalog_and_replace_style_imports(
     if !source.ends_with(".css") || !single_default || !source.ends_with(".scoped.css") {
         return;
     }
-    let s = d.source.span.start as usize;
-    let q = &src[s..s + 1];
+    // stylesheets.ts replaces the source with `b.literal(value + '?scoped=true')` (no `raw`),
+    // so astring prints `JSON.stringify`, not the quote the import used.
     edits.push(Edit::replace(
         d.source.span.start,
         d.source.span.end,
-        format!("{q}{source}?scoped=true{q}"),
+        string_literal(format!("{source}?scoped=true").encode_utf16()),
     ));
 }

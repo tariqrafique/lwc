@@ -2,7 +2,6 @@
 //! strictSpecifier -> LWC1121 for non-string-literal sources; loader -> `import(x)` becomes `_load(x)`
 //! with `import { load as _load } from "<loader>"`.
 use crate::transforms::component::unique;
-use crate::transforms::scoped_css::serde_quote;
 use lwc_shared::edits::Edit;
 use lwc_shared::errors::error_info::lwc_class::LWCClassErrors;
 use lwc_shared::{CompileError, CompileOptions};
@@ -67,7 +66,10 @@ pub fn run(
         if !v.edits.is_empty() {
             edits.push(Edit::insert(
                 0,
-                format!("import {{ load as {l} }} from {};\n", serde_quote(loader)),
+                format!(
+                    "import {{ load as {l} }} from {};\n",
+                    lwc_shared::js::string_literal(loader.encode_utf16())
+                ),
             ));
         }
     }

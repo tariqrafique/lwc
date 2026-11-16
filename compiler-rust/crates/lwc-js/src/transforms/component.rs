@@ -1,7 +1,6 @@
 //! registerComponent wrapping (port of babel-plugin-component/src/component.ts).
 use crate::constants::*;
 use crate::tag_name;
-use crate::transforms::scoped_css::serde_quote;
 use lwc_shared::CompileOptions;
 use lwc_shared::api_version;
 use lwc_shared::edits::Edit;
@@ -59,16 +58,18 @@ pub fn run(
         let tmpl = unique(src, TEMPLATE_KEY);
         let mut imports = format!(
             "import {tmpl} from {};\nimport {{ {REGISTER_COMPONENT_ID} as {reg} }} from \"{LWC_PACKAGE_ALIAS}\";\n",
-            serde_quote(&format!("./{}.html", base_name(filename)))
+            lwc_shared::js::string_literal(
+                format!("./{}.html", base_name(filename)).encode_utf16()
+            )
         );
         let mut props = vec![
             format!("{TEMPLATE_KEY}: {tmpl}"),
             format!(
                 "{COMPONENT_NAME_KEY}: {}",
-                serde_quote(&tag_name::generate_custom_element_tag_name(
-                    &o.namespace,
-                    &o.name
-                ))
+                lwc_shared::js::string_literal(
+                    tag_name::generate_custom_element_tag_name(&o.namespace, &o.name)
+                        .encode_utf16()
+                )
             ),
             format!(
                 "{API_VERSION_KEY}: {}",
@@ -77,7 +78,8 @@ pub fn run(
         ];
         if !o.component_feature_flag_module_path.is_empty() {
             let ff = unique(src, COMPONENT_FEATURE_FLAG_KEY);
-            let path = serde_quote(&o.component_feature_flag_module_path);
+            let path =
+                lwc_shared::js::string_literal(o.component_feature_flag_module_path.encode_utf16());
             imports.insert_str(0, &format!("import {ff} from {path};\n"));
             props.push(format!(
                 "{COMPONENT_FEATURE_FLAG_KEY}: {{ value: Boolean({ff}), path: {path} }}"

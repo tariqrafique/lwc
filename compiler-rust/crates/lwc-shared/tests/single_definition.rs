@@ -1,7 +1,8 @@
 //! AB-L0022 guard: `lwc_shared::style` and `lwc_shared::js` are the only definitions of the
-//! style-text parser and JS whitespace. Fails if any other crate under `crates/` defines one, or
-//! hand-rolls JS whitespace under another name: a `'\u{feff}'` char literal (ZWNBSP is the char a
-//! `char::is_whitespace` copy has to add by hand) or `is_whitespace() ||` (that add-on).
+//! style-text parser, JS whitespace, and the JS string-literal quoter. Fails if any other crate
+//! under `crates/` defines one, or hand-rolls JS whitespace under another name: a `'\u{feff}'`
+//! char literal (ZWNBSP is the char a `char::is_whitespace` copy has to add by hand) or
+//! `is_whitespace() ||` (that add-on).
 
 use repo_tracked::{rel_slash, tracked_files_filtered, workspace_root};
 use std::path::{Path, PathBuf};
@@ -11,6 +12,11 @@ const FORBIDDEN: &[&str] = &[
     "fn normalize_style",
     "fn js_trim",
     "fn js_ws",
+    // The one JS string-literal quoter is `lwc_shared::js::string_literal`. `fn js_str(` does not
+    // match napi's `fn js_string`, which is `String(value)` coercion (D-0158), not a literal quoter.
+    "fn json_string",
+    "fn js_str(",
+    "fn serde_quote",
 ];
 
 /// A U+FEFF char literal that is not JS whitespace: postcss `Input` drops a leading byte-order mark

@@ -5,7 +5,6 @@
 //! are matched by name.
 use crate::Origin;
 use crate::constants::*;
-use crate::transforms::scoped_css::serde_quote;
 use lwc_shared::api_version::{self, ApiFeature};
 use lwc_shared::edits::Edit;
 use lwc_shared::errors::error_info::lwc_class::DecoratorErrors as E;
@@ -313,7 +312,10 @@ fn param_value(path: &str, counter: &mut u32, decls: &mut Vec<String>) -> String
     let invalid = parts.iter().any(|p| !is_es3_ident(p));
     let member = |obj: &str, p: &str| {
         if invalid {
-            format!("{obj}[{}]", serde_quote(p))
+            format!(
+                "{obj}[{}]",
+                lwc_shared::js::string_literal(p.encode_utf16())
+            )
         } else {
             format!("{obj}.{p}")
         }
@@ -378,17 +380,25 @@ impl<'s> Classes<'s, '_> {
                         Some((op, path)) => {
                             let key_src = slice(src, op.key.span());
                             dynamic.push(match &op.key {
-                                PropertyKey::StaticIdentifier(i) => serde_quote(i.name.as_str()),
+                                PropertyKey::StaticIdentifier(i) => {
+                                    lwc_shared::js::string_literal(i.name.as_str().encode_utf16())
+                                }
                                 PropertyKey::Identifier(i) if op.computed => i.name.to_string(),
-                                PropertyKey::StringLiteral(s) => {
-                                    serde_quote(s.value.as_str().unwrap_or(""))
+                                PropertyKey::StringLiteral(s) => lwc_shared::js::string_literal(
+                                    s.value.as_str().unwrap_or("").encode_utf16(),
+                                ),
+                                PropertyKey::NumericLiteral(n) => lwc_shared::js::string_literal(
+                                    n.value.to_string().encode_utf16(),
+                                ),
+                                PropertyKey::BooleanLiteral(b) => lwc_shared::js::string_literal(
+                                    b.value.to_string().encode_utf16(),
+                                ),
+                                PropertyKey::NullLiteral(_) => {
+                                    lwc_shared::js::string_literal("null".encode_utf16())
                                 }
-                                PropertyKey::NumericLiteral(n) => serde_quote(&n.value.to_string()),
-                                PropertyKey::BooleanLiteral(b) => serde_quote(&b.value.to_string()),
-                                PropertyKey::NullLiteral(_) => serde_quote("null"),
-                                PropertyKey::BigIntLiteral(_) => {
-                                    serde_quote(key_src.trim_end_matches('n'))
-                                }
+                                PropertyKey::BigIntLiteral(_) => lwc_shared::js::string_literal(
+                                    key_src.trim_end_matches('n').encode_utf16(),
+                                ),
                                 _ => key_src.to_string(),
                             });
                             let key = if op.computed {
@@ -578,7 +588,7 @@ impl<'s> Classes<'s, '_> {
             if is_es3_ident(n) {
                 n.to_string()
             } else {
-                serde_quote(n)
+                lwc_shared::js::string_literal(n.encode_utf16())
             }
         };
         if !public_props.is_empty() {
@@ -591,7 +601,7 @@ impl<'s> Classes<'s, '_> {
         let methods: Vec<_> = metas
             .iter()
             .filter(|m| m.name == "api" && m.kind == Kind::Method)
-            .map(|m| serde_quote(&m.prop))
+            .map(|m| lwc_shared::js::string_literal(m.prop.encode_utf16()))
             .collect();
         if !methods.is_empty() {
             list.push(format!("publicMethods: [{}]", methods.join(", ")));
@@ -619,7 +629,9 @@ impl<'s> Classes<'s, '_> {
                     if !p.computed && !p.r#static && p.decorators.is_empty() =>
                 {
                     match &p.key {
-                        PropertyKey::StaticIdentifier(i) => Some(serde_quote(i.name.as_str())),
+                        PropertyKey::StaticIdentifier(i) => Some(lwc_shared::js::string_literal(
+                            i.name.as_str().encode_utf16(),
+                        )),
                         _ => None,
                     }
                 }

@@ -4,6 +4,7 @@ pub(crate) mod element;
 pub mod slot;
 mod yield_opt;
 use element::ElView;
+use lwc_shared::js::string_literal;
 use lwc_shared::template_ir::{
     ChildNode, ElementDirective, ElseBranch, Expression, LiteralValue, Root, RootDirective,
     TextValue,
@@ -143,25 +144,6 @@ pub(crate) fn is_concat(n: &ChildNode, o: TemplateOptions) -> bool {
     matches!(n, ChildNode::Text(_)) || (matches!(n, ChildNode::Comment(_)) && !o.preserve_comments)
 }
 
-pub(crate) fn js_str(s: &str) -> String {
-    let mut r = String::from("'");
-    for c in s.chars() {
-        match c {
-            '\'' => r.push_str("\\'"),
-            '\\' => r.push_str("\\\\"),
-            '\n' => r.push_str("\\n"),
-            '\r' => r.push_str("\\r"),
-            '\t' => r.push_str("\\t"),
-            '\u{2028}' => r.push_str("\\u2028"),
-            '\u{2029}' => r.push_str("\\u2029"),
-            c if (c as u32) < 0x20 || c == '\u{7f}' => r.push_str(&format!("\\u{:04x}", c as u32)),
-            c => r.push(c),
-        }
-    }
-    r.push('\'');
-    r
-}
-
 /// Identifiers resolve to `instance.<name>` unless the root identifier is a for:each/for:of local in `sc` (expression.ts getScopedExpression).
 /// Complex expressions (AB-D0004 S5) bind and print the parsed `.ast`; they are not re-parsed from `.source`.
 pub(crate) fn expr(e: &Expression, sc: &[String]) -> Result<String, CompileError> {
@@ -170,7 +152,7 @@ pub(crate) fn expr(e: &Expression, sc: &[String]) -> Result<String, CompileError
 fn expr_in(e: &Expression, top: bool, sc: &[String]) -> Result<String, CompileError> {
     Ok(match e {
         Expression::Literal(l) => match &l.value {
-            LiteralValue::String(s) => js_str(s),
+            LiteralValue::String(s) => string_literal((s).encode_utf16()),
             LiteralValue::Bool(b) => b.to_string(),
         },
         Expression::Identifier(i) => {
@@ -242,7 +224,7 @@ fn print_err(e: lwc_template::printer::PrintError) -> CompileError {
 
 fn text_value(v: &TextValue, sc: &[String]) -> Result<String, CompileError> {
     match v {
-        TextValue::Literal(s) => Ok(js_str(s)),
+        TextValue::Literal(s) => Ok(string_literal((s).encode_utf16())),
         TextValue::Expression(e) => expr(e, sc),
     }
 }
@@ -345,9 +327,9 @@ fn emit_child(
                 sc,
             )?,
             // comment.ts: literal `<!--${value}-->`, only JS-string escaping.
-            ChildNode::Comment(c) if o.preserve_comments => {
-                out.push(o.y(&js_str(&format!("<!--{}-->", c.value))))
-            }
+            ChildNode::Comment(c) if o.preserve_comments => out.push(o.y(&string_literal(
+                format!("<!--{}-->", c.value).encode_utf16(),
+            ))),
             // legacyIf.ts
             ChildNode::If(f) => {
                 // legacyIf.ts optimizes the block before the if is built, so a later
@@ -660,7 +642,9 @@ mod tests {
         let (body, imports) = compile_body(&root, TemplateOptions::default()).unwrap();
         assert_eq!(
             body,
-            vec!["__lwcYield += renderTextContent(normalizeTextContent('\\n    Static text\\n'));"]
+            vec![
+                "__lwcYield += renderTextContent(normalizeTextContent(\"\\n    Static text\\n\"));"
+            ]
         );
         assert_eq!(imports, vec!["normalizeTextContent", "renderTextContent"]);
         let code =
@@ -753,9 +737,9 @@ mod tests {
         // bStringLiteralYield is a block, so it splits the element. The open tag still
         // swallows the slot ternary; the close tag swallows the text.
         assert_eq!(body, vec![
-            "__lwcYield += '<div' + (slotAttributeValue ? ` slot=\"${slotAttributeValue}\"` : '');".to_string(),
-            "{ const attrName = 'class'; const attrValue = 'x'; const shouldRenderScopeToken = attrName === 'class' && (hasScopedStylesheets || hasScopedStaticStylesheets(Cmp)); const suffix = shouldRenderScopeToken ? ' ' + stylesheetScopeToken : ''; __lwcYield += ' ' + attrName; if (attrValue !== '' || shouldRenderScopeToken) { __lwcYield += '=\"' + attrValue + suffix + '\"'; } }".into(),
-            "__lwcYield += '>' + renderTextContent(normalizeTextContent('hi')) + '</div>';".into(),
+            "__lwcYield += \"<div\" + (slotAttributeValue ? ` slot=\"${slotAttributeValue}\"` : \"\");".to_string(),
+            "{ const attrName = \"class\"; const attrValue = \"x\"; const shouldRenderScopeToken = attrName === 'class' && (hasScopedStylesheets || hasScopedStaticStylesheets(Cmp)); const suffix = shouldRenderScopeToken ? ' ' + stylesheetScopeToken : ''; __lwcYield += ' ' + attrName; if (attrValue !== '' || shouldRenderScopeToken) { __lwcYield += '=\"' + attrValue + suffix + '\"'; } }".into(),
+            "__lwcYield += \">\" + renderTextContent(normalizeTextContent(\"hi\")) + \"</div>\";".into(),
         ]);
     }
     #[test]
@@ -791,13 +775,13 @@ mod tests {
         // The src literal is a bStringLiteralYield block, so it is not part of the tag yield.
         // The `>` after that block still merges with the following `<br>`.
         assert_eq!(body.len(), 3, "{body:?}");
-        assert!(body[0].starts_with("__lwcYield += '<img' + "), "{body:?}");
+        assert!(body[0].starts_with("__lwcYield += \"<img\" + "), "{body:?}");
         assert!(
-            body[1].contains("const attrName = 'src'")
-                && body[1].contains("const attrValue = 'a\"b'"),
+            body[1].contains("const attrName = \"src\"")
+                && body[1].contains("const attrValue = \"a\\\"b\""),
             "{body:?}"
         );
-        assert!(body[2].starts_with("__lwcYield += '><br' + "), "{body:?}");
+        assert!(body[2].starts_with("__lwcYield += \"><br\" + "), "{body:?}");
         assert!(!body.join("").contains("</"), "{body:?}");
     }
     fn id(n: &str) -> Expression<'static> {
@@ -833,7 +817,7 @@ mod tests {
             )
             .unwrap()
             .0,
-            vec!["__lwcYield += '<!-- it\\'s -->';"]
+            vec!["__lwcYield += \"<!-- it's -->\";"]
         );
         let root = Root {
             children: vec![cmt("x")],
@@ -842,7 +826,7 @@ mod tests {
         };
         assert_eq!(
             compile_body(&root, TemplateOptions::default()).unwrap().0,
-            vec!["__lwcYield += '<!--x-->';"]
+            vec!["__lwcYield += \"<!--x-->\";"]
         );
     }
     fn legacy_if(m: &str) -> ChildNode<'static> {
@@ -865,7 +849,7 @@ mod tests {
         assert_eq!(
             compile_body(&root, TemplateOptions::default()).unwrap().0,
             vec![
-                "__lwcYield += (instance.show ? renderTextContent(normalizeTextContent('hi')) : '');"
+                "__lwcYield += (instance.show ? renderTextContent(normalizeTextContent(\"hi\")) : \"\");"
             ]
         );
     }
@@ -879,7 +863,7 @@ mod tests {
         assert_eq!(
             compile_body(&root, TemplateOptions::default()).unwrap().0,
             vec![
-                "__lwcYield += (!instance.show ? renderTextContent(normalizeTextContent('hi')) : '');"
+                "__lwcYield += (!instance.show ? renderTextContent(normalizeTextContent(\"hi\")) : \"\");"
             ]
         );
     }
@@ -913,7 +897,7 @@ mod tests {
         // at construction, so the bookends and the text are one yield per branch.
         let r = |s: &str| {
             format!(
-                "__lwcYield += '<!---->' + renderTextContent(normalizeTextContent('{s}')) + '<!---->';"
+                "__lwcYield += \"<!---->\" + renderTextContent(normalizeTextContent(\"{s}\")) + \"<!---->\";"
             )
         };
         assert_eq!(
@@ -980,7 +964,7 @@ mod tests {
             "for (let [__unused__, item] of Object.entries(instance.items ?? {})) {"
         );
         assert!(body[2].contains("let attrValue = item.id;"), "{body:?}");
-        assert!(body.contains(&"__lwcYield += '></li>' + renderTextContent(normalizeTextContent(item.name) + normalizeTextContent(instance.other));".to_string()), "{body:?}");
+        assert!(body.contains(&"__lwcYield += \"></li>\" + renderTextContent(normalizeTextContent(item.name) + normalizeTextContent(instance.other));".to_string()), "{body:?}");
         assert_eq!(body.last().unwrap(), "}");
         assert!(!body.join("\n").contains("instance.item."), "{body:?}");
     }
@@ -1148,10 +1132,10 @@ mod tests {
         )
         .unwrap();
         assert_eq!(body.len(), 1, "{body:?}");
-        assert!(body[0].starts_with("yield '<div' + "), "{body:?}");
+        assert!(body[0].starts_with("yield \"<div\" + "), "{body:?}");
         // Right-spine literal concat joins the close of one element to the open of the next.
         assert!(body[0].contains("</div><span"), "{body:?}");
-        assert!(body[0].ends_with("</span>';"), "{body:?}");
+        assert!(body[0].ends_with("</span>\";"), "{body:?}");
     }
     #[test]
     fn async_yield_host_element_read_stays_inside_the_span_yield() {

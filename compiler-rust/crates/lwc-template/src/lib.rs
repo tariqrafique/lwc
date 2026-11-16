@@ -165,8 +165,8 @@ mod tests {
     #[test]
     fn js_escape() {
         assert_eq!(
-            codegen::js_string("a\"b\\\n\u{2028}"),
-            "\"a\\\"b\\\\\\n\\u2028\""
+            lwc_shared::js::string_literal("a\"b\\\n\u{2028}".encode_utf16()),
+            "\"a\\\"b\\\\\\n\u{2028}\""
         );
     }
 

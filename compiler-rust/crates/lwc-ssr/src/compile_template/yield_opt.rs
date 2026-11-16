@@ -8,12 +8,12 @@
 //! chain, and a string literal on the right spine is concatenated at compile time.
 //! `yield*` is not merged. When an `if` does not collapse, the attempt is discarded
 //! and the statements that were already optimized at construction are kept.
-use super::js_str;
 use lwc_shared::SsrMode;
+use lwc_shared::js::string_literal;
 
 #[derive(Clone, Debug)]
 enum Expr {
-    /// Decoded JS string literal. Printed with [`js_str`].
+    /// Decoded JS string literal. Printed with [`string_literal`].
     Str(String),
     /// Any other yield argument, already valid to splice into source.
     Atom(String),
@@ -199,7 +199,7 @@ fn print_stmt(stmt: &Stmt, mode: SsrMode, out: &mut Vec<String>) {
 
 fn print_expr(expr: &Expr) -> String {
     match expr {
-        Expr::Str(s) => js_str(s),
+        Expr::Str(s) => string_literal((s).encode_utf16()),
         Expr::Atom(s) => s.clone(),
         Expr::Add(left, right) => format!("{} + {}", print_expr(left), print_add_right(right)),
     }
@@ -387,6 +387,8 @@ fn parse_js_str_literal(s: &str) -> Option<String> {
                 b'\'' => out.push('\''),
                 b'"' => out.push('"'),
                 b'\\' => out.push('\\'),
+                b'b' => out.push('\u{8}'),
+                b'f' => out.push('\u{c}'),
                 b'n' => out.push('\n'),
                 b'r' => out.push('\r'),
                 b't' => out.push('\t'),
@@ -551,11 +553,11 @@ mod tests {
         // shared.ts: a string literal on the right spine of `+` is concatenated now.
         assert_eq!(
             y(&["yield '<div';", "yield '>';", "yield '</div>';"]),
-            vec!["yield '<div></div>';"]
+            vec!["yield \"<div></div>\";"]
         );
         assert_eq!(
             y(&["yield '</div>';", "yield '<div';", "yield ' class=\"x\"';"]),
-            vec!["yield '</div><div class=\"x\"';"]
+            vec!["yield \"</div><div class=\\\"x\\\"\";"]
         );
     }
 
@@ -563,14 +565,14 @@ mod tests {
     fn empty_literal_yield_is_dropped_and_star_breaks_the_chain() {
         assert_eq!(
             y(&["yield '<a';", "yield '';", "yield '</a>';"]),
-            vec!["yield '<a</a>';"]
+            vec!["yield \"<a</a>\";"]
         );
         assert_eq!(
             y(&["yield '<a';", "yield* child();", "yield '</a>';"]),
             vec![
-                "yield '<a';".to_string(),
+                "yield \"<a\";".to_string(),
                 "yield* child();".into(),
-                "yield '</a>';".into()
+                "yield \"</a>\";".into()
             ]
         );
     }
@@ -579,7 +581,7 @@ mod tests {
     fn single_yield_if_becomes_parenthesized_ternary_and_adjacent_ifs_merge() {
         assert_eq!(
             y(&["if (instance.show) {", "yield 'x';", "}"]),
-            vec!["yield (instance.show ? 'x' : '');"]
+            vec!["yield (instance.show ? \"x\" : \"\");"]
         );
         assert_eq!(
             y(&[
@@ -590,7 +592,7 @@ mod tests {
                 "yield 'B';",
                 "}",
             ]),
-            vec!["yield (instance.a ? 'A' : '') + (instance.b ? 'B' : '');"]
+            vec!["yield (instance.a ? \"A\" : \"\") + (instance.b ? \"B\" : \"\");"]
         );
     }
 
@@ -609,9 +611,9 @@ mod tests {
             "yield '</slot>';",
             "}",
         ]);
-        assert!(kept.iter().any(|l| l == "yield '<slot';"), "{kept:?}");
-        assert!(kept.iter().any(|l| l == "yield '>';"), "{kept:?}");
-        assert!(kept.iter().any(|l| l == "yield '</slot>';"), "{kept:?}");
+        assert!(kept.iter().any(|l| l == "yield \"<slot\";"), "{kept:?}");
+        assert!(kept.iter().any(|l| l == "yield \">\";"), "{kept:?}");
+        assert!(kept.iter().any(|l| l == "yield \"</slot>\";"), "{kept:?}");
         assert!(!kept.iter().any(|l| l.contains("<slot>")), "{kept:?}");
     }
 
@@ -622,9 +624,9 @@ mod tests {
             "{ const suffix = ''; yield ' class'; yield '=\"x\"'; }",
             "yield '>';",
         ]);
-        assert_eq!(out[0], "yield '<div';");
+        assert_eq!(out[0], "yield \"<div\";");
         assert!(out[1].starts_with("{ const suffix"), "{out:?}");
-        assert_eq!(out.last().map(String::as_str), Some("yield '>';"));
+        assert_eq!(out.last().map(String::as_str), Some("yield \">\";"));
         let out = y(&[
             "yield '<ul>';",
             "for (let [i, item] of Object.entries(instance.list ?? {})) {",
@@ -636,11 +638,11 @@ mod tests {
         assert_eq!(
             out,
             vec![
-                "yield '<ul>';".to_string(),
+                "yield \"<ul>\";".to_string(),
                 "for (let [i, item] of Object.entries(instance.list ?? {})) {".into(),
-                "yield '<li>';".into(),
+                "yield \"<li>\";".into(),
                 "}".into(),
-                "yield '</ul>';".into(),
+                "yield \"</ul>\";".into(),
             ]
         );
     }

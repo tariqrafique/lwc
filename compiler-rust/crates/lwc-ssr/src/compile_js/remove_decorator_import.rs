@@ -1,7 +1,7 @@
 //! compile-js/remove-decorator-import.ts: `api`, `wire` and `track` specifiers leave the
 //! `@lwc/ssr-runtime` import (decorators are compiled away).
 use lwc_shared::edits::Edit;
-use lwc_shared::js_literal::json_string;
+use lwc_shared::js::string_literal;
 use oxc::ast::ast::*;
 
 use crate::runtime_abi::RUNTIME_MODULE;
@@ -43,7 +43,7 @@ pub(super) fn remove_decorator_import(
     if !named.is_empty() {
         leading.push(format!("{{ {} }}", named.join(", ")));
     }
-    let source = json_string(RUNTIME_MODULE.encode_utf16());
+    let source = string_literal(RUNTIME_MODULE.encode_utf16());
     // No specifiers left: astring prints the declaration as a bare `import "src";`.
     let text = if leading.is_empty() {
         format!("import {source};")

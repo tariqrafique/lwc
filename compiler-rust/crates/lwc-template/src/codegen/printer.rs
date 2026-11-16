@@ -14,6 +14,7 @@
 
 use crate::codegen::chunk::{Buf, Chunk, group};
 use crate::codegen::expression::BindPlan;
+use lwc_shared::js::string_literal;
 use oxc_allocator::Allocator;
 use oxc_ast::ast::{
     Argument, ArrayAssignmentTarget, ArrayExpressionElement, ArrowFunctionBody, AssignmentTarget,
@@ -265,7 +266,7 @@ impl<'p, 'a> Printer<'p, 'a> {
                 if let Some(raw) = l.raw.as_ref() {
                     Ok(self.b.string_printed(raw.as_str()))
                 } else if let Some(v) = l.value.as_str() {
-                    Ok(self.b.string_printed(&crate::codegen::js_string(v)))
+                    Ok(self.b.string_printed(&string_literal((v).encode_utf16())))
                 } else {
                     Err(PrintError("string literal value is not UTF-8"))
                 }
