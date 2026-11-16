@@ -1,27 +1,26 @@
 # Handoff
 
-Updated 2026-11-16 07:32 PST. main 133a1fdb1494, official board 82860ed098bf (VALID), notes fff336d. Plan of record: notes/PLAN.md.
+Updated 2026-11-16 09:32 PST. main 3e5765a9c046, official board 65006817bd11 (VALID), notes f596765. Plan of record: notes/PLAN.md. New LLM? Start with CONTINUE.md.
 
-# LWC → Rust migration: handoff (refreshed 2026-11-10 23:58 PST)
+# LWC → Rust migration: handoff index
 
-Work is on main or on committed `agent/*` branches. Both bundles below are current as of this refresh.
-
-## What's here
-- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, with main @ 9183a4c08c5552032dc72aef8b3490b7596a9cf4. Restore it with `git clone -b main lwc-compiler-rust.bundle lwc-compiler-rust`.
-- `notes.bundle`: notes repo main @ ffd254a87f348dd2e38d396958d65fd6c33493ac (PLAN.md rewritten from official board 66479d02aafa). Restore with `git clone -b main notes.bundle notes`.
-- `notes/`: plain copies of selected notes for reading on GitHub. `notes/lwc-rust-migrate/PLAN.md`, `notes/lwc-rust-migrate/decisions.tsv`, and `notes/state/*.md` are current as of this refresh. Other files under `notes/` may be older; prefer the notes bundle for history.
-- `semdiff-uncommitted.patch`: older Semdiff WIP from 2026-11-02 (not refreshed). Check whether it is already superseded before applying.
+## What's here (all under handoff/)
+- `CONTINUE.md`: self-contained guide for continuing without the box (goal, status, queue, rules, commands, risks).
+- `lwc-compiler-rust.bundle`: full git history of the Rust workspace, main @ 3e5765a9c046c743fdd01b2c71270a99cbf7f740 (the commit of official board 65006817bd11). Restore: `git clone -b main lwc-compiler-rust.bundle lwc-compiler-rust`.
+- `notes.bundle`: notes repo @ f596765a0e28bc3d7f0c54c64a3ba68109590e11 (PLAN.md from board 65006817bd11; decisions through D-0295). Restore: `git clone notes.bundle notes && git -C notes switch -c main`.
+- `notes/`: plain copies for reading on GitHub, current as of this refresh: `notes/lwc-rust-migrate/` (PLAN.md, decisions.tsv, CUTOVER.md and the other plan docs), `notes/state/*.md`, `notes/arch-board/`, `notes/OWNERS.tsv`. Flat files directly under `notes/` are legacy copies of the same PLAN, decisions and state files, refreshed too.
+- `consumers.bundle`: branch `agent/consumers` (D-0295), the consumer port on upstream b9e8007 (thin bundle; needs b9e8007, branch `upstream-b9e8007`). Restore inside an lwc clone: `git fetch consumers.bundle agent/consumers:agent/consumers`.
+- `official-board/65006817bd11/`: OFFICIAL_BOARD.txt + board.txt of the newest official board.
+- `semdiff-uncommitted.patch`: old Semdiff WIP from 2026-11-02, not refreshed. Probably superseded; check before applying.
 
 ## Ground truth
 - Oracle: salesforce/lwc 9.5.3 @ b9e8007 (clean).
-- Newest official board: **66479d02aafa** VALID, commit `b2bb4be10388c530a5b77069de8116c024be0b04`, notes at board time `06afd5e9c148`, published 2026-11-10 23:53 PST. See `compiler-rust/board.txt` once that board is copied onto the rust-compiler branch, or the official store. New rows vs 37036c11d866: `lbc` 523/523 (discovered=522 included=522 excluded=0) and `coverage-gate` report-only (192 cells, 26 covered, 11 diagnostic-only, 77 gap, 76 na, 2 dec, 0 invalid).
-- Main @ 9183a4c is **UNMEASURED**: it is two commits past the official board (`1887e9f6c` ban global vitest error mutes, then `9183a4c08` decisions snapshot to notes@ffd254a). The bundle tip is 9183a4c; `b2bb4be` is an ancestor of that tip and is in the bundle.
-- Plan of record: notes/lwc-rust-migrate/PLAN.md (notes @ ffd254a). Item 10 (LBC whole-component row) is DONE. Next port item is 10b (`agent/coverage-green`): coverage gate green and gating. Decisions: notes/lwc-rust-migrate/decisions.tsv.
+- Newest official board: **65006817bd11** VALID, commit 3e5765a9c046, notes_commit ed6a5ab, published 2026-11-16 09:17:56 PST. Item 18 F5 landed: pretty-equal 1555/1560, allowlist 5 (was 1418, allowlist 142).
+- `compiler-rust/` on this branch is box main at the board commit plus the board files.
+- Next item: 18b (pretty-equal residuals to 1560/1560, empty allowlist), then 19, 20, then the item 15 remainder. See notes/lwc-rust-migrate/PLAN.md §3.
+
+- Off-box land gate (D-0294): fresh-clone portable board exit 0 + preflight exit 0 with land-path lints; procedure in CONTINUE.md (e).
 
 ## How to resume
-1. Restore both bundles under /workspace (lwc-compiler-rust, notes). Check out the oracle at b9e8007.
-2. Read PLAN.md §2 (current official board), §3 (ownership and queue), and §5 (rules), then `state/harness.md`.
-3. Cloud agents port on `agent/<item>`. LWC Worker lands with `scripts/land-agent-branch.sh` and publishes the official board. No PRs, no GitHub Actions, no force-push.
-
-## 2026-11-10 23:58 PST refresh
-Bundled main 9183a4c and notes ffd254a. Official board 66479d02aafa remains the newest VALID board (commit b2bb4be).
+Read CONTINUE.md. Then PLAN.md §2–§5, then notes/state/harness.md.
+Rules in brief: no PRs, no GitHub Actions, no force-push, never touch master, commit as tariqrafique <tariqrafique@users.noreply.github.com>.

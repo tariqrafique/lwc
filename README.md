@@ -1,3 +1,5 @@
+Continuing this migration? Start with handoff/CONTINUE.md.
+
 <p>
   <a href="https://lwc.dev">
     <img src="https://lwc.dev/assets/images/git-hero.png">
