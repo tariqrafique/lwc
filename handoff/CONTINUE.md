@@ -1,8 +1,8 @@
 # CONTINUE: LWC compiler → Rust migration (start here)
 
-Written 2026-11-16 09:30 PST, updated 09:40 PST (D-0294, D-0295) for an LLM or engineer who has **only a clone of
+Written 2026-11-16 09:30 PST, updated 09:40 PST (D-0294, D-0295) and 11:15 PST (board d0c1ca60cb18) for an LLM or engineer who has **only a clone of
 `github.com/tariqrafique/lwc`, branch `rust-compiler`**, and no access to the box, its bots or
-Cursor cloud agents. Every number below comes from official board **65006817bd11**. Every rule
+Cursor cloud agents. Every number below comes from official board **d0c1ca60cb18**. Every rule
 comes from `handoff/notes/lwc-rust-migrate/PLAN.md`, `decisions.tsv` (rows are cited as D-NNNN),
 `CUTOVER.md` or the scripts in `compiler-rust/scripts/`. If this file disagrees with those files,
 they win.
@@ -20,15 +20,13 @@ they win.
   and CUTOVER.md "Verify" green. A parity gate counts as CLOSED only with clean oracle + option-gate all mapped +
   unknown-option rejection on the same board (PLAN §1).
 
-## (b) Current status: official board 65006817bd11 (VALID)
-Files: `handoff/official-board/65006817bd11/{OFFICIAL_BOARD.txt,board.txt}`.
-`commit=3e5765a9c046` (box `lwc-compiler-rust@main`, = `handoff/lwc-compiler-rust.bundle` main), `notes_commit=ed6a5ab`,
-`parse5_rust_commit=370629a079da`, oracle b9e8007 clean, published 2026-11-16T09:17:56-08:00.
-- **pretty-equal 1555/1560 identical, allowlist 5** (was 1418/1560, allowlist 142 on 738958401bb4).
-  Classes: blank-line 6, other 4, comment-added 2, comment-placement 2, comment-dropped 1. object-shorthand and duplicate-key are 0.
-  The 5 cases (`compiler-rust/harness/pretty-equal-allowlist.txt`): LightningFlowComponents `fsc_flowButtonBar`,
-  `fsc_flowButtonBarCPE` (blank-line), `ibanComponent` (blank-line, comment-dropped), `datatable`
-  (comment-added, comment-placement, other); lwc-utils `fuseBasic` (other).
+## (b) Current status: official board d0c1ca60cb18 (VALID)
+Files: `handoff/official-board/d0c1ca60cb18/{OFFICIAL_BOARD.txt,board.txt}` (previous: `handoff/official-board/65006817bd11/`).
+`commit=bf0f176608d6` (box `lwc-compiler-rust@main`, = `handoff/lwc-compiler-rust.bundle` main), `notes_commit=f596765`,
+`parse5_rust_commit=370629a079da`, oracle b9e8007 clean, published 2026-11-16T11:03:25-08:00.
+- **pretty-equal 1560/1560 identical, allowlist 0**, no class lines (item 18b, agent/pretty-residuals e997997 → main bf0f176;
+  was 1555/1560 with allowlist 5 on 65006817bd11). Every corpus is N/N (both-fail 3: cases that fail to compile on both backends).
+  **The D-0292 precondition for deleting the JS compiler packages is met.**
 - semantic-diff eq=16809 diff 0 unc 0 crash 0; semantic-diff-ssr printer-equal 852, static-observed-differs 240,
   exec-static-comments-differ 0, exec-differs 0, gate=ok.
 - template-diag and template-diag-napi: 63224 cases, 0 mismatches, SOUND. lbc 523/523. upstream-cmp 1433 passed / 3 skipped (1436).
@@ -38,16 +36,13 @@ Files: `handoff/official-board/65006817bd11/{OFFICIAL_BOARD.txt,board.txt}`.
   Known limitation D-0242 (ssr-render-async scope-token renders `[object Promise]` on both backends).
 
 ## (c) Ordered work queue (PLAN §3; do one item at a time, top first)
-1. **18b, pretty-equal residuals.** Fix the 5 allowlisted cases above at the root (printer/comment handling in
-   `crates/lwc-js` and `vendor/oxc_codegen`, as item 18 did), and delete each allowlist line as it goes to 0.
-   *Done when:* pretty-equal 1560/1560 with an empty allowlist on a VALID board. When handed off, a Cursor cloud agent was working on
-   `agent/pretty-residuals` (dispatched 09:21 PST 2026-11-16). Check `git ls-remote origin 'agent/*'` first; if that branch
-   exists, continue it rather than starting over.
-2. **19, F8:** semdiff compares comments and literal spelling from the source, not via the oxc reprint.
-   *Done when:* no printer-equal verdict hides a hunk.
-3. **20, F9:** option-sweep census (inline maps, LWS on, old apiVersion) plus the new external corpus.
+0. **18b DONE** (pretty-equal 1560/1560, allowlist 0, board d0c1ca60cb18).
+1. **19, F8 (in flight):** semdiff compares comments and literal spelling from the source, not via the oxc reprint.
+   *Done when:* no printer-equal verdict hides a hunk. At handoff a Cursor cloud agent was working on it on `agent/semdiff-source`
+   (dispatched 11:11 PST 2026-11-16). Check `git ls-remote origin 'agent/*'` first; if that branch exists, continue it rather than starting over.
+2. **20, F9:** option-sweep census (inline maps, LWS on, old apiVersion) plus the new external corpus.
    *Done when:* each variant is at N/N or allowlisted under a D-id, and pretty-equal is at N/N with an empty allowlist.
-4. **Item 15 remainder (ship):**
+3. **Item 15 remainder (ship):**
    - Real macOS and Windows napi load tests. *Done when:* `docs/napi-cross-build.md` §4 steps 1–3 pass on darwin-arm64, darwin-x64,
      win32-x64 and win32-arm64 with Node 20 and 22. linux-arm64-gnu has never been loaded either (§4 last paragraph).
      Cross builds come from `scripts/build-napi-cross.sh` (zig 0.13, cargo-zigbuild, cargo-xwin; D-0290 six triples, D-0291).
@@ -64,10 +59,10 @@ Files: `handoff/official-board/65006817bd11/{OFFICIAL_BOARD.txt,board.txt}`.
      dependency; CUTOVER D2/D3/D6–D8 (ESM-only output, engine-server fixtures, the other consumers, the `lwc` barrel, docs); and the rollup-plugin spec suite.
      *Done when:* the consumers compile and test against the Rust `transform`/`transformSync` API with no JS compiler package imported.
      Never merge it into `master`; no PR (D-0295).
-   - Delete the JS compiler packages (CUTOVER.md §E) in ONE revertable commit. *Allowed only when* pretty-equal is N/N (D-0292).
+   - Delete the JS compiler packages (CUTOVER.md §E) in ONE revertable commit. *Allowed only when* pretty-equal is N/N (D-0292). **That precondition is met** on board d0c1ca60cb18, so this is unblocked. CUTOVER §E lists which packages stay.
    - CUTOVER.md "Verify" and "Rollback". *Done when:* the four Verify commands pass (cargo check/test, harness with
      `LWC_COMPILER_BACKEND=rust`, the grep finds no JS compiler imports, consumers `yarn build && yarn test`).
-5. **Residuals:**
+4. **Residuals:**
    - **semdiff `--exec` on the board (D-0256(b), D-0285).** The exec leg stays off the official board until Semdiff signs off. D-0285
      says it gets revisited after item 7b, which is DONE. *Done when:* a D-id rules it on or off, and if on, the row is gating.
    - **pre-commit `--no-verify`.** The `scripts/git-hooks/pre-commit` hook refuses commits on `main` (bypass `LWC_BOOTSTRAP`).
@@ -100,8 +95,8 @@ Files: `handoff/official-board/65006817bd11/{OFFICIAL_BOARD.txt,board.txt}`.
 ## (e) Working without the box fleet (official procedure, D-0294)
 **Two layouts.** On `rust-compiler`, `compiler-rust/` holds the Rust workspace tree plus 8 board artifacts at its top
 (`OFFICIAL_BOARD.txt`, `board.txt`, `csr-ssr.tsv`, `csr-template.tsv`, `template-diag{,-napi}{.json,.soundness.json}`).
-`handoff/lwc-compiler-rust.bundle` holds the same workspace with its full git history in **root layout** (main @ 3e5765a9c046).
-On 2026-11-16 the box confirmed `git diff --stat <bundle main> rust-compiler:compiler-rust` shows exactly those 8 board files and nothing else.
+`handoff/lwc-compiler-rust.bundle` holds the same workspace with its full git history in **root layout** (main @ bf0f176608d6).
+On 2026-11-16 (at main 3e5765a) the box confirmed `git diff --stat <bundle main> rust-compiler:compiler-rust` shows exactly those 8 board files and nothing else.
 **Run the gates in the root-layout repo, not in `compiler-rust/`.** The gate scripts read blobs as `git show <base>:scripts/...`
 (root-relative). Run from the `compiler-rust/` subdirectory of an lwc clone, `preflight.sh` fails `land-main-refs` and
 `baseline-ceiling` ("path 'compiler-rust/scripts/land-main-refs.tsv' exists, but not 'scripts/land-main-refs.tsv'"). `shim-gate` also fails there,
@@ -135,7 +130,7 @@ scripts/fetch-style-corpus.sh
 PORTABLE_BOARD_TXT=/tmp/portable-board.txt scripts/run-portable-board.sh   # also fetches the pinned sample corpora + Prettier 3.9.9
 ```
 Exit codes: 0 = every gating row passed, 4 = the snapshot mutated (invalid), 2 = an input fetch or setup failed. No row may be lower than
-`handoff/official-board/65006817bd11/board.txt` or the newest portable board under `handoff/portable-board/`.
+`handoff/official-board/d0c1ca60cb18/board.txt` or the newest portable board under `handoff/portable-board/`.
 The ratchets are `harness/ratchets` and `harness/board-baseline.tsv`.
 
 **Preflight + land-path lints (in W).**
@@ -190,13 +185,13 @@ On branch `rust-compiler`:
   `PROGRAM.md`, `ship-packaging-plan.md` and `ship-survey.md` are background.
 - `handoff/notes/state/*.md` is each bot's working log. `harness.md` (the Worker) has every land with shas and durations.
 - `handoff/notes/arch-board/` holds the architecture, `COVERAGE.tsv` and `reviews.tsv`. `handoff/notes/OWNERS.tsv` holds ownership.
-- `handoff/official-board/65006817bd11/` has the newest official board. `compiler-rust/{board.txt,OFFICIAL_BOARD.txt,...}` are that board's artifacts.
-- Bundles: `handoff/lwc-compiler-rust.bundle` is the root-layout workspace history (main 3e5765a9c046), `handoff/notes.bundle` is the notes repo,
+- `handoff/official-board/d0c1ca60cb18/` has the newest official board (`65006817bd11/` is the one before). `compiler-rust/{board.txt,OFFICIAL_BOARD.txt,...}` are that board's artifacts.
+- Bundles: `handoff/lwc-compiler-rust.bundle` is the root-layout workspace history (main bf0f176608d6), `handoff/notes.bundle` is the notes repo,
   and `handoff/consumers.bundle` is `agent/consumers` (a thin bundle; it needs `b9e8007`, which is branch `upstream-b9e8007` on GitHub).
 - Flat files directly under `handoff/notes/` (e.g. `notes/PLAN.md`, `notes/harness.md`) are legacy copies of the same files.
 
 Other branches on tariqrafique/lwc: `agent/consumers` is the consumer port (D-0295, based on `b9e8007`), and `upstream-b9e8007` is the oracle commit.
-Check `git ls-remote origin 'agent/*'` for in-flight items such as `agent/pretty-residuals`.
+Check `git ls-remote origin 'agent/*'` for in-flight items such as `agent/semdiff-source`.
 
 ## (g) Open risks
 - **The consumer port imports napi through a box-relative path** (see the item 15 bullet), so it won't resolve in a plain clone until that's fixed.
@@ -204,5 +199,5 @@ Check `git ls-remote origin 'agent/*'` for in-flight items such as `agent/pretty
   `handoff/lwc-compiler-rust.bundle` in step with `rust-compiler` on every land, or the two diverge.
 - **The gate scripts assume `/workspace/notes`.** Without it, the decisions snapshot is used, but preflight's case-set checks need the notes git repo.
 - **The macOS, Windows and linux-arm64 napi binaries have never been loaded** on real hardware. The darwin size gap (zig linker) is still open (`docs/napi-cross-build.md` §5).
-- `CUTOVER.md` status and the PLAN §4 checkboxes are stale against this board. Re-derive them before claiming cutover.
+- `CUTOVER.md` status is stale against this board (PLAN §4 coverage and template-diag boxes were ticked from d0c1ca60cb18; the others were not re-derived). Re-derive them before claiming cutover.
 - The pretty-equal and corpus rows need network access to fetch the pinned sample corpora (`scripts/fetch-sample-corpus.sh`, lock `harness/external-inputs.lock`).

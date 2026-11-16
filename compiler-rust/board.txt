@@ -1,5 +1,5 @@
-official board  commit=3e5765a9c046  src=65006817bd11  napi=e275c9464280  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-16T09:17:38-08:00
-napi sha256:e275c9464280  pinned=/tmp/lwc-board-snap.NLaHFR/repo/harness/.pins/lwc-compiler-napi.e275c9464280.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-16T09:12:12-08:00
+official board  commit=bf0f176608d6  src=d0c1ca60cb18  napi=54c1da236c3a  parse5-rust=2ff244545879 (build dep, NOT in tgz)  2026-11-16T11:03:16-08:00
+napi sha256:54c1da236c3a  pinned=/tmp/lwc-board-snap.FVK6k9/repo/harness/.pins/lwc-compiler-napi.54c1da236c3a.node  oracle=b9e8007f9810edb59596536b596f80ca6c0d3fab(clean)  oracle_repo=/workspace/lwc  2026-11-16T10:58:07-08:00
 style                  Tests  70 passed (70)
 js                     Tests  174 passed (174)
 js-eval                Tests  2 passed (2)
@@ -41,30 +41,25 @@ upstream-cmp exclude integration-types/src/playground/modules/x/ref compile-erro
 js-transform-corpus    Tests  1958 passed (1958)
 unported-specs         Tests  24 passed (24)
 pretty-equal           Tests  1 passed (1)
-pretty-equal: 1555/1560 identical, allowlist 5
-pretty-equal class blank-line 6
-pretty-equal class other 4
-pretty-equal class comment-added 2
-pretty-equal class comment-placement 2
-pretty-equal class comment-dropped 1
+pretty-equal: 1560/1560 identical, allowlist 0
 pretty-equal corpus b2b-commerce-open-source-components 389/389
 pretty-equal corpus dreamhouse-lwc 11/11
 pretty-equal corpus ebikes-lwc 16/16
 pretty-equal corpus lbc 395/395 both-fail 1
 pretty-equal corpus lbc-recipes 126/126
-pretty-equal corpus LightningFlowComponents 245/249 both-fail 1
+pretty-equal corpus LightningFlowComponents 249/249 both-fail 1
 pretty-equal corpus lwc-recipes 112/112 both-fail 1
-pretty-equal corpus lwc-utils 34/35
+pretty-equal corpus lwc-utils 35/35
 pretty-equal corpus NPSP 122/122
 pretty-equal corpus revenue-cloud-foundations 50/50
 pretty-equal corpus visualforce-to-lwc 55/55
 pretty-equal both-fail 3
 js-options skip-union: 1708 cases, 0 skipped in every row (js-options js-api)
-shim-check: template-gap=0  parity=0  (cutover blockers until 0)  untagged=0 (GATING)
+shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
 shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
 ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
-option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.NLaHFR/notes/decisions.tsv]
-coverage-gate: notes ed6a5ab792b3 matrix 0e37f14933c6 strict: 24 sources x 8 stages = 192 cells, 98 covered (declared gating), 0 diagnostic-only, 0 gap, 76 na, 18 dec, 0 invalid
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.FVK6k9/notes/decisions.tsv]
+coverage-gate: notes f596765a0e28 matrix 0e37f14933c6 strict: 24 sources x 8 stages = 192 cells, 98 covered (declared gating), 0 diagnostic-only, 0 gap, 76 na, 18 dec, 0 invalid
 golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
 style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)
 csr-clusters[ssr]: pass 392 fail 0
