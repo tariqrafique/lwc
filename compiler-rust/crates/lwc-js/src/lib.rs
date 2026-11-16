@@ -133,7 +133,8 @@ pub fn resolve_like_node(cwd: &std::path::Path, f: &str) -> String {
 
 /// oxc prints a comment that leads a statement and drops a trailing `// eslint-disable-line`.
 /// Move those directives, plus istanbul and sourceMappingURL, to the start of their line before
-/// the print parse so they are leading comments.
+/// the print parse so they are leading comments. A sourceMappingURL comment that Babel would strip
+/// is then removed by [`drop_input_sourcemap_comments`]; one Babel keeps is printed.
 fn hoist_trailing_directives(src: &str) -> Vec<edits::Edit> {
     let mut out = Vec::new();
     let mut line_start = 0u32;
@@ -155,6 +156,120 @@ fn hoist_trailing_directives(src: &str) -> Vec<edits::Edit> {
             }
         }
         line_start += line.len() as u32;
+    }
+    out
+}
+
+/// Babel's normalize-file (`@babel/core` 7, `inputSourceMap` default) removes input source-map
+/// comments from the AST before any plugin runs, so they never reach the output:
+/// 1. every comment matching INLINE_SOURCEMAP_REGEX is removed; the last one is decoded with
+///    convert-source-map `fromComment` (base64 after the last `,`, then `JSON.parse`);
+/// 2. only when that did not yield a map, every comment matching EXTERNAL_SOURCEMAP_REGEX is removed.
+fn drop_input_sourcemap_comments(program: &mut oxc::ast::ast::Program<'_>, text: &str) {
+    let value = |c: &oxc::ast::Comment| {
+        let s = c.content_span();
+        &text[s.start as usize..s.end as usize]
+    };
+    let mut last_inline: Option<String> = None;
+    program.comments.retain(|c| {
+        if is_inline_sourcemap(value(c)) {
+            last_inline = Some(value(c).to_string());
+            false
+        } else {
+            true
+        }
+    });
+    let inline_map = last_inline.is_some_and(|v| {
+        let payload = v.rsplit(',').next().unwrap_or_default();
+        serde_json::from_slice::<serde_json::Value>(&node_base64_decode(payload)).is_ok()
+    });
+    if !inline_map {
+        program
+            .comments
+            .retain(|c| !is_external_sourcemap(value(c)));
+    }
+}
+
+/// `/^[@#]\s+sourceMappingURL=data:(?:application|text)\/json;(?:charset[:=]\S+?;)?base64,.*$/`
+fn is_inline_sourcemap(v: &str) -> bool {
+    let Some(rest) = v.strip_prefix(['@', '#']) else {
+        return false;
+    };
+    let body = rest.trim_start_matches(lwc_shared::js::js_ws);
+    if body.len() == rest.len() {
+        return false;
+    }
+    let Some(body) = body.strip_prefix("sourceMappingURL=data:") else {
+        return false;
+    };
+    let Some(body) = body
+        .strip_prefix("application/json;")
+        .or_else(|| body.strip_prefix("text/json;"))
+    else {
+        return false;
+    };
+    let tail = if let Some(t) = body.strip_prefix("base64,") {
+        t
+    } else if let Some(cs) = body
+        .strip_prefix("charset")
+        .and_then(|c| c.strip_prefix([':', '=']))
+    {
+        // `\S+?;` then `base64,`: the first `;base64,` reached through non-space characters.
+        let Some(at) = cs.find(";base64,") else {
+            return false;
+        };
+        if at == 0 || cs[..at].chars().any(lwc_shared::js::js_ws) {
+            return false;
+        }
+        &cs[at + ";base64,".len()..]
+    } else {
+        return false;
+    };
+    // `.*$` (no `s`/`m` flag): no line terminator up to the end.
+    !tail.contains(['\n', '\r', '\u{2028}', '\u{2029}'])
+}
+
+/// `/^[@#][ \t]+sourceMappingURL=([^\s'"`]+)[ \t]*$/`
+fn is_external_sourcemap(v: &str) -> bool {
+    let Some(rest) = v.strip_prefix(['@', '#']) else {
+        return false;
+    };
+    let body = rest.trim_start_matches([' ', '\t']);
+    if body.len() == rest.len() {
+        return false;
+    }
+    let Some(url) = body.strip_prefix("sourceMappingURL=") else {
+        return false;
+    };
+    let url = url.trim_end_matches([' ', '\t']);
+    !url.is_empty()
+        && !url
+            .chars()
+            .any(|c| lwc_shared::js::js_ws(c) || matches!(c, '\'' | '"' | '`'))
+}
+
+/// Node `Buffer.from(s, "base64")`: standard and URL-safe alphabets, other characters skipped,
+/// decoding stops at the first `=`.
+fn node_base64_decode(s: &str) -> Vec<u8> {
+    let mut out = Vec::new();
+    let (mut acc, mut bits) = (0u32, 0u32);
+    for b in s.bytes() {
+        let v = match b {
+            b'A'..=b'Z' => b - b'A',
+            b'a'..=b'z' => b - b'a' + 26,
+            b'0'..=b'9' => b - b'0' + 52,
+            b'+' | b'-' => 62,
+            b'/' | b'_' => 63,
+            b'=' => break,
+            _ => continue,
+        };
+        acc = (acc << 6) | u32::from(v);
+        bits += 6;
+        if bits >= 8 {
+            bits -= 8;
+            out.push((acc >> bits) as u8);
+            acc &= (1 << bits) - 1;
+        }
     }
     out
 }
@@ -220,9 +335,14 @@ fn transform_inner(
     // Class-properties slices field initializers. Those slices must already show LWC and
     // private-field edits, because the field itself is deleted and a global apply would drop
     // edits contained in that deletion (nested `registerDecorators`, `#field` rewrites).
+    // An anonymous `const B = class` that private fields named `class B` and that refers to `B`
+    // in its body: rename the outer binding (Babel helper-function-name), with the private-field
+    // edits so initializer slices and the rendered-into filter below treat them alike.
+    let self_ref = transforms::class_self_ref::run(&program0, &pf);
+    pf.extend(self_ref.edits.iter().cloned());
     let mut prior = all.clone();
     prior.extend(pf.iter().cloned());
-    let (cp, rendered) = transforms::class_properties::run_after(&program0, src, &prior);
+    let (cp, rendered) = transforms::class_properties::run_after(&program0, src, &prior, &self_ref);
     // Initializers moved into a constructor already contain the private-field edits inside them.
     pf.retain(|e| {
         !rendered
@@ -267,6 +387,7 @@ fn transform_inner(
             filename,
         )
     })?;
+    drop_input_sourcemap_comments(&mut program, &edited);
     if do_rest {
         transforms::lower::apply_object_rest_spread(&alloc, &edited, filename, &mut program)?;
     }

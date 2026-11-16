@@ -38,3 +38,13 @@ Updated: 2026-11-09 by LWC Arch Board. Mode: **milestone-only (D-0276)**. Idle u
 ## Notes
 - Board files: arch-board/{reviews.tsv, ARCHITECTURE.md, COVERAGE.tsv, proposals/}. Commit with `bin/notes-commit arch-board`.
 - Routines: none.
+
+## AB-0008/AB-0009 closure review (2026-11-11; main 5087f1b+60d8098, board ca2ab905b502 VALID)
+- AB-0009: CLOSED. Dispatch mirrors transformer.ts:96-122, including .mts, with Path::extension (matches extname on 18 inputs). LWC1005 comes from the generated table, and the x.mts and x.txt tests exist.
+- AB-0008: OPEN. These gaps block closure:
+  G1. napi still validates. Move the null-options LWC1023 (lib.rs:267-271), the apiVersion type check (de_api_version :243-257) and the ssrMode enum reject into options.rs. The ssrMode reject has no upstream equivalent, so either drop it or log it as a decision. napi should deserialize and call validate once; today it validates twice, at lib.rs:49.
+  G2. There is still more than one key source. csrRender.ts:30-37 TRANSFORM_OPTION_KEYS must read rust-option-keys.json. `instrumentation` is in upstream options.ts but not in OPTION_KEYS, so add it or log the divergence.
+  G3. The nested key test only checks wire ⊆ schema. It must be equality.
+  G4. Delete the dead code: the discarded `let _text = …message()` (options.rs:250,:262; under D-0212, don't compute it) and the unused `_filename` (napi lib.rs:265).
+- Carry-forward (non-blocking): the template-diag driver clamp (main.rs:25) should call lwc-shared get_api_version_from_f64. The mts oracle test accepts an extra trailing newline; normalize it explicitly and name it under D-0196. The enable_synthetic_element_internals and enable_private_methods unwrap_or(false) defaults differ from upstream's undefined; confirm there is no observable runtime difference.
+

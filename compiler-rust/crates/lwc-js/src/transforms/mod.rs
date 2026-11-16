@@ -13,6 +13,7 @@ use lwc_shared::{CompileError, CompileOptions};
 use oxc::ast::ast::Program;
 
 pub mod class_properties;
+pub mod class_self_ref;
 pub mod component;
 pub mod decorators;
 pub mod dynamic_imports;

@@ -24,6 +24,9 @@ struct Lower<'s> {
     prior: &'s [Edit],
     edits: Vec<Edit>,
     uids: Uids,
+    /// classes whose outer binding class_self_ref renamed: their inferred name is not a class
+    /// binding in the source, so `B` in a static initializer stays the (renamed) variable
+    self_ref: &'s HashSet<u32>,
     scopes: Scopes,
     /// class span start -> (statement start, statement end) for class declarations
     stmt: HashMap<u32, (u32, u32)>,
@@ -204,8 +207,12 @@ impl<'s> Lower<'s> {
         let mut alias_needed = false;
         // Private fields may have named an anonymous `const C = class` in `prior` (` C` at `class`.len()).
         let named = inserted_name(self.prior, class.span.start);
+        let renamed = self.self_ref.contains(&class.span.start);
         let own_owned = class.id.as_ref().map(|i| i.name.to_string()).or(named);
-        let own = own_owned.as_deref();
+        // `own` names the class inside its static initializers; `uid_base` seeds the alias uid.
+        // A renamed self-referencing class has no own name in the source (Babel: `_Class`).
+        let own = if renamed { None } else { own_owned.as_deref() };
+        let uid_base = if renamed { None } else { own };
         let mut alias: Option<String> = None;
         let mut pending_static: Vec<(String, usize, bool)> = Vec::new(); // suffix, element index, private
         for (el_idx, el) in class.body.body.iter().enumerate() {
@@ -289,13 +296,13 @@ impl<'s> Lower<'s> {
         // Babel's class-features uid is reserved for a class that has instance fields even when
         // the alias is not emitted. A later class expression in the same program then gets `_Class2`.
         if pending_static.is_empty() && !inits.is_empty() && decl.is_none() {
-            let _reserved = self.uids.generate(own.unwrap_or("Class"));
+            let _reserved = self.uids.generate(uid_base.unwrap_or("Class"));
         }
         // reference used by the trailing statics, and the alias used inside static initializers
         let reference = match decl {
             Some(_) => own.unwrap_or_default().to_string(),
             None if !pending_static.is_empty() => {
-                let a = self.uids.generate(own.unwrap_or("Class"));
+                let a = self.uids.generate(uid_base.unwrap_or("Class"));
                 self.hoist_var(a.clone());
                 alias = Some(a.clone());
                 a
@@ -303,7 +310,7 @@ impl<'s> Lower<'s> {
             None => String::new(),
         };
         if decl.is_some() && alias_needed {
-            let a = self.uids.generate(own.unwrap_or("Class"));
+            let a = self.uids.generate(uid_base.unwrap_or("Class"));
             self.hoist_var(a.clone());
             alias = Some(a);
         }
@@ -526,15 +533,31 @@ impl<'s> Lower<'s> {
 /// One walk of `program`. `prior` is earlier span edits (private fields) in the same coordinates;
 /// nested classes are lowered in this walk, not by re-parsing.
 pub fn run(program: &Program<'_>, src: &str) -> Vec<Edit> {
-    run_after(program, src, &[]).0
+    run_after(
+        program,
+        src,
+        &[],
+        &super::class_self_ref::SelfRef::default(),
+    )
+    .0
 }
 
-pub fn run_after(program: &Program<'_>, src: &str, prior: &[Edit]) -> (Vec<Edit>, Vec<(u32, u32)>) {
+pub fn run_after(
+    program: &Program<'_>,
+    src: &str,
+    prior: &[Edit],
+    self_ref: &super::class_self_ref::SelfRef,
+) -> (Vec<Edit>, Vec<(u32, u32)>) {
+    let mut uids = Uids::new(program);
+    for n in &self_ref.names {
+        uids.reserve(n);
+    }
     let mut l = Lower {
+        self_ref: &self_ref.classes,
         src,
         prior,
         edits: Vec::new(),
-        uids: Uids::new(program),
+        uids,
         scopes: Scopes::default(),
         stmt: HashMap::new(),
         any: false,
