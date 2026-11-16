@@ -332,7 +332,10 @@ impl<'s> Lower<'s> {
                 // A field with no such comment deletes its line and the blank
                 // lines that belonged only to it.
                 let text = if kept_leading { "\n" } else { "" };
-                self.edits.push(Edit::replace(s, e, text.to_string()));
+                let (s, e) = disjoint_removal(&self.edits, s, e);
+                if s < e {
+                    self.edits.push(Edit::replace(s, e, text.to_string()));
+                }
             }
             if p.r#static {
                 if let Some(v) = &p.value {
@@ -600,6 +603,20 @@ impl<'s> Lower<'s> {
         });
         let leave_leading = prev_survives && ctor_later;
         let mut kept_leading = false;
+        // `} //NEW` then a field: the comment is not attached to the field, but
+        // Babel still prints it on the init when the constructor is emitted
+        // first. An existing constructor later in the class prints the method
+        // first, so the comment stays on the `}`.
+        if !leave_leading && idx > 0 && !element_lowered(&class.body.body[idx - 1], lower_static) {
+            let prev_end = class.body.body[idx - 1].span().end;
+            for c in &self.cmts {
+                if c.start >= prev_end && c.end <= p.span.start && c.attached != p.span.start {
+                    let dest = if p.r#static { 0 } else { 4 };
+                    lead.push_str(&comment_prefix(self.src, c.start, c.end, dest));
+                    moved.push((c.start, c.end));
+                }
+            }
+        }
         for i in 0..self.cmts.len() {
             let c = &self.cmts[i];
             let before_key = c.start >= p.span.start && c.end <= p.key.span().start;
@@ -620,6 +637,7 @@ impl<'s> Lower<'s> {
             }
         }
         for (s, e) in moved {
+            let (s, e) = whole_comment_line(self.src, s, e);
             self.removed.push((s, e));
             self.edits.push(Edit::replace(s, e, String::new()));
         }
@@ -647,6 +665,7 @@ impl<'s> Lower<'s> {
             for (s, e) in trailing {
                 let dest = if p.r#static { 0 } else { 4 };
                 self.carry.push_str(&comment_prefix(self.src, s, e, dest));
+                let (s, e) = whole_comment_line(self.src, s, e);
                 self.removed.push((s, e));
                 self.edits.push(Edit::replace(s, e, String::new()));
             }
@@ -655,6 +674,7 @@ impl<'s> Lower<'s> {
             None
         } else if p.r#static {
             for (s, e) in trailing {
+                let (s, e) = whole_comment_line(self.src, s, e);
                 self.edits.push(Edit::replace(s, e, String::new()));
             }
             None
@@ -884,6 +904,31 @@ pub(crate) fn edit_rendered_into(start: u32, end: u32, e: &Edit) -> bool {
 /// `prev_lowered` means the previous class element is also a removed field. The
 /// gap between two removed fields belongs to the earlier field, so this one
 /// does not take it.
+/// Shrink `[s, e)` so it does not partially overlap an edit already queued.
+/// A contained edit is fine (`apply` drops it). A one-byte overlap of two
+/// field gaps is not.
+fn disjoint_removal(edits: &[Edit], mut s: u32, mut e: u32) -> (u32, u32) {
+    for ed in edits {
+        if ed.start >= ed.end {
+            continue;
+        }
+        if s >= e || e <= ed.start || s >= ed.end {
+            continue;
+        }
+        let contains = s <= ed.start && e >= ed.end;
+        let contained = s >= ed.start && e <= ed.end;
+        if contains || contained {
+            continue;
+        }
+        if s < ed.end && s >= ed.start {
+            s = ed.end;
+        } else if e > ed.start && e <= ed.end {
+            e = ed.start;
+        }
+    }
+    (s, e)
+}
+
 fn widened_field_removal(
     src: &str,
     span: Span,
@@ -932,6 +977,11 @@ fn extend_field_gap(
     prev_lowered: bool,
 ) -> (u32, u32) {
     let b = src.as_bytes();
+    // Whitespace directly above this field belongs to the previous removed
+    // field. Whitespace above a comment this field is carrying away does not:
+    // the previous field stopped at that comment, and deleting the comment
+    // would otherwise leave the blank line in front of the next survivor.
+    let mut ate_gone = false;
     loop {
         if start == 0 {
             break;
@@ -940,11 +990,16 @@ fn extend_field_gap(
         if !region_is_disposable(src, prev, start, start, start, gone) {
             break;
         }
-        // A pure whitespace gap between two removed fields belongs to the earlier
-        // field. A comment line does not: the earlier field stops at it.
         let whitespace = region_is_disposable(src, prev, start, start, start, &[]);
-        if whitespace && prev_lowered {
+        // A blank line directly above this field belongs to the previous
+        // removed field, unless a comment this field is deleting sits above
+        // that blank. Stopping at the blank would leave it behind once the
+        // comment line is gone (`// gone\n\ny = 1` before a method).
+        if whitespace && prev_lowered && !ate_gone && !gone_comment_above(src, prev, gone) {
             break;
+        }
+        if !whitespace {
+            ate_gone = true;
         }
         start = prev;
     }
@@ -959,6 +1014,24 @@ fn extend_field_gap(
         end = next;
     }
     (start, end)
+}
+
+/// A comment this field deletes sits above `at`, with only blank lines between.
+fn gone_comment_above(src: &str, mut at: u32, gone: &[(u32, u32)]) -> bool {
+    let b = src.as_bytes();
+    while at > 0 {
+        let prev = line_start(b, at - 1);
+        let with_gone = region_is_disposable(src, prev, at, at, at, gone);
+        let whitespace = region_is_disposable(src, prev, at, at, at, &[]);
+        if with_gone && !whitespace {
+            return true;
+        }
+        if !whitespace {
+            return false;
+        }
+        at = prev;
+    }
+    false
 }
 
 /// `true` when `[from, to)` is only whitespace, semicolons, and `gone` comments,
@@ -994,6 +1067,29 @@ fn region_is_disposable(
         i += ch.len_utf8() as u32;
     }
     true
+}
+
+/// A comment that is the only text on its line takes the indent and the newline
+/// with it. Deleting just the comment text would leave a blank indented line.
+fn whole_comment_line(src: &str, start: u32, end: u32) -> (u32, u32) {
+    let b = src.as_bytes();
+    if end == 0 || end as usize > b.len() || start >= end {
+        return (start, end);
+    }
+    let ls = line_start(b, start);
+    let le = line_end(b, end - 1);
+    let before = src[ls as usize..start as usize]
+        .chars()
+        .all(char::is_whitespace);
+    let after = src[end as usize..le as usize]
+        .trim_end_matches(['\n', '\r'])
+        .chars()
+        .all(char::is_whitespace);
+    if before && after {
+        (ls, le)
+    } else {
+        (start, end)
+    }
 }
 
 fn line_start(b: &[u8], pos: u32) -> u32 {

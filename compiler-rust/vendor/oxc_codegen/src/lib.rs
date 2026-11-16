@@ -972,6 +972,17 @@ impl<'a> Codegen<'a> {
         for directive in directives {
             directive.print(self, ctx);
         }
+        // Babel keeps one blank line after the directive prologue when the
+        // source had one anywhere before the first real statement
+        // (`"use strict";\n\n"use foo";\nx` prints the blank after both
+        // directives). A blank before `}` with no statement is dropped.
+        if let (Some(first_dir), Some(first_stmt)) = (directives.first(), stmts.first())
+            && let Some(src) = self.source_text
+            && has_blank_line(src, first_dir.span.end, first_stmt.span().start)
+            && !self.output_ends_with_blank_line()
+        {
+            self.print_hard_newline();
+        }
 
         let Some((first, rest)) = stmts.split_first() else {
             self.print_orphan_comments_before(scope_end);
@@ -1402,6 +1413,28 @@ impl<'a> Codegen<'a> {
     #[inline]
     #[expect(clippy::needless_pass_by_ref_mut, clippy::unused_self)]
     fn add_source_mapping_for_private_name(&mut self, _span: Span, _name: &str) {}
+}
+
+/// Two newlines with only spaces and tabs between them, in `src[from..to)`.
+fn has_blank_line(src: &str, from: u32, to: u32) -> bool {
+    let b = src.as_bytes();
+    let end = (to as usize).min(b.len());
+    let mut i = (from as usize).min(end);
+    let mut newlines = 0u32;
+    while i < end {
+        match b[i] {
+            b'\n' => {
+                newlines += 1;
+                if newlines >= 2 {
+                    return true;
+                }
+            }
+            b' ' | b'\t' | b'\r' => {}
+            _ => newlines = 0,
+        }
+        i += 1;
+    }
+    false
 }
 
 /// A decimal integer token (`10000`, `1_000`) cannot be followed by `.` without a space.

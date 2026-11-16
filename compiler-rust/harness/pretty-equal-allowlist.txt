@@ -4,8 +4,3 @@
 # gone, fails until the line is removed. An unlisted differing case fails.
 # Both-sides compile failure is not listed. One-side failure is compile-one-side.
 # Literal spelling (numeric-spelling, string-raw) is not allowlisted.
-LightningFlowComponents/flow_screen_components/FlowScreenComponentsBasePack/force-app/main/default/lwc/fsc_flowButtonBar	blank-line
-LightningFlowComponents/flow_screen_components/FlowScreenComponentsBasePack/force-app/main/default/lwc/fsc_flowButtonBarCPE	blank-line
-LightningFlowComponents/flow_screen_components/datatable/force-app/main/default/lwc/datatable	comment-added,comment-placement,other
-LightningFlowComponents/flow_screen_components/ibanLWC/force-app/main/default/lwc/ibanComponent	blank-line,comment-dropped
-lwc-utils/utils-core/main/default/lwc/fuseBasic	other

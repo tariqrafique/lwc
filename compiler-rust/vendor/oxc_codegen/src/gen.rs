@@ -281,7 +281,10 @@ fn print_if(if_stmt: &IfStatement<'_>, p: &mut Codegen, ctx: Context) {
                 p.print_soft_newline();
             }
         }
-        stmt if wrap_to_avoid_ambiguous_else(stmt) => {
+        // Babel leaves `if (a) if (b) c;` unbraced. Braces are required only
+        // when this `if` has an `else` that the consequent would capture
+        // (`if (a) if (b) c; else d` binds `else` to the inner `if`).
+        stmt if if_stmt.alternate.is_some() && consequent_hides_else(stmt) => {
             p.print_soft_space();
             p.print_block_start(stmt.span());
             stmt.print(p, ctx);
@@ -329,18 +332,13 @@ fn print_if(if_stmt: &IfStatement<'_>, p: &mut Codegen, ctx: Context) {
     }
 }
 
-// <https://github.com/evanw/esbuild/blob/e6a8169c3a574f4c67d4cdd5f31a938b53eb7421/internal/js_printer/js_printer.go#L3444>
-fn wrap_to_avoid_ambiguous_else(stmt: &Statement) -> bool {
+/// The consequent, or a loop/label wrapped around it, is an `if`. Printed
+/// without braces, an outer `else` binds to that inner `if`.
+fn consequent_hides_else(stmt: &Statement) -> bool {
     let mut current = stmt;
     loop {
         current = match current {
-            Statement::IfStatement(if_stmt) => {
-                if let Some(stmt) = &if_stmt.alternate {
-                    stmt
-                } else {
-                    return true;
-                }
-            }
+            Statement::IfStatement(_) => return true,
             Statement::ForStatement(for_stmt) => &for_stmt.body,
             Statement::ForOfStatement(for_of_stmt) => &for_of_stmt.body,
             Statement::ForInStatement(for_in_stmt) => &for_in_stmt.body,
@@ -348,7 +346,7 @@ fn wrap_to_avoid_ambiguous_else(stmt: &Statement) -> bool {
             Statement::WithStatement(with_stmt) => &with_stmt.body,
             Statement::LabeledStatement(labeled_stmt) => &labeled_stmt.body,
             _ => return false,
-        }
+        };
     }
 }
 
@@ -640,12 +638,15 @@ impl Gen for SwitchCase<'_> {
         }
         p.print_colon();
 
-        // `default:\n// nothing` — no consequent. The comment is inside the case
-        // span, after the colon, and Babel prints it at the case's indent.
+        // An empty case owns the comments between `:` and the next case.
+        // `case 'date-local': // v4.3.6` stays on the case line; a comment on
+        // its own line stays at the case's indent. A case that has a statement
+        // gives that same-line comment to the statement instead.
         if self.consequent.is_empty() {
             if let Some(colon) = p.find_byte(self.span.start, self.span.end, b':') {
-                p.print_gap_comments(colon + 1, self.span.end, None);
-                p.print_orphan_comments_before(self.span.end);
+                let next = p.skip_to_code(colon + 1);
+                p.print_gap_comments(colon + 1, next, None);
+                p.print_orphan_comments_before(next);
             }
             if p.last_byte() != Some(b'\n') {
                 p.print_soft_newline();
@@ -659,7 +660,14 @@ impl Gen for SwitchCase<'_> {
             .consequent
             .last()
             .and_then(|stmt| p.take_trailing_line_comments(stmt.span().end));
-        let single_line = deferred.is_none()
+        // Babel breaks before a consequent that starts on the next source line
+        // (`case 'date':\n  break`). A consequent that shares the case line stays
+        // there (`case 'onetime': d.setFullYear(1); break`).
+        let body_on_next_line = self.consequent.first().is_some_and(|stmt| {
+            p.find_byte(self.span.start, stmt.span().start, b'\n').is_some()
+        });
+        let single_line = !body_on_next_line
+            && deferred.is_none()
             && self.consequent.len() == 1
             && !p.has_leading_line_comment(self.consequent[0].span().start)
             && !p.has_orphan_comments_before(self.consequent[0].span().start);
@@ -878,6 +886,23 @@ impl Gen for Function<'_> {
                 }
             }
             self.params.print(p, ctx);
+            // `function (fun /*, thisArg */)` — the comment sits after the last
+            // parameter and before `)`. `params.span` may already include `)`.
+            let params_end = self
+                .params
+                .rest
+                .as_ref()
+                .map(|r| r.span.end)
+                .or_else(|| self.params.items.last().map(|item| item.span().end))
+                .or_else(|| self.this_param.as_ref().map(|t| t.span.end))
+                .unwrap_or(self.params.span.start);
+            let paren_limit = self.body.as_ref().map(|b| b.span.start).unwrap_or(self.span.end);
+            if let Some(paren) = p.find_byte(params_end, paren_limit, b')') {
+                p.print_gap_comments(params_end, paren, None);
+            }
+            // The comment is inside the parameter list. It must not steal the
+            // body's indent.
+            p.print_next_indent_as_space = false;
             p.print_ascii_byte(b')');
             if let Some(return_type) = &self.return_type {
                 p.print_colon();

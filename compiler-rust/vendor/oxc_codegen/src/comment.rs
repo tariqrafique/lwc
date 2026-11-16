@@ -327,6 +327,37 @@ impl Codegen<'_> {
     }
 
     /// First `byte` in the source span `[from, to)`.
+    /// Index of the next source byte at or after `from` that is not whitespace
+    /// or a comment. An empty case uses it to claim the comments before the
+    /// next `case` or `}`.
+    pub(crate) fn skip_to_code(&self, from: u32) -> u32 {
+        let Some(src) = self.source_text else {
+            return from;
+        };
+        let b = src.as_bytes();
+        let mut i = from as usize;
+        while i < b.len() {
+            match b[i] {
+                b' ' | b'\t' | b'\n' | b'\r' => i += 1,
+                b'/' if i + 1 < b.len() && b[i + 1] == b'/' => {
+                    i += 2;
+                    while i < b.len() && b[i] != b'\n' {
+                        i += 1;
+                    }
+                }
+                b'/' if i + 1 < b.len() && b[i + 1] == b'*' => {
+                    i += 2;
+                    while i + 1 < b.len() && !(b[i] == b'*' && b[i + 1] == b'/') {
+                        i += 1;
+                    }
+                    i = (i + 2).min(b.len());
+                }
+                _ => break,
+            }
+        }
+        i as u32
+    }
+
     pub(crate) fn find_byte(&self, from: u32, to: u32, byte: u8) -> Option<u32> {
         let src = self.source_text?;
         let start = from as usize;
@@ -432,7 +463,9 @@ impl Codegen<'_> {
         while i > 0 && matches!(b[i - 1], b' ' | b'\t' | b'\r') {
             i -= 1;
         }
-        !(i > 0 && matches!(b[i - 1], b'{' | b'(' | b'['))
+        // A comma is the end of the previous object member. Babel's first
+        // leading comment of the next member does not keep that blank line.
+        !(i > 0 && matches!(b[i - 1], b'{' | b'(' | b'[' | b','))
     }
 
     /// One blank line in the source immediately after `pos` (the comment end).
@@ -484,7 +517,7 @@ impl Codegen<'_> {
         bytes[line_start..].iter().all(|&b| matches!(b, b' ' | b'\t'))
     }
 
-    fn output_ends_with_blank_line(&self) -> bool {
+    pub(crate) fn output_ends_with_blank_line(&self) -> bool {
         let b = self.code().as_bytes();
         let mut i = b.len();
         while i > 0 && matches!(b[i - 1], b' ' | b'\t') {

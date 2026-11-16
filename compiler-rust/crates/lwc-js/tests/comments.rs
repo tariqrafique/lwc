@@ -191,3 +191,24 @@ fn class_field_comments_travel_with_the_init() {
     check("const a = 1;\nconst o = { a, b: 1 };\n");
     check("export const o = { a: 1, a: 2 };\n");
 }
+
+#[test]
+fn directive_blank_empty_case_comment_and_unbraced_if() {
+    check("function f() {\n  \"use strict\";\n\n  x;\n}\n");
+    check("function f() {\n  \"use strict\";\n\n  \"use foo\";\n  x;\n}\n");
+    check("function f() {\n  x;\n\n  y;\n}\n");
+    check(
+        "function f(x) {\n  switch (x) {\n    case 'date-local': // v4.3.6\n      // let dl = row[fieldName];\n    case 'date':\n      break;\n  }\n}\n",
+    );
+    check("if (i(h)) if (t(h)) {\n  let n = [];\n}\n");
+    check(
+        "class C {\n  m() {\n    return 1;\n  }\n  x = 1;\n\n  // gone\n  y = 2;\n  // keep\n  n() {\n    return 2;\n  }\n}\n",
+    );
+}
+
+#[test]
+fn parameter_list_keeps_a_block_comment_before_the_paren() {
+    let src = "function f() {\n  Array.prototype.map = function (fun /*, thisArg */) {\n    return fun;\n  };\n}\n";
+    let out = rust_code(src);
+    assert!(out.contains("fun /*, thisArg */"), "{out}");
+}
