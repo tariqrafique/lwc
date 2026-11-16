@@ -3,9 +3,16 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-// The shipped binding wrapper (index.js uses the same one): strips the instrumentation callbacks before
-// the serde boundary, replays the collected events and prints deprecations (AB-0008 G2b, D-0205).
-import { wrapBinding } from './napiWrap.js';
+// The shipped binding wrapper, loaded from the crate (index.js uses the same file): passes the
+// instrumentation object beside the JSON options so the native calls it during the compile, and prints
+// deprecations (AB-0008 G2b, D-0205). Required lazily by the Rust backend only: the JS-oracle golden
+// recording (golden-gate) runs on a copy of harness/ alone, without crates/.
+type WrapBinding = typeof import('../../crates/lwc-compiler-napi/wrap.js').wrapBinding;
+function wrapBinding(binding: NativeAddon): ReturnType<WrapBinding> {
+    const req = createRequire(import.meta.url);
+    const mod = req('../../crates/lwc-compiler-napi/wrap.js') as { wrapBinding: WrapBinding };
+    return mod.wrapBinding(binding);
+}
 
 export interface CompileOptions {
     name: string;
@@ -71,7 +78,7 @@ export type NapiCompileError = {
 };
 
 type NativeAddon = {
-    transform(src: string, filename: string, options: Record<string, unknown>, callbacks?: { log: boolean; incrementCounter: boolean }): {
+    transform(src: string, filename: string, options: Record<string, unknown>, instrumentation?: unknown): {
         code?: string | null;
         map?: string | null;
         cssScopeTokens?: string[];
@@ -125,7 +132,7 @@ function assertShape(v: unknown, shape: Shape, where: string): void {
 }
 function assertKnownKeys(options: Record<string, unknown>): void {
     for (const k of Object.keys(options)) {
-        // instrumentation: forwarded as-is; wrapBinding strips the callbacks before the JSON seam (G2b).
+        // instrumentation: forwarded as-is; wrapBinding passes it beside the JSON options (G2b).
         if (k === 'instrumentation') continue;
         if (!(RUST_OPTION_KEYS as readonly string[]).includes(k)) throw new Error(`rust backend: unsupported compile option "${k}" (not forwarded by the Rust seam)`);
         if (k in NESTED_SHAPES) assertShape(options[k], NESTED_SHAPES[k], k);

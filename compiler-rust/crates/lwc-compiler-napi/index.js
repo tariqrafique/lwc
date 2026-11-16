@@ -1,6 +1,6 @@
 // @lwc/rust-compiler ESM loader. Loads the native binary and wraps it with wrap.js; no compile logic
-// (AB-D0005). Option decisions belong to Rust. wrap.js strips and replays the D-0205 instrumentation
-// callbacks and prints D-0212 deprecation messages. No ThreadsafeFunction.
+// (AB-D0005). Option decisions belong to Rust. wrap.js passes the D-0205 instrumentation object beside
+// the options (the native calls it synchronously) and prints D-0212 deprecation messages. No ThreadsafeFunction.
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { wrapBinding } from './wrap.js';
@@ -38,5 +38,5 @@ function load() {
     );
 }
 
-// S1: wrap the native export so events and deprecations surface the way upstream does.
+// S1: wrap the native export so instrumentation callbacks and deprecations behave the way upstream's do.
 export const { transform } = wrapBinding(load());

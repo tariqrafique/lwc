@@ -21,6 +21,8 @@ use oxc_allocator::Allocator;
 pub(crate) enum CodegenError {
     Bind(BindError),
     Internal(InternalError),
+    /// codegen/index.ts:605 `instrumentation?.incrementCounter(...)` threw; `compile` maps it through its catch.
+    Counter(lwc_shared::CounterError),
 }
 
 impl From<BindError> for CodegenError {
@@ -115,7 +117,8 @@ impl ApiHelper {
 }
 
 /// codegen/index.ts:605 `instrumentation?.incrementCounter(...)` with no callable `incrementCounter`.
-const CODEGEN_COUNTER_NOT_A_FUNCTION: &str = "instrumentation?.incrementCounter is not a function";
+pub(crate) const CODEGEN_COUNTER_NOT_A_FUNCTION: &str =
+    "instrumentation?.incrementCounter is not a function";
 
 struct Gen<'a> {
     alloc: &'a Allocator,
@@ -139,6 +142,8 @@ struct Gen<'a> {
     memo: u32,
     /// TS `state.config.instrumentation` (codegen/index.ts:605 lwc:spread metric).
     instrumentation: Option<lwc_shared::InstrumentationHandle>,
+    /// The spread metric's counter threw; the abort travels as an [`InternalError`], the throw itself here.
+    counter_threw: std::cell::RefCell<Option<lwc_shared::CounterError>>,
 }
 
 impl<'a> Gen<'a> {
@@ -661,9 +666,11 @@ impl<'a> Gen<'a> {
         if let Some(e) = spread {
             // codegen/index.ts:603-605: spread goes last, then `instrumentation?.incrementCounter(...)`.
             entries.push(Field::Spread(self.expr_at(e, nest_indent)?));
-            if let Some(i) = &self.instrumentation {
-                i.increment_counter(lwc_shared::CompilerMetric::LwcSpreadDirective)
-                    .map_err(|_| InternalError::new(CODEGEN_COUNTER_NOT_A_FUNCTION))?;
+            if let Some(i) = &self.instrumentation
+                && let Err(c) = i.increment_counter(lwc_shared::CompilerMetric::LwcSpreadDirective)
+            {
+                *self.counter_threw.borrow_mut() = Some(c);
+                return Err(InternalError::new(CODEGEN_COUNTER_NOT_A_FUNCTION).into());
             }
         }
         if !entries.is_empty() {
@@ -1886,12 +1893,22 @@ pub fn generate(
         scope_frag: has_id_attribute(&root.children),
         apis: Vec::new(),
         instrumentation: config.instrumentation.clone(),
+        counter_threw: std::cell::RefCell::new(None),
         memo: 0,
     };
     // TS CodeGen.isSyntheticShadow.
     g.synthetic = !g.light && !config.disable_synthetic_shadow_support;
     // TS transform(): `return transformChildren(codeGen.root)`.
-    let ret = match g.kids(&root.children, 2, None)? {
+    let kids = match g.kids(&root.children, 2, None) {
+        Ok(k) => k,
+        Err(e) => {
+            return Err(match g.counter_threw.take() {
+                Some(c) => CodegenError::Counter(c),
+                None => e,
+            });
+        }
+    };
+    let ret = match kids {
         Kids::Arr(v) => g.b().array_inline(v),
         Kids::Expr(e) => e,
     };

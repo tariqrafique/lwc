@@ -2,11 +2,13 @@
 //! Compile errors are returned as `{ error: {...} }` so the harness can throw a JS Error
 //! carrying the upstream CompilerError / AggregateError own keys (napi v2 `Error` cannot).
 //! Position lives only under `location` (D-0239 / D-0241); no own `line` / `column` / Aggregate `name`.
+use napi::Env;
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
 use serde::{Deserialize, Serialize};
 
 mod errors;
+mod instrumentation;
 
 /// Options accepted over the seam. Taken as JSON (not a `#[napi(object)]`, which silently ignores extra
 /// keys) and deserialized with `deny_unknown_fields`, so any unknown key, top-level or nested, is an
@@ -38,7 +40,7 @@ pub struct JsCompileOptions {
     pub dynamic_imports: Option<JsDynamicImports>,
     pub enable_lightning_web_security_transforms: Option<bool>,
     /// Presence only (D-0203 / D-0205): the loader replaces the callback object with a JSON placeholder
-    /// before serde and passes which callbacks are functions as [`JsInstrumentationCallbacks`].
+    /// before serde and passes the caller's object itself as `transform`'s 4th argument.
     pub instrumentation: Option<serde_json::Value>,
     pub is_explicit_import: Option<bool>,
     pub output_config: Option<JsOutputConfig>,
@@ -238,28 +240,8 @@ pub struct JsCompileResult {
     pub css_scope_tokens: Option<Vec<String>>,
     pub warnings: Option<Vec<JsDiagnostic>>,
     pub error: Option<JsCompileError>,
-    /// D-0205: ordered `log` / `incrementCounter` calls. The loader replays them and strips this field.
-    #[napi(js_name = "instrumentationEvents")]
-    pub instrumentation_events: Option<Vec<JsInstrumentationEvent>>,
     /// D-0212: `console.warn` texts. The loader prints them and strips this field.
     pub deprecations: Option<Vec<String>>,
-}
-
-/// `typeof instrumentation.log / .incrementCounter === 'function'`, from the loader (`wrap.js`), which
-/// strips the callbacks before the serde boundary (G2b). Absent (a direct JSON caller) means neither is
-/// a function: JSON cannot carry one.
-#[napi(object)]
-pub struct JsInstrumentationCallbacks {
-    pub log: bool,
-    #[napi(js_name = "incrementCounter")]
-    pub increment_counter: bool,
-}
-
-#[napi(object)]
-pub struct JsInstrumentationEvent {
-    pub kind: String,
-    pub metric: Option<String>,
-    pub diagnostic: Option<JsDiagnostic>,
 }
 
 /// The JSON map string from the compiler -> a JS object (`null` when absent).
@@ -268,41 +250,10 @@ fn map_value(map: Option<&str>) -> serde_json::Value {
         .unwrap_or(serde_json::Value::Null)
 }
 
-thread_local! {
-    static NAPI_RECORDER: std::cell::RefCell<Option<std::sync::Arc<lwc_shared::InstrumentationRecorder>>> =
-        const { std::cell::RefCell::new(None) };
-}
-
-fn take_recorded_events() -> Option<Vec<JsInstrumentationEvent>> {
-    let rec = NAPI_RECORDER.with(|c| c.borrow_mut().take())?;
-    let events: Vec<JsInstrumentationEvent> = rec
-        .take()
-        .into_iter()
-        .map(|e| match e {
-            lwc_shared::InstrumentationEvent::IncrementCounter(m) => JsInstrumentationEvent {
-                kind: "incrementCounter".into(),
-                metric: Some(m.js_value().to_string()),
-                diagnostic: None,
-            },
-            lwc_shared::InstrumentationEvent::Log(d) => JsInstrumentationEvent {
-                kind: "log".into(),
-                metric: None,
-                diagnostic: Some(to_js_diagnostic(d)),
-            },
-        })
-        .collect();
-    if events.is_empty() {
-        None
-    } else {
-        Some(events)
-    }
-}
-
 fn attach_side_channels(
     mut r: JsCompileResult,
     deprecations: Vec<lwc_shared::DeprecationId>,
 ) -> JsCompileResult {
-    r.instrumentation_events = take_recorded_events();
     r.deprecations = if deprecations.is_empty() {
         None
     } else {
@@ -321,11 +272,10 @@ fn attach_side_channels(
 /// `Ok(Err(compile))` = LWC validation error (LWC1021 / LWC1023).
 fn to_compile_options_with(
     options: serde_json::Value,
-    callbacks: Option<&JsInstrumentationCallbacks>,
+    callbacks: Option<lwc_shared::InstrumentationHandle>,
 ) -> Result<std::result::Result<lwc_compiler::NormalizedTransformOptions, lwc_shared::CompileError>>
 {
     if options.is_null() {
-        NAPI_RECORDER.with(|c| *c.borrow_mut() = None);
         return Ok(lwc_compiler::validate_incoming(None, &js_string(&options)));
     }
     // `Option<Value>` maps JSON null to None, so read ssrMode off the raw object to
@@ -346,16 +296,12 @@ fn to_compile_options_with(
         };
     }
     if inst_present && raw.instrumentation.is_none() {
-        // A JS InstrumentationObject cannot cross JSON; attach a recorder so events can be
-        // returned for the loader to replay (D-0205 / G2b). With no callable `incrementCounter`
-        // the first metric fails where upstream's `instrumentation?.incrementCounter` throws.
-        let rec = std::sync::Arc::new(lwc_shared::InstrumentationRecorder::for_js(
-            callbacks.is_some_and(|c| c.increment_counter),
-        ));
-        raw.instrumentation = Some(lwc_shared::InstrumentationHandle(rec.clone()));
-        NAPI_RECORDER.with(|c| *c.borrow_mut() = Some(rec));
-    } else {
-        NAPI_RECORDER.with(|c| *c.borrow_mut() = None);
+        // A JS InstrumentationObject cannot cross JSON: the loader passes it beside the options and the
+        // compile calls it synchronously (D-0205 / G2b). A direct JSON caller has no functions, so its
+        // first metric throws where upstream's `instrumentation?.incrementCounter` does.
+        raw.instrumentation = Some(callbacks.unwrap_or_else(|| {
+            lwc_shared::InstrumentationHandle::new(instrumentation::NotCallable)
+        }));
     }
     Ok(lwc_compiler::validate_incoming(
         Some(&raw),
@@ -869,7 +815,7 @@ mod tests {
     }
 
     /// G2b: `instrumentation:{}` (no callable incrementCounter) fails at the first metric with the
-    /// oracle's error (upstream 1052 "...incrementCounter is not a function"); callable records it.
+    /// oracle's error (upstream 1052 "...incrementCounter is not a function"); a callable one is called.
     #[test]
     fn missing_increment_counter_throws_at_first_metric() {
         let spread = "<template><div lwc:spread={p}></div></template>";
@@ -882,33 +828,124 @@ mod tests {
             e.message,
             "Unexpected compilation error: LWC1052: Error parsing attribute: instrumentation?.incrementCounter is not a function"
         );
-        let cb = JsInstrumentationCallbacks {
-            log: true,
-            increment_counter: true,
-        };
-        let o = to_compile_options_with(opts(), Some(&cb)).unwrap().unwrap();
+        let rec = std::sync::Arc::new(lwc_shared::InstrumentationRecorder::default());
+        let h = lwc_shared::InstrumentationHandle(rec.clone());
+        let o = to_compile_options_with(opts(), Some(h)).unwrap().unwrap();
         assert!(
             errors::compile(spread, "a.html", &o).is_ok(),
             "callable counter compiles"
         );
-        let events = take_recorded_events().expect("events");
-        assert_eq!(events.len(), 1);
         assert_eq!(
-            events[0].metric.as_deref(),
-            Some(lwc_shared::CompilerMetric::LwcSpreadDirective.js_value())
+            rec.take(),
+            vec![lwc_shared::InstrumentationEvent::IncrementCounter(
+                lwc_shared::CompilerMetric::LwcSpreadDirective
+            )]
+        );
+    }
+
+    /// G2b r4: a callback that throws ends the compile with the oracle's coded error (oracle runs:
+    /// scratch/harness/ab-0008-r4-oracle{1,2}.log): LWC1052 from the template catch for an Error,
+    /// LWC1008 TypeError when the catch itself throws on a primitive, LWC1007 from Babel's catch.
+    #[test]
+    fn throwing_counter_is_the_oracle_coded_error() {
+        struct Throws(lwc_shared::ThrownValue);
+        impl lwc_shared::Instrumentation for Throws {
+            fn increment_counter(&self, _: lwc_shared::CompilerMetric) {}
+            fn try_increment_counter(
+                &self,
+                _: lwc_shared::CompilerMetric,
+            ) -> std::result::Result<(), lwc_shared::CounterError> {
+                Err(lwc_shared::CounterError::Threw(self.0.clone()))
+            }
+        }
+        let run = |src: &str, file: &str, extra: serde_json::Value, v: lwc_shared::ThrownValue| {
+            let mut opts = json!({"name": "a", "namespace": "x", "instrumentation": {}});
+            for (k, x) in extra.as_object().unwrap() {
+                opts[k] = x.clone();
+            }
+            let h = lwc_shared::InstrumentationHandle::new(Throws(v));
+            let o = to_compile_options_with(opts, Some(h)).unwrap().unwrap();
+            let e = errors::compile(src, file, &o)
+                .expect_err("must throw")
+                .error
+                .unwrap();
+            (e.code, e.message)
+        };
+        let boom = || lwc_shared::ThrownValue::Object {
+            name: "Error".into(),
+            message: "boom".into(),
+        };
+        let strboom = || lwc_shared::ThrownValue::Primitive {
+            type_of: "string",
+            display: "strboom".into(),
+        };
+        let spread = "<template><div lwc:spread={p}></div></template>";
+        let rm = r#"<template lwc:render-mode="light"><div></div></template>"#;
+        for src in [spread, rm] {
+            assert_eq!(
+                run(src, "a.html", json!({}), boom()),
+                (
+                    Some(1052),
+                    "Unexpected compilation error: LWC1052: Error parsing attribute: boom".into()
+                )
+            );
+            assert_eq!(
+                run(src, "a.html", json!({}), strboom()),
+                (
+                    Some(1008),
+                    "TypeError: LWC1008: Cannot use 'in' operator to search for 'level' in strboom"
+                        .into()
+                )
+            );
+        }
+        let dyn_js = r#"export function f(){ return import("x"); }"#;
+        let di = json!({"dynamicImports": {"loader": "myLoader"}});
+        assert_eq!(
+            run(dyn_js, "dyn.js", di.clone(), boom()),
+            (Some(1007), "Error: LWC1007: dyn.js: boom".into())
+        );
+        assert_eq!(
+            run(dyn_js, "dyn.js", di, strboom()),
+            (
+                Some(1007),
+                "TypeError: LWC1007: Cannot create property 'message' on string 'strboom'".into()
+            )
         );
     }
 }
 
-/// `callbacks`: see [`JsInstrumentationCallbacks`] (the loader passes it when `instrumentation` is set).
+/// `instrumentation`: the caller's `InstrumentationObject` (the loader passes it when the option is set
+/// and replaces it in `options` with a JSON placeholder). Its callbacks are called synchronously on this
+/// thread during the compile (G2b r4; no ThreadsafeFunction, no replay).
 #[napi]
 pub fn transform(
+    env: Env,
     src: String,
     filename: String,
     options: serde_json::Value,
-    callbacks: Option<JsInstrumentationCallbacks>,
+    instrumentation: Option<napi::JsUnknown>,
 ) -> Result<JsCompileResult> {
-    let o = match to_compile_options_with(options, callbacks.as_ref())? {
+    let callbacks = instrumentation
+        .map(|v| instrumentation::JsCallbacks::new(env, v))
+        .transpose()?;
+    let handle = callbacks
+        .as_ref()
+        .map(|c| lwc_shared::InstrumentationHandle(c.clone()));
+    let r = transform_with(&src, &filename, options, handle);
+    if let Some(c) = callbacks {
+        // The handles are only valid during this call; a `log` throw is rethrown as-is.
+        c.end()?;
+    }
+    r
+}
+
+fn transform_with(
+    src: &str,
+    filename: &str,
+    options: serde_json::Value,
+    callbacks: Option<lwc_shared::InstrumentationHandle>,
+) -> Result<JsCompileResult> {
+    let o = match to_compile_options_with(options, callbacks)? {
         Ok(o) => o,
         Err(e) => {
             return Ok(attach_side_channels(
@@ -918,7 +955,7 @@ pub fn transform(
         }
     };
     let deprecations = o.deprecations().to_vec();
-    Ok(match errors::compile(&src, &filename, &o) {
+    Ok(match errors::compile(src, filename, &o) {
         Ok(r) => {
             let warnings = if r.warnings.is_empty() {
                 None
@@ -932,7 +969,6 @@ pub fn transform(
                     css_scope_tokens: r.css_scope_tokens,
                     warnings,
                     error: None,
-                    instrumentation_events: None,
                     deprecations: None,
                 },
                 deprecations,

@@ -190,9 +190,11 @@ fn transform_template(
         ..lwc_template::Config::default()
     };
     let r = lwc_template::compile(src, filename, config).map_err(|e| {
+        let mut thrown = CompileError::new(e.message, filename);
+        thrown.name = e.name.map(str::to_string);
         TransformError::Compiler(normalize_to_compiler_error(
             &TransformerErrors::HTML_TRANSFORMER_ERROR,
-            CompileError::new(e.message, filename),
+            thrown,
             Some(filename),
         ))
     })?;

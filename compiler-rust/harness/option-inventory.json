@@ -77,8 +77,8 @@
  },
  "compiler.instrumentation": {
   "row": "template-options",
-  "via": "inst/{real,counter-only,empty,log-only,counter-not-a-function,primitive,null} x erm x metric snippets + 53 metric fixtures (real callbacks through wrap.js, oracle call sequence; AB-0008 G2b)",
-  "also": "js-options inst/ (dynamic-import-transform); unit instrumentation_counters_reach_template_and_js"
+  "via": "inst/{real,counter-only,empty,log-only,counter-not-a-function,primitive,null} x erm x metric snippets + 53 metric fixtures (real callbacks through wrap.js, oracle call sequence; AB-0008 G2b) + inst/throw-<value> x erm x 4 snippets (throwing callbacks: oracle coded error during the compile, G2b r4)",
+  "also": "js-options inst/ + inst/throw-<value> (dynamic-import-transform); unit instrumentation_counters_reach_template_and_js"
  },
  "compiler.isExplicitImport": {
   "row": "js-options",

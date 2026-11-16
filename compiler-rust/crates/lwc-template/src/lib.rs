@@ -53,7 +53,7 @@ pub fn parse<'a>(
     config: Config,
 ) -> Result<TemplateParseResult<'a>, ConfigError> {
     let options = config.normalize()?;
-    Ok(parser::parse_template(alloc, source, &options))
+    parser::parse_template(alloc, source, &options)
 }
 
 /// Compile an LWC template to ESM source consumable by the engine.
@@ -72,7 +72,7 @@ pub fn compile(
     );
     // The compile entry owns the arena; the IR never outlives this call or leaves its thread.
     let alloc = Allocator::default();
-    let parsing = parser::parse_template(&alloc, source, &options);
+    let parsing = parser::parse_template(&alloc, source, &options)?;
 
     let has_error = parsing
         .warnings
@@ -84,7 +84,7 @@ pub fn compile(
             Ok(code) => (code, parsing.warnings),
             Err(e) => {
                 let mut warnings = parsing.warnings;
-                warnings.push(codegen_catch(e));
+                warnings.push(codegen_catch(e)?);
                 (String::new(), warnings)
             }
         },
@@ -102,8 +102,9 @@ pub fn compile(
 /// `Unexpected compilation error: `. A thrown `CompilerError` (1189 from bind) keeps its code,
 /// level and (absent) location via `toDiagnostic()`; `GENERIC_PARSING_ERROR` is only the fallback
 /// for a non-CompilerError, which PrintError maps to [`InternalError`].
-fn codegen_catch(e: codegen::CodegenError) -> CompilerDiagnostic {
-    match e {
+/// `Err`: the catch itself throws on a primitive thrown by an instrumentation callback.
+fn codegen_catch(e: codegen::CodegenError) -> Result<CompilerDiagnostic, ConfigError> {
+    Ok(match e {
         codegen::CodegenError::Bind(e) => {
             let ce = e.compiler_error();
             CompilerDiagnostic::new(
@@ -115,7 +116,18 @@ fn codegen_catch(e: codegen::CodegenError) -> CompilerDiagnostic {
             )
         }
         codegen::CodegenError::Internal(e) => e.diagnostic(),
-    }
+        codegen::CodegenError::Counter(c) => {
+            match c.template_catch(codegen::CODEGEN_COUNTER_NOT_A_FUNCTION) {
+                lwc_shared::TemplateCatch::Generic(m) => parser::InternalError::diagnostic_of(&m),
+                lwc_shared::TemplateCatch::Escapes { name, message } => {
+                    return Err(ConfigError {
+                        message,
+                        name: Some(name),
+                    });
+                }
+            }
+        }
+    })
 }
 
 #[cfg(test)]

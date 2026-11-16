@@ -41,10 +41,13 @@ pub struct NormalizedConfig {
     pub instrumentation: Option<InstrumentationHandle>,
 }
 
-/// Error from invalid custom-renderer entries.
+/// A throw that escapes the template compiler: invalid custom-renderer entries (`Error`), or the
+/// `TypeError` upstream's catch raises on a primitive thrown by an instrumentation callback.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ConfigError {
     pub message: String,
+    /// JS error name; `None` is a plain `Error`.
+    pub name: Option<&'static str>,
 }
 
 /// Version used when `api_version` is omitted (`getAPIVersionFromNumber(undefined)` = HIGHEST_API_VERSION).
@@ -101,6 +104,7 @@ fn normalize_custom_renderer_config(
                         "custom renderer config disallows custom element tag: {}",
                         e.tag_name
                     ),
+                    name: None,
                 });
             }
             tag_names.push(tag_name.clone());
@@ -118,6 +122,7 @@ fn normalize_custom_renderer_config(
         if tag_names.iter().position(|n| n == name) != Some(i) {
             return Err(ConfigError {
                 message: format!("duplicate custom renderer element entry: {name}"),
+                name: None,
             });
         }
     }

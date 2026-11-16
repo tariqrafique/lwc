@@ -56,9 +56,9 @@ pub struct Found {
 }
 
 /// Fires the counts Babel reaches before `stop_at` (the sort key of the throw that ends traversal; a count
-/// at the same key comes after it, since validateImport runs first). A missing `incrementCounter`
-/// (utils.ts:155) is itself a Babel-internal TypeError, wrapped as LWC1007 by @lwc/compiler: returned
-/// with its key, and no later import is counted.
+/// at the same key comes after it, since validateImport runs first). A counter that throws (utils.ts:155:
+/// no callable `incrementCounter`, or the callback threw) ends Babel's traversal, wrapped as LWC1007 by
+/// @lwc/compiler: returned with its key, and no later import is counted.
 pub fn count(
     counted: &[u32],
     stop_at: Option<u32>,
@@ -70,17 +70,12 @@ pub fn count(
         if stop_at.is_some_and(|s| k >= s) {
             return None;
         }
-        if i.increment_counter(lwc_shared::CompilerMetric::DynamicImportTransform)
-            .is_err()
-        {
+        if let Err(c) = i.increment_counter(lwc_shared::CompilerMetric::DynamicImportTransform) {
             return Some((
                 k,
-                CompileError::babel(
-                    "TypeError",
+                c.babel_catch(
                     "state.opts.instrumentation?.incrementCounter is not a function",
                     filename,
-                    None,
-                    None,
                 ),
             ));
         }

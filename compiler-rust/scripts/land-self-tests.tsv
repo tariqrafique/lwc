@@ -87,3 +87,6 @@ test-board-runtime	scripts/test-board-runtime.sh	scripts/land-path-checks.tsv
 test-install-napi	scripts/test-install-napi.sh	scripts/test-install-napi.sh
 test-install-napi	scripts/test-install-napi.sh	scripts/install-napi.sh
 test-install-napi	scripts/test-install-napi.sh	scripts/cargo-locked.sh
+skip-union	harness/scripts/skip-union.mjs --self-test	harness/scripts/skip-union.mjs
+skip-union	harness/scripts/skip-union.mjs --self-test	harness/board.sh
+test-board-ratchet	scripts/test-board-ratchet.sh	harness/scripts/skip-union.mjs

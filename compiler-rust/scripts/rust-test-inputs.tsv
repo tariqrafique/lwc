@@ -68,7 +68,3 @@ tools/semdiff/	semdiff
 tools/semdiff/decisions.tsv	semdiff
 tools/semdiff/exec/	semdiff
 tools/semdiff/rules/rt-1.toml	semdiff
-harness/src/napiWrap.d.ts	lwc-compiler-napi
-harness/src/napiWrap.js	lwc-compiler
-harness/src/napiWrap.js	lwc-compiler-napi
-harness/src/napiWrap.js	semdiff

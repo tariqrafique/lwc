@@ -95,7 +95,7 @@ fn transform_html(
         message: e.message,
         filename: Some(filename.into()),
         diagnostics: vec![],
-        name: None,
+        name: e.name.map(str::to_string),
         position: lwc_shared::ProducerPosition::Diagnostics,
     })?;
 

@@ -1,0 +1,22 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "dynamic-import-transform"
+    ],
+    [
+      "incrementCounter",
+      "dynamic-import-transform"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1007
+  ],
+  "line": null,
+  "errors": [
+    1007
+  ],
+  "message": "Error: LWC1007: test.js: second"
+}

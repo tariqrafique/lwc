@@ -52,9 +52,10 @@ pub(crate) struct Ctx<'a> {
     exprs: expression_complex::ExprCache<'a>,
     /// TS `ctx.instrumentation`.
     instrumentation: Option<lwc_shared::InstrumentationHandle>,
-    /// TS `ctx.instrumentation?.incrementCounter(m)` threw (no callable `incrementCounter`). The TypeError
-    /// escapes every `withErrorRecovery`, so the parse ends with [`internal_failure`] (G2b).
-    counter_threw: std::cell::Cell<Option<InternalError>>,
+    /// TS `ctx.instrumentation?.incrementCounter(m)` threw (no callable `incrementCounter`, or the callback
+    /// threw). The throw escapes every `withErrorRecovery`, so the parse ends; [`parse_template`] maps it
+    /// through the template-compiler `compile` catch (G2b).
+    counter_threw: std::cell::RefCell<Option<lwc_shared::CounterError>>,
     /// Template source as UTF-16 code units (parse5 offsets index this); see [`raw_attr`] / [`raw_source`].
     src16: Vec<u16>,
     /// TS `seenIds` (1042).
@@ -150,11 +151,10 @@ impl<'a> Ctx<'a> {
     }
     fn count(&self, m: lwc_shared::CompilerMetric) {
         if let Some(i) = &self.instrumentation
-            && self.counter_threw.get().is_none()
-            && i.increment_counter(m).is_err()
+            && self.counter_threw.borrow().is_none()
+            && let Err(e) = i.increment_counter(m)
         {
-            self.counter_threw
-                .set(Some(InternalError(PARSER_COUNTER_NOT_A_FUNCTION)));
+            *self.counter_threw.borrow_mut() = Some(e);
         }
     }
     fn push(&mut self, d: CompilerDiagnostic) {
@@ -288,10 +288,15 @@ impl InternalError {
     /// `normalizeToDiagnostic(GENERIC_PARSING_ERROR, error)` prefixed `Unexpected compilation error: `, with
     /// no location.
     pub(crate) fn diagnostic(self) -> CompilerDiagnostic {
+        Self::diagnostic_of(self.0)
+    }
+
+    /// [`Self::diagnostic`] for a runtime message (a thrown JS value's `String(e.message)`).
+    pub(crate) fn diagnostic_of(msg: &str) -> CompilerDiagnostic {
         let info = &ParserDiagnostics::GENERIC_PARSING_ERROR;
         let message = format!(
             "Unexpected compilation error: {}",
-            lwc_shared::generate_error_message(info, Some(&[self.0]))
+            lwc_shared::generate_error_message(info, Some(&[msg]))
         );
         CompilerDiagnostic::new(Some(info.code), message, info.level, None, None)
     }
@@ -1797,10 +1802,34 @@ fn lower_children<'a>(
 }
 
 /// Parses `source`; complex expression ASTs are allocated in `alloc`, which the IR borrows.
+/// `Err`: an instrumentation callback's throw that escapes the template compiler
+/// ([`lwc_shared::TemplateCatch::Escapes`]).
 pub fn parse_template<'a>(
     alloc: &'a oxc_allocator::Allocator,
     source: &str,
     config: &NormalizedConfig,
+) -> Result<TemplateParseResult<'a>, crate::ConfigError> {
+    let mut counter = None;
+    let r = parse_template_inner(alloc, source, config, &mut counter);
+    let Some(c) = counter else { return Ok(r) };
+    match c.template_catch(PARSER_COUNTER_NOT_A_FUNCTION) {
+        lwc_shared::TemplateCatch::Generic(m) => Ok(TemplateParseResult {
+            root: None,
+            warnings: vec![InternalError::diagnostic_of(&m)],
+        }),
+        lwc_shared::TemplateCatch::Escapes { name, message } => Err(crate::ConfigError {
+            message,
+            name: Some(name),
+        }),
+    }
+}
+
+/// [`parse_template`]; a counter throw is moved into `counter` and the returned result is discarded.
+fn parse_template_inner<'a>(
+    alloc: &'a oxc_allocator::Allocator,
+    source: &str,
+    config: &NormalizedConfig,
+    counter: &mut Option<lwc_shared::CounterError>,
 ) -> TemplateParseResult<'a> {
     let mut warnings = Vec::new();
     let out = parse5::parse_fragment_with_errors(
@@ -1892,7 +1921,7 @@ pub fn parse_template<'a>(
             && !config.experimental_complex_expressions,
         exprs: expression_complex::ExprCache::new(),
         instrumentation: config.instrumentation.clone(),
-        counter_threw: std::cell::Cell::new(None),
+        counter_threw: std::cell::RefCell::new(None),
         src16: source.encode_utf16().collect(),
         seen_ids: HashSet::new(),
         scopes: Vec::new(),
@@ -1909,7 +1938,10 @@ pub fn parse_template<'a>(
                 warnings: cx.diags.into_vec(),
             };
         }
-        Err(e) => return internal_failure(e),
+        Err(e) => {
+            *counter = cx.counter_threw.take();
+            return internal_failure(e);
+        }
     };
     // TS ParserCtx: `preserveComments = root lwc:preserve-comments directive ?? config.preserveHtmlComments`
     // (root_errors already rejected a non-boolean value, so presence means true).
@@ -1942,8 +1974,9 @@ pub fn parse_template<'a>(
         }
     }
     let lowered = lower_children(&kids, config, &mut cx);
-    if let Some(e) = cx.counter_threw.get() {
-        return internal_failure(e);
+    if let Some(c) = cx.counter_threw.take() {
+        *counter = Some(c);
+        return internal_failure(InternalError(PARSER_COUNTER_NOT_A_FUNCTION));
     }
     match lowered {
         Ok(children) => TemplateParseResult {

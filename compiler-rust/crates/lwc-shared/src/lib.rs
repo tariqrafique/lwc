@@ -21,8 +21,8 @@ pub use errors::{
     normalize_to_compiler_error,
 };
 pub use instrumentation::{
-    CompilerMetric, CounterNotCallable, DeprecationId, Instrumentation, InstrumentationEvent,
-    InstrumentationHandle, InstrumentationRecorder,
+    CompilerMetric, CounterError, DeprecationId, Instrumentation, InstrumentationEvent,
+    InstrumentationHandle, InstrumentationRecorder, TemplateCatch, ThrownValue,
 };
 pub use location::{DiagnosticLocation, LineIndex};
 pub mod js;
@@ -564,6 +564,18 @@ impl CompileError {
                 (line, column) => crate::errors::ProducerPosition::Raw { line, column },
             },
         }
+    }
+
+    /// [`Self::babel`] for an error thrown from inside @babel/core's own transform catch (it failed
+    /// while prefixing the filename), so `text` carries no `{filename}: ` prefix.
+    pub fn babel_unprefixed(kind: &str, text: impl Into<String>, filename: &str) -> Self {
+        let mut e = Self::babel(kind, "", filename, None, None);
+        let text = text.into();
+        e.message.clone_from(&text);
+        if let Some(d) = e.diagnostics.first_mut() {
+            d.message = text;
+        }
+        e
     }
 
     /// True for an `@lwc/errors` error raised by an LWC plugin (`CompileError::lwc`, message `LWC####: ...`)

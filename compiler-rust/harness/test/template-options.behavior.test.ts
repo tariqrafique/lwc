@@ -4,6 +4,7 @@
 //   inst/<shape>/<recovery>/<snippet>  instrumentation (AB-0008 G2b): real callbacks and non-callable shapes
 //             (src/instrumentationObserve.ts) × metric snippets (lwc:spread, lwc:render-mode, lwc:dynamic) × erm
 //   inst/real/fixture/<rel>  real callbacks × every template fixture using lwc:spread / lwc:render-mode / lwc:dynamic
+//   inst/throw-<value>/<recovery>/<snippet>  incrementCounter throws <value> (AB-0008 G2b r4) × 4 metric snippets × erm
 //   erm/<v>   experimentalErrorRecoveryMode {true,false,omitted} × upstream transform-html.spec experimentalErrorRecoveryMode
 //             cases (valid, 3 invalid directives, custom element) + transform-css.spec `<` case
 // Goldens: goldens/template-options, JS oracle only (UPDATE_GOLDENS=1, JS backend).
@@ -13,7 +14,7 @@ import { describe, it, beforeAll, expect } from 'vitest';
 import { getBackend, type CompilerBackend } from '../src/backend';
 import { checkGolden, findFiles, errorObservation, errorMultiset } from '../src/optionRows';
 import { observeTemplate, TEMPLATE_ROOT } from '../src/templateObserve';
-import { INSTRUMENTATION_SHAPES, observeInstrumented } from '../src/instrumentationObserve';
+import { INSTRUMENTATION_SHAPES, THROWING_SHAPES, observeInstrumented } from '../src/instrumentationObserve';
 
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/template-options');
 const DYNAMIC = findFiles(TEMPLATE_ROOT, 'actual.html').filter((f) => /lwc:dynamic\b/.test(fs.readFileSync(f, 'utf8'))).map((f) => path.relative(TEMPLATE_ROOT, path.dirname(f)));
@@ -99,6 +100,16 @@ describe('template-options: inst', () => {
                 const key = `inst/${shape}/${label}/${name}`;
                 it(key, () => checkGolden(GOLDEN_DIR, key, observeInstrumented(backend, src, 'foo.html',
                     { namespace: 'x', name: 'foo', experimentalDynamicDirective: true, experimentalErrorRecoveryMode: erm }, make)));
+            }
+        }
+    }
+    // G2b r4: a throwing callback ends the compile with the oracle's coded error (spread.html repro: codegen).
+    for (const [shape, make] of Object.entries(THROWING_SHAPES)) {
+        for (const [label, erm] of [['erm-false', false], ['erm-true', true]] as const) {
+            for (const name of ['spread', 'render-mode', 'dynamic', 'mixed']) {
+                const key = `inst/throw-${shape}/${label}/${name}`;
+                it(key, () => checkGolden(GOLDEN_DIR, key, observeInstrumented(backend, INST_SNIPPETS[name], 'spread.html',
+                    { namespace: 'x', name: 'spread', experimentalDynamicDirective: true, experimentalErrorRecoveryMode: erm }, make)));
             }
         }
     }

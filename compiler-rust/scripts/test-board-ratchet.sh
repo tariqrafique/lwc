@@ -25,6 +25,8 @@ assert_observed() {
 tar -C "$R" --exclude=harness/node_modules --exclude=harness/.pins --exclude=harness/.vitest --exclude=harness/.csr-render-out --exclude=harness/.lbc-out --exclude=harness/.upstream-cmp-out \
   --exclude=harness/.ssr-render-out -cf - harness | tar -C "$T" -xf -
 H="$T/harness"
+# The harness Rust backend imports the shipped binding wrapper from the crate (AB-0008 r4: no harness copy).
+ln -sfn "$R/crates" "$T/crates"
 # board.sh reads SHIM_OWNERS from $here/../OWNERS (the tree board.sh itself lives in). The harness
 # copy's parent is $T, so plant the repo OWNERS there (same as --root using MAIN's board.sh).
 cp "$R/OWNERS" "$T/OWNERS"
@@ -662,6 +664,39 @@ assert_observed "$T/out.plug" "mutation Vite plugin" || true
 if [ "$rc" -ne 0 ] && grep -qE 'RATCHET REGRESSION: js-eval' "$T/out.plug"; then ok "mutation branch Vite plugin strip-throw has no effect (test still fails)"
 else bad "mutation Vite plugin: rc $rc (want non-zero + REGRESSION)"; sed 's/^/       /' "$T/out.plug" | tail -20; fi
 restore
+
+# AB-0008 r4 (G2b-1) end to end: the real board.sh on js-options + js-api over a planted test file. A case outside
+# every js row's filter must fail the board (skip-union); the same file without it must pass.
+restore
+cp "$H/test/js-options.behavior.test.ts" "$T/js-options.orig"
+SU_TEST="$H/test/js-options.behavior.test.ts"
+su_file() {
+  printf '%s\n' "import { describe, it } from 'vitest';" \
+    "describe('js-options: api', () => { it('a', () => {}); });" \
+    "describe('js-options: lws', () => { it('b', () => {}); });" > "$SU_TEST"
+  [ -z "${1:-}" ] || printf '%s\n' "it('$1', () => {});" >> "$SU_TEST"
+}
+# Baseline blocks for the planted file (js-api keeps 'api a', js-options the rest of its -t complement).
+node -e '
+  const fs=require("fs"), f=process.argv[1];
+  const want={"js-options":["js-options\tcounts\t1 0 0","js-options\tpassed\tjs-options: lws b"],"js-api":["js-api\tcounts\t1 0 0","js-api\tpassed\tjs-options: api a"]};
+  const out=[], done=new Set();
+  for (const l of fs.readFileSync(f,"utf8").split("\n")) {
+    const r=l.split("\t")[0];
+    if (want[r]) { if (!done.has(r)) { out.push(...want[r]); done.add(r); } continue; }
+    out.push(l);
+  }
+  if (done.size!==2) process.exit(3); fs.writeFileSync(f,out.join("\n"));
+' "$BL0" || { echo "!! test-board-ratchet: cannot plant js-options/js-api baseline blocks" >&2; exit 2; }
+su_board() { (cd "$H" && env -u BOARD_RATCHET_UPDATE CRATES_ROOT="$R/crates" BOARD_REPO_ROOT="$R" BOARD_LOG_DIR="$T/log.su.$1" ./board.sh js-options js-api) > "$T/out.su.$1" 2>&1; }
+su_file; rc=0; su_board clean || rc=$?
+if [ $rc -eq 0 ] && grep -q 'js-options skip-union: 2 cases, 0 skipped in every row' "$T/out.su.clean"; then ok "skip-union: every js-options case routed -> rc 0"
+else bad "skip-union clean: rc $rc (want 0 + 0 skipped)"; sed 's/^/       /' "$T/out.su.clean" | tail -15; fi
+su_file 'planted unrouted case'; rc=0; su_board plant || rc=$?
+if [ $rc -eq 1 ] && grep -q 'SKIP-UNION: js-options: 1 of 3 case(s) skipped in every row (js-options js-api): "planted unrouted case"' "$T/out.su.plant" \
+  && grep -q 'BOARD FAILED: js-options skip-union' "$T/out.su.plant"; then ok "skip-union: planted unrouted case fails the board -> rc 1"
+else bad "skip-union plant: rc $rc (want 1 + SKIP-UNION)"; sed 's/^/       /' "$T/out.su.plant" | tail -15; fi
+cp "$T/js-options.orig" "$SU_TEST"; restore
 
 echo "test-board-ratchet: $([ $fail -eq 0 ] && echo ok || echo FAILED)"
 exit $fail

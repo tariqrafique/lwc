@@ -41,7 +41,6 @@ fn result_fields(error: Option<JsCompileError>) -> JsCompileResult {
         css_scope_tokens: None,
         warnings: None,
         error,
-        instrumentation_events: None,
         deprecations: None,
     }
 }

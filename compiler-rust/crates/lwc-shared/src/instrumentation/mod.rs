@@ -9,29 +9,109 @@ use crate::CompilerDiagnostic;
 mod generated;
 pub use generated::{CompilerMetric, DeprecationId};
 
-/// `@lwc/errors` `InstrumentationObject`. Rust consumers implement it directly; over napi JS callbacks
-/// can't cross the JSON options object, so D-0205 collects events with [`InstrumentationRecorder`] and
-/// the loader (`wrap.js`) replays them into the caller's callbacks (AB-0008 G2b).
+/// `@lwc/errors` `InstrumentationObject`. Rust consumers implement it directly. Over napi the binding
+/// implements it by calling the caller's JS callbacks synchronously, on the JS thread, during the
+/// compile (AB-0008 G2b r4; no ThreadsafeFunction), so a callback that throws stops the compile where
+/// upstream's does.
 pub trait Instrumentation: Send + Sync {
     /// JS `log(errorInfo, config)`. Upstream compilers never call it today; kept for API parity.
     fn log(&self, _diagnostic: &CompilerDiagnostic) {}
     /// JS `incrementCounter(metric)`.
     fn increment_counter(&self, metric: CompilerMetric);
-    /// `false` when the JS `InstrumentationObject` is present but `incrementCounter` is not a
-    /// function (`instrumentation: {}`): upstream's `instrumentation?.incrementCounter(m)` then throws
-    /// a TypeError at the first metric. Rust implementations are always callable.
-    fn counter_callable(&self) -> bool {
-        true
+    /// Upstream's `instrumentation?.incrementCounter(metric)`, which can throw: the JS object has no
+    /// callable `incrementCounter`, or the callback threw. Rust implementations never fail.
+    fn try_increment_counter(&self, metric: CompilerMetric) -> Result<(), CounterError> {
+        self.increment_counter(metric);
+        Ok(())
     }
 }
 
-/// Upstream `instrumentation?.incrementCounter(metric)` threw `TypeError: ... is not a function`;
-/// each emit site maps it to the error upstream surfaces there.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct CounterNotCallable;
+/// Upstream `instrumentation?.incrementCounter(metric)` threw. Each emit site maps it to the error
+/// upstream surfaces there ([`CounterError::template_catch`], [`CounterError::babel_catch`]).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CounterError {
+    /// `TypeError: ... is not a function` (`instrumentation: {}`, `incrementCounter: 1`, a primitive).
+    NotCallable,
+    /// The callback (or an `incrementCounter` getter) threw this value.
+    Threw(ThrownValue),
+}
 
-/// One `InstrumentationObject` call made during a compile, in call order (D-0205: Rust collects them, the
-/// JS loader replays them into the caller's callbacks).
+/// A JS value thrown by an instrumentation callback, reduced to what upstream's catch sites read.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ThrownValue {
+    /// An object or function: `String(e.name)` and `String(e.message)` (`"undefined"` when absent).
+    Object { name: String, message: String },
+    /// `undefined` or `null` (the JS spelling).
+    Nullish(&'static str),
+    /// A string, number, boolean, bigint or symbol: its `typeof` and `String(value)`.
+    Primitive {
+        type_of: &'static str,
+        display: String,
+    },
+}
+
+/// How upstream's template-compiler `compile` catch (index.ts:76-79,
+/// `normalizeToDiagnostic(GENERIC_PARSING_ERROR, e)`) treats a counter throw.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TemplateCatch {
+    /// Normalized: the template's only diagnostic is LWC1052 with this message argument.
+    Generic(String),
+    /// `normalizeToDiagnostic` itself throws (it reads `e.lwcCode` and `'level' in e`), so this
+    /// `TypeError` escapes the template compiler; @lwc/compiler then wraps it as LWC1008.
+    Escapes { name: &'static str, message: String },
+}
+
+impl CounterError {
+    /// The template-compiler `compile` catch. `not_a_function` is the emit site's TypeError text.
+    pub fn template_catch(&self, not_a_function: &str) -> TemplateCatch {
+        match self {
+            CounterError::NotCallable => TemplateCatch::Generic(not_a_function.to_string()),
+            CounterError::Threw(ThrownValue::Object { message, .. }) => {
+                TemplateCatch::Generic(message.clone())
+            }
+            // getCodeFromError reads `error.lwcCode` first.
+            CounterError::Threw(ThrownValue::Nullish(n)) => TemplateCatch::Escapes {
+                name: "TypeError",
+                message: format!("Cannot read properties of {n} (reading 'lwcCode')"),
+            },
+            // convertErrorToDiagnostic: `'level' in error` on a primitive.
+            CounterError::Threw(ThrownValue::Primitive { display, .. }) => TemplateCatch::Escapes {
+                name: "TypeError",
+                message: format!("Cannot use 'in' operator to search for 'level' in {display}"),
+            },
+        }
+    }
+
+    /// The error leaving Babel when a plugin visitor's counter call throws: @babel/core's transform
+    /// catch runs `e.message = `${filename}: ${e.message}`` (strict mode), then @lwc/compiler normalizes
+    /// it as LWC1007. `not_a_function` is the emit site's TypeError text.
+    pub fn babel_catch(&self, not_a_function: &str, filename: &str) -> crate::CompileError {
+        match self {
+            CounterError::NotCallable => {
+                crate::CompileError::babel("TypeError", not_a_function, filename, None, None)
+            }
+            CounterError::Threw(ThrownValue::Object { name, message }) => {
+                crate::CompileError::babel(name, message.as_str(), filename, None, None)
+            }
+            // Reading `e.message` on undefined / null throws from inside Babel's catch.
+            CounterError::Threw(ThrownValue::Nullish(n)) => crate::CompileError::babel_unprefixed(
+                "TypeError",
+                format!("Cannot read properties of {n} (reading 'message')"),
+                filename,
+            ),
+            // Assigning `e.message` on a primitive throws in strict mode.
+            CounterError::Threw(ThrownValue::Primitive { type_of, display }) => {
+                crate::CompileError::babel_unprefixed(
+                    "TypeError",
+                    format!("Cannot create property 'message' on {type_of} '{display}'"),
+                    filename,
+                )
+            }
+        }
+    }
+}
+
+/// One `InstrumentationObject` call made during a compile, in call order.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InstrumentationEvent {
     /// `log(errorInfo, config)`.
@@ -40,22 +120,13 @@ pub enum InstrumentationEvent {
     IncrementCounter(CompilerMetric),
 }
 
-/// An [`Instrumentation`] that records every call as an [`InstrumentationEvent`].
+/// An [`Instrumentation`] that records every call as an [`InstrumentationEvent`] (Rust callers and tests).
 #[derive(Debug, Default)]
 pub struct InstrumentationRecorder {
     events: std::sync::Mutex<Vec<InstrumentationEvent>>,
-    /// The JS object had no callable `incrementCounter` (see [`Instrumentation::counter_callable`]).
-    counter_missing: bool,
 }
 
 impl InstrumentationRecorder {
-    /// A recorder for a JS `InstrumentationObject` whose `incrementCounter` is (`true`) or is not a function.
-    pub fn for_js(counter_callable: bool) -> Self {
-        Self {
-            events: std::sync::Mutex::default(),
-            counter_missing: !counter_callable,
-        }
-    }
     /// The events recorded so far, in call order; leaves the recorder empty.
     pub fn take(&self) -> Vec<InstrumentationEvent> {
         std::mem::take(&mut *self.events.lock().unwrap_or_else(|e| e.into_inner()))
@@ -75,9 +146,6 @@ impl Instrumentation for InstrumentationRecorder {
     fn increment_counter(&self, m: CompilerMetric) {
         self.push(InstrumentationEvent::IncrementCounter(m))
     }
-    fn counter_callable(&self) -> bool {
-        !self.counter_missing
-    }
 }
 
 /// Shared handle so options stay `Clone + Debug + Eq` (equality is pointer identity).
@@ -88,14 +156,9 @@ impl InstrumentationHandle {
     pub fn new(i: impl Instrumentation + 'static) -> Self {
         Self(std::sync::Arc::new(i))
     }
-    /// `instrumentation?.incrementCounter(metric)`: `Err` (nothing recorded) when the JS object has no
-    /// callable `incrementCounter`, where upstream throws.
-    pub fn increment_counter(&self, metric: CompilerMetric) -> Result<(), CounterNotCallable> {
-        if !self.0.counter_callable() {
-            return Err(CounterNotCallable);
-        }
-        self.0.increment_counter(metric);
-        Ok(())
+    /// `instrumentation?.incrementCounter(metric)`: `Err` where upstream's call throws.
+    pub fn increment_counter(&self, metric: CompilerMetric) -> Result<(), CounterError> {
+        self.0.try_increment_counter(metric)
     }
     pub fn log(&self, d: &CompilerDiagnostic) {
         self.0.log(d)
@@ -148,26 +211,56 @@ mod tests {
         assert!(rec.take().is_empty());
     }
 
+    /// Oracle (scratch/harness/ab-0008-r4-oracle2.log): what each catch site makes of a thrown value.
     #[test]
-    fn missing_js_counter_errs_and_records_nothing() {
-        let rec = std::sync::Arc::new(InstrumentationRecorder::for_js(false));
-        let h = InstrumentationHandle(rec.clone());
+    fn counter_throw_maps_to_upstream_catch_sites() {
+        let obj = CounterError::Threw(ThrownValue::Object {
+            name: "Error".into(),
+            message: "boom".into(),
+        });
+        let s = |v: &str| v.to_string();
+        let prim = |t, d: &str| {
+            CounterError::Threw(ThrownValue::Primitive {
+                type_of: t,
+                display: d.into(),
+            })
+        };
+        assert_eq!(obj.template_catch("nf"), TemplateCatch::Generic(s("boom")));
         assert_eq!(
-            h.increment_counter(CompilerMetric::LwcSpreadDirective),
-            Err(CounterNotCallable)
+            CounterError::NotCallable.template_catch("nf"),
+            TemplateCatch::Generic(s("nf"))
         );
-        assert!(rec.take().is_empty());
-        let rec = std::sync::Arc::new(InstrumentationRecorder::for_js(true));
-        let h = InstrumentationHandle(rec.clone());
         assert_eq!(
-            h.increment_counter(CompilerMetric::LwcSpreadDirective),
-            Ok(())
+            CounterError::Threw(ThrownValue::Nullish("null")).template_catch("nf"),
+            TemplateCatch::Escapes {
+                name: "TypeError",
+                message: s("Cannot read properties of null (reading 'lwcCode')")
+            }
         );
         assert_eq!(
-            rec.take(),
-            vec![InstrumentationEvent::IncrementCounter(
-                CompilerMetric::LwcSpreadDirective
-            )]
+            prim("string", "strboom").template_catch("nf"),
+            TemplateCatch::Escapes {
+                name: "TypeError",
+                message: s("Cannot use 'in' operator to search for 'level' in strboom")
+            }
+        );
+        let e = obj.babel_catch("nf", "a.js");
+        assert_eq!(
+            (e.name.as_deref(), e.message.as_str()),
+            (Some("Error"), "a.js: boom")
+        );
+        let e = prim("bigint", "10").babel_catch("nf", "a.js");
+        assert_eq!(
+            (e.name.as_deref(), e.message.as_str()),
+            (
+                Some("TypeError"),
+                "Cannot create property 'message' on bigint '10'"
+            )
+        );
+        let e = CounterError::Threw(ThrownValue::Nullish("undefined")).babel_catch("nf", "a.js");
+        assert_eq!(
+            e.message,
+            "Cannot read properties of undefined (reading 'message')"
         );
     }
 }

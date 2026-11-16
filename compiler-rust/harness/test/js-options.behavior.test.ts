@@ -10,6 +10,7 @@
 //   epm/<v>       enablePrivateMethods {omitted,false,true} × the #method fixtures + spec snippet
 //   inst/<shape>/<case>  instrumentation (AB-0008 G2b): real callbacks and non-callable shapes
 //                 (src/instrumentationObserve.ts) × spec instrumentation snippet + dynamic-imports fixtures (loader set)
+//   inst/throw-<value>/<case>  incrementCounter throws <value> (G2b r4) × spec snippet + dynamic-imports fixtures
 //   ssrmode/<v>   targetSSR ssrMode {unknown string, null, number, boolean, {}, {a:1}, [], [1]} × spec component
 //                 (generate-markup.ts:75 b.literal: objects/arrays throw a plain Error; G1a-r)
 //   dyn/<v>       dynamicImports {omitted, strictSpecifier omitted, strictSpecifier false} × dynamic-imports fixtures
@@ -20,7 +21,7 @@ import { getBackend, type CompilerBackend } from '../src/backend';
 import { evalJsModule } from '../src/evalJs';
 import { checkGolden, errorObservation, findFiles, apiLabel, apiOpt, type ApiCell } from '../src/optionRows';
 import { oracleRoot } from '../src/oracleRoot';
-import { INSTRUMENTATION_SHAPES, observeInstrumented } from '../src/instrumentationObserve';
+import { INSTRUMENTATION_SHAPES, THROWING_SHAPES, observeInstrumented } from '../src/instrumentationObserve';
 
 const ROOT = `${oracleRoot()}/packages/@lwc/babel-plugin-component/src/__tests__/fixtures`;
 const GOLDEN_DIR = path.resolve(import.meta.dirname, '../goldens/js-options');
@@ -196,6 +197,16 @@ describe('js-options: inst', () => {
             const o = baseOpts(rel) as any;
             const opts = { ...o, dynamicImports: { strictSpecifier: false, ...(o.dynamicImports ?? {}), loader: o.dynamicImports?.loader || '@custom/loader' } };
             it(`inst/${shape}/${rel}`, () => checkGolden(GOLDEN_DIR, `inst/${shape}/${rel}`, observeInstrumented(backend, readFx(rel, 'actual.js'), 'test.js', opts, make)));
+        }
+    }
+    // G2b r4: an incrementCounter that throws ends Babel's traversal with the oracle's LWC1007 (dynamic-import repro).
+    for (const [shape, make] of Object.entries(THROWING_SHAPES)) {
+        it(`inst/throw-${shape}/spec/instrumentation`, () => checkGolden(GOLDEN_DIR, `inst/throw-${shape}/spec/instrumentation`,
+            observeInstrumented(backend, SPEC_INST, 'foo.js', { namespace: 'x', name: 'foo', dynamicImports: loader }, make)));
+        for (const rel of DYN_FIXTURES) {
+            const o = baseOpts(rel) as any;
+            const opts = { ...o, dynamicImports: { strictSpecifier: false, ...(o.dynamicImports ?? {}), loader: o.dynamicImports?.loader || '@custom/loader' } };
+            it(`inst/throw-${shape}/${rel}`, () => checkGolden(GOLDEN_DIR, `inst/throw-${shape}/${rel}`, observeInstrumented(backend, readFx(rel, 'actual.js'), 'test.js', opts, make)));
         }
     }
 });

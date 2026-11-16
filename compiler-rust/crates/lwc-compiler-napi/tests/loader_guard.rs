@@ -1,6 +1,6 @@
 //! Gate G2 (ship-packaging-plan.md §8, AB-D0005 #5): the ESM loader `index.js` only loads the binary
 //! and wraps `transform`. It must not read the environment and must not mention compile option keys
-//! other than the D-0205 replay keys (`instrumentation`, `log`, `incrementCounter`); option
+//! other than the D-0205 seam key (`instrumentation`, moved beside the options); option
 //! decisions belong to Rust. Deprecation *messages* are opaque strings from Rust (D-0212).
 //!
 //! Key set source (S1): the serde option structs in `src/lib.rs` (every `Deserialize` struct/enum field,
@@ -11,8 +11,8 @@ use std::collections::BTreeSet;
 /// Option keys that are JS-only (callbacks), so not in the serde structs (D-0205).
 const NON_SERDE_KEYS: [&str; 3] = ["instrumentation", "log", "incrementCounter"];
 
-/// The loader may mention these keys only to extract callbacks and replay events (G2b).
-const REPLAY_KEYS: &[&str] = &["instrumentation", "log", "incrementCounter"];
+/// The loader may mention this key only to pass the callbacks object beside the options (G2b).
+const SEAM_KEYS: &[&str] = &["instrumentation"];
 
 fn camel(s: &str) -> String {
     let mut out = String::new();
@@ -243,7 +243,7 @@ fn index_js_has_no_env_access_and_no_option_keys() {
         .collect::<Vec<_>>()
         .join("\n");
     let mut keys = option_keys();
-    for k in REPLAY_KEYS {
+    for k in SEAM_KEYS {
         keys.remove(*k);
     }
     let v = violations(&js, &keys);
@@ -251,33 +251,15 @@ fn index_js_has_no_env_access_and_no_option_keys() {
         v.is_empty(),
         "index.js must not inspect options or the environment (AB-D0005 #5): {v:?}"
     );
-    // G2b / D-0205: replaying collected events into real callbacks is a behavior test, the harness
-    // `template-options: inst` / `js-options: inst` rows (oracle call sequence through wrap.js).
+    // G2b / D-0205: real callbacks called during the compile are a behavior test, the harness
+    // `template-options: inst` / `js-options: inst` rows (oracle call sequence and throws through wrap.js).
     let code = code_only(&js);
     assert!(
         !code.contains("ThreadsafeFunction"),
-        "D-0205: replay events in-process; do not use a ThreadsafeFunction"
+        "D-0205: call the callbacks synchronously in-process; do not use a ThreadsafeFunction"
     );
     assert!(
         code.contains("console.warn") && code.contains("deprecations"),
         "index.js must print Rust-decided deprecation messages (D-0212 / G4b)"
     );
-}
-
-/// AB-0008 G2b: the harness Rust backend runs the shipped wrapper through a byte-identical copy (land
-/// self-tests run the harness from a harness-only tree, so it cannot import across `crates/`).
-#[test]
-fn harness_copy_is_byte_identical() {
-    let dir = lwc_shared::cargo_manifest_dir!();
-    for (shipped, copy) in [
-        ("wrap.js", "../../harness/src/napiWrap.js"),
-        ("wrap.d.ts", "../../harness/src/napiWrap.d.ts"),
-    ] {
-        let a = std::fs::read(dir.join(shipped)).unwrap();
-        let b = std::fs::read(dir.join(copy)).unwrap_or_else(|e| panic!("{copy}: {e}"));
-        assert!(
-            a == b,
-            "{copy} must equal crates/lwc-compiler-napi/{shipped} byte for byte"
-        );
-    }
 }

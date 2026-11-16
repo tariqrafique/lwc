@@ -494,7 +494,7 @@ judge_row() {
   fi
   [ ${#why[@]} -eq 0 ] || for w in "${why[@]}"; do rowfail+=("$row: $w (see $out)"); done
 }
-declare -A measured_counts=() obs_written=() obs_sha=() cap_out_for=()
+declare -A measured_counts=() obs_written=() obs_sha=() cap_out_for=() cap_json_for=()
 SEMDIFF_BIN="${SEMDIFF_BIN:-}"
 sdrow=0
 if [ ${#suites[@]} -eq 0 ] && [ "${BOARD_SUITES_EXPLICIT:-}" != 1 ]; then suites=("${ROWS[@]}"); fi
@@ -513,7 +513,7 @@ for s in "${suites[@]}"; do
   unset LBC_SUMMARY
   case "$s" in
     js-api) test=test/js-options.behavior.test.ts; extra=(-t '^js-options: api ');;
-    js-options) extra=(-t '^js-options: (lws|explicit|sourcemap|epm|dyn) ');;
+    js-options) extra=(-t '^js-options: (?!api )');;   # AB-0008 r4: every describe but js-api's, so a new one runs; skip-union below gates it
     template-renderer) test=test/template.behavior.test.ts;;   # D-0217: whole file (was -t 'renderer-hooks/|directive-spread/no-renderer-hook': 14 passed, 554 skipped)
     csr-render) test=test/csr.render.test.ts; export CORPUS=ssr;;
     csr-render-template) test=test/csr.render.test.ts; export CORPUS=template;;
@@ -526,7 +526,7 @@ for s in "${suites[@]}"; do
   esac
   json="$logdir/board-$s-$hash.json"; rm -f "$json"; pat=""; [ ${#extra[@]} -eq 0 ] || pat="${extra[1]}"   # extra is (-t <pattern>) or empty
   vrc=0; SSR_MODE="$mode" run_isolated_vitest "$out" "$json" "$test" "${extra[@]}" || vrc=$?
-  cap_out_for["$s"]="$cap_out"
+  cap_out_for["$s"]="$cap_out"; cap_json_for["$s"]="${cap_json:-}"
   grc=0; lines="$(grep -E '^\s+Tests ' "$cap_out")" || grc=$?
   [ $grc -le 1 ] || { rowfail+=("$s: grep Tests summary failed (rc=$grc)"); lines=""; }
   lines="$(sed 's/^ *//' <<< "$lines")"
@@ -577,6 +577,20 @@ for s in "${suites[@]}"; do
   fi
   judge_row "$s" "$vrc" "$lines" "$err" "$cap_out" "${cap_json:-}" "$pat"
 done
+# AB-0008 r4 (G2b-1): js-options and js-api split test/js-options.behavior.test.ts by -t. A case skipped in both
+# rows runs nowhere: fail the board (skip-union.mjs; its --self-test plants unrouted and it.skip cases).
+if [[ " ${suites[*]} " == *" js-options "* ]] && [[ " ${suites[*]} " == *" js-api "* ]]; then
+  _su=(); for _r in js-options js-api; do
+    if [ -n "${cap_json_for[$_r]:-}" ] && [ -f "${cap_json_for[$_r]}" ]; then _su+=("$_r=${cap_json_for[$_r]}")
+    else rowfail+=("js-options skip-union: no vitest JSON report for row $_r"); fi
+  done
+  if [ ${#_su[@]} -eq 2 ]; then
+    _surc=0; node "$here/scripts/skip-union.mjs" js-options "${_su[@]}" || _surc=$?
+    [ $_surc -eq 0 ] || rowfail+=("js-options skip-union: case(s) skipped in every js row, or reports unusable (rc=$_surc; line above)")
+  fi
+else
+  echo "js-options skip-union: not checked (needs both js-options and js-api rows in this run)"
+fi
 # semantic-diff and semantic-diff-ssr now run as template-diag-semdiff and
 # template-diag-ssr inside the row loop. They still print the footer lines.
 shimgate=0; SHIM_REPO_ROOT="$repo" SHIM_OWNERS="$here/../OWNERS" SHIM_REGISTRY="${SHIM_REGISTRY:-$testdir/shim-registry.tsv}" SHIM_ALLOWLIST="${SHIM_ALLOWLIST:-$testdir/shim-allowlist.tsv}" node "$here/scripts/shim-gate.mjs" || shimgate=1

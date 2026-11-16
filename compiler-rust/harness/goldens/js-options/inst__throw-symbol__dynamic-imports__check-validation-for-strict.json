@@ -1,0 +1,13 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1121
+  ],
+  "line": 3,
+  "errors": [
+    1121
+  ],
+  "message": "SyntaxError: test.js: LWC1121: Invalid import. The argument \"id\" must be a stringLiteral for dynamic imports when strict mode is enabled.\n  1 | export async function test() {\n  2 |   const id = \"foo\";\n> 3 |   const x = await import(id);\n    |                          ^^\n  4 |   return x + \"yay\";\n  5 | }\n  6 |"
+}

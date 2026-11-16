@@ -1123,8 +1123,8 @@ pub(super) fn root_errors(
             // TS applyLwcRenderModeDirective (index.ts:898): counted once the value is valid, before the
             // preserve-comments directive and validateRoot can throw.
             d.count(lwc_shared::CompilerMetric::LwcRenderModeDirective);
-            if let Some(e) = d.counter_threw.get() {
-                return Err(e);
+            if d.counter_threw.borrow().is_some() {
+                return Err(InternalError::new(super::PARSER_COUNTER_NOT_A_FUNCTION));
             }
         }
         if let Some(p) = pick(&mut pas, |x| x == "lwc:preserve-comments") {
