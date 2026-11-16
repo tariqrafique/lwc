@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { transform } from '@lwc/style-compiler';
+import { transform } from 'lwc-compiler-rs';
 
 import { renderStylesheets, hasScopedStaticStylesheets } from '../styles';
 import { RenderContext } from '../render';
@@ -9,7 +9,11 @@ import type { LightningElementConstructor } from '../lightning-element';
 
 describe('styles.ts internals', () => {
     function createCompilerStylesheet(content: string, scoped: boolean = false): Stylesheet {
-        const compiled = transform(content, 'test-component', { scoped });
+        const compiled = transform(content, 'test-component.css', {
+            name: 'component',
+            namespace: 'test',
+            scopedStyles: scoped,
+        }) as { code: string };
 
         const cssMatch = compiled.code.match(/return\s+["'](.*?)["']/s);
         const extractedCss = cssMatch ? cssMatch[1] : content;

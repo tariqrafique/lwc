@@ -31,7 +31,6 @@ async function compileModule(input, targetSSR, format) {
                     loader: fileURLToPath(
                         new URL('../../helpers/loader.js', import.meta.url)
                     ).replaceAll(path.sep, path.posix.sep),
-                    strict: true,
                 },
                 enableSyntheticElementInternals: true,
                 enableDynamicComponents: true,

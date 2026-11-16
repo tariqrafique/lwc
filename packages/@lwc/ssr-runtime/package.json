@@ -53,6 +53,7 @@
         }
     },
     "devDependencies": {
+        "lwc-compiler-rs": "0.1.0",
         "@lwc/shared": "9.5.3",
         "@lwc/engine-core": "9.5.3",
         "@lwc/features": "9.5.3",

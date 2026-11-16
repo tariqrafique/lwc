@@ -25,7 +25,6 @@ const createRollupPlugin = (input, options) => {
         sourcemap: !process.env.COVERAGE,
         dynamicImports: {
             loader: fileURLToPath(new URL('../../helpers/dynamic-loader', import.meta.url)),
-            strict: true,
         },
         enableDynamicComponents: true,
         enableLwcOn: true,

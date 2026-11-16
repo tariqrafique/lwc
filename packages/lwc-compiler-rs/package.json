@@ -1,0 +1,20 @@
+{
+    "name": "lwc-compiler-rs",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Box-local adapter: re-exports the Rust napi loader (transform is sync today; transformSync is the same function until S3 lands).",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./index.d.ts",
+            "default": "./index.js"
+        }
+    },
+    "files": [
+        "index.js",
+        "index.d.ts"
+    ],
+    "dependencies": {
+        "@lwc/errors": "9.5.3"
+    }
+}
