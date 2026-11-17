@@ -447,16 +447,31 @@ impl<'s> Lower<'s> {
                     if !hoist.is_empty() {
                         self.edits.push(Edit::insert(b.span.start + 1, hoist));
                     }
-                    let after_super = b.statements.iter().find_map(|s| match s {
+                    let after_super = b.statements.iter().enumerate().find_map(|(i, s)| match s {
                         Statement::ExpressionStatement(es) => match &es.expression {
                             Expression::CallExpression(c)
                                 if matches!(c.callee, Expression::Super(_)) =>
                             {
-                                Some(es.span.end)
+                                Some((i, es.span.end))
                             }
                             _ => None,
                         },
                         _ => None,
+                    });
+                    // Babel makes the comments between `super(...)` and the next
+                    // statement trailing comments of `super(...)`, so they print
+                    // before the inserted initializers.
+                    let after_super = after_super.map(|(i, end)| {
+                        let next = b
+                            .statements
+                            .get(i + 1)
+                            .map_or(b.span.end - 1, |s| s.span().start);
+                        self.cmts
+                            .iter()
+                            .filter(|c| c.start >= end && c.end <= next)
+                            .map(|c| c.end)
+                            .max()
+                            .map_or(end, |e| e.max(end))
                     });
                     let at = after_super.unwrap_or(b.span.start + 1);
                     self.edits.push(Edit::insert(at, format!("\n{body}\n")));

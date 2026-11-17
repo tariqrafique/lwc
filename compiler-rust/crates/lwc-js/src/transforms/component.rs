@@ -166,8 +166,9 @@ fn export_leading(program: &Program<'_>, src: &str, stmt: &Statement<'_>) -> Opt
     Some((start, src[start as usize..at as usize].to_string()))
 }
 
-/// Add `spec` to an existing `from "lwc"` import. A decorator rewrite of that
-/// import is updated in place so the two edits do not overlap.
+/// Add `spec` to an existing `from "lwc"` import when it is the first statement.
+/// A decorator rewrite of that import is updated in place so the two edits do
+/// not overlap.
 fn merge_lwc_specifier(
     edits: &mut Vec<Edit>,
     program: &Program<'_>,
@@ -180,10 +181,17 @@ fn merge_lwc_specifier(
     }) else {
         return false;
     };
+    // Babel merges into the `lwc` import only when it is the program's first
+    // statement. Otherwise it adds a fresh import at the top of the file,
+    // ahead of any license comment.
+    if program.body.first().map(|s| s.span()) != Some(stmt.span) {
+        return false;
+    }
     if let Some(e) = edits
         .iter_mut()
         .find(|e| e.start == stmt.span.start && e.end == stmt.span.end)
     {
+        // The decorator pass removed the whole import: reuse its place.
         if e.text.is_empty() {
             e.text = format!("import {{ {spec} }} from \"{LWC_PACKAGE_ALIAS}\";");
         } else if let Some(idx) = e.text.rfind('}') {

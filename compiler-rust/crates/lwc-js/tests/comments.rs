@@ -212,3 +212,108 @@ fn parameter_list_keeps_a_block_comment_before_the_paren() {
     let out = rust_code(src);
     assert!(out.contains("fun /*, thisArg */"), "{out}");
 }
+
+/// Only the statement and comment order before the class body, and inside the
+/// constructor: the LWC printer lays out generated objects differently.
+fn check_order(src: &str, keep: impl Fn(&str) -> bool) {
+    let pick = |s: String| -> Vec<String> {
+        canon(&s)
+            .lines()
+            .map(|l| l.trim().replace('"', "'"))
+            .filter(|l| keep(l) && !l.starts_with("/*LWC compiler"))
+            .collect()
+    };
+    assert_eq!(pick(rust_code(src)), pick(oracle_code(src)), "src:\n{src}");
+}
+
+#[test]
+fn comment_after_super_precedes_lowered_fields() {
+    let body = |l: &str| {
+        ["this.", "super", "//", "/*"]
+            .iter()
+            .any(|p| l.starts_with(p))
+    };
+    check_order(
+        "class C extends B {\n  x = 1;\n  constructor() {\n    super();\n    // lead\n    // two\n    this.y;\n  }\n}\n",
+        body,
+    );
+    check_order(
+        "class C extends B {\n  x = 1;\n  constructor() {\n    super(); /* t */\n    this.y;\n  }\n}\n",
+        body,
+    );
+    check_order(
+        "class C extends B {\n  x = 1;\n  constructor() {\n    super();\n    // only\n  }\n}\n",
+        body,
+    );
+}
+
+#[test]
+fn decorator_only_lwc_import_after_a_license() {
+    let head = |l: &str| l.starts_with("import") || l.starts_with("/*") || l.starts_with('*');
+    check_order(
+        "import a from './a';\n/*\n * license\n */\nimport b from './b';\nimport { api } from 'lwc';\nimport c from './c';\nexport default class C extends B {\n  @api x;\n}\n",
+        head,
+    );
+    check_order(
+        "/*\n * license\n */\nimport b from './b';\nimport { api, track } from 'lwc';\nexport default class C extends B {\n  @api x;\n  @track y;\n}\n",
+        head,
+    );
+}
+
+#[test]
+fn decorator_only_lwc_import_is_reused_only_as_the_first_statement() {
+    let head = |l: &str| l.starts_with("import") || l.starts_with("/*") || l.starts_with("//");
+    let body = "export default class C extends B {\n  @api a;\n}\n";
+    for imports in [
+        "import { api } from 'lwc';\nimport x from 'y';\n",
+        "import x from 'y';\nimport { api } from 'lwc';\n",
+        "/* lic */\nimport { api } from 'lwc';\nimport x from 'y';\n",
+        "/* lic */\nimport x from 'y';\nimport { api } from 'lwc';\n",
+        "import x from 'y';\n// c\nimport { api } from 'lwc';\n",
+        "import x from 'y';\nimport z from 'w';\nimport { api } from 'lwc';\n",
+    ] {
+        check_order(&format!("{imports}{body}"), head);
+    }
+}
+
+#[test]
+fn register_component_merges_only_into_a_leading_lwc_import() {
+    let head = |l: &str| l.starts_with("import") || l.starts_with("/*") || l.starts_with("//");
+    for (imports, member) in [
+        (
+            "import { LightningElement, api } from 'lwc';\nimport x from 'y';\n",
+            "@api a;",
+        ),
+        (
+            "import x from 'y';\nimport { LightningElement, api } from 'lwc';\n",
+            "@api a;",
+        ),
+        (
+            "/* lic */\nimport { LightningElement, api } from 'lwc';\nimport x from 'y';\n",
+            "@api a;",
+        ),
+        (
+            "/* lic */\nimport x from 'y';\nimport { LightningElement, api } from 'lwc';\n",
+            "@api a;",
+        ),
+        (
+            "import x from 'y';\nimport { LightningElement } from 'lwc';\n",
+            "a;",
+        ),
+        (
+            "/* lic */\nimport x from 'y';\nimport { LightningElement } from 'lwc';\n",
+            "a;",
+        ),
+        (
+            "/* lic */\nimport x from 'y';\nimport { api, LightningElement } from 'lwc';\n",
+            "@api a;",
+        ),
+    ] {
+        check_order(
+            &format!(
+                "{imports}export default class C extends LightningElement {{\n  {member}\n}}\n"
+            ),
+            head,
+        );
+    }
+}
