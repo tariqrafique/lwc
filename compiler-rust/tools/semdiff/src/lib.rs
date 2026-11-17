@@ -13,12 +13,15 @@
 //!      explicit `;` (only after steps 2–3, so an AST difference never reaches them). ContentEq and the printer both
 //!      drop more spelling than D-0196 lists as unobservable (identifier escapes,
 //!      member form); the default remains observed;
-//!   5. the comment texts, in source order, are identical, and each comment sits at the same aligned position (the
-//!      number of matched token pairs before it). When an import-merge rule dropped import tokens, a comment inside
+//!   5. the comment texts are identical, and each comment sits in the same gap: between the same two matched token
+//!      pairs, taken as its nearest matched neighbours in its own source (tokens that a D-0258 rule or R-ARROW-PAREN
+//!      skips, and tokens a rule dropped, are passed over). A rewrite can reorder statements, so the neighbours are
+//!      found by source offset, not by position in the rewritten stream. Comments are compared per gap, then in source
+//!      order within a gap, never by text alone. When an import-merge rule dropped import tokens, a comment inside
 //!      the import zone (first import start to last import end) has no matched token to anchor to, so its place is
 //!      its count of zone tokens. That place is compared only when the zone tokens are identical on both sides;
 //!      otherwise the pair is UNCLASSIFIED (comments-differ), never printer-equal. Comments before or after the zone
-//!      keep their matched-pair position. Comments are observable via Function#toString (D-0196).
+//!      keep their gap. Comments are observable via Function#toString (D-0196).
 //!
 //! Whitespace (never a token) and string quote/escape spelling stay unobservable. Anything else is UNCLASSIFIED with a
 //! reason. The rewrite leg never emits DIFFERENT: DIFFERENT needs the execution leg (SD-2, `exec-differs`) to have
@@ -616,35 +619,67 @@ fn token_or_comment(
     }
 }
 
-/// A comment's text with its position: the matched-pair count, then its place relative to the import zone (see
-/// `zone_place`; 0 unless the import tokens were dropped).
-type Anchored = (String, (usize, usize));
+/// Where a comment sits: the gap between two matched token pairs, then its place relative to the import zone (see
+/// `zone_place`; 0 unless the import tokens were dropped). `before` and `after` are indices into the matched pairs,
+/// with -1 for the start of the stream and the pair count for its end.
+#[derive(Clone, Copy, PartialEq, Eq)]
+struct Gap {
+    before: isize,
+    after: isize,
+    place: usize,
+}
 
-/// Each comment's text with its position in the aligned token stream: the number of matched token pairs whose token
-/// starts before the comment. Equal positions on both sides mean the comment sits between the same matched tokens.
-/// Tokens the D-0258 rules skip are not matched pairs, so they count as gaps and cannot shift a position.
+type Anchored = (String, Gap);
+
+/// Each comment's text with its gap, ordered by gap and then by source order within a gap (never by text).
+///
+/// The gap is the pair of matched token pairs that the comment sits between in this side's own source: the nearest
+/// matched token before it and the nearest after it, in source order. `side.tokens` is in rewritten statement order, but
+/// source offsets still say which tokens neighbour the comment. A matched pair is the same token position on both sides,
+/// so equal gaps mean the comment has the same two neighbours in both sources, whichever way a rewrite reordered the
+/// statements around them. A comment moved to a different statement, into or out of a body, or across a hoisted
+/// function changes a neighbour, so its gap changes.
+///
+/// Tokens the D-0258 rules skip (a trailing comma, an ASI `;`) and the tokens R-ARROW-PAREN skips are retained but not
+/// matched pairs. They are not neighbours: the search passes over them, so a comment cannot move across a matched token
+/// unnoticed, and moving across only skipped tokens is not a move (D-0258). Tokens a rule dropped from `side.tokens`
+/// (import tokens, redundant parens, last-key spans, shorthand `: name`) are likewise passed over.
 fn comment_anchors(
     side: &Side,
     pairs: &[(usize, usize)],
     pick: fn(&(usize, usize)) -> usize,
 ) -> Vec<Anchored> {
-    side.comments
+    let mut pair_of: Vec<Option<usize>> = vec![None; side.tokens.len()];
+    for (k, p) in pairs.iter().enumerate() {
+        pair_of[pick(p)] = Some(k);
+    }
+    let mut source: Vec<usize> = (0..side.tokens.len()).collect();
+    source.sort_by_key(|&i| side.tokens[i].start);
+    let mut out: Vec<Anchored> = side
+        .comments
         .iter()
         .zip(&side.comment_starts)
         .zip(&side.comment_place)
         .map(|((text, &start), &place)| {
-            let at = pairs
-                .iter()
-                .filter(|p| side.tokens[pick(p)].start < start)
-                .count();
-            let place = if side.imports_dropped { place } else { 0 };
-            (text.clone(), (at, place))
+            let end = start + text.len() as u32;
+            let lo = source.partition_point(|&i| side.tokens[i].start < start);
+            let hi = source.partition_point(|&i| side.tokens[i].start < end);
+            let before = source[..lo].iter().rev().find_map(|&i| pair_of[i]);
+            let after = source[hi..].iter().find_map(|&i| pair_of[i]);
+            let gap = Gap {
+                before: before.map_or(-1, |k| k as isize),
+                after: after.map_or(pairs.len() as isize, |k| k as isize),
+                place: if side.imports_dropped { place } else { 0 },
+            };
+            (text.clone(), gap)
         })
-        .collect()
+        .collect();
+    out.sort_by_key(|(_, g)| (g.before, g.after));
+    out
 }
 
 /// Block-comment continuation indent before `*` is the only comment difference this erases. A comment must also sit
-/// at the same aligned position (see `comment_anchors`); its text alone is not its identity.
+/// in the same gap (see `comment_anchors`); its text alone is not its identity.
 fn comments_match(
     a: &[Anchored],
     b: &[Anchored],

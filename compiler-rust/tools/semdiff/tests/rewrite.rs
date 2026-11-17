@@ -265,3 +265,197 @@ fn positive_whitespace_around_comment_between_same_module_imports_is_equivalent(
         (Class::EquivalentByRewrite, "printer-equal".into())
     );
 }
+
+// R-HOIST-DECL moves function declarations to the front. A comment is compared at its position in the rewritten token
+// stream, so a comment that sat in one hoisted function must not pass as sitting in another.
+#[test]
+fn negative_comment_moved_between_hoisted_functions_is_not_equivalent() {
+    // The hoist swaps `a` and `b`. The comment moves from `a` to `b`, so the function that holds it changes.
+    let a = "function b(){}\nfunction a(){/*c*/}";
+    let b = "function a(){}\nfunction b(){/*c*/}";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}
+
+#[test]
+fn negative_lwc_banner_moved_between_hoisted_functions_is_not_equivalent() {
+    // The banner is read back via Function#toString (see negative_comment_change_not_equivalent). Moving it from `tmpl`
+    // into `x` changes what `tmpl` reports, even though the hoist makes the printed texts agree.
+    let a = "function x(){return 1;}\nfunction tmpl(){/*LWC compiler v9.5.3*/ return 1;}\nexport default tmpl;\n";
+    let b = "function tmpl(){return 1;}\nfunction x(){/*LWC compiler v9.5.3*/ return 1;}\nexport default tmpl;\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}
+
+#[test]
+fn negative_gap_comment_moved_across_hoisted_function_is_not_equivalent() {
+    // The gap comment is before `a` on one side and after it on the other. The hoist moves `a` ahead of `x()`.
+    let a = "x();\n/*g*/\nfunction a(){}\nexport { a };\n";
+    let b = "function a(){}\nx();\n/*g*/\nexport { a };\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}
+
+#[test]
+fn positive_comment_inside_a_hoisted_function_is_equivalent() {
+    // The comment stays inside `b`, at the same spot in it. Only the two function declarations swap.
+    let a = "function b(){ /*c*/ }\nfunction a(){}\nx();\n";
+    let b = "function a(){}\nfunction b(){ /*c*/ }\nx();\n";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+// A comment is placed by the two matched token pairs it sits between in its own source. R-HOIST-DECL reorders the
+// token stream, but a comment with the same two neighbours on both sides is at the same place on both.
+#[test]
+fn positive_gap_comment_before_hoisted_function_is_equivalent() {
+    // Byte-identical inputs. The hoist moves `a` ahead of `x()` on both sides, and nothing differs.
+    let src = "x();\n/*g*/\nfunction a(){}\nexport { a };\n";
+    assert_eq!(
+        class(src, src),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+#[test]
+fn positive_gap_comment_before_hoisted_function_ignores_whitespace() {
+    let a = "x();\n/*g*/\nfunction a(){}\nexport { a };\n";
+    let b = "x(); /*g*/ function a(){}\n\n\nexport {a};";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+#[test]
+fn positive_leading_comment_before_hoisted_function_is_equivalent() {
+    // The comment leads `b` on both sides and `b` is hoisted on both.
+    let src = "/*c*/\nfunction b(){}\nfunction a(){}\nexport { a, b };\n";
+    assert_eq!(
+        class(src, src),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+    // Only `a` moves relative to `x()`. The comment leads `b` on both sides.
+    let a = "/*c*/\nfunction b(){}\nfunction a(){}\nx();\n";
+    let b = "/*c*/\nfunction b(){}\nx();\nfunction a(){}\n";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+#[test]
+fn positive_same_comment_in_two_hoisted_functions_is_equivalent() {
+    // The hoist swaps `a` and `b`. Each keeps its own `/*x*/`, so comparing the comments in source order is wrong.
+    let a = "function b(){/*x*/}\nfunction a(){/*x*/}\nexport { a, b };\n";
+    let b = "function a(){/*x*/}\nfunction b(){/*x*/}\nexport { a, b };\n";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+#[test]
+fn negative_same_text_moved_between_hoisted_functions_is_not_equivalent() {
+    // Equal comment multisets, but `/*x*/` sits in `b` on one side and in `a` on the other.
+    let a = "function b(){/*x*/}\nfunction a(){}\nexport { a, b };\n";
+    let b = "function a(){/*x*/}\nfunction b(){}\nexport { a, b };\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}
+
+#[test]
+fn negative_two_comments_in_one_gap_swapped_is_not_equivalent() {
+    // Same gap, same texts, other order. Comments must be ordered by gap and then by source order, never by text.
+    let a = "x();\n/*a*/ /*b*/\ny();\n";
+    let b = "x();\n/*b*/ /*a*/\ny();\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+    // Same, inside a hoisted function.
+    let a = "function b(){ /*a*/ /*b*/ }\nfunction a(){}\nx();\n";
+    let b = "function a(){}\nfunction b(){ /*b*/ /*a*/ }\nx();\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}
+
+#[test]
+fn positive_comment_next_to_a_skipped_trailing_comma_in_a_hoisted_function_is_equivalent() {
+    // The trailing comma is skipped (D-0258), so it is not a matched pair. The comment sits between `1` and `]`.
+    let a = "function b(){ return [1, /*c*/]; }\nfunction a(){}\nexport { a, b };\n";
+    let b = "function a(){}\nfunction b(){ return [1 /*c*/]; }\nexport { a, b };\n";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+#[test]
+fn negative_comment_moved_across_a_matched_token_next_to_a_skipped_comma_is_not_equivalent() {
+    // The comment crosses `2`, a matched token, so it is not the skipped comma that moved.
+    let a = "function b(){ return [1, /*c*/ 2,]; }\nfunction a(){}\nexport { a, b };\n";
+    let b = "function a(){}\nfunction b(){ return [1, 2 /*c*/,]; }\nexport { a, b };\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}
+
+#[test]
+fn positive_comment_next_to_a_skipped_asi_semicolon_before_a_hoisted_function_is_equivalent() {
+    // `x()` has an ASI `;` on one side. The skipped `;` is not a matched pair, so the comment sits after `)`.
+    let a = "x()\n/*g*/\nfunction a(){}\nexport { a };\n";
+    let b = "x();\n/*g*/\nfunction a(){}\nexport { a };\n";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+#[test]
+fn zone_and_gap_checks_both_apply_to_a_comment_with_a_hoist_present() {
+    let zone = "import { a } from \"m\";\n/*c*/\nimport { b } from \"m\";\nx();\nfunction f(){}\nexport { a, b };\n";
+    assert_eq!(
+        class(zone, zone),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+    // Whitespace only.
+    let spaced = "import { a } from \"m\"; /*c*/ import { b } from \"m\";\nx();\nfunction f(){}\nexport { a, b };\n";
+    assert_eq!(
+        class(zone, spaced),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+    // The comment leaves the import zone. Its neighbours stay the same, so only the zone place tells them apart.
+    let out_of_zone = "import { a } from \"m\";\nimport { b } from \"m\";\n/*c*/\nx();\nfunction f(){}\nexport { a, b };\n";
+    assert_eq!(
+        class(zone, out_of_zone),
+        (Class::Unclassified, "comments-differ".into())
+    );
+    // The zone comment agrees, but a second comment crosses the hoisted function. Only the gap check sees that.
+    let before_f = "import { a } from \"m\";\n/*c*/\nimport { b } from \"m\";\nx();\n/*d*/\nfunction f(){}\nexport { a, b };\n";
+    let after_f = "import { a } from \"m\";\n/*c*/\nimport { b } from \"m\";\nx();\nfunction f(){}\n/*d*/\nexport { a, b };\n";
+    assert_eq!(
+        class(before_f, after_f),
+        (Class::Unclassified, "comments-differ".into())
+    );
+}
+
+// R-ARROW-PAREN skips the parentheses around a lone parameter, never the parameter itself.
+#[test]
+fn positive_comment_moved_across_arrow_parens_only_is_equivalent() {
+    // The comment sits between `=` and the name on both sides. Only the optional parens differ.
+    let a = "export const f = (/*c*/x) => x;\n";
+    let b = "export const f = /*c*/x => x;\n";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+    let a = "export const f = (x /*c*/) => x;\n";
+    let b = "export const f = x /*c*/ => x;\n";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+#[test]
+fn negative_comment_moved_across_an_arrow_parameter_name_is_not_equivalent() {
+    // The comment crosses `x`, which is a matched token even though the parens around it are skipped.
+    let a = "export const f = (/*c*/x) => x;\n";
+    let b = "export const f = x /*c*/ => x;\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+    let b = "export const f = (x /*c*/) => x;\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}

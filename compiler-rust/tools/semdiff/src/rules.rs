@@ -375,7 +375,7 @@ fn skip_trailing(toks: &[Tok], i: usize, program: &Program<'_>) -> bool {
 /// `id@rev` of each rule that skipped at least one token, in first-seen order.
 ///
 /// On success returns the matched index pairs `(i in a, j in b)` in order. Skipped tokens are not pairs, so a
-/// comment's position (see `lib.rs`) is measured in matched pairs and a skip cannot shift it.
+/// comment's gap (see `comment_anchors` in `lib.rs`) is between matched pairs and a skip cannot shift it.
 pub(crate) fn first_token_diff(
     a: &[Tok],
     b: &[Tok],
@@ -443,8 +443,9 @@ fn first_token_diff_with(
                     continue;
                 }
                 if en.arrow_paren {
-                    if let Some((ni, nj)) = align_arrow_paren(a, i, b, j) {
+                    if let Some((ni, nj, name)) = align_arrow_paren(a, i, b, j) {
                         note(applied, tagged_starting("R-ARROW-PAREN"));
+                        pairs.push(name);
                         i = ni;
                         j = nj;
                         continue;
@@ -460,7 +461,14 @@ fn first_token_diff_with(
 
 /// `(ident) =>` and `ident =>` are the same arrow. The paren side's index moves to the `=>`,
 /// and the bare side's index moves to its `=>`. A parameter list, default, rest, or pattern is not this shape.
-fn align_arrow_paren(a: &[Tok], i: usize, b: &[Tok], j: usize) -> Option<(usize, usize)> {
+/// Also returns the two `ident` tokens as a matched pair: the parens are skipped, but the name is not, so a comment
+/// cannot move across it unnoticed.
+fn align_arrow_paren(
+    a: &[Tok],
+    i: usize,
+    b: &[Tok],
+    j: usize,
+) -> Option<(usize, usize, (usize, usize))> {
     fn name_token(t: &Tok) -> bool {
         t.text
             .starts_with(|c: char| c == '_' || c == '$' || c.is_ascii_alphabetic())
@@ -476,10 +484,10 @@ fn align_arrow_paren(a: &[Tok], i: usize, b: &[Tok], j: usize) -> Option<(usize,
         matches!((toks.get(i), toks.get(i + 1)), (Some(id), Some(ar)) if name_token(id) && ar.kind == Kind::Arrow)
     }
     if wrapped(a, i) && bare(b, j) && a[i + 1].text == b[j].text {
-        return Some((i + 3, j + 1));
+        return Some((i + 3, j + 1, (i + 1, j)));
     }
     if wrapped(b, j) && bare(a, i) && b[j + 1].text == a[i].text {
-        return Some((i + 1, j + 3));
+        return Some((i + 1, j + 3, (i, j + 1)));
     }
     None
 }
