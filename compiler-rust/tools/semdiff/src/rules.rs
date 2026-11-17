@@ -373,13 +373,16 @@ fn skip_trailing(toks: &[Tok], i: usize, program: &Program<'_>) -> bool {
 
 /// Two-pointer comparison: `Tok::same`, plus skips allowed by the enabled D-0258 rules. `applied` collects the
 /// `id@rev` of each rule that skipped at least one token, in first-seen order.
+///
+/// On success returns the matched index pairs `(i in a, j in b)` in order. Skipped tokens are not pairs, so a
+/// comment's position (see `lib.rs`) is measured in matched pairs and a skip cannot shift it.
 pub(crate) fn first_token_diff(
     a: &[Tok],
     b: &[Tok],
     applied: &mut Vec<String>,
     prog_a: &Program<'_>,
     prog_b: &Program<'_>,
-) -> Option<Value> {
+) -> Result<Vec<(usize, usize)>, Value> {
     first_token_diff_with(a, b, applied, &enabled(), prog_a, prog_b)
 }
 
@@ -390,7 +393,7 @@ pub(crate) fn first_token_diff_forcing(
     force: &[&str],
     prog_a: &Program<'_>,
     prog_b: &Program<'_>,
-) -> Option<Value> {
+) -> Result<Vec<(usize, usize)>, Value> {
     first_token_diff_with(a, b, applied, &enable_forcing(force), prog_a, prog_b)
 }
 
@@ -401,21 +404,23 @@ fn first_token_diff_with(
     en: &Enable,
     prog_a: &Program<'_>,
     prog_b: &Program<'_>,
-) -> Option<Value> {
+) -> Result<Vec<(usize, usize)>, Value> {
     let clip = |t: Option<&Tok>| t.map(|t| t.text.chars().take(200).collect::<String>());
     let note = |applied: &mut Vec<String>, id: String| {
         if !applied.iter().any(|x| x == &id) {
             applied.push(id);
         }
     };
+    let mut pairs = Vec::new();
     let (mut i, mut j) = (0usize, 0usize);
     loop {
         match (a.get(i), b.get(j)) {
             (Some(x), Some(y)) if x.same(y) => {
+                pairs.push((i, j));
                 i += 1;
                 j += 1;
             }
-            (None, None) => return None,
+            (None, None) => return Ok(pairs),
             _ => {
                 if en.comma && skip_trailing(a, i, prog_a) {
                     note(applied, tagged_starting("R-TRAILING-COMMA"));
@@ -445,7 +450,7 @@ fn first_token_diff_with(
                         continue;
                     }
                 }
-                return Some(
+                return Err(
                     json!({"coords": "tokens", "index": i.max(j), "oracle": clip(a.get(i)), "rust": clip(b.get(j))}),
                 );
             }

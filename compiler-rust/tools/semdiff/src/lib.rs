@@ -147,6 +147,8 @@ struct Side {
     parse_errors: usize,
     printed: Option<String>,
     comments: Vec<String>,
+    /// Source offset of each comment, parallel to `comments` (its position in the source, not the reprint).
+    comment_starts: Vec<u32>,
     tokens: Vec<Tok>,
 }
 
@@ -211,11 +213,12 @@ fn parse<'a>(alloc: &'a Allocator, src: &'a str) -> (Program<'a>, Side) {
                 .flatten(),
         })
         .collect();
-    let comments = program
+    let comments: Vec<String> = program
         .comments
         .iter()
         .map(|c| c.span.source_text(src).to_string())
         .collect();
+    let comment_starts: Vec<u32> = program.comments.iter().map(|c| c.span.start).collect();
     let printed = (parse_errors == 0).then(|| {
         let opts = CodegenOptions {
             comments: CommentOptions::disabled(),
@@ -230,6 +233,7 @@ fn parse<'a>(alloc: &'a Allocator, src: &'a str) -> (Program<'a>, Side) {
             parse_errors,
             printed,
             comments,
+            comment_starts,
             tokens,
         },
     )
@@ -492,7 +496,7 @@ fn token_or_comment(
             (en.comment_star, en.inert_line)
         }
     };
-    if let Some(d) = match force {
+    let aligned = match force {
         Some(f) => crate::rules::first_token_diff_forcing(
             &o.tokens,
             &r.tokens,
@@ -502,26 +506,54 @@ fn token_or_comment(
             prog_r,
         ),
         None => crate::rules::first_token_diff(&o.tokens, &r.tokens, rules_applied, prog_o, prog_r),
-    } {
-        *first_diff = d;
-        (Class::Unclassified, Reason::TokensDiffer)
-    } else if !comments_match(
-        &o.comments,
-        &r.comments,
-        comment_star,
-        inert_line,
-        rules_applied,
-    ) {
+    };
+    let pairs = match aligned {
+        Ok(pairs) => pairs,
+        Err(d) => {
+            *first_diff = d;
+            return (Class::Unclassified, Reason::TokensDiffer);
+        }
+    };
+    let (ca, cb) = (
+        comment_anchors(o, &pairs, |p| p.0),
+        comment_anchors(r, &pairs, |p| p.1),
+    );
+    if !comments_match(&ca, &cb, comment_star, inert_line, rules_applied) {
         (Class::Unclassified, Reason::CommentsDiffer)
     } else {
         (Class::EquivalentByRewrite, Reason::PrinterEqual)
     }
 }
 
-/// Block-comment continuation indent before `*` is the only comment difference this erases.
+/// A comment's text with its position in the aligned token stream (see `comment_anchors`).
+type Anchored = (String, usize);
+
+/// Each comment's text with its position in the aligned token stream: the number of matched token pairs whose token
+/// starts before the comment. Equal positions on both sides mean the comment sits between the same matched tokens.
+/// Tokens the D-0258 rules skip are not matched pairs, so they count as gaps and cannot shift a position.
+fn comment_anchors(
+    side: &Side,
+    pairs: &[(usize, usize)],
+    pick: fn(&(usize, usize)) -> usize,
+) -> Vec<Anchored> {
+    side.comments
+        .iter()
+        .zip(&side.comment_starts)
+        .map(|(text, &start)| {
+            let at = pairs
+                .iter()
+                .filter(|p| side.tokens[pick(p)].start < start)
+                .count();
+            (text.clone(), at)
+        })
+        .collect()
+}
+
+/// Block-comment continuation indent before `*` is the only comment difference this erases. A comment must also sit
+/// at the same aligned position (see `comment_anchors`); its text alone is not its identity.
 fn comments_match(
-    a: &[String],
-    b: &[String],
+    a: &[Anchored],
+    b: &[Anchored],
     star: bool,
     inert: bool,
     applied: &mut Vec<String>,
@@ -529,9 +561,17 @@ fn comments_match(
     if a == b {
         return true;
     }
-    let (af, bf, dropped): (Vec<String>, Vec<String>, bool) = if inert {
-        let af: Vec<String> = a.iter().filter(|c| !is_inert_line(c)).cloned().collect();
-        let bf: Vec<String> = b.iter().filter(|c| !is_inert_line(c)).cloned().collect();
+    let (af, bf, dropped): (Vec<Anchored>, Vec<Anchored>, bool) = if inert {
+        let af: Vec<Anchored> = a
+            .iter()
+            .filter(|(c, _)| !is_inert_line(c))
+            .cloned()
+            .collect();
+        let bf: Vec<Anchored> = b
+            .iter()
+            .filter(|(c, _)| !is_inert_line(c))
+            .cloned()
+            .collect();
         let dropped = af.len() != a.len() || bf.len() != b.len();
         (af, bf, dropped)
     } else {
@@ -543,9 +583,11 @@ fn comments_match(
     let star_hit = af
         .iter()
         .zip(&bf)
-        .any(|(x, y)| x != y && norm_block_comment(x) == norm_block_comment(y));
-    let same = af.iter().zip(&bf).all(|(x, y)| {
-        if x == y {
+        .any(|((x, _), (y, _))| x != y && norm_block_comment(x) == norm_block_comment(y));
+    let same = af.iter().zip(&bf).all(|((x, xa), (y, ya))| {
+        if xa != ya {
+            false
+        } else if x == y {
             true
         } else if star {
             norm_block_comment(x) == norm_block_comment(y)

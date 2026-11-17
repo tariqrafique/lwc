@@ -148,3 +148,81 @@ fn positive_string_quote_and_escape_spelling_is_unobservable() {
         );
     }
 }
+
+// Comment placement. D-0196 observes comments in order, and the printer (comments off) drops them, so the
+// position of each comment relative to the compared tokens must come from the source, not the reprint.
+#[test]
+fn negative_comment_moved_within_declaration_is_not_equivalent() {
+    // Same comment text, same printed text, same token spellings; only its position differs.
+    let a = "const a = /*c*/ 1;\nexport { a };\n";
+    let b = "const /*c*/ a = 1;\nexport { a };\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}
+
+#[test]
+fn negative_comment_moved_into_or_out_of_function_body_is_not_equivalent() {
+    // Moving a comment into a body changes Function#toString (the engine-visible channel for comments).
+    let outside = "/*c*/\nfunction f() {\n  return 1;\n}\nexport { f };\n";
+    let inside = "function f() {\n  /*c*/\n  return 1;\n}\nexport { f };\n";
+    assert_eq!(
+        class(outside, inside),
+        (Class::Unclassified, "comments-differ".into())
+    );
+    assert_eq!(
+        class(inside, outside),
+        (Class::Unclassified, "comments-differ".into())
+    );
+}
+
+#[test]
+fn positive_whitespace_around_a_comment_is_equivalent() {
+    let a = "const a = /*c*/ 1;\nexport { a };\n";
+    let b = "const a=/*c*/1;\n\n\nexport {a};\n";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+#[test]
+fn positive_trailing_comma_next_to_a_comment_is_equivalent() {
+    // D-0258: the trailing comma is skipped by the token walk. The skip must not move the comment's position.
+    let a = "const a = [1, /*c*/];\nexport { a };\n";
+    let b = "const a = [1 /*c*/];\nexport { a };\n";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+#[test]
+fn negative_comment_moved_across_a_trailing_comma_element_is_not_equivalent() {
+    let a = "const a = [/*c*/ 1,];\nexport { a };\n";
+    let b = "const a = [1, /*c*/];\nexport { a };\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}
+
+// Literal spelling. Numeric, BigInt, regex and template spelling are compared from the source token text; the
+// reprint must not be the only check for them.
+#[test]
+fn negative_number_and_bigint_spelling_is_observed() {
+    for (a, b) in [
+        ("const n = 0x10n;", "const n = 16n;"),
+        ("const n = 1.0;", "const n = 1;"),
+        ("const n = 1_000;", "const n = 1000;"),
+    ] {
+        assert_eq!(class(a, b).0, Class::Unclassified, "{a:?} vs {b:?}");
+    }
+}
+
+#[test]
+fn negative_regex_spelling_is_observed() {
+    assert_eq!(
+        class("const r = /\\x41/;", "const r = /A/;").0,
+        Class::Unclassified
+    );
+    assert_eq!(
+        class("const r = /a/g;", "const r = /a/gi;").0,
+        Class::Unclassified
+    );
+}
