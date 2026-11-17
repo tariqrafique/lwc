@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./tag-with-namespace.css",
+    "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate",
+    "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-ed3iv0kbet",
+    "lwc-ed3iv0kbet-host",
+    "x-tag-with-namespace_tag-with-namespace",
+    "x-tag-with-namespace_tag-with-namespace-host"
+  ]
+}

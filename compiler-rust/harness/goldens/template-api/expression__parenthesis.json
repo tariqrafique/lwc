@@ -1,0 +1,392 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parenthesis.css",
+   "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6uuifvb6qqe",
+   "lwc-6uuifvb6qqe-host",
+   "x-parenthesis_parenthesis",
+   "x-parenthesis_parenthesis-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6uuifvb6qqe"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parenthesis.css",
+   "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6uuifvb6qqe",
+   "lwc-6uuifvb6qqe-host",
+   "x-parenthesis_parenthesis",
+   "x-parenthesis_parenthesis-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-parenthesis_parenthesis"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parenthesis.css",
+   "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6uuifvb6qqe",
+   "lwc-6uuifvb6qqe-host",
+   "x-parenthesis_parenthesis",
+   "x-parenthesis_parenthesis-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-parenthesis_parenthesis"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parenthesis.css",
+   "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6uuifvb6qqe",
+   "lwc-6uuifvb6qqe-host",
+   "x-parenthesis_parenthesis",
+   "x-parenthesis_parenthesis-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6uuifvb6qqe"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parenthesis.css",
+   "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6uuifvb6qqe",
+   "lwc-6uuifvb6qqe-host",
+   "x-parenthesis_parenthesis",
+   "x-parenthesis_parenthesis-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6uuifvb6qqe"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parenthesis.css",
+   "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6uuifvb6qqe",
+   "lwc-6uuifvb6qqe-host",
+   "x-parenthesis_parenthesis",
+   "x-parenthesis_parenthesis-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6uuifvb6qqe"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parenthesis.css",
+   "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6uuifvb6qqe",
+   "lwc-6uuifvb6qqe-host",
+   "x-parenthesis_parenthesis",
+   "x-parenthesis_parenthesis-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6uuifvb6qqe"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parenthesis.css",
+   "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6uuifvb6qqe",
+   "lwc-6uuifvb6qqe-host",
+   "x-parenthesis_parenthesis",
+   "x-parenthesis_parenthesis-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6uuifvb6qqe"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parenthesis.css",
+   "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6uuifvb6qqe",
+   "lwc-6uuifvb6qqe-host",
+   "x-parenthesis_parenthesis",
+   "x-parenthesis_parenthesis-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6uuifvb6qqe"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parenthesis.css",
+   "./parenthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6uuifvb6qqe",
+   "lwc-6uuifvb6qqe-host",
+   "x-parenthesis_parenthesis",
+   "x-parenthesis_parenthesis-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6uuifvb6qqe"
+  }
+ }
+}

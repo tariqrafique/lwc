@@ -1,0 +1,422 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-mixed-slot-content.css",
+   "./parent-mixed-slot-content.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s5q7c313i4",
+   "lwc-3s5q7c313i4-host",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "h",
+   "sp",
+   "ssf",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<span${3}>Chocolatier</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s5q7c313i4"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-mixed-slot-content.css",
+   "./parent-mixed-slot-content.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s5q7c313i4",
+   "lwc-3s5q7c313i4-host",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "h",
+   "sp",
+   "ssf",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<span${3}>Chocolatier</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-parent-mixed-slot-content_parent-mixed-slot-content"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-mixed-slot-content.css",
+   "./parent-mixed-slot-content.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s5q7c313i4",
+   "lwc-3s5q7c313i4-host",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "h",
+   "sp",
+   "ssf",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<span${3}>Chocolatier</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-parent-mixed-slot-content_parent-mixed-slot-content"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-mixed-slot-content.css",
+   "./parent-mixed-slot-content.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s5q7c313i4",
+   "lwc-3s5q7c313i4-host",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "h",
+   "sp",
+   "ssf",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<span${3}>Chocolatier</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s5q7c313i4"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-mixed-slot-content.css",
+   "./parent-mixed-slot-content.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s5q7c313i4",
+   "lwc-3s5q7c313i4-host",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "h",
+   "sp",
+   "ssf",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<span${3}>Chocolatier</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s5q7c313i4"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-mixed-slot-content.css",
+   "./parent-mixed-slot-content.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s5q7c313i4",
+   "lwc-3s5q7c313i4-host",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "h",
+   "sp",
+   "ssf",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<span${3}>Chocolatier</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s5q7c313i4"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-mixed-slot-content.css",
+   "./parent-mixed-slot-content.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s5q7c313i4",
+   "lwc-3s5q7c313i4-host",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "h",
+   "sp",
+   "ssf",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<span${3}>Chocolatier</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s5q7c313i4"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-mixed-slot-content.css",
+   "./parent-mixed-slot-content.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s5q7c313i4",
+   "lwc-3s5q7c313i4-host",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "h",
+   "sp",
+   "ssf",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<span${3}>Chocolatier</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s5q7c313i4"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-mixed-slot-content.css",
+   "./parent-mixed-slot-content.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s5q7c313i4",
+   "lwc-3s5q7c313i4-host",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "h",
+   "sp",
+   "ssf",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<span${3}>Chocolatier</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s5q7c313i4"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-mixed-slot-content.css",
+   "./parent-mixed-slot-content.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s5q7c313i4",
+   "lwc-3s5q7c313i4-host",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content",
+   "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "h",
+   "sp",
+   "ssf",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<span${3}>Chocolatier</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s5q7c313i4"
+  }
+ }
+}

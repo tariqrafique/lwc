@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div data-id=\"staticText\"><span>static text</span><span>static text</span><span>static text</span><span>static text</span></div><div data-id=\"dynamicText\"><span> text</span><span> text</span><span> text</span><span> text</span></div><div data-id=\"mixedText\"> static text<span>  text</span> text </div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div data-id=\"staticText\"><span>static text</span><span>static text</span><span>static text</span><span>static text</span></div><div data-id=\"dynamicText\"><span> text</span><span> text</span><span> text</span><span> text</span></div><div data-id=\"mixedText\"> static text<span>  text</span> text </div></template></lwc-up>"
+ }
+}

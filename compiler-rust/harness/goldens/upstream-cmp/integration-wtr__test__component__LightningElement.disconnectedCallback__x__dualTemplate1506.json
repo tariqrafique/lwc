@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-disconnected-callback-sets-tracked-value><template shadowrootmode=\"open\"></template></x-disconnected-callback-sets-tracked-value></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-disconnected-callback-sets-tracked-value><template shadowrootmode=\"open\"></template></x-disconnected-callback-sets-tracked-value></template></lwc-up>"
+ }
+}

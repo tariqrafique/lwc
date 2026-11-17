@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./parent-with-for.css",
+    "./parent-with-for.scoped.css?scoped=true",
+    "x/list"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5cl44u45eun",
+    "lwc-5cl44u45eun-host",
+    "x-parent-with-for_parent-with-for",
+    "x-parent-with-for_parent-with-for-host"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-wire>\n      <template shadowrootmode=\"open\">\n        <div>\n          Invocation sequence: \n 1. component: setApiValue(parent provided (initial) value)\n 2. adapter: connect()\n 3. component: getApiValue(parent provided (initial) value)\n 4. adapter: update()\n 5. component: wiredMethod(wire provided value)\n 6. component: setApiValue(wire provided value)\n        </div>\n        <div>\n          Api Value: wire provided value\n        </div>\n      </template>\n    </x-wire>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-wire>\n      <template shadowrootmode=\"open\">\n        <div>\n          Invocation sequence: \n 1. component: setApiValue(parent provided (initial) value)\n 2. adapter: connect()\n 3. component: getApiValue(parent provided (initial) value)\n 4. adapter: update()\n 5. component: wiredMethod(wire provided value)\n 6. component: setApiValue(wire provided value)\n        </div>\n        <div>\n          Api Value: wire provided value\n        </div>\n      </template>\n    </x-wire>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-wire>\n      <template shadowrootmode=\"open\">\n        <div>\n          Invocation sequence: \n 1. component: setApiValue(parent provided (initial) value)\n 2. adapter: connect()\n 3. component: getApiValue(parent provided (initial) value)\n 4. adapter: update()\n 5. component: wiredMethod(wire provided value)\n 6. component: setApiValue(wire provided value)\n        </div>\n        <div>\n          Api Value: wire provided value\n        </div>\n      </template>\n    </x-wire>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-wire>\n      <template shadowrootmode=\"open\">\n        <div>\n          Invocation sequence: \n 1. component: setApiValue(parent provided (initial) value)\n 2. adapter: connect()\n 3. component: getApiValue(parent provided (initial) value)\n 4. adapter: update()\n 5. component: wiredMethod(wire provided value)\n 6. component: setApiValue(wire provided value)\n        </div>\n        <div>\n          Api Value: wire provided value\n        </div>\n      </template>\n    </x-wire>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-wire>\n      <template shadowrootmode=\"open\">\n        <div>\n          Invocation sequence: \n 1. component: setApiValue(parent provided (initial) value)\n 2. adapter: connect()\n 3. component: getApiValue(parent provided (initial) value)\n 4. adapter: update()\n 5. component: wiredMethod(wire provided value)\n 6. component: setApiValue(wire provided value)\n        </div>\n        <div>\n          Api Value: wire provided value\n        </div>\n      </template>\n    </x-wire>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-wire>\n      <template shadowrootmode=\"open\">\n        <div>\n          Invocation sequence: \n 1. component: setApiValue(parent provided (initial) value)\n 2. adapter: connect()\n 3. component: getApiValue(parent provided (initial) value)\n 4. adapter: update()\n 5. component: wiredMethod(wire provided value)\n 6. component: setApiValue(wire provided value)\n        </div>\n        <div>\n          Api Value: wire provided value\n        </div>\n      </template>\n    </x-wire>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-wire>\n      <template shadowrootmode=\"open\">\n        <div>\n          Invocation sequence: \n 1. component: setApiValue(parent provided (initial) value)\n 2. adapter: connect()\n 3. component: getApiValue(parent provided (initial) value)\n 4. adapter: update()\n 5. component: wiredMethod(wire provided value)\n 6. component: setApiValue(wire provided value)\n        </div>\n        <div>\n          Api Value: wire provided value\n        </div>\n      </template>\n    </x-wire>\n  </template>\n</fixture-test>"
+ }
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-crossorigin.css",
+    "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2bplc35dp3p",
+    "lwc-2bplc35dp3p-host",
+    "x-attribute-crossorigin_attribute-crossorigin",
+    "x-attribute-crossorigin_attribute-crossorigin-host"
+  ]
+}

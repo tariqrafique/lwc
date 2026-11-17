@@ -1,0 +1,322 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-href-with-id-no-hash.css",
+   "./attribute-href-with-id-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-37mnkrd5rqc",
+   "lwc-37mnkrd5rqc-host",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash",
+   "x-attribute-href-with-id-no-hash_attribute-href-with-id-no-hash-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-37mnkrd5rqc"
+  }
+ }
+}

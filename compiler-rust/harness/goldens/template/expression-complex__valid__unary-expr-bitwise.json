@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./unary-expr-bitwise.css",
+    "./unary-expr-bitwise.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3c5ct80lpft",
+    "lwc-3c5ct80lpft-host",
+    "x-unary-expr-bitwise_unary-expr-bitwise",
+    "x-unary-expr-bitwise_unary-expr-bitwise-host"
+  ]
+}

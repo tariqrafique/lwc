@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><input class=\"first\"><input class=\"second\"><integration-child tabindex=\"-1\"><template shadowrootmode=\"open\"></template></integration-child><button disabled>Disabled button</button></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><input class=\"first\"><input class=\"second\"><integration-child tabindex=\"-1\"><template shadowrootmode=\"open\"></template></integration-child><button disabled=\"\">Disabled button</button></template></lwc-up>"
+ }
+}

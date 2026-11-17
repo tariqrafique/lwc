@@ -1,0 +1,177 @@
+[
+ {
+  "name": "multi-rename-same-line",
+  "src": "class Z { #a() {} #bb() {} m() { this.#a(); this.#bb(); } } class X { @api x; }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "multi-rename-same-line-rec",
+  "src": "class Z { #a() {} #bb() {} m() { this.#a(); this.#bb(); } } class X { @api x; }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "rename-in-deco-multiline",
+  "src": "class X {\n  #helper() { return 1; }\n  @api\n  value;\n}\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "rename-in-deco-multiline-rec",
+  "src": "class X {\n  #helper() { return 1; }\n  @api\n  value;\n}\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "rename-before-cls-deco",
+  "src": "class Z { #a() {} }\n@track\nclass X { y = this.#a; }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "rename-before-cls-deco-rec",
+  "src": "class Z { #a() {} }\n@track\nclass X { y = this.#a; }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "rename-pf-in-deco",
+  "src": "class X { #a() {} #f = 1; @api x; }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "rename-pf-in-deco-rec",
+  "src": "class X { #a() {} #f = 1; @api x; }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "le-rename-then-deco",
+  "src": "import { LightningElement, api } from \"lwc\";\nexport default class Z extends LightningElement { @api x; #a() {} }\nclass X { #b() {} @api y; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "le-rename-then-deco-rec",
+  "src": "import { LightningElement, api } from \"lwc\";\nexport default class Z extends LightningElement { @api x; #a() {} }\nclass X { #b() {} @api y; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "anon-api-pm-rec",
+  "src": "export default class { #m() {} @api x; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "anon-api-pm-after-rec",
+  "src": "export default class { @api x; #m() {} }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "anon-api-pm-ml-rec",
+  "src": "export default class {\n  #m() { return 1; }\n  #n() {}\n  @api x;\n}",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "anon-foo-pm-rec",
+  "src": "export default class { #m() {} @foo x; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "anon-api-pf-pm-rec",
+  "src": "export default class { #m() {} #f = 1; @api x; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "nosuper-api-pm-use-rec",
+  "src": "export default class A { #m() {} @api x; y() { this.#m(); } }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "two-cls-rec",
+  "src": "class B { #a() {} }\nexport default class { #m() {} @api x; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "pm-before-cls-rec",
+  "src": "class B { #a() {} #b() { this.#a(); } }\nclass C { @api x; }\nexport default B;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "cls-deco-rec",
+  "src": "@foo class B { #a() {} }\nexport default B;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "cls-deco-long-rec",
+  "src": "class Z { #aaaaaaaaaaaa() {} }\n@foo class B { x() {} }\nexport default B;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true,
+   "experimentalErrorRecoveryMode": true
+  }
+ }
+]

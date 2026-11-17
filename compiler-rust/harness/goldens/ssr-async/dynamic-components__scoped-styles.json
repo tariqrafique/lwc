@@ -1,0 +1,106 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/dynamic/dynamic.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dynamic.css",
+        "./dynamic.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-32cmakp1ss8",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/dynamic/dynamic.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dynamic.html",
+        "x/scopedStyle"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-dynamic",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/scopedStyle/scopedStyle.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./scopedStyle.css",
+        "./scopedStyle.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-2d8pgjj85pu",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/scopedStyle/scopedStyle.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./scopedStyle.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-scoped-style",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/scopedStyle/scopedStyle.scoped.css": {
+      "ok": true,
+      "warnings": []
+    }
+  }
+}

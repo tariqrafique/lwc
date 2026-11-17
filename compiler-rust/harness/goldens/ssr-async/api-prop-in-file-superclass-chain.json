@@ -1,0 +1,57 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/api-prop-in-file-superclass-chain/api-prop-in-file-superclass-chain.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./api-prop-in-file-superclass-chain.css",
+        "./api-prop-in-file-superclass-chain.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-2nj5uddc1fn",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/api-prop-in-file-superclass-chain/api-prop-in-file-superclass-chain.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./api-prop-in-file-superclass-chain.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "registerPublicProperties",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-api-prop-in-file-superclass-chain",
+          "publicProps": [
+            "component"
+          ],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

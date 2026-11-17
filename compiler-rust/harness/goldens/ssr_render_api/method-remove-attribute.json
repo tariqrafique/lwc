@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-a data-c data-lwc-host-mutated=\"data-a data-b data-c data-unknown\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-a data-c data-lwc-host-mutated=\"data-a data-b data-c data-unknown\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-a data-c data-lwc-host-mutated=\"data-a data-b data-c data-unknown\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-a data-c data-lwc-host-mutated=\"data-a data-b data-c data-unknown\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-a data-c data-lwc-host-mutated=\"data-a data-b data-c data-unknown\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-a data-c data-lwc-host-mutated=\"data-a data-b data-c data-unknown\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test data-a data-c data-lwc-host-mutated=\"data-a data-b data-c data-unknown\">\n  <template shadowrootmode=\"open\">\n  </template>\n</fixture-test>"
+ }
+}

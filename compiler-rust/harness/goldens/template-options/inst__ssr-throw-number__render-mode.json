@@ -1,0 +1,13 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "callbackThrew": true,
+  "identical": true,
+  "type": "number",
+  "value": "1.5"
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./preserve-comments-on-with-parts.css",
+    "./preserve-comments-on-with-parts.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2hhaie9eb6e",
+    "lwc-2hhaie9eb6e-host",
+    "x-preserve-comments-on-with-parts_preserve-comments-on-with-parts",
+    "x-preserve-comments-on-with-parts_preserve-comments-on-with-parts-host"
+  ]
+}

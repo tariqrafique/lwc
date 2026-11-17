@@ -1,0 +1,352 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-describedby\"}${\"a0:aria-activedescendant\"}${\"a0:aria-errormessage\"}${\"a0:aria-flowto\"}${\"a0:aria-labelledby\"}${\"a0:aria-controls\"}${\"a0:aria-details\"}${\"a0:aria-owns\"}${\"a0:for\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-describedby\"}${\"a0:aria-activedescendant\"}${\"a0:aria-errormessage\"}${\"a0:aria-flowto\"}${\"a0:aria-labelledby\"}${\"a0:aria-controls\"}${\"a0:aria-details\"}${\"a0:aria-owns\"}${\"a0:for\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-scoped_scoped"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-describedby\"}${\"a0:aria-activedescendant\"}${\"a0:aria-errormessage\"}${\"a0:aria-flowto\"}${\"a0:aria-labelledby\"}${\"a0:aria-controls\"}${\"a0:aria-details\"}${\"a0:aria-owns\"}${\"a0:for\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-scoped_scoped"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-describedby\"}${\"a0:aria-activedescendant\"}${\"a0:aria-errormessage\"}${\"a0:aria-flowto\"}${\"a0:aria-labelledby\"}${\"a0:aria-controls\"}${\"a0:aria-details\"}${\"a0:aria-owns\"}${\"a0:for\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-describedby\"}${\"a0:aria-activedescendant\"}${\"a0:aria-errormessage\"}${\"a0:aria-flowto\"}${\"a0:aria-labelledby\"}${\"a0:aria-controls\"}${\"a0:aria-details\"}${\"a0:aria-owns\"}${\"a0:for\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-describedby\"}${\"a0:aria-activedescendant\"}${\"a0:aria-errormessage\"}${\"a0:aria-flowto\"}${\"a0:aria-labelledby\"}${\"a0:aria-controls\"}${\"a0:aria-details\"}${\"a0:aria-owns\"}${\"a0:for\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-describedby\"}${\"a0:aria-activedescendant\"}${\"a0:aria-errormessage\"}${\"a0:aria-flowto\"}${\"a0:aria-labelledby\"}${\"a0:aria-controls\"}${\"a0:aria-details\"}${\"a0:aria-owns\"}${\"a0:for\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-describedby\"}${\"a0:aria-activedescendant\"}${\"a0:aria-errormessage\"}${\"a0:aria-flowto\"}${\"a0:aria-labelledby\"}${\"a0:aria-controls\"}${\"a0:aria-details\"}${\"a0:aria-owns\"}${\"a0:for\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-describedby\"}${\"a0:aria-activedescendant\"}${\"a0:aria-errormessage\"}${\"a0:aria-flowto\"}${\"a0:aria-labelledby\"}${\"a0:aria-controls\"}${\"a0:aria-details\"}${\"a0:aria-owns\"}${\"a0:for\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:aria-describedby\"}${\"a0:aria-activedescendant\"}${\"a0:aria-errormessage\"}${\"a0:aria-flowto\"}${\"a0:aria-labelledby\"}${\"a0:aria-controls\"}${\"a0:aria-details\"}${\"a0:aria-owns\"}${\"a0:for\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ }
+}

@@ -1,0 +1,250 @@
+[
+ {
+  "id": "dup-let",
+  "src": "let a; let a;"
+ },
+ {
+  "id": "with",
+  "src": "with(a){}"
+ },
+ {
+  "id": "delete-ident",
+  "src": "delete x;"
+ },
+ {
+  "id": "legacy-octal",
+  "src": "00"
+ },
+ {
+  "id": "var-eval",
+  "src": "var eval"
+ },
+ {
+  "id": "dup-label",
+  "src": "l: l: ;"
+ },
+ {
+  "id": "dup-proto",
+  "src": "({__proto__: 1, __proto__: 2});"
+ },
+ {
+  "id": "break-undef-label",
+  "src": "break foo;"
+ },
+ {
+  "id": "rw-let-eq",
+  "src": "let = ;"
+ },
+ {
+  "id": "rw-let-1",
+  "src": "let = 1;"
+ },
+ {
+  "id": "rw-let-comment",
+  "src": "let /*c*/ = ;"
+ },
+ {
+  "id": "rw-let-after",
+  "src": "x; let = ;"
+ },
+ {
+  "id": "rw-let-utf",
+  "src": "const s = \"\u00e9\"; let = ;"
+ },
+ {
+  "id": "rw-static",
+  "src": "var static = 1;"
+ },
+ {
+  "id": "rw-yield-param",
+  "src": "function f(yield){}"
+ },
+ {
+  "id": "rw-let-shorthand",
+  "src": "({let});"
+ },
+ {
+  "id": "rw-let-line2",
+  "src": "let x = 1;\nx = let;"
+ },
+ {
+  "id": "rw-let-template",
+  "src": "const a = `${let}`;"
+ },
+ {
+  "id": "ok-class-static",
+  "src": "class A { static = 1; let = 2; }"
+ },
+ {
+  "id": "ok-props",
+  "src": "obj.public = 1; ({private: 1});"
+ },
+ {
+  "id": "ok-import-let",
+  "src": "import { let as l } from 'm';"
+ },
+ {
+  "id": "ok-let-comment",
+  "src": "let /* let */ x = 'let';"
+ },
+ {
+  "id": "abstract-default",
+  "src": "export default abstract class {}"
+ },
+ {
+  "id": "abstract-default-named",
+  "src": "export default abstract class A {}"
+ },
+ {
+  "id": "abstract-decl",
+  "src": "abstract class A {}"
+ },
+ {
+  "id": "abstract-export",
+  "src": "export abstract class A {}"
+ },
+ {
+  "id": "dup-let-var",
+  "src": "let a; var a;"
+ },
+ {
+  "id": "dup-var-let",
+  "src": "var a; let a;"
+ },
+ {
+  "id": "dup-const-let",
+  "src": "const a = 1; let a;"
+ },
+ {
+  "id": "dup-class-let",
+  "src": "class A {} let A;"
+ },
+ {
+  "id": "dup-fn-let",
+  "src": "function f() {} let f;"
+ },
+ {
+  "id": "dup-let-fn",
+  "src": "let f; function f() {}"
+ },
+ {
+  "id": "dup-import-let",
+  "src": "import a from 'x'; let a;"
+ },
+ {
+  "id": "dup-block-let",
+  "src": "{ let a; let a; }"
+ },
+ {
+  "id": "dup-param-let",
+  "src": "function f(a) { let a; }"
+ },
+ {
+  "id": "dup-catch-let",
+  "src": "try {} catch (e) { let e; }"
+ },
+ {
+  "id": "dup-params",
+  "src": "function f(a, a) {}"
+ },
+ {
+  "id": "dup-export",
+  "src": "export const a = 1; export { a };"
+ },
+ {
+  "id": "dup-default-export",
+  "src": "export default 1; export default 2;"
+ },
+ {
+  "id": "export-undeclared",
+  "src": "export { nope };"
+ },
+ {
+  "id": "priv-undeclared",
+  "src": "class A { m() { this.#x; } }"
+ },
+ {
+  "id": "priv-dup",
+  "src": "class A { #x; #x; }"
+ },
+ {
+  "id": "new-target-top",
+  "src": "new.target;"
+ },
+ {
+  "id": "super-top",
+  "src": "super.x;"
+ },
+ {
+  "id": "return-top",
+  "src": "return 1;"
+ },
+ {
+  "id": "continue-undef",
+  "src": "for(;;) { continue foo; }"
+ },
+ {
+  "id": "break-outside",
+  "src": "break;"
+ },
+ {
+  "id": "assign-eval",
+  "src": "eval = 1;"
+ },
+ {
+  "id": "assign-arguments",
+  "src": "arguments = 1;"
+ },
+ {
+  "id": "octal-escape",
+  "src": "'\\01';"
+ },
+ {
+  "id": "fn-in-if",
+  "src": "if (1) function f() {}"
+ },
+ {
+  "id": "labeled-fn",
+  "src": "l: function f() {}"
+ },
+ {
+  "id": "await-top-id",
+  "src": "var await;"
+ },
+ {
+  "id": "yield-id",
+  "src": "var yield;"
+ },
+ {
+  "id": "strict-impl",
+  "src": "var implements;"
+ },
+ {
+  "id": "getter-param",
+  "src": "({ get x(a) {} });"
+ },
+ {
+  "id": "setter-noparam",
+  "src": "({ set x() {} });"
+ },
+ {
+  "id": "class-ctor-dup",
+  "src": "class A { constructor() {} constructor() {} }"
+ },
+ {
+  "id": "super-call-no-extends",
+  "src": "class A { constructor() { super(); } }"
+ },
+ {
+  "id": "use-strict-nonsimple",
+  "src": "function f(a = 1) { 'use strict'; }"
+ },
+ {
+  "id": "delete-private",
+  "src": "class A { #x; m() { delete this.#x; } }"
+ },
+ {
+  "id": "lwc-comp-dup",
+  "src": "import { LightningElement } from 'lwc';\nlet a; let a;\nexport default class Foo extends LightningElement {}"
+ }
+]

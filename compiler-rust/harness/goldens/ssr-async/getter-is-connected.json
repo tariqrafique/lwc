@@ -1,0 +1,54 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/getter-is-connected/getter-is-connected.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./getter-is-connected.css",
+        "./getter-is-connected.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-7duaeef1efr",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/getter-is-connected/getter-is-connected.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./getter-is-connected.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-getter-is-connected",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

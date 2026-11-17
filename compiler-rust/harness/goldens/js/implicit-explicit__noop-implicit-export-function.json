@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "imports": [],
+  "lwcImports": [],
+  "exports": {
+    "default": "function"
+  },
+  "defaultExport": {
+    "kind": "function",
+    "extendsLightningElement": false,
+    "registered": false
+  },
+  "decorators": [],
+  "warnings": []
+}

@@ -1,0 +1,332 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-attr-escaping.css",
+   "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-287h74uthl5",
+   "lwc-287h74uthl5-host",
+   "x-class-attr-escaping_class-attr-escaping",
+   "x-class-attr-escaping_class-attr-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1 class=\"&quot;>\\\\x3Cscript>alert('pwned')\\\\x3C/script>\\\\x3Ch1 foo=&quot;${0}\"${2}></h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-287h74uthl5"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-attr-escaping.css",
+   "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-287h74uthl5",
+   "lwc-287h74uthl5-host",
+   "x-class-attr-escaping_class-attr-escaping",
+   "x-class-attr-escaping_class-attr-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1 class=\"&quot;>\\\\x3Cscript>alert('pwned')\\\\x3C/script>\\\\x3Ch1 foo=&quot;${0}\"${2}></h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-class-attr-escaping_class-attr-escaping"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-attr-escaping.css",
+   "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-287h74uthl5",
+   "lwc-287h74uthl5-host",
+   "x-class-attr-escaping_class-attr-escaping",
+   "x-class-attr-escaping_class-attr-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1 class=\"&quot;>\\\\x3Cscript>alert('pwned')\\\\x3C/script>\\\\x3Ch1 foo=&quot;${0}\"${2}></h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-class-attr-escaping_class-attr-escaping"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-attr-escaping.css",
+   "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-287h74uthl5",
+   "lwc-287h74uthl5-host",
+   "x-class-attr-escaping_class-attr-escaping",
+   "x-class-attr-escaping_class-attr-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1 class=\"&quot;>\\\\x3Cscript>alert('pwned')\\\\x3C/script>\\\\x3Ch1 foo=&quot;${0}\"${2}></h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-287h74uthl5"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-attr-escaping.css",
+   "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-287h74uthl5",
+   "lwc-287h74uthl5-host",
+   "x-class-attr-escaping_class-attr-escaping",
+   "x-class-attr-escaping_class-attr-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1 class=\"&quot;>\\\\x3Cscript>alert('pwned')\\\\x3C/script>\\\\x3Ch1 foo=&quot;${0}\"${2}></h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-287h74uthl5"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-attr-escaping.css",
+   "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-287h74uthl5",
+   "lwc-287h74uthl5-host",
+   "x-class-attr-escaping_class-attr-escaping",
+   "x-class-attr-escaping_class-attr-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1 class=\"&quot;>\\\\x3Cscript>alert('pwned')\\\\x3C/script>\\\\x3Ch1 foo=&quot;${0}\"${2}></h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-287h74uthl5"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-attr-escaping.css",
+   "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-287h74uthl5",
+   "lwc-287h74uthl5-host",
+   "x-class-attr-escaping_class-attr-escaping",
+   "x-class-attr-escaping_class-attr-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1 class=\"&quot;>\\\\x3Cscript>alert('pwned')\\\\x3C/script>\\\\x3Ch1 foo=&quot;${0}\"${2}></h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-287h74uthl5"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-attr-escaping.css",
+   "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-287h74uthl5",
+   "lwc-287h74uthl5-host",
+   "x-class-attr-escaping_class-attr-escaping",
+   "x-class-attr-escaping_class-attr-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1 class=\"&quot;>\\\\x3Cscript>alert('pwned')\\\\x3C/script>\\\\x3Ch1 foo=&quot;${0}\"${2}></h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-287h74uthl5"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-attr-escaping.css",
+   "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-287h74uthl5",
+   "lwc-287h74uthl5-host",
+   "x-class-attr-escaping_class-attr-escaping",
+   "x-class-attr-escaping_class-attr-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1 class=\"&quot;>\\\\x3Cscript>alert('pwned')\\\\x3C/script>\\\\x3Ch1 foo=&quot;${0}\"${2}></h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-287h74uthl5"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-attr-escaping.css",
+   "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-287h74uthl5",
+   "lwc-287h74uthl5-host",
+   "x-class-attr-escaping_class-attr-escaping",
+   "x-class-attr-escaping_class-attr-escaping-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1 class=\"&quot;>\\\\x3Cscript>alert('pwned')\\\\x3C/script>\\\\x3Ch1 foo=&quot;${0}\"${2}></h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-287h74uthl5"
+  }
+ }
+}

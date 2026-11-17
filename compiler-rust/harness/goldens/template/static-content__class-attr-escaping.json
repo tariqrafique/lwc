@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./class-attr-escaping.css",
+    "./class-attr-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-287h74uthl5",
+    "lwc-287h74uthl5-host",
+    "x-class-attr-escaping_class-attr-escaping",
+    "x-class-attr-escaping_class-attr-escaping-host"
+  ]
+}

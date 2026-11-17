@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./inline-multiple.css",
+    "./inline-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-1ehv46vni88",
+    "lwc-1ehv46vni88-host",
+    "x-inline-multiple_inline-multiple",
+    "x-inline-multiple_inline-multiple-host"
+  ]
+}

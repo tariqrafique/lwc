@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><x-light-container><template shadowrootmode=\"open\"></template>Default slot not yet forwarded</x-light-container></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><x-light-container><template shadowrootmode=\"open\"></template>Default slot not yet forwarded</x-light-container></lwc-up>"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-combobox><template shadowrootmode=\"open\"></template></lightning-combobox><p>Selected value is: inProgress</p></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-combobox><template shadowrootmode=\"open\"></template></lightning-combobox><p>Selected value is: inProgress</p></template></lwc-lbc>"
+ }
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./quoted-empty-paranthesis.css",
+    "./quoted-empty-paranthesis.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-70a5ikbn661",
+    "lwc-70a5ikbn661-host",
+    "x-quoted-empty-paranthesis_quoted-empty-paranthesis",
+    "x-quoted-empty-paranthesis_quoted-empty-paranthesis-host"
+  ]
+}

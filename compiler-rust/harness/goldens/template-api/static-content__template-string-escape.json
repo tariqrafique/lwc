@@ -1,0 +1,592 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-string-escape.css",
+   "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-742r8pnmnj5",
+   "lwc-742r8pnmnj5-host",
+   "x-template-string-escape_template-string-escape",
+   "x-template-string-escape_template-string-escape-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Escape \\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\`me\\`</xmp>",
+   "parseFragment:<div${3}>Escape \\\\\\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\\\\\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\\\\\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\\\\\`me\\`</xmp>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div data-message=\"Escape \\${me}\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\${me} --></div>",
+   "parseFragment:<xmp${3}>${\"t1\"}</xmp>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-742r8pnmnj5"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-string-escape.css",
+   "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-742r8pnmnj5",
+   "lwc-742r8pnmnj5-host",
+   "x-template-string-escape_template-string-escape",
+   "x-template-string-escape_template-string-escape-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Escape \\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\`me\\`</xmp>",
+   "parseFragment:<div${3}>Escape \\\\\\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\\\\\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\\\\\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\\\\\`me\\`</xmp>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div data-message=\"Escape \\${me}\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\${me} --></div>",
+   "parseFragment:<xmp${3}>${\"t1\"}</xmp>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-template-string-escape_template-string-escape"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-string-escape.css",
+   "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-742r8pnmnj5",
+   "lwc-742r8pnmnj5-host",
+   "x-template-string-escape_template-string-escape",
+   "x-template-string-escape_template-string-escape-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Escape \\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\`me\\`</xmp>",
+   "parseFragment:<div${3}>Escape \\\\\\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\\\\\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\\\\\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\\\\\`me\\`</xmp>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div data-message=\"Escape \\${me}\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\${me} --></div>",
+   "parseFragment:<xmp${3}>${\"t1\"}</xmp>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-template-string-escape_template-string-escape"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-string-escape.css",
+   "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-742r8pnmnj5",
+   "lwc-742r8pnmnj5-host",
+   "x-template-string-escape_template-string-escape",
+   "x-template-string-escape_template-string-escape-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Escape \\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\`me\\`</xmp>",
+   "parseFragment:<div${3}>Escape \\\\\\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\\\\\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\\\\\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\\\\\`me\\`</xmp>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div data-message=\"Escape \\${me}\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\${me} --></div>",
+   "parseFragment:<xmp${3}>${\"t1\"}</xmp>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-742r8pnmnj5"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-string-escape.css",
+   "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-742r8pnmnj5",
+   "lwc-742r8pnmnj5-host",
+   "x-template-string-escape_template-string-escape",
+   "x-template-string-escape_template-string-escape-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Escape \\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\`me\\`</xmp>",
+   "parseFragment:<div${3}>Escape \\\\\\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\\\\\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\\\\\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\\\\\`me\\`</xmp>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div data-message=\"Escape \\${me}\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\${me} --></div>",
+   "parseFragment:<xmp${3}>${\"t1\"}</xmp>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-742r8pnmnj5"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-string-escape.css",
+   "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-742r8pnmnj5",
+   "lwc-742r8pnmnj5-host",
+   "x-template-string-escape_template-string-escape",
+   "x-template-string-escape_template-string-escape-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Escape \\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\`me\\`</xmp>",
+   "parseFragment:<div${3}>Escape \\\\\\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\\\\\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\\\\\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\\\\\`me\\`</xmp>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div data-message=\"Escape \\${me}\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\${me} --></div>",
+   "parseFragment:<xmp${3}>${\"t1\"}</xmp>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-742r8pnmnj5"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-string-escape.css",
+   "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-742r8pnmnj5",
+   "lwc-742r8pnmnj5-host",
+   "x-template-string-escape_template-string-escape",
+   "x-template-string-escape_template-string-escape-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Escape \\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\`me\\`</xmp>",
+   "parseFragment:<div${3}>Escape \\\\\\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\\\\\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\\\\\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\\\\\`me\\`</xmp>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div data-message=\"Escape \\${me}\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\${me} --></div>",
+   "parseFragment:<xmp${3}>${\"t1\"}</xmp>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-742r8pnmnj5"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-string-escape.css",
+   "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-742r8pnmnj5",
+   "lwc-742r8pnmnj5-host",
+   "x-template-string-escape_template-string-escape",
+   "x-template-string-escape_template-string-escape-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Escape \\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\`me\\`</xmp>",
+   "parseFragment:<div${3}>Escape \\\\\\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\\\\\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\\\\\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\\\\\`me\\`</xmp>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div data-message=\"Escape \\${me}\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\${me} --></div>",
+   "parseFragment:<xmp${3}>${\"t1\"}</xmp>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-742r8pnmnj5"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-string-escape.css",
+   "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-742r8pnmnj5",
+   "lwc-742r8pnmnj5-host",
+   "x-template-string-escape_template-string-escape",
+   "x-template-string-escape_template-string-escape-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Escape \\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\`me\\`</xmp>",
+   "parseFragment:<div${3}>Escape \\\\\\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\\\\\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\\\\\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\\\\\`me\\`</xmp>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div data-message=\"Escape \\${me}\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\${me} --></div>",
+   "parseFragment:<xmp${3}>${\"t1\"}</xmp>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-742r8pnmnj5"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-string-escape.css",
+   "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   },
+   {
+    "code": 1123,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-742r8pnmnj5",
+   "lwc-742r8pnmnj5-host",
+   "x-template-string-escape_template-string-escape",
+   "x-template-string-escape_template-string-escape-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Escape \\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\`me\\`</xmp>",
+   "parseFragment:<div${3}>Escape \\\\\\`me\\`</div>",
+   "parseFragment:<div data-message=\"Escape \\\\\\`me\\`\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\\\\\`me\\` --></div>",
+   "parseFragment:<xmp${3}>Escape \\\\\\`me\\`</xmp>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div data-message=\"Escape \\${me}\"${3}></div>",
+   "parseFragment:<div${3}><!-- Escape \\${me} --></div>",
+   "parseFragment:<xmp${3}>${\"t1\"}</xmp>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-742r8pnmnj5"
+  }
+ }
+}

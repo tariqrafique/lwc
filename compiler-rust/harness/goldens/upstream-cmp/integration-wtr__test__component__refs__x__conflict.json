@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div>january</div><div><div><div>february</div></div></div><div>march</div><div><div><div>april</div></div></div><div>may</div><div>june</div><div>july</div><div>august<div>september</div></div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div>january</div><div><div><div>february</div></div></div><div>march</div><div><div><div>april</div></div></div><div>may</div><div>june</div><div>july</div><div>august<div>september</div></div></template></lwc-up>"
+ }
+}

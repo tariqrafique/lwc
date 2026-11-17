@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./inside-loop-global-var.css",
+    "./inside-loop-global-var.scoped.css?scoped=true",
+    "x/foo"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-7u8n0d6m1f3",
+    "lwc-7u8n0d6m1f3-host",
+    "x-inside-loop-global-var_inside-loop-global-var",
+    "x-inside-loop-global-var_inside-loop-global-var-host"
+  ]
+}

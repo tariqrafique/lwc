@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Below is a progressbar of variant base.</p><lightning-progress-bar><template shadowrootmode=\"open\"></template></lightning-progress-bar><p>Below is a progressbar of variant circular.</p><lightning-progress-bar><template shadowrootmode=\"open\"></template></lightning-progress-bar></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Below is a progressbar of variant base.</p><lightning-progress-bar><template shadowrootmode=\"open\"></template></lightning-progress-bar><p>Below is a progressbar of variant circular.</p><lightning-progress-bar><template shadowrootmode=\"open\"></template></lightning-progress-bar></template></lwc-lbc>"
+ }
+}

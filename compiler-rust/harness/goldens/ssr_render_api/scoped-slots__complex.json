@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-complex-child>\n      <div>\n        <!---->\n        <!---->\n        <span>\n          99 - ssr\n        </span>\n        <!---->\n        <!---->\n      </div>\n    </x-complex-child>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-complex-child>\n      <div>\n      </div>\n    </x-complex-child>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-complex-child>\n      <div>\n      </div>\n    </x-complex-child>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-complex-child>\n      <div>\n      </div>\n    </x-complex-child>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-complex-child>\n      <div>\n      </div>\n    </x-complex-child>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-complex-child>\n      <div>\n        <!---->\n        <!---->\n        <span>\n          99 - ssr\n        </span>\n        <!---->\n        <!---->\n      </div>\n    </x-complex-child>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-complex-child>\n      <div>\n        <!---->\n        <!---->\n        <span>\n          99 - ssr\n        </span>\n        <!---->\n        <!---->\n      </div>\n    </x-complex-child>\n  </template>\n</fixture-test>"
+ }
+}

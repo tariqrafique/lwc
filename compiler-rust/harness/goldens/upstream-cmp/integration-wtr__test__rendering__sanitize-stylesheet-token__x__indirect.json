@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-43hbgpo0grn-host\" data-lwc-host-scope-token=\"lwc-43hbgpo0grn-host\"><template shadowrootmode=\"open\"><style class=\"lwc-43hbgpo0grn\" id=\"lwc-style--0\" type=\"text/css\">:host {color: red;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><p class=\"lwc-43hbgpo0grn\">Lillian: Harold.</p><p class=\"lwc-43hbgpo0grn\">Fiona: Shrek.</p><p class=\"lwc-43hbgpo0grn\">Shrek: Fiona...</p><p class=\"lwc-43hbgpo0grn\">Harold: Fiona!</p><p class=\"lwc-43hbgpo0grn\">Fiona: Mommm!</p><p class=\"lwc-43hbgpo0grn\">Lillian: Harold!</p><p class=\"lwc-43hbgpo0grn\">Donkey: DONKEY!</p></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-43hbgpo0grn-host\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {color: red;}</style><p class=\"lwc-43hbgpo0grn\">Lillian: Harold.</p><p class=\"lwc-43hbgpo0grn\">Fiona: Shrek.</p><p class=\"lwc-43hbgpo0grn\">Shrek: Fiona...</p><p class=\"lwc-43hbgpo0grn\">Harold: Fiona!</p><p class=\"lwc-43hbgpo0grn\">Fiona: Mommm!</p><p class=\"lwc-43hbgpo0grn\">Lillian: Harold!</p><p class=\"lwc-43hbgpo0grn\">Donkey: DONKEY!</p></template></lwc-up>"
+ }
+}

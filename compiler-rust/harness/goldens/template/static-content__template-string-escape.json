@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./template-string-escape.css",
+    "./template-string-escape.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1123,
+      "level": 2
+    },
+    {
+      "code": 1123,
+      "level": 2
+    },
+    {
+      "code": 1123,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-742r8pnmnj5",
+    "lwc-742r8pnmnj5-host",
+    "x-template-string-escape_template-string-escape",
+    "x-template-string-escape_template-string-escape-host"
+  ]
+}

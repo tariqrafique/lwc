@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc data-handles-touch=\"true\" data-lwc-host-mutated=\"data-handles-touch\"><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">slot {display: flex;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><div class=\"slds-carousel\"><div class=\"slds-carousel__stage\"><span class=\"slds-carousel__autoplay\"><button class=\"slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small\" aria-pressed=\"false\" title=\"[object Object]\"><c-primitive-icon class=\"slds-button__icon\"><template shadowrootmode=\"open\"></template></c-primitive-icon><span class=\"slds-assistive-text\">[object Object]</span></button></span><div class=\"slds-carousel__panels\"><slot></slot></div><ul class=\"slds-carousel__indicators\" role=\"tablist\"></ul></div></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc data-handles-touch=\"true\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">slot {display: flex;}</style><div class=\"slds-carousel\"><div class=\"slds-carousel__stage\"><span class=\"slds-carousel__autoplay\"><button class=\"slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small\" aria-pressed=\"false\" title=\"[object Object]\"><c-primitive-icon class=\"slds-button__icon\"><template shadowrootmode=\"open\"></template></c-primitive-icon><span class=\"slds-assistive-text\">[object Object]</span></button></span><div class=\"slds-carousel__panels\"><slot></slot></div><ul class=\"slds-carousel__indicators\" role=\"tablist\"></ul></div></div></template></lwc-lbc>"
+ }
+}

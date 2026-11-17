@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./if-elseif-else-nested.css",
+    "./if-elseif-else-nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2ejbkifb08c",
+    "lwc-2ejbkifb08c-host",
+    "x-if-elseif-else-nested_if-elseif-else-nested",
+    "x-if-elseif-else-nested_if-elseif-else-nested-host"
+  ]
+}

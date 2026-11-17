@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>.",
+  "html": ""
+ },
+ "v57": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>.",
+  "html": ""
+ },
+ "v58": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>.",
+  "html": ""
+ },
+ "v59": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>.",
+  "html": ""
+ },
+ "v65": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>.",
+  "html": ""
+ },
+ "v66": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>.",
+  "html": ""
+ },
+ "v67": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"outer-h-t-m-l\" on <omg-whatever>.",
+  "html": ""
+ }
+}

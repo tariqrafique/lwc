@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {}",
+     "x|host=false|dir=true": "[x-host] {}",
+     "x|host=false|dir=false": "[x-host] {}",
+     "x|host=true|dir=true": ":host {}",
+     "-|host=true|dir=false": ":host {}"
+    }
+   }
+  ]
+ }
+}

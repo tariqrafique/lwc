@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><h1 class=\"slds-text-heading_small\">Address in Spanish format</h1><lightning-formatted-address><template shadowrootmode=\"open\"></template></lightning-formatted-address><h1 class=\"slds-text-heading_small\">Address in Japanese format</h1><lightning-formatted-address><template shadowrootmode=\"open\"></template></lightning-formatted-address></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><h1 class=\"slds-text-heading_small\">Address in Spanish format</h1><lightning-formatted-address><template shadowrootmode=\"open\"></template></lightning-formatted-address><h1 class=\"slds-text-heading_small\">Address in Japanese format</h1><lightning-formatted-address><template shadowrootmode=\"open\"></template></lightning-formatted-address></template></lwc-lbc>"
+ }
+}

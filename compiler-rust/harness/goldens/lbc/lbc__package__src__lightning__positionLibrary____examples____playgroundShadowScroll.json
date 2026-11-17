@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div style=\"overflow: auto; width: 100%; height: 100%; background: #f3f2f2;\"><slot></slot></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div style=\"overflow: auto; width: 100%; height: 100%; background: rgb(243, 242, 242);\"><slot></slot></div></template></lwc-lbc>"
+ }
+}

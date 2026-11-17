@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=false|dir=false": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "x|host=true|dir=true": "div[x] {background: var(--lwc-color, var(--lwc-other, black));}",
+     "-|host=true|dir=false": "div {background: var(--lwc-color, var(--lwc-other, black));}"
+    }
+   }
+  ]
+ }
+}

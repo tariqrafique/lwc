@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./if-else.css",
+    "./if-else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1187,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-59e6ud6dj78",
+    "lwc-59e6ud6dj78-host",
+    "x-if-else_if-else",
+    "x-if-else_if-else-host"
+  ]
+}

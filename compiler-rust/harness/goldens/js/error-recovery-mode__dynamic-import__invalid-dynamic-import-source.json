@@ -1,0 +1,27 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1121
+  ],
+  "line": null,
+  "expectedCodes": [
+    1121
+  ],
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1121,
+        "message": "LWC1121: Invalid import. The argument \"123\" must be a stringLiteral for dynamic imports when strict mode is enabled.",
+        "location": {
+          "line": 5,
+          "column": 32,
+          "start": 152,
+          "length": 3
+        }
+      }
+    ]
+  }
+}

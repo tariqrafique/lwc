@@ -1,0 +1,75 @@
+{
+ "api/duplicate-api-property": {
+  "src": "import { api, LightningElement } from \"lwc\";\n\nexport default class Test extends LightningElement {\n  @api\n  duplicateProp;\n  @api\n  duplicateProp;\n}\n",
+  "opts": {}
+ },
+ "api/invalid-boolean-public-property": {
+  "src": "import { api, LightningElement } from \"lwc\";\n\nexport default class Test extends LightningElement {\n  @api\n  isVisible = true;\n}\n",
+  "opts": {}
+ },
+ "api/invalid-property-name-on": {
+  "src": "import { api, LightningElement } from \"lwc\";\n\nexport default class Test extends LightningElement {\n  @api\n  onClickHandler;\n}\n",
+  "opts": {}
+ },
+ "api/invalid-propery-name-data": {
+  "src": "import { api, LightningElement } from \"lwc\";\n\nexport default class Test extends LightningElement {\n  @api\n  dataProperty;\n}\n",
+  "opts": {}
+ },
+ "api/reserved-property-name-class": {
+  "src": "import { wire, LightningElement } from \"lwc\";\n\nexport default class Test extends LightningElement {\n  @api class\n}\n",
+  "opts": {}
+ },
+ "dynamic-import/invalid-dynamic-import-source": {
+  "src": "import { LightningElement } from \"lwc\";\n\nexport default class Test extends LightningElement {\n  async loadComponent() {\n    const module = await import(123);\n  }\n}\n",
+  "opts": {
+   "dynamicImports": {
+    "loader": null,
+    "strictSpecifier": true
+   }
+  }
+ },
+ "track/track-only-allowed-on-class-properties": {
+  "src": "import { track, LightningElement } from \"lwc\";\n\nexport default class Test extends LightningElement {\n  @track\n  someMethod() {\n    return 'invalid';\n  }\n}\n",
+  "opts": {}
+ },
+ "wire/adapter-should-be-first-parameter": {
+  "src": "import { wire, LightningElement } from \"lwc\";\nimport { getRecord } from \"lightning/uiRecordApi\";\n\nexport default class Test extends LightningElement {\n  @wire({ recordId: '$recordId' }, getRecord )\n  wiredRecord;\n}\n",
+  "opts": {}
+ },
+ "wire/config-object-should-be-second-parameter": {
+  "src": "import { wire, LightningElement } from \"lwc\";\nimport { getRecord } from \"lightning/uiRecordApi\";\n\nexport default class Test extends LightningElement {\n  @wire(getRecord, 'invalid')\n  wiredRecord;\n}\n",
+  "opts": {}
+ },
+ "wire/conflict-with-another-decorator": {
+  "src": "import { wire, api, LightningElement } from \"lwc\";\nimport { getRecord } from \"lightning/uiRecordApi\";\n\nexport default class Test extends LightningElement {\n  @wire(getRecord, { recordId: '$recordId' })\n  @api\n  wiredApiProperty;\n}\n",
+  "opts": {}
+ },
+ "wire/invalid-adapter": {
+  "src": "import { wire, LightningElement } from \"lwc\";\n\nexport default class Test extends LightningElement {\n  @wire(invalidConfig) // This should trigger error recovery mode handling\n  wiredProperty;\n}\n",
+  "opts": {}
+ },
+ "wire/one-wire-decorator-allowed": {
+  "src": "import { wire, LightningElement } from \"lwc\";\nimport { getRecord } from \"lightning/uiRecordApi\";\n\nexport default class Test extends LightningElement {\n  @wire(getRecord, { recordId: '$recordId' })\n  @wire(getRecord, { recordId: '$recordId' })\n  doubleWiredProperty;\n}\n",
+  "opts": {}
+ },
+ "extra/multi-error": {
+  "opts": {},
+  "src": "import { api, track, wire, LightningElement } from 'lwc';\nimport { getRecord } from 'lightning/uiRecordApi';\nexport default class Test extends LightningElement {\n  @api dup;\n  @api dup;\n  @api data;\n  @track\n  m() {}\n  @wire('notAnId') w1;\n  @wire(getRecord, { a: 1 }) @api both;\n  @api get g() { return 1; }\n  @api set g(v) {}\n  load() { return import(this.x); }\n}\n"
+ },
+ "extra/1212-decorated-private-method": {
+  "opts": {},
+  "src": "import { api, LightningElement } from 'lwc';\nexport default class Test extends LightningElement {\n  @api #m() {}\n}\n"
+ },
+ "extra/import-before-and-between-classes": {
+  "opts": {},
+  "src": "import { api, wire, LightningElement } from 'lwc';\nconst early = import(someVar);\nclass A extends LightningElement {\n  @api onFoo;\n  run() { return import(1); }\n}\nconst mid = import(other);\nexport default class Test extends LightningElement {\n  @wire('x') w;\n  @api dataX;\n}\n"
+ },
+ "extra/decorator-used-as-value": {
+  "opts": {},
+  "src": "import { api, track, LightningElement } from 'lwc';\nconst t = track;\nexport default class Test extends LightningElement {\n  @api onBar;\n  load() { return import(this.y); }\n}\n"
+ },
+ "extra/epm-renamed-same-line": {
+  "opts": {},
+  "src": "import { api, wire, LightningElement } from 'lwc';\nexport default class Test extends LightningElement {\n  #a() { return this.#b(); } #b() {} @wire('nope') w; @api dataQ;\n  #c() { return import(this.#a()); }\n}\n"
+ }
+}

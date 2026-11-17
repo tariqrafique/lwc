@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Formatted URL\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><div class=\"slds-box\"><h3 class=\"header\">Formatted URL</h3><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Displays a URL as a hyperlink.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Formatted URL\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><div class=\"slds-box\"><h3 class=\"header\">Formatted URL</h3><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p><p><c-formatted-url><template shadowrootmode=\"open\"></template></c-formatted-url></p></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Displays a URL as a hyperlink.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

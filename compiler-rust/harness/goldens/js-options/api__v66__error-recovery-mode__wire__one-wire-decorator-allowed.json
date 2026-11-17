@@ -1,0 +1,34 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1105
+  ],
+  "line": null,
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1105,
+        "message": "LWC1105: Method or property can only have 1 @wire decorator",
+        "location": {
+          "line": 5,
+          "column": 2,
+          "start": 153,
+          "length": 43
+        }
+      },
+      {
+        "code": 1105,
+        "message": "LWC1105: Method or property can only have 1 @wire decorator",
+        "location": {
+          "line": 6,
+          "column": 2,
+          "start": 199,
+          "length": 43
+        }
+      }
+    ]
+  }
+}

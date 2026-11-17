@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><x-list data-id=\"x-list\"><template shadowrootmode=\"open\"></template><button class=\"button\" data-id=\"button\">Hello</button></x-list></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><x-list data-id=\"x-list\"><template shadowrootmode=\"open\"></template><button class=\"button\" data-id=\"button\">Hello</button></x-list></lwc-up>"
+ }
+}

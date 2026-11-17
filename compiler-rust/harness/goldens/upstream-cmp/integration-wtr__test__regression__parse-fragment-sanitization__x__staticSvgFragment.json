@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><svg data-id=\"region\"><rect data-marker=\"marker\" width=\"10\" height=\"10\"/></svg></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><svg data-id=\"region\"><rect data-marker=\"marker\" width=\"10\" height=\"10\"></rect></svg></template></lwc-up>"
+ }
+}

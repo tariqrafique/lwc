@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "imports": [
+    "foo",
+    "./foo.css"
+  ],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "/*import:foo:x*/",
+        "x|host=false|dir=true": "/*import:foo:x*/",
+        "x|host=false|dir=false": "/*import:foo:x*/",
+        "x|host=true|dir=true": "/*import:foo:x*/",
+        "-|host=true|dir=false": "/*import:foo*/"
+      }
+    },
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "/*import:./foo.css:x*/",
+        "x|host=false|dir=true": "/*import:./foo.css:x*/",
+        "x|host=false|dir=false": "/*import:./foo.css:x*/",
+        "x|host=true|dir=true": "/*import:./foo.css:x*/",
+        "-|host=true|dir=false": "/*import:./foo.css*/"
+      }
+    }
+  ]
+}

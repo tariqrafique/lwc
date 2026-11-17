@@ -1,0 +1,163 @@
+# LWC → Rust compiler: plan of record
+
+Owner: LWC Migrate (only Migrate edits this file). Written 2026-11-01 21:55 PST. Updated 2026-11-16 11:15 PST from official board d0c1ca60cb18.
+Source of truth order: this file → `state/<bot>.md` → cited files. Chat summaries are never authoritative.
+Repos: oracle `/workspace/lwc` @ b9e8007 (9.5.3, clean); Rust main `/workspace/lwc-compiler-rust` (@ bf0f176608d6, official board d0c1ca60cb18);
+notes `/workspace/notes`. Workflow: cloud agents port on `agent/*`; LWC Worker lands with `scripts/land-agent-branch.sh` and publishes the official board (`docs/WORKFLOW.md`, D-0276/D-0279/D-0281/D-0287).
+
+## 1. Fixed direction (do not relitigate; changes need a new decisions.tsv row by Migrate)
+- Full-Rust breaking exit; JS compiler packages deleted per `lwc-rust-migrate/CUTOVER.md` ("Remove / stop publishing").
+- Goldens lock runtime semantics; new goldens allowed; no Babel byte-identity (PROGRAM.md "Gates", "JS path locks").
+- ESM only. AMD is the consumer's job (CUTOVER.md header). No JS shim, long-lived or interim (PROGRAM.md seam; shim gate).
+- Oracle = clean `/workspace/lwc` @ b9e8007; board refuses a dirty oracle (decisions.tsv D-0010).
+- A parity gate counts as CLOSED only when all three pass on the same official board: clean oracle,
+  option coverage (`option-gate`: all fields mapped), unknown-option rejection (backend.ts `assertKnownKeys` + napi `deny_unknown_fields`).
+- Render rows gate; diagnostic rows (marked "diagnostic, non-gating" in board.txt) never gate.
+- Fix root causes at the owning layer (`arch-board/ARCHITECTURE.md` target modules + invariants). Arch Board reviews milestones only (a gate flipping, ownership or direction change, cutover); no per-landing Arch-Review trailer (D-0276).
+- Divergences from upstream exist only as logged rows in `lwc-rust-migrate/decisions.tsv`. Column 1 is a stable `id` (`D-NNNN`, never renumbered or reused); add a row only with `bin/d-id <bot> <phase> <decision> <why> <evidence> <result>` (allocates the id and ts under a lock); cite rows by id, never by line. Coverage cells cite `dec:D-NNNN`.
+- D-0282–D-0287: 30-minute land+official-board target, change-scoped rows, hash reuse, full cold every 5 lands or 6h (D-0282); Style item 9 was cloud work (D-0283); SD-2b asyncYield chunk boundaries and `this.hostElement` throw match the oracle (D-0284); CSR interaction steps were item 7b (D-0285); one-pass lands, registries = main ∪ incoming, removals/loosening need a D-id (D-0286); fixes to already-landed work go onto box main as plain Worker commits and iterate until the official board is VALID (D-0287). The GitHub `rust-compiler` push still waits for a VALID official board unless Tariq says otherwise.
+
+## 2. Current official board
+Newest by `published=`: `/cursor/stores/store-4280618e-f4d8-4614-b1b6-bf88ea27f849/official/d0c1ca60cb18/` (strict key=value manifest).
+status=VALID · producer=scripts/official-board.sh · commit=bf0f176608d6 · notes_commit=f596765a0e28 · oracle b9e8007f9810 clean · parse5_rust_commit=370629a079da · published=2026-11-16T11:03:25-08:00 (America/Los_Angeles). Item 18b landed (agent/pretty-residuals e997997 → main bf0f176): pretty-equal 1560/1560 identical, allowlist 0, no class lines (was 1555/1560, allowlist 5); every corpus N/N (LightningFlowComponents 249/249, lwc-utils 35/35; both-fail 3 unchanged). Unchanged: semantic-diff eq=16809 diff 0, semantic-diff-ssr printer-equal 852 (esc 0), template-diag 0, template-diag-napi 0, lbc 523/523, coverage strict 98 covered/0 gap/0 invalid, js-transform-corpus 1958/1958, template-options 444, js-options 469/1708, option-gate 61/61.
+New in this board: pretty-equal reaches N/N with an empty allowlist, so the D-0292 precondition for the JS package deletes (item 15) is met.
+Row lines copied verbatim from `board.txt`:
+
+```
+style                  Tests  70 passed (70)
+js                     Tests  174 passed (174)
+js-eval                Tests  2 passed (2)
+template               Tests  568 passed (568)  (diagnostic row: not option coverage; case set still ratcheted)
+ssr                    Tests  388 passed (388)  (diagnostic row: not option coverage; case set still ratcheted)
+ssr-async              Tests  388 passed (388)  (diagnostic row: not option coverage; case set still ratcheted)
+ssr-asyncYield         Tests  388 passed (388)  (diagnostic row: not option coverage; case set still ratcheted)
+ssr-render             Tests  389 passed (389)
+ssr-render-async       Tests  389 passed (389)
+known-limitation: ssr-render-async scope-token (D-0242) both backends render [object Promise]
+ssr-render-asyncYield  Tests  389 passed (389)
+csr-render             Tests  395 passed (395)
+csr-render-template    Tests  571 passed (571)
+template-renderer      Tests  568 passed (568)
+js-options             Tests  469 passed | 1239 skipped (1708)
+js-api                 Tests  1239 passed | 469 skipped (1708)
+template-options       Tests  444 passed (444)
+ssr_dynamic_imports    Tests  16 passed (16)
+style-api              Tests  829 passed (829)
+template-api           Tests  5671 passed (5671)
+ssr_render_api         Tests  2724 passed (2724)
+template-diag          cases 63224  clean 63224  mismatches 0 (code 0, message 0, level 0, location 0, order 0, missing-diag 0, extra-diag 0)  codegen-unclean 0 (STATIC_EQUAL 46415, REWRITE_EQUAL 16809, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
+template-diag-napi     cases 63224  clean 63224  mismatches 0 (code 0, message 0, level 0, location 0, order 0, missing-diag 0, extra-diag 0, seam-reject 0)  codegen-unclean 0 (STATIC_EQUAL 46444, REWRITE_EQUAL 16780, exact-bytes+semdiff)  crash 0  oracle-error 0  (diagnostic, non-gating)  SOUND
+style-upstream         Tests  12 passed (12)
+lbc                    Tests  523 passed (523)
+lbc: discovered=522 included=522 excluded=0 compile-error-both=0
+semantic-diff  eq=16809 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1
+template-diag-semdiff  eq=16809 diff_u=0 diff_d=0 unc=0 crash=0  gate=ok  rt=rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1
+semantic-diff-ssr  printer-equal=852  static-observed-differs=240  exec-static-comments-differ=0  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  async:pe=224,sod=140,esc=0,ed=0,et=0,eu=0,ex=23  asyncYield:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  gate=ok
+template-diag-ssr  printer-equal=852  static-observed-differs=240  exec-static-comments-differ=0  exec-differs=0  exec-throw-one-side=0  exec-uncovered=0  crash=0  exclusions=69  exclusion-reasons=compile-error-both:69  sync:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  async:pe=224,sod=140,esc=0,ed=0,et=0,eu=0,ex=23  asyncYield:pe=314,sod=50,esc=0,ed=0,et=0,eu=0,ex=23  gate=ok
+template-diag-style  integration-wtr=206/206 integration-wdio=7/7 integration-types=1/1 lbc=584/584 lbc-recipes=32/32 slds=223/223 fixture-smoke=69/69 parse-error=67/67 dedup=319 jobs=5136 fail=0 (uncapped style-diff, hash-dedup, direct oracle)
+template-diag-realgate  cases=5441 diagMismatch=0 codegenUnclean=0 crash=0 oracleError=0
+template-diag-napierrors  5/5
+upstream-cmp           Tests  1433 passed | 3 skipped (1436)
+upstream-cmp: discovered=1435 included=1432 excluded=3 compile-error-both=3
+upstream-cmp exclude integration-types/src/playground/modules/x/counter compile-error-both LWC1007
+upstream-cmp exclude integration-types/src/playground/modules/x/multiply compile-error-both LWC1007
+upstream-cmp exclude integration-types/src/playground/modules/x/ref compile-error-both LWC1007
+js-transform-corpus    Tests  1958 passed (1958)
+unported-specs         Tests  24 passed (24)
+pretty-equal           Tests  1 passed (1)
+pretty-equal: 1560/1560 identical, allowlist 0
+pretty-equal corpus b2b-commerce-open-source-components 389/389
+pretty-equal corpus dreamhouse-lwc 11/11
+pretty-equal corpus ebikes-lwc 16/16
+pretty-equal corpus lbc 395/395 both-fail 1
+pretty-equal corpus lbc-recipes 126/126
+pretty-equal corpus LightningFlowComponents 249/249 both-fail 1
+pretty-equal corpus lwc-recipes 112/112 both-fail 1
+pretty-equal corpus lwc-utils 35/35
+pretty-equal corpus NPSP 122/122
+pretty-equal corpus revenue-cloud-foundations 50/50
+pretty-equal corpus visualforce-to-lwc 55/55
+pretty-equal both-fail 3
+js-options skip-union: 1708 cases, 0 skipped in every row (js-options js-api)
+shim-check: SHIM(template-gap:=0  SHIM(|TODO(parity=0  (cutover blockers until 0)  untagged=0 (GATING)
+shim-registry: tags=0 rows=0 untracked=0 stale=0 (GATING)
+ssr-compile-js-scanners: count=9 baseline=9 (GATING, must be equal)
+option-gate: 61 fields, 61 mapped, 0 pending, 0 invalid  [decisions /tmp/lwc-board-snap.FVK6k9/notes/decisions.tsv]
+coverage-gate: notes f596765a0e28 matrix 0e37f14933c6 strict: 24 sources x 8 stages = 192 cells, 98 covered (declared gating), 0 diagnostic-only, 0 gap, 76 na, 18 dec, 0 invalid
+golden-io-guard: ok (golden writes + UPDATE_GOLDENS only in src/optionRows.ts)
+style-parse-errors     67/67 (lwc-style fixture tests, LWC_STYLE_STRICT=1)
+csr-clusters[ssr]: pass 392 fail 0
+csr-clusters[template]: pass 568 fail 0
+style-corpus     integration-wtr=206/206 integration-wdio=7/7 integration-types=1/1 lbc=584/584 lbc-recipes=32/32 slds=223/223 fixture-smoke=69/69 parse-error=67/67 dedup=319 jobs=5136 fail=0 (uncapped style-diff, hash-dedup, direct oracle)
+napi-css-errors     5/5 (lwc-compiler-napi single_errors_match_shipped, css-1009 css-1009-host-context)
+```
+
+## 3. Ownership and serial queue (D-0276, D-0281, D-0287)
+One worker, one queue, one item at a time. **LWC Worker (28881e7c)** is the box gatekeeper: it fetches a finished `agent/*` branch, lands it (`scripts/land-agent-branch.sh` / `land.sh`), publishes the official board, and (per D-0287) applies fixes to already-landed work as plain commits on box main until that board is VALID. It owns the workspace trees (every crate, `harness/**`, `scripts/**`, `tools/semdiff`, napi packaging, the official board, `CUTOVER.md`). It does not port the next queue item. Migrate (only contact with Tariq) owns this file, decisions.tsv rulings and OWNERS contents. Arch Board (af0d1105) reviews **milestones only**: a gate flipping, an ownership or direction change, and cutover. No per-landing Arch-Review trailer.
+Parked (no work; their state/<bot>.md is the handoff): Template Rust 766f1a0b, SSR Rust 37aea75f, JS Style e79e5456, Semantic Diff 45d9257f, Ship 2d877d6d. Retired earlier: postcss, diagnostics, debugger-view.
+Rules that still stand: land.sh is the only path from an `agent/*` branch onto main (D-0287 is the exception for post-land fixes); numbers only from official boards; D-0268 disk hygiene; D-0275 store-first audit logs; no build unlocked; no PRs, no GitHub Actions, no force-push, `agent/*` only, delete after landing (D-0279/D-0280/D-0281). After D-0286, do not change land/board machinery unless the current item cannot land.
+
+Finished items (land sha = the commit on `main` that carried the work; board id = the VALID official board published for that tip; D-0286 lands as main ∪ incoming so the board commit may be a later snapshot refresh on the same land):
+
+1. **DONE** OWNERS = single owner; land.sh drops the per-land Arch-Review requirement. Land `dd99d0a` (2026-11-09 13:37 PST). No dedicated official board of its own; first subsequent VALID board is item 2 (`78a3500dd541`).
+2. **DONE** Fresh official board on then-current main. Land / board commit `3ecff19`; official board `78a3500dd541` (VALID, published 2026-11-09 22:03 PST).
+3. **DONE** (D-0281, 2026-11-10): (a) portable harness landed `c9e03e1`; (b) cloud fresh-clone board MATCH vs official `6e5d1ca4f011` (VALID, commit `c9e03e1`, published 2026-11-10 05:56 PST); (c) in force — cloud agents port on `agent/*`, Worker gatekeeps. D-0277/D-0278 superseded by D-0279+D-0280 (no Actions, no PRs).
+4. **DONE** semantic-diff board row (`--gate strict`, no baseline). Feature land `8cf3c64`; official board `2ead84925858` (VALID, commit `1017bce`, published 2026-11-10 03:51 PST).
+5. **DONE** Template S5 (SSR consumes `.ast`): land `a82b713` (AB-D0004 S5); official board `8a00cf3f860c` (VALID, commit `5e2230f`, published 2026-11-10 06:37 PST). S6 (first cloud task, `agent/s6`): land `8e338f9`; official board `811ad3f956d2` (VALID, published 2026-11-10 07:49 PST).
+6. **DONE** ssr-render: clear the 5 skips (×3 modes). Feature land `d9e0e35` (reseed `33cbac3`, D-0242 byte-compare `7c7ae1b`); official board `ecfcb59de9ad` (VALID, commit `1b562b0`, published 2026-11-10 09:08 PST). Known-limitation D-0242 remains on the board (both backends render `[object Promise]` for ssr-render-async scope-token).
+7. **DONE** SSR pair emitter + SD-2b exec leg. Feature land `f73cc9d` (yield merge `6e64d5c`, oracle path `a5206e7`); official board `5e80e0ff4f72` (VALID, commit `6026c08`, published 2026-11-10 15:41 PST).
+7b. **DONE** (D-0285) CSR interaction steps after first mount. Feature land `4ee0bd7`; official board `5aafe4b7f269` (VALID, commit `bcabc2e`, published 2026-11-10 17:11 PST). csr-render 395/395, csr-render-template 571/571.
+8. **DONE** JS: D-0265 phase 2 residuals (3 shim rows) and CompileError raw position as one typed variant. Agent tip `60fab49` (not on main; parent `1b562b0`); landed on main as `bb64d8d`; official board `0d4392d66b82` (VALID, commit `bb64d8d`, published 2026-11-10 10:58 PST). D-0243 was deferred and is now item 14.
+9. **DONE** Style: close the live coverage GAPs (D-0283, `agent/style-gaps`). Feature land `8f9bb1b`; official board `edcfde44d1b8` (VALID, commit `3d3d152`, published 2026-11-10 20:21 PST). style-upstream 12/12, style-corpus 5136 jobs fail=0, napi-css-errors 2/2.
+
+Also landed after item 9, not a leftover port item: **D-0286** one-pass lands. Commits `4bd18a3` / `123512b` / `ee92647`; official board `37036c11d866` (VALID, commit `ee92647`, published 2026-11-10 20:52 PST). Every scoreboard row identical to `edcfde44d1b8`.
+
+Remaining queue (Worker or a cloud agent pulls the top item; Migrate reorders; finish or park an item with a state note before starting the next). From D-0281 on, porting is a cloud-agent task on `agent/<item>` unless listed as box-only Worker work:
+
+10. **DONE** LBC whole-component row. Branch tip `179a794` landed in main `b2bb4be`; official board `66479d02aafa` (VALID, commit `b2bb4be`, published 2026-11-10 23:53 PST). `lbc` Tests 523 passed (523), discovered=522 included=522 excluded=0. The coverage-gate line is on the board and is still report-only.
+10b. **DONE** (except the 2 template-diag-mutations cells, moved to item 12 together with the COVGATE_STRICT flip): js-transform baseline 0, upstream-cmp 1433/1436, coverage 96 covered / 2 gap / 18 dec / 0 invalid on official board b4b4637149dc (main 5057776). Coverage gate green and gating. Cloud-agent work (`agent/coverage-green`). Gap cells whose owner is a parked bot get no owner; work goes to cloud agents. **Done when:** every GAP cell is either covered by a gating board row or reclassified na/dec citing a D-id, then the coverage gate flips from report-only to gating. **Progress (00:53 PST 11-11):** pass 1 at agent tip 9dc5ff6 closed 44 cells (agent-reported, not yet on an official board: 70 covered / 44 gap). D-0288 scopes semantic_diff and crate-internal fixture cells to dec, and rejects the waivers for js_transform, render on the integration/rollup/remainder trees, and the unported compiler specs, which get real rows (pass 2 on the same branch). Mutations stay GAP until item 12, and strict flips after item 12. **Pass 2 (02:15 PST):** tip 5340bb6, agent-reported 96 covered / 2 gap / 18 dec / 0 invalid. The Worker lands it after item 13 with the dec:D-0288→D-0289 swap (D-0289 = D-0288 locked). D-0289 also says js-transform-corpus (baseline 1939/1957 diffs) doesn't count toward DONE until it's 0 or classified. Diff root-cause is on agent/js-transform-diffs (same cloud agent). **Landed 03:09 PST** at main 2fe71f2, board 55f1d0c2885f; branch deleted. js-transform-diffs landed at main 3d2e472, board fd035de9d515. Residual landed at main 5057776, board b4b4637149dc. Follow-up f2b2ced landed (board b4b4637149dc): R-VAR-LITERAL-IMPORT-1 narrowed (no longer reorders function decls), negatives for both rules, unit tests for uid/directive fixes; counts unchanged. Remaining for DONE: js-transform-corpus baseline to 0 or classified; the 22 upstream-cmp compile-error-both exclusions checked against each test's own compile config; the 2 mutation cells (item 12); then strict. **03:35 PST:** agent tip f2c1d23 (agent-reported) cuts the js-transform baseline 1939→36 with 6 named rules and planted negatives, and upstream-cmp exclusions 22→3 (the 3 left are LWC1007 TypeScript sources). It's being landed. Pass 3 on agent/js-transform-residual takes the last 36 to 0: var-init-order and duplicate-key first, then comment-dropped. **04:20 PST:** pass 3 tip 98ed2f6 (agent-reported) takes the ratchet 36→0, and the Worker is landing it. After that board, 10b is DONE except the 2 mutation cells, so the strict flip moves into item 12's done-when.
+11. **DONE** 5087f1b + 60d8098 / main 1a0062d / board ca2ab905b502 (AB-0008 one option schema + AB-0009 .mts/LWC1005; napi seam-reject 1120→0). AB-0009 CLOSED by Arch (notes d61f8f1). AB-0008 G1-G4 landed acc5297 + 84d8a6b, board 78636d164fd6; Arch re-review (notes 2dd6d0b): G2-G4 fixed; G1a ssrMode unknown->mirror upstream, G1b single validate + typed dispatch, G2b instrumentation per D-0205, G4b warn latch: on Worker. Round 2 (G1a/G1b/G2b/G4b) landed da7aa28..a492147 on board b52f488b4470; Arch re-review requested 21:40 PST. Arch r2 review (notes 769679e): G1a/G1b/G4b fixed; still open: G2b, G1b-r, G1a-r. Ruling: G2b takes option (ii), JS instrumentation callbacks work for real, per D-0009/D-0205. Round 3 is queued on the Worker after item 14 lands. Round 3 landed d52bdba + 2cb9072 / main 4b53e18 / board ae879939adbf; Arch r3 re-review requested 23:10 PST. Arch r3 review (notes e5b21ae): G1b-r and G1a-r are CLOSED. The G2b(ii) design is approved, but three gaps remain. Rulings: (1) the board runs the 58 js-options inst|ssrmode cases: derive the filter at board.sh:515-516, and the board fails if any js-options case is skipped; (2) a throwing instrumentation callback must throw the oracle's coded error (LWC1052/LWC1007) during the compile, with no divergence row; (3) the harness imports crates/lwc-compiler-napi/wrap.js, and harness/src/napiWrap.js plus the loader_guard.rs:270 equality test are deleted. Round 4 goes to the Worker after ship15a lands. Round 4 landed 0d4c9bd..45d13cf / board e0252ee27381; the D-0205 amendment is D-0293; Arch r4 re-review requested 01:00 PST. Divergences the Worker reported (notes c187146), ruled to match the oracle with tests, as round 5 after item 16 lands: (a) the deprecation console.warn is emitted before compile, as the oracle does; (b) targetSSR rethrows thrown values in the oracle's form; (c) thrown objects carrying lwcCode/code/level are handled as the oracle handles them. Arch r4 review (notes b841416): all three r3 gaps are CLOSED, and AB-0008 now waits only on r5. The divergences are in AB-0008 scope. Arch's r5 spec (D1 warn sink before dispatch, D2 catch only at the compile entry, D3 lwcCode carried through a shared getCodeFromError, plus dead-code deletes) was sent to the Worker to do after the item 16 land. Round 5 landed 0152aab + 48c00ba / main 8ab3753 / board 475fc6bc0c9a; Arch r5 re-review requested 03:05 PST. Arch carry-forward #10 (a: a throwing console.warn aborts at validation; b: dead napi branch lib.rs:1048-1053; c: explicit null vs omitted on the wire for stylesheetConfig/minify/outputConfig; d: only Error-level parse warnings are fatal, as upstream) went to the Worker as a box-main fix (D-0287). Carry-forward #10 landed 5b6437e + 9cb6515 / main b0b786d / board 05b3d3b6d929.
+12. **DONE** a71a63b..2ad1614 / main f610223 / board 9b3f4b7b48f5: template-diag + napi mismatches 0 (four root causes: leaked element scopes 64, warnings lost after throw 15, complex literals as expressions 10, if-chain/slot publication 19); coverage gate strict, 0 gap.
+13. **DONE** D-0235 fmt gating green: `cargo fmt --all` 40e71c2, `cargo fmt --all --check` hard check 6255cc8, main b5fa58b, official board fbdb6da03d8a VALID. Box-only Worker work (D-0235 is a one-shot `cargo fmt` on main, then `cargo fmt --all --check` as a hard land/official-board gate; D-0286 says gate-code changes go main-first by the Worker; D-0280 dropped the Actions half). **Done when:** `cargo fmt --all --check` is green on main and a VALID official board / land path fails if it is not.
+14. **DONE** 336fdd0 + cb61644 (agent/d0243 c4fec3f) / main b7f0b11 / board 015278db2b76: one JS string-literal quoter (lwc_shared::js::string_literal); json_string, js_string x2, js_str and serde_quote deleted; napi js_string is String() coercion (D-0158); no row moved.
+15. Ship: linux-x64 napi (already packing on the board’s napi sha), a written and tested plan for building macOS and Windows napi **without** GitHub Actions (D-0280), CUTOVER.md brought current from the latest official board, consumers (`@lwc/rollup-plugin` and the other bundler integrations) on the Rust `transform` / `transformSync` API, JS compiler package deletes, CUTOVER verify. Box-only Worker work: consumer ports live in the box-local tree `/workspace/wt/lwc-consumers` (D-0202: never pushed, never read by the board) and CUTOVER verify/rollback touch local layout; other triples cannot be produced on this Linux box or a typical cloud Linux VM, so the plan is written and tested here. **Done when:** CUTOVER.md preconditions and verify steps are checked from a VALID official board plus the written macOS/Windows napi plan (tested as far as a Linux host can test it), consumers compile against the Rust API, and the JS packages slated for delete are gone from the consumer/cutover tree (oracle `/workspace/lwc` stays untouched). **Running (Worker)** since 21:41 PST 2026-11-15: (a) the macOS/Windows napi plan and (b) the consumer ports. Deletes and CUTOVER verify wait for item 14. (b) DONE (Worker-reported) 21:50 PST: consumers ship/consumers 2dcd877 (D1/D4/D5 on Rust transform via packages/lwc-compiler-rs), yarn build rc 0. JS package deletes now also wait for pretty-equal at N/N (D-0292). (a) LANDED 8bf6db3..2f67bc3 / main f549579 / board 12b7d5d72e23. Real macOS and Windows load tests are still outstanding. 2026-11-16: the D-0292 precondition for the JS package deletes (pretty-equal N/N, empty allowlist) is met on board d0c1ca60cb18 (1560/1560, allowlist 0).
+16. **DONE** c1a11eb..486dd84 / main f847d2d / board abda6df3bc80. **Running** pretty-equal row + literal fidelity (D-0292 F1+F2) on agent/pretty-literals. Done when: the official board has a pretty-equal row over the census corpus, ratcheted, with an allowlist that can only shrink; the literal-spelling class is at 0 (the probe matches the oracle); R-NUMERIC-SPELLING-1 is retired. Pushed agent/pretty-literals f3dcc0a (agent-reported: portable board rc 0; pretty-equal 1141/1560, allowlist 419, numeric/string spelling 0, 11 corpora including the six new ones). Queued on the Worker to land after AB-0008 r4.
+17. **DONE** d96baeb / main 133a1fd / board 82860ed098bf. Comment fidelity (F3 field comments travel with the init, F4 trailing/inner/verbatim block comments, blank line before a comment). Done when: the blank-line, comment-moved and comment-dropped classes are at 0, and R-INERT-LINE-COMMENT-1 and R-COMMENT-STAR-SPACE-1 are retired. Also: keep the tab and space indentation inside block comments verbatim (corpora example: rlmCollectionsConsole). Running: agent/comment-fidelity. Run 1 (bc-37a23467) pushed agent/comment-fidelity b96809a. Agent-reported pretty-equal is 1388/1560, up from 1141. Residuals: blank-line 37, placement 34, dropped 47, added 10, layout 2. The portable board exited 3 because notes weren't mounted (shim gate). Sent back 03:08 PST with root-cause targets per class; timebox 2h. Run 3 06:30 PST: agent/comment-fidelity 759360d, portable board 0 (agent-reported), pretty-equal 1418/1560 allowlist 142; handed to Worker to land after F11. Residual allowlisted comment cases (fsc_flowButtonBar*, ibanComponent, datatable) go to item 18 F5 cloud agent.
+17b. **DONE** 1d0db50 / main 01c8956 / board 738958401bb4. SSR comment regression from item 17: semantic-diff-ssr printer-equal must return to >=849 (exec-static-comments-differ <=17) with pretty-equal staying >=1418. Root cause: the item 17 comment rules changed SSR output where it used to match JS. Cloud, agent/ssr-comment-fidelity.
+18. **DONE** 55c0fcd / main 3e5765a / board 65006817bd11. Small fidelity fixes: F5 shorthand and duplicate keys as written, F6 source map sources basename, F7 SSR template stamp, F10 match the oracle's dropped header. Done when: sources match 662/662, the SSR stamp matches 662/662, and the F5 rules are retired. Also F11: on malformed HTML, the parse error must match the oracle's message and location. Example: LightningFlowComponents customHeaderCpe.html, a start tag left unclosed. JS reports unexpected-character-in-attribute-name at 5:5, Rust reports closing-of-element-with-open-child-elements at 190:1. Split 04:06 PST: F6/F7/F10/F11 go to the Worker on box main (D-0287, fixes to landed code that don't touch the printer); F5 stays as the cloud item after 17. Board 73b1a4ad868d (main 3d70193): F6/F7/F10 LANDED (0c837bd). F11 pending on Worker; F5 cloud after 17. Board f4412e929653 (main 82d68c2): F11 LANDED (5863a94, parse5-rust main 370629a, Tariq-approved FF). Only F5 remains (cloud, after 17). 08:22 PST: F5 dispatched to cloud bc-37a23467 on agent/object-shorthand, with item 17 residual comment cases (blank-line 6, added 2, placement 2, dropped 1). F5 LANDED on board 65006817bd11.
+18b. **DONE** e997997 / main bf0f176 / board d0c1ca60cb18. Pretty-equal residuals to 1560/1560 with an empty allowlist (gates the JS deletes, D-0292): fsc_flowButtonBar, fsc_flowButtonBarCPE (blank-line), ibanComponent (blank-line + param comment dropped), datatable (`} //NEW` placement; also comment-added, other), fuseBasic (other). Cloud bc-37a23467 on agent/pretty-residuals, dispatched 09:21 PST. Done when: pretty-equal 1560/1560 with an empty allowlist on a VALID official board.
+19. F8 semdiff compares comments and literal spelling from the source, not via the oxc reprint. Done when: no printer-equal verdict hides a hunk. Dispatched 11:11 PST to cloud bc-37a23467 on agent/semdiff-source.
+20. F9 option-sweep census (inline maps, LWS on, old apiVersion) plus the new external corpus. Done when: each variant is at N/N or allowlisted under a D-id, and pretty-equal is at N/N with an empty allowlist.
+
+2026-11-10 23:20 PST root-cause ruling (`/workspace/rootcause/report.md`): allowlists are judged main ∪ incoming (Worker fix1 `8585774`); a no-error-mute lint; one `scripts/preflight.sh` shared by land.sh and cloud agents; land self-tests run only when a branch touches gate files; gate-code commits must pass `run-land-self-tests.sh --all` (D-0287 does not cover gate code). Worker in flight: `scripts/preflight.sh` and the land self-test scoping.
+
+## 4. Remaining exit criteria (full cutover)
+- [x] Golden-gate hole closed (AB-0003 `5cc367c`, AB-0007 `cdd2a74`, 2026-11-01); current official board `b4b4637149dc` is VALID, not provisional.
+- [x] Board fails on row regressions (AB-0006 `ebfad54`); land.sh runs option gate + behaviour ratchet + dependents (AB-0005 `672ac09`).
+- [x] csr-render 395/395 and csr-render-template 571/571 on official board `b4b4637149dc` (original targets were 390/390 and 570/570; item 7b added cases).
+- [x] ssr-render ×3 389/389, ssr_render_api 2724/2724, ssr_dynamic_imports 16/16 on `b4b4637149dc` (AB-0002 work is landed; SSR numbers count).
+- [x] Previously listed skips cleared: ssr-render 5 (D-0242 known-limitation remains, both backends), ssr_render_api 14, template-renderer full file 568/568 (D-0217). Any new skip still needs a decisions.tsv id.
+- [ ] Unknown-option rejection asserted by an explicit board check, alongside option-gate and clean oracle (AB-0008, item 11).
+- [x] semantic-diff gate green on `b4b4637149dc`: eq=16795, diff=0, unc=0, crash=0, gate=ok.
+- [x] Coverage gate green and gating: strict on official board `d0c1ca60cb18` (192 cells, 98 covered, 0 gap, 76 na, 18 dec, 0 invalid).
+- [x] LBC whole-component parity row closed (compile + SSR/CSR render on both engines), gating (item 10, official board `66479d02aafa`: 523/523, discovered=522 included=522 excluded=0).
+- [ ] One option schema (AB-0008); dispatch `.mts` + LWC1005 (AB-0009) (item 11).
+- [ ] One error model (AB-R003, AB-0001, AB-R001); one LWC_VERSION (AB-0010); shared tables in lwc-shared (AB-0011).
+- [ ] Zero open REWORK rows in `arch-board/reviews.tsv`.
+- [ ] CUTOVER.md preconditions: shims 0 (tagged + untagged) already hold on `66479d02aafa`; crate-surface review; `cargo check && cargo test` on main; fmt gate (item 13).
+- [ ] Move engine-server fixtures out of @lwc/ssr-compiler; consumers on the Rust API (CUTOVER.md) (item 15).
+- [ ] Delete JS packages and run CUTOVER.md "Verify"; rollback path per CUTOVER.md "Rollback" (item 15).
+- [x] template-diag mismatches 0 (template-diag and template-diag-napi: 63224 cases, 0 mismatches, SOUND) on official board `d0c1ca60cb18` (item 12); D-0243 wave is item 14 (DONE, board 015278db2b76).
+
+## 5. Protocol (anti context rot)
+- Every wake: read this file. LWC Worker updates `state/harness.md` when its state changes (item, branch tip, landing, board, dead end, blocker) and commits it in `/workspace/notes`. Write facts with paths and shas, not narrative. Parked bots do no work.
+- Only Migrate edits PLAN.md. The Worker puts disagreements under "Open questions for Migrate" in its state file.
+- Numbers come only from an official board in the store (newest `published=`). Live-tree runs are not reportable.
+- Shared-box hygiene: in `/workspace/notes` commit only with `bin/notes-commit <bot> -m <msg> <file>...` (the hook refuses anything else; ownership is `OWNERS.tsv`).
+  Never kill by pattern (`pkill -f`, `killall`); kill only PIDs your own turn started. Remove a worktree only with `git worktree remove` (no `--force`)
+  after confirming its branch has no unmerged commits.
+- D-ids: allocate only with `bin/d-id` (locked; rejects duplicates and future timestamps). Never hand-edit new rows into decisions.tsv.
+- D-0276 supersedes the old multi-writer protocol: one serial Worker; no Cross-Lane trailers; no per-bot worktrees; no writing into another bot's tree; Arch reviews milestones only.
+- D-0279 / D-0280 / D-0281: no PRs, no GitHub Actions, no force-push. New work uses `agent/<item>` on tariqrafique/lwc only (not `bot/<bot>-*` or `wip/*`); each `agent/*` branch is deleted after it lands. The Worker's land of that branch, then the official board on this computer against `/workspace/lwc` @ b9e8007, is the gate.
+- D-0268 disk hygiene and D-0275 store-first audit logs still stand.
+- Migrate forwards decisions, never unverified scores or results.

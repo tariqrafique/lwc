@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-top_medium slds-m-bottom_x-large\"><p class=\"slds-m-bottom_medium\">Badges with <code>icon</code>.</p><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-top_medium slds-m-bottom_x-large\"><p class=\"slds-m-bottom_medium\">Badges with <code>icon</code>.</p><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge><lightning-badge><template shadowrootmode=\"open\"></template></lightning-badge></div></template></lwc-lbc>"
+ }
+}

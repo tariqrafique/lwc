@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./static-id-in-iteration.css",
+    "./static-id-in-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1041,
+      "level": 2
+    },
+    {
+      "code": 1041,
+      "level": 2
+    },
+    {
+      "code": 1041,
+      "level": 2
+    },
+    {
+      "code": 1041,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-41g515g6rr7",
+    "lwc-41g515g6rr7-host",
+    "x-static-id-in-iteration_static-id-in-iteration",
+    "x-static-id-in-iteration_static-id-in-iteration-host"
+  ]
+}

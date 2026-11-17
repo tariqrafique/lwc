@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"mutatis\" data-lwc-host-mutated=\"class\"><template shadowrootmode=\"open\"><div>woot</div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"mutatis\"><template shadowrootmode=\"open\"><div>woot</div></template></lwc-up>"
+ }
+}

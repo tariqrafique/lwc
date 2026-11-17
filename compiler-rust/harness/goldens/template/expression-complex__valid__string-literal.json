@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./string-literal.css",
+    "./string-literal.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-76sj5dn4mci",
+    "lwc-76sj5dn4mci-host",
+    "x-string-literal_string-literal",
+    "x-string-literal_string-literal-host"
+  ]
+}

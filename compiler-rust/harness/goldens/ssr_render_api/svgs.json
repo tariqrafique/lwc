@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <svg height=\"150\" width=\"400\">\n      <defs>\n        <linearGradient id=\"grad1\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\">\n          <stop class=\"static\" offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"/>\n          <stop class=\"static\" offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"/>\n        </linearGradient>\n      </defs>\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <svg class=\"static\" height=\"150\" width=\"400\">\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <div>\n      <svg xmlns=\"http://www.w3.org/2000/svg\">\n        <path/>\n        <path/>\n      </svg>\n    </div>\n    <svg xmlns=\"http://www.w3.org/2000/svg\">\n      <path/>\n      <path/>\n    </svg>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <svg height=\"150\" width=\"400\">\n      <defs>\n        <linearGradient id=\"grad1\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\">\n          <stop class=\"static\" offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"/>\n          <stop class=\"static\" offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"/>\n        </linearGradient>\n      </defs>\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <svg class=\"static\" height=\"150\" width=\"400\">\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <div>\n      <svg xmlns=\"http://www.w3.org/2000/svg\">\n        <path/>\n        <path/>\n      </svg>\n    </div>\n    <svg xmlns=\"http://www.w3.org/2000/svg\">\n      <path/>\n      <path/>\n    </svg>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <svg height=\"150\" width=\"400\">\n      <defs>\n        <linearGradient id=\"grad1\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\">\n          <stop class=\"static\" offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"/>\n          <stop class=\"static\" offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"/>\n        </linearGradient>\n      </defs>\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <svg class=\"static\" height=\"150\" width=\"400\">\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <div>\n      <svg xmlns=\"http://www.w3.org/2000/svg\">\n        <path/>\n        <path/>\n      </svg>\n    </div>\n    <svg xmlns=\"http://www.w3.org/2000/svg\">\n      <path/>\n      <path/>\n    </svg>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <svg height=\"150\" width=\"400\">\n      <defs>\n        <linearGradient id=\"grad1\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\">\n          <stop class=\"static\" offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"/>\n          <stop class=\"static\" offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"/>\n        </linearGradient>\n      </defs>\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <svg class=\"static\" height=\"150\" width=\"400\">\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <div>\n      <svg xmlns=\"http://www.w3.org/2000/svg\">\n        <path/>\n        <path/>\n      </svg>\n    </div>\n    <svg xmlns=\"http://www.w3.org/2000/svg\">\n      <path/>\n      <path/>\n    </svg>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <svg height=\"150\" width=\"400\">\n      <defs>\n        <linearGradient id=\"grad1\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\">\n          <stop class=\"static\" offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"/>\n          <stop class=\"static\" offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"/>\n        </linearGradient>\n      </defs>\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <svg class=\"static\" height=\"150\" width=\"400\">\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <div>\n      <svg xmlns=\"http://www.w3.org/2000/svg\">\n        <path/>\n        <path/>\n      </svg>\n    </div>\n    <svg xmlns=\"http://www.w3.org/2000/svg\">\n      <path/>\n      <path/>\n    </svg>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <svg height=\"150\" width=\"400\">\n      <defs>\n        <linearGradient id=\"grad1\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\">\n          <stop class=\"static\" offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"/>\n          <stop class=\"static\" offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"/>\n        </linearGradient>\n      </defs>\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <svg class=\"static\" height=\"150\" width=\"400\">\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <div>\n      <svg xmlns=\"http://www.w3.org/2000/svg\">\n        <path/>\n        <path/>\n      </svg>\n    </div>\n    <svg xmlns=\"http://www.w3.org/2000/svg\">\n      <path/>\n      <path/>\n    </svg>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <svg height=\"150\" width=\"400\">\n      <defs>\n        <linearGradient id=\"grad1\" x1=\"0%\" x2=\"100%\" y1=\"0%\" y2=\"0%\">\n          <stop class=\"static\" offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"/>\n          <stop class=\"static\" offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"/>\n        </linearGradient>\n      </defs>\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <svg class=\"static\" height=\"150\" width=\"400\">\n      <ellipse class=\"static\" cx=\"200\" cy=\"70\" fill=\"url(#grad1)\" rx=\"85\" ry=\"55\"/>\n    </svg>\n    <div>\n      <svg xmlns=\"http://www.w3.org/2000/svg\">\n        <path/>\n        <path/>\n      </svg>\n    </div>\n    <svg xmlns=\"http://www.w3.org/2000/svg\">\n      <path/>\n      <path/>\n    </svg>\n  </template>\n</fixture-test>"
+ }
+}

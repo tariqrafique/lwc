@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./binary-expr-bit-shift.css",
+    "./binary-expr-bit-shift.scoped.css?scoped=true",
+    "x/child"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5p79c89e8dj",
+    "lwc-5p79c89e8dj-host",
+    "x-binary-expr-bit-shift_binary-expr-bit-shift",
+    "x-binary-expr-bit-shift_binary-expr-bit-shift-host"
+  ]
+}

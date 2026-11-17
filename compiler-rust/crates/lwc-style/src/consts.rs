@@ -1,0 +1,8 @@
+pub const KEY_SCOPED_CSS: &str = "$scoped$";
+pub const KEY_NATIVE_ONLY_CSS: &str = "$nativeOnly$";
+pub const SHADOW_ATTRIBUTE: &str = "__shadowAttribute__";
+pub const HOST_ATTRIBUTE: &str = "__hostAttribute__";
+pub const DIR_ATTRIBUTE_NATIVE_LTR: &str = "__dirAttributeNativeLtr__";
+pub const DIR_ATTRIBUTE_NATIVE_RTL: &str = "__dirAttributeNativeRtl__";
+pub const DIR_ATTRIBUTE_SYNTHETIC_LTR: &str = "__dirAttributeSyntheticLtr__";
+pub const DIR_ATTRIBUTE_SYNTHETIC_RTL: &str = "__dirAttributeSyntheticRtl__";

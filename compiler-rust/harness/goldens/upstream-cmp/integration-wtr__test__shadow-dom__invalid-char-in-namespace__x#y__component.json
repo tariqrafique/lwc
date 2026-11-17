@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot find module '<out>/integration-wtr/test/shadow-dom/invalid-char-in-namespace/x#y/component/ssr.mjs' imported from <harness>/upstream-cmp.behavior.test.ts"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "Cannot find module '<out>/integration-wtr/test/shadow-dom/invalid-char-in-namespace/x#y/component/csr.mjs' imported from <harness>/upstream-cmp.behavior.test.ts"
+ }
+}

@@ -1,0 +1,18 @@
+[package]
+name = "lwc-style"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lwc-shared = { path = "../lwc-shared" }
+
+[dev-dependencies]
+# The style facade (`@lwc/compiler` transformers/style.ts) lives in lwc-compiler; tests pin its errors.
+lwc-compiler = { path = "../lwc-compiler" }
+serde_json = "1"
+repo-tracked = { path = "../repo-tracked" }
+
+[[test]]
+name = "fixtures"
+path = "tests/fixtures.rs"
+harness = false

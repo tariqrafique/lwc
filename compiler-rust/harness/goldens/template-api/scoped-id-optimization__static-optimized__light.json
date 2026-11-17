@@ -1,0 +1,412 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./light.css",
+   "./light.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1kadf5igpar",
+   "lwc-1kadf5igpar-host",
+   "x-light_light",
+   "x-light_light-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1kadf5igpar"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./light.css",
+   "./light.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1kadf5igpar",
+   "lwc-1kadf5igpar-host",
+   "x-light_light",
+   "x-light_light-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-light_light"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./light.css",
+   "./light.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1kadf5igpar",
+   "lwc-1kadf5igpar-host",
+   "x-light_light",
+   "x-light_light-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-light_light"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./light.css",
+   "./light.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1kadf5igpar",
+   "lwc-1kadf5igpar-host",
+   "x-light_light",
+   "x-light_light-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1kadf5igpar"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./light.css",
+   "./light.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1kadf5igpar",
+   "lwc-1kadf5igpar-host",
+   "x-light_light",
+   "x-light_light-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1kadf5igpar"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./light.css",
+   "./light.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1kadf5igpar",
+   "lwc-1kadf5igpar-host",
+   "x-light_light",
+   "x-light_light-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1kadf5igpar"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./light.css",
+   "./light.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1kadf5igpar",
+   "lwc-1kadf5igpar-host",
+   "x-light_light",
+   "x-light_light-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1kadf5igpar"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./light.css",
+   "./light.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1kadf5igpar",
+   "lwc-1kadf5igpar-host",
+   "x-light_light",
+   "x-light_light-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1kadf5igpar"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./light.css",
+   "./light.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1kadf5igpar",
+   "lwc-1kadf5igpar-host",
+   "x-light_light",
+   "x-light_light-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1kadf5igpar"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./light.css",
+   "./light.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1kadf5igpar",
+   "lwc-1kadf5igpar-host",
+   "x-light_light",
+   "x-light_light-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1kadf5igpar"
+  }
+ }
+}

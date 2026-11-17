@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1107
+  ],
+  "message": "LWC1107: Invalid property name \"dataFooBar\". Properties starting with \"data\" are reserved attributes."
+}

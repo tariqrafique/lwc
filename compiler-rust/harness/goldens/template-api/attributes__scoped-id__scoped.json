@@ -1,0 +1,322 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true",
+   "lightning/combobox"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true",
+   "lightning/combobox"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-scoped_scoped"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true",
+   "lightning/combobox"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-scoped_scoped"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true",
+   "lightning/combobox"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true",
+   "lightning/combobox"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true",
+   "lightning/combobox"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true",
+   "lightning/combobox"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true",
+   "lightning/combobox"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true",
+   "lightning/combobox"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped.css",
+   "./scoped.scoped.css?scoped=true",
+   "lightning/combobox"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-8anf07i38v",
+   "lwc-8anf07i38v-host",
+   "x-scoped_scoped",
+   "x-scoped_scoped-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-8anf07i38v"
+  }
+ }
+}

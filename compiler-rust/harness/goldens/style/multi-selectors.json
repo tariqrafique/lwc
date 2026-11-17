@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "h1[x], h2[x] {}h1[x],h2[x]{}",
+        "x|host=false|dir=true": "h1[x], h2[x] {}h1[x],h2[x]{}",
+        "x|host=false|dir=false": "h1[x], h2[x] {}h1[x],h2[x]{}",
+        "x|host=true|dir=true": "h1[x], h2[x] {}h1[x],h2[x]{}",
+        "-|host=true|dir=false": "h1, h2 {}h1,h2{}"
+      }
+    }
+  ]
+}

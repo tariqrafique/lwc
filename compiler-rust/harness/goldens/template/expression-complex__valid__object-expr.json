@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./object-expr.css",
+    "./object-expr.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6baembf2687",
+    "lwc-6baembf2687-host",
+    "x-object-expr_object-expr",
+    "x-object-expr_object-expr-host"
+  ]
+}

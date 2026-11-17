@@ -1,0 +1,11 @@
+[
+{"name":"two-invalid-directives","filename":"foo.html","opts":{"experimentalErrorRecoveryMode":true},"src":"<template>\n  <div lwc:a=\"1\"></div>\n  <span lwc:b=\"2\"></span>\n</template>"},
+{"name":"directive+template-tag","filename":"foo.html","opts":{"experimentalErrorRecoveryMode":true},"src":"<template><div lwc:a=\"1\" lwc:b=\"2\"></div><template></template></template>"},
+{"name":"three-errors-mixed","filename":"foo.html","opts":{"experimentalErrorRecoveryMode":true},"src":"<template>\n  <template></template>\n  <x-foo lwc:if={a} lwc:else></x-foo>\n  <p lwc:zzz=\"1\"></p>\n</template>"},
+{"name":"bad-exprs","filename":"foo.html","opts":{"experimentalErrorRecoveryMode":true},"src":"<template><div class={a.b.c()}></div><span title={foo bar}></span></template>"},
+{"name":"for-each-errors","filename":"foo.html","opts":{"experimentalErrorRecoveryMode":true},"src":"<template><template for:each={items}><div></div></template><template for:each={items} for:item=\"x\"><div></div></template></template>"},
+{"name":"key-and-slot","filename":"foo.html","opts":{"experimentalErrorRecoveryMode":true},"src":"<template><div key=\"k\"></div><slot name=\"a\"></slot><slot name=\"a\"></slot><input lwc:inner-html=\"x\"></template>"},
+{"name":"html-syntax+directive","filename":"foo.html","opts":{"experimentalErrorRecoveryMode":true},"src":"<template><div lwc:a=\"1\"></div><p></template>"},
+{"name":"lwc-ref-dup","filename":"foo.html","opts":{"experimentalErrorRecoveryMode":true},"src":"<template><div lwc:ref=\"\"></div><div lwc:ref={x}></div><div lwc:spread=\"s\"></div></template>"},
+{"name":"normal-two-errors","filename":"foo.html","opts":{},"src":"<template>\n  <div lwc:a=\"1\"></div>\n  <span lwc:b=\"2\"></span>\n</template>"}
+]

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100px\" height=\"100px\" viewport=\"0 0 100 100\"><defs><circle class=\"blk-circle\" id=\"blk-circle\" r=\"10\" cx=\"10\" cy=\"10\" fill=\"black\"/><circle class=\"red-circle\" id=\"red-circle\" r=\"10\" cx=\"14\" cy=\"14\" fill=\"red\"/></defs><use class=\"blk-circle-use\" href=\"#blk-circle\"/><use class=\"red-circle-use\" xlink:href=\"#red-circle\"/></svg></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100px\" height=\"100px\" viewport=\"0 0 100 100\"><defs><circle class=\"blk-circle\" r=\"10\" cx=\"10\" cy=\"10\" fill=\"black\" id=\"blk-circle\"></circle><circle class=\"red-circle\" r=\"10\" cx=\"14\" cy=\"14\" fill=\"red\" id=\"red-circle\"></circle></defs><use class=\"blk-circle-use\" href=\"#blk-circle\"></use><use class=\"red-circle-use\" xlink:href=\"#red-circle\"></use></svg></template></lwc-up>"
+ }
+}

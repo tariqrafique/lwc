@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./multiple-tagname.css",
+    "./multiple-tagname.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate",
+    "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 3,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4hgahqkce",
+    "lwc-4hgahqkce-host",
+    "x-multiple-tagname_multiple-tagname",
+    "x-multiple-tagname_multiple-tagname-host"
+  ]
+}

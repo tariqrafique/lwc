@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./literal-value.css",
+    "./literal-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate",
+    "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-20i8lahhlnu",
+    "lwc-20i8lahhlnu-host",
+    "x-literal-value_literal-value",
+    "x-literal-value_literal-value-host"
+  ]
+}

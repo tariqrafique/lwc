@@ -1,0 +1,18 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1008
+  ],
+  "line": null,
+  "errors": [
+    1008
+  ],
+  "message": "TypeError: LWC1008: Cannot read properties of null (reading 'lwcCode')"
+}

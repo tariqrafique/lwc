@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-dialog><template shadowrootmode=\"open\"></template><lightning-input-name><template shadowrootmode=\"open\"></template></lightning-input-name><div slot=\"footer\"><button class=\"slds-button slds-button_brand\">Cancel</button><button class=\"slds-button slds-button_brand\">Save</button></div></lightning-dialog><div><lightning-button-icon><template shadowrootmode=\"open\"></template></lightning-button-icon></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-dialog><template shadowrootmode=\"open\"></template><lightning-input-name><template shadowrootmode=\"open\"></template></lightning-input-name><div slot=\"footer\"><button class=\"slds-button slds-button_brand\">Cancel</button><button class=\"slds-button slds-button_brand\">Save</button></div></lightning-dialog><div><lightning-button-icon><template shadowrootmode=\"open\"></template></lightning-button-icon></div></template></lwc-lbc>"
+ }
+}

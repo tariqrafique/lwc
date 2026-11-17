@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <x-external>\n      <div slot=\"foo\">\n        I am the foo slot\n      </div>\n    </x-external>\n    <x-external>\n      <div slot=\"foo\">\n        I am also the foo slot\n      </div>\n    </x-external>\n    <!---->\n    b\n    <!---->\n    fallback for foo\n    <!---->\n    c\n  </x-inner>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <x-external>\n      <div slot=\"foo\">\n        I am the foo slot\n      </div>\n    </x-external>\n    <x-external>\n      <div slot=\"foo\">\n        I am also the foo slot\n      </div>\n    </x-external>\n    <!---->\n    b\n    <!---->\n    fallback for foo\n    <!---->\n    c\n  </x-inner>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <x-external>\n      <div slot=\"foo\">\n        I am the foo slot\n      </div>\n    </x-external>\n    <x-external>\n      <div slot=\"foo\">\n        I am also the foo slot\n      </div>\n    </x-external>\n    <!---->\n    b\n    <!---->\n    fallback for foo\n    <!---->\n    c\n  </x-inner>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <x-external>\n      <div slot=\"foo\">\n        I am the foo slot\n      </div>\n    </x-external>\n    <x-external>\n      <div slot=\"foo\">\n        I am also the foo slot\n      </div>\n    </x-external>\n    <!---->\n    b\n    <!---->\n    fallback for foo\n    <!---->\n    c\n  </x-inner>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <x-external>\n      <div slot=\"foo\">\n        I am the foo slot\n      </div>\n    </x-external>\n    <x-external>\n      <div slot=\"foo\">\n        I am also the foo slot\n      </div>\n    </x-external>\n    <!---->\n    b\n    <!---->\n    fallback for foo\n    <!---->\n    c\n  </x-inner>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <x-external>\n      <div slot=\"foo\">\n        I am the foo slot\n      </div>\n    </x-external>\n    <x-external>\n      <div slot=\"foo\">\n        I am also the foo slot\n      </div>\n    </x-external>\n    <!---->\n    b\n    <!---->\n    fallback for foo\n    <!---->\n    c\n  </x-inner>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <x-external>\n      <div slot=\"foo\">\n        I am the foo slot\n      </div>\n    </x-external>\n    <x-external>\n      <div slot=\"foo\">\n        I am also the foo slot\n      </div>\n    </x-external>\n    <!---->\n    b\n    <!---->\n    fallback for foo\n    <!---->\n    c\n  </x-inner>\n</fixture-test>"
+ }
+}

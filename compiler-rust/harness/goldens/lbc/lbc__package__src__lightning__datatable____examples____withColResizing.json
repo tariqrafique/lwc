@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Datatable with resize-column disabled</p><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable><p>Datatable with min and max column widths. Resize step: 10 </p><lightning-button class=\"increaseResizeStep\"><template shadowrootmode=\"open\"></template></lightning-button><lightning-button class=\"decreaseResizeStep\"><template shadowrootmode=\"open\"></template></lightning-button><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable><p>Datatable with column-widths-mode=&#x27;fixed&#x27;</p><lightning-button class=\"changeWidthsMode\"><template shadowrootmode=\"open\"></template></lightning-button><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Datatable with resize-column disabled</p><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable><p>Datatable with min and max column widths. Resize step: 10 </p><lightning-button class=\"increaseResizeStep\"><template shadowrootmode=\"open\"></template></lightning-button><lightning-button class=\"decreaseResizeStep\"><template shadowrootmode=\"open\"></template></lightning-button><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable><p>Datatable with column-widths-mode='fixed'</p><lightning-button class=\"changeWidthsMode\"><template shadowrootmode=\"open\"></template></lightning-button><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-datatable><template shadowrootmode=\"open\"></template></lightning-datatable></template></lwc-lbc>"
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><p>90&#x27;s hits</p><x-list-child-api-data><template shadowrootmode=\"open\"></template></x-list-child-api-data></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><p>90's hits</p><x-list-child-api-data><template shadowrootmode=\"open\"></template></x-list-child-api-data></template></lwc-up>"
+ },
+ "asyncErrors": [
+  "Cannot read properties of undefined (reading 'push')"
+ ]
+}

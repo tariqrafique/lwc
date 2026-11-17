@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+        "x|host=false|dir=true": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+        "x|host=false|dir=false": "[x-host].foo {}[x-host].foo span[x] {}[x-host]:hover {}[x-host].foo,[x-host].bar {}",
+        "x|host=true|dir=true": ":host(.foo) {}:host(.foo) span[x] {}:host(:hover) {}:host(.foo, .bar) {}",
+        "-|host=true|dir=false": ":host(.foo) {}:host(.foo) span {}:host(:hover) {}:host(.foo, .bar) {}"
+      }
+    }
+  ]
+}

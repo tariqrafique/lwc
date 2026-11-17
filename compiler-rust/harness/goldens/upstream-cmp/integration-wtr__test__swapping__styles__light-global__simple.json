@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><style id=\"lwc-style--0\" type=\"text/css\">.simple {display: block;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><p class=\"simple\" data-id=\"paragraph\">simple</p></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><p data-id=\"paragraph\" class=\"simple\">simple</p></lwc-up>"
+ }
+}

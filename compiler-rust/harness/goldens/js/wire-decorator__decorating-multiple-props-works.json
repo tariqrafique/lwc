@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./test.html",
+    "data-service"
+  ],
+  "lwcImports": [
+    "LightningElement",
+    "registerComponent",
+    "registerDecorators"
+  ],
+  "exports": {
+    "default": "class"
+  },
+  "defaultExport": {
+    "kind": "class",
+    "extendsLightningElement": true,
+    "registered": true,
+    "registerOptions": {
+      "sel": "lwc-test",
+      "apiVersion": "number",
+      "hasTmpl": true
+    }
+  },
+  "decorators": [
+    {
+      "className": "Test",
+      "meta": {
+        "wire": {
+          "wired1": {
+            "adapter": "[fn]",
+            "config": "[fn]",
+            "dynamic": [
+              "key1"
+            ]
+          },
+          "wired2": {
+            "adapter": "[fn]",
+            "config": "[fn]",
+            "dynamic": [
+              "key1"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "warnings": []
+}

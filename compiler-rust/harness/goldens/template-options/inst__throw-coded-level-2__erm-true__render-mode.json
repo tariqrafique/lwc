@@ -1,0 +1,17 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": true,
+  "codeLength": 0,
+  "warnings": [
+    {
+      "code": 1052,
+      "level": 2,
+      "message": "Unexpected compilation error: LWC1052: Error parsing attribute: m"
+    }
+  ]
+}

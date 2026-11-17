@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1093
+  ],
+  "message": "LWC1093: @api method or property cannot be used with @track"
+}

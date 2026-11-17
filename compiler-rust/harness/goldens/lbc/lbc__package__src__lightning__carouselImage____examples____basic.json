@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-carousel-image><template shadowrootmode=\"open\"></template></lightning-carousel-image></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-carousel-image><template shadowrootmode=\"open\"></template></lightning-carousel-image></template></lwc-lbc>"
+ }
+}

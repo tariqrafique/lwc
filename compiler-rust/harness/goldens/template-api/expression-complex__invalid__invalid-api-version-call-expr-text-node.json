@@ -1,0 +1,181 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./invalid-api-version-call-expr-text-node.css",
+   "./invalid-api-version-call-expr-text-node.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-666dc2f17ml",
+   "lwc-666dc2f17ml-host",
+   "x-invalid-api-version-call-expr-text-node_invalid-api-version-call-expr-text-node",
+   "x-invalid-api-version-call-expr-text-node_invalid-api-version-call-expr-text-node-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-666dc2f17ml"
+  }
+ },
+ "v57": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v58": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v59": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v60": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v61": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v62": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v65": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1210
+  ],
+  "line": 3,
+  "errors": [
+   1210
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./invalid-api-version-call-expr-text-node.css",
+   "./invalid-api-version-call-expr-text-node.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-666dc2f17ml",
+   "lwc-666dc2f17ml-host",
+   "x-invalid-api-version-call-expr-text-node_invalid-api-version-call-expr-text-node",
+   "x-invalid-api-version-call-expr-text-node_invalid-api-version-call-expr-text-node-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-666dc2f17ml"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./invalid-api-version-call-expr-text-node.css",
+   "./invalid-api-version-call-expr-text-node.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-666dc2f17ml",
+   "lwc-666dc2f17ml-host",
+   "x-invalid-api-version-call-expr-text-node_invalid-api-version-call-expr-text-node",
+   "x-invalid-api-version-call-expr-text-node_invalid-api-version-call-expr-text-node-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-666dc2f17ml"
+  }
+ }
+}

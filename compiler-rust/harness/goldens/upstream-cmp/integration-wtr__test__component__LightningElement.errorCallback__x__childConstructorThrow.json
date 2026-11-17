@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "child-constructor-throw: triggered error"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "child-constructor-throw: triggered error"
+ }
+}

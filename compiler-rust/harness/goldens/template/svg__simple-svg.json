@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./simple-svg.css",
+    "./simple-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4f5bqv1dnt5",
+    "lwc-4f5bqv1dnt5-host",
+    "x-simple-svg_simple-svg",
+    "x-simple-svg_simple-svg-host"
+  ]
+}

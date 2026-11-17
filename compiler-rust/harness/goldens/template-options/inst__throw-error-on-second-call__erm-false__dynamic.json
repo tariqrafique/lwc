@@ -1,0 +1,22 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ],
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1052
+  ],
+  "line": null,
+  "errors": [
+    1052
+  ],
+  "message": "Unexpected compilation error: LWC1052: Error parsing attribute: second"
+}

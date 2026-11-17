@@ -1,0 +1,342 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./simple.css",
+   "./simple.scoped.css?scoped=true",
+   "x/childWithNamedSlots"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1lae0rspni6",
+   "lwc-1lae0rspni6-host",
+   "x-simple_simple",
+   "x-simple_simple-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1lae0rspni6"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./simple.css",
+   "./simple.scoped.css?scoped=true",
+   "x/childWithNamedSlots"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1lae0rspni6",
+   "lwc-1lae0rspni6-host",
+   "x-simple_simple",
+   "x-simple_simple-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-simple_simple"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./simple.css",
+   "./simple.scoped.css?scoped=true",
+   "x/childWithNamedSlots"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1lae0rspni6",
+   "lwc-1lae0rspni6-host",
+   "x-simple_simple",
+   "x-simple_simple-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-simple_simple"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./simple.css",
+   "./simple.scoped.css?scoped=true",
+   "x/childWithNamedSlots"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1lae0rspni6",
+   "lwc-1lae0rspni6-host",
+   "x-simple_simple",
+   "x-simple_simple-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1lae0rspni6"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./simple.css",
+   "./simple.scoped.css?scoped=true",
+   "x/childWithNamedSlots"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1lae0rspni6",
+   "lwc-1lae0rspni6-host",
+   "x-simple_simple",
+   "x-simple_simple-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1lae0rspni6"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./simple.css",
+   "./simple.scoped.css?scoped=true",
+   "x/childWithNamedSlots"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1lae0rspni6",
+   "lwc-1lae0rspni6-host",
+   "x-simple_simple",
+   "x-simple_simple-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1lae0rspni6"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./simple.css",
+   "./simple.scoped.css?scoped=true",
+   "x/childWithNamedSlots"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1lae0rspni6",
+   "lwc-1lae0rspni6-host",
+   "x-simple_simple",
+   "x-simple_simple-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1lae0rspni6"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./simple.css",
+   "./simple.scoped.css?scoped=true",
+   "x/childWithNamedSlots"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1lae0rspni6",
+   "lwc-1lae0rspni6-host",
+   "x-simple_simple",
+   "x-simple_simple-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1lae0rspni6"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./simple.css",
+   "./simple.scoped.css?scoped=true",
+   "x/childWithNamedSlots"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1lae0rspni6",
+   "lwc-1lae0rspni6-host",
+   "x-simple_simple",
+   "x-simple_simple-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1lae0rspni6"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./simple.css",
+   "./simple.scoped.css?scoped=true",
+   "x/childWithNamedSlots"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1lae0rspni6",
+   "lwc-1lae0rspni6-host",
+   "x-simple_simple",
+   "x-simple_simple-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1lae0rspni6"
+  }
+ }
+}

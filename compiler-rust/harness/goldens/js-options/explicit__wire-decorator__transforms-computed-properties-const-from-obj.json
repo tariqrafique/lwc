@@ -1,0 +1,52 @@
+{
+  "ok": true,
+  "eval": {
+    "imports": [
+      "lwc",
+      "data-service",
+      "some/importee"
+    ],
+    "lwcImports": [
+      "LightningElement",
+      "registerDecorators"
+    ],
+    "exports": {
+      "default": "class"
+    },
+    "defaultExport": {
+      "kind": "class",
+      "extendsLightningElement": true,
+      "registered": false
+    },
+    "decorators": [
+      {
+        "className": "Test",
+        "meta": {
+          "wire": {
+            "wiredIdentifier": {
+              "adapter": "[fn]",
+              "config": "[fn]",
+              "dynamic": [
+                "[fn]",
+                "[fn]",
+                "baz",
+                "quux"
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "warnings": [],
+  "signals": {
+    "objectSpreadPreserved": false,
+    "asyncToGenerator": false,
+    "wrapAsyncGenerator": false,
+    "asyncIterator": false,
+    "locationRewrite": false,
+    "nativeAsync": false,
+    "registerDecoratorsCalls": 1,
+    "registerComponentCalls": 0
+  }
+}

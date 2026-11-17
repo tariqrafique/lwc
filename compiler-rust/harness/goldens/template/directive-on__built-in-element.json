@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./built-in-element.css",
+    "./built-in-element.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-1uv881g6g8o",
+    "lwc-1uv881g6g8o-host",
+    "x-built-in-element_built-in-element",
+    "x-built-in-element_built-in-element-host"
+  ]
+}

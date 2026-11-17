@@ -1,0 +1,326 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-svg.css",
+   "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5g5a2lm585s",
+   "lwc-5g5a2lm585s-host",
+   "x-valid-svg_valid-svg",
+   "x-valid-svg_valid-svg-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg${3}><a${3}/><circle${3}/><defs${3}/><desc${3}/><ellipse${3}/><filter${3}/><g${3}/><line${3}/><marker${3}/><mask${3}/><path${3}/><pattern${3}/><polygon${3}/><polyline${3}/><rect${3}/><stop${3}/><symbol${3}/><text${3}/><title${3}/><tspan${3}/><use${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5g5a2lm585s"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-svg.css",
+   "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5g5a2lm585s",
+   "lwc-5g5a2lm585s-host",
+   "x-valid-svg_valid-svg",
+   "x-valid-svg_valid-svg-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-valid-svg_valid-svg"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-svg.css",
+   "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5g5a2lm585s",
+   "lwc-5g5a2lm585s-host",
+   "x-valid-svg_valid-svg",
+   "x-valid-svg_valid-svg-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-valid-svg_valid-svg"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-svg.css",
+   "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5g5a2lm585s",
+   "lwc-5g5a2lm585s-host",
+   "x-valid-svg_valid-svg",
+   "x-valid-svg_valid-svg-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg${3}><a${3}/><circle${3}/><defs${3}/><desc${3}/><ellipse${3}/><filter${3}/><g${3}/><line${3}/><marker${3}/><mask${3}/><path${3}/><pattern${3}/><polygon${3}/><polyline${3}/><rect${3}/><stop${3}/><symbol${3}/><text${3}/><title${3}/><tspan${3}/><use${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5g5a2lm585s"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-svg.css",
+   "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5g5a2lm585s",
+   "lwc-5g5a2lm585s-host",
+   "x-valid-svg_valid-svg",
+   "x-valid-svg_valid-svg-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg${3}><a${3}/><circle${3}/><defs${3}/><desc${3}/><ellipse${3}/><filter${3}/><g${3}/><line${3}/><marker${3}/><mask${3}/><path${3}/><pattern${3}/><polygon${3}/><polyline${3}/><rect${3}/><stop${3}/><symbol${3}/><text${3}/><title${3}/><tspan${3}/><use${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5g5a2lm585s"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-svg.css",
+   "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5g5a2lm585s",
+   "lwc-5g5a2lm585s-host",
+   "x-valid-svg_valid-svg",
+   "x-valid-svg_valid-svg-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg${3}><a${3}/><circle${3}/><defs${3}/><desc${3}/><ellipse${3}/><filter${3}/><g${3}/><line${3}/><marker${3}/><mask${3}/><path${3}/><pattern${3}/><polygon${3}/><polyline${3}/><rect${3}/><stop${3}/><symbol${3}/><text${3}/><title${3}/><tspan${3}/><use${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5g5a2lm585s"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-svg.css",
+   "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5g5a2lm585s",
+   "lwc-5g5a2lm585s-host",
+   "x-valid-svg_valid-svg",
+   "x-valid-svg_valid-svg-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg${3}><a${3}/><circle${3}/><defs${3}/><desc${3}/><ellipse${3}/><filter${3}/><g${3}/><line${3}/><marker${3}/><mask${3}/><path${3}/><pattern${3}/><polygon${3}/><polyline${3}/><rect${3}/><stop${3}/><symbol${3}/><text${3}/><title${3}/><tspan${3}/><use${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5g5a2lm585s"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-svg.css",
+   "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5g5a2lm585s",
+   "lwc-5g5a2lm585s-host",
+   "x-valid-svg_valid-svg",
+   "x-valid-svg_valid-svg-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg${3}><a${3}/><circle${3}/><defs${3}/><desc${3}/><ellipse${3}/><filter${3}/><g${3}/><line${3}/><marker${3}/><mask${3}/><path${3}/><pattern${3}/><polygon${3}/><polyline${3}/><rect${3}/><stop${3}/><symbol${3}/><text${3}/><title${3}/><tspan${3}/><use${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5g5a2lm585s"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-svg.css",
+   "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5g5a2lm585s",
+   "lwc-5g5a2lm585s-host",
+   "x-valid-svg_valid-svg",
+   "x-valid-svg_valid-svg-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg${3}><a${3}/><circle${3}/><defs${3}/><desc${3}/><ellipse${3}/><filter${3}/><g${3}/><line${3}/><marker${3}/><mask${3}/><path${3}/><pattern${3}/><polygon${3}/><polyline${3}/><rect${3}/><stop${3}/><symbol${3}/><text${3}/><title${3}/><tspan${3}/><use${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5g5a2lm585s"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./valid-svg.css",
+   "./valid-svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5g5a2lm585s",
+   "lwc-5g5a2lm585s-host",
+   "x-valid-svg_valid-svg",
+   "x-valid-svg_valid-svg-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg${3}><a${3}/><circle${3}/><defs${3}/><desc${3}/><ellipse${3}/><filter${3}/><g${3}/><line${3}/><marker${3}/><mask${3}/><path${3}/><pattern${3}/><polygon${3}/><polyline${3}/><rect${3}/><stop${3}/><symbol${3}/><text${3}/><title${3}/><tspan${3}/><use${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5g5a2lm585s"
+  }
+ }
+}

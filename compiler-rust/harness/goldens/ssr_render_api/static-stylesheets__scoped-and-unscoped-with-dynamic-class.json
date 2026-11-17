@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-1l667kdb4s5 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <h1 class=\"lwc-1l667kdb4s5 yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-1l667kdb4s5 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <h1 class=\"lwc-1l667kdb4s5 yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-1l667kdb4s5 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <h1 class=\"lwc-1l667kdb4s5 yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-1l667kdb4s5 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <h1 class=\"lwc-1l667kdb4s5 yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-1l667kdb4s5 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <h1 class=\"lwc-1l667kdb4s5 yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-1l667kdb4s5 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <h1 class=\"lwc-1l667kdb4s5 yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-1l667kdb4s5-host\" data-lwc-host-scope-token=\"lwc-1l667kdb4s5-host\">\n  <template shadowrootmode=\"open\">\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <style class=\"lwc-1l667kdb4s5\" id=\"lwc-style--1\" type=\"text/css\">\n      h1.lwc-1l667kdb4s5 {color: cornsilk;}\n    </style>\n    <lwc-style style-id=\"lwc-style--1\">\n    </lwc-style>\n    <h1 class=\"lwc-1l667kdb4s5 yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ }
+}

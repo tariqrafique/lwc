@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'push')"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'push')"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">.lgc-bg {background-color: rgb(242 242 242);}.lgc-bg-inverse {background-color: var(--slds-g-color-surface-container-inverse-1);}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><div class=\"slds-m-top_medium slds-m-bottom_x-large\"><p class=\"slds-m-bottom_medium\">Tree component with an <code>onselect</code> handler. Click an item in the tree to make a selection.</p><div class=\"slds-p-around_medium lgc-bg\"><lightning-tree><template shadowrootmode=\"open\"></template></lightning-tree></div><div class=\"slds-m-vertical_medium\"><p>The selected item is: <span class=\"slds-text-heading_small\">‍</span></p></div></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.lgc-bg {background-color: rgb(242 242 242);}.lgc-bg-inverse {background-color: var(--slds-g-color-surface-container-inverse-1);}</style><div class=\"slds-m-top_medium slds-m-bottom_x-large\"><p class=\"slds-m-bottom_medium\">Tree component with an <code>onselect</code> handler. Click an item in the tree to make a selection.</p><div class=\"slds-p-around_medium lgc-bg\"><lightning-tree><template shadowrootmode=\"open\"></template></lightning-tree></div><div class=\"slds-m-vertical_medium\"><p>The selected item is: <span class=\"slds-text-heading_small\"></span></p></div></div></template></lwc-lbc>"
+ }
+}

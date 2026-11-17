@@ -1,0 +1,25 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ],
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ],
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ],
+    [
+      "incrementCounter",
+      "lwc-spread-directive"
+    ]
+  ],
+  "ok": true,
+  "warnings": [
+    1187,
+    1187
+  ]
+}

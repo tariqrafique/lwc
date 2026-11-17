@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./dynamic.css",
+    "./dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-32cmakp1ss8",
+    "lwc-32cmakp1ss8-host",
+    "x-dynamic_dynamic",
+    "x-dynamic_dynamic-host"
+  ]
+}

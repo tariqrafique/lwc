@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><details><summary>An Ode to Toads</summary><p>Violets are red,<br>Roses are blue,<br>Toads are cool!</p></details></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><details><summary>An Ode to Toads</summary><p>Violets are red,<br>Roses are blue,<br>Toads are cool!</p></details></template></lwc-up>"
+ }
+}

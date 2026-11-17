@@ -1,0 +1,372 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-if-loops.css",
+   "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6ugg4ao851r",
+   "lwc-6ugg4ao851r-host",
+   "x-nested-if-loops_nested-if-loops",
+   "x-nested-if-loops_nested-if-loops-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Inner</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6ugg4ao851r"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-if-loops.css",
+   "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6ugg4ao851r",
+   "lwc-6ugg4ao851r-host",
+   "x-nested-if-loops_nested-if-loops",
+   "x-nested-if-loops_nested-if-loops-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Inner</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-nested-if-loops_nested-if-loops"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-if-loops.css",
+   "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6ugg4ao851r",
+   "lwc-6ugg4ao851r-host",
+   "x-nested-if-loops_nested-if-loops",
+   "x-nested-if-loops_nested-if-loops-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Inner</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-nested-if-loops_nested-if-loops"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-if-loops.css",
+   "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6ugg4ao851r",
+   "lwc-6ugg4ao851r-host",
+   "x-nested-if-loops_nested-if-loops",
+   "x-nested-if-loops_nested-if-loops-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Inner</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6ugg4ao851r"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-if-loops.css",
+   "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6ugg4ao851r",
+   "lwc-6ugg4ao851r-host",
+   "x-nested-if-loops_nested-if-loops",
+   "x-nested-if-loops_nested-if-loops-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Inner</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6ugg4ao851r"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-if-loops.css",
+   "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6ugg4ao851r",
+   "lwc-6ugg4ao851r-host",
+   "x-nested-if-loops_nested-if-loops",
+   "x-nested-if-loops_nested-if-loops-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Inner</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6ugg4ao851r"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-if-loops.css",
+   "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6ugg4ao851r",
+   "lwc-6ugg4ao851r-host",
+   "x-nested-if-loops_nested-if-loops",
+   "x-nested-if-loops_nested-if-loops-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Inner</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6ugg4ao851r"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-if-loops.css",
+   "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6ugg4ao851r",
+   "lwc-6ugg4ao851r-host",
+   "x-nested-if-loops_nested-if-loops",
+   "x-nested-if-loops_nested-if-loops-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Inner</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6ugg4ao851r"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-if-loops.css",
+   "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6ugg4ao851r",
+   "lwc-6ugg4ao851r-host",
+   "x-nested-if-loops_nested-if-loops",
+   "x-nested-if-loops_nested-if-loops-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Inner</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6ugg4ao851r"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-if-loops.css",
+   "./nested-if-loops.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6ugg4ao851r",
+   "lwc-6ugg4ao851r-host",
+   "x-nested-if-loops_nested-if-loops",
+   "x-nested-if-loops_nested-if-loops-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Inner</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6ugg4ao851r"
+  }
+ }
+}

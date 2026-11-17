@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up data-mutate-during-connected-callback=\"true\" data-mutate-during-render=\"true\" data-lwc-host-mutated=\"data-mutate-during-connected-callback\"><template shadowrootmode=\"open\"></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up data-mutate-during-connected-callback=\"true\" data-mutate-during-render=\"true\"><template shadowrootmode=\"open\"></template></lwc-up>"
+ }
+}

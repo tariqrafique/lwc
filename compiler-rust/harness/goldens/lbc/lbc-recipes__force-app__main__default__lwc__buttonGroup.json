@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "this.template.addEventListener is not a function"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-button-group\" role=\"group\"><template shadowrootmode=\"open\"><slot></slot></template></lwc-lbc>"
+ }
+}

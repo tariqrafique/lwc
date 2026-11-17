@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><span><span class=\"slds-pill__icon_container\"><slot></slot></span><span class=\"slds-pill__label\">‍</span><c-button-icon class=\"slds-pill__remove\" title=\"[object Object]\" tabindex=\"undefined\"><template shadowrootmode=\"open\"></template></c-button-icon></span></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><span><span class=\"slds-pill__label\"></span><c-button-icon class=\"slds-pill__remove\" title=\"[object Object]\" tabindex=\"0\"><template shadowrootmode=\"open\"></template></c-button-icon></span></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "_missingExportShim is not a function"
+ ]
+}

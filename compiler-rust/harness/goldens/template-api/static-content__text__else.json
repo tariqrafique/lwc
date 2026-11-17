@@ -1,0 +1,482 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./else.css",
+   "./else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-a7tod85hel",
+   "lwc-a7tod85hel-host",
+   "x-else_else",
+   "x-else_else-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElse</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElse</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElse</span>${\"t3\"}<span${3}>text4LwcElse</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-a7tod85hel"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./else.css",
+   "./else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-a7tod85hel",
+   "lwc-a7tod85hel-host",
+   "x-else_else",
+   "x-else_else-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElse</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElse</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElse</span>${\"t3\"}<span${3}>text4LwcElse</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-else_else"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./else.css",
+   "./else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-a7tod85hel",
+   "lwc-a7tod85hel-host",
+   "x-else_else",
+   "x-else_else-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElse</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElse</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElse</span>${\"t3\"}<span${3}>text4LwcElse</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-else_else"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./else.css",
+   "./else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-a7tod85hel",
+   "lwc-a7tod85hel-host",
+   "x-else_else",
+   "x-else_else-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElse</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElse</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElse</span>${\"t3\"}<span${3}>text4LwcElse</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-a7tod85hel"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./else.css",
+   "./else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-a7tod85hel",
+   "lwc-a7tod85hel-host",
+   "x-else_else",
+   "x-else_else-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElse</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElse</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElse</span>${\"t3\"}<span${3}>text4LwcElse</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-a7tod85hel"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./else.css",
+   "./else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-a7tod85hel",
+   "lwc-a7tod85hel-host",
+   "x-else_else",
+   "x-else_else-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElse</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElse</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElse</span>${\"t3\"}<span${3}>text4LwcElse</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-a7tod85hel"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./else.css",
+   "./else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-a7tod85hel",
+   "lwc-a7tod85hel-host",
+   "x-else_else",
+   "x-else_else-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElse</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElse</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElse</span>${\"t3\"}<span${3}>text4LwcElse</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-a7tod85hel"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./else.css",
+   "./else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-a7tod85hel",
+   "lwc-a7tod85hel-host",
+   "x-else_else",
+   "x-else_else-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElse</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElse</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElse</span>${\"t3\"}<span${3}>text4LwcElse</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-a7tod85hel"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./else.css",
+   "./else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-a7tod85hel",
+   "lwc-a7tod85hel-host",
+   "x-else_else",
+   "x-else_else-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElse</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElse</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElse</span>${\"t3\"}<span${3}>text4LwcElse</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-a7tod85hel"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./else.css",
+   "./else.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-a7tod85hel",
+   "lwc-a7tod85hel-host",
+   "x-else_else",
+   "x-else_else-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElse</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElse</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElse</span>${\"t3\"}<span${3}>text4LwcElse</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-a7tod85hel"
+  }
+ }
+}

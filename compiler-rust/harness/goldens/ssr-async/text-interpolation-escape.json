@@ -1,0 +1,56 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/text-interpolation-escape/text-interpolation-escape.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./text-interpolation-escape.css",
+        "./text-interpolation-escape.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-2g6h4kskd61",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/text-interpolation-escape/text-interpolation-escape.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./text-interpolation-escape.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-text-interpolation-escape",
+          "publicProps": [
+            "text"
+          ],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

@@ -1,0 +1,432 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./children.css",
+   "./children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7t3q3ieetp5",
+   "lwc-7t3q3ieetp5-host",
+   "x-children_children",
+   "x-children_children-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "h",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<p${3}>X1</p>",
+   "parseFragment:<p${3}>X2</p>",
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<div${3}></div>",
+   "parseFragment:<section class=\"s4${0}\"${2}><p${3}>Other child1</p><p${3}>Other child2</p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7t3q3ieetp5"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./children.css",
+   "./children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7t3q3ieetp5",
+   "lwc-7t3q3ieetp5-host",
+   "x-children_children",
+   "x-children_children-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "h",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<p${3}>X1</p>",
+   "parseFragment:<p${3}>X2</p>",
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<div${3}></div>",
+   "parseFragment:<section class=\"s4${0}\"${2}><p${3}>Other child1</p><p${3}>Other child2</p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-children_children"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./children.css",
+   "./children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7t3q3ieetp5",
+   "lwc-7t3q3ieetp5-host",
+   "x-children_children",
+   "x-children_children-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "h",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<p${3}>X1</p>",
+   "parseFragment:<p${3}>X2</p>",
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<div${3}></div>",
+   "parseFragment:<section class=\"s4${0}\"${2}><p${3}>Other child1</p><p${3}>Other child2</p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-children_children"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./children.css",
+   "./children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7t3q3ieetp5",
+   "lwc-7t3q3ieetp5-host",
+   "x-children_children",
+   "x-children_children-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "h",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<p${3}>X1</p>",
+   "parseFragment:<p${3}>X2</p>",
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<div${3}></div>",
+   "parseFragment:<section class=\"s4${0}\"${2}><p${3}>Other child1</p><p${3}>Other child2</p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7t3q3ieetp5"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./children.css",
+   "./children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7t3q3ieetp5",
+   "lwc-7t3q3ieetp5-host",
+   "x-children_children",
+   "x-children_children-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "h",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<p${3}>X1</p>",
+   "parseFragment:<p${3}>X2</p>",
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<div${3}></div>",
+   "parseFragment:<section class=\"s4${0}\"${2}><p${3}>Other child1</p><p${3}>Other child2</p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7t3q3ieetp5"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./children.css",
+   "./children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7t3q3ieetp5",
+   "lwc-7t3q3ieetp5-host",
+   "x-children_children",
+   "x-children_children-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "h",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<p${3}>X1</p>",
+   "parseFragment:<p${3}>X2</p>",
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<div${3}></div>",
+   "parseFragment:<section class=\"s4${0}\"${2}><p${3}>Other child1</p><p${3}>Other child2</p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7t3q3ieetp5"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./children.css",
+   "./children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7t3q3ieetp5",
+   "lwc-7t3q3ieetp5-host",
+   "x-children_children",
+   "x-children_children-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "h",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<p${3}>X1</p>",
+   "parseFragment:<p${3}>X2</p>",
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<div${3}></div>",
+   "parseFragment:<section class=\"s4${0}\"${2}><p${3}>Other child1</p><p${3}>Other child2</p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7t3q3ieetp5"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./children.css",
+   "./children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7t3q3ieetp5",
+   "lwc-7t3q3ieetp5-host",
+   "x-children_children",
+   "x-children_children-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "h",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<p${3}>X1</p>",
+   "parseFragment:<p${3}>X2</p>",
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<div${3}></div>",
+   "parseFragment:<section class=\"s4${0}\"${2}><p${3}>Other child1</p><p${3}>Other child2</p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7t3q3ieetp5"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./children.css",
+   "./children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7t3q3ieetp5",
+   "lwc-7t3q3ieetp5-host",
+   "x-children_children",
+   "x-children_children-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "h",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<p${3}>X1</p>",
+   "parseFragment:<p${3}>X2</p>",
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<div${3}></div>",
+   "parseFragment:<section class=\"s4${0}\"${2}><p${3}>Other child1</p><p${3}>Other child2</p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7t3q3ieetp5"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./children.css",
+   "./children.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7t3q3ieetp5",
+   "lwc-7t3q3ieetp5-host",
+   "x-children_children",
+   "x-children_children-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "h",
+   "i",
+   "k",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<p${3}>X1</p>",
+   "parseFragment:<p${3}>X2</p>",
+   "parseFragment:<p${3}>Last child</p>",
+   "parseFragment:<div${3}></div>",
+   "parseFragment:<section class=\"s4${0}\"${2}><p${3}>Other child1</p><p${3}>Other child2</p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7t3q3ieetp5"
+  }
+ }
+}

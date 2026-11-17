@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot destructure property 'setContext' of '_missingExportShim' as it is undefined."
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "Cannot destructure property 'setContext' of '_missingExportShim' as it is undefined."
+ }
+}

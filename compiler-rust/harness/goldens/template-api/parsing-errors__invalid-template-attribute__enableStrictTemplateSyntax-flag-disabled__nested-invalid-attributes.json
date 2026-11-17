@@ -1,0 +1,442 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-invalid-attributes.css",
+   "./nested-invalid-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1153,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5pibivjbnss",
+   "lwc-5pibivjbnss-host",
+   "x-nested-invalid-attributes_nested-invalid-attributes",
+   "x-nested-invalid-attributes_nested-invalid-attributes-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5pibivjbnss"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-invalid-attributes.css",
+   "./nested-invalid-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1153,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5pibivjbnss",
+   "lwc-5pibivjbnss-host",
+   "x-nested-invalid-attributes_nested-invalid-attributes",
+   "x-nested-invalid-attributes_nested-invalid-attributes-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-nested-invalid-attributes_nested-invalid-attributes"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-invalid-attributes.css",
+   "./nested-invalid-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1153,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5pibivjbnss",
+   "lwc-5pibivjbnss-host",
+   "x-nested-invalid-attributes_nested-invalid-attributes",
+   "x-nested-invalid-attributes_nested-invalid-attributes-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-nested-invalid-attributes_nested-invalid-attributes"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-invalid-attributes.css",
+   "./nested-invalid-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1153,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5pibivjbnss",
+   "lwc-5pibivjbnss-host",
+   "x-nested-invalid-attributes_nested-invalid-attributes",
+   "x-nested-invalid-attributes_nested-invalid-attributes-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5pibivjbnss"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-invalid-attributes.css",
+   "./nested-invalid-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1153,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5pibivjbnss",
+   "lwc-5pibivjbnss-host",
+   "x-nested-invalid-attributes_nested-invalid-attributes",
+   "x-nested-invalid-attributes_nested-invalid-attributes-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5pibivjbnss"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-invalid-attributes.css",
+   "./nested-invalid-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1153,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5pibivjbnss",
+   "lwc-5pibivjbnss-host",
+   "x-nested-invalid-attributes_nested-invalid-attributes",
+   "x-nested-invalid-attributes_nested-invalid-attributes-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5pibivjbnss"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-invalid-attributes.css",
+   "./nested-invalid-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1153,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5pibivjbnss",
+   "lwc-5pibivjbnss-host",
+   "x-nested-invalid-attributes_nested-invalid-attributes",
+   "x-nested-invalid-attributes_nested-invalid-attributes-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5pibivjbnss"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-invalid-attributes.css",
+   "./nested-invalid-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1153,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5pibivjbnss",
+   "lwc-5pibivjbnss-host",
+   "x-nested-invalid-attributes_nested-invalid-attributes",
+   "x-nested-invalid-attributes_nested-invalid-attributes-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5pibivjbnss"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-invalid-attributes.css",
+   "./nested-invalid-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1153,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5pibivjbnss",
+   "lwc-5pibivjbnss-host",
+   "x-nested-invalid-attributes_nested-invalid-attributes",
+   "x-nested-invalid-attributes_nested-invalid-attributes-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5pibivjbnss"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-invalid-attributes.css",
+   "./nested-invalid-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1145,
+    "level": 2
+   },
+   {
+    "code": 1153,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-5pibivjbnss",
+   "lwc-5pibivjbnss-host",
+   "x-nested-invalid-attributes_nested-invalid-attributes",
+   "x-nested-invalid-attributes_nested-invalid-attributes-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5pibivjbnss"
+  }
+ }
+}

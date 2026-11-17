@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./null-literal.css",
+    "./null-literal.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-7hg93bi1m0a",
+    "lwc-7hg93bi1m0a-host",
+    "x-null-literal_null-literal",
+    "x-null-literal_null-literal-host"
+  ]
+}

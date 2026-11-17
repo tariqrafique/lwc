@@ -1,0 +1,312 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-underscore.css",
+   "./attribute-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-36q7c97l1ni",
+   "lwc-36q7c97l1ni-host",
+   "x-attribute-underscore_attribute-underscore",
+   "x-attribute-underscore_attribute-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-36q7c97l1ni"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-underscore.css",
+   "./attribute-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-36q7c97l1ni",
+   "lwc-36q7c97l1ni-host",
+   "x-attribute-underscore_attribute-underscore",
+   "x-attribute-underscore_attribute-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-attribute-underscore_attribute-underscore"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-underscore.css",
+   "./attribute-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-36q7c97l1ni",
+   "lwc-36q7c97l1ni-host",
+   "x-attribute-underscore_attribute-underscore",
+   "x-attribute-underscore_attribute-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-attribute-underscore_attribute-underscore"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-underscore.css",
+   "./attribute-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-36q7c97l1ni",
+   "lwc-36q7c97l1ni-host",
+   "x-attribute-underscore_attribute-underscore",
+   "x-attribute-underscore_attribute-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-36q7c97l1ni"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-underscore.css",
+   "./attribute-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-36q7c97l1ni",
+   "lwc-36q7c97l1ni-host",
+   "x-attribute-underscore_attribute-underscore",
+   "x-attribute-underscore_attribute-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-36q7c97l1ni"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-underscore.css",
+   "./attribute-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-36q7c97l1ni",
+   "lwc-36q7c97l1ni-host",
+   "x-attribute-underscore_attribute-underscore",
+   "x-attribute-underscore_attribute-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-36q7c97l1ni"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-underscore.css",
+   "./attribute-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-36q7c97l1ni",
+   "lwc-36q7c97l1ni-host",
+   "x-attribute-underscore_attribute-underscore",
+   "x-attribute-underscore_attribute-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-36q7c97l1ni"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-underscore.css",
+   "./attribute-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-36q7c97l1ni",
+   "lwc-36q7c97l1ni-host",
+   "x-attribute-underscore_attribute-underscore",
+   "x-attribute-underscore_attribute-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-36q7c97l1ni"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-underscore.css",
+   "./attribute-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-36q7c97l1ni",
+   "lwc-36q7c97l1ni-host",
+   "x-attribute-underscore_attribute-underscore",
+   "x-attribute-underscore_attribute-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-36q7c97l1ni"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-underscore.css",
+   "./attribute-underscore.scoped.css?scoped=true",
+   "x/button"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-36q7c97l1ni",
+   "lwc-36q7c97l1ni-host",
+   "x-attribute-underscore_attribute-underscore",
+   "x-attribute-underscore_attribute-underscore-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-36q7c97l1ni"
+  }
+ }
+}

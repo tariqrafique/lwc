@@ -1,0 +1,18 @@
+{
+  "calls": [
+    [
+      "warn",
+      "\"OutputConfig.minify\" property is deprecated. The value doesn't impact the compilation and can safely be removed."
+    ],
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ],
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ]
+  ],
+  "ok": true,
+  "warnings": []
+}

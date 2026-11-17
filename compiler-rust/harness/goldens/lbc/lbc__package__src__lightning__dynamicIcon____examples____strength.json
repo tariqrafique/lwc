@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>The strength icon displays three animated horizontal circles that are colored green or red.</p><lightning-dynamic-icon><template shadowrootmode=\"open\"></template></lightning-dynamic-icon></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>The strength icon displays three animated horizontal circles that are colored green or red.</p><lightning-dynamic-icon><template shadowrootmode=\"open\"></template></lightning-dynamic-icon></template></lwc-lbc>"
+ }
+}

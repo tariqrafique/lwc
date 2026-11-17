@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot set properties of undefined (setting 'foo')"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up foo=\"bar\"><template shadowrootmode=\"open\"></template></lwc-up>"
+ }
+}

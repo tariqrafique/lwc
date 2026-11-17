@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-with-equal.css",
+    "./attribute-with-equal.scoped.css?scoped=true",
+    "x/foo"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1057,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-7uumbeenlgi",
+    "lwc-7uumbeenlgi-host",
+    "x-attribute-with-equal_attribute-with-equal",
+    "x-attribute-with-equal_attribute-with-equal-host"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-7q48250iir7-host\" data-lwc-host-scope-token=\"lwc-7q48250iir7-host\">\n  <style class=\"lwc-7q48250iir7\" id=\"lwc-style--0\" type=\"text/css\">\n    p.lwc-7q48250iir7 {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <p class=\"lwc-7q48250iir7\">\n    Hello\n  </p>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-7q48250iir7-host\" data-lwc-host-scope-token=\"lwc-7q48250iir7-host\">\n  <style class=\"lwc-7q48250iir7\" id=\"lwc-style--0\" type=\"text/css\">\n    p.lwc-7q48250iir7 {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <p class=\"lwc-7q48250iir7\">\n    Hello\n  </p>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-7q48250iir7-host\" data-lwc-host-scope-token=\"lwc-7q48250iir7-host\">\n  <style class=\"lwc-7q48250iir7\" id=\"lwc-style--0\" type=\"text/css\">\n    p.lwc-7q48250iir7 {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <p class=\"lwc-7q48250iir7\">\n    Hello\n  </p>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-7q48250iir7-host\" data-lwc-host-scope-token=\"lwc-7q48250iir7-host\">\n  <style class=\"lwc-7q48250iir7\" id=\"lwc-style--0\" type=\"text/css\">\n    p.lwc-7q48250iir7 {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <p class=\"lwc-7q48250iir7\">\n    Hello\n  </p>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-7q48250iir7-host\" data-lwc-host-scope-token=\"lwc-7q48250iir7-host\">\n  <style class=\"lwc-7q48250iir7\" id=\"lwc-style--0\" type=\"text/css\">\n    p.lwc-7q48250iir7 {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <p class=\"lwc-7q48250iir7\">\n    Hello\n  </p>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-7q48250iir7-host\" data-lwc-host-scope-token=\"lwc-7q48250iir7-host\">\n  <style class=\"lwc-7q48250iir7\" id=\"lwc-style--0\" type=\"text/css\">\n    p.lwc-7q48250iir7 {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <p class=\"lwc-7q48250iir7\">\n    Hello\n  </p>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test class=\"lwc-7q48250iir7-host\" data-lwc-host-scope-token=\"lwc-7q48250iir7-host\">\n  <style class=\"lwc-7q48250iir7\" id=\"lwc-style--0\" type=\"text/css\">\n    p.lwc-7q48250iir7 {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <p class=\"lwc-7q48250iir7\">\n    Hello\n  </p>\n</fixture-test>"
+ }
+}

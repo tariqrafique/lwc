@@ -1,0 +1,6 @@
+<template>
+    <p>{note}</p>
+    <template for:each={items} for:item="item">
+        <x-row key={item} value={item}></x-row>
+    </template>
+</template>

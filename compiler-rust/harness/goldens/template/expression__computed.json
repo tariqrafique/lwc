@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "name": "Error",
+  "code": 1038,
+  "line": 1,
+  "seamGap": "throws LWC1038: shipped transformSync does not forward experimentalComputedMemberExpression; upstream template-compiler fixture sets it directly",
+  "expectedErrorCodes": []
+}

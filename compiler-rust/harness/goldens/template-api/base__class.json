@@ -1,0 +1,332 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class.css",
+   "./class.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-44l3bs9cc8q",
+   "lwc-44l3bs9cc8q-host",
+   "x-class_class",
+   "x-class_class-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"foo bar baz-fiz${0}\"${2}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-44l3bs9cc8q"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class.css",
+   "./class.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-44l3bs9cc8q",
+   "lwc-44l3bs9cc8q-host",
+   "x-class_class",
+   "x-class_class-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"foo bar baz-fiz${0}\"${2}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-class_class"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class.css",
+   "./class.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-44l3bs9cc8q",
+   "lwc-44l3bs9cc8q-host",
+   "x-class_class",
+   "x-class_class-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"foo bar baz-fiz${0}\"${2}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-class_class"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class.css",
+   "./class.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-44l3bs9cc8q",
+   "lwc-44l3bs9cc8q-host",
+   "x-class_class",
+   "x-class_class-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"foo bar baz-fiz${0}\"${2}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-44l3bs9cc8q"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class.css",
+   "./class.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-44l3bs9cc8q",
+   "lwc-44l3bs9cc8q-host",
+   "x-class_class",
+   "x-class_class-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"foo bar baz-fiz${0}\"${2}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-44l3bs9cc8q"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class.css",
+   "./class.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-44l3bs9cc8q",
+   "lwc-44l3bs9cc8q-host",
+   "x-class_class",
+   "x-class_class-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"foo bar baz-fiz${0}\"${2}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-44l3bs9cc8q"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class.css",
+   "./class.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-44l3bs9cc8q",
+   "lwc-44l3bs9cc8q-host",
+   "x-class_class",
+   "x-class_class-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"foo bar baz-fiz${0}\"${2}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-44l3bs9cc8q"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class.css",
+   "./class.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-44l3bs9cc8q",
+   "lwc-44l3bs9cc8q-host",
+   "x-class_class",
+   "x-class_class-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"foo bar baz-fiz${0}\"${2}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-44l3bs9cc8q"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class.css",
+   "./class.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-44l3bs9cc8q",
+   "lwc-44l3bs9cc8q-host",
+   "x-class_class",
+   "x-class_class-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"foo bar baz-fiz${0}\"${2}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-44l3bs9cc8q"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class.css",
+   "./class.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-44l3bs9cc8q",
+   "lwc-44l3bs9cc8q-host",
+   "x-class_class",
+   "x-class_class-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"foo bar baz-fiz${0}\"${2}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-44l3bs9cc8q"
+  }
+ }
+}

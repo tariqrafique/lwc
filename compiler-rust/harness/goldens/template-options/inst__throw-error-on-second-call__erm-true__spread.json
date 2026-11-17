@@ -1,0 +1,33 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-spread-directive"
+    ],
+    [
+      "incrementCounter",
+      "lwc-spread-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1052
+  ],
+  "line": null,
+  "aggregate": {
+    "message": "",
+    "code": null,
+    "errors": [
+      {
+        "code": 1052,
+        "message": "Unexpected compilation error: LWC1052: Error parsing attribute: second",
+        "location": null
+      }
+    ]
+  },
+  "errors": [
+    1052
+  ],
+  "message": ""
+}

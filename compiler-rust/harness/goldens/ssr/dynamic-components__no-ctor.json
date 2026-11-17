@@ -1,0 +1,54 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/dynamic-no-ctor/dynamic-no-ctor.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dynamic-no-ctor.css",
+        "./dynamic-no-ctor.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-1507v2k97ce",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/dynamic-no-ctor/dynamic-no-ctor.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./dynamic-no-ctor.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-dynamic-no-ctor",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

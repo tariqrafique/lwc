@@ -1,0 +1,11 @@
+[
+{"name":"ts-anon-api","filename":"foo.ts","src":"export default class { @api x; }\n"},
+{"name":"ts-anon-api-rec","filename":"foo.ts","opts":{"experimentalErrorRecoveryMode":true},"src":"export default class { @api x; }\n"},
+{"name":"ts-anon-api-typed","filename":"foo.ts","src":"export default class { @api x: string; }\n"},
+{"name":"ts-le-api","filename":"foo.ts","src":"import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { @api x: string = 'a'; }\n"},
+{"name":"ts-type-anno-fn","filename":"foo.ts","src":"const a: number = 1;\nexport default a;\n"},
+{"name":"ts-interface","filename":"foo.ts","src":"interface A { x: number }\nexport const y = 1;\n"},
+{"name":"ts-plain","filename":"foo.ts","src":"export const y = 1;\n"},
+{"name":"ts-anon-foo","filename":"foo.ts","src":"export default class { @foo x; }\n"},
+{"name":"ts-syntax","filename":"foo.ts","src":"let = ;\n"}
+]

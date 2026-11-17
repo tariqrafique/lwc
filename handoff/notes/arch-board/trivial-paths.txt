@@ -1,0 +1,8 @@
+# Owned by LWC Arch Board. One glob per line; * crosses /. A landing is trivial iff every changed path matches.
+# Plain line: any change to a matching path is trivial.
+# Line prefixed '+': trivial ONLY if the diff for that path deletes no lines (pure additions). Needs land.sh support (AB proposal to Harness); until then land.sh treats '+' lines as non-matching, which fails closed.
+# NEVER trivial: crates/*/src/**, harness/goldens/**, harness/fixtures/**, crates/*/tests/goldens/**, crates/*/tests/parse-errors/** (expected outputs lock semantics),
+#   harness/test/** and harness/src/** (the oracle), scripts/**, Cargo.toml/Cargo.lock, decisions.tsv.
+docs/*
+# *.md  -- disabled AB-0004: matches harness/fixtures/**/README.md and allows deletions
+# +crates/*/tests/*.rs  -- disabled AB-0004: * crosses /, and added-only edits can disable a test file (#![cfg(any())])

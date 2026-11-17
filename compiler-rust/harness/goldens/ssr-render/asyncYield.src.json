@@ -1,0 +1,16 @@
+{
+ "dynamic-imports/basic": {
+  "reason": "upstream-asyncYield-microtask: import().then() in constructor resolves before template reads `importee`",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    Importee: stub\n  </template>\n</fixture-test>"
+  }
+ },
+ "rehydration": {
+  "reason": "upstream-asyncYield-microtask: Promise.then() in connectedCallback sets `reactive=1` before template renders",
+  "outputs": {
+   "error.txt": "",
+   "expected.html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    1\n  </template>\n</fixture-test>"
+  }
+ }
+}

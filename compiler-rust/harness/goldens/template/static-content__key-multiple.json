@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./key-multiple.css",
+    "./key-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-8k5meuf7hp",
+    "lwc-8k5meuf7hp-host",
+    "x-key-multiple_key-multiple",
+    "x-key-multiple_key-multiple-host"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><ce-with-camel-case-property></ce-with-camel-case-property></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><ce-with-camel-case-property></ce-with-camel-case-property></template></lwc-up>"
+ }
+}

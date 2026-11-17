@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./template-multiple.css",
+    "./template-multiple.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-766do8vn4oi",
+    "lwc-766do8vn4oi-host",
+    "x-template-multiple_template-multiple",
+    "x-template-multiple_template-multiple-host"
+  ]
+}

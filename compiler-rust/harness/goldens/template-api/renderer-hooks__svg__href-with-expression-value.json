@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./href-with-expression-value.css",
+   "./href-with-expression-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4i58lt2008n",
+   "lwc-4i58lt2008n-host",
+   "x-href-with-expression-value_href-with-expression-value",
+   "x-href-with-expression-value_href-with-expression-value-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<circle${\"a0:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"black\"${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4i58lt2008n"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./href-with-expression-value.css",
+   "./href-with-expression-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4i58lt2008n",
+   "lwc-4i58lt2008n-host",
+   "x-href-with-expression-value_href-with-expression-value",
+   "x-href-with-expression-value_href-with-expression-value-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-href-with-expression-value_href-with-expression-value"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./href-with-expression-value.css",
+   "./href-with-expression-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4i58lt2008n",
+   "lwc-4i58lt2008n-host",
+   "x-href-with-expression-value_href-with-expression-value",
+   "x-href-with-expression-value_href-with-expression-value-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-href-with-expression-value_href-with-expression-value"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./href-with-expression-value.css",
+   "./href-with-expression-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4i58lt2008n",
+   "lwc-4i58lt2008n-host",
+   "x-href-with-expression-value_href-with-expression-value",
+   "x-href-with-expression-value_href-with-expression-value-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<circle${\"a0:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"black\"${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4i58lt2008n"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./href-with-expression-value.css",
+   "./href-with-expression-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4i58lt2008n",
+   "lwc-4i58lt2008n-host",
+   "x-href-with-expression-value_href-with-expression-value",
+   "x-href-with-expression-value_href-with-expression-value-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<circle${\"a0:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"black\"${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4i58lt2008n"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./href-with-expression-value.css",
+   "./href-with-expression-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4i58lt2008n",
+   "lwc-4i58lt2008n-host",
+   "x-href-with-expression-value_href-with-expression-value",
+   "x-href-with-expression-value_href-with-expression-value-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<circle${\"a0:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"black\"${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4i58lt2008n"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./href-with-expression-value.css",
+   "./href-with-expression-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4i58lt2008n",
+   "lwc-4i58lt2008n-host",
+   "x-href-with-expression-value_href-with-expression-value",
+   "x-href-with-expression-value_href-with-expression-value-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<circle${\"a0:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"black\"${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4i58lt2008n"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./href-with-expression-value.css",
+   "./href-with-expression-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4i58lt2008n",
+   "lwc-4i58lt2008n-host",
+   "x-href-with-expression-value_href-with-expression-value",
+   "x-href-with-expression-value_href-with-expression-value-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<circle${\"a0:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"black\"${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4i58lt2008n"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./href-with-expression-value.css",
+   "./href-with-expression-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4i58lt2008n",
+   "lwc-4i58lt2008n-host",
+   "x-href-with-expression-value_href-with-expression-value",
+   "x-href-with-expression-value_href-with-expression-value-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<circle${\"a0:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"black\"${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4i58lt2008n"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./href-with-expression-value.css",
+   "./href-with-expression-value.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4i58lt2008n",
+   "lwc-4i58lt2008n-host",
+   "x-href-with-expression-value_href-with-expression-value",
+   "x-href-with-expression-value_href-with-expression-value-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<circle${\"a0:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"black\"${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4i58lt2008n"
+  }
+ }
+}

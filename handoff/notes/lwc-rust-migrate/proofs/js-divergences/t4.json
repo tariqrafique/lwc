@@ -1,0 +1,332 @@
+[
+ {
+  "name": "deco-then-pm",
+  "src": "class X { @api x; }\nclass Z { #a() {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "deco-then-pm-rec",
+  "src": "class X { @api x; }\nclass Z { #a() {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "deco-then-pm-on",
+  "src": "class X { @api x; }\nclass Z { #a() {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "pm-then-deco",
+  "src": "class Z { #a() {} }\nclass X { @api x; }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "pm-then-deco-rec",
+  "src": "class Z { #a() {} }\nclass X { @api x; }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "pm-then-deco-on",
+  "src": "class Z { #a() {} }\nclass X { @api x; }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "deco-pm-same",
+  "src": "class X { @api x; #a() {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "deco-pm-same-rec",
+  "src": "class X { @api x; #a() {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "deco-pm-same-on",
+  "src": "class X { @api x; #a() {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "deco-pf-pm",
+  "src": "class X { #a() {} #f = 1; @api x; }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "deco-pf-pm-rec",
+  "src": "class X { #a() {} #f = 1; @api x; }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "deco-pf-pm-on",
+  "src": "class X { #a() {} #f = 1; @api x; }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "le-pm-then-deco",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass Z extends LightningElement { @api x; #a() {} }\nclass X { @api y; }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "le-pm-then-deco-rec",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass Z extends LightningElement { @api x; #a() {} }\nclass X { @api y; }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "le-pm-then-deco-on",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass Z extends LightningElement { @api x; #a() {} }\nclass X { @api y; }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "deco-then-le-pm",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass X { @api y; }\nclass Z extends LightningElement { @api x; #a() {} }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "deco-then-le-pm-rec",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass X { @api y; }\nclass Z extends LightningElement { @api x; #a() {} }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "deco-then-le-pm-on",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass X { @api y; }\nclass Z extends LightningElement { @api x; #a() {} }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "lwcerr-after-deco",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass X { @api y; }\nexport default class Z extends LightningElement { @api foo; @api foo; }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "lwcerr-after-deco-rec",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass X { @api y; }\nexport default class Z extends LightningElement { @api foo; @api foo; }",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "lwcerr-after-deco-on",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass X { @api y; }\nexport default class Z extends LightningElement { @api foo; @api foo; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "lwcerr-before-deco",
+  "src": "import { LightningElement, api } from \"lwc\";\nexport default class Z extends LightningElement { @api foo; @api foo; }\nclass X { @api y; }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "lwcerr-before-deco-rec",
+  "src": "import { LightningElement, api } from \"lwc\";\nexport default class Z extends LightningElement { @api foo; @api foo; }\nclass X { @api y; }",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "lwcerr-before-deco-on",
+  "src": "import { LightningElement, api } from \"lwc\";\nexport default class Z extends LightningElement { @api foo; @api foo; }\nclass X { @api y; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "lwcerr-after-pm",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass X { #a() {} }\nexport default class Z extends LightningElement { @api foo; @api foo; }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "lwcerr-after-pm-rec",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass X { #a() {} }\nexport default class Z extends LightningElement { @api foo; @api foo; }",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "lwcerr-after-pm-on",
+  "src": "import { LightningElement, api } from \"lwc\";\nclass X { #a() {} }\nexport default class Z extends LightningElement { @api foo; @api foo; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "nested-pm-in-deco",
+  "src": "class X { @api y; m() { return class { #a() {} }; } }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "nested-pm-in-deco-rec",
+  "src": "class X { @api y; m() { return class { #a() {} }; } }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "nested-pm-in-deco-on",
+  "src": "class X { @api y; m() { return class { #a() {} }; } }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "nested-deco-in-pm",
+  "src": "class X { #a() {} m() { return class { @api y; }; } }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "nested-deco-in-pm-rec",
+  "src": "class X { #a() {} m() { return class { @api y; }; } }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "nested-deco-in-pm-on",
+  "src": "class X { #a() {} m() { return class { @api y; }; } }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "static-then-pm",
+  "src": "class X { static {} }\nclass Z { #a() {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "static-then-pm-rec",
+  "src": "class X { static {} }\nclass Z { #a() {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "static-then-pm-on",
+  "src": "class X { static {} }\nclass Z { #a() {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "pm-then-static",
+  "src": "class Z { #a() {} }\nclass X { static {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "pm-then-static-rec",
+  "src": "class Z { #a() {} }\nclass X { static {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "pm-then-static-on",
+  "src": "class Z { #a() {} }\nclass X { static {} }\nexport default X;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "pm-static-same",
+  "src": "class Z { static {} #a() {} }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "pm-static-same-rec",
+  "src": "class Z { static {} #a() {} }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "pm-static-same-on",
+  "src": "class Z { static {} #a() {} }\nexport default Z;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "le-get-pm-on",
+  "src": "import { LightningElement, api } from \"lwc\";\nexport default class Z extends LightningElement { get #a() { return 1; } }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "le-get-pm-on-rec",
+  "src": "import { LightningElement, api } from \"lwc\";\nexport default class Z extends LightningElement { get #a() { return 1; } }",
+  "filename": "foo.js",
+  "opts": {
+   "experimentalErrorRecoveryMode": true
+  }
+ },
+ {
+  "name": "le-get-pm-on-on",
+  "src": "import { LightningElement, api } from \"lwc\";\nexport default class Z extends LightningElement { get #a() { return 1; } }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ }
+]

@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "eval": {
+    "imports": [
+      "lwc"
+    ],
+    "lwcImports": [
+      "LightningElement",
+      "registerDecorators"
+    ],
+    "exports": {
+      "default": "class"
+    },
+    "defaultExport": {
+      "kind": "class",
+      "extendsLightningElement": true,
+      "registered": false
+    },
+    "decorators": [
+      {
+        "className": "Test",
+        "meta": {
+          "publicProps": {
+            "first": {
+              "config": 3
+            },
+            "second": {
+              "config": 3
+            }
+          }
+        }
+      }
+    ]
+  },
+  "warnings": [],
+  "signals": {
+    "objectSpreadPreserved": false,
+    "asyncToGenerator": false,
+    "wrapAsyncGenerator": false,
+    "asyncIterator": false,
+    "locationRewrite": false,
+    "nativeAsync": false,
+    "registerDecoratorsCalls": 1,
+    "registerComponentCalls": 0
+  }
+}

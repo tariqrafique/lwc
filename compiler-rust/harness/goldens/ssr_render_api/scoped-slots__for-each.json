@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      span {background-color: blue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <x-child-with-for-each>\n      <ul>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            39 - Audio\n          </span>\n          <!---->\n          <!---->\n        </li>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            40 - Video\n          </span>\n          <!---->\n          <!---->\n        </li>\n      </ul>\n    </x-child-with-for-each>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      span {background-color: blue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <x-child-with-for-each>\n      <ul>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            39 - Audio\n          </span>\n          <!---->\n          <!---->\n        </li>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            40 - Video\n          </span>\n          <!---->\n          <!---->\n        </li>\n      </ul>\n    </x-child-with-for-each>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      span {background-color: blue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <x-child-with-for-each>\n      <ul>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            39 - Audio\n          </span>\n          <!---->\n          <!---->\n        </li>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            40 - Video\n          </span>\n          <!---->\n          <!---->\n        </li>\n      </ul>\n    </x-child-with-for-each>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      span {background-color: blue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <x-child-with-for-each>\n      <ul>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            39 - Audio\n          </span>\n          <!---->\n          <!---->\n        </li>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            40 - Video\n          </span>\n          <!---->\n          <!---->\n        </li>\n      </ul>\n    </x-child-with-for-each>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      span {background-color: blue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <x-child-with-for-each>\n      <ul>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            39 - Audio\n          </span>\n          <!---->\n          <!---->\n        </li>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            40 - Video\n          </span>\n          <!---->\n          <!---->\n        </li>\n      </ul>\n    </x-child-with-for-each>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      span {background-color: blue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <x-child-with-for-each>\n      <ul>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            39 - Audio\n          </span>\n          <!---->\n          <!---->\n        </li>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            40 - Video\n          </span>\n          <!---->\n          <!---->\n        </li>\n      </ul>\n    </x-child-with-for-each>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      span {background-color: blue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <x-child-with-for-each>\n      <ul>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            39 - Audio\n          </span>\n          <!---->\n          <!---->\n        </li>\n        <li>\n          <!---->\n          <!---->\n          <span>\n            40 - Video\n          </span>\n          <!---->\n          <!---->\n        </li>\n      </ul>\n    </x-child-with-for-each>\n  </template>\n</fixture-test>"
+ }
+}

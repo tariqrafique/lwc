@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# main moves ONLY via scripts/land.sh (fast-forward). Direct commits on main are refused.
+br="$(git symbolic-ref --short -q HEAD || true)"
+if [ "$br" = main ] && [ -z "${LWC_BOOTSTRAP:-}" ]; then
+  echo "!! refused: no direct commits to main. Commit on your bot/<name> branch in /workspace/wt/<name>, then scripts/land.sh" >&2
+  exit 1
+fi

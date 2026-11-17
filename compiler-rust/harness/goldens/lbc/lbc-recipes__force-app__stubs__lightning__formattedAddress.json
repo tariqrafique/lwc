@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'formatAddressAllFields')"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "Cannot read properties of undefined (reading 'formatAddressAllFields')"
+ ]
+}

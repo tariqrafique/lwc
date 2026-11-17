@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./numeric-literal-float.css",
+    "./numeric-literal-float.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-72hs29kfuv6",
+    "lwc-72hs29kfuv6-host",
+    "x-numeric-literal-float_numeric-literal-float",
+    "x-numeric-literal-float_numeric-literal-float-host"
+  ]
+}

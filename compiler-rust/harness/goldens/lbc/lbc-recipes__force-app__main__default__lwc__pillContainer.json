@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-pill_container\"><ul class=\"slds-listbox slds-listbox_horizontal\" role=\"listbox\" aria-label=\"[object Object]\" aria-orientation=\"horizontal\"></ul></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-pill_container\"><ul class=\"slds-listbox slds-listbox_horizontal\" role=\"listbox\" aria-label=\"[object Object]\" aria-orientation=\"horizontal\" tabindex=\"0\"></ul></div></template></lwc-lbc>"
+ }
+}

@@ -1,0 +1,357 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data.css",
+   "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-38lifoo63d4",
+   "lwc-38lifoo63d4-host",
+   "x-deep-data_deep-data",
+   "x-deep-data_deep-data-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div><div${\"a6:data-name\"}${3}></div><div${\"s7\"}${3}></div><div${\"c8\"}${2}></div></div></div><div${3}></div><div${3}></div><div${\"a11:data-name\"}${3}></div><div${\"s12\"}${3}></div><div${\"c13\"}${2}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-38lifoo63d4"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data.css",
+   "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-38lifoo63d4",
+   "lwc-38lifoo63d4-host",
+   "x-deep-data_deep-data",
+   "x-deep-data_deep-data-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div><div${\"a6:data-name\"}${3}></div><div${\"s7\"}${3}></div><div${\"c8\"}${2}></div></div></div><div${3}></div><div${3}></div><div${\"a11:data-name\"}${3}></div><div${\"s12\"}${3}></div><div${\"c13\"}${2}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-deep-data_deep-data"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data.css",
+   "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-38lifoo63d4",
+   "lwc-38lifoo63d4-host",
+   "x-deep-data_deep-data",
+   "x-deep-data_deep-data-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div><div${\"a6:data-name\"}${3}></div><div${\"s7\"}${3}></div><div${\"c8\"}${2}></div></div></div><div${3}></div><div${3}></div><div${\"a11:data-name\"}${3}></div><div${\"s12\"}${3}></div><div${\"c13\"}${2}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-deep-data_deep-data"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data.css",
+   "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-38lifoo63d4",
+   "lwc-38lifoo63d4-host",
+   "x-deep-data_deep-data",
+   "x-deep-data_deep-data-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div><div${\"a6:data-name\"}${3}></div><div${\"s7\"}${3}></div><div${\"c8\"}${2}></div></div></div><div${3}></div><div${3}></div><div${\"a11:data-name\"}${3}></div><div${\"s12\"}${3}></div><div${\"c13\"}${2}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-38lifoo63d4"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data.css",
+   "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-38lifoo63d4",
+   "lwc-38lifoo63d4-host",
+   "x-deep-data_deep-data",
+   "x-deep-data_deep-data-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div><div${\"a6:data-name\"}${3}></div><div${\"s7\"}${3}></div><div${\"c8\"}${2}></div></div></div><div${3}></div><div${3}></div><div${\"a11:data-name\"}${3}></div><div${\"s12\"}${3}></div><div${\"c13\"}${2}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-38lifoo63d4"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data.css",
+   "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-38lifoo63d4",
+   "lwc-38lifoo63d4-host",
+   "x-deep-data_deep-data",
+   "x-deep-data_deep-data-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div><div${\"a6:data-name\"}${3}></div><div${\"s7\"}${3}></div><div${\"c8\"}${2}></div></div></div><div${3}></div><div${3}></div><div${\"a11:data-name\"}${3}></div><div${\"s12\"}${3}></div><div${\"c13\"}${2}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-38lifoo63d4"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data.css",
+   "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-38lifoo63d4",
+   "lwc-38lifoo63d4-host",
+   "x-deep-data_deep-data",
+   "x-deep-data_deep-data-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div><div${\"a6:data-name\"}${3}></div><div${\"s7\"}${3}></div><div${\"c8\"}${2}></div></div></div><div${3}></div><div${3}></div><div${\"a11:data-name\"}${3}></div><div${\"s12\"}${3}></div><div${\"c13\"}${2}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-38lifoo63d4"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data.css",
+   "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-38lifoo63d4",
+   "lwc-38lifoo63d4-host",
+   "x-deep-data_deep-data",
+   "x-deep-data_deep-data-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div><div${\"a6:data-name\"}${3}></div><div${\"s7\"}${3}></div><div${\"c8\"}${2}></div></div></div><div${3}></div><div${3}></div><div${\"a11:data-name\"}${3}></div><div${\"s12\"}${3}></div><div${\"c13\"}${2}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-38lifoo63d4"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data.css",
+   "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-38lifoo63d4",
+   "lwc-38lifoo63d4-host",
+   "x-deep-data_deep-data",
+   "x-deep-data_deep-data-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div><div${\"a6:data-name\"}${3}></div><div${\"s7\"}${3}></div><div${\"c8\"}${2}></div></div></div><div${3}></div><div${3}></div><div${\"a11:data-name\"}${3}></div><div${\"s12\"}${3}></div><div${\"c13\"}${2}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-38lifoo63d4"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./deep-data.css",
+   "./deep-data.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-38lifoo63d4",
+   "lwc-38lifoo63d4-host",
+   "x-deep-data_deep-data",
+   "x-deep-data_deep-data-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}></div><div${3}><div${3}><div${3}></div><div${3}></div><div${\"a6:data-name\"}${3}></div><div${\"s7\"}${3}></div><div${\"c8\"}${2}></div></div></div><div${3}></div><div${3}></div><div${\"a11:data-name\"}${3}></div><div${\"s12\"}${3}></div><div${\"c13\"}${2}></div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-38lifoo63d4"
+  }
+ }
+}

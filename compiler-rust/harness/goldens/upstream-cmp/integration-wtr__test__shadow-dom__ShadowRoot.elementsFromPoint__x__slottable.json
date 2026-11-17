@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">.in-slottable {position: absolute;top: 0;left: 0;right: 0;bottom: 75px;}.in-slottable-inner {position: absolute;top: 0;left: 0;right: 0;bottom: 0;}.slot-wrapper {position: absolute;top: 75px;left: 0;right: 0;bottom: 0;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><div class=\"in-slottable\" data-id=\"inSlottable\"><div class=\"in-slottable-inner\" data-id=\"inSlottableInner\"></div></div><div class=\"slot-wrapper\" data-id=\"slotWrapper\"><slot></slot></div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.in-slottable {position: absolute;top: 0;left: 0;right: 0;bottom: 75px;}.in-slottable-inner {position: absolute;top: 0;left: 0;right: 0;bottom: 0;}.slot-wrapper {position: absolute;top: 75px;left: 0;right: 0;bottom: 0;}</style><div class=\"in-slottable\" data-id=\"inSlottable\"><div class=\"in-slottable-inner\" data-id=\"inSlottableInner\"></div></div><div class=\"slot-wrapper\" data-id=\"slotWrapper\"><slot></slot></div></template></lwc-up>"
+ }
+}

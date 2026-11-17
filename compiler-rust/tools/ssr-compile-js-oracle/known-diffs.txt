@@ -1,0 +1,25 @@
+# compile_js oracle cases whose output differs from upstream (run.mjs fails on any other diff and on a listed
+# case that matches). One `suite/case` per line; the reason follows. The LWC SSR Rust bot (lwc-ssr owner) owns this list; it only shrinks.
+members/ctorDefaults  trailing comma kept from source; closes via print_expr (AB-D0004 S4)
+wire/multiline        the config object is copied from source, so its comments stay; upstream reprints it (astring)
+wire/parenAdapter     the adapter expression is copied from source, so its parentheses stay; upstream reprints it
+wire/parenAdapterConfig  same as wire/parenAdapter
+dynamic/strictParen   the import() source is copied from source, so its parentheses stay; upstream reprints it (as wire/parenAdapter)
+wire/prop  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/dollarDeep  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/method  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/getter  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/setter  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/staticGetter  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/memberId  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/noConfig  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/constKey  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/undefinedKey  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/wrapped  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/nested  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/dollarNulDigit  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/dollarQuote  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/dollarLineSep  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/dollarLineSepRaw  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/dollarLoneSurrogate  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4
+wire/dollarControls  wire callbacks print `(instance) =>` and `newValue;` where upstream prints `instance =>` and `newValue;;` (astring); closes via print_expr, AB-D0004 S4

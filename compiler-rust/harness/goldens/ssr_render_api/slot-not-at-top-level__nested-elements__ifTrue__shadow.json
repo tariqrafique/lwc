@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <slot name=\"foo\">\n          fallback for foo\n        </slot>\n      </template>\n      z\n      <div>\n        1\n        <div slot=\"foo\">\n          2\n        </div>\n        34\n        <div slot=\"foo\">\n          5\n        </div>\n        67\n      </div>\n      8\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <slot name=\"foo\">\n          fallback for foo\n        </slot>\n      </template>\n      z\n      <div>\n        1\n        <div slot=\"foo\">\n          2\n        </div>\n        34\n        <div slot=\"foo\">\n          5\n        </div>\n        67\n      </div>\n      8\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <slot name=\"foo\">\n          fallback for foo\n        </slot>\n      </template>\n      z\n      <div>\n        1\n        <div slot=\"foo\">\n          2\n        </div>\n        34\n        <div slot=\"foo\">\n          5\n        </div>\n        67\n      </div>\n      8\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <slot name=\"foo\">\n          fallback for foo\n        </slot>\n      </template>\n      z\n      <div>\n        1\n        <div slot=\"foo\">\n          2\n        </div>\n        34\n        <div slot=\"foo\">\n          5\n        </div>\n        67\n      </div>\n      8\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <slot name=\"foo\">\n          fallback for foo\n        </slot>\n      </template>\n      z\n      <div>\n        1\n        <div slot=\"foo\">\n          2\n        </div>\n        34\n        <div slot=\"foo\">\n          5\n        </div>\n        67\n      </div>\n      8\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <slot name=\"foo\">\n          fallback for foo\n        </slot>\n      </template>\n      z\n      <div>\n        1\n        <div slot=\"foo\">\n          2\n        </div>\n        34\n        <div slot=\"foo\">\n          5\n        </div>\n        67\n      </div>\n      8\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <slot name=\"foo\">\n          fallback for foo\n        </slot>\n      </template>\n      z\n      <div>\n        1\n        <div slot=\"foo\">\n          2\n        </div>\n        34\n        <div slot=\"foo\">\n          5\n        </div>\n        67\n      </div>\n      8\n    </x-inner>\n  </template>\n</fixture-test>"
+ }
+}

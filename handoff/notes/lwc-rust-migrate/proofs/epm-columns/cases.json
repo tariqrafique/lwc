@@ -1,0 +1,7 @@
+{
+ "before": "import { wire, LightningElement } from 'lwc';\nexport default class Test extends LightningElement {\n  #m() { return 1; } @wire('not-an-identifier') w;\n}\n",
+ "after": "import { wire, LightningElement } from 'lwc';\nexport default class Test extends LightningElement {\n  @wire('not-an-identifier') w; #m() { return 1; }\n}\n",
+ "use_before": "import { wire, LightningElement } from 'lwc';\nexport default class Test extends LightningElement {\n  #m() { return 1; }\n  x = this.#m(); @wire('not-an-identifier') w;\n}\n",
+ "multiline": "import { api, LightningElement } from 'lwc';\nexport default class Test extends LightningElement {\n  #m() { return 1; } @api get a() {\n    return this.#m(); }\n  #n() {} @api set a(v) {\n    this.#n(); }\n}\n",
+ "deco_misuse": "import { LightningElement, track } from 'lwc';\nexport default class Test extends LightningElement {\n  #m() {} #n() {} @track @api x;\n}\n"
+}

@@ -1,0 +1,319 @@
+[
+ {
+  "id": "js-lwc-1107",
+  "filename": "foo.js",
+  "src": "import {api,LightningElement} from \"lwc\";\nexport default class T extends LightningElement{ @api dataA; }\n",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "SyntaxError: <cwd>/foo.js: LWC1107: Invalid property name \"dataA\". Properties starting with \"data\" are reserved attributes.\n  1 | import {api,LightningElement} from \"lwc\";\n> 2 | export default class T extends LightningElement{ @api dataA; }\n    |                                                  ^^^^^^^^^^^\n  3 |",
+   "code": 1107,
+   "filename": "foo.js",
+   "location": {
+    "line": 2,
+    "column": 49,
+    "start": 91,
+    "length": 11
+   },
+   "level": 1,
+   "url": "https://lwc.dev/guide/error_codes#lwc1007"
+  }
+ },
+ {
+  "id": "js-lwc-1097-wire",
+  "filename": "foo.js",
+  "src": "import {wire,LightningElement} from \"lwc\";\nexport default class T extends LightningElement{ @wire(\"x\") w; }\n",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "SyntaxError: <cwd>/foo.js: LWC1097: @wire expects a function identifier as first parameter.\n  1 | import {wire,LightningElement} from \"lwc\";\n> 2 | export default class T extends LightningElement{ @wire(\"x\") w; }\n    |                                                        ^^^\n  3 |",
+   "code": 1097,
+   "filename": "foo.js",
+   "location": {
+    "line": 2,
+    "column": 55,
+    "start": 98,
+    "length": 3
+   },
+   "level": 1,
+   "url": "https://lwc.dev/guide/error_codes#lwc1007"
+  }
+ },
+ {
+  "id": "js-lwc-1121-dyn-import",
+  "filename": "foo.js",
+  "src": "export function f(x){ return import(x); }\n",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "SyntaxError: <cwd>/foo.js: LWC1121: Invalid import. The argument \"x\" must be a stringLiteral for dynamic imports when strict mode is enabled.\n> 1 | export function f(x){ return import(x); }\n    |                                     ^\n  2 |",
+   "code": 1121,
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 36,
+    "start": 36,
+    "length": 1
+   },
+   "level": 1,
+   "url": "https://lwc.dev/guide/error_codes#lwc1007"
+  }
+ },
+ {
+  "id": "js-lwc-1103-private-method",
+  "filename": "foo.js",
+  "src": "import { api, LightningElement } from \"lwc\";\nexport default class Test extends LightningElement {\n  @api #m() {}\n}\n",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "SyntaxError: <cwd>/foo.js: LWC1103: \"@api\" can only be applied on class properties\n  1 | import { api, LightningElement } from \"lwc\";\n  2 | export default class Test extends LightningElement {\n> 3 |   @api #m() {}\n    |   ^^^^^^^^^^^^\n  4 | }\n  5 |",
+   "code": 1103,
+   "filename": "foo.js",
+   "location": {
+    "line": 3,
+    "column": 2,
+    "start": 100,
+    "length": 12
+   },
+   "level": 1,
+   "url": "https://lwc.dev/guide/error_codes#lwc1007"
+  }
+ },
+ {
+  "id": "js-parse-1007",
+  "filename": "foo.js",
+  "src": "let = ;\n",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "SyntaxError: LWC1007: <cwd>/foo.js: Unexpected reserved word 'let'. (1:0)\n\n> 1 | let = ;\n    | ^\n  2 |",
+   "code": 1007,
+   "filename": "foo.js",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   },
+   "level": 1,
+   "url": "https://lwc.dev/guide/error_codes#lwc1007"
+  }
+ },
+ {
+  "id": "js-1007-decorators-not-enabled",
+  "filename": "foo.js",
+  "src": "export default class { @foo x; }\n",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "SyntaxError: LWC1007: <cwd>/foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @foo x; }\n    |                ^^^^^^^^^^^^^^^^^\n  2 |",
+   "code": 1007,
+   "filename": "foo.js",
+   "level": 1,
+   "url": "https://lwc.dev/guide/error_codes#lwc1007"
+  }
+ },
+ {
+  "id": "js-1198-decorator-sniff",
+  "filename": "foo.js",
+  "src": "export default class { @api x; }\n",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. <cwd>/foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  2 |",
+   "code": 1198,
+   "filename": "foo.js",
+   "level": 1,
+   "url": ""
+  }
+ },
+ {
+  "id": "html-1058",
+  "filename": "foo.html",
+  "src": "<template><div></template>",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "LWC1058: Invalid HTML syntax: closing-of-element-with-open-child-elements. For more information, please visit https://html.spec.whatwg.org/multipage/parsing.html#parse-error-closing-of-element-with-open-child-elements",
+   "code": 1058,
+   "filename": "foo.html",
+   "location": {
+    "line": 1,
+    "column": 16,
+    "start": 15,
+    "length": 11
+   },
+   "level": 1,
+   "url": ""
+  }
+ },
+ {
+  "id": "html-1058-duplicate-attr",
+  "filename": "foo.html",
+  "src": "<template><div if:true={a} if:true={b}></div></template>",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "LWC1058: Invalid HTML syntax: duplicate-attribute. For more information, please visit https://html.spec.whatwg.org/multipage/parsing.html#parse-error-duplicate-attribute",
+   "code": 1058,
+   "filename": "foo.html",
+   "location": {
+    "line": 1,
+    "column": 35,
+    "start": 34,
+    "length": 0
+   },
+   "level": 1,
+   "url": ""
+  }
+ },
+ {
+  "id": "css-1009",
+  "filename": "foo.css",
+  "src": ":host{",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "CssSyntaxError: LWC1009: <cwd>/foo.css:1:1: Unclosed block",
+   "code": 1009,
+   "filename": "foo.css",
+   "location": {
+    "line": 1,
+    "column": 1
+   },
+   "level": 1,
+   "url": "https://lwc.dev/guide/error_codes#lwc1009"
+  }
+ },
+ {
+  "id": "css-1009-host-context",
+  "filename": "foo.css",
+  "src": ":host-context(.a){}",
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "CssSyntaxError: LWC1009: <cwd>/foo.css:1:1: Invalid usage of unsupported selector \":host-context\". This selector is only supported in non-scoped CSS where the `disableSyntheticShadowSupport` flag is set to true.",
+   "code": 1009,
+   "filename": "foo.css",
+   "location": {
+    "line": 1,
+    "column": 1
+   },
+   "level": 1,
+   "url": "https://lwc.dev/guide/error_codes#lwc1009"
+  }
+ },
+ {
+  "id": "opts-1021",
+  "filename": "foo.js",
+  "src": "export const a = 1;\n",
+  "opts": {
+   "outputConfig": {
+    "sourcemap": "foo"
+   }
+  },
+  "error": {
+   "ownKeys": [
+    "message",
+    "code",
+    "filename",
+    "location",
+    "level",
+    "url"
+   ],
+   "name": "Error",
+   "proto": "CompilerError",
+   "message": "LWC1021: Expected a boolean value or 'inline' for outputConfig.sourcemap, received \"foo\".",
+   "code": 1021,
+   "level": 1,
+   "url": "https://lwc.dev/guide/error_codes#lwc1021"
+  }
+ }
+]

@@ -1,0 +1,23 @@
+# Pinned hashes of official-board external inputs (paths relative to EXT_INPUTS_ROOT).
+# hash-format: content-only
+# sha256[:12] of sorted per-file sha256sum, excluding files under any .git/ (D-0280).
+# style-corpus/lbc: npm lightning-base-components@1.28.19-alpha (extracts to lbc/package/)
+# style-corpus/lbc-recipes: git https://github.com/salesforce/base-components-recipes.git @ 9c5f95d4e0cd5434a2b8373405e4f6c7657c88e8
+# style-corpus/slds: npm @salesforce-ux/design-system@2.264.3 (extracts to slds/package/). CSS inputs only; .scss is not a compiler input.
+# lwc/.../dist: hashed from the built oracle tree (not fetched by fetch-style-corpus.sh).
+# sample-corpus/* and prettier/3.9.9: fetched by scripts/fetch-sample-corpus.sh (pretty-equal, D-0292).
+# Change ONLY via a landing. Milestone Arch review applies when a landing flips a gate or changes ownership (D-0276). Regenerate: see scripts/official-board.sh inputhash1().
+style-corpus/lbc	0519d3825645
+style-corpus/lbc-recipes	036116865208
+style-corpus/slds	6c74356ddfd1
+lwc/packages/@lwc/template-compiler/dist	0163d9bc3029
+sample-corpus/lwc-recipes	4fed920f2405
+sample-corpus/ebikes-lwc	092846976fd2
+sample-corpus/dreamhouse-lwc	2f3ec22efb2f
+sample-corpus/b2b-commerce-open-source-components	ecbf7db2a6b7
+sample-corpus/LightningFlowComponents	bd06e7474bbe
+sample-corpus/NPSP	3d1e535fbf63
+sample-corpus/visualforce-to-lwc	9a3bdbb4f315
+sample-corpus/revenue-cloud-foundations	dc1edd96f270
+sample-corpus/lwc-utils	b95ee1048681
+prettier/3.9.9	78e9f151c8d7

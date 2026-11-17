@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "scoped is not defined"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><x-light-child><template shadowrootmode=\"open\"></template><p>Default slot</p><p slot=\"named1\">Named 1</p></x-light-child></lwc-up>"
+ }
+}

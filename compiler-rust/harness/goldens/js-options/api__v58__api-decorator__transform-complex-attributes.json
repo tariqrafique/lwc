@@ -1,0 +1,64 @@
+{
+  "ok": true,
+  "eval": {
+    "imports": [
+      "lwc",
+      "./test.html"
+    ],
+    "lwcImports": [
+      "LightningElement",
+      "registerComponent",
+      "registerDecorators"
+    ],
+    "exports": {
+      "default": "class"
+    },
+    "defaultExport": {
+      "kind": "class",
+      "extendsLightningElement": true,
+      "registered": true,
+      "registerOptions": {
+        "sel": "lwc-test",
+        "apiVersion": "number",
+        "hasTmpl": true,
+        "apiVersionValue": 58,
+        "enablePrivateMethods": true
+      }
+    },
+    "decorators": [
+      {
+        "className": "Text",
+        "meta": {
+          "fields": [
+            "privateProp"
+          ],
+          "publicMethods": [
+            "m1"
+          ],
+          "publicProps": {
+            "aloneGet": {
+              "config": 1
+            },
+            "myget": {
+              "config": 3
+            },
+            "publicProp": {
+              "config": 0
+            }
+          }
+        }
+      }
+    ]
+  },
+  "warnings": [],
+  "signals": {
+    "objectSpreadPreserved": false,
+    "asyncToGenerator": false,
+    "wrapAsyncGenerator": false,
+    "asyncIterator": false,
+    "locationRewrite": false,
+    "nativeAsync": false,
+    "registerDecoratorsCalls": 1,
+    "registerComponentCalls": 1
+  }
+}

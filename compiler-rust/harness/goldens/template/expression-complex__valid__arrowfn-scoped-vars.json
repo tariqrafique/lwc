@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./arrowfn-scoped-vars.css",
+    "./arrowfn-scoped-vars.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4jav1e64a2p",
+    "lwc-4jav1e64a2p-host",
+    "x-arrowfn-scoped-vars_arrowfn-scoped-vars",
+    "x-arrowfn-scoped-vars_arrowfn-scoped-vars-host"
+  ]
+}

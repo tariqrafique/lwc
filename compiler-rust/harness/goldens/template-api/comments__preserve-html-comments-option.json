@@ -1,0 +1,342 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-html-comments-option.css",
+   "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-gaekmoo0tf",
+   "lwc-gaekmoo0tf-host",
+   "x-preserve-html-comments-option_preserve-html-comments-option",
+   "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>click me</button>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-gaekmoo0tf"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-html-comments-option.css",
+   "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-gaekmoo0tf",
+   "lwc-gaekmoo0tf-host",
+   "x-preserve-html-comments-option_preserve-html-comments-option",
+   "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>click me</button>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-preserve-html-comments-option_preserve-html-comments-option"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-html-comments-option.css",
+   "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-gaekmoo0tf",
+   "lwc-gaekmoo0tf-host",
+   "x-preserve-html-comments-option_preserve-html-comments-option",
+   "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>click me</button>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-preserve-html-comments-option_preserve-html-comments-option"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-html-comments-option.css",
+   "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-gaekmoo0tf",
+   "lwc-gaekmoo0tf-host",
+   "x-preserve-html-comments-option_preserve-html-comments-option",
+   "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>click me</button>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-gaekmoo0tf"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-html-comments-option.css",
+   "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-gaekmoo0tf",
+   "lwc-gaekmoo0tf-host",
+   "x-preserve-html-comments-option_preserve-html-comments-option",
+   "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>click me</button>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-gaekmoo0tf"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-html-comments-option.css",
+   "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-gaekmoo0tf",
+   "lwc-gaekmoo0tf-host",
+   "x-preserve-html-comments-option_preserve-html-comments-option",
+   "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>click me</button>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-gaekmoo0tf"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-html-comments-option.css",
+   "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-gaekmoo0tf",
+   "lwc-gaekmoo0tf-host",
+   "x-preserve-html-comments-option_preserve-html-comments-option",
+   "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>click me</button>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-gaekmoo0tf"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-html-comments-option.css",
+   "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-gaekmoo0tf",
+   "lwc-gaekmoo0tf-host",
+   "x-preserve-html-comments-option_preserve-html-comments-option",
+   "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>click me</button>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-gaekmoo0tf"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-html-comments-option.css",
+   "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-gaekmoo0tf",
+   "lwc-gaekmoo0tf-host",
+   "x-preserve-html-comments-option_preserve-html-comments-option",
+   "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>click me</button>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-gaekmoo0tf"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-html-comments-option.css",
+   "./preserve-html-comments-option.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-gaekmoo0tf",
+   "lwc-gaekmoo0tf-host",
+   "x-preserve-html-comments-option_preserve-html-comments-option",
+   "x-preserve-html-comments-option_preserve-html-comments-option-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<button${3}>click me</button>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-gaekmoo0tf"
+  }
+ }
+}

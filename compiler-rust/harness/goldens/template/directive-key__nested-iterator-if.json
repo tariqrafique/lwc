@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./nested-iterator-if.css",
+    "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-s0e1j42tjc",
+    "lwc-s0e1j42tjc-host",
+    "x-nested-iterator-if_nested-iterator-if",
+    "x-nested-iterator-if_nested-iterator-if-host"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/lwc-inner-html/lwc-inner-html.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./lwc-inner-html.css",
+        "./lwc-inner-html.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-415nl686tks",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/lwc-inner-html/lwc-inner-html.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./lwc-inner-html.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-lwc-inner-html",
+          "publicProps": [
+            "content"
+          ],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

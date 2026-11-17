@@ -1,0 +1,38 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1096
+  ],
+  "line": null,
+  "expectedCodes": [
+    1096,
+    1096
+  ],
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1096,
+        "message": "LWC1096: Duplicate @api property \"duplicateProp\".",
+        "location": {
+          "line": 6,
+          "column": 2,
+          "start": 125,
+          "length": 4
+        }
+      },
+      {
+        "code": 1096,
+        "message": "LWC1096: Duplicate @api property \"duplicateProp\".",
+        "location": {
+          "line": 4,
+          "column": 2,
+          "start": 101,
+          "length": 4
+        }
+      }
+    ]
+  }
+}

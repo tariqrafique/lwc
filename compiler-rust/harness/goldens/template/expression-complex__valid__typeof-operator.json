@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./typeof-operator.css",
+    "./typeof-operator.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2o1pscqo7n3",
+    "lwc-2o1pscqo7n3-host",
+    "x-typeof-operator_typeof-operator",
+    "x-typeof-operator_typeof-operator-host"
+  ]
+}

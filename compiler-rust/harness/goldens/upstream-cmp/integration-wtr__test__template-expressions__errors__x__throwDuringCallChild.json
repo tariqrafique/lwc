@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"></template></lwc-up>"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "LWC1034: Ambiguous attribute value foo=\"{runRunAsFastAsYouCan()}\". If you want to make it a valid identifier you should remove the surrounding quotes foo={runRunAsFastAsYouCan()}. If you want to make it a string you should escape it foo=\"\\{runRunAsFastAsYouCan()}\"."
+ }
+}

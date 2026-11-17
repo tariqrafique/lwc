@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./binary-expr-relational.css",
+    "./binary-expr-relational.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-39eucbo25ji",
+    "lwc-39eucbo25ji-host",
+    "x-binary-expr-relational_binary-expr-relational",
+    "x-binary-expr-relational_binary-expr-relational-host"
+  ]
+}

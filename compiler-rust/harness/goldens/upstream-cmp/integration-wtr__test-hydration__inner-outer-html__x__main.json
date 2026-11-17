@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div data-id=\"div-inner-spread\">original</div><x-component data-id=\"cmp-inner-static\"><template shadowrootmode=\"open\"></template>original</x-component><x-component data-id=\"cmp-inner-computed\"><template shadowrootmode=\"open\"></template>original</x-component><x-component data-id=\"cmp-inner-spread\"><template shadowrootmode=\"open\"></template>original</x-component><omg-whatever data-id=\"external-inner-spread\">original</omg-whatever><div data-id=\"div-outer-spread\">original</div><x-component data-id=\"cmp-outer-static\"><template shadowrootmode=\"open\"></template>original</x-component><x-component data-id=\"cmp-outer-computed\"><template shadowrootmode=\"open\"></template>original</x-component><x-component data-id=\"cmp-outer-spread\"><template shadowrootmode=\"open\"></template>original</x-component><omg-whatever data-id=\"external-outer-spread\">original</omg-whatever><span data-id=\"lwc-inner-html-static\">injected</span><p data-id=\"lwc-inner-html-computed\">injected</p></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"></template></lwc-up>"
+ },
+ "asyncErrors": [
+  "sanitizeHtmlContent hook must be implemented."
+ ]
+}

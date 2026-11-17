@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child class=\"x-child-simple\"><template shadowrootmode=\"open\"></template></x-child><x-child class=\"x-child-overridden\"><template shadowrootmode=\"open\"></template></x-child><span>Hello</span><x-cmp><template shadowrootmode=\"open\"></template></x-cmp><x-child class=\"x-child-tracked\"><template shadowrootmode=\"open\"></template></x-child><div class=\"div-innerhtml\">innerHTML from directive</div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "LWC1188: Invalid dynamic components usage, lwc:component and lwc:is can only be used when dynamic components have been enabled."
+ }
+}

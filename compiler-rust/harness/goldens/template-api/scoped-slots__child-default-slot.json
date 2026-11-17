@@ -1,0 +1,302 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-default-slot.css",
+   "./child-default-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1fdico6s7m4",
+   "lwc-1fdico6s7m4-host",
+   "x-child-default-slot_child-default-slot",
+   "x-child-default-slot_child-default-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1fdico6s7m4"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-default-slot.css",
+   "./child-default-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1fdico6s7m4",
+   "lwc-1fdico6s7m4-host",
+   "x-child-default-slot_child-default-slot",
+   "x-child-default-slot_child-default-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-child-default-slot_child-default-slot"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-default-slot.css",
+   "./child-default-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1fdico6s7m4",
+   "lwc-1fdico6s7m4-host",
+   "x-child-default-slot_child-default-slot",
+   "x-child-default-slot_child-default-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-child-default-slot_child-default-slot"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-default-slot.css",
+   "./child-default-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1fdico6s7m4",
+   "lwc-1fdico6s7m4-host",
+   "x-child-default-slot_child-default-slot",
+   "x-child-default-slot_child-default-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1fdico6s7m4"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-default-slot.css",
+   "./child-default-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1fdico6s7m4",
+   "lwc-1fdico6s7m4-host",
+   "x-child-default-slot_child-default-slot",
+   "x-child-default-slot_child-default-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1fdico6s7m4"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-default-slot.css",
+   "./child-default-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1fdico6s7m4",
+   "lwc-1fdico6s7m4-host",
+   "x-child-default-slot_child-default-slot",
+   "x-child-default-slot_child-default-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1fdico6s7m4"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-default-slot.css",
+   "./child-default-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1fdico6s7m4",
+   "lwc-1fdico6s7m4-host",
+   "x-child-default-slot_child-default-slot",
+   "x-child-default-slot_child-default-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1fdico6s7m4"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-default-slot.css",
+   "./child-default-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1fdico6s7m4",
+   "lwc-1fdico6s7m4-host",
+   "x-child-default-slot_child-default-slot",
+   "x-child-default-slot_child-default-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1fdico6s7m4"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-default-slot.css",
+   "./child-default-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1fdico6s7m4",
+   "lwc-1fdico6s7m4-host",
+   "x-child-default-slot_child-default-slot",
+   "x-child-default-slot_child-default-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1fdico6s7m4"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-default-slot.css",
+   "./child-default-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1fdico6s7m4",
+   "lwc-1fdico6s7m4-host",
+   "x-child-default-slot_child-default-slot",
+   "x-child-default-slot_child-default-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-1fdico6s7m4"
+  }
+ }
+}

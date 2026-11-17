@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./text-non-direct-child.css",
+    "./text-non-direct-child.scoped.css?scoped=true",
+    "x/list"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-7snm06k811b",
+    "lwc-7snm06k811b-host",
+    "x-text-non-direct-child_text-non-direct-child",
+    "x-text-non-direct-child_text-non-direct-child-host"
+  ]
+}

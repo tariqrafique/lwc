@@ -1,0 +1,134 @@
+[
+ {
+  "name": "js-missing-comma-obj",
+  "src": "import { LightningElement, api } from 'lwc';\nconst o = {a: 1 b: 2};",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "js-class-two-ids",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { x y }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "js-call-unclosed",
+  "src": "import { LightningElement, api } from 'lwc';\nfoo(1, 2;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "js-if-paren",
+  "src": "import { LightningElement, api } from 'lwc';\nif (x { }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "js-arr",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = [1 2];",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "js-stmt",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = 1 2;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "js-arrow-bad",
+  "src": "import { LightningElement, api } from 'lwc';\nconst f = (a b) => a;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "js-import-bad",
+  "src": "import { LightningElement, api } from 'lwc';\nimport { a b } from 'x';",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "ts-param-default",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { foo(a: string = 'x', b?: number) {} }",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-ret-generic",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { foo(a = (1)): Promise<void> {} }",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-ml-field",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement {\n  @api\n  recordId: string;\n}",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-as-call",
+  "src": "import { LightningElement, api } from 'lwc';\nfoo(x as any);\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-as-array",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = [x as any];\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-as-ret",
+  "src": "import { LightningElement, api } from 'lwc';\nfunction f() { return x as any; }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-protected",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { protected foo() {} }",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-static-private",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { private static x = 1; }",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-export-interface",
+  "src": "import { LightningElement, api } from 'lwc';\nexport interface A { x: number }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-arrow-ret",
+  "src": "import { LightningElement, api } from 'lwc';\nconst f = (): void => {};\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-fragment",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = <></>;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.tsx",
+  "opts": {}
+ },
+ {
+  "name": "ts-generic-fn",
+  "src": "import { LightningElement, api } from 'lwc';\nfunction f<T>(a) { return a; }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-optional-param-fn",
+  "src": "import { LightningElement, api } from 'lwc';\nfunction f(a?) { return a; }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "opts": {}
+ },
+ {
+  "name": "ts-wire-typed",
+  "src": "import { LightningElement, api } from 'lwc';\nimport { wire } from 'lwc';\nexport default class Foo extends LightningElement { @wire(getX) data: any; }",
+  "filename": "foo.ts",
+  "opts": {}
+ }
+]

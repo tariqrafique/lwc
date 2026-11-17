@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\" shadowrootdelegatesfocus><input class=\"internal-input\" placeholder=\"internal\"><textarea class=\"internal-textarea\" placeholder=\"internal\"></textarea></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><input class=\"internal-input\" placeholder=\"internal\"><textarea class=\"internal-textarea\" placeholder=\"internal\"></textarea></template></lwc-up>"
+ }
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./dynamic-name.css",
+    "./dynamic-name.scoped.css?scoped=true",
+    "ns/cmp"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-619lvcnih24",
+    "lwc-619lvcnih24-host",
+    "x-dynamic-name_dynamic-name",
+    "x-dynamic-name_dynamic-name-host"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-around_medium\"><h1 class=\"slds-text-heading_small\">Basic accordion-section</h1><p class=\"slds-text-body_regular\">A lightning-accordion-section component is a single section that’s nested in a lightning-accordion component. You can&#x27;t use this component on its own. This example creates a basic accordion with one section.</p></div><lightning-accordion><template shadowrootmode=\"open\"></template><lightning-accordion-section><template shadowrootmode=\"open\"></template><lightning-button-menu slot=\"actions\"><template shadowrootmode=\"open\"></template><lightning-menu-item><template shadowrootmode=\"open\"></template></lightning-menu-item><lightning-menu-item><template shadowrootmode=\"open\"></template></lightning-menu-item></lightning-button-menu><p>This is the content area for section A.</p><p>.</p><p>.</p><p>.</p><p>The section height expands to fit your content.</p></lightning-accordion-section></lightning-accordion></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-around_medium\"><h1 class=\"slds-text-heading_small\">Basic accordion-section</h1><p class=\"slds-text-body_regular\">A lightning-accordion-section component is a single section that’s nested in a lightning-accordion component. You can't use this component on its own. This example creates a basic accordion with one section.</p></div><lightning-accordion><template shadowrootmode=\"open\"></template><lightning-accordion-section><template shadowrootmode=\"open\"></template><lightning-button-menu slot=\"actions\"><template shadowrootmode=\"open\"></template><lightning-menu-item><template shadowrootmode=\"open\"></template></lightning-menu-item><lightning-menu-item><template shadowrootmode=\"open\"></template></lightning-menu-item></lightning-button-menu><p>This is the content area for section A.</p><p>.</p><p>.</p><p>.</p><p>The section height expands to fit your content.</p></lightning-accordion-section></lightning-accordion></template></lwc-lbc>"
+ }
+}

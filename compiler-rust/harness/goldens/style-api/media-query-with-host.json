@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=true": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=false|dir=false": "@media screen and (max-width: 768px) {[x-host] {width: calc(50% - 1rem);}}",
+     "x|host=true|dir=true": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}",
+     "-|host=true|dir=false": "@media screen and (max-width: 768px) {:host {width: calc(50% - 1rem);}}"
+    }
+   }
+  ]
+ }
+}

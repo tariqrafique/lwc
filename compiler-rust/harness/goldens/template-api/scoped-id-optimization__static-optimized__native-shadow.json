@@ -1,0 +1,412 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-native-shadow_native-shadow"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-native-shadow_native-shadow"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label for=\"foo\"${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\" id=\"foo\"${3}>",
+   "parseFragment:<a href=\"#bar\"${3}>Click to scroll</a>",
+   "parseFragment:<section id=\"bar\"${3}>Scroll to me</section>",
+   "parseFragment:<label${\"a0:for\"}${3}>Click me:</label>",
+   "parseFragment:<input type=\"checkbox\"${\"a0:id\"}${3}>",
+   "parseFragment:<a${\"a0:href\"}${3}>Click to scroll</a>",
+   "parseFragment:<section${\"a0:id\"}${3}>Scroll to me</section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ }
+}

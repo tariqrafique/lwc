@@ -1,0 +1,22 @@
+{
+  "calls": [
+    [
+      "warn",
+      "\"OutputConfig.minify\" property is deprecated. The value doesn't impact the compilation and can safely be removed."
+    ],
+    [
+      "incrementCounter",
+      "dynamic-import-transform"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1007
+  ],
+  "line": null,
+  "errors": [
+    1007
+  ],
+  "message": "Error: LWC1007: foo.js: boom"
+}

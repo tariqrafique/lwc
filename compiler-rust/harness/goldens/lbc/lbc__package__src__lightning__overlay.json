@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Use of <lightning-overlay> as an element is not supported. See developer documentation for extending the LightningOverlay class."
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "Use of <lightning-overlay> as an element is not supported. See developer documentation for extending the LightningOverlay class."
+ ]
+}

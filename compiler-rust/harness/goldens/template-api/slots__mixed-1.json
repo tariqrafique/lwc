@@ -1,0 +1,402 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-1.css",
+   "./mixed-1.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s8i697dbds",
+   "lwc-4s8i697dbds-host",
+   "x-mixed-1_mixed-1",
+   "x-mixed-1_mixed-1-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Before header</p>",
+   "parseFragment:<p${3}>In</p>",
+   "parseFragment:<p${3}>between</p>",
+   "parseFragment:<p${3}>Default body</p>",
+   "parseFragment:<p${3}>Default footer</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s8i697dbds"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-1.css",
+   "./mixed-1.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s8i697dbds",
+   "lwc-4s8i697dbds-host",
+   "x-mixed-1_mixed-1",
+   "x-mixed-1_mixed-1-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Before header</p>",
+   "parseFragment:<p${3}>In</p>",
+   "parseFragment:<p${3}>between</p>",
+   "parseFragment:<p${3}>Default body</p>",
+   "parseFragment:<p${3}>Default footer</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-mixed-1_mixed-1"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-1.css",
+   "./mixed-1.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s8i697dbds",
+   "lwc-4s8i697dbds-host",
+   "x-mixed-1_mixed-1",
+   "x-mixed-1_mixed-1-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Before header</p>",
+   "parseFragment:<p${3}>In</p>",
+   "parseFragment:<p${3}>between</p>",
+   "parseFragment:<p${3}>Default body</p>",
+   "parseFragment:<p${3}>Default footer</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-mixed-1_mixed-1"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-1.css",
+   "./mixed-1.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s8i697dbds",
+   "lwc-4s8i697dbds-host",
+   "x-mixed-1_mixed-1",
+   "x-mixed-1_mixed-1-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Before header</p>",
+   "parseFragment:<p${3}>In</p>",
+   "parseFragment:<p${3}>between</p>",
+   "parseFragment:<p${3}>Default body</p>",
+   "parseFragment:<p${3}>Default footer</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s8i697dbds"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-1.css",
+   "./mixed-1.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s8i697dbds",
+   "lwc-4s8i697dbds-host",
+   "x-mixed-1_mixed-1",
+   "x-mixed-1_mixed-1-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Before header</p>",
+   "parseFragment:<p${3}>In</p>",
+   "parseFragment:<p${3}>between</p>",
+   "parseFragment:<p${3}>Default body</p>",
+   "parseFragment:<p${3}>Default footer</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s8i697dbds"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-1.css",
+   "./mixed-1.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s8i697dbds",
+   "lwc-4s8i697dbds-host",
+   "x-mixed-1_mixed-1",
+   "x-mixed-1_mixed-1-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Before header</p>",
+   "parseFragment:<p${3}>In</p>",
+   "parseFragment:<p${3}>between</p>",
+   "parseFragment:<p${3}>Default body</p>",
+   "parseFragment:<p${3}>Default footer</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s8i697dbds"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-1.css",
+   "./mixed-1.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s8i697dbds",
+   "lwc-4s8i697dbds-host",
+   "x-mixed-1_mixed-1",
+   "x-mixed-1_mixed-1-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Before header</p>",
+   "parseFragment:<p${3}>In</p>",
+   "parseFragment:<p${3}>between</p>",
+   "parseFragment:<p${3}>Default body</p>",
+   "parseFragment:<p${3}>Default footer</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s8i697dbds"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-1.css",
+   "./mixed-1.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s8i697dbds",
+   "lwc-4s8i697dbds-host",
+   "x-mixed-1_mixed-1",
+   "x-mixed-1_mixed-1-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Before header</p>",
+   "parseFragment:<p${3}>In</p>",
+   "parseFragment:<p${3}>between</p>",
+   "parseFragment:<p${3}>Default body</p>",
+   "parseFragment:<p${3}>Default footer</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s8i697dbds"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-1.css",
+   "./mixed-1.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s8i697dbds",
+   "lwc-4s8i697dbds-host",
+   "x-mixed-1_mixed-1",
+   "x-mixed-1_mixed-1-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Before header</p>",
+   "parseFragment:<p${3}>In</p>",
+   "parseFragment:<p${3}>between</p>",
+   "parseFragment:<p${3}>Default body</p>",
+   "parseFragment:<p${3}>Default footer</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s8i697dbds"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-1.css",
+   "./mixed-1.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4s8i697dbds",
+   "lwc-4s8i697dbds-host",
+   "x-mixed-1_mixed-1",
+   "x-mixed-1_mixed-1-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Before header</p>",
+   "parseFragment:<p${3}>In</p>",
+   "parseFragment:<p${3}>between</p>",
+   "parseFragment:<p${3}>Default body</p>",
+   "parseFragment:<p${3}>Default footer</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4s8i697dbds"
+  }
+ }
+}

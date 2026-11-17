@@ -1,0 +1,10 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": true,
+  "warnings": []
+}

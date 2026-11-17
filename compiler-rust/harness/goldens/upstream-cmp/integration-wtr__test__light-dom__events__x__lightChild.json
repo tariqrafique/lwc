@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><button data-id=\"button\">Click Me</button></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><button data-id=\"button\">Click Me</button></lwc-up>"
+ }
+}

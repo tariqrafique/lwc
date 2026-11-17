@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-tabset class=\"default_tabset\"><template shadowrootmode=\"open\"></template></c-tabset></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-tabset class=\"default_tabset\"><template shadowrootmode=\"open\"></template></c-tabset></template></lwc-lbc>"
+ }
+}

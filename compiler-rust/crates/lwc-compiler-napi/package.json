@@ -1,0 +1,47 @@
+{
+  "name": "@lwc/rust-compiler",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Rust (napi) port of @lwc/compiler. Working name pending Tariq (D-0202); not published.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "wrap.js",
+    "wrap.d.ts"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "napi": {
+    "name": "lwc-compiler",
+    "triples": {
+      "defaults": false,
+      "additional": [
+        "x86_64-unknown-linux-gnu",
+        "aarch64-unknown-linux-gnu",
+        "x86_64-apple-darwin",
+        "aarch64-apple-darwin",
+        "x86_64-pc-windows-msvc",
+        "aarch64-pc-windows-msvc"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "npx -y @napi-rs/cli@2.18.4 build --platform --release --js false --dts napi.gen.d.ts"
+  },
+  "optionalDependencies": {
+    "@lwc/rust-compiler-linux-x64-gnu": "0.1.0",
+    "@lwc/rust-compiler-linux-arm64-gnu": "0.1.0",
+    "@lwc/rust-compiler-darwin-x64": "0.1.0",
+    "@lwc/rust-compiler-darwin-arm64": "0.1.0",
+    "@lwc/rust-compiler-win32-x64-msvc": "0.1.0",
+    "@lwc/rust-compiler-win32-arm64-msvc": "0.1.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-43ipqg73cej-host\" data-lwc-host-scope-token=\"lwc-43ipqg73cej-host\"><template shadowrootmode=\"open\"><style class=\"lwc-43ipqg73cej\" id=\"lwc-style--0\" type=\"text/css\">text.lwc-43ipqg73cej {display: none;}svg.lwc-43ipqg73cej {fill: rgb(255, 0, 0);}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><svg class=\"lwc-43ipqg73cej\" viewBox=\"0 0 240 80\"><text class=\"lwc-43ipqg73cej\" x=\"20\" y=\"35\">I should not be visible</text></svg></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-43ipqg73cej-host\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">text.lwc-43ipqg73cej {display: none;}svg.lwc-43ipqg73cej {fill: rgb(255, 0, 0);}</style><svg viewBox=\"0 0 240 80\" class=\"lwc-43ipqg73cej\"><text x=\"20\" y=\"35\" class=\"lwc-43ipqg73cej\">I should not be visible</text></svg></template></lwc-up>"
+ }
+}

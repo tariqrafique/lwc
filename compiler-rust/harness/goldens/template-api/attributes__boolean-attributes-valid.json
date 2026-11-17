@@ -1,0 +1,372 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean-attributes-valid.css",
+   "./boolean-attributes-valid.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s2d8ffesnq",
+   "lwc-3s2d8ffesnq-host",
+   "x-boolean-attributes-valid_boolean-attributes-valid",
+   "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s2d8ffesnq"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean-attributes-valid.css",
+   "./boolean-attributes-valid.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s2d8ffesnq",
+   "lwc-3s2d8ffesnq-host",
+   "x-boolean-attributes-valid_boolean-attributes-valid",
+   "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-boolean-attributes-valid_boolean-attributes-valid"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean-attributes-valid.css",
+   "./boolean-attributes-valid.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s2d8ffesnq",
+   "lwc-3s2d8ffesnq-host",
+   "x-boolean-attributes-valid_boolean-attributes-valid",
+   "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-boolean-attributes-valid_boolean-attributes-valid"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean-attributes-valid.css",
+   "./boolean-attributes-valid.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s2d8ffesnq",
+   "lwc-3s2d8ffesnq-host",
+   "x-boolean-attributes-valid_boolean-attributes-valid",
+   "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s2d8ffesnq"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean-attributes-valid.css",
+   "./boolean-attributes-valid.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s2d8ffesnq",
+   "lwc-3s2d8ffesnq-host",
+   "x-boolean-attributes-valid_boolean-attributes-valid",
+   "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s2d8ffesnq"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean-attributes-valid.css",
+   "./boolean-attributes-valid.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s2d8ffesnq",
+   "lwc-3s2d8ffesnq-host",
+   "x-boolean-attributes-valid_boolean-attributes-valid",
+   "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s2d8ffesnq"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean-attributes-valid.css",
+   "./boolean-attributes-valid.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s2d8ffesnq",
+   "lwc-3s2d8ffesnq-host",
+   "x-boolean-attributes-valid_boolean-attributes-valid",
+   "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s2d8ffesnq"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean-attributes-valid.css",
+   "./boolean-attributes-valid.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s2d8ffesnq",
+   "lwc-3s2d8ffesnq-host",
+   "x-boolean-attributes-valid_boolean-attributes-valid",
+   "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s2d8ffesnq"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean-attributes-valid.css",
+   "./boolean-attributes-valid.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s2d8ffesnq",
+   "lwc-3s2d8ffesnq-host",
+   "x-boolean-attributes-valid_boolean-attributes-valid",
+   "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s2d8ffesnq"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean-attributes-valid.css",
+   "./boolean-attributes-valid.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3s2d8ffesnq",
+   "lwc-3s2d8ffesnq-host",
+   "x-boolean-attributes-valid_boolean-attributes-valid",
+   "x-boolean-attributes-valid_boolean-attributes-valid-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3s2d8ffesnq"
+  }
+ }
+}

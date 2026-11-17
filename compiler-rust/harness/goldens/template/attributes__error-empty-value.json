@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./error-empty-value.css",
+    "./error-empty-value.scoped.css?scoped=true",
+    "foo/bar"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5kto7mbkvvs",
+    "lwc-5kto7mbkvvs-host",
+    "x-error-empty-value_error-empty-value",
+    "x-error-empty-value_error-empty-value-host"
+  ]
+}

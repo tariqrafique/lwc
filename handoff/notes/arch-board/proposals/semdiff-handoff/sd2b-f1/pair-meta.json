@@ -1,0 +1,7 @@
+{
+ "both": 359,
+ "byte_equal_bundles": 0,
+ "byte_differ_bundles": 359,
+ "only_js": [],
+ "only_rs": []
+}

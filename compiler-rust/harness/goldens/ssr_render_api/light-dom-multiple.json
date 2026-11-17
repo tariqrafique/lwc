@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <style id=\"lwc-style--0\" type=\"text/css\">\n    p {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <style id=\"lwc-style--1\" type=\"text/css\">\n    p {color: red;}\n  </style>\n  <lwc-style style-id=\"lwc-style--1\">\n  </lwc-style>\n  <p>\n    Hello\n  </p>\n  <x-one>\n    <style id=\"lwc-style--2\" type=\"text/css\">\n      p {color: saddlebrown;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <p>\n      one\n    </p>\n  </x-one>\n  <x-two>\n    <style id=\"lwc-style--3\" type=\"text/css\">\n      p {color: goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <p>\n      two\n    </p>\n  </x-two>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <style id=\"lwc-style--0\" type=\"text/css\">\n    p {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <style id=\"lwc-style--1\" type=\"text/css\">\n    p {color: red;}\n  </style>\n  <lwc-style style-id=\"lwc-style--1\">\n  </lwc-style>\n  <p>\n    Hello\n  </p>\n  <x-one>\n    <style id=\"lwc-style--2\" type=\"text/css\">\n      p {color: saddlebrown;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <p>\n      one\n    </p>\n  </x-one>\n  <x-two>\n    <style id=\"lwc-style--3\" type=\"text/css\">\n      p {color: goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <p>\n      two\n    </p>\n  </x-two>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <style id=\"lwc-style--0\" type=\"text/css\">\n    p {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <style id=\"lwc-style--1\" type=\"text/css\">\n    p {color: red;}\n  </style>\n  <lwc-style style-id=\"lwc-style--1\">\n  </lwc-style>\n  <p>\n    Hello\n  </p>\n  <x-one>\n    <style id=\"lwc-style--2\" type=\"text/css\">\n      p {color: saddlebrown;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <p>\n      one\n    </p>\n  </x-one>\n  <x-two>\n    <style id=\"lwc-style--3\" type=\"text/css\">\n      p {color: goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <p>\n      two\n    </p>\n  </x-two>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <style id=\"lwc-style--0\" type=\"text/css\">\n    p {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <style id=\"lwc-style--1\" type=\"text/css\">\n    p {color: red;}\n  </style>\n  <lwc-style style-id=\"lwc-style--1\">\n  </lwc-style>\n  <p>\n    Hello\n  </p>\n  <x-one>\n    <style id=\"lwc-style--2\" type=\"text/css\">\n      p {color: saddlebrown;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <p>\n      one\n    </p>\n  </x-one>\n  <x-two>\n    <style id=\"lwc-style--3\" type=\"text/css\">\n      p {color: goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <p>\n      two\n    </p>\n  </x-two>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <style id=\"lwc-style--0\" type=\"text/css\">\n    p {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <style id=\"lwc-style--1\" type=\"text/css\">\n    p {color: red;}\n  </style>\n  <lwc-style style-id=\"lwc-style--1\">\n  </lwc-style>\n  <p>\n    Hello\n  </p>\n  <x-one>\n    <style id=\"lwc-style--2\" type=\"text/css\">\n      p {color: saddlebrown;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <p>\n      one\n    </p>\n  </x-one>\n  <x-two>\n    <style id=\"lwc-style--3\" type=\"text/css\">\n      p {color: goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <p>\n      two\n    </p>\n  </x-two>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <style id=\"lwc-style--0\" type=\"text/css\">\n    p {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <style id=\"lwc-style--1\" type=\"text/css\">\n    p {color: red;}\n  </style>\n  <lwc-style style-id=\"lwc-style--1\">\n  </lwc-style>\n  <p>\n    Hello\n  </p>\n  <x-one>\n    <style id=\"lwc-style--2\" type=\"text/css\">\n      p {color: saddlebrown;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <p>\n      one\n    </p>\n  </x-one>\n  <x-two>\n    <style id=\"lwc-style--3\" type=\"text/css\">\n      p {color: goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <p>\n      two\n    </p>\n  </x-two>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <style id=\"lwc-style--0\" type=\"text/css\">\n    p {background-color: blue;}\n  </style>\n  <lwc-style style-id=\"lwc-style--0\">\n  </lwc-style>\n  <style id=\"lwc-style--1\" type=\"text/css\">\n    p {color: red;}\n  </style>\n  <lwc-style style-id=\"lwc-style--1\">\n  </lwc-style>\n  <p>\n    Hello\n  </p>\n  <x-one>\n    <style id=\"lwc-style--2\" type=\"text/css\">\n      p {color: saddlebrown;}\n    </style>\n    <lwc-style style-id=\"lwc-style--2\">\n    </lwc-style>\n    <p>\n      one\n    </p>\n  </x-one>\n  <x-two>\n    <style id=\"lwc-style--3\" type=\"text/css\">\n      p {color: goldenrod;}\n    </style>\n    <lwc-style style-id=\"lwc-style--3\">\n    </lwc-style>\n    <p>\n      two\n    </p>\n  </x-two>\n</fixture-test>"
+ }
+}

@@ -1,0 +1,412 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-outside-scope-reference.css",
+   "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5jakk9rc2bg",
+   "lwc-5jakk9rc2bg-host",
+   "x-template-outside-scope-reference_template-outside-scope-reference",
+   "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5jakk9rc2bg"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-outside-scope-reference.css",
+   "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5jakk9rc2bg",
+   "lwc-5jakk9rc2bg-host",
+   "x-template-outside-scope-reference_template-outside-scope-reference",
+   "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-template-outside-scope-reference_template-outside-scope-reference"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-outside-scope-reference.css",
+   "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5jakk9rc2bg",
+   "lwc-5jakk9rc2bg-host",
+   "x-template-outside-scope-reference_template-outside-scope-reference",
+   "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-template-outside-scope-reference_template-outside-scope-reference"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-outside-scope-reference.css",
+   "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5jakk9rc2bg",
+   "lwc-5jakk9rc2bg-host",
+   "x-template-outside-scope-reference_template-outside-scope-reference",
+   "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5jakk9rc2bg"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-outside-scope-reference.css",
+   "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5jakk9rc2bg",
+   "lwc-5jakk9rc2bg-host",
+   "x-template-outside-scope-reference_template-outside-scope-reference",
+   "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5jakk9rc2bg"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-outside-scope-reference.css",
+   "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5jakk9rc2bg",
+   "lwc-5jakk9rc2bg-host",
+   "x-template-outside-scope-reference_template-outside-scope-reference",
+   "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5jakk9rc2bg"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-outside-scope-reference.css",
+   "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5jakk9rc2bg",
+   "lwc-5jakk9rc2bg-host",
+   "x-template-outside-scope-reference_template-outside-scope-reference",
+   "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5jakk9rc2bg"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-outside-scope-reference.css",
+   "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5jakk9rc2bg",
+   "lwc-5jakk9rc2bg-host",
+   "x-template-outside-scope-reference_template-outside-scope-reference",
+   "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5jakk9rc2bg"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-outside-scope-reference.css",
+   "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5jakk9rc2bg",
+   "lwc-5jakk9rc2bg-host",
+   "x-template-outside-scope-reference_template-outside-scope-reference",
+   "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5jakk9rc2bg"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-outside-scope-reference.css",
+   "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5jakk9rc2bg",
+   "lwc-5jakk9rc2bg-host",
+   "x-template-outside-scope-reference_template-outside-scope-reference",
+   "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>",
+   "parseFragment:<p${3}>${\"t1\"}</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5jakk9rc2bg"
+  }
+ }
+}

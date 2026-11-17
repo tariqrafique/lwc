@@ -1,0 +1,422 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-with-for.css",
+   "./parent-with-for.scoped.css?scoped=true",
+   "x/list"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5cl44u45eun",
+   "lwc-5cl44u45eun-host",
+   "x-parent-with-for_parent-with-for",
+   "x-parent-with-for_parent-with-for-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "i",
+   "k",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5cl44u45eun"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-with-for.css",
+   "./parent-with-for.scoped.css?scoped=true",
+   "x/list"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5cl44u45eun",
+   "lwc-5cl44u45eun-host",
+   "x-parent-with-for_parent-with-for",
+   "x-parent-with-for_parent-with-for-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "i",
+   "k",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-parent-with-for_parent-with-for"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-with-for.css",
+   "./parent-with-for.scoped.css?scoped=true",
+   "x/list"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5cl44u45eun",
+   "lwc-5cl44u45eun-host",
+   "x-parent-with-for_parent-with-for",
+   "x-parent-with-for_parent-with-for-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "i",
+   "k",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-parent-with-for_parent-with-for"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-with-for.css",
+   "./parent-with-for.scoped.css?scoped=true",
+   "x/list"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5cl44u45eun",
+   "lwc-5cl44u45eun-host",
+   "x-parent-with-for_parent-with-for",
+   "x-parent-with-for_parent-with-for-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "i",
+   "k",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5cl44u45eun"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-with-for.css",
+   "./parent-with-for.scoped.css?scoped=true",
+   "x/list"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5cl44u45eun",
+   "lwc-5cl44u45eun-host",
+   "x-parent-with-for_parent-with-for",
+   "x-parent-with-for_parent-with-for-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "i",
+   "k",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5cl44u45eun"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-with-for.css",
+   "./parent-with-for.scoped.css?scoped=true",
+   "x/list"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5cl44u45eun",
+   "lwc-5cl44u45eun-host",
+   "x-parent-with-for_parent-with-for",
+   "x-parent-with-for_parent-with-for-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "i",
+   "k",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5cl44u45eun"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-with-for.css",
+   "./parent-with-for.scoped.css?scoped=true",
+   "x/list"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5cl44u45eun",
+   "lwc-5cl44u45eun-host",
+   "x-parent-with-for_parent-with-for",
+   "x-parent-with-for_parent-with-for-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "i",
+   "k",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5cl44u45eun"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-with-for.css",
+   "./parent-with-for.scoped.css?scoped=true",
+   "x/list"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5cl44u45eun",
+   "lwc-5cl44u45eun-host",
+   "x-parent-with-for_parent-with-for",
+   "x-parent-with-for_parent-with-for-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "i",
+   "k",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5cl44u45eun"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-with-for.css",
+   "./parent-with-for.scoped.css?scoped=true",
+   "x/list"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5cl44u45eun",
+   "lwc-5cl44u45eun-host",
+   "x-parent-with-for_parent-with-for",
+   "x-parent-with-for_parent-with-for-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "i",
+   "k",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5cl44u45eun"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent-with-for.css",
+   "./parent-with-for.scoped.css?scoped=true",
+   "x/list"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5cl44u45eun",
+   "lwc-5cl44u45eun-host",
+   "x-parent-with-for_parent-with-for",
+   "x-parent-with-for_parent-with-for-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "i",
+   "k",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5cl44u45eun"
+  }
+ }
+}

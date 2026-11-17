@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1108
+  ],
+  "message": "LWC1108: Invalid property name \"onChangeHandler\". Properties starting with \"on\" are reserved for event handlers."
+}

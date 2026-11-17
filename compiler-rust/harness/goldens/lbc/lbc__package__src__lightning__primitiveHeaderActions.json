@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\" shadowrootdelegatesfocus><style id=\"lwc-style--0\" type=\"text/css\">:host([data-render-mode=\"shadow\"]) .slds-th__action-button {position: absolute;transform: translateY(-50%);top: 50%;inset-inline-end: var(--slds-g-spacing-1, 0.25rem);}:host([data-render-mode=\"shadow\"]) .slds-th__action-button .slds-button {color: var(--slds-g-color-on-surface-3, #181818);}:host([data-render-mode=\"shadow\"]) .slds-th__action-button .slds-button:hover {background: transparent;}:host([data-render-mode=\"shadow\"]) .slds-th__action-button {inset-inline-end: var(--slds-g-spacing-3, 0.75rem);}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host([data-render-mode=\"shadow\"]) .slds-th__action-button {position: absolute;transform: translateY(-50%);top: 50%;inset-inline-end: var(--slds-g-spacing-1, 0.25rem);}:host([data-render-mode=\"shadow\"]) .slds-th__action-button .slds-button {color: var(--slds-g-color-on-surface-3, #181818);}:host([data-render-mode=\"shadow\"]) .slds-th__action-button .slds-button:hover {background: transparent;}:host([data-render-mode=\"shadow\"]) .slds-th__action-button {inset-inline-end: var(--slds-g-spacing-3, 0.75rem);}</style></template></lwc-lbc>"
+ }
+}

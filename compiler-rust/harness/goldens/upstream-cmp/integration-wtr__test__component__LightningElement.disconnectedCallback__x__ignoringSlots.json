@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">ignore slot content from parent</template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">ignore slot content from parent</template></lwc-up>"
+ },
+ "asyncErrors": [
+  "this.disconnect is not a function"
+ ]
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./numeric-literal-hex.css",
+    "./numeric-literal-hex.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5qbiqmmuenu",
+    "lwc-5qbiqmmuenu-host",
+    "x-numeric-literal-hex_numeric-literal-hex",
+    "x-numeric-literal-hex_numeric-literal-hex-host"
+  ]
+}

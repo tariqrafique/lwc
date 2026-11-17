@@ -1,0 +1,520 @@
+{
+ "value-ref": {
+  "code": 1104,
+  "location": {
+   "line": 2,
+   "column": 0,
+   "start": 52,
+   "length": 16
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1104: \"track\" can only be used as a class decorator"
+ },
+ "value-ref [rec]": {
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"track\" can only be used as a class decorator",
+    "location": {
+     "line": 2,
+     "column": 0,
+     "start": 52,
+     "length": 16
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@track\" can only be applied on class properties",
+    "location": {
+     "line": 1,
+     "column": 0,
+     "start": 0,
+     "length": 0
+    }
+   },
+   {
+    "code": 1108,
+    "message": "LWC1108: Invalid property name \"onBar\". Properties starting with \"on\" are reserved for event handlers.",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 124,
+     "length": 11
+    }
+   }
+  ]
+ },
+ "wire-arg-ref": "NO ERROR",
+ "wire-arg-ref [rec]": "NO ERROR",
+ "wire-config-ref": {
+  "code": 1104,
+  "location": {
+   "line": 4,
+   "column": 16,
+   "start": 152,
+   "length": 10
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1104: \"api\" can only be used as a class decorator"
+ },
+ "wire-config-ref [rec]": {
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"api\" can only be used as a class decorator",
+    "location": {
+     "line": 4,
+     "column": 16,
+     "start": 152,
+     "length": 10
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@api\" can only be applied on class properties",
+    "location": {
+     "line": 4,
+     "column": 3,
+     "start": 139,
+     "length": 24
+    }
+   }
+  ]
+ },
+ "class-decorator": {
+  "code": 1103,
+  "location": {
+   "line": 2,
+   "column": 0,
+   "start": 47,
+   "length": 61
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1103: \"@track\" can only be applied on class properties"
+ },
+ "class-decorator [rec]": {
+  "code": 1198,
+  "location": null,
+  "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: Decorators are not enabled."
+ },
+ "private-prop": {
+  "code": 1103,
+  "location": {
+   "line": 3,
+   "column": 2,
+   "start": 102,
+   "length": 14
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1103: \"@track\" can only be applied on class properties"
+ },
+ "private-prop [rec]": {
+  "errors": [
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@track\" can only be applied on class properties",
+    "location": {
+     "line": 3,
+     "column": 2,
+     "start": 102,
+     "length": 14
+    }
+   },
+   {
+    "code": 1101,
+    "message": "LWC1101: Invalid property of field type",
+    "location": {
+     "line": 3,
+     "column": 2,
+     "start": 102,
+     "length": 14
+    }
+   },
+   {
+    "code": 1113,
+    "message": "LWC1113: @track decorator can only be applied to class properties.",
+    "location": {
+     "line": 3,
+     "column": 2,
+     "start": 102,
+     "length": 6
+    }
+   }
+  ]
+ },
+ "export-spec": {
+  "code": 1104,
+  "location": {
+   "line": 2,
+   "column": 0,
+   "start": 45,
+   "length": 15
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1104: \"api\" can only be used as a class decorator"
+ },
+ "export-spec [rec]": {
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"api\" can only be used as a class decorator",
+    "location": {
+     "line": 2,
+     "column": 0,
+     "start": 45,
+     "length": 15
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@api\" can only be applied on class properties",
+    "location": {
+     "line": 1,
+     "column": 0,
+     "start": 0,
+     "length": 0
+    }
+   }
+  ]
+ },
+ "shadowed": "NO ERROR",
+ "shadowed [rec]": "NO ERROR",
+ "call-arg": {
+  "code": 1104,
+  "location": {
+   "line": 2,
+   "column": 0,
+   "start": 47,
+   "length": 11
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1104: \"track\" can only be used as a class decorator"
+ },
+ "call-arg [rec]": {
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"track\" can only be used as a class decorator",
+    "location": {
+     "line": 2,
+     "column": 0,
+     "start": 47,
+     "length": 11
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@track\" can only be applied on class properties",
+    "location": {
+     "line": 1,
+     "column": 0,
+     "start": 0,
+     "length": 0
+    }
+   }
+  ]
+ },
+ "member-decorator": {
+  "code": 1100,
+  "location": {
+   "line": 3,
+   "column": 2,
+   "start": 100,
+   "length": 11
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1100: Invalid decorator usage. Supported decorators (api, wire, track) should be imported from \"lwc\""
+ },
+ "member-decorator [rec]": {
+  "code": 1198,
+  "location": null,
+  "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: Decorators are not enabled."
+ },
+ "two-refs": {
+  "code": 1104,
+  "location": {
+   "line": 3,
+   "column": 0,
+   "start": 69,
+   "length": 14
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1104: \"api\" can only be used as a class decorator"
+ },
+ "two-refs [rec]": {
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"api\" can only be used as a class decorator",
+    "location": {
+     "line": 3,
+     "column": 0,
+     "start": 69,
+     "length": 14
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@api\" can only be applied on class properties",
+    "location": {
+     "line": 1,
+     "column": 0,
+     "start": 0,
+     "length": 0
+    }
+   },
+   {
+    "code": 1104,
+    "message": "LWC1104: \"track\" can only be used as a class decorator",
+    "location": {
+     "line": 2,
+     "column": 0,
+     "start": 52,
+     "length": 16
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@track\" can only be applied on class properties",
+    "location": {
+     "line": 1,
+     "column": 0,
+     "start": 0,
+     "length": 0
+    }
+   },
+   {
+    "code": 1108,
+    "message": "LWC1108: Invalid property name \"onBar\". Properties starting with \"on\" are reserved for event handlers.",
+    "location": {
+     "line": 5,
+     "column": 2,
+     "start": 139,
+     "length": 11
+    }
+   }
+  ]
+ },
+ "aliased": {
+  "code": 1007,
+  "location": null,
+  "message": "TypeError: LWC1007: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: Cannot read properties of undefined (reading 'referencePaths')"
+ },
+ "aliased [rec]": {
+  "code": 1007,
+  "location": null,
+  "message": "TypeError: LWC1007: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: Cannot read properties of undefined (reading 'referencePaths')"
+ },
+ "in-class-method": {
+  "code": 1104,
+  "location": {
+   "line": 4,
+   "column": 6,
+   "start": 114,
+   "length": 15
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1104: \"api\" can only be used as a class decorator"
+ },
+ "in-class-method [rec]": {
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"api\" can only be used as a class decorator",
+    "location": {
+     "line": 4,
+     "column": 6,
+     "start": 114,
+     "length": 15
+    }
+   }
+  ]
+ },
+ "private-api": {
+  "code": 1103,
+  "location": {
+   "line": 4,
+   "column": 2,
+   "start": 145,
+   "length": 8
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1103: \"@api\" can only be applied on class properties"
+ },
+ "private-api [rec]": {
+  "code": 1007,
+  "location": null,
+  "message": "TypeError: LWC1007: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: Cannot read properties of undefined (reading 'startsWith')"
+ },
+ "private-wire": {
+  "code": 1103,
+  "location": {
+   "line": 4,
+   "column": 2,
+   "start": 145,
+   "length": 17
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1103: \"@wire\" can only be applied on class properties"
+ },
+ "private-wire [rec]": {
+  "code": 1007,
+  "location": null,
+  "message": "TypeError: LWC1007: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: Property name expected type of string but got undefined"
+ },
+ "private-two": {
+  "code": 1103,
+  "location": {
+   "line": 4,
+   "column": 2,
+   "start": 145,
+   "length": 15
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1103: \"@api\" can only be applied on class properties"
+ },
+ "private-two [rec]": {
+  "code": 1007,
+  "location": null,
+  "message": "TypeError: LWC1007: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: Cannot read properties of undefined (reading 'startsWith')"
+ },
+ "arrow-ref": {
+  "code": 1104,
+  "location": {
+   "line": 3,
+   "column": 6,
+   "start": 96,
+   "length": 13
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1104: \"api\" can only be used as a class decorator"
+ },
+ "arrow-ref [rec]": {
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"api\" can only be used as a class decorator",
+    "location": {
+     "line": 3,
+     "column": 6,
+     "start": 96,
+     "length": 13
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@api\" can only be applied on class properties",
+    "location": {
+     "line": 3,
+     "column": 0,
+     "start": 90,
+     "length": 20
+    }
+   }
+  ]
+ },
+ "object-method-ref": {
+  "code": 1104,
+  "location": {
+   "line": 3,
+   "column": 16,
+   "start": 106,
+   "length": 16
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1104: \"wire\" can only be used as a class decorator"
+ },
+ "object-method-ref [rec]": {
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"wire\" can only be used as a class decorator",
+    "location": {
+     "line": 3,
+     "column": 16,
+     "start": 106,
+     "length": 16
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@wire\" can only be applied on class properties",
+    "location": {
+     "line": 3,
+     "column": 12,
+     "start": 102,
+     "length": 20
+    }
+   }
+  ]
+ },
+ "paren-ref": {
+  "code": 1104,
+  "location": {
+   "line": 3,
+   "column": 0,
+   "start": 90,
+   "length": 18
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1104: \"track\" can only be used as a class decorator"
+ },
+ "paren-ref [rec]": {
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"track\" can only be used as a class decorator",
+    "location": {
+     "line": 3,
+     "column": 0,
+     "start": 90,
+     "length": 18
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@track\" can only be applied on class properties",
+    "location": {
+     "line": 1,
+     "column": 0,
+     "start": 0,
+     "length": 0
+    }
+   }
+  ]
+ },
+ "class-expr-decorator": {
+  "code": 1103,
+  "location": {
+   "line": 3,
+   "column": 10,
+   "start": 100,
+   "length": 13
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1103: \"@api\" can only be applied on class properties"
+ },
+ "class-expr-decorator [rec]": {
+  "code": 1198,
+  "location": null,
+  "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: Decorators are not enabled."
+ },
+ "no-trailing-newline-value": {
+  "code": 1104,
+  "location": {
+   "line": 1,
+   "column": 0,
+   "start": 0,
+   "length": 110
+  },
+  "message": "SyntaxError: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/usage/test.js: LWC1104: \"track\" can only be used as a class decorator"
+ },
+ "no-trailing-newline-value [rec]": {
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"track\" can only be used as a class decorator",
+    "location": {
+     "line": 1,
+     "column": 0,
+     "start": 0,
+     "length": 110
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@track\" can only be applied on class properties",
+    "location": {
+     "line": 1,
+     "column": 0,
+     "start": 0,
+     "length": 110
+    }
+   }
+  ]
+ }
+}

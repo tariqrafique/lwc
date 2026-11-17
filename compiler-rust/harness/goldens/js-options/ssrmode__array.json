@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "name": "Error",
+  "codes": [],
+  "line": null,
+  "message": "Expected the value to be one of `[\"string\",\"number\",\"bigint\",\"boolean\",\"null\"]` but got a `array`. The value is [1,\"x\"]."
+}

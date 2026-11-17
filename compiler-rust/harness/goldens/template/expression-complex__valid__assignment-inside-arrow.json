@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./assignment-inside-arrow.css",
+    "./assignment-inside-arrow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-7uuiq9sbjjh",
+    "lwc-7uuiq9sbjjh-host",
+    "x-assignment-inside-arrow_assignment-inside-arrow",
+    "x-assignment-inside-arrow_assignment-inside-arrow-host"
+  ]
+}

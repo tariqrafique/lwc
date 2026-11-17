@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tag-with-namespace.css",
+   "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ed3iv0kbet",
+   "lwc-ed3iv0kbet-host",
+   "x-tag-with-namespace_tag-with-namespace",
+   "x-tag-with-namespace_tag-with-namespace-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Should not get custom renderer!<circle${\"a2:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"blue\"${3}></circle><use href=\"#myCircle\" x=\"10\" fill=\"blue\"${3}></use></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ed3iv0kbet"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tag-with-namespace.css",
+   "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ed3iv0kbet",
+   "lwc-ed3iv0kbet-host",
+   "x-tag-with-namespace_tag-with-namespace",
+   "x-tag-with-namespace_tag-with-namespace-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Should not get custom renderer!<circle${\"a2:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"blue\"${3}></circle><use href=\"#myCircle\" x=\"10\" fill=\"blue\"${3}></use></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-tag-with-namespace_tag-with-namespace"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tag-with-namespace.css",
+   "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ed3iv0kbet",
+   "lwc-ed3iv0kbet-host",
+   "x-tag-with-namespace_tag-with-namespace",
+   "x-tag-with-namespace_tag-with-namespace-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Should not get custom renderer!<circle${\"a2:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"blue\"${3}></circle><use href=\"#myCircle\" x=\"10\" fill=\"blue\"${3}></use></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-tag-with-namespace_tag-with-namespace"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tag-with-namespace.css",
+   "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ed3iv0kbet",
+   "lwc-ed3iv0kbet-host",
+   "x-tag-with-namespace_tag-with-namespace",
+   "x-tag-with-namespace_tag-with-namespace-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Should not get custom renderer!<circle${\"a2:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"blue\"${3}></circle><use href=\"#myCircle\" x=\"10\" fill=\"blue\"${3}></use></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ed3iv0kbet"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tag-with-namespace.css",
+   "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ed3iv0kbet",
+   "lwc-ed3iv0kbet-host",
+   "x-tag-with-namespace_tag-with-namespace",
+   "x-tag-with-namespace_tag-with-namespace-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Should not get custom renderer!<circle${\"a2:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"blue\"${3}></circle><use href=\"#myCircle\" x=\"10\" fill=\"blue\"${3}></use></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ed3iv0kbet"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tag-with-namespace.css",
+   "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ed3iv0kbet",
+   "lwc-ed3iv0kbet-host",
+   "x-tag-with-namespace_tag-with-namespace",
+   "x-tag-with-namespace_tag-with-namespace-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Should not get custom renderer!<circle${\"a2:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"blue\"${3}></circle><use href=\"#myCircle\" x=\"10\" fill=\"blue\"${3}></use></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ed3iv0kbet"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tag-with-namespace.css",
+   "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ed3iv0kbet",
+   "lwc-ed3iv0kbet-host",
+   "x-tag-with-namespace_tag-with-namespace",
+   "x-tag-with-namespace_tag-with-namespace-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Should not get custom renderer!<circle${\"a2:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"blue\"${3}></circle><use href=\"#myCircle\" x=\"10\" fill=\"blue\"${3}></use></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ed3iv0kbet"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tag-with-namespace.css",
+   "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ed3iv0kbet",
+   "lwc-ed3iv0kbet-host",
+   "x-tag-with-namespace_tag-with-namespace",
+   "x-tag-with-namespace_tag-with-namespace-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Should not get custom renderer!<circle${\"a2:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"blue\"${3}></circle><use href=\"#myCircle\" x=\"10\" fill=\"blue\"${3}></use></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ed3iv0kbet"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tag-with-namespace.css",
+   "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ed3iv0kbet",
+   "lwc-ed3iv0kbet-host",
+   "x-tag-with-namespace_tag-with-namespace",
+   "x-tag-with-namespace_tag-with-namespace-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Should not get custom renderer!<circle${\"a2:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"blue\"${3}></circle><use href=\"#myCircle\" x=\"10\" fill=\"blue\"${3}></use></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ed3iv0kbet"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tag-with-namespace.css",
+   "./tag-with-namespace.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ed3iv0kbet",
+   "lwc-ed3iv0kbet-host",
+   "x-tag-with-namespace_tag-with-namespace",
+   "x-tag-with-namespace_tag-with-namespace-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Should not get custom renderer!<circle${\"a2:id\"} cx=\"5\" cy=\"5\" r=\"4\" stroke=\"blue\"${3}></circle><use href=\"#myCircle\" x=\"10\" fill=\"blue\"${3}></use></span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ed3iv0kbet"
+  }
+ }
+}

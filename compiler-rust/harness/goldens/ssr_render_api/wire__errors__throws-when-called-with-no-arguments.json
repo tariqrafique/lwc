@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "compile",
+  "error": "LWC1092: @wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).",
+  "html": ""
+ },
+ "v57": {
+  "stage": "compile",
+  "error": "LWC1092: @wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).",
+  "html": ""
+ },
+ "v58": {
+  "stage": "compile",
+  "error": "LWC1092: @wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).",
+  "html": ""
+ },
+ "v59": {
+  "stage": "compile",
+  "error": "LWC1092: @wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).",
+  "html": ""
+ },
+ "v65": {
+  "stage": "compile",
+  "error": "LWC1092: @wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).",
+  "html": ""
+ },
+ "v66": {
+  "stage": "compile",
+  "error": "LWC1092: @wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).",
+  "html": ""
+ },
+ "v67": {
+  "stage": "compile",
+  "error": "LWC1092: @wire expects an adapter as first parameter. @wire(adapter: WireAdapter, config?: any).",
+  "html": ""
+ }
+}

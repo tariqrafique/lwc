@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./unkown-element.css",
+    "./unkown-element.scoped.css?scoped=true",
+    "x/customComponent"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1123,
+      "level": 2
+    },
+    {
+      "code": 1123,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-616604d1ker",
+    "lwc-616604d1ker-host",
+    "x-unkown-element_unkown-element",
+    "x-unkown-element_unkown-element-host"
+  ]
+}

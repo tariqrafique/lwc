@@ -1,0 +1,517 @@
+{
+ "api/duplicate-api-property": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1096,
+    "message": "LWC1096: Duplicate @api property \"duplicateProp\".",
+    "location": {
+     "line": 6,
+     "column": 2,
+     "start": 125,
+     "length": 4
+    }
+   },
+   {
+    "code": 1096,
+    "message": "LWC1096: Duplicate @api property \"duplicateProp\".",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 101,
+     "length": 4
+    }
+   }
+  ]
+ },
+ "api/invalid-boolean-public-property": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1099,
+    "message": "LWC1099: Boolean public property must default to false.",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 101,
+     "length": 24
+    }
+   }
+  ]
+ },
+ "api/invalid-property-name-on": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1108,
+    "message": "LWC1108: Invalid property name \"onClickHandler\". Properties starting with \"on\" are reserved for event handlers.",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 101,
+     "length": 22
+    }
+   }
+  ]
+ },
+ "api/invalid-propery-name-data": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1107,
+    "message": "LWC1107: Invalid property name \"dataProperty\". Properties starting with \"data\" are reserved attributes.",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 101,
+     "length": 20
+    }
+   }
+  ]
+ },
+ "api/reserved-property-name-class": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1102,
+    "message": "LWC1102: Invalid 'api' decorator usage. Supported decorators (api, wire, track) should be imported from \"lwc\"",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 102,
+     "length": 10
+    }
+   },
+   {
+    "code": 1110,
+    "message": "LWC1110: Invalid property name \"class\". \"class\" is a reserved attribute.",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 102,
+     "length": 10
+    }
+   }
+  ]
+ },
+ "dynamic-import/invalid-dynamic-import-source": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1121,
+    "message": "LWC1121: Invalid import. The argument \"123\" must be a stringLiteral for dynamic imports when strict mode is enabled.",
+    "location": {
+     "line": 5,
+     "column": 32,
+     "start": 152,
+     "length": 3
+    }
+   }
+  ]
+ },
+ "track/track-only-allowed-on-class-properties": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1113,
+    "message": "LWC1113: @track decorator can only be applied to class properties.",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 103,
+     "length": 6
+    }
+   }
+  ]
+ },
+ "wire/adapter-should-be-first-parameter": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1097,
+    "message": "LWC1097: @wire expects a function identifier as first parameter.",
+    "location": {
+     "line": 5,
+     "column": 8,
+     "start": 159,
+     "length": 25
+    }
+   },
+   {
+    "code": 1094,
+    "message": "LWC1094: @wire expects a configuration object expression as second parameter.",
+    "location": {
+     "line": 5,
+     "column": 35,
+     "start": 186,
+     "length": 9
+    }
+   }
+  ]
+ },
+ "wire/config-object-should-be-second-parameter": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1094,
+    "message": "LWC1094: @wire expects a configuration object expression as second parameter.",
+    "location": {
+     "line": 5,
+     "column": 19,
+     "start": 170,
+     "length": 9
+    }
+   }
+  ]
+ },
+ "wire/conflict-with-another-decorator": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1095,
+    "message": "LWC1095: @wire method or property cannot be used with @api",
+    "location": {
+     "line": 5,
+     "column": 2,
+     "start": 158,
+     "length": 43
+    }
+   }
+  ]
+ },
+ "wire/invalid-adapter": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1119,
+    "message": "LWC1119: Failed to resolve @wire adapter \"invalidConfig\". Ensure it is imported.",
+    "location": {
+     "line": 4,
+     "column": 8,
+     "start": 108,
+     "length": 13
+    }
+   }
+  ]
+ },
+ "wire/one-wire-decorator-allowed": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1105,
+    "message": "LWC1105: Method or property can only have 1 @wire decorator",
+    "location": {
+     "line": 5,
+     "column": 2,
+     "start": 153,
+     "length": 43
+    }
+   },
+   {
+    "code": 1105,
+    "message": "LWC1105: Method or property can only have 1 @wire decorator",
+    "location": {
+     "line": 6,
+     "column": 2,
+     "start": 199,
+     "length": 43
+    }
+   }
+  ]
+ },
+ "extra/multi-error": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1112,
+    "message": "LWC1112: @api get g and @api set g detected in class declaration. Only one of the two needs to be decorated with @api.",
+    "location": {
+     "line": 12,
+     "column": 2,
+     "start": 311,
+     "length": 16
+    }
+   },
+   {
+    "code": 1096,
+    "message": "LWC1096: Duplicate @api property \"dup\".",
+    "location": {
+     "line": 5,
+     "column": 2,
+     "start": 176,
+     "length": 4
+    }
+   },
+   {
+    "code": 1096,
+    "message": "LWC1096: Duplicate @api property \"dup\".",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 164,
+     "length": 4
+    }
+   },
+   {
+    "code": 1096,
+    "message": "LWC1096: Duplicate @api property \"g\".",
+    "location": {
+     "line": 12,
+     "column": 2,
+     "start": 311,
+     "length": 4
+    }
+   },
+   {
+    "code": 1096,
+    "message": "LWC1096: Duplicate @api property \"g\".",
+    "location": {
+     "line": 11,
+     "column": 2,
+     "start": 282,
+     "length": 4
+    }
+   },
+   {
+    "code": 1097,
+    "message": "LWC1097: @wire expects a function identifier as first parameter.",
+    "location": {
+     "line": 9,
+     "column": 8,
+     "start": 225,
+     "length": 9
+    }
+   },
+   {
+    "code": 1095,
+    "message": "LWC1095: @wire method or property cannot be used with @api",
+    "location": {
+     "line": 10,
+     "column": 2,
+     "start": 242,
+     "length": 26
+    }
+   },
+   {
+    "code": 1113,
+    "message": "LWC1113: @track decorator can only be applied to class properties.",
+    "location": {
+     "line": 7,
+     "column": 2,
+     "start": 201,
+     "length": 6
+    }
+   },
+   {
+    "code": 1121,
+    "message": "LWC1121: Invalid import. The argument \"this.x\" must be a stringLiteral for dynamic imports when strict mode is enabled.",
+    "location": {
+     "line": 13,
+     "column": 25,
+     "start": 353,
+     "length": 6
+    }
+   }
+  ]
+ },
+ "extra/1212-decorated-private-method": {
+  "name": "Error",
+  "ctor": "CompilerError",
+  "message": "TypeError: LWC1007: /workspace/notes/lwc-rust-migrate/proofs/recovery-errors/test.js: Cannot read properties of undefined (reading 'startsWith')",
+  "code": 1007,
+  "errors": null
+ },
+ "extra/import-before-and-between-classes": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1121,
+    "message": "LWC1121: Invalid import. The argument \"someVar\" must be a stringLiteral for dynamic imports when strict mode is enabled.",
+    "location": {
+     "line": 2,
+     "column": 21,
+     "start": 72,
+     "length": 7
+    }
+   },
+   {
+    "code": 1108,
+    "message": "LWC1108: Invalid property name \"onFoo\". Properties starting with \"on\" are reserved for event handlers.",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 119,
+     "length": 11
+    }
+   },
+   {
+    "code": 1121,
+    "message": "LWC1121: Invalid import. The argument \"1\" must be a stringLiteral for dynamic imports when strict mode is enabled.",
+    "location": {
+     "line": 5,
+     "column": 24,
+     "start": 155,
+     "length": 1
+    }
+   },
+   {
+    "code": 1121,
+    "message": "LWC1121: Invalid import. The argument \"other\" must be a stringLiteral for dynamic imports when strict mode is enabled.",
+    "location": {
+     "line": 7,
+     "column": 19,
+     "start": 182,
+     "length": 5
+    }
+   },
+   {
+    "code": 1107,
+    "message": "LWC1107: Invalid property name \"dataX\". Properties starting with \"data\" are reserved attributes.",
+    "location": {
+     "line": 10,
+     "column": 2,
+     "start": 261,
+     "length": 11
+    }
+   },
+   {
+    "code": 1097,
+    "message": "LWC1097: @wire expects a function identifier as first parameter.",
+    "location": {
+     "line": 9,
+     "column": 8,
+     "start": 251,
+     "length": 3
+    }
+   }
+  ]
+ },
+ "extra/decorator-used-as-value": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1104,
+    "message": "LWC1104: \"track\" can only be used as a class decorator",
+    "location": {
+     "line": 2,
+     "column": 0,
+     "start": 52,
+     "length": 16
+    }
+   },
+   {
+    "code": 1103,
+    "message": "LWC1103: \"@track\" can only be applied on class properties",
+    "location": {
+     "line": 1,
+     "column": 0,
+     "start": 0,
+     "length": 0
+    }
+   },
+   {
+    "code": 1108,
+    "message": "LWC1108: Invalid property name \"onBar\". Properties starting with \"on\" are reserved for event handlers.",
+    "location": {
+     "line": 4,
+     "column": 2,
+     "start": 124,
+     "length": 11
+    }
+   },
+   {
+    "code": 1121,
+    "message": "LWC1121: Invalid import. The argument \"this.y\" must be a stringLiteral for dynamic imports when strict mode is enabled.",
+    "location": {
+     "line": 5,
+     "column": 25,
+     "start": 161,
+     "length": 6
+    }
+   }
+  ]
+ },
+ "extra/epm-renamed-same-line": {
+  "name": "AggregateError",
+  "ctor": "CompilerAggregateError",
+  "message": "Multiple errors occurred during compilation.",
+  "code": null,
+  "errors": [
+   {
+    "code": 1107,
+    "message": "LWC1107: Invalid property name \"dataQ\". Properties starting with \"data\" are reserved attributes.",
+    "location": {
+     "line": 3,
+     "column": 54,
+     "start": 158,
+     "length": 11
+    }
+   },
+   {
+    "code": 1097,
+    "message": "LWC1097: @wire expects a function identifier as first parameter.",
+    "location": {
+     "line": 3,
+     "column": 43,
+     "start": 147,
+     "length": 6
+    }
+   },
+   {
+    "code": 1121,
+    "message": "LWC1121: Invalid import. The argument \"this.__lwc_component_class_internal_private_a()\" must be a stringLiteral for dynamic imports when strict mode is enabled.",
+    "location": {
+     "line": 4,
+     "column": 23,
+     "start": 193,
+     "length": 9
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-inert.css",
+    "./attribute-inert.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3qsl00mbun",
+    "lwc-3qsl00mbun-host",
+    "x-attribute-inert_attribute-inert",
+    "x-attribute-inert_attribute-inert-host"
+  ]
+}

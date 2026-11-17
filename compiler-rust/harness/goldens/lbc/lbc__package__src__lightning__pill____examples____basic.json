@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-vertical_medium\"><p>Info: <span class=\"slds-text-heading_small\">‍</span></p></div><lightning-pill><template shadowrootmode=\"open\"></template></lightning-pill><lightning-pill><template shadowrootmode=\"open\"></template></lightning-pill></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-vertical_medium\"><p>Info: <span class=\"slds-text-heading_small\"></span></p></div><lightning-pill><template shadowrootmode=\"open\"></template></lightning-pill><lightning-pill><template shadowrootmode=\"open\"></template></lightning-pill></template></lwc-lbc>"
+ }
+}

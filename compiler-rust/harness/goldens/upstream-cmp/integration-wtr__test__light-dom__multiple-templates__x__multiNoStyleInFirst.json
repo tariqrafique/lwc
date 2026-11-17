@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><div class=\"red\">a</div></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><div class=\"red\">a</div></lwc-up>"
+ }
+}

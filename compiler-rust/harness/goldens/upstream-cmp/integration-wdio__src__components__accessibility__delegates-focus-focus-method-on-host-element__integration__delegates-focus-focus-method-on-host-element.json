@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><input><integration-button class=\"negative\" tabindex=\"-1\"><template shadowrootmode=\"open\"></template></integration-button><integration-button class=\"zero\" tabindex=\"0\"><template shadowrootmode=\"open\"></template></integration-button><integration-button class=\"none\"><template shadowrootmode=\"open\"></template></integration-button></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><input><integration-button class=\"negative\" tabindex=\"-1\"><template shadowrootmode=\"open\"></template></integration-button><integration-button class=\"zero\" tabindex=\"0\"><template shadowrootmode=\"open\"></template></integration-button><integration-button class=\"none\"><template shadowrootmode=\"open\"></template></integration-button></template></lwc-up>"
+ }
+}

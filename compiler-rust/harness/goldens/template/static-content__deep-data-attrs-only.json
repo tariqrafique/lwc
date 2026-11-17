@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./deep-data-attrs-only.css",
+    "./deep-data-attrs-only.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4vkge12a0vo",
+    "lwc-4vkge12a0vo-host",
+    "x-deep-data-attrs-only_deep-data-attrs-only",
+    "x-deep-data-attrs-only_deep-data-attrs-only-host"
+  ]
+}

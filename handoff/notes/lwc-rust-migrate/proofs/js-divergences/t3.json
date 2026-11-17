@@ -1,0 +1,142 @@
+[
+ {
+  "name": "anon-api-pm",
+  "src": "export default class { #m() {} @api x; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "anon-api-pm-off",
+  "src": "export default class { #m() {} @api x; }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "anon-api-pm-after",
+  "src": "export default class { @api x; #m() {} }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "anon-api-pm-after-off",
+  "src": "export default class { @api x; #m() {} }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "anon-api-pm-ml",
+  "src": "export default class {\n  #m() { return 1; }\n  #n() {}\n  @api x;\n}",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "anon-api-pm-ml-off",
+  "src": "export default class {\n  #m() { return 1; }\n  #n() {}\n  @api x;\n}",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "anon-foo-pm",
+  "src": "export default class { #m() {} @foo x; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "anon-foo-pm-off",
+  "src": "export default class { #m() {} @foo x; }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "anon-api-pf-pm",
+  "src": "export default class { #m() {} #f = 1; @api x; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "anon-api-pf-pm-off",
+  "src": "export default class { #m() {} #f = 1; @api x; }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "nosuper-api-pm-use",
+  "src": "export default class A { #m() {} @api x; y() { this.#m(); } }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "nosuper-api-pm-use-off",
+  "src": "export default class A { #m() {} @api x; y() { this.#m(); } }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "two-cls",
+  "src": "class B { #a() {} }\nexport default class { #m() {} @api x; }",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "two-cls-off",
+  "src": "class B { #a() {} }\nexport default class { #m() {} @api x; }",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "pm-before-cls",
+  "src": "class B { #a() {} #b() { this.#a(); } }\nclass C { @api x; }\nexport default B;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "pm-before-cls-off",
+  "src": "class B { #a() {} #b() { this.#a(); } }\nclass C { @api x; }\nexport default B;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "cls-deco",
+  "src": "@foo class B { #a() {} }\nexport default B;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "cls-deco-off",
+  "src": "@foo class B { #a() {} }\nexport default B;",
+  "filename": "foo.js",
+  "opts": {}
+ },
+ {
+  "name": "cls-deco-long",
+  "src": "class Z { #aaaaaaaaaaaa() {} }\n@foo class B { x() {} }\nexport default B;",
+  "filename": "foo.js",
+  "opts": {
+   "enablePrivateMethods": true
+  }
+ },
+ {
+  "name": "cls-deco-long-off",
+  "src": "class Z { #aaaaaaaaaaaa() {} }\n@foo class B { x() {} }\nexport default B;",
+  "filename": "foo.js",
+  "opts": {}
+ }
+]

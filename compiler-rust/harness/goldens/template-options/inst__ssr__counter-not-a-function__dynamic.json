@@ -1,0 +1,12 @@
+{
+  "calls": [],
+  "ok": false,
+  "callbackThrew": false,
+  "identical": false,
+  "type": "object",
+  "name": "TypeError",
+  "message": "ctx.instrumentation?.incrementCounter is not a function",
+  "lwcCode": null,
+  "code": null,
+  "level": null
+}

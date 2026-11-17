@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "h1[x] {text-decoration: underline;}",
+        "x|host=false|dir=true": "h1[x] {text-decoration: underline;}",
+        "x|host=false|dir=false": "h1[x] {text-decoration: underline;}",
+        "x|host=true|dir=true": "h1[x] {text-decoration: underline;}",
+        "-|host=true|dir=false": "h1 {text-decoration: underline;}"
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+# pretty-equal allowlist (D-0292). One case id per line, then a tab, then the
+# sorted comma-separated hunk classes still observed for that case.
+# Shrink only: a listed case that is now identical, or a listed class that is
+# gone, fails until the line is removed. An unlisted differing case fails.
+# Both-sides compile failure is not listed. One-side failure is compile-one-side.
+# Literal spelling (numeric-spelling, string-raw) is not allowlisted.

@@ -1,0 +1,54 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/delegates-focus/delegates-focus.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./delegates-focus.css",
+        "./delegates-focus.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-7vbcie3mq1l",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/delegates-focus/delegates-focus.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./delegates-focus.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-delegates-focus",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

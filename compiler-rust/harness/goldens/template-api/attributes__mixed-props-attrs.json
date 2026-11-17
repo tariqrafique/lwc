@@ -1,0 +1,427 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-props-attrs.css",
+   "./mixed-props-attrs.scoped.css?scoped=true",
+   "ns/foo",
+   "ns/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-cfdictrqeg",
+   "lwc-cfdictrqeg-host",
+   "x-mixed-props-attrs_mixed-props-attrs",
+   "x-mixed-props-attrs_mixed-props-attrs-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a class=\"test${0}\" data-foo=\"datafoo\" aria-hidden=\"h\" role=\"presentation\" href=\"/foo\" title=\"test\" tabindex=\"-1\"${2}></a>",
+   "parseFragment:<svg class=\"cubano${0}\" focusable=\"true\"${2}><use${\"a1:xlink:href\"}${3}/></svg>",
+   "parseFragment:<table bgcolor=\"x\"${3}></table>",
+   "parseFragment:<div${\"c0\"} aria-hidden=\"hidden\"${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-cfdictrqeg"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-props-attrs.css",
+   "./mixed-props-attrs.scoped.css?scoped=true",
+   "ns/foo",
+   "ns/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-cfdictrqeg",
+   "lwc-cfdictrqeg-host",
+   "x-mixed-props-attrs_mixed-props-attrs",
+   "x-mixed-props-attrs_mixed-props-attrs-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a class=\"test${0}\" data-foo=\"datafoo\" aria-hidden=\"h\" role=\"presentation\" href=\"/foo\" title=\"test\" tabindex=\"-1\"${2}></a>",
+   "parseFragment:<table bgcolor=\"x\"${3}></table>",
+   "parseFragment:<div${\"c0\"} aria-hidden=\"hidden\"${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-mixed-props-attrs_mixed-props-attrs"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-props-attrs.css",
+   "./mixed-props-attrs.scoped.css?scoped=true",
+   "ns/foo",
+   "ns/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-cfdictrqeg",
+   "lwc-cfdictrqeg-host",
+   "x-mixed-props-attrs_mixed-props-attrs",
+   "x-mixed-props-attrs_mixed-props-attrs-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid",
+   "h",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a class=\"test${0}\" data-foo=\"datafoo\" aria-hidden=\"h\" role=\"presentation\" href=\"/foo\" title=\"test\" tabindex=\"-1\"${2}></a>",
+   "parseFragment:<table bgcolor=\"x\"${3}></table>",
+   "parseFragment:<div${\"c0\"} aria-hidden=\"hidden\"${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-mixed-props-attrs_mixed-props-attrs"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-props-attrs.css",
+   "./mixed-props-attrs.scoped.css?scoped=true",
+   "ns/foo",
+   "ns/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-cfdictrqeg",
+   "lwc-cfdictrqeg-host",
+   "x-mixed-props-attrs_mixed-props-attrs",
+   "x-mixed-props-attrs_mixed-props-attrs-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a class=\"test${0}\" data-foo=\"datafoo\" aria-hidden=\"h\" role=\"presentation\" href=\"/foo\" title=\"test\" tabindex=\"-1\"${2}></a>",
+   "parseFragment:<svg class=\"cubano${0}\" focusable=\"true\"${2}><use${\"a1:xlink:href\"}${3}/></svg>",
+   "parseFragment:<table bgcolor=\"x\"${3}></table>",
+   "parseFragment:<div${\"c0\"} aria-hidden=\"hidden\"${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-cfdictrqeg"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-props-attrs.css",
+   "./mixed-props-attrs.scoped.css?scoped=true",
+   "ns/foo",
+   "ns/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-cfdictrqeg",
+   "lwc-cfdictrqeg-host",
+   "x-mixed-props-attrs_mixed-props-attrs",
+   "x-mixed-props-attrs_mixed-props-attrs-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a class=\"test${0}\" data-foo=\"datafoo\" aria-hidden=\"h\" role=\"presentation\" href=\"/foo\" title=\"test\" tabindex=\"-1\"${2}></a>",
+   "parseFragment:<svg class=\"cubano${0}\" focusable=\"true\"${2}><use${\"a1:xlink:href\"}${3}/></svg>",
+   "parseFragment:<table bgcolor=\"x\"${3}></table>",
+   "parseFragment:<div${\"c0\"} aria-hidden=\"hidden\"${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-cfdictrqeg"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-props-attrs.css",
+   "./mixed-props-attrs.scoped.css?scoped=true",
+   "ns/foo",
+   "ns/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-cfdictrqeg",
+   "lwc-cfdictrqeg-host",
+   "x-mixed-props-attrs_mixed-props-attrs",
+   "x-mixed-props-attrs_mixed-props-attrs-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a class=\"test${0}\" data-foo=\"datafoo\" aria-hidden=\"h\" role=\"presentation\" href=\"/foo\" title=\"test\" tabindex=\"-1\"${2}></a>",
+   "parseFragment:<svg class=\"cubano${0}\" focusable=\"true\"${2}><use${\"a1:xlink:href\"}${3}/></svg>",
+   "parseFragment:<table bgcolor=\"x\"${3}></table>",
+   "parseFragment:<div${\"c0\"} aria-hidden=\"hidden\"${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-cfdictrqeg"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-props-attrs.css",
+   "./mixed-props-attrs.scoped.css?scoped=true",
+   "ns/foo",
+   "ns/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-cfdictrqeg",
+   "lwc-cfdictrqeg-host",
+   "x-mixed-props-attrs_mixed-props-attrs",
+   "x-mixed-props-attrs_mixed-props-attrs-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a class=\"test${0}\" data-foo=\"datafoo\" aria-hidden=\"h\" role=\"presentation\" href=\"/foo\" title=\"test\" tabindex=\"-1\"${2}></a>",
+   "parseFragment:<svg class=\"cubano${0}\" focusable=\"true\"${2}><use${\"a1:xlink:href\"}${3}/></svg>",
+   "parseFragment:<table bgcolor=\"x\"${3}></table>",
+   "parseFragment:<div${\"c0\"} aria-hidden=\"hidden\"${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-cfdictrqeg"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-props-attrs.css",
+   "./mixed-props-attrs.scoped.css?scoped=true",
+   "ns/foo",
+   "ns/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-cfdictrqeg",
+   "lwc-cfdictrqeg-host",
+   "x-mixed-props-attrs_mixed-props-attrs",
+   "x-mixed-props-attrs_mixed-props-attrs-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a class=\"test${0}\" data-foo=\"datafoo\" aria-hidden=\"h\" role=\"presentation\" href=\"/foo\" title=\"test\" tabindex=\"-1\"${2}></a>",
+   "parseFragment:<svg class=\"cubano${0}\" focusable=\"true\"${2}><use${\"a1:xlink:href\"}${3}/></svg>",
+   "parseFragment:<table bgcolor=\"x\"${3}></table>",
+   "parseFragment:<div${\"c0\"} aria-hidden=\"hidden\"${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-cfdictrqeg"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-props-attrs.css",
+   "./mixed-props-attrs.scoped.css?scoped=true",
+   "ns/foo",
+   "ns/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-cfdictrqeg",
+   "lwc-cfdictrqeg-host",
+   "x-mixed-props-attrs_mixed-props-attrs",
+   "x-mixed-props-attrs_mixed-props-attrs-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a class=\"test${0}\" data-foo=\"datafoo\" aria-hidden=\"h\" role=\"presentation\" href=\"/foo\" title=\"test\" tabindex=\"-1\"${2}></a>",
+   "parseFragment:<svg class=\"cubano${0}\" focusable=\"true\"${2}><use${\"a1:xlink:href\"}${3}/></svg>",
+   "parseFragment:<table bgcolor=\"x\"${3}></table>",
+   "parseFragment:<div${\"c0\"} aria-hidden=\"hidden\"${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-cfdictrqeg"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-props-attrs.css",
+   "./mixed-props-attrs.scoped.css?scoped=true",
+   "ns/foo",
+   "ns/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-cfdictrqeg",
+   "lwc-cfdictrqeg-host",
+   "x-mixed-props-attrs_mixed-props-attrs",
+   "x-mixed-props-attrs_mixed-props-attrs-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "gid",
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<a class=\"test${0}\" data-foo=\"datafoo\" aria-hidden=\"h\" role=\"presentation\" href=\"/foo\" title=\"test\" tabindex=\"-1\"${2}></a>",
+   "parseFragment:<svg class=\"cubano${0}\" focusable=\"true\"${2}><use${\"a1:xlink:href\"}${3}/></svg>",
+   "parseFragment:<table bgcolor=\"x\"${3}></table>",
+   "parseFragment:<div${\"c0\"} aria-hidden=\"hidden\"${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-cfdictrqeg"
+  }
+ }
+}

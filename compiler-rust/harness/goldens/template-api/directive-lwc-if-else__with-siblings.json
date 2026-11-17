@@ -1,0 +1,527 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./with-siblings.css",
+   "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-17drfojvaju",
+   "lwc-17drfojvaju-host",
+   "x-with-siblings_with-siblings",
+   "x-with-siblings_with-siblings-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "ncls",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Happy days!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>stranger</h1>",
+   "parseFragment:<h1${3}>things</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>hello</h1>",
+   "parseFragment:<h1${3}>world!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-17drfojvaju"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./with-siblings.css",
+   "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-17drfojvaju",
+   "lwc-17drfojvaju-host",
+   "x-with-siblings_with-siblings",
+   "x-with-siblings_with-siblings-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Happy days!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>stranger</h1>",
+   "parseFragment:<h1${3}>things</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>hello</h1>",
+   "parseFragment:<h1${3}>world!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-with-siblings_with-siblings"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./with-siblings.css",
+   "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-17drfojvaju",
+   "lwc-17drfojvaju-host",
+   "x-with-siblings_with-siblings",
+   "x-with-siblings_with-siblings-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Happy days!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>stranger</h1>",
+   "parseFragment:<h1${3}>things</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>hello</h1>",
+   "parseFragment:<h1${3}>world!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-with-siblings_with-siblings"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./with-siblings.css",
+   "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-17drfojvaju",
+   "lwc-17drfojvaju-host",
+   "x-with-siblings_with-siblings",
+   "x-with-siblings_with-siblings-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Happy days!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>stranger</h1>",
+   "parseFragment:<h1${3}>things</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>hello</h1>",
+   "parseFragment:<h1${3}>world!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-17drfojvaju"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./with-siblings.css",
+   "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-17drfojvaju",
+   "lwc-17drfojvaju-host",
+   "x-with-siblings_with-siblings",
+   "x-with-siblings_with-siblings-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Happy days!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>stranger</h1>",
+   "parseFragment:<h1${3}>things</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>hello</h1>",
+   "parseFragment:<h1${3}>world!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-17drfojvaju"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./with-siblings.css",
+   "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-17drfojvaju",
+   "lwc-17drfojvaju-host",
+   "x-with-siblings_with-siblings",
+   "x-with-siblings_with-siblings-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Happy days!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>stranger</h1>",
+   "parseFragment:<h1${3}>things</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>hello</h1>",
+   "parseFragment:<h1${3}>world!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-17drfojvaju"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./with-siblings.css",
+   "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-17drfojvaju",
+   "lwc-17drfojvaju-host",
+   "x-with-siblings_with-siblings",
+   "x-with-siblings_with-siblings-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "ncls",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Happy days!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>stranger</h1>",
+   "parseFragment:<h1${3}>things</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>hello</h1>",
+   "parseFragment:<h1${3}>world!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-17drfojvaju"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./with-siblings.css",
+   "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-17drfojvaju",
+   "lwc-17drfojvaju-host",
+   "x-with-siblings_with-siblings",
+   "x-with-siblings_with-siblings-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "ncls",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Happy days!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>stranger</h1>",
+   "parseFragment:<h1${3}>things</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>hello</h1>",
+   "parseFragment:<h1${3}>world!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-17drfojvaju"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./with-siblings.css",
+   "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-17drfojvaju",
+   "lwc-17drfojvaju-host",
+   "x-with-siblings_with-siblings",
+   "x-with-siblings_with-siblings-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "ncls",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Happy days!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>stranger</h1>",
+   "parseFragment:<h1${3}>things</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>hello</h1>",
+   "parseFragment:<h1${3}>world!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-17drfojvaju"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./with-siblings.css",
+   "./with-siblings.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-17drfojvaju",
+   "lwc-17drfojvaju-host",
+   "x-with-siblings_with-siblings",
+   "x-with-siblings_with-siblings-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "ncls",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>Happy days!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>stranger</h1>",
+   "parseFragment:<h1${3}>things</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>",
+   "parseFragment:<h1${3}>hello</h1>",
+   "parseFragment:<h1${3}>world!</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${3}>Dynamic attribute</h1>",
+   "parseFragment:<h1${\"c0\"}${2}>Dynamic class</h1>",
+   "parseFragment:<h1${\"s0\"}${3}>Dynamic style</h1>",
+   "parseFragment:<h1${\"a0:data-dynamic\"}${\"c0\"}${\"s0\"}${2}>Dynamic combination</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-17drfojvaju"
+  }
+ }
+}

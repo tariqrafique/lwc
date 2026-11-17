@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./member-expr.css",
+    "./member-expr.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2a1sbir7isn",
+    "lwc-2a1sbir7isn-host",
+    "x-member-expr_member-expr",
+    "x-member-expr_member-expr-host"
+  ]
+}

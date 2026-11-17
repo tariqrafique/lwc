@@ -1,0 +1,18 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1170
+  ],
+  "line": 2,
+  "errors": [
+    1170
+  ],
+  "message": "LWC1170: Invalid lwc:slot-bind usage on element <slot>. The directive binding must be an expression."
+}

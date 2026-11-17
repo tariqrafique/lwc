@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-tabset><template shadowrootmode=\"open\"></template><lightning-tab><template shadowrootmode=\"open\"></template>Tab Content 0</lightning-tab><lightning-tab><template shadowrootmode=\"open\"></template>Tab Content 1</lightning-tab><lightning-tab><template shadowrootmode=\"open\"></template>Tab Content 2</lightning-tab></lightning-tabset><lightning-formatted-text><template shadowrootmode=\"open\"></template></lightning-formatted-text></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-tabset><template shadowrootmode=\"open\"></template><lightning-tab><template shadowrootmode=\"open\"></template>Tab Content 0</lightning-tab><lightning-tab><template shadowrootmode=\"open\"></template>Tab Content 1</lightning-tab><lightning-tab><template shadowrootmode=\"open\"></template>Tab Content 2</lightning-tab></lightning-tabset><lightning-formatted-text><template shadowrootmode=\"open\"></template></lightning-formatted-text></template></lwc-lbc>"
+ }
+}

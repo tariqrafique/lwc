@@ -1,0 +1,64 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/overwrite-properties/overwrite-properties.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./overwrite-properties.css",
+        "./overwrite-properties.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-11055soke37",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/overwrite-properties/overwrite-properties.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./overwrite-properties.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-overwrite-properties",
+          "publicProps": [
+            "name",
+            "namespace",
+            "type",
+            "parent",
+            "value",
+            "shadowRoot",
+            "children",
+            "attributes",
+            "eventListeners"
+          ],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

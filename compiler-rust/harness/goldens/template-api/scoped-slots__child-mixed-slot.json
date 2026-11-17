@@ -1,0 +1,305 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-mixed-slot.css",
+   "./child-mixed-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-75jblr64tev",
+   "lwc-75jblr64tev-host",
+   "x-child-mixed-slot_child-mixed-slot",
+   "x-child-mixed-slot_child-mixed-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-75jblr64tev"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-mixed-slot.css",
+   "./child-mixed-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-75jblr64tev",
+   "lwc-75jblr64tev-host",
+   "x-child-mixed-slot_child-mixed-slot",
+   "x-child-mixed-slot_child-mixed-slot-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-child-mixed-slot_child-mixed-slot"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-mixed-slot.css",
+   "./child-mixed-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-75jblr64tev",
+   "lwc-75jblr64tev-host",
+   "x-child-mixed-slot_child-mixed-slot",
+   "x-child-mixed-slot_child-mixed-slot-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-child-mixed-slot_child-mixed-slot"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-mixed-slot.css",
+   "./child-mixed-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-75jblr64tev",
+   "lwc-75jblr64tev-host",
+   "x-child-mixed-slot_child-mixed-slot",
+   "x-child-mixed-slot_child-mixed-slot-host"
+  ],
+  "apiHelpers": [
+   "f",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-75jblr64tev"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-mixed-slot.css",
+   "./child-mixed-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-75jblr64tev",
+   "lwc-75jblr64tev-host",
+   "x-child-mixed-slot_child-mixed-slot",
+   "x-child-mixed-slot_child-mixed-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-75jblr64tev"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-mixed-slot.css",
+   "./child-mixed-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-75jblr64tev",
+   "lwc-75jblr64tev-host",
+   "x-child-mixed-slot_child-mixed-slot",
+   "x-child-mixed-slot_child-mixed-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-75jblr64tev"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-mixed-slot.css",
+   "./child-mixed-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-75jblr64tev",
+   "lwc-75jblr64tev-host",
+   "x-child-mixed-slot_child-mixed-slot",
+   "x-child-mixed-slot_child-mixed-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-75jblr64tev"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-mixed-slot.css",
+   "./child-mixed-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-75jblr64tev",
+   "lwc-75jblr64tev-host",
+   "x-child-mixed-slot_child-mixed-slot",
+   "x-child-mixed-slot_child-mixed-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-75jblr64tev"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-mixed-slot.css",
+   "./child-mixed-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-75jblr64tev",
+   "lwc-75jblr64tev-host",
+   "x-child-mixed-slot_child-mixed-slot",
+   "x-child-mixed-slot_child-mixed-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-75jblr64tev"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./child-mixed-slot.css",
+   "./child-mixed-slot.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-75jblr64tev",
+   "lwc-75jblr64tev-host",
+   "x-child-mixed-slot_child-mixed-slot",
+   "x-child-mixed-slot_child-mixed-slot-host"
+  ],
+  "apiHelpers": [
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-75jblr64tev"
+  }
+ }
+}

@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./tagname-no-attributes.css",
+    "./tagname-no-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate",
+    "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 2,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-15ubc3rrgkq",
+    "lwc-15ubc3rrgkq-host",
+    "x-tagname-no-attributes_tagname-no-attributes",
+    "x-tagname-no-attributes_tagname-no-attributes-host"
+  ]
+}

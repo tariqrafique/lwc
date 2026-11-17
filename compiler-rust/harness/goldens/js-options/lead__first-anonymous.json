@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "comments": [
+    {
+      "marker": "m1",
+      "next": "export default __lwc_component_class_internal;"
+    }
+  ]
+}

@@ -1,0 +1,372 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline.css",
+   "./inline.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3t4t4g81u",
+   "lwc-c3t4t4g81u-host",
+   "x-inline_inline",
+   "x-inline_inline-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3t4t4g81u"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline.css",
+   "./inline.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3t4t4g81u",
+   "lwc-c3t4t4g81u-host",
+   "x-inline_inline",
+   "x-inline_inline-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-inline_inline"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline.css",
+   "./inline.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3t4t4g81u",
+   "lwc-c3t4t4g81u-host",
+   "x-inline_inline",
+   "x-inline_inline-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-inline_inline"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline.css",
+   "./inline.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3t4t4g81u",
+   "lwc-c3t4t4g81u-host",
+   "x-inline_inline",
+   "x-inline_inline-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3t4t4g81u"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline.css",
+   "./inline.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3t4t4g81u",
+   "lwc-c3t4t4g81u-host",
+   "x-inline_inline",
+   "x-inline_inline-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3t4t4g81u"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline.css",
+   "./inline.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3t4t4g81u",
+   "lwc-c3t4t4g81u-host",
+   "x-inline_inline",
+   "x-inline_inline-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3t4t4g81u"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline.css",
+   "./inline.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3t4t4g81u",
+   "lwc-c3t4t4g81u-host",
+   "x-inline_inline",
+   "x-inline_inline-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3t4t4g81u"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline.css",
+   "./inline.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3t4t4g81u",
+   "lwc-c3t4t4g81u-host",
+   "x-inline_inline",
+   "x-inline_inline-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3t4t4g81u"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline.css",
+   "./inline.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3t4t4g81u",
+   "lwc-c3t4t4g81u-host",
+   "x-inline_inline",
+   "x-inline_inline-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3t4t4g81u"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline.css",
+   "./inline.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3t4t4g81u",
+   "lwc-c3t4t4g81u-host",
+   "x-inline_inline",
+   "x-inline_inline-host"
+  ],
+  "apiHelpers": [
+   "dc",
+   "fr",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>if condition</h1>",
+   "parseFragment:<h1${3}>elseif condition</h1>",
+   "parseFragment:<h1${3}>else condition</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3t4t4g81u"
+  }
+ }
+}

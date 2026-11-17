@@ -1,0 +1,16 @@
+[package]
+name = "semdiff"
+version = "0.0.0"
+edition = "2021"
+publish = false
+description = "Deterministic semantic-equivalence checker for JS-oracle vs Rust LWC compiler output (SD-0 skeleton)"
+
+[dependencies]
+# Pinned via [workspace.dependencies]: the parser/printer that judges equivalence must be the same oxc the compiler crates use.
+oxc = { workspace = true, features = ["codegen", "ast_visit"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[[bin]]
+name = "semdiff"
+path = "src/main.rs"

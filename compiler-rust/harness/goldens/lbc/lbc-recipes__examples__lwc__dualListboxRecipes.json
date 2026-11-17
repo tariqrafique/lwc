@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Dual Listbox\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><div class=\"slds-box\"><h2 class=\"header\">Basic Dual Listbox</h2><c-dual-listbox><template shadowrootmode=\"open\"></template></c-dual-listbox><p>Selected languages are: none</p></div><div class=\"slds-box\"><c-dual-listbox><template shadowrootmode=\"open\"></template></c-dual-listbox><p>Selected languages are: en</p></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A dual listbox provides a pair of listboxes that enables multiple options to be selected and reordered.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Dual Listbox\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><div class=\"slds-box\"><h2 class=\"header\">Basic Dual Listbox</h2><c-dual-listbox><template shadowrootmode=\"open\"></template></c-dual-listbox><p>Selected languages are: none</p></div><div class=\"slds-box\"><c-dual-listbox><template shadowrootmode=\"open\"></template></c-dual-listbox><p>Selected languages are: en</p></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A dual listbox provides a pair of listboxes that enables multiple options to be selected and reordered.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

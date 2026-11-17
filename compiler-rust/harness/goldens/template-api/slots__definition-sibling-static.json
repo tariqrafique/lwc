@@ -1,0 +1,362 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibling-static.css",
+   "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5n9s7p96h6j",
+   "lwc-5n9s7p96h6j-host",
+   "x-definition-sibling-static_definition-sibling-static",
+   "x-definition-sibling-static_definition-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Sibling</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5n9s7p96h6j"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibling-static.css",
+   "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5n9s7p96h6j",
+   "lwc-5n9s7p96h6j-host",
+   "x-definition-sibling-static_definition-sibling-static",
+   "x-definition-sibling-static_definition-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Sibling</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-definition-sibling-static_definition-sibling-static"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibling-static.css",
+   "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5n9s7p96h6j",
+   "lwc-5n9s7p96h6j-host",
+   "x-definition-sibling-static_definition-sibling-static",
+   "x-definition-sibling-static_definition-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Sibling</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-definition-sibling-static_definition-sibling-static"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibling-static.css",
+   "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5n9s7p96h6j",
+   "lwc-5n9s7p96h6j-host",
+   "x-definition-sibling-static_definition-sibling-static",
+   "x-definition-sibling-static_definition-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Sibling</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5n9s7p96h6j"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibling-static.css",
+   "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5n9s7p96h6j",
+   "lwc-5n9s7p96h6j-host",
+   "x-definition-sibling-static_definition-sibling-static",
+   "x-definition-sibling-static_definition-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Sibling</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5n9s7p96h6j"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibling-static.css",
+   "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5n9s7p96h6j",
+   "lwc-5n9s7p96h6j-host",
+   "x-definition-sibling-static_definition-sibling-static",
+   "x-definition-sibling-static_definition-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Sibling</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5n9s7p96h6j"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibling-static.css",
+   "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5n9s7p96h6j",
+   "lwc-5n9s7p96h6j-host",
+   "x-definition-sibling-static_definition-sibling-static",
+   "x-definition-sibling-static_definition-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Sibling</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5n9s7p96h6j"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibling-static.css",
+   "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5n9s7p96h6j",
+   "lwc-5n9s7p96h6j-host",
+   "x-definition-sibling-static_definition-sibling-static",
+   "x-definition-sibling-static_definition-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Sibling</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5n9s7p96h6j"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibling-static.css",
+   "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5n9s7p96h6j",
+   "lwc-5n9s7p96h6j-host",
+   "x-definition-sibling-static_definition-sibling-static",
+   "x-definition-sibling-static_definition-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Sibling</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5n9s7p96h6j"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition-sibling-static.css",
+   "./definition-sibling-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5n9s7p96h6j",
+   "lwc-5n9s7p96h6j-host",
+   "x-definition-sibling-static_definition-sibling-static",
+   "x-definition-sibling-static_definition-sibling-static-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Sibling</p>",
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5n9s7p96h6j"
+  }
+ }
+}

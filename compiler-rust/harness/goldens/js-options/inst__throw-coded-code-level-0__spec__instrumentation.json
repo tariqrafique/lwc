@@ -1,0 +1,20 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "dynamic-import-transform"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1007,
+    1111
+  ],
+  "line": null,
+  "errors": [
+    1111
+  ],
+  "message": "undefined: LWC1007: foo.js: m",
+  "level": 0
+}

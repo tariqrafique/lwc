@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">text {display: none;}svg {fill: rgb(255, 0, 0);}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><svg viewBox=\"0 0 240 80\"><text x=\"20\" y=\"35\">I should not be visible</text></svg></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">text {display: none;}svg {fill: rgb(255, 0, 0);}</style><svg viewBox=\"0 0 240 80\"><text x=\"20\" y=\"35\">I should not be visible</text></svg></template></lwc-up>"
+ }
+}

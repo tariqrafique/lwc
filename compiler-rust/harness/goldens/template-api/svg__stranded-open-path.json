@@ -1,0 +1,326 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-path.css",
+   "./stranded-open-path.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-25dcqi2nfps",
+   "lwc-25dcqi2nfps-host",
+   "x-stranded-open-path_stranded-open-path",
+   "x-stranded-open-path_stranded-open-path-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><path${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-25dcqi2nfps"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-path.css",
+   "./stranded-open-path.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-25dcqi2nfps",
+   "lwc-25dcqi2nfps-host",
+   "x-stranded-open-path_stranded-open-path",
+   "x-stranded-open-path_stranded-open-path-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-stranded-open-path_stranded-open-path"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-path.css",
+   "./stranded-open-path.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-25dcqi2nfps",
+   "lwc-25dcqi2nfps-host",
+   "x-stranded-open-path_stranded-open-path",
+   "x-stranded-open-path_stranded-open-path-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-stranded-open-path_stranded-open-path"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-path.css",
+   "./stranded-open-path.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-25dcqi2nfps",
+   "lwc-25dcqi2nfps-host",
+   "x-stranded-open-path_stranded-open-path",
+   "x-stranded-open-path_stranded-open-path-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><path${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-25dcqi2nfps"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-path.css",
+   "./stranded-open-path.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-25dcqi2nfps",
+   "lwc-25dcqi2nfps-host",
+   "x-stranded-open-path_stranded-open-path",
+   "x-stranded-open-path_stranded-open-path-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><path${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-25dcqi2nfps"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-path.css",
+   "./stranded-open-path.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-25dcqi2nfps",
+   "lwc-25dcqi2nfps-host",
+   "x-stranded-open-path_stranded-open-path",
+   "x-stranded-open-path_stranded-open-path-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><path${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-25dcqi2nfps"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-path.css",
+   "./stranded-open-path.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-25dcqi2nfps",
+   "lwc-25dcqi2nfps-host",
+   "x-stranded-open-path_stranded-open-path",
+   "x-stranded-open-path_stranded-open-path-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><path${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-25dcqi2nfps"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-path.css",
+   "./stranded-open-path.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-25dcqi2nfps",
+   "lwc-25dcqi2nfps-host",
+   "x-stranded-open-path_stranded-open-path",
+   "x-stranded-open-path_stranded-open-path-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><path${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-25dcqi2nfps"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-path.css",
+   "./stranded-open-path.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-25dcqi2nfps",
+   "lwc-25dcqi2nfps-host",
+   "x-stranded-open-path_stranded-open-path",
+   "x-stranded-open-path_stranded-open-path-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><path${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-25dcqi2nfps"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-path.css",
+   "./stranded-open-path.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-25dcqi2nfps",
+   "lwc-25dcqi2nfps-host",
+   "x-stranded-open-path_stranded-open-path",
+   "x-stranded-open-path_stranded-open-path-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><path${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-25dcqi2nfps"
+  }
+ }
+}

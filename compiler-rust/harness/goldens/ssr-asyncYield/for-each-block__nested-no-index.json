@@ -1,0 +1,56 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/for-each-nested-no-index/for-each-nested-no-index.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./for-each-nested-no-index.css",
+        "./for-each-nested-no-index.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-5pc7krboku8",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/for-each-nested-no-index/for-each-nested-no-index.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./for-each-nested-no-index.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-for-each-nested-no-index",
+          "publicProps": [
+            "list"
+          ],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

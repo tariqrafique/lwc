@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./foreign-object.css",
+    "./foreign-object.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5pja51876ng",
+    "lwc-5pja51876ng-host",
+    "x-foreign-object_foreign-object",
+    "x-foreign-object_foreign-object-host"
+  ]
+}

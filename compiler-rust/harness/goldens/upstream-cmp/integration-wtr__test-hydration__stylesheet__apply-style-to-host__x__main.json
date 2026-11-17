@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">:host {display: block;margin-left: 10px;}:host([data-styled]) {margin-left: 20px;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style>I am a host</template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {display: block;margin-left: 10px;}:host([data-styled]) {margin-left: 20px;}</style>I am a host</template></lwc-up>"
+ }
+}

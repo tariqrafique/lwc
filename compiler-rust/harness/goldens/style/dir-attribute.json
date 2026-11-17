@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+        "x|host=false|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+        "x|host=false|dir=false": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+        "x|host=true|dir=true": "[dir=\"rtl\"][x] test[x] {order: 0;}",
+        "-|host=true|dir=false": "[dir=\"rtl\"] test {order: 0;}"
+      }
+    }
+  ]
+}

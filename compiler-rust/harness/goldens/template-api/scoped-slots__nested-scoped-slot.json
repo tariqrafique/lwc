@@ -1,0 +1,402 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-scoped-slot.css",
+   "./nested-scoped-slot.scoped.css?scoped=true",
+   "x/row",
+   "x/table"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uogi8eu1mb",
+   "lwc-1uogi8eu1mb-host",
+   "x-nested-scoped-slot_nested-scoped-slot",
+   "x-nested-scoped-slot_nested-scoped-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1uogi8eu1mb"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-scoped-slot.css",
+   "./nested-scoped-slot.scoped.css?scoped=true",
+   "x/row",
+   "x/table"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uogi8eu1mb",
+   "lwc-1uogi8eu1mb-host",
+   "x-nested-scoped-slot_nested-scoped-slot",
+   "x-nested-scoped-slot_nested-scoped-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-nested-scoped-slot_nested-scoped-slot"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-scoped-slot.css",
+   "./nested-scoped-slot.scoped.css?scoped=true",
+   "x/row",
+   "x/table"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uogi8eu1mb",
+   "lwc-1uogi8eu1mb-host",
+   "x-nested-scoped-slot_nested-scoped-slot",
+   "x-nested-scoped-slot_nested-scoped-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-nested-scoped-slot_nested-scoped-slot"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-scoped-slot.css",
+   "./nested-scoped-slot.scoped.css?scoped=true",
+   "x/row",
+   "x/table"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uogi8eu1mb",
+   "lwc-1uogi8eu1mb-host",
+   "x-nested-scoped-slot_nested-scoped-slot",
+   "x-nested-scoped-slot_nested-scoped-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1uogi8eu1mb"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-scoped-slot.css",
+   "./nested-scoped-slot.scoped.css?scoped=true",
+   "x/row",
+   "x/table"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uogi8eu1mb",
+   "lwc-1uogi8eu1mb-host",
+   "x-nested-scoped-slot_nested-scoped-slot",
+   "x-nested-scoped-slot_nested-scoped-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1uogi8eu1mb"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-scoped-slot.css",
+   "./nested-scoped-slot.scoped.css?scoped=true",
+   "x/row",
+   "x/table"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uogi8eu1mb",
+   "lwc-1uogi8eu1mb-host",
+   "x-nested-scoped-slot_nested-scoped-slot",
+   "x-nested-scoped-slot_nested-scoped-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1uogi8eu1mb"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-scoped-slot.css",
+   "./nested-scoped-slot.scoped.css?scoped=true",
+   "x/row",
+   "x/table"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uogi8eu1mb",
+   "lwc-1uogi8eu1mb-host",
+   "x-nested-scoped-slot_nested-scoped-slot",
+   "x-nested-scoped-slot_nested-scoped-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1uogi8eu1mb"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-scoped-slot.css",
+   "./nested-scoped-slot.scoped.css?scoped=true",
+   "x/row",
+   "x/table"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uogi8eu1mb",
+   "lwc-1uogi8eu1mb-host",
+   "x-nested-scoped-slot_nested-scoped-slot",
+   "x-nested-scoped-slot_nested-scoped-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1uogi8eu1mb"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-scoped-slot.css",
+   "./nested-scoped-slot.scoped.css?scoped=true",
+   "x/row",
+   "x/table"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uogi8eu1mb",
+   "lwc-1uogi8eu1mb-host",
+   "x-nested-scoped-slot_nested-scoped-slot",
+   "x-nested-scoped-slot_nested-scoped-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1uogi8eu1mb"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-scoped-slot.css",
+   "./nested-scoped-slot.scoped.css?scoped=true",
+   "x/row",
+   "x/table"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1uogi8eu1mb",
+   "lwc-1uogi8eu1mb-host",
+   "x-nested-scoped-slot_nested-scoped-slot",
+   "x-nested-scoped-slot_nested-scoped-slot-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "d",
+   "fr",
+   "sp",
+   "ssf",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1uogi8eu1mb"
+  }
+ }
+}

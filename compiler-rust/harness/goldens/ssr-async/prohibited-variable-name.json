@@ -1,0 +1,11 @@
+{
+  "expectedCompileError": 1202,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/dontDoItStupid/dontDoItStupid.js": {
+      "ok": false,
+      "code": 1202
+    }
+  }
+}

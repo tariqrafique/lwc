@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./child-default-slot-content.css",
+    "./child-default-slot-content.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6di869hpvmf",
+    "lwc-6di869hpvmf-host",
+    "x-child-default-slot-content_child-default-slot-content",
+    "x-child-default-slot-content_child-default-slot-content-host"
+  ]
+}

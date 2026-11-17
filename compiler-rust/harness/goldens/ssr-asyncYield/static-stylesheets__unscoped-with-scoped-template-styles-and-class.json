@@ -1,0 +1,63 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/stylish/glamorous.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/stylish/stylish.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./stylish.css",
+        "./stylish.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-1l667kdb4s5",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/stylish/stylish.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./stylish.html",
+        "./glamorous.css"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-stylish",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/stylish/stylish.scoped.css": {
+      "ok": true,
+      "warnings": []
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./grandparent-slot.css",
+    "./grandparent-slot.scoped.css?scoped=true",
+    "x/foo"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1201,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-g41ii4u05q",
+    "lwc-g41ii4u05q-host",
+    "x-grandparent-slot_grandparent-slot",
+    "x-grandparent-slot_grandparent-slot-host"
+  ]
+}

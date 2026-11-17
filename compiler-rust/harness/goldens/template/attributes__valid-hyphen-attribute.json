@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./valid-hyphen-attribute.css",
+    "./valid-hyphen-attribute.scoped.css?scoped=true",
+    "x/button"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4rpc6om82jo",
+    "lwc-4rpc6om82jo-host",
+    "x-valid-hyphen-attribute_valid-hyphen-attribute",
+    "x-valid-hyphen-attribute_valid-hyphen-attribute-host"
+  ]
+}

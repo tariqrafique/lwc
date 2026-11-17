@@ -1,0 +1,62 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/basic/basic.css": {
+      "ok": true,
+      "warnings": []
+    },
+    "x/basic/basic.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./basic.css",
+        "./basic.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-1rssj1tib70",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/basic/basic.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./basic.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-basic",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/basic/basic.scoped.css": {
+      "ok": true,
+      "warnings": []
+    }
+  }
+}

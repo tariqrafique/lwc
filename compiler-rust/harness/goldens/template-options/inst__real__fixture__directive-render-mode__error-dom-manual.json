@@ -1,0 +1,18 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1135
+  ],
+  "line": 2,
+  "errors": [
+    1135
+  ],
+  "message": "LWC1135: Invalid directive 'lwc:dom' on element <p>. 'lwc:dom' is not necessary in Light DOM components."
+}

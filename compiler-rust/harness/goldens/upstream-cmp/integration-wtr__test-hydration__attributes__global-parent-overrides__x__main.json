@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child id=\"parentProvided\" tabindex=\"0\" hidden draggable=\"true\" spellcheck=\"true\"><template shadowrootmode=\"open\"></template></x-child><x-child id=\"parentProvided\" tabindex=\"0\" hidden draggable=\"true\" spellcheck=\"true\"><template shadowrootmode=\"open\"></template></x-child></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child id=\"parentProvided\" tabindex=\"0\" hidden=\"\" draggable=\"true\"><template shadowrootmode=\"open\"></template></x-child><x-child id=\"parentProvided\" tabindex=\"0\" hidden=\"\" draggable=\"true\"><template shadowrootmode=\"open\"></template></x-child></template></lwc-up>"
+ }
+}

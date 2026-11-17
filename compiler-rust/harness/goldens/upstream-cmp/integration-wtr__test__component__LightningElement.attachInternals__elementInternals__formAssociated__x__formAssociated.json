@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "\"attachInternals\" is not supported in this environment"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "<lwc-up> was already registered with formAssociated=undefined. It cannot be re-registered with formAssociated=true. Please rename your component to have a different name than <lwc-up>"
+ }
+}

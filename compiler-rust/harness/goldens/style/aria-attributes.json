@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+        "x|host=false|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+        "x|host=false|dir=false": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+        "x|host=true|dir=true": "[aria-labelledby][x] {}[aria-labelledby=\"bar\"][x] {}",
+        "-|host=true|dir=false": "[aria-labelledby] {}[aria-labelledby=\"bar\"] {}"
+      }
+    }
+  ]
+}

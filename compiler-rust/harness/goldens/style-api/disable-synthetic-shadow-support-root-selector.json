@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": ":root {}",
+     "x|host=false|dir=true": ":root {}",
+     "x|host=false|dir=false": ":root {}",
+     "x|host=true|dir=true": ":root {}",
+     "-|host=true|dir=false": ":root {}"
+    }
+   }
+  ]
+ }
+}

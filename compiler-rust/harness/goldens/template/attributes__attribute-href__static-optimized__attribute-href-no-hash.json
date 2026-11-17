@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-href-no-hash.css",
+    "./attribute-href-no-hash.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-1sm3fsuk72n",
+    "lwc-1sm3fsuk72n-host",
+    "x-attribute-href-no-hash_attribute-href-no-hash",
+    "x-attribute-href-no-hash_attribute-href-no-hash-host"
+  ]
+}

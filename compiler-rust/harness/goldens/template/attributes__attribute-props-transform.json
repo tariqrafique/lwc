@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-props-transform.css",
+    "./attribute-props-transform.scoped.css?scoped=true",
+    "x/foo"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6dvmnra325n",
+    "lwc-6dvmnra325n-host",
+    "x-attribute-props-transform_attribute-props-transform",
+    "x-attribute-props-transform_attribute-props-transform-host"
+  ]
+}

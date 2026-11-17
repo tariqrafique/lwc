@@ -1,0 +1,13 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1052
+  ],
+  "line": null,
+  "errors": [
+    1052
+  ],
+  "message": "Unexpected compilation error: LWC1052: Error parsing attribute: ctx.instrumentation?.incrementCounter is not a function"
+}

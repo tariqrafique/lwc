@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./disallowed-on-custom-element.css",
+    "./disallowed-on-custom-element.scoped.css?scoped=true",
+    "x/foo"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1187,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-4q030adgbk8",
+    "lwc-4q030adgbk8-host",
+    "x-disallowed-on-custom-element_disallowed-on-custom-element",
+    "x-disallowed-on-custom-element_disallowed-on-custom-element-host"
+  ]
+}

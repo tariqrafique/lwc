@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div class=\"backtick-text\">Escape `me`</div><div class=\"backtick-escape-text\">Escape \\`me`</div><div class=\"backtick-comment\"><!--Escape `me`--></div><div class=\"backtick-escape-comment\"><!--Escape \\`me`--></div><div class=\"backtick-attr\" data-message=\"Escape `me`\"></div><div class=\"backtick-escape-attr\" data-message=\"Escape \\`me`\"></div><div class=\"dollar-attr\" data-message=\"Escape ${me}\"></div><div class=\"dollar-escape-attr\" data-message=\"Escape \\${me}\"></div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div class=\"backtick-text\">Escape `me`</div><div class=\"backtick-escape-text\">Escape \\`me`</div><div class=\"backtick-comment\"><!--Escape `me`--></div><div class=\"backtick-escape-comment\"><!--Escape \\`me`--></div><div class=\"backtick-attr\" data-message=\"Escape `me`\"></div><div class=\"backtick-escape-attr\" data-message=\"Escape \\`me`\"></div><div class=\"dollar-attr\" data-message=\"Escape ${me}\"></div><div class=\"dollar-escape-attr\" data-message=\"Escape \\${me}\"></div></template></lwc-up>"
+ }
+}

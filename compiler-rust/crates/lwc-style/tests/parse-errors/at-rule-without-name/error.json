@@ -1,0 +1,6 @@
+{
+    "name": "CssSyntaxError",
+    "reason": "At-rule without name",
+    "column": 1,
+    "line": 1
+}

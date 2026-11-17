@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <div>\n        <!---->\n        abcdefghi\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        Fallback slot content 3\n        <!---->\n      </div>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <div>\n        <!---->\n        abcdefghi\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        Fallback slot content 3\n        <!---->\n      </div>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <div>\n        <!---->\n        abcdefghi\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        Fallback slot content 3\n        <!---->\n      </div>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <div>\n        <!---->\n        abcdefghi\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        Fallback slot content 3\n        <!---->\n      </div>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <div>\n        <!---->\n        abcdefghi\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        Fallback slot content 3\n        <!---->\n      </div>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <div>\n        <!---->\n        abcdefghi\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        Fallback slot content 3\n        <!---->\n      </div>\n    </x-child>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-child>\n      <div>\n        <!---->\n        abcdefghi\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        <!---->\n        Fallback slot content 3\n        <!---->\n      </div>\n    </x-child>\n  </template>\n</fixture-test>"
+ }
+}

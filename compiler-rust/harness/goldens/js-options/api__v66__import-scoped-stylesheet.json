@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "eval": {
+    "imports": [
+      "./test.html",
+      "lwc",
+      "./stylesheet.css",
+      "./stylesheet.scoped.css?scoped=true"
+    ],
+    "lwcImports": [
+      "LightningElement",
+      "registerComponent"
+    ],
+    "exports": {
+      "default": "class"
+    },
+    "defaultExport": {
+      "kind": "class",
+      "extendsLightningElement": true,
+      "registered": true,
+      "registerOptions": {
+        "sel": "lwc-test",
+        "apiVersion": "number",
+        "hasTmpl": true,
+        "apiVersionValue": 66,
+        "enablePrivateMethods": true
+      }
+    },
+    "decorators": []
+  },
+  "warnings": [],
+  "signals": {
+    "objectSpreadPreserved": false,
+    "asyncToGenerator": false,
+    "wrapAsyncGenerator": false,
+    "asyncIterator": false,
+    "locationRewrite": false,
+    "nativeAsync": false,
+    "registerDecoratorsCalls": 0,
+    "registerComponentCalls": 1
+  }
+}

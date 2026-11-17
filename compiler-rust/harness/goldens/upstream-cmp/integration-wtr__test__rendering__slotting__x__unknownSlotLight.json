@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><x-unknown-slot-light-child><template shadowrootmode=\"open\"></template><div slot=\"doesnotexist\"></div></x-unknown-slot-light-child></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><x-unknown-slot-light-child><template shadowrootmode=\"open\"></template><div slot=\"doesnotexist\"></div></x-unknown-slot-light-child></lwc-up>"
+ }
+}

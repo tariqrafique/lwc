@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./template-sibling.css",
+    "./template-sibling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4clse9dpbrh",
+    "lwc-4clse9dpbrh-host",
+    "x-template-sibling_template-sibling",
+    "x-template-sibling_template-sibling-host"
+  ]
+}

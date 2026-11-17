@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "compile",
+  "error": "LWC1199: Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
+  "html": ""
+ },
+ "v57": {
+  "stage": "compile",
+  "error": "LWC1199: Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
+  "html": ""
+ },
+ "v58": {
+  "stage": "compile",
+  "error": "LWC1199: Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
+  "html": ""
+ },
+ "v59": {
+  "stage": "compile",
+  "error": "LWC1199: Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
+  "html": ""
+ },
+ "v65": {
+  "stage": "compile",
+  "error": "LWC1199: Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
+  "html": ""
+ },
+ "v66": {
+  "stage": "compile",
+  "error": "LWC1199: Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
+  "html": ""
+ },
+ "v67": {
+  "stage": "compile",
+  "error": "LWC1199: Cannot use a template literal as a computed property key. Instead, use a string or extract the value to a constant.",
+  "html": ""
+ }
+}

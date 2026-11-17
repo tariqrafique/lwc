@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <div>\n      x\n    </div>\n    <!---->\n    b\n    <!---->\n    <div>\n      y\n    </div>\n    <div>\n      y2\n    </div>\n    <div>\n      y3\n    </div>\n    <!---->\n    c\n    <!---->\n    default1default2default3default4default5default6\n    <!---->\n    d\n  </x-inner>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <div>\n      x\n    </div>\n    <!---->\n    b\n    <!---->\n    <div>\n      y\n    </div>\n    <div>\n      y2\n    </div>\n    <div>\n      y3\n    </div>\n    <!---->\n    c\n    <!---->\n    default1default2default3default4default5default6\n    <!---->\n    d\n  </x-inner>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <div>\n      x\n    </div>\n    <!---->\n    b\n    <!---->\n    <div>\n      y\n    </div>\n    <div>\n      y2\n    </div>\n    <div>\n      y3\n    </div>\n    <!---->\n    c\n    <!---->\n    default1default2default3default4default5default6\n    <!---->\n    d\n  </x-inner>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <div>\n      x\n    </div>\n    <!---->\n    b\n    <!---->\n    <div>\n      y\n    </div>\n    <div>\n      y2\n    </div>\n    <div>\n      y3\n    </div>\n    <!---->\n    c\n    <!---->\n    default1default2default3default4default5default6\n    <!---->\n    d\n  </x-inner>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <div>\n      x\n    </div>\n    <!---->\n    b\n    <!---->\n    <div>\n      y\n    </div>\n    <div>\n      y2\n    </div>\n    <div>\n      y3\n    </div>\n    <!---->\n    c\n    <!---->\n    default1default2default3default4default5default6\n    <!---->\n    d\n  </x-inner>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <div>\n      x\n    </div>\n    <!---->\n    b\n    <!---->\n    <div>\n      y\n    </div>\n    <div>\n      y2\n    </div>\n    <div>\n      y3\n    </div>\n    <!---->\n    c\n    <!---->\n    default1default2default3default4default5default6\n    <!---->\n    d\n  </x-inner>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <x-inner>\n    a\n    <!---->\n    <div>\n      x\n    </div>\n    <!---->\n    b\n    <!---->\n    <div>\n      y\n    </div>\n    <div>\n      y2\n    </div>\n    <div>\n      y3\n    </div>\n    <!---->\n    c\n    <!---->\n    default1default2default3default4default5default6\n    <!---->\n    d\n  </x-inner>\n</fixture-test>"
+ }
+}

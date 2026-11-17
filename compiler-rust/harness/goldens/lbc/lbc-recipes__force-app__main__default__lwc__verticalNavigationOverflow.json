@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "\"dispatchEvent\" is not supported in this environment"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">div[role='list'] {list-style: none;}</style><div class=\"slds-nav-vertical__overflow\"><button class=\"slds-button slds-button_reset slds-nav-vertical__action slds-nav-vertical__action_overflow\" id=\"vertical-navigation-button\" aria-controls=\"vertical-navigation-heading\" aria-expanded=\"false\"><c-primitive-icon><template shadowrootmode=\"open\"></template></c-primitive-icon><span class=\"slds-nav-vertical__action-text\">[object Object]<span class=\"slds-assistive-text\"></span></span></button><div class=\"slds-hide\" id=\"vertical-navigation-heading\"><div role=\"list\"><slot></slot></div></div></div></template></lwc-lbc>"
+ }
+}

@@ -1,0 +1,650 @@
+[
+ {
+  "id": "anon-api",
+  "src": "export default class { @api x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  2 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "anon-foo",
+  "src": "export default class { @foo x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @foo x; }\n    |                ^^^^^^^^^^^^^^^^^\n  2 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "anon-track",
+  "src": "export default class { @track x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @track x; }\n    |                ^^^^^^^^^^^^^^^^^^^\n  2 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "anon-api-imported",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @api x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "named-ext-le-foo",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class Foo extends LightningElement { @foo x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1102,
+   "message": "SyntaxError: foo.js: LWC1102: Invalid 'foo' decorator usage. Supported decorators (api, wire, track) should be imported from \"lwc\"\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class Foo extends LightningElement { @foo x; }\n    |                                                     ^^^^^^^\n  3 |",
+   "hasLocation": true,
+   "errors": null
+  }
+ },
+ {
+  "id": "nested-inner-anon",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class Foo extends LightningElement { @api y; m() { return class { @api x; }; } }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class Foo extends LightningElement { @api y; m() { return class { @api x; }; } }\n    |                                                                          ^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "nested-outer-anon",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @api y; m() { return class extends LightningElement { @api x; }; } }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class { @api y; m() { return class extends LightningElement { @api x; }; } }\n    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "two-classes",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nclass A { @api x; }\nexport default class B extends LightningElement { @api y; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | class A { @api x; }\n    | ^^^^^^^^^^^^^^^^^^^\n  3 | export default class B extends LightningElement { @api y; }\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "two-classes-rev",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class B extends LightningElement { @api y; }\nclass A { @foo x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n  2 | export default class B extends LightningElement { @api y; }\n> 3 | class A { @foo x; }\n    | ^^^^^^^^^^^^^^^^^^^\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "ext-le-classdeco",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\n@api\nexport default class Foo extends LightningElement {}\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1103,
+   "message": "SyntaxError: foo.js: LWC1103: \"@api\" can only be applied on class properties\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | @api\n    | ^\n  3 | export default class Foo extends LightningElement {}\n  4 |",
+   "hasLocation": true,
+   "errors": null
+  }
+ },
+ {
+  "id": "ext-le-classdeco-foo",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\n@foo\nexport default class Foo extends LightningElement { @api x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | @foo\n    | ^\n  3 | export default class Foo extends LightningElement { @api x; }\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "ext-le-only-foo-and-field",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class Foo extends LightningElement { @foo x; y = 1; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1102,
+   "message": "SyntaxError: foo.js: LWC1102: Invalid 'foo' decorator usage. Supported decorators (api, wire, track) should be imported from \"lwc\"\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class Foo extends LightningElement { @foo x; y = 1; }\n    |                                                     ^^^^^^^\n  3 |",
+   "hasLocation": true,
+   "errors": null
+  }
+ },
+ {
+  "id": "ext-le-foo-and-api",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class Foo extends LightningElement { @foo x; @api y; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1102,
+   "message": "SyntaxError: foo.js: LWC1102: Invalid 'foo' decorator usage. Supported decorators (api, wire, track) should be imported from \"lwc\"\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class Foo extends LightningElement { @foo x; @api y; }\n    |                                                     ^^^^^^^\n  3 |",
+   "hasLocation": true,
+   "errors": null
+  }
+ },
+ {
+  "id": "dynimport-then-anon",
+  "src": "import(\"a\");\nexport default class { @api x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import(\"a\");\n> 2 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "anon-api-multiline",
+  "src": "export default class {\n  @api x;\n}\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class {\n    |                ^\n  2 |   @api x;\n  3 | }\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "anon-empty-body-classdeco",
+  "src": "@foo\nclass A {}\nexport default A;\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | @foo\n    | ^\n  2 | class A {}\n  3 | export default A;\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "anon-static-api",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @api static x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class { @api static x; }\n    |                ^^^^^^^^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "anon-getter",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @api get x() { return 1; } }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class { @api get x() { return 1; } }\n    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "anon-private-field",
+  "src": "export default class { @api x; #p = 1; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Private fields in decorated classes are not supported yet.\n> 1 | export default class { @api x; #p = 1; }\n    |                                ^^^^^^^\n  2 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "anon-private-method",
+  "src": "export default class { @api x; #m() {} }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Private methods in decorated classes are not supported yet.\n> 1 | export default class { @api x; #m() {} }\n    |                                ^^^^^^^\n  2 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "old-api-anon-api",
+  "src": "export default class { @api x; }\n",
+  "opts": {
+   "apiVersion": 58
+  },
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1102,
+   "message": "SyntaxError: foo.js: LWC1102: Invalid 'api' decorator usage. Supported decorators (api, wire, track) should be imported from \"lwc\"\n> 1 | export default class { @api x; }\n    |                        ^^^^^^^\n  2 |",
+   "hasLocation": true,
+   "errors": null
+  }
+ },
+ {
+  "id": "old-api-anon-api-imp",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @api x; }\n",
+  "opts": {
+   "apiVersion": 58
+  },
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": "ok"
+ },
+ {
+  "id": "old-api-anon-foo",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @foo x; }\n",
+  "opts": {
+   "apiVersion": 58
+  },
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1102,
+   "message": "SyntaxError: foo.js: LWC1102: Invalid 'foo' decorator usage. Supported decorators (api, wire, track) should be imported from \"lwc\"\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class { @foo x; }\n    |                        ^^^^^^^\n  3 |",
+   "hasLocation": true,
+   "errors": null
+  }
+ },
+ {
+  "id": "unicode-before",
+  "src": "const s = \"😀é\";\nexport default class { @api x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | const s = \"😀é\";\n> 2 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "no-decorators",
+  "src": "export default class { x = 1; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": "ok"
+ },
+ {
+  "id": "rec:anon-api",
+  "src": "export default class { @api x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  2 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:anon-foo",
+  "src": "export default class { @foo x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @foo x; }\n    |                ^^^^^^^^^^^^^^^^^\n  2 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:anon-track",
+  "src": "export default class { @track x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @track x; }\n    |                ^^^^^^^^^^^^^^^^^^^\n  2 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:anon-api-imported",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @api x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:named-ext-le-foo",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class Foo extends LightningElement { @foo x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class Foo extends LightningElement { @foo x; }\n    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:nested-inner-anon",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class Foo extends LightningElement { @api y; m() { return class { @api x; }; } }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class Foo extends LightningElement { @api y; m() { return class { @api x; }; } }\n    |                                                                          ^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:nested-outer-anon",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @api y; m() { return class extends LightningElement { @api x; }; } }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class { @api y; m() { return class extends LightningElement { @api x; }; } }\n    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:two-classes",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nclass A { @api x; }\nexport default class B extends LightningElement { @api y; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | class A { @api x; }\n    | ^^^^^^^^^^^^^^^^^^^\n  3 | export default class B extends LightningElement { @api y; }\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:two-classes-rev",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class B extends LightningElement { @api y; }\nclass A { @foo x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n  2 | export default class B extends LightningElement { @api y; }\n> 3 | class A { @foo x; }\n    | ^^^^^^^^^^^^^^^^^^^\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:ext-le-classdeco",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\n@api\nexport default class Foo extends LightningElement {}\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | @api\n    | ^\n  3 | export default class Foo extends LightningElement {}\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:ext-le-classdeco-foo",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\n@foo\nexport default class Foo extends LightningElement { @api x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | @foo\n    | ^\n  3 | export default class Foo extends LightningElement { @api x; }\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:ext-le-only-foo-and-field",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class Foo extends LightningElement { @foo x; y = 1; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": null,
+   "message": "Multiple errors occurred during compilation.",
+   "hasLocation": false,
+   "errors": [
+    1102
+   ]
+  }
+ },
+ {
+  "id": "rec:ext-le-foo-and-api",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class Foo extends LightningElement { @foo x; @api y; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": null,
+   "message": "Multiple errors occurred during compilation.",
+   "hasLocation": false,
+   "errors": [
+    1102
+   ]
+  }
+ },
+ {
+  "id": "rec:dynimport-then-anon",
+  "src": "import(\"a\");\nexport default class { @api x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import(\"a\");\n> 2 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:anon-api-multiline",
+  "src": "export default class {\n  @api x;\n}\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class {\n    |                ^\n  2 |   @api x;\n  3 | }\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:anon-empty-body-classdeco",
+  "src": "@foo\nclass A {}\nexport default A;\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | @foo\n    | ^\n  2 | class A {}\n  3 | export default A;\n  4 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:anon-static-api",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @api static x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class { @api static x; }\n    |                ^^^^^^^^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:anon-getter",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @api get x() { return 1; } }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class { @api get x() { return 1; } }\n    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:anon-private-field",
+  "src": "export default class { @api x; #p = 1; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Private fields in decorated classes are not supported yet.\n> 1 | export default class { @api x; #p = 1; }\n    |                                ^^^^^^^\n  2 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:anon-private-method",
+  "src": "export default class { @api x; #m() {} }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Private methods in decorated classes are not supported yet.\n> 1 | export default class { @api x; #m() {} }\n    |                                ^^^^^^^\n  2 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:old-api-anon-api",
+  "src": "export default class { @api x; }\n",
+  "opts": {
+   "apiVersion": 58
+  },
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": null,
+   "message": "Multiple errors occurred during compilation.",
+   "hasLocation": false,
+   "errors": [
+    1102
+   ]
+  }
+ },
+ {
+  "id": "rec:old-api-anon-api-imp",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @api x; }\n",
+  "opts": {
+   "apiVersion": 58
+  },
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok"
+ },
+ {
+  "id": "rec:old-api-anon-foo",
+  "src": "import { LightningElement, api, track, wire } from \"lwc\";\nexport default class { @foo x; }\n",
+  "opts": {
+   "apiVersion": 58
+  },
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | import { LightningElement, api, track, wire } from \"lwc\";\n> 2 | export default class { @foo x; }\n    |                ^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:unicode-before",
+  "src": "const s = \"😀é\";\nexport default class { @api x; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.js: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n  1 | const s = \"😀é\";\n> 2 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  3 |",
+   "hasLocation": false,
+   "errors": null
+  }
+ },
+ {
+  "id": "rec:no-decorators",
+  "src": "export default class { x = 1; }\n",
+  "opts": {},
+  "filename": "foo.js",
+  "recover": true,
+  "shipped": "ok"
+ }
+]

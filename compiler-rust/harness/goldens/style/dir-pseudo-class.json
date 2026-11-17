@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "[dir=\"ltr\"]  {order: 0;}[dir=\"ltr\"]  test[x] {order: 1;}[dir=\"ltr\"] test[x]  {order: 2;}[dir=\"ltr\"] test[x] {order: 3;}[dir=\"ltr\"] test[x] test[x] {order: 4;}[dir=\"rtl\"]  {order: 5;}[dir=\"rtl\"]  test[x] {order: 6;}[dir=\"rtl\"] test[x]  {order: 7;}[dir=\"rtl\"] test[x] {order: 8;}[dir=\"rtl\"] test[x] test[x] {order: 9;}",
+        "x|host=false|dir=true": " :dir(ltr) {order: 0;} :dir(ltr) test[x] {order: 1;} test[x] :dir(ltr) {order: 2;} test:dir(ltr)[x] {order: 3;} test:dir(ltr)[x] test[x] {order: 4;} :dir(rtl) {order: 5;} :dir(rtl) test[x] {order: 6;} test[x] :dir(rtl) {order: 7;} test:dir(rtl)[x] {order: 8;} test:dir(rtl)[x] test[x] {order: 9;}",
+        "x|host=false|dir=false": "[dir=\"ltr\"]  {order: 0;}[dir=\"ltr\"]  test[x] {order: 1;}[dir=\"ltr\"] test[x]  {order: 2;}[dir=\"ltr\"] test[x] {order: 3;}[dir=\"ltr\"] test[x] test[x] {order: 4;}[dir=\"rtl\"]  {order: 5;}[dir=\"rtl\"]  test[x] {order: 6;}[dir=\"rtl\"] test[x]  {order: 7;}[dir=\"rtl\"] test[x] {order: 8;}[dir=\"rtl\"] test[x] test[x] {order: 9;}",
+        "x|host=true|dir=true": " :dir(ltr) {order: 0;} :dir(ltr) test[x] {order: 1;} test[x] :dir(ltr) {order: 2;} test:dir(ltr)[x] {order: 3;} test:dir(ltr)[x] test[x] {order: 4;} :dir(rtl) {order: 5;} :dir(rtl) test[x] {order: 6;} test[x] :dir(rtl) {order: 7;} test:dir(rtl)[x] {order: 8;} test:dir(rtl)[x] test[x] {order: 9;}",
+        "-|host=true|dir=false": "[dir=\"ltr\"]  {order: 0;}[dir=\"ltr\"]  test {order: 1;}[dir=\"ltr\"] test  {order: 2;}[dir=\"ltr\"] test {order: 3;}[dir=\"ltr\"] test test {order: 4;}[dir=\"rtl\"]  {order: 5;}[dir=\"rtl\"]  test {order: 6;}[dir=\"rtl\"] test  {order: 7;}[dir=\"rtl\"] test {order: 8;}[dir=\"rtl\"] test test {order: 9;}"
+      }
+    }
+  ]
+}

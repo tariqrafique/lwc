@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./update-inside-arrow.css",
+    "./update-inside-arrow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2nerumn9on6",
+    "lwc-2nerumn9on6-host",
+    "x-update-inside-arrow_update-inside-arrow",
+    "x-update-inside-arrow_update-inside-arrow-host"
+  ]
+}

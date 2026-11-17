@@ -1,0 +1,42 @@
+# Path-exact allowlist for scripts/workspace-path-scan.sh (D-0280(b)).
+# Columns: path<TAB>reason
+# path is repo-relative and must match a real file exactly (no globs).
+# Reasons must not themselves contain the substring that the scanner forbids
+# if this file is not listed here; keep reasons free of that box-root prefix.
+harness/scripts/oracle-root.mjs	single resolver: box defaults for the oracle, style corpus, and notes decisions
+crates/lwc-shared/src/lib.rs	Rust twin of oracle-root.mjs styleCorpusRoot: box default when STYLE_CORPUS is unset
+scripts/land.sh	box-only land chokepoint (MAIN checkout, lock, notes, parse5)
+scripts/official-board.sh	box-only official board default inputs and publish dest
+scripts/publish-official.sh	box-only official push dest
+scripts/land-main-refs.tsv	box-config table: cargo config and parse5 url-rewrite paths
+scripts/check-land-main-refs.sh	validates the box-config table
+scripts/test-one-pass-land.sh	D-0286 one-pass fixture plants box-config allowlist rows
+scripts/box-parse5-git/gitconfig-includeIf.fragment	box-only parse5 git rewrite
+scripts/box-parse5-git/cargo-config.toml	box-only parse5 cargo rewrite
+scripts/box-parse5-git/apply.sh	box-only parse5 rewrite installer
+scripts/box-parse5-git/url-rewrite.gitconfig	box-only parse5 file:// rewrite
+scripts/git-hooks/pre-commit	box workflow: refuse direct commits to main
+scripts/git-hooks/pre-merge-commit	box workflow: refuse direct commits to main
+scripts/new-worktree.sh	box-only worktree layout helper
+scripts/parse5-pin-check.sh	box default parse5 checkout when PARSE5_DIR is unset
+scripts/refresh-decisions-snapshot.sh	box default notes repo
+scripts/fetch-oracle.sh	must refuse to write the box oracle checkout
+scripts/test-fetch-oracle.sh	asserts fetch-oracle refuses the box oracle path
+scripts/test-parse5-pin.sh	tests the box parse5 default
+scripts/test-parse5-git-rewrite.sh	tests the box parse5 rewrite
+scripts/test-notes-precheck.sh	throwaway clone source is the box notes repo
+scripts/test-oracle-root.sh	tests resolver box-default behavior
+scripts/test-land-classify.sh	self-test runner default MAIN checkout
+scripts/test-board-ratchet.sh	comment names the box oracle as a local-run prerequisite
+harness/decisions.snapshot.tsv	historical decision prose copied from notes; not a runtime fallback
+harness/scripts/golden-gate.sh	detects box-path leaks in goldens
+harness/IN-REPO.md	documents box vs portable input mapping
+scripts/workspace-path-scan.sh	the scanner names the forbidden prefix it searches for
+harness/vitest.config.ts	Vite alias specifier remapped to LWC_ORACLE; not a filesystem fallback
+harness/vitest.board.config.ts	Vite alias specifier remapped to LWC_ORACLE; not a filesystem fallback
+harness/test/csr.render.test.ts	static imports use the Vite alias specifier
+harness/test/ssr.render.test.ts	static imports use the Vite alias specifier
+harness/test/ssr_render.behavior.test.ts	static imports use the Vite alias specifier
+harness/test/ssr_render_api.behavior.test.ts	static imports use the Vite alias specifier
+scripts/preflight.sh	box-only land checks moved from land.sh (notes arch-board, decisions repo)
+scripts/run-land-self-tests.sh	box-only shared CARGO_TARGET_DIR root (as official-board.sh) to pin the board napi

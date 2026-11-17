@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "\"dispatchEvent\" is not supported in this environment"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-dropdown-trigger slds-dropdown-trigger_click\"><template shadowrootmode=\"open\"></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "_missingExportShim is not a function"
+ ]
+}

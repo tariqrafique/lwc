@@ -1,0 +1,342 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-on.css",
+   "./preserve-comments-on.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2hege9bfdij",
+   "lwc-2hege9bfdij-host",
+   "x-preserve-comments-on_preserve-comments-on",
+   "x-preserve-comments-on_preserve-comments-on-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><!--only comments within elements can be static--></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2hege9bfdij"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-on.css",
+   "./preserve-comments-on.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2hege9bfdij",
+   "lwc-2hege9bfdij-host",
+   "x-preserve-comments-on_preserve-comments-on",
+   "x-preserve-comments-on_preserve-comments-on-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><!--only comments within elements can be static--></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-preserve-comments-on_preserve-comments-on"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-on.css",
+   "./preserve-comments-on.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2hege9bfdij",
+   "lwc-2hege9bfdij-host",
+   "x-preserve-comments-on_preserve-comments-on",
+   "x-preserve-comments-on_preserve-comments-on-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><!--only comments within elements can be static--></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-preserve-comments-on_preserve-comments-on"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-on.css",
+   "./preserve-comments-on.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2hege9bfdij",
+   "lwc-2hege9bfdij-host",
+   "x-preserve-comments-on_preserve-comments-on",
+   "x-preserve-comments-on_preserve-comments-on-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><!--only comments within elements can be static--></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2hege9bfdij"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-on.css",
+   "./preserve-comments-on.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2hege9bfdij",
+   "lwc-2hege9bfdij-host",
+   "x-preserve-comments-on_preserve-comments-on",
+   "x-preserve-comments-on_preserve-comments-on-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><!--only comments within elements can be static--></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2hege9bfdij"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-on.css",
+   "./preserve-comments-on.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2hege9bfdij",
+   "lwc-2hege9bfdij-host",
+   "x-preserve-comments-on_preserve-comments-on",
+   "x-preserve-comments-on_preserve-comments-on-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><!--only comments within elements can be static--></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2hege9bfdij"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-on.css",
+   "./preserve-comments-on.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2hege9bfdij",
+   "lwc-2hege9bfdij-host",
+   "x-preserve-comments-on_preserve-comments-on",
+   "x-preserve-comments-on_preserve-comments-on-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><!--only comments within elements can be static--></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2hege9bfdij"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-on.css",
+   "./preserve-comments-on.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2hege9bfdij",
+   "lwc-2hege9bfdij-host",
+   "x-preserve-comments-on_preserve-comments-on",
+   "x-preserve-comments-on_preserve-comments-on-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><!--only comments within elements can be static--></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2hege9bfdij"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-on.css",
+   "./preserve-comments-on.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2hege9bfdij",
+   "lwc-2hege9bfdij-host",
+   "x-preserve-comments-on_preserve-comments-on",
+   "x-preserve-comments-on_preserve-comments-on-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><!--only comments within elements can be static--></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2hege9bfdij"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./preserve-comments-on.css",
+   "./preserve-comments-on.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2hege9bfdij",
+   "lwc-2hege9bfdij-host",
+   "x-preserve-comments-on_preserve-comments-on",
+   "x-preserve-comments-on_preserve-comments-on-host"
+  ],
+  "apiHelpers": [
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><!--only comments within elements can be static--></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2hege9bfdij"
+  }
+ }
+}

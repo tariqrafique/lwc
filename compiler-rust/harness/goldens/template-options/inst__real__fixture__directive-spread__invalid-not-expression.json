@@ -1,0 +1,13 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1155
+  ],
+  "line": 2,
+  "errors": [
+    1155
+  ],
+  "message": "LWC1155: Invalid lwc:spread usage on element \"<a>\". The directive binding must be an expression."
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "compile-error",
+  "message": "[6:20-6:21]: Missing initializer in const declaration"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "SyntaxError: LWC1007: /virtual-lbc/x/ref/ref.ts: Missing initializer in const declaration. (6:20)\n\n  4 | export default class extends LightningElement {\n  5 |     handleClick() {\n> 6 |         const button: Element | undefined = this.refs?.button;\n    |                     ^\n  7 |         console.log('This is a ref to the button!', button);\n  8 |     }\n  9 | }"
+ }
+}

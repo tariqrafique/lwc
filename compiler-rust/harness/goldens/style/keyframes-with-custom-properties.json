@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "@keyframes slidein-x {from {margin-left: 100%;}to {margin-left: 0%;}}div[x] {color: var(--my-var);animation: 200ms slidein-x;}span[x] {animation: var(--another-var) slidein-x;}p[x] {animation-name: slidein-x;animation-delay: 1s;}input[x] {animation-name: spin;}",
+        "x|host=false|dir=true": "@keyframes slidein-x {from {margin-left: 100%;}to {margin-left: 0%;}}div[x] {color: var(--my-var);animation: 200ms slidein-x;}span[x] {animation: var(--another-var) slidein-x;}p[x] {animation-name: slidein-x;animation-delay: 1s;}input[x] {animation-name: spin;}",
+        "x|host=false|dir=false": "@keyframes slidein-x {from {margin-left: 100%;}to {margin-left: 0%;}}div[x] {color: var(--my-var);animation: 200ms slidein-x;}span[x] {animation: var(--another-var) slidein-x;}p[x] {animation-name: slidein-x;animation-delay: 1s;}input[x] {animation-name: spin;}",
+        "x|host=true|dir=true": "@keyframes slidein-x {from {margin-left: 100%;}to {margin-left: 0%;}}div[x] {color: var(--my-var);animation: 200ms slidein-x;}span[x] {animation: var(--another-var) slidein-x;}p[x] {animation-name: slidein-x;animation-delay: 1s;}input[x] {animation-name: spin;}",
+        "-|host=true|dir=false": "@keyframes slidein {from {margin-left: 100%;}to {margin-left: 0%;}}div {color: var(--my-var);animation: 200ms slidein;}span {animation: var(--another-var) slidein;}p {animation-name: slidein;animation-delay: 1s;}input {animation-name: spin;}"
+      }
+    }
+  ]
+}

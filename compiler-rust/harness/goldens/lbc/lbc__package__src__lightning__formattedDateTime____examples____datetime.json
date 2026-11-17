@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-box\"><h2 class=\"header\">Date and Time Formatting</h2><p><lightning-formatted-date-time><template shadowrootmode=\"open\"></template></lightning-formatted-date-time></p><p><lightning-formatted-date-time><template shadowrootmode=\"open\"></template></lightning-formatted-date-time></p><p><lightning-formatted-date-time><template shadowrootmode=\"open\"></template></lightning-formatted-date-time></p></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-box\"><h2 class=\"header\">Date and Time Formatting</h2><p><lightning-formatted-date-time><template shadowrootmode=\"open\"></template></lightning-formatted-date-time></p><p><lightning-formatted-date-time><template shadowrootmode=\"open\"></template></lightning-formatted-date-time></p><p><lightning-formatted-date-time><template shadowrootmode=\"open\"></template></lightning-formatted-date-time></p></div></template></lwc-lbc>"
+ }
+}

@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": true,
+    "css": {
+     "x|host=true|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=true": " :host(.foo) :dir(rtl) {}",
+     "x|host=false|dir=false": " :host(.foo) :dir(rtl) {}",
+     "x|host=true|dir=true": " :host(.foo) :dir(rtl) {}",
+     "-|host=true|dir=false": " :host(.foo) :dir(rtl) {}"
+    }
+   }
+  ]
+ }
+}

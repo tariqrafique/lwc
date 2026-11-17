@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-iterator.css",
+   "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4sfvv4u31r7",
+   "lwc-4sfvv4u31r7-host",
+   "x-inline-iterator_inline-iterator",
+   "x-inline-iterator_inline-iterator-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4sfvv4u31r7"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-iterator.css",
+   "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4sfvv4u31r7",
+   "lwc-4sfvv4u31r7-host",
+   "x-inline-iterator_inline-iterator",
+   "x-inline-iterator_inline-iterator-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-inline-iterator_inline-iterator"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-iterator.css",
+   "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4sfvv4u31r7",
+   "lwc-4sfvv4u31r7-host",
+   "x-inline-iterator_inline-iterator",
+   "x-inline-iterator_inline-iterator-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-inline-iterator_inline-iterator"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-iterator.css",
+   "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4sfvv4u31r7",
+   "lwc-4sfvv4u31r7-host",
+   "x-inline-iterator_inline-iterator",
+   "x-inline-iterator_inline-iterator-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4sfvv4u31r7"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-iterator.css",
+   "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4sfvv4u31r7",
+   "lwc-4sfvv4u31r7-host",
+   "x-inline-iterator_inline-iterator",
+   "x-inline-iterator_inline-iterator-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4sfvv4u31r7"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-iterator.css",
+   "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4sfvv4u31r7",
+   "lwc-4sfvv4u31r7-host",
+   "x-inline-iterator_inline-iterator",
+   "x-inline-iterator_inline-iterator-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4sfvv4u31r7"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-iterator.css",
+   "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4sfvv4u31r7",
+   "lwc-4sfvv4u31r7-host",
+   "x-inline-iterator_inline-iterator",
+   "x-inline-iterator_inline-iterator-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4sfvv4u31r7"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-iterator.css",
+   "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4sfvv4u31r7",
+   "lwc-4sfvv4u31r7-host",
+   "x-inline-iterator_inline-iterator",
+   "x-inline-iterator_inline-iterator-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4sfvv4u31r7"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-iterator.css",
+   "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4sfvv4u31r7",
+   "lwc-4sfvv4u31r7-host",
+   "x-inline-iterator_inline-iterator",
+   "x-inline-iterator_inline-iterator-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4sfvv4u31r7"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./inline-iterator.css",
+   "./inline-iterator.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4sfvv4u31r7",
+   "lwc-4sfvv4u31r7-host",
+   "x-inline-iterator_inline-iterator",
+   "x-inline-iterator_inline-iterator-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4sfvv4u31r7"
+  }
+ }
+}

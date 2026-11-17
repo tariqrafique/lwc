@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"inner-h-t-m-l\" on <div>.",
+  "html": ""
+ },
+ "v57": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"inner-h-t-m-l\" on <div>.",
+  "html": ""
+ },
+ "v58": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"inner-h-t-m-l\" on <div>.",
+  "html": ""
+ },
+ "v59": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"inner-h-t-m-l\" on <div>.",
+  "html": ""
+ },
+ "v65": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"inner-h-t-m-l\" on <div>.",
+  "html": ""
+ },
+ "v66": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"inner-h-t-m-l\" on <div>.",
+  "html": ""
+ },
+ "v67": {
+  "stage": "compile",
+  "error": "Cannot set attribute \"inner-h-t-m-l\" on <div>.",
+  "html": ""
+ }
+}

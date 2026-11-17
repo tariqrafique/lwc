@@ -1,0 +1,17 @@
+{
+  "calls": [
+    [
+      "warn",
+      "\"OutputConfig.minify\" property is deprecated. The value doesn't impact the compilation and can safely be removed."
+    ]
+  ],
+  "ok": false,
+  "warnThrew": true,
+  "identical": true,
+  "type": "object",
+  "name": "Error",
+  "message": "warnboom",
+  "lwcCode": null,
+  "code": null,
+  "level": null
+}

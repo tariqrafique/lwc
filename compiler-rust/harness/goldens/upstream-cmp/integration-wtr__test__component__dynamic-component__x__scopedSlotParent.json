@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-scoped-slot-child><template shadowrootmode=\"open\"></template></x-scoped-slot-child></template></lwc-up>"
+ },
+ "csr": {
+  "status": "compile-error",
+  "message": "LWC1188: Invalid dynamic components usage, lwc:component and lwc:is can only be used when dynamic components have been enabled."
+ }
+}

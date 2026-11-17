@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+        "x|host=false|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+        "x|host=false|dir=false": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+        "x|host=true|dir=true": "[data-foo][x] {}[data-foo=\"bar\"][x] {}",
+        "-|host=true|dir=false": "[data-foo] {}[data-foo=\"bar\"] {}"
+      }
+    }
+  ]
+}

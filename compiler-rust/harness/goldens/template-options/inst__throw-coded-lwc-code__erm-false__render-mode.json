@@ -1,0 +1,19 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1234
+  ],
+  "line": null,
+  "errors": [
+    1234
+  ],
+  "message": "Unexpected compilation error: m",
+  "level": 1
+}

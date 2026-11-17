@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./no-th-or-td.css",
+    "./no-th-or-td.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3dqe88fvse3",
+    "lwc-3dqe88fvse3-host",
+    "x-no-th-or-td_no-th-or-td",
+    "x-no-th-or-td_no-th-or-td-host"
+  ]
+}

@@ -1,0 +1,246 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/container/container.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/lightParent",
+        "x/shadowParent",
+        "./container.css",
+        "./container.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-7c9hba002d8",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/container/container.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./container.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-container",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/lightLeaf/lightLeaf.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./lightLeaf.css",
+        "./lightLeaf.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-pmfcvje4q6",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/lightLeaf/lightLeaf.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./lightLeaf.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-light-leaf",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/lightParent/lightParent.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/shadowLeaf",
+        "./lightParent.css",
+        "./lightParent.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-4cnb496op0j",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/lightParent/lightParent.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./lightParent.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-light-parent",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/shadowLeaf/shadowLeaf.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./shadowLeaf.css",
+        "./shadowLeaf.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-6mqg0hu9doa",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/shadowLeaf/shadowLeaf.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./shadowLeaf.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-shadow-leaf",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/shadowParent/shadowParent.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/lightLeaf",
+        "./shadowParent.css",
+        "./shadowParent.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-6dt36t701ns",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/shadowParent/shadowParent.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./shadowParent.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-shadow-parent",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

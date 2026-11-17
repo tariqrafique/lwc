@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1095
+  ],
+  "message": "LWC1095: @wire method or property cannot be used with @track"
+}

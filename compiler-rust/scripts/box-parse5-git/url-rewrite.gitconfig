@@ -1,0 +1,7 @@
+# Cargo git-CLI rewrite: resolve parse5 from the local clone instead of GitHub.
+# Installed only via includeIf gitdir:<CARGO_HOME>/git/ so it does not rewrite
+# /workspace/parse5-rust's own origin (which IS this GitHub URL).
+[url "file:///workspace/parse5-rust"]
+	insteadOf = https://github.com/tariqrafique/parse5-rust
+[url "https://github.com/tariqrafique/parse5-rust"]
+	pushInsteadOf = https://github.com/tariqrafique/parse5-rust

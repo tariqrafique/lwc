@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot convert object to primitive value"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-child><template shadowrootmode=\"open\"></template></x-child></template></lwc-up>"
+ },
+ "asyncErrors": [
+  "TypeError: Cannot convert object to primitive value"
+ ]
+}

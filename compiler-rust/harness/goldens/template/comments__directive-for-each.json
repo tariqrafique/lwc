@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./directive-for-each.css",
+    "./directive-for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6fjo1bal55e",
+    "lwc-6fjo1bal55e-host",
+    "x-directive-for-each_directive-for-each",
+    "x-directive-for-each_directive-for-each-host"
+  ]
+}

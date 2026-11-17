@@ -1,0 +1,16 @@
+/target/
+target/
+node_modules/
+*.node
+.lwc-compiler-napi.*
+harness/.pins/
+harness/.vitest/
+harness/.csr-render-out/
+harness/.ssr-render-out/
+harness/.lbc-out/
+harness/.upstream-cmp-out/
+harness/render-out/
+harness/.template-diag-diff/
+
+# D-0280: fetched oracle / style-corpus / notes copies for portable runs
+.oracle/

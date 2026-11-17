@@ -1,0 +1,362 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./expression.css",
+   "./expression.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-602vdkaauac",
+   "lwc-602vdkaauac-host",
+   "x-expression_expression",
+   "x-expression_expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:spellcheck\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-602vdkaauac"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./expression.css",
+   "./expression.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-602vdkaauac",
+   "lwc-602vdkaauac-host",
+   "x-expression_expression",
+   "x-expression_expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:spellcheck\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-expression_expression"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./expression.css",
+   "./expression.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-602vdkaauac",
+   "lwc-602vdkaauac-host",
+   "x-expression_expression",
+   "x-expression_expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:spellcheck\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-expression_expression"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./expression.css",
+   "./expression.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-602vdkaauac",
+   "lwc-602vdkaauac-host",
+   "x-expression_expression",
+   "x-expression_expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:spellcheck\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-602vdkaauac"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./expression.css",
+   "./expression.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-602vdkaauac",
+   "lwc-602vdkaauac-host",
+   "x-expression_expression",
+   "x-expression_expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:spellcheck\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-602vdkaauac"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./expression.css",
+   "./expression.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-602vdkaauac",
+   "lwc-602vdkaauac-host",
+   "x-expression_expression",
+   "x-expression_expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:spellcheck\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-602vdkaauac"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./expression.css",
+   "./expression.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-602vdkaauac",
+   "lwc-602vdkaauac-host",
+   "x-expression_expression",
+   "x-expression_expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:spellcheck\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-602vdkaauac"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./expression.css",
+   "./expression.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-602vdkaauac",
+   "lwc-602vdkaauac-host",
+   "x-expression_expression",
+   "x-expression_expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:spellcheck\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-602vdkaauac"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./expression.css",
+   "./expression.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-602vdkaauac",
+   "lwc-602vdkaauac-host",
+   "x-expression_expression",
+   "x-expression_expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:spellcheck\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-602vdkaauac"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./expression.css",
+   "./expression.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-602vdkaauac",
+   "lwc-602vdkaauac-host",
+   "x-expression_expression",
+   "x-expression_expression-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:spellcheck\"}${3}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-602vdkaauac"
+  }
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">Before[<div class=\"container\"><slot><div class=\"default-slotted\">default-slotted</div></slot></div>]After</template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">Before[<div class=\"container\"><slot><div class=\"default-slotted\">default-slotted</div></slot></div>]After</template></lwc-up>"
+ }
+}

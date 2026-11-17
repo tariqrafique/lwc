@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <p>\n      this only matters for ssr-compiler; engine-server does not have the same internals\n    </p>\n    <p>\n      generateMarkup overridden: false\n    </p>\n    <p>\n      tmpl overridden: false\n    </p>\n    <p>\n      public props overridden: false\n    </p>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <p>\n      this only matters for ssr-compiler; engine-server does not have the same internals\n    </p>\n    <p>\n      generateMarkup overridden: false\n    </p>\n    <p>\n      tmpl overridden: false\n    </p>\n    <p>\n      public props overridden: false\n    </p>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <p>\n      this only matters for ssr-compiler; engine-server does not have the same internals\n    </p>\n    <p>\n      generateMarkup overridden: false\n    </p>\n    <p>\n      tmpl overridden: false\n    </p>\n    <p>\n      public props overridden: false\n    </p>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <p>\n      this only matters for ssr-compiler; engine-server does not have the same internals\n    </p>\n    <p>\n      generateMarkup overridden: false\n    </p>\n    <p>\n      tmpl overridden: false\n    </p>\n    <p>\n      public props overridden: false\n    </p>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <p>\n      this only matters for ssr-compiler; engine-server does not have the same internals\n    </p>\n    <p>\n      generateMarkup overridden: false\n    </p>\n    <p>\n      tmpl overridden: false\n    </p>\n    <p>\n      public props overridden: false\n    </p>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <p>\n      this only matters for ssr-compiler; engine-server does not have the same internals\n    </p>\n    <p>\n      generateMarkup overridden: false\n    </p>\n    <p>\n      tmpl overridden: false\n    </p>\n    <p>\n      public props overridden: false\n    </p>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <p>\n      this only matters for ssr-compiler; engine-server does not have the same internals\n    </p>\n    <p>\n      generateMarkup overridden: false\n    </p>\n    <p>\n      tmpl overridden: false\n    </p>\n    <p>\n      public props overridden: false\n    </p>\n  </template>\n</fixture-test>"
+ }
+}

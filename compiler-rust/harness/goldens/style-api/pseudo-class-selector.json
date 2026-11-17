@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=false|dir=false": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "x|host=true|dir=true": ":checked[x] {}ul[x] li:first-child[x] a[x] {}",
+     "-|host=true|dir=false": ":checked {}ul li:first-child a {}"
+    }
+   }
+  ]
+ }
+}

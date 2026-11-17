@@ -1,0 +1,54 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/comments-foreach/comments-foreach.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./comments-foreach.css",
+        "./comments-foreach.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-62akn1j5d4f",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/comments-foreach/comments-foreach.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./comments-foreach.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-comments-foreach",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

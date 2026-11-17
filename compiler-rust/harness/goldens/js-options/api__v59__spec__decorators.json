@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "eval": {
+    "imports": [
+      "lwc",
+      "./foo.html",
+      "data-service"
+    ],
+    "lwcImports": [
+      "LightningElement",
+      "registerComponent",
+      "registerDecorators"
+    ],
+    "exports": {
+      "default": "class"
+    },
+    "defaultExport": {
+      "kind": "class",
+      "extendsLightningElement": true,
+      "registered": true,
+      "registerOptions": {
+        "sel": "x-foo",
+        "apiVersion": "number",
+        "hasTmpl": true,
+        "apiVersionValue": 59,
+        "enablePrivateMethods": true
+      }
+    },
+    "decorators": [
+      {
+        "className": "Test",
+        "meta": {
+          "publicProps": {
+            "foo": {
+              "config": 0
+            }
+          },
+          "track": {
+            "bar": 1
+          },
+          "wire": {
+            "wired": {
+              "adapter": "[fn]",
+              "config": "[fn]",
+              "dynamic": [
+                "id"
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "warnings": [],
+  "signals": {
+    "objectSpreadPreserved": false,
+    "asyncToGenerator": false,
+    "wrapAsyncGenerator": false,
+    "asyncIterator": false,
+    "locationRewrite": false,
+    "nativeAsync": false,
+    "registerDecoratorsCalls": 1,
+    "registerComponentCalls": 1
+  }
+}

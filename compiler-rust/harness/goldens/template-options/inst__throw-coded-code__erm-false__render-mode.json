@@ -1,0 +1,20 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1052,
+    1234
+  ],
+  "line": null,
+  "errors": [
+    1234
+  ],
+  "message": "Unexpected compilation error: LWC1052: Error parsing attribute: m",
+  "level": 1
+}

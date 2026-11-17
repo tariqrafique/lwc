@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><iframe src=\"http://example.com\"></iframe><iframe data-id=\"same_origin_iframe\" src=\"about:blank\"></iframe></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><iframe src=\"http://example.com\"></iframe><iframe data-id=\"same_origin_iframe\" src=\"about:blank\"></iframe></template></lwc-up>"
+ }
+}

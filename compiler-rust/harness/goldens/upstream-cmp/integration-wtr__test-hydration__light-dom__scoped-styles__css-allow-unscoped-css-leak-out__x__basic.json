@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-1rssj1tib70-host\" data-lwc-host-scope-token=\"lwc-1rssj1tib70-host\"><style class=\"lwc-1rssj1tib70\" id=\"lwc-style--0\" type=\"text/css\">div {margin-left: 10px;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><style class=\"lwc-1rssj1tib70\" id=\"lwc-style--1\" type=\"text/css\">.lwc-1rssj1tib70-host {background-color: red;}div.lwc-1rssj1tib70 {color: green;}</style><lwc-style style-id=\"lwc-style--1\"></lwc-style><div class=\"lwc-1rssj1tib70\">hello</div></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-1rssj1tib70-host\"><div class=\"lwc-1rssj1tib70\">hello</div></lwc-up>"
+ }
+}

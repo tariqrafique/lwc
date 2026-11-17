@@ -1,0 +1,31 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-spread-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1052,
+    1234
+  ],
+  "line": null,
+  "aggregate": {
+    "message": "",
+    "code": null,
+    "errors": [
+      {
+        "code": 1234,
+        "message": "Unexpected compilation error: LWC1052: Error parsing attribute: m",
+        "location": null
+      }
+    ]
+  },
+  "errors": [
+    1234
+  ],
+  "message": "",
+  "level": null
+}

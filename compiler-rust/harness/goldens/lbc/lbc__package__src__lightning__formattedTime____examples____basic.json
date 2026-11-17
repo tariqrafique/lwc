@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Simple Time value: <lightning-formatted-time><template shadowrootmode=\"open\"></template></lightning-formatted-time></p><p>Time value with Z suffix: <lightning-formatted-time><template shadowrootmode=\"open\"></template></lightning-formatted-time></p></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p>Simple Time value: <lightning-formatted-time><template shadowrootmode=\"open\"></template></lightning-formatted-time></p><p>Time value with Z suffix: <lightning-formatted-time><template shadowrootmode=\"open\"></template></lightning-formatted-time></p></template></lwc-lbc>"
+ }
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./iterator-value-as-key.css",
+    "./iterator-value-as-key.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-85bmjhkq70",
+    "lwc-85bmjhkq70-host",
+    "x-iterator-value-as-key_iterator-value-as-key",
+    "x-iterator-value-as-key_iterator-value-as-key-host"
+  ]
+}

@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=false|dir=false": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "x|host=true|dir=true": "h1[x] > a[x] {}h1[x] + a[x] {}div.active[x] > p[x] {}",
+     "-|host=true|dir=false": "h1 > a {}h1 + a {}div.active > p {}"
+    }
+   }
+  ]
+ }
+}

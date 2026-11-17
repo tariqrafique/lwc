@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div class=\"sanjo\"></div><div><a class=\"anchor-empty-string\">fragment url</a></div><div><map name=\"blackdot\"><area class=\"area-empty-string\" shape=\"circle\" coords=\"75,75,75\"></map></div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div class=\"sanjo\"></div><div><a class=\"anchor-empty-string\">fragment url</a></div><div><map name=\"blackdot\"><area class=\"area-empty-string\" shape=\"circle\" coords=\"75,75,75\"></map></div></template></lwc-up>"
+ }
+}

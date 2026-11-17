@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><slot><div>Default fallback</div></slot><slot name=\"foo\"><div>Named fallback</div></slot></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><slot><div fallback=\"\">Default fallback</div></slot><slot name=\"foo\"><div fallback=\"\">Named fallback</div></slot></template></lwc-up>"
+ }
+}

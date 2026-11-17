@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-4aa1c9u7cd1-host\" data-lwc-host-scope-token=\"lwc-4aa1c9u7cd1-host\"><template shadowrootmode=\"open\"><style class=\"lwc-4aa1c9u7cd1\" id=\"lwc-style--0\" type=\"text/css\">text.lwc-4aa1c9u7cd1 {display: none;}svg.lwc-4aa1c9u7cd1 {fill: rgb(255, 0, 0);}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><svg class=\"lwc-4aa1c9u7cd1\" viewBox=\"0 0 240 80\" data-dynamic=\"foo\"><text class=\"lwc-4aa1c9u7cd1\" x=\"20\" y=\"35\">I should not be visible</text></svg></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-4aa1c9u7cd1-host\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">text.lwc-4aa1c9u7cd1 {display: none;}svg.lwc-4aa1c9u7cd1 {fill: rgb(255, 0, 0);}</style><svg viewBox=\"0 0 240 80\" class=\"lwc-4aa1c9u7cd1\" data-dynamic=\"foo\"><text x=\"20\" y=\"35\" class=\"lwc-4aa1c9u7cd1\">I should not be visible</text></svg></template></lwc-up>"
+ }
+}

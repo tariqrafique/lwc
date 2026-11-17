@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./valid-non-alphanumeric.css",
+    "./valid-non-alphanumeric.scoped.css?scoped=true",
+    "x/button"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-7m0fdesmolf",
+    "lwc-7m0fdesmolf-host",
+    "x-valid-non-alphanumeric_valid-non-alphanumeric",
+    "x-valid-non-alphanumeric_valid-non-alphanumeric-host"
+  ]
+}

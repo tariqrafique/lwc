@@ -1,0 +1,362 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-sibiling.css",
+   "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4m9tr5ct9rp",
+   "lwc-4m9tr5ct9rp-host",
+   "x-template-sibiling_template-sibiling",
+   "x-template-sibiling_template-sibiling-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>2</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4m9tr5ct9rp"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-sibiling.css",
+   "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4m9tr5ct9rp",
+   "lwc-4m9tr5ct9rp-host",
+   "x-template-sibiling_template-sibiling",
+   "x-template-sibiling_template-sibiling-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>2</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-template-sibiling_template-sibiling"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-sibiling.css",
+   "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4m9tr5ct9rp",
+   "lwc-4m9tr5ct9rp-host",
+   "x-template-sibiling_template-sibiling",
+   "x-template-sibiling_template-sibiling-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>2</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-template-sibiling_template-sibiling"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-sibiling.css",
+   "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4m9tr5ct9rp",
+   "lwc-4m9tr5ct9rp-host",
+   "x-template-sibiling_template-sibiling",
+   "x-template-sibiling_template-sibiling-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>2</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4m9tr5ct9rp"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-sibiling.css",
+   "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4m9tr5ct9rp",
+   "lwc-4m9tr5ct9rp-host",
+   "x-template-sibiling_template-sibiling",
+   "x-template-sibiling_template-sibiling-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>2</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4m9tr5ct9rp"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-sibiling.css",
+   "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4m9tr5ct9rp",
+   "lwc-4m9tr5ct9rp-host",
+   "x-template-sibiling_template-sibiling",
+   "x-template-sibiling_template-sibiling-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>2</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4m9tr5ct9rp"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-sibiling.css",
+   "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4m9tr5ct9rp",
+   "lwc-4m9tr5ct9rp-host",
+   "x-template-sibiling_template-sibiling",
+   "x-template-sibiling_template-sibiling-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>2</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4m9tr5ct9rp"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-sibiling.css",
+   "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4m9tr5ct9rp",
+   "lwc-4m9tr5ct9rp-host",
+   "x-template-sibiling_template-sibiling",
+   "x-template-sibiling_template-sibiling-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>2</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4m9tr5ct9rp"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-sibiling.css",
+   "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4m9tr5ct9rp",
+   "lwc-4m9tr5ct9rp-host",
+   "x-template-sibiling_template-sibiling",
+   "x-template-sibiling_template-sibiling-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>2</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4m9tr5ct9rp"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./template-sibiling.css",
+   "./template-sibiling.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4m9tr5ct9rp",
+   "lwc-4m9tr5ct9rp-host",
+   "x-template-sibiling_template-sibiling",
+   "x-template-sibiling_template-sibiling-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>1</p>",
+   "parseFragment:<p${3}>2</p>",
+   "parseFragment:<p${3}>3</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4m9tr5ct9rp"
+  }
+ }
+}

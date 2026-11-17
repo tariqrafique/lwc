@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Cannot use 'in' operator to search for 'adapter' in undefined"
+ },
+ "csr": {
+  "status": "render-error",
+  "message": "Cannot read properties of undefined (reading 'adapter')"
+ }
+}

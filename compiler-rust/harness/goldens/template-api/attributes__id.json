@@ -1,0 +1,462 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./id.css",
+   "./id.scoped.css?scoped=true",
+   "x/subject",
+   "x/description",
+   "x/textarea"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6rsnvsuaeq1",
+   "lwc-6rsnvsuaeq1-host",
+   "x-id_id",
+   "x-id_id-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label${\"a0:for\"}${3}>label text</label>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<p${\"a0:id\"}${3}>description text</p>",
+   "parseFragment:<input${\"a0:aria-describedby\"}${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6rsnvsuaeq1"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./id.css",
+   "./id.scoped.css?scoped=true",
+   "x/subject",
+   "x/description",
+   "x/textarea"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6rsnvsuaeq1",
+   "lwc-6rsnvsuaeq1-host",
+   "x-id_id",
+   "x-id_id-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label${\"a0:for\"}${3}>label text</label>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<p${\"a0:id\"}${3}>description text</p>",
+   "parseFragment:<input${\"a0:aria-describedby\"}${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-id_id"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./id.css",
+   "./id.scoped.css?scoped=true",
+   "x/subject",
+   "x/description",
+   "x/textarea"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6rsnvsuaeq1",
+   "lwc-6rsnvsuaeq1-host",
+   "x-id_id",
+   "x-id_id-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label${\"a0:for\"}${3}>label text</label>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<p${\"a0:id\"}${3}>description text</p>",
+   "parseFragment:<input${\"a0:aria-describedby\"}${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-id_id"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./id.css",
+   "./id.scoped.css?scoped=true",
+   "x/subject",
+   "x/description",
+   "x/textarea"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6rsnvsuaeq1",
+   "lwc-6rsnvsuaeq1-host",
+   "x-id_id",
+   "x-id_id-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label${\"a0:for\"}${3}>label text</label>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<p${\"a0:id\"}${3}>description text</p>",
+   "parseFragment:<input${\"a0:aria-describedby\"}${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6rsnvsuaeq1"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./id.css",
+   "./id.scoped.css?scoped=true",
+   "x/subject",
+   "x/description",
+   "x/textarea"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6rsnvsuaeq1",
+   "lwc-6rsnvsuaeq1-host",
+   "x-id_id",
+   "x-id_id-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label${\"a0:for\"}${3}>label text</label>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<p${\"a0:id\"}${3}>description text</p>",
+   "parseFragment:<input${\"a0:aria-describedby\"}${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6rsnvsuaeq1"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./id.css",
+   "./id.scoped.css?scoped=true",
+   "x/subject",
+   "x/description",
+   "x/textarea"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6rsnvsuaeq1",
+   "lwc-6rsnvsuaeq1-host",
+   "x-id_id",
+   "x-id_id-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label${\"a0:for\"}${3}>label text</label>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<p${\"a0:id\"}${3}>description text</p>",
+   "parseFragment:<input${\"a0:aria-describedby\"}${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6rsnvsuaeq1"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./id.css",
+   "./id.scoped.css?scoped=true",
+   "x/subject",
+   "x/description",
+   "x/textarea"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6rsnvsuaeq1",
+   "lwc-6rsnvsuaeq1-host",
+   "x-id_id",
+   "x-id_id-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label${\"a0:for\"}${3}>label text</label>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<p${\"a0:id\"}${3}>description text</p>",
+   "parseFragment:<input${\"a0:aria-describedby\"}${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6rsnvsuaeq1"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./id.css",
+   "./id.scoped.css?scoped=true",
+   "x/subject",
+   "x/description",
+   "x/textarea"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6rsnvsuaeq1",
+   "lwc-6rsnvsuaeq1-host",
+   "x-id_id",
+   "x-id_id-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label${\"a0:for\"}${3}>label text</label>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<p${\"a0:id\"}${3}>description text</p>",
+   "parseFragment:<input${\"a0:aria-describedby\"}${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6rsnvsuaeq1"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./id.css",
+   "./id.scoped.css?scoped=true",
+   "x/subject",
+   "x/description",
+   "x/textarea"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6rsnvsuaeq1",
+   "lwc-6rsnvsuaeq1-host",
+   "x-id_id",
+   "x-id_id-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label${\"a0:for\"}${3}>label text</label>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<p${\"a0:id\"}${3}>description text</p>",
+   "parseFragment:<input${\"a0:aria-describedby\"}${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6rsnvsuaeq1"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./id.css",
+   "./id.scoped.css?scoped=true",
+   "x/subject",
+   "x/description",
+   "x/textarea"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6rsnvsuaeq1",
+   "lwc-6rsnvsuaeq1-host",
+   "x-id_id",
+   "x-id_id-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "f",
+   "gid",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<label${\"a0:for\"}${3}>label text</label>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<input${\"a0:id\"}${3}>",
+   "parseFragment:<p${\"a0:id\"}${3}>description text</p>",
+   "parseFragment:<input${\"a0:aria-describedby\"}${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6rsnvsuaeq1"
+  }
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"backgroundInverse\"><lightning-button-stateful><template shadowrootmode=\"open\"></template></lightning-button-stateful></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"backgroundInverse\"><lightning-button-stateful><template shadowrootmode=\"open\"></template></lightning-button-stateful></div></template></lwc-lbc>"
+ }
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./dashed-html-tag.css",
+    "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-490hohg2691",
+    "lwc-490hohg2691-host",
+    "x-dashed-html-tag_dashed-html-tag",
+    "x-dashed-html-tag_dashed-html-tag-host"
+  ]
+}

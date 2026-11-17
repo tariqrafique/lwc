@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./scoped-id-static.css",
+    "./scoped-id-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate",
+    "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-1h20vq2uq0o",
+    "lwc-1h20vq2uq0o-host",
+    "x-scoped-id-static_scoped-id-static",
+    "x-scoped-id-static_scoped-id-static-host"
+  ]
+}

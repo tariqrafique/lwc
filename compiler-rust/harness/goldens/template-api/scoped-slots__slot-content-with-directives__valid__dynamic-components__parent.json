@@ -1,0 +1,342 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent.css",
+   "./parent.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ts1rr7v761",
+   "lwc-ts1rr7v761-host",
+   "x-parent_parent",
+   "x-parent_parent-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "dc",
+   "fr",
+   "ssf"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-ts1rr7v761"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent.css",
+   "./parent.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ts1rr7v761",
+   "lwc-ts1rr7v761-host",
+   "x-parent_parent",
+   "x-parent_parent-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "dc",
+   "fr",
+   "ssf"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-parent_parent"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent.css",
+   "./parent.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ts1rr7v761",
+   "lwc-ts1rr7v761-host",
+   "x-parent_parent",
+   "x-parent_parent-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "dc",
+   "fr",
+   "ssf"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-parent_parent"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent.css",
+   "./parent.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ts1rr7v761",
+   "lwc-ts1rr7v761-host",
+   "x-parent_parent",
+   "x-parent_parent-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "dc",
+   "fr",
+   "ssf"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-ts1rr7v761"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent.css",
+   "./parent.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ts1rr7v761",
+   "lwc-ts1rr7v761-host",
+   "x-parent_parent",
+   "x-parent_parent-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "dc",
+   "fr",
+   "ssf"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-ts1rr7v761"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent.css",
+   "./parent.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ts1rr7v761",
+   "lwc-ts1rr7v761-host",
+   "x-parent_parent",
+   "x-parent_parent-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "dc",
+   "fr",
+   "ssf"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-ts1rr7v761"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent.css",
+   "./parent.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ts1rr7v761",
+   "lwc-ts1rr7v761-host",
+   "x-parent_parent",
+   "x-parent_parent-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "dc",
+   "fr",
+   "ssf"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-ts1rr7v761"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent.css",
+   "./parent.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ts1rr7v761",
+   "lwc-ts1rr7v761-host",
+   "x-parent_parent",
+   "x-parent_parent-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "dc",
+   "fr",
+   "ssf"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-ts1rr7v761"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent.css",
+   "./parent.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ts1rr7v761",
+   "lwc-ts1rr7v761-host",
+   "x-parent_parent",
+   "x-parent_parent-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "dc",
+   "fr",
+   "ssf"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-ts1rr7v761"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./parent.css",
+   "./parent.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ts1rr7v761",
+   "lwc-ts1rr7v761-host",
+   "x-parent_parent",
+   "x-parent_parent-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "dc",
+   "fr",
+   "ssf"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-ts1rr7v761"
+  }
+ }
+}

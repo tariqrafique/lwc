@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ol>\n      <li>\n        europe\n        <strong>\n          paris\n        </strong>\n        <strong>\n          london\n        </strong>\n        <strong>\n          rome\n        </strong>\n      </li>\n      <li>\n        asia\n        <strong>\n          tokyo\n        </strong>\n        <strong>\n          kuala lumpur\n        </strong>\n        <strong>\n          singapore\n        </strong>\n      </li>\n    </ol>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ol>\n      <li>\n        europe\n        <strong>\n          paris\n        </strong>\n        <strong>\n          london\n        </strong>\n        <strong>\n          rome\n        </strong>\n      </li>\n      <li>\n        asia\n        <strong>\n          tokyo\n        </strong>\n        <strong>\n          kuala lumpur\n        </strong>\n        <strong>\n          singapore\n        </strong>\n      </li>\n    </ol>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ol>\n      <li>\n        europe\n        <strong>\n          paris\n        </strong>\n        <strong>\n          london\n        </strong>\n        <strong>\n          rome\n        </strong>\n      </li>\n      <li>\n        asia\n        <strong>\n          tokyo\n        </strong>\n        <strong>\n          kuala lumpur\n        </strong>\n        <strong>\n          singapore\n        </strong>\n      </li>\n    </ol>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ol>\n      <li>\n        europe\n        <strong>\n          paris\n        </strong>\n        <strong>\n          london\n        </strong>\n        <strong>\n          rome\n        </strong>\n      </li>\n      <li>\n        asia\n        <strong>\n          tokyo\n        </strong>\n        <strong>\n          kuala lumpur\n        </strong>\n        <strong>\n          singapore\n        </strong>\n      </li>\n    </ol>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ol>\n      <li>\n        europe\n        <strong>\n          paris\n        </strong>\n        <strong>\n          london\n        </strong>\n        <strong>\n          rome\n        </strong>\n      </li>\n      <li>\n        asia\n        <strong>\n          tokyo\n        </strong>\n        <strong>\n          kuala lumpur\n        </strong>\n        <strong>\n          singapore\n        </strong>\n      </li>\n    </ol>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ol>\n      <li>\n        europe\n        <strong>\n          paris\n        </strong>\n        <strong>\n          london\n        </strong>\n        <strong>\n          rome\n        </strong>\n      </li>\n      <li>\n        asia\n        <strong>\n          tokyo\n        </strong>\n        <strong>\n          kuala lumpur\n        </strong>\n        <strong>\n          singapore\n        </strong>\n      </li>\n    </ol>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <ol>\n      <li>\n        europe\n        <strong>\n          paris\n        </strong>\n        <strong>\n          london\n        </strong>\n        <strong>\n          rome\n        </strong>\n      </li>\n      <li>\n        asia\n        <strong>\n          tokyo\n        </strong>\n        <strong>\n          kuala lumpur\n        </strong>\n        <strong>\n          singapore\n        </strong>\n      </li>\n    </ol>\n  </template>\n</fixture-test>"
+ }
+}

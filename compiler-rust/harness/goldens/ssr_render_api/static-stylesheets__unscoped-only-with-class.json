@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <h1 class=\"yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <h1 class=\"yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <h1 class=\"yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <h1 class=\"yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <h1 class=\"yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <h1 class=\"yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <style id=\"lwc-style--0\" type=\"text/css\">\n      .yolo {background: royalblue;}\n    </style>\n    <lwc-style style-id=\"lwc-style--0\">\n    </lwc-style>\n    <h1 class=\"yolo\">\n      hello\n    </h1>\n  </template>\n</fixture-test>"
+ }
+}

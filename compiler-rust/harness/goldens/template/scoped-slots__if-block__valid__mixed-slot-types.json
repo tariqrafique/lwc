@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./mixed-slot-types.css",
+    "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2og2ir50afk",
+    "lwc-2og2ir50afk-host",
+    "x-mixed-slot-types_mixed-slot-types",
+    "x-mixed-slot-types_mixed-slot-types-host"
+  ]
+}

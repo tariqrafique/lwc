@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./parent-mixed-slot-content.css",
+    "./parent-mixed-slot-content.scoped.css?scoped=true",
+    "x/child"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-3s5q7c313i4",
+    "lwc-3s5q7c313i4-host",
+    "x-parent-mixed-slot-content_parent-mixed-slot-content",
+    "x-parent-mixed-slot-content_parent-mixed-slot-content-host"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./unary-expr-logical.css",
+    "./unary-expr-logical.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-1s8kdgpsntb",
+    "lwc-1s8kdgpsntb-host",
+    "x-unary-expr-logical_unary-expr-logical",
+    "x-unary-expr-logical_unary-expr-logical-host"
+  ]
+}

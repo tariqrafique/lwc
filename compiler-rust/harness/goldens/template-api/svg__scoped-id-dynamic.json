@@ -1,0 +1,364 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped-id-dynamic.css",
+   "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-72ju6ij1be7",
+   "lwc-72ju6ij1be7-host",
+   "x-scoped-id-dynamic_scoped-id-dynamic",
+   "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"100px\" height=\"100px\" viewport=\"0 0 100 100\"${3}><defs${3}><circle${\"a2:id\"} r=\"10\" cx=\"10\" cy=\"10\" fill=\"black\"${3}/><circle${\"a3:id\"} r=\"10\" cx=\"14\" cy=\"14\" fill=\"red\"${3}/></defs><use${\"a4:href\"}${3}/><use${\"a5:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-72ju6ij1be7"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped-id-dynamic.css",
+   "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-72ju6ij1be7",
+   "lwc-72ju6ij1be7-host",
+   "x-scoped-id-dynamic_scoped-id-dynamic",
+   "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-scoped-id-dynamic_scoped-id-dynamic"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped-id-dynamic.css",
+   "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-72ju6ij1be7",
+   "lwc-72ju6ij1be7-host",
+   "x-scoped-id-dynamic_scoped-id-dynamic",
+   "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-scoped-id-dynamic_scoped-id-dynamic"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped-id-dynamic.css",
+   "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-72ju6ij1be7",
+   "lwc-72ju6ij1be7-host",
+   "x-scoped-id-dynamic_scoped-id-dynamic",
+   "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"100px\" height=\"100px\" viewport=\"0 0 100 100\"${3}><defs${3}><circle${\"a2:id\"} r=\"10\" cx=\"10\" cy=\"10\" fill=\"black\"${3}/><circle${\"a3:id\"} r=\"10\" cx=\"14\" cy=\"14\" fill=\"red\"${3}/></defs><use${\"a4:href\"}${3}/><use${\"a5:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-72ju6ij1be7"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped-id-dynamic.css",
+   "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-72ju6ij1be7",
+   "lwc-72ju6ij1be7-host",
+   "x-scoped-id-dynamic_scoped-id-dynamic",
+   "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"100px\" height=\"100px\" viewport=\"0 0 100 100\"${3}><defs${3}><circle${\"a2:id\"} r=\"10\" cx=\"10\" cy=\"10\" fill=\"black\"${3}/><circle${\"a3:id\"} r=\"10\" cx=\"14\" cy=\"14\" fill=\"red\"${3}/></defs><use${\"a4:href\"}${3}/><use${\"a5:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-72ju6ij1be7"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped-id-dynamic.css",
+   "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-72ju6ij1be7",
+   "lwc-72ju6ij1be7-host",
+   "x-scoped-id-dynamic_scoped-id-dynamic",
+   "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"100px\" height=\"100px\" viewport=\"0 0 100 100\"${3}><defs${3}><circle${\"a2:id\"} r=\"10\" cx=\"10\" cy=\"10\" fill=\"black\"${3}/><circle${\"a3:id\"} r=\"10\" cx=\"14\" cy=\"14\" fill=\"red\"${3}/></defs><use${\"a4:href\"}${3}/><use${\"a5:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-72ju6ij1be7"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped-id-dynamic.css",
+   "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-72ju6ij1be7",
+   "lwc-72ju6ij1be7-host",
+   "x-scoped-id-dynamic_scoped-id-dynamic",
+   "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"100px\" height=\"100px\" viewport=\"0 0 100 100\"${3}><defs${3}><circle${\"a2:id\"} r=\"10\" cx=\"10\" cy=\"10\" fill=\"black\"${3}/><circle${\"a3:id\"} r=\"10\" cx=\"14\" cy=\"14\" fill=\"red\"${3}/></defs><use${\"a4:href\"}${3}/><use${\"a5:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-72ju6ij1be7"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped-id-dynamic.css",
+   "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-72ju6ij1be7",
+   "lwc-72ju6ij1be7-host",
+   "x-scoped-id-dynamic_scoped-id-dynamic",
+   "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"100px\" height=\"100px\" viewport=\"0 0 100 100\"${3}><defs${3}><circle${\"a2:id\"} r=\"10\" cx=\"10\" cy=\"10\" fill=\"black\"${3}/><circle${\"a3:id\"} r=\"10\" cx=\"14\" cy=\"14\" fill=\"red\"${3}/></defs><use${\"a4:href\"}${3}/><use${\"a5:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-72ju6ij1be7"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped-id-dynamic.css",
+   "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-72ju6ij1be7",
+   "lwc-72ju6ij1be7-host",
+   "x-scoped-id-dynamic_scoped-id-dynamic",
+   "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"100px\" height=\"100px\" viewport=\"0 0 100 100\"${3}><defs${3}><circle${\"a2:id\"} r=\"10\" cx=\"10\" cy=\"10\" fill=\"black\"${3}/><circle${\"a3:id\"} r=\"10\" cx=\"14\" cy=\"14\" fill=\"red\"${3}/></defs><use${\"a4:href\"}${3}/><use${\"a5:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-72ju6ij1be7"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./scoped-id-dynamic.css",
+   "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-72ju6ij1be7",
+   "lwc-72ju6ij1be7-host",
+   "x-scoped-id-dynamic_scoped-id-dynamic",
+   "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ],
+  "apiHelpers": [
+   "fid",
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg width=\"100px\" height=\"100px\" viewport=\"0 0 100 100\"${3}><defs${3}><circle${\"a2:id\"} r=\"10\" cx=\"10\" cy=\"10\" fill=\"black\"${3}/><circle${\"a3:id\"} r=\"10\" cx=\"14\" cy=\"14\" fill=\"red\"${3}/></defs><use${\"a4:href\"}${3}/><use${\"a5:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-72ju6ij1be7"
+  }
+ }
+}

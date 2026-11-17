@@ -1,0 +1,57 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/computed/computed.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./computed.css",
+        "./computed.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-5m7vih8u5bq",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/computed/computed.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./computed.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-computed",
+          "publicProps": [
+            "a",
+            "b"
+          ],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

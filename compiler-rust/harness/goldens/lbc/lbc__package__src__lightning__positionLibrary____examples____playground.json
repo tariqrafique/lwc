@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "_missingExportShim is not a function"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.config {background: white;border-radius: 5px;padding: 8px 15px 13px 15px;position: fixed;width: auto;left: 10px;right: 10px;}.config-bottom {bottom: 130px;}.slds-col {border-left: 1px solid #eef4ff;border-right: 1px solid #eef4ff;}.container {width: var(--containerWidth, 300px);height: var(--containerHeight, 200px);border: 3.5px solid #0176d3;}.container-text {position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);}.container-placeholder {background: transparent;height: 1000px;word-wrap: break-word;}.top-left {position: absolute;left: 0;top: 0;}.top-right {position: absolute;right: 0;top: 0;}.bottom-left {position: absolute;left: 0;bottom: 0;}.bottom-right {position: absolute;right: 0;bottom: 0;}.viewport-placeholder {height: 200vh;width: 50%;background: transparent;}*::-webkit-scrollbar {-webkit-appearance: none;width: 6px;}*::-webkit-scrollbar-thumb {border-radius: 4px;background-color: rgba(0, 0, 0, 0.5);box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);}body {overflow-y: auto;}</style></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "_missingExportShim is not a function"
+ ]
+}

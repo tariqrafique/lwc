@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./text-escaping.css",
+    "./text-escaping.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6t1doghra7u",
+    "lwc-6t1doghra7u-host",
+    "x-text-escaping_text-escaping",
+    "x-text-escaping_text-escaping-host"
+  ]
+}

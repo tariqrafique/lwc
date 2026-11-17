@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Input Location\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Represents a geolocation compound field that accepts a latitude and longitude value.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Input Location\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-input-location><template shadowrootmode=\"open\"></template></c-input-location><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Represents a geolocation compound field that accepts a latitude and longitude value.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

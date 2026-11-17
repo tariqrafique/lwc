@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./binary-expr-arithmetic.css",
+    "./binary-expr-arithmetic.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-dhsrcdf074",
+    "lwc-dhsrcdf074-host",
+    "x-binary-expr-arithmetic_binary-expr-arithmetic",
+    "x-binary-expr-arithmetic_binary-expr-arithmetic-host"
+  ]
+}

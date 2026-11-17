@@ -1,0 +1,362 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandchild.css",
+   "./grandchild.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-42b236sbaik",
+   "lwc-42b236sbaik-host",
+   "x-grandchild_grandchild",
+   "x-grandchild_grandchild-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}>${\"t2\"}</div></div>",
+   "parseFragment:<div${3}><div${3}>${\"t2\"}<span${3}>text1</span></div><div${3}><span${3}>text2</span>${\"t8\"}<span${3}>text3</span></div><div${3}><span${3}>text4</span><span${3}>text5</span>${\"t16\"}</div><div${3}>${\"t18\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-42b236sbaik"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandchild.css",
+   "./grandchild.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-42b236sbaik",
+   "lwc-42b236sbaik-host",
+   "x-grandchild_grandchild",
+   "x-grandchild_grandchild-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}>${\"t2\"}</div></div>",
+   "parseFragment:<div${3}><div${3}>${\"t2\"}<span${3}>text1</span></div><div${3}><span${3}>text2</span>${\"t8\"}<span${3}>text3</span></div><div${3}><span${3}>text4</span><span${3}>text5</span>${\"t16\"}</div><div${3}>${\"t18\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-grandchild_grandchild"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandchild.css",
+   "./grandchild.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-42b236sbaik",
+   "lwc-42b236sbaik-host",
+   "x-grandchild_grandchild",
+   "x-grandchild_grandchild-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}>${\"t2\"}</div></div>",
+   "parseFragment:<div${3}><div${3}>${\"t2\"}<span${3}>text1</span></div><div${3}><span${3}>text2</span>${\"t8\"}<span${3}>text3</span></div><div${3}><span${3}>text4</span><span${3}>text5</span>${\"t16\"}</div><div${3}>${\"t18\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-grandchild_grandchild"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandchild.css",
+   "./grandchild.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-42b236sbaik",
+   "lwc-42b236sbaik-host",
+   "x-grandchild_grandchild",
+   "x-grandchild_grandchild-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}>${\"t2\"}</div></div>",
+   "parseFragment:<div${3}><div${3}>${\"t2\"}<span${3}>text1</span></div><div${3}><span${3}>text2</span>${\"t8\"}<span${3}>text3</span></div><div${3}><span${3}>text4</span><span${3}>text5</span>${\"t16\"}</div><div${3}>${\"t18\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-42b236sbaik"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandchild.css",
+   "./grandchild.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-42b236sbaik",
+   "lwc-42b236sbaik-host",
+   "x-grandchild_grandchild",
+   "x-grandchild_grandchild-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}>${\"t2\"}</div></div>",
+   "parseFragment:<div${3}><div${3}>${\"t2\"}<span${3}>text1</span></div><div${3}><span${3}>text2</span>${\"t8\"}<span${3}>text3</span></div><div${3}><span${3}>text4</span><span${3}>text5</span>${\"t16\"}</div><div${3}>${\"t18\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-42b236sbaik"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandchild.css",
+   "./grandchild.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-42b236sbaik",
+   "lwc-42b236sbaik-host",
+   "x-grandchild_grandchild",
+   "x-grandchild_grandchild-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}>${\"t2\"}</div></div>",
+   "parseFragment:<div${3}><div${3}>${\"t2\"}<span${3}>text1</span></div><div${3}><span${3}>text2</span>${\"t8\"}<span${3}>text3</span></div><div${3}><span${3}>text4</span><span${3}>text5</span>${\"t16\"}</div><div${3}>${\"t18\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-42b236sbaik"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandchild.css",
+   "./grandchild.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-42b236sbaik",
+   "lwc-42b236sbaik-host",
+   "x-grandchild_grandchild",
+   "x-grandchild_grandchild-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}>${\"t2\"}</div></div>",
+   "parseFragment:<div${3}><div${3}>${\"t2\"}<span${3}>text1</span></div><div${3}><span${3}>text2</span>${\"t8\"}<span${3}>text3</span></div><div${3}><span${3}>text4</span><span${3}>text5</span>${\"t16\"}</div><div${3}>${\"t18\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-42b236sbaik"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandchild.css",
+   "./grandchild.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-42b236sbaik",
+   "lwc-42b236sbaik-host",
+   "x-grandchild_grandchild",
+   "x-grandchild_grandchild-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}>${\"t2\"}</div></div>",
+   "parseFragment:<div${3}><div${3}>${\"t2\"}<span${3}>text1</span></div><div${3}><span${3}>text2</span>${\"t8\"}<span${3}>text3</span></div><div${3}><span${3}>text4</span><span${3}>text5</span>${\"t16\"}</div><div${3}>${\"t18\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-42b236sbaik"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandchild.css",
+   "./grandchild.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-42b236sbaik",
+   "lwc-42b236sbaik-host",
+   "x-grandchild_grandchild",
+   "x-grandchild_grandchild-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}>${\"t2\"}</div></div>",
+   "parseFragment:<div${3}><div${3}>${\"t2\"}<span${3}>text1</span></div><div${3}><span${3}>text2</span>${\"t8\"}<span${3}>text3</span></div><div${3}><span${3}>text4</span><span${3}>text5</span>${\"t16\"}</div><div${3}>${\"t18\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-42b236sbaik"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./grandchild.css",
+   "./grandchild.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-42b236sbaik",
+   "lwc-42b236sbaik-host",
+   "x-grandchild_grandchild",
+   "x-grandchild_grandchild-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><div${3}>${\"t2\"}</div></div>",
+   "parseFragment:<div${3}><div${3}>${\"t2\"}<span${3}>text1</span></div><div${3}><span${3}>text2</span>${\"t8\"}<span${3}>text3</span></div><div${3}><span${3}>text4</span><span${3}>text5</span>${\"t16\"}</div><div${3}>${\"t18\"}</div></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-42b236sbaik"
+  }
+ }
+}

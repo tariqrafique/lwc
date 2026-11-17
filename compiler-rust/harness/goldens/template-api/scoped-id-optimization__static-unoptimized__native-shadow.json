@@ -1,0 +1,312 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-native-shadow_native-shadow"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-native-shadow_native-shadow"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./native-shadow.css",
+   "./native-shadow.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54b380gv09b",
+   "lwc-54b380gv09b-host",
+   "x-native-shadow_native-shadow",
+   "x-native-shadow_native-shadow-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "t"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-54b380gv09b"
+  }
+ }
+}

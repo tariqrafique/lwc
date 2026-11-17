@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./scoped-id-dynamic.css",
+    "./scoped-id-dynamic.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate",
+    "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-72ju6ij1be7",
+    "lwc-72ju6ij1be7-host",
+    "x-scoped-id-dynamic_scoped-id-dynamic",
+    "x-scoped-id-dynamic_scoped-id-dynamic-host"
+  ]
+}

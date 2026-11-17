@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-optimized.css",
+   "./static-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7n28hdp1g54",
+   "lwc-7n28hdp1g54-host",
+   "x-static-optimized_static-optimized",
+   "x-static-optimized_static-optimized-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"these-are-dynamic${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-static${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-boolean-true${0}\"${2}><div aria-describedby aria-activedescendant aria-errormessage aria-flowto aria-labelledby for id${3}></div></section>",
+   "parseFragment:<section class=\"these-are-the-empty-string${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7n28hdp1g54"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-optimized.css",
+   "./static-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7n28hdp1g54",
+   "lwc-7n28hdp1g54-host",
+   "x-static-optimized_static-optimized",
+   "x-static-optimized_static-optimized-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"these-are-dynamic${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-static${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-boolean-true${0}\"${2}><div aria-describedby aria-activedescendant aria-errormessage aria-flowto aria-labelledby for id${3}></div></section>",
+   "parseFragment:<section class=\"these-are-the-empty-string${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-static-optimized_static-optimized"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-optimized.css",
+   "./static-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7n28hdp1g54",
+   "lwc-7n28hdp1g54-host",
+   "x-static-optimized_static-optimized",
+   "x-static-optimized_static-optimized-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"these-are-dynamic${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-static${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-boolean-true${0}\"${2}><div aria-describedby aria-activedescendant aria-errormessage aria-flowto aria-labelledby for id${3}></div></section>",
+   "parseFragment:<section class=\"these-are-the-empty-string${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-static-optimized_static-optimized"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-optimized.css",
+   "./static-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7n28hdp1g54",
+   "lwc-7n28hdp1g54-host",
+   "x-static-optimized_static-optimized",
+   "x-static-optimized_static-optimized-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"these-are-dynamic${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-static${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-boolean-true${0}\"${2}><div aria-describedby aria-activedescendant aria-errormessage aria-flowto aria-labelledby for id${3}></div></section>",
+   "parseFragment:<section class=\"these-are-the-empty-string${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7n28hdp1g54"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-optimized.css",
+   "./static-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7n28hdp1g54",
+   "lwc-7n28hdp1g54-host",
+   "x-static-optimized_static-optimized",
+   "x-static-optimized_static-optimized-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"these-are-dynamic${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-static${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-boolean-true${0}\"${2}><div aria-describedby aria-activedescendant aria-errormessage aria-flowto aria-labelledby for id${3}></div></section>",
+   "parseFragment:<section class=\"these-are-the-empty-string${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7n28hdp1g54"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-optimized.css",
+   "./static-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7n28hdp1g54",
+   "lwc-7n28hdp1g54-host",
+   "x-static-optimized_static-optimized",
+   "x-static-optimized_static-optimized-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"these-are-dynamic${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-static${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-boolean-true${0}\"${2}><div aria-describedby aria-activedescendant aria-errormessage aria-flowto aria-labelledby for id${3}></div></section>",
+   "parseFragment:<section class=\"these-are-the-empty-string${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7n28hdp1g54"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-optimized.css",
+   "./static-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7n28hdp1g54",
+   "lwc-7n28hdp1g54-host",
+   "x-static-optimized_static-optimized",
+   "x-static-optimized_static-optimized-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"these-are-dynamic${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-static${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-boolean-true${0}\"${2}><div aria-describedby aria-activedescendant aria-errormessage aria-flowto aria-labelledby for id${3}></div></section>",
+   "parseFragment:<section class=\"these-are-the-empty-string${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7n28hdp1g54"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-optimized.css",
+   "./static-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7n28hdp1g54",
+   "lwc-7n28hdp1g54-host",
+   "x-static-optimized_static-optimized",
+   "x-static-optimized_static-optimized-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"these-are-dynamic${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-static${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-boolean-true${0}\"${2}><div aria-describedby aria-activedescendant aria-errormessage aria-flowto aria-labelledby for id${3}></div></section>",
+   "parseFragment:<section class=\"these-are-the-empty-string${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7n28hdp1g54"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-optimized.css",
+   "./static-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7n28hdp1g54",
+   "lwc-7n28hdp1g54-host",
+   "x-static-optimized_static-optimized",
+   "x-static-optimized_static-optimized-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"these-are-dynamic${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-static${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-boolean-true${0}\"${2}><div aria-describedby aria-activedescendant aria-errormessage aria-flowto aria-labelledby for id${3}></div></section>",
+   "parseFragment:<section class=\"these-are-the-empty-string${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7n28hdp1g54"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./static-optimized.css",
+   "./static-optimized.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7n28hdp1g54",
+   "lwc-7n28hdp1g54-host",
+   "x-static-optimized_static-optimized",
+   "x-static-optimized_static-optimized-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section class=\"these-are-dynamic${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-static${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>",
+   "parseFragment:<section class=\"these-are-boolean-true${0}\"${2}><div aria-describedby aria-activedescendant aria-errormessage aria-flowto aria-labelledby for id${3}></div></section>",
+   "parseFragment:<section class=\"these-are-the-empty-string${0}\"${2}><div${\"a1:aria-describedby\"}${\"a1:aria-activedescendant\"}${\"a1:aria-errormessage\"}${\"a1:aria-flowto\"}${\"a1:aria-labelledby\"}${\"a1:for\"}${\"a1:id\"}${3}></div></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7n28hdp1g54"
+  }
+ }
+}

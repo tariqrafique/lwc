@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Text Area\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-textarea><template shadowrootmode=\"open\"></template></c-textarea><c-textarea><template shadowrootmode=\"open\"></template></c-textarea><c-textarea><template shadowrootmode=\"open\"></template></c-textarea><c-textarea><template shadowrootmode=\"open\"></template></c-textarea><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Represents a multiline text input field.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Text Area\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-textarea><template shadowrootmode=\"open\"></template></c-textarea><c-textarea><template shadowrootmode=\"open\"></template></c-textarea><c-textarea><template shadowrootmode=\"open\"></template></c-textarea><c-textarea><template shadowrootmode=\"open\"></template></c-textarea><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Represents a multiline text input field.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

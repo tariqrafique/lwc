@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./html-tag-invalid.css",
+    "./html-tag-invalid.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1057,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-31vb55krkoh",
+    "lwc-31vb55krkoh-host",
+    "x-html-tag-invalid_html-tag-invalid",
+    "x-html-tag-invalid_html-tag-invalid-host"
+  ]
+}

@@ -1,0 +1,326 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-svg-ellipse.css",
+   "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4l5bd87bi6t",
+   "lwc-4l5bd87bi6t-host",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><ellipse${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4l5bd87bi6t"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-svg-ellipse.css",
+   "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4l5bd87bi6t",
+   "lwc-4l5bd87bi6t-host",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-svg-ellipse.css",
+   "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4l5bd87bi6t",
+   "lwc-4l5bd87bi6t-host",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-svg-ellipse.css",
+   "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4l5bd87bi6t",
+   "lwc-4l5bd87bi6t-host",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><ellipse${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4l5bd87bi6t"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-svg-ellipse.css",
+   "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4l5bd87bi6t",
+   "lwc-4l5bd87bi6t-host",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><ellipse${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4l5bd87bi6t"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-svg-ellipse.css",
+   "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4l5bd87bi6t",
+   "lwc-4l5bd87bi6t-host",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><ellipse${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4l5bd87bi6t"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-svg-ellipse.css",
+   "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4l5bd87bi6t",
+   "lwc-4l5bd87bi6t-host",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><ellipse${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4l5bd87bi6t"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-svg-ellipse.css",
+   "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4l5bd87bi6t",
+   "lwc-4l5bd87bi6t-host",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><ellipse${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4l5bd87bi6t"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-svg-ellipse.css",
+   "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4l5bd87bi6t",
+   "lwc-4l5bd87bi6t-host",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><ellipse${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4l5bd87bi6t"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./stranded-open-svg-ellipse.css",
+   "./stranded-open-svg-ellipse.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4l5bd87bi6t",
+   "lwc-4l5bd87bi6t-host",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse",
+   "x-stranded-open-svg-ellipse_stranded-open-svg-ellipse-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg xmlns=\"http://www.w3.org/2000/svg\"${3}><ellipse${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4l5bd87bi6t"
+  }
+ }
+}

@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": true,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": "div.x {color: blue;}",
+        "x|host=false|dir=true": "div.x {color: blue;}",
+        "x|host=false|dir=false": "div.x {color: blue;}",
+        "x|host=true|dir=true": "div.x {color: blue;}",
+        "-|host=true|dir=false": "div {color: blue;}"
+      }
+    }
+  ]
+}

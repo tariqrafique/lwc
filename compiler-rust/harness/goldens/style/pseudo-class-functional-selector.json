@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": ":not(p)[x] {}p:not(.foo, .bar)[x] {}:matches(ol, li, span)[x] {}",
+        "x|host=false|dir=true": ":not(p)[x] {}p:not(.foo, .bar)[x] {}:matches(ol, li, span)[x] {}",
+        "x|host=false|dir=false": ":not(p)[x] {}p:not(.foo, .bar)[x] {}:matches(ol, li, span)[x] {}",
+        "x|host=true|dir=true": ":not(p)[x] {}p:not(.foo, .bar)[x] {}:matches(ol, li, span)[x] {}",
+        "-|host=true|dir=false": ":not(p) {}p:not(.foo, .bar) {}:matches(ol, li, span) {}"
+      }
+    }
+  ]
+}

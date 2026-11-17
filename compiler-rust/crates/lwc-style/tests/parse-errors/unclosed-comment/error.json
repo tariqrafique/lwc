@@ -1,0 +1,6 @@
+{
+    "name": "CssSyntaxError",
+    "reason": "Unclosed comment",
+    "column": 1,
+    "line": 1
+}

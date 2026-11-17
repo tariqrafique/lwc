@@ -1,0 +1,8 @@
+[package]
+name = "repo-tracked"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "D-0280(b): enumerate git-tracked files for source-scanning gates"
+
+[dependencies]

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Formatted Name\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><div class=\"slds-box\"><h3 class=\"header\">Default (Long Format)</h3><c-formatted-name><template shadowrootmode=\"open\"></template></c-formatted-name></div><div class=\"slds-box\"><h3 class=\"header\">Medium Format</h3><c-formatted-name><template shadowrootmode=\"open\"></template></c-formatted-name></div><div class=\"slds-box\"><h3 class=\"header\">Short Format</h3><c-formatted-name><template shadowrootmode=\"open\"></template></c-formatted-name></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Displays a formatted name that can include a salutation and suffix.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Formatted Name\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><div class=\"slds-box\"><h3 class=\"header\">Default (Long Format)</h3><c-formatted-name><template shadowrootmode=\"open\"></template></c-formatted-name></div><div class=\"slds-box\"><h3 class=\"header\">Medium Format</h3><c-formatted-name><template shadowrootmode=\"open\"></template></c-formatted-name></div><div class=\"slds-box\"><h3 class=\"header\">Short Format</h3><c-formatted-name><template shadowrootmode=\"open\"></template></c-formatted-name></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Displays a formatted name that can include a salutation and suffix.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

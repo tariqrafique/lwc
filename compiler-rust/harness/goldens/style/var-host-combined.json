@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": ":host {color: var(--lwc-color);padding: 10px;}:host(.foo) {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}div[x] {background: var(--lwc-color, var(--lwc-other, black));display: \"block\";}",
+        "x|host=false|dir=true": "[x-host] {color: var(--lwc-color);padding: 10px;}[x-host].foo {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}div[x] {background: var(--lwc-color, var(--lwc-other, black));display: \"block\";}",
+        "x|host=false|dir=false": "[x-host] {color: var(--lwc-color);padding: 10px;}[x-host].foo {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}div[x] {background: var(--lwc-color, var(--lwc-other, black));display: \"block\";}",
+        "x|host=true|dir=true": ":host {color: var(--lwc-color);padding: 10px;}:host(.foo) {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}div[x] {background: var(--lwc-color, var(--lwc-other, black));display: \"block\";}",
+        "-|host=true|dir=false": ":host {color: var(--lwc-color);padding: 10px;}:host(.foo) {background: linear-gradient(to top, var(--lwc-color), var(--lwc-other));}div {background: var(--lwc-color, var(--lwc-other, black));display: \"block\";}"
+      }
+    }
+  ]
+}

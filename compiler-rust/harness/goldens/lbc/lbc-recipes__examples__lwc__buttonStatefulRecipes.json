@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Button Stateful\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-button-stateful><template shadowrootmode=\"open\"></template></c-button-stateful><div class=\"backgroundInverse\"><c-button-stateful><template shadowrootmode=\"open\"></template></c-button-stateful></div><c-button-stateful><template shadowrootmode=\"open\"></template></c-button-stateful><div class=\"backgroundInverse\"><c-button-stateful><template shadowrootmode=\"open\"></template></c-button-stateful></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A button that changes state when clicked.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Button Stateful\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-button-stateful><template shadowrootmode=\"open\"></template></c-button-stateful><div class=\"backgroundInverse\"><c-button-stateful><template shadowrootmode=\"open\"></template></c-button-stateful></div><c-button-stateful><template shadowrootmode=\"open\"></template></c-button-stateful><div class=\"backgroundInverse\"><c-button-stateful><template shadowrootmode=\"open\"></template></c-button-stateful></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A button that changes state when clicked.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

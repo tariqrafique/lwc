@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Formatted Text\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><div class=\"slds-box\"><h3 class=\"header\">Formatted Text</h3><p><c-formatted-text><template shadowrootmode=\"open\"></template></c-formatted-text></p><p><c-formatted-text><template shadowrootmode=\"open\"></template></c-formatted-text></p><p><c-formatted-text><template shadowrootmode=\"open\"></template></c-formatted-text></p><p><c-formatted-text><template shadowrootmode=\"open\"></template></c-formatted-text></p></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Displays text, replaces newlines with line breaks, and linkifies if requested.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Formatted Text\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><div class=\"slds-box\"><h3 class=\"header\">Formatted Text</h3><p><c-formatted-text><template shadowrootmode=\"open\"></template></c-formatted-text></p><p><c-formatted-text><template shadowrootmode=\"open\"></template></c-formatted-text></p><p><c-formatted-text><template shadowrootmode=\"open\"></template></c-formatted-text></p><p><c-formatted-text><template shadowrootmode=\"open\"></template></c-formatted-text></p></div><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>Displays text, replaces newlines with line breaks, and linkifies if requested.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

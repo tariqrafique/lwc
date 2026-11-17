@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1189
+  ],
+  "message": "Unexpected compilation error: LWC1189: Template expression doesn't allow AssignmentPattern in arrow function params."
+}

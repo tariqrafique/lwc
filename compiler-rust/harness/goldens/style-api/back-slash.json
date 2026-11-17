@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "x|host=false|dir=false": ".foo[x] {content: \"\\\\\";}",
+     "x|host=true|dir=true": ".foo[x] {content: \"\\\\\";}",
+     "-|host=true|dir=false": ".foo {content: \"\\\\\";}"
+    }
+   }
+  ]
+ }
+}

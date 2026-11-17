@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./concatenated.css",
+    "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2mft3qo9a2t",
+    "lwc-2mft3qo9a2t-host",
+    "x-concatenated_concatenated",
+    "x-concatenated_concatenated-host"
+  ]
+}

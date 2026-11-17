@@ -1,0 +1,166 @@
+{
+ "omitted": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1058
+  ],
+  "line": 4,
+  "errors": [
+   1058
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./double-close-template-older-api-version.css",
+   "./double-close-template-older-api-version.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1148,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-72dp8v9vcue",
+   "lwc-72dp8v9vcue-host",
+   "x-double-close-template-older-api-version_double-close-template-older-api-version",
+   "x-double-close-template-older-api-version_double-close-template-older-api-version-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>hello</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-double-close-template-older-api-version_double-close-template-older-api-version"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./double-close-template-older-api-version.css",
+   "./double-close-template-older-api-version.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1148,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-72dp8v9vcue",
+   "lwc-72dp8v9vcue-host",
+   "x-double-close-template-older-api-version_double-close-template-older-api-version",
+   "x-double-close-template-older-api-version_double-close-template-older-api-version-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<h1${3}>hello</h1>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-double-close-template-older-api-version_double-close-template-older-api-version"
+  }
+ },
+ "v59": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1058
+  ],
+  "line": 4,
+  "errors": [
+   1058
+  ]
+ },
+ "v60": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1058
+  ],
+  "line": 4,
+  "errors": [
+   1058
+  ]
+ },
+ "v61": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1058
+  ],
+  "line": 4,
+  "errors": [
+   1058
+  ]
+ },
+ "v62": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1058
+  ],
+  "line": 4,
+  "errors": [
+   1058
+  ]
+ },
+ "v65": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1058
+  ],
+  "line": 4,
+  "errors": [
+   1058
+  ]
+ },
+ "v66": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1058
+  ],
+  "line": 4,
+  "errors": [
+   1058
+  ]
+ },
+ "v67": {
+  "ok": false,
+  "name": "Error",
+  "codes": [
+   1058
+  ],
+  "line": 4,
+  "errors": [
+   1058
+  ]
+ }
+}

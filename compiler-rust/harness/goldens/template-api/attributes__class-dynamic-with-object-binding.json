@@ -1,0 +1,347 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-dynamic-with-object-binding.css",
+   "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-agbrffqjb4",
+   "lwc-agbrffqjb4-host",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ],
+  "apiHelpers": [
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"c0\"}${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-agbrffqjb4"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-dynamic-with-object-binding.css",
+   "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-agbrffqjb4",
+   "lwc-agbrffqjb4-host",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"c0\"}${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-dynamic-with-object-binding.css",
+   "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-agbrffqjb4",
+   "lwc-agbrffqjb4-host",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"c0\"}${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-dynamic-with-object-binding.css",
+   "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-agbrffqjb4",
+   "lwc-agbrffqjb4-host",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"c0\"}${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-agbrffqjb4"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-dynamic-with-object-binding.css",
+   "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-agbrffqjb4",
+   "lwc-agbrffqjb4-host",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"c0\"}${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-agbrffqjb4"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-dynamic-with-object-binding.css",
+   "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-agbrffqjb4",
+   "lwc-agbrffqjb4-host",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"c0\"}${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-agbrffqjb4"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-dynamic-with-object-binding.css",
+   "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-agbrffqjb4",
+   "lwc-agbrffqjb4-host",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ],
+  "apiHelpers": [
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"c0\"}${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-agbrffqjb4"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-dynamic-with-object-binding.css",
+   "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-agbrffqjb4",
+   "lwc-agbrffqjb4-host",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ],
+  "apiHelpers": [
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"c0\"}${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-agbrffqjb4"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-dynamic-with-object-binding.css",
+   "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-agbrffqjb4",
+   "lwc-agbrffqjb4-host",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ],
+  "apiHelpers": [
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"c0\"}${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-agbrffqjb4"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./class-dynamic-with-object-binding.css",
+   "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-agbrffqjb4",
+   "lwc-agbrffqjb4-host",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+   "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ],
+  "apiHelpers": [
+   "ncls",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"c0\"}${2}></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-agbrffqjb4"
+  }
+ }
+}

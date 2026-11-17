@@ -1,0 +1,24 @@
+{
+  "ok": false,
+  "name": "AggregateError",
+  "codes": [
+    1107
+  ],
+  "line": null,
+  "aggregate": {
+    "message": "Multiple errors occurred during compilation.",
+    "code": null,
+    "errors": [
+      {
+        "code": 1107,
+        "message": "LWC1107: Invalid property name \"dataProperty\". Properties starting with \"data\" are reserved attributes.",
+        "location": {
+          "line": 4,
+          "column": 2,
+          "start": 101,
+          "length": 20
+        }
+      }
+    ]
+  }
+}

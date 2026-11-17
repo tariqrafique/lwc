@@ -1,0 +1,13 @@
+{
+  "calls": [],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1133
+  ],
+  "line": 1,
+  "errors": [
+    1133
+  ],
+  "message": "LWC1133: Invalid value for \"lwc:render-mode\". 'lwc:render-mode' can only be set to \"shadow\", or \"light\""
+}

@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-receiver>\n      <template shadowrootmode=\"open\">\n        <div>\n          Default slot: \n          <slot>\n          </slot>\n        </div>\n        <div>\n          Named slot: \n          <slot name=\"my-slot\">\n          </slot>\n        </div>\n      </template>\n      A\n      <div slot=\"my-slot\">\n        B\n      </div>\n      C\n      <div>\n        D\n      </div>\n      E\n      <div slot=\"my-slot\">\n        F\n      </div>\n      G\n    </x-receiver>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-receiver>\n      <template shadowrootmode=\"open\">\n        <div>\n          Default slot: \n          <slot>\n          </slot>\n        </div>\n        <div>\n          Named slot: \n          <slot name=\"my-slot\">\n          </slot>\n        </div>\n      </template>\n      A\n      <div slot=\"my-slot\">\n        B\n      </div>\n      C\n      <div>\n        D\n      </div>\n      E\n      <div slot=\"my-slot\">\n        F\n      </div>\n      G\n    </x-receiver>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-receiver>\n      <template shadowrootmode=\"open\">\n        <div>\n          Default slot: \n          <slot>\n          </slot>\n        </div>\n        <div>\n          Named slot: \n          <slot name=\"my-slot\">\n          </slot>\n        </div>\n      </template>\n      A\n      <div slot=\"my-slot\">\n        B\n      </div>\n      C\n      <div>\n        D\n      </div>\n      E\n      <div slot=\"my-slot\">\n        F\n      </div>\n      G\n    </x-receiver>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-receiver>\n      <template shadowrootmode=\"open\">\n        <div>\n          Default slot: \n          <slot>\n          </slot>\n        </div>\n        <div>\n          Named slot: \n          <slot name=\"my-slot\">\n          </slot>\n        </div>\n      </template>\n      A\n      <div slot=\"my-slot\">\n        B\n      </div>\n      C\n      <div>\n        D\n      </div>\n      E\n      <div slot=\"my-slot\">\n        F\n      </div>\n      G\n    </x-receiver>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-receiver>\n      <template shadowrootmode=\"open\">\n        <div>\n          Default slot: \n          <slot>\n          </slot>\n        </div>\n        <div>\n          Named slot: \n          <slot name=\"my-slot\">\n          </slot>\n        </div>\n      </template>\n      A\n      <div slot=\"my-slot\">\n        B\n      </div>\n      C\n      <div>\n        D\n      </div>\n      E\n      <div slot=\"my-slot\">\n        F\n      </div>\n      G\n    </x-receiver>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-receiver>\n      <template shadowrootmode=\"open\">\n        <div>\n          Default slot: \n          <slot>\n          </slot>\n        </div>\n        <div>\n          Named slot: \n          <slot name=\"my-slot\">\n          </slot>\n        </div>\n      </template>\n      A\n      <div slot=\"my-slot\">\n        B\n      </div>\n      C\n      <div>\n        D\n      </div>\n      E\n      <div slot=\"my-slot\">\n        F\n      </div>\n      G\n    </x-receiver>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <x-receiver>\n      <template shadowrootmode=\"open\">\n        <div>\n          Default slot: \n          <slot>\n          </slot>\n        </div>\n        <div>\n          Named slot: \n          <slot name=\"my-slot\">\n          </slot>\n        </div>\n      </template>\n      A\n      <div slot=\"my-slot\">\n        B\n      </div>\n      C\n      <div>\n        D\n      </div>\n      E\n      <div slot=\"my-slot\">\n        F\n      </div>\n      G\n    </x-receiver>\n  </template>\n</fixture-test>"
+ }
+}

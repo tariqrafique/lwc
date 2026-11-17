@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=false|dir=false": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "x|host=true|dir=true": "div[x] {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}",
+     "-|host=true|dir=false": "div {--slds-c-button-neutral-shadow-focus: var(\n --slds-c-buttonstateful-shadow-focus,\n var(--sds-g-color-brand-base-50, #0176d3) black\n );}"
+    }
+   }
+  ]
+ }
+}

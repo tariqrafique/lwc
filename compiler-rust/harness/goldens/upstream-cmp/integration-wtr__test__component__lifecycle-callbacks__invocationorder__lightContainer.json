@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><invocationorder-light-foo class=\"a\"><template shadowrootmode=\"open\"></template><invocationorder-light-foo class=\"b\"><template shadowrootmode=\"open\"></template><invocationorder-light-foo class=\"c\"><template shadowrootmode=\"open\"></template></invocationorder-light-foo></invocationorder-light-foo><invocationorder-light-foo class=\"d\"><template shadowrootmode=\"open\"></template></invocationorder-light-foo></invocationorder-light-foo><invocationorder-light-foo class=\"e\"><template shadowrootmode=\"open\"></template></invocationorder-light-foo></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><invocationorder-light-foo class=\"a\"><template shadowrootmode=\"open\"></template><invocationorder-light-foo class=\"b\"><template shadowrootmode=\"open\"></template><invocationorder-light-foo class=\"c\"><template shadowrootmode=\"open\"></template></invocationorder-light-foo></invocationorder-light-foo><invocationorder-light-foo class=\"d\"><template shadowrootmode=\"open\"></template></invocationorder-light-foo></invocationorder-light-foo><invocationorder-light-foo class=\"e\"><template shadowrootmode=\"open\"></template></invocationorder-light-foo></lwc-up>"
+ }
+}

@@ -1,0 +1,412 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-props.css",
+   "./duplicate-props.scoped.css?scoped=true",
+   "ns/baz1",
+   "ns/baz2"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1147,
+    "level": 2
+   },
+   {
+    "code": 1147,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-2tn6o48t2v1",
+   "lwc-2tn6o48t2v1-host",
+   "x-duplicate-props_duplicate-props",
+   "x-duplicate-props_duplicate-props-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2tn6o48t2v1"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-props.css",
+   "./duplicate-props.scoped.css?scoped=true",
+   "ns/baz1",
+   "ns/baz2"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1147,
+    "level": 2
+   },
+   {
+    "code": 1147,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-2tn6o48t2v1",
+   "lwc-2tn6o48t2v1-host",
+   "x-duplicate-props_duplicate-props",
+   "x-duplicate-props_duplicate-props-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-duplicate-props_duplicate-props"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-props.css",
+   "./duplicate-props.scoped.css?scoped=true",
+   "ns/baz1",
+   "ns/baz2"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1147,
+    "level": 2
+   },
+   {
+    "code": 1147,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-2tn6o48t2v1",
+   "lwc-2tn6o48t2v1-host",
+   "x-duplicate-props_duplicate-props",
+   "x-duplicate-props_duplicate-props-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-duplicate-props_duplicate-props"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-props.css",
+   "./duplicate-props.scoped.css?scoped=true",
+   "ns/baz1",
+   "ns/baz2"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1147,
+    "level": 2
+   },
+   {
+    "code": 1147,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-2tn6o48t2v1",
+   "lwc-2tn6o48t2v1-host",
+   "x-duplicate-props_duplicate-props",
+   "x-duplicate-props_duplicate-props-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2tn6o48t2v1"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-props.css",
+   "./duplicate-props.scoped.css?scoped=true",
+   "ns/baz1",
+   "ns/baz2"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1147,
+    "level": 2
+   },
+   {
+    "code": 1147,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-2tn6o48t2v1",
+   "lwc-2tn6o48t2v1-host",
+   "x-duplicate-props_duplicate-props",
+   "x-duplicate-props_duplicate-props-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2tn6o48t2v1"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-props.css",
+   "./duplicate-props.scoped.css?scoped=true",
+   "ns/baz1",
+   "ns/baz2"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1147,
+    "level": 2
+   },
+   {
+    "code": 1147,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-2tn6o48t2v1",
+   "lwc-2tn6o48t2v1-host",
+   "x-duplicate-props_duplicate-props",
+   "x-duplicate-props_duplicate-props-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2tn6o48t2v1"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-props.css",
+   "./duplicate-props.scoped.css?scoped=true",
+   "ns/baz1",
+   "ns/baz2"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1147,
+    "level": 2
+   },
+   {
+    "code": 1147,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-2tn6o48t2v1",
+   "lwc-2tn6o48t2v1-host",
+   "x-duplicate-props_duplicate-props",
+   "x-duplicate-props_duplicate-props-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2tn6o48t2v1"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-props.css",
+   "./duplicate-props.scoped.css?scoped=true",
+   "ns/baz1",
+   "ns/baz2"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1147,
+    "level": 2
+   },
+   {
+    "code": 1147,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-2tn6o48t2v1",
+   "lwc-2tn6o48t2v1-host",
+   "x-duplicate-props_duplicate-props",
+   "x-duplicate-props_duplicate-props-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2tn6o48t2v1"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-props.css",
+   "./duplicate-props.scoped.css?scoped=true",
+   "ns/baz1",
+   "ns/baz2"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1147,
+    "level": 2
+   },
+   {
+    "code": 1147,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-2tn6o48t2v1",
+   "lwc-2tn6o48t2v1-host",
+   "x-duplicate-props_duplicate-props",
+   "x-duplicate-props_duplicate-props-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2tn6o48t2v1"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./duplicate-props.css",
+   "./duplicate-props.scoped.css?scoped=true",
+   "ns/baz1",
+   "ns/baz2"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1147,
+    "level": 2
+   },
+   {
+    "code": 1147,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-2tn6o48t2v1",
+   "lwc-2tn6o48t2v1-host",
+   "x-duplicate-props_duplicate-props",
+   "x-duplicate-props_duplicate-props-host"
+  ],
+  "apiHelpers": [
+   "c"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2tn6o48t2v1"
+  }
+ }
+}

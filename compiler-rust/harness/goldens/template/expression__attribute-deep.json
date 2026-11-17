@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./attribute-deep.css",
+    "./attribute-deep.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6paibrvdh9b",
+    "lwc-6paibrvdh9b-host",
+    "x-attribute-deep_attribute-deep",
+    "x-attribute-deep_attribute-deep-host"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1172
+  ],
+  "line": 3,
+  "errors": [
+    1172
+  ],
+  "message": "LWC1172: Invalid duplicate scoped slots (name=\"slotname\")"
+}

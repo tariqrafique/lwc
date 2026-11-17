@@ -1,0 +1,362 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots.css",
+   "./slots.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54mco27ror1",
+   "lwc-54mco27ror1-host",
+   "x-slots_slots",
+   "x-slots_slots-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54mco27ror1"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots.css",
+   "./slots.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54mco27ror1",
+   "lwc-54mco27ror1-host",
+   "x-slots_slots",
+   "x-slots_slots-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-slots_slots"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots.css",
+   "./slots.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54mco27ror1",
+   "lwc-54mco27ror1-host",
+   "x-slots_slots",
+   "x-slots_slots-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-slots_slots"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots.css",
+   "./slots.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54mco27ror1",
+   "lwc-54mco27ror1-host",
+   "x-slots_slots",
+   "x-slots_slots-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54mco27ror1"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots.css",
+   "./slots.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54mco27ror1",
+   "lwc-54mco27ror1-host",
+   "x-slots_slots",
+   "x-slots_slots-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54mco27ror1"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots.css",
+   "./slots.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54mco27ror1",
+   "lwc-54mco27ror1-host",
+   "x-slots_slots",
+   "x-slots_slots-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54mco27ror1"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots.css",
+   "./slots.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54mco27ror1",
+   "lwc-54mco27ror1-host",
+   "x-slots_slots",
+   "x-slots_slots-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54mco27ror1"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots.css",
+   "./slots.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54mco27ror1",
+   "lwc-54mco27ror1-host",
+   "x-slots_slots",
+   "x-slots_slots-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54mco27ror1"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots.css",
+   "./slots.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54mco27ror1",
+   "lwc-54mco27ror1-host",
+   "x-slots_slots",
+   "x-slots_slots-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54mco27ror1"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./slots.css",
+   "./slots.scoped.css?scoped=true",
+   "x/child"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-54mco27ror1",
+   "lwc-54mco27ror1-host",
+   "x-slots_slots",
+   "x-slots_slots-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "co",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-54mco27ror1"
+  }
+ }
+}

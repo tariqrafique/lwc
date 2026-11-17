@@ -1,0 +1,25 @@
+# AB-0011 (AB-D0002) lint-shared-tables ratchet: one known duplicate per line, "<file>\t<trimmed line>".
+# Ceiling 23 (scripts/lint-shared-tables.sh CEILING); entries may only be deleted, never added.
+crates/lwc-js/src/tag_name.rs	pub fn generate_custom_element_tag_name(namespace: &str, name: &str) -> String {
+crates/lwc-js/src/transforms/decorators.rs	const AMBIGUOUS_PROP_SET: [(&str, &str); 6] = [("bgcolor", "bgColor"), ("accesskey", "accessKey"), ("contenteditable", "contentEditable"), ("tabindex", "tabIndex"), ("maxlength", "maxLength"), ("maxvalue", "maxValue")];
+crates/lwc-js/src/transforms/decorators.rs	const DISALLOWED_PROP_SET: [&str; 4] = ["is", "class", "slot", "style"];
+crates/lwc-ssr/src/compile_js/mod.rs	pub fn generate_custom_element_tag_name(namespace: &str, name: &str) -> String {
+crates/lwc-ssr/src/compile_template/component.rs	fn kebab_case_to_camel_case(s: &str) -> String {
+crates/lwc-ssr/src/compile_template/component.rs	pub(crate) fn kebabcase_to_camelcase_path(name: &str) -> String {
+crates/lwc-ssr/src/compile_template/component.rs	pub(crate) fn to_property_name(name: &str) -> String {
+crates/lwc-ssr/src/compile_template/element.rs	const VOID: &[&str] = &["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr", "param", "keygen", "menuitem"];
+crates/lwc-ssr/src/compile_template/element.rs	pub(crate) const HTML_NAMESPACE: &str = "http://www.w3.org/1999/xhtml";
+crates/lwc-ssr/src/compile_template/element.rs	pub(crate) fn is_boolean_attribute(attr: &str, tag: &str) -> bool {
+crates/lwc-ssr/src/compile_template/element.rs	pub(crate) fn is_void_element(name: &str) -> bool {
+crates/lwc-template/src/codegen/mod.rs	const HTML_NS: &str = "http://www.w3.org/1999/xhtml";
+crates/lwc-template/src/codegen/mod.rs	const SVG_NS: &str = "http://www.w3.org/2000/svg";
+crates/lwc-template/src/codegen/mod.rs	const VOID: &[&str] = &["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr", "keygen", "menuitem"]; // + DEPRECATED_VOID_ELEMENTS
+crates/lwc-template/src/codegen/mod.rs	fn is_id_referencing(attr: &str) -> bool {
+crates/lwc-template/src/codegen/mod.rs	fn is_void(name: &str, ns: &str) -> bool { ns == HTML_NS && VOID.contains(&name.to_ascii_lowercase().as_str()) }
+crates/lwc-template/src/codegen/mod.rs	pub(crate) fn camel_name(rest: &str) -> String {
+crates/lwc-template/src/parser/element_check.rs	const VOID: &[&str] = &["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr", "param", "keygen", "menuitem"];
+crates/lwc-template/src/parser/element_check.rs	pub(crate) fn is_boolean_attribute(attr: &str, tag: &str) -> bool {
+crates/lwc-template/src/parser/mod.rs	const ARIA_PROPS: &[&str] = &[
+crates/lwc-template/src/parser/mod.rs	const SPECIAL_ATTR_PROPS: &[(&str, &str)] = &[
+crates/lwc-template/src/parser/tables.rs	pub const ARIA_ATTRS: &[&str] = &["aria-activedescendant", "aria-atomic", "aria-autocomplete", "aria-busy", "aria-checked", "aria-colcount", "aria-colindex", "aria-colindextext", "aria-colspan", "aria-controls", "aria-current", "aria-describedby", "aria-description", "aria-details", "aria-disabled", "aria-errormessage", "aria-expanded", "aria-flowto", "aria-haspopup", "aria-hidden", "aria-invalid", "aria-keyshortcuts", "aria-label", "aria-labelledby", "aria-level", "aria-live", "aria-modal", "aria-multiline", "aria-multiselectable", "aria-orientation", "aria-owns", "aria-placeholder", "aria-posinset", "aria-pressed", "aria-readonly", "aria-relevant", "aria-required", "aria-roledescription", "aria-rowcount", "aria-rowindex", "aria-rowindextext", "aria-rowspan", "aria-selected", "aria-setsize", "aria-sort", "aria-valuemax", "aria-valuemin", "aria-valuenow", "aria-valuetext", "aria-braillelabel", "aria-brailleroledescription", "role"];
+crates/lwc-template/src/parser/tables.rs	pub const GLOBAL_ATTRIBUTE: &[&str] = &["accesskey", "autocapitalize", "autofocus", "class", "contenteditable", "dir", "draggable", "enterkeyhint", "exportparts", "hidden", "id", "inert", "inputmode", "is", "itemid", "itemprop", "itemref", "itemscope", "itemtype", "lang", "nonce", "part", "popover", "slot", "spellcheck", "style", "tabindex", "title", "translate"];

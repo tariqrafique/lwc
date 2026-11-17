@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div>accessKey: </div><div>ariaLabel: </div><div>dir: </div><div>draggable: true</div><div>hidden: false</div><div>id: </div><div>lang: </div><div>role: </div><div>spellcheck: false</div><div>tabIndex: 0</div><div>title: </div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div>accessKey: </div><div>ariaLabel: </div><div>dir: </div><div>draggable: false</div><div>hidden: false</div><div>id: </div><div>lang: </div><div>role: </div><div>spellcheck: </div><div>tabIndex: -1</div><div>title: </div></template></lwc-up>"
+ }
+}

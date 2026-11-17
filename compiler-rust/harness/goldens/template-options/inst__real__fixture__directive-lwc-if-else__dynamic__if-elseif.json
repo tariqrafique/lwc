@@ -1,0 +1,12 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ]
+  ],
+  "ok": true,
+  "warnings": [
+    1187
+  ]
+}

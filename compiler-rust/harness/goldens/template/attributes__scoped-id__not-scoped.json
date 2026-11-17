@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./not-scoped.css",
+    "./not-scoped.scoped.css?scoped=true",
+    "lightning/combobox"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-68v9rhsbkkg",
+    "lwc-68v9rhsbkkg-host",
+    "x-not-scoped_not-scoped",
+    "x-not-scoped_not-scoped-host"
+  ]
+}

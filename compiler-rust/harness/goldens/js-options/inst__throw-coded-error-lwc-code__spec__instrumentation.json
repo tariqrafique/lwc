@@ -1,0 +1,19 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "dynamic-import-transform"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1100
+  ],
+  "line": null,
+  "errors": [
+    1100
+  ],
+  "message": "Error: foo.js: e",
+  "level": 1
+}

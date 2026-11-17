@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p><p><lightning-formatted-number><template shadowrootmode=\"open\"></template></lightning-formatted-number></p></template></lwc-lbc>"
+ }
+}

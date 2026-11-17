@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-ctj709jia9-host\" data-lwc-host-scope-token=\"lwc-ctj709jia9-host\"><template shadowrootmode=\"open\"><style class=\"lwc-ctj709jia9\" id=\"lwc-style--0\" type=\"text/css\">:host {background: blue;}div.lwc-ctj709jia9 {color: red;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><div class=\"lwc-ctj709jia9\">hi</div><x-light-child class=\"lwc-ctj709jia9\"><template shadowrootmode=\"open\"></template></x-light-child></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-ctj709jia9-host\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {background: blue;}div.lwc-ctj709jia9 {color: red;}</style><div class=\"lwc-ctj709jia9\">hi</div><x-light-child class=\"lwc-ctj709jia9\"><template shadowrootmode=\"open\"></template></x-light-child></template></lwc-up>"
+ }
+}

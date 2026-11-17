@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./svg-with-iteration.css",
+    "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseSVGFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-4k8f5oq0rrb",
+    "lwc-4k8f5oq0rrb-host",
+    "x-svg-with-iteration_svg-with-iteration",
+    "x-svg-with-iteration_svg-with-iteration-host"
+  ]
+}

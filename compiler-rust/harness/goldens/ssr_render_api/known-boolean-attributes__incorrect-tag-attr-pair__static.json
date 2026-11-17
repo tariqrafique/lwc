@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus=\"   \">\n    </div>\n    <div formnovalidate=\"  \">\n    </div>\n    <div autofocus=\"false\">\n    </div>\n    <div formnovalidate=\"false\">\n    </div>\n    <div autofocus=\"true\">\n    </div>\n    <div formnovalidate=\"true\">\n    </div>\n    <div autofocus=\"FALSE\">\n    </div>\n    <div formnovalidate=\"FALSE\">\n    </div>\n    <div autofocus=\"TRUE\">\n    </div>\n    <div formnovalidate=\"TRUE\">\n    </div>\n    <div autofocus=\"yolo\">\n    </div>\n    <div formnovalidate=\"yolo\">\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus=\"   \">\n    </div>\n    <div formnovalidate=\"  \">\n    </div>\n    <div autofocus=\"false\">\n    </div>\n    <div formnovalidate=\"false\">\n    </div>\n    <div autofocus=\"true\">\n    </div>\n    <div formnovalidate=\"true\">\n    </div>\n    <div autofocus=\"FALSE\">\n    </div>\n    <div formnovalidate=\"FALSE\">\n    </div>\n    <div autofocus=\"TRUE\">\n    </div>\n    <div formnovalidate=\"TRUE\">\n    </div>\n    <div autofocus=\"yolo\">\n    </div>\n    <div formnovalidate=\"yolo\">\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus=\"   \">\n    </div>\n    <div formnovalidate=\"  \">\n    </div>\n    <div autofocus=\"false\">\n    </div>\n    <div formnovalidate=\"false\">\n    </div>\n    <div autofocus=\"true\">\n    </div>\n    <div formnovalidate=\"true\">\n    </div>\n    <div autofocus=\"FALSE\">\n    </div>\n    <div formnovalidate=\"FALSE\">\n    </div>\n    <div autofocus=\"TRUE\">\n    </div>\n    <div formnovalidate=\"TRUE\">\n    </div>\n    <div autofocus=\"yolo\">\n    </div>\n    <div formnovalidate=\"yolo\">\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus=\"   \">\n    </div>\n    <div formnovalidate=\"  \">\n    </div>\n    <div autofocus=\"false\">\n    </div>\n    <div formnovalidate=\"false\">\n    </div>\n    <div autofocus=\"true\">\n    </div>\n    <div formnovalidate=\"true\">\n    </div>\n    <div autofocus=\"FALSE\">\n    </div>\n    <div formnovalidate=\"FALSE\">\n    </div>\n    <div autofocus=\"TRUE\">\n    </div>\n    <div formnovalidate=\"TRUE\">\n    </div>\n    <div autofocus=\"yolo\">\n    </div>\n    <div formnovalidate=\"yolo\">\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus=\"   \">\n    </div>\n    <div formnovalidate=\"  \">\n    </div>\n    <div autofocus=\"false\">\n    </div>\n    <div formnovalidate=\"false\">\n    </div>\n    <div autofocus=\"true\">\n    </div>\n    <div formnovalidate=\"true\">\n    </div>\n    <div autofocus=\"FALSE\">\n    </div>\n    <div formnovalidate=\"FALSE\">\n    </div>\n    <div autofocus=\"TRUE\">\n    </div>\n    <div formnovalidate=\"TRUE\">\n    </div>\n    <div autofocus=\"yolo\">\n    </div>\n    <div formnovalidate=\"yolo\">\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus=\"   \">\n    </div>\n    <div formnovalidate=\"  \">\n    </div>\n    <div autofocus=\"false\">\n    </div>\n    <div formnovalidate=\"false\">\n    </div>\n    <div autofocus=\"true\">\n    </div>\n    <div formnovalidate=\"true\">\n    </div>\n    <div autofocus=\"FALSE\">\n    </div>\n    <div formnovalidate=\"FALSE\">\n    </div>\n    <div autofocus=\"TRUE\">\n    </div>\n    <div formnovalidate=\"TRUE\">\n    </div>\n    <div autofocus=\"yolo\">\n    </div>\n    <div formnovalidate=\"yolo\">\n    </div>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus>\n    </div>\n    <div formnovalidate>\n    </div>\n    <div autofocus=\"   \">\n    </div>\n    <div formnovalidate=\"  \">\n    </div>\n    <div autofocus=\"false\">\n    </div>\n    <div formnovalidate=\"false\">\n    </div>\n    <div autofocus=\"true\">\n    </div>\n    <div formnovalidate=\"true\">\n    </div>\n    <div autofocus=\"FALSE\">\n    </div>\n    <div formnovalidate=\"FALSE\">\n    </div>\n    <div autofocus=\"TRUE\">\n    </div>\n    <div formnovalidate=\"TRUE\">\n    </div>\n    <div autofocus=\"yolo\">\n    </div>\n    <div formnovalidate=\"yolo\">\n    </div>\n  </template>\n</fixture-test>"
+ }
+}

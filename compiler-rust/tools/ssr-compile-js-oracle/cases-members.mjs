@@ -1,0 +1,33 @@
+// index.ts class-member visitors (MethodDefinition switch, Super) and the Identifier visitor (LWC1202).
+const H = `import { LightningElement, api, wire } from 'lwc';\n`;
+const cls = (members) => H + `export default class C extends LightningElement {\n${members}\n}\n`;
+export const cases = {
+  ctor: cls(`  constructor(a, ...r) { super(a, ...r); const f = () => super(); if (1) { super(); } }\n  connectedCallback() {}\n  disconnectedCallback() {}\n  errorCallback(e) {}\n  @api renderedCallback() {}`),
+  ctorEmpty: cls(`  constructor() {\n    super();\n  }`),
+  ctorDefaults: cls(`  constructor(a = 1, { b } = {}) { super(a, b,); }`),
+  nested: cls(`  m() { return class extends Object { constructor(a) { super(a); } renderedCallback() {} }; }`),
+  nestedFn: cls(`  constructor() { super(); function f() { return class extends Object { constructor() { super(); } }; } }`),
+  computedCtor: H + `const constructor = 'k';\nexport default class C extends LightningElement {\n  [constructor](a) {}\n  static constructor(b) {}\n  'renderedCallback'() {}\n}\n`,
+  exprDefault: H + `export default (class extends LightningElement {\n  constructor() { super(); }\n  renderedCallback() {}\n});\n`,
+  extracted: H + `export default mix(class extends LightningElement {\n  constructor(a) { super(a); }\n  renderedCallback() {}\n  connectedCallback() {}\n});\n`,
+  extractedEmpty: H + `export default mix(class extends LightningElement {\n  constructor() { super(); }\n});\n`,
+  noLeImport: `import Base from './base';\nexport default class C extends Base {\n  constructor() { super(); }\n  renderedCallback() {}\n}\n`,
+  baseNotComponent: H + `class B extends LightningElement {\n  constructor() { super(); }\n  renderedCallback() {}\n}\nexport default class C extends B {}\n`,
+  removedBody: cls(`  renderedCallback() { __lwcX; }`),
+  nonLwc: `const __lwcX = 1;\nexport default {};\n`,
+  memberProp: cls(`  m() { return this.__lwcY; }`),
+  strInComment: { src: H + `// __lwcZ\nexport default class C extends LightningElement {\n  m() { return '__lwcQ'; }\n}\n`, expectAbsent: ['sigs'] },
+  privateName: { src: cls(`  #__lwcP = 1;`), expectAbsent: ['sigs'] },
+  keyName: cls(`  __lwcK = 1;`),
+  apiThenId: cls(`  @api x = true;\n  y = __lwcB;`),
+  idThenApi: cls(`  y = __lwcB;\n  @api x = true;`),
+  apiKey: cls(`  @api __lwcX = true;`),
+  utf16: H + `const s = '\u{1F600}';\nexport default class C extends LightningElement {\n  y = __lwcB;\n}\n`,
+  label: cls(`  m() { __lwcL: for(;;) { break __lwcL; } }`),
+  importSpec: `import { __lwcI } from 'x';\n` + cls(''),
+  exportSpec: `const a = 1;\nexport { a as __lwcE };\n` + cls(''),
+  shorthand: cls(`  m() { const o = { __lwcS }; }`),
+  classDecorator: { src: H + `@__lwcD\nexport default class C extends LightningElement {}\n`, expectAbsent: ['sigs'] },
+  decoratorArg: { src: cls(`  @foo(__lwcA) x;`), expectAbsent: ['sigs'] },
+  extractedId: H + `export default mix(class extends LightningElement {\n  m() { return __lwcZ; }\n});\n`,
+};

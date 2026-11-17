@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">I&#x27;m offender child, will throw in render method. You should not see me</template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">I'm offender child, will throw in render method. You should not see me</template></lwc-up>"
+ },
+ "asyncErrors": [
+  "Boundary Initial Child Offender Throws"
+ ]
+}

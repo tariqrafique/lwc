@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1111
+  ],
+  "message": "LWC1111: Invalid property name \"part\". \"part\" is a future reserved attribute for web components."
+}

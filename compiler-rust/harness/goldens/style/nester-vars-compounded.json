@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+    {
+      "scoped": false,
+      "nativeOnly": false,
+      "css": {
+        "x|host=true|dir=false": ".a[x] {box-shadow: var(--lwc-c-active-button-box-shadow, 0 0 2px var(--lwc-brand-accessible, #0070d2));}",
+        "x|host=false|dir=true": ".a[x] {box-shadow: var(--lwc-c-active-button-box-shadow, 0 0 2px var(--lwc-brand-accessible, #0070d2));}",
+        "x|host=false|dir=false": ".a[x] {box-shadow: var(--lwc-c-active-button-box-shadow, 0 0 2px var(--lwc-brand-accessible, #0070d2));}",
+        "x|host=true|dir=true": ".a[x] {box-shadow: var(--lwc-c-active-button-box-shadow, 0 0 2px var(--lwc-brand-accessible, #0070d2));}",
+        "-|host=true|dir=false": ".a {box-shadow: var(--lwc-c-active-button-box-shadow, 0 0 2px var(--lwc-brand-accessible, #0070d2));}"
+      }
+    }
+  ]
+}

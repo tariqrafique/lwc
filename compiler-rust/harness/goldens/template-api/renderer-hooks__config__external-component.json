@@ -1,0 +1,342 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./external-component.css",
+   "./external-component.scoped.css?scoped=true",
+   "foo/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5fjt5cr87l5",
+   "lwc-5fjt5cr87l5-host",
+   "x-external-component_external-component",
+   "x-external-component_external-component-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5fjt5cr87l5"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./external-component.css",
+   "./external-component.scoped.css?scoped=true",
+   "foo/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5fjt5cr87l5",
+   "lwc-5fjt5cr87l5-host",
+   "x-external-component_external-component",
+   "x-external-component_external-component-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-external-component_external-component"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./external-component.css",
+   "./external-component.scoped.css?scoped=true",
+   "foo/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5fjt5cr87l5",
+   "lwc-5fjt5cr87l5-host",
+   "x-external-component_external-component",
+   "x-external-component_external-component-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-external-component_external-component"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./external-component.css",
+   "./external-component.scoped.css?scoped=true",
+   "foo/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5fjt5cr87l5",
+   "lwc-5fjt5cr87l5-host",
+   "x-external-component_external-component",
+   "x-external-component_external-component-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5fjt5cr87l5"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./external-component.css",
+   "./external-component.scoped.css?scoped=true",
+   "foo/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5fjt5cr87l5",
+   "lwc-5fjt5cr87l5-host",
+   "x-external-component_external-component",
+   "x-external-component_external-component-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5fjt5cr87l5"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./external-component.css",
+   "./external-component.scoped.css?scoped=true",
+   "foo/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5fjt5cr87l5",
+   "lwc-5fjt5cr87l5-host",
+   "x-external-component_external-component",
+   "x-external-component_external-component-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5fjt5cr87l5"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./external-component.css",
+   "./external-component.scoped.css?scoped=true",
+   "foo/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5fjt5cr87l5",
+   "lwc-5fjt5cr87l5-host",
+   "x-external-component_external-component",
+   "x-external-component_external-component-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5fjt5cr87l5"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./external-component.css",
+   "./external-component.scoped.css?scoped=true",
+   "foo/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5fjt5cr87l5",
+   "lwc-5fjt5cr87l5-host",
+   "x-external-component_external-component",
+   "x-external-component_external-component-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5fjt5cr87l5"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./external-component.css",
+   "./external-component.scoped.css?scoped=true",
+   "foo/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5fjt5cr87l5",
+   "lwc-5fjt5cr87l5-host",
+   "x-external-component_external-component",
+   "x-external-component_external-component-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5fjt5cr87l5"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./external-component.css",
+   "./external-component.scoped.css?scoped=true",
+   "foo/bar"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5fjt5cr87l5",
+   "lwc-5fjt5cr87l5-host",
+   "x-external-component_external-component",
+   "x-external-component_external-component-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-5fjt5cr87l5"
+  }
+ }
+}

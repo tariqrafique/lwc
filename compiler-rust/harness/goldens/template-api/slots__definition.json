@@ -1,0 +1,352 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition.css",
+   "./definition.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ksn4idai2c",
+   "lwc-4ksn4idai2c-host",
+   "x-definition_definition",
+   "x-definition_definition-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ksn4idai2c"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition.css",
+   "./definition.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ksn4idai2c",
+   "lwc-4ksn4idai2c-host",
+   "x-definition_definition",
+   "x-definition_definition-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-definition_definition"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition.css",
+   "./definition.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ksn4idai2c",
+   "lwc-4ksn4idai2c-host",
+   "x-definition_definition",
+   "x-definition_definition-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-definition_definition"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition.css",
+   "./definition.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ksn4idai2c",
+   "lwc-4ksn4idai2c-host",
+   "x-definition_definition",
+   "x-definition_definition-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ksn4idai2c"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition.css",
+   "./definition.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ksn4idai2c",
+   "lwc-4ksn4idai2c-host",
+   "x-definition_definition",
+   "x-definition_definition-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ksn4idai2c"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition.css",
+   "./definition.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ksn4idai2c",
+   "lwc-4ksn4idai2c-host",
+   "x-definition_definition",
+   "x-definition_definition-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ksn4idai2c"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition.css",
+   "./definition.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ksn4idai2c",
+   "lwc-4ksn4idai2c-host",
+   "x-definition_definition",
+   "x-definition_definition-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ksn4idai2c"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition.css",
+   "./definition.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ksn4idai2c",
+   "lwc-4ksn4idai2c-host",
+   "x-definition_definition",
+   "x-definition_definition-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ksn4idai2c"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition.css",
+   "./definition.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ksn4idai2c",
+   "lwc-4ksn4idai2c-host",
+   "x-definition_definition",
+   "x-definition_definition-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ksn4idai2c"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./definition.css",
+   "./definition.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4ksn4idai2c",
+   "lwc-4ksn4idai2c-host",
+   "x-definition_definition",
+   "x-definition_definition-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "s",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>Default slot content</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4ksn4idai2c"
+  }
+ }
+}

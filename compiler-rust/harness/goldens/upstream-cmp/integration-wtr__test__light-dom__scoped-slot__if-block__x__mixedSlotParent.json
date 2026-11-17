@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "compile-error",
+  "message": "Unimplemented IR node: ScopedSlotFragment"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><x-mixed-slot-child><template shadowrootmode=\"open\"></template></x-mixed-slot-child></template></lwc-up>"
+ }
+}

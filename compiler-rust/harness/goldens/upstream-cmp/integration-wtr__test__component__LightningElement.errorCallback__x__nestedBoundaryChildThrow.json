@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">NestedBoundaryHost: <x-nested-grand-child-throw><template shadowrootmode=\"open\"></template></x-nested-grand-child-throw></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">NestedBoundaryHost: <x-nested-grand-child-throw><template shadowrootmode=\"open\"></template></x-nested-grand-child-throw></template></lwc-up>"
+ }
+}

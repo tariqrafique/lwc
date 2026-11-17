@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><!---->Default scoped slot content in child<!----></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><!---->Default scoped slot content in child<!----></lwc-up>"
+ }
+}

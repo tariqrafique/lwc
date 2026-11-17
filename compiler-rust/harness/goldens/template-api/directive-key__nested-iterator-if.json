@@ -1,0 +1,392 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-iterator-if.css",
+   "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-s0e1j42tjc",
+   "lwc-s0e1j42tjc-host",
+   "x-nested-iterator-if_nested-iterator-if",
+   "x-nested-iterator-if_nested-iterator-if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}>Text</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-s0e1j42tjc"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-iterator-if.css",
+   "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-s0e1j42tjc",
+   "lwc-s0e1j42tjc-host",
+   "x-nested-iterator-if_nested-iterator-if",
+   "x-nested-iterator-if_nested-iterator-if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}>Text</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-nested-iterator-if_nested-iterator-if"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-iterator-if.css",
+   "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-s0e1j42tjc",
+   "lwc-s0e1j42tjc-host",
+   "x-nested-iterator-if_nested-iterator-if",
+   "x-nested-iterator-if_nested-iterator-if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}>Text</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-nested-iterator-if_nested-iterator-if"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-iterator-if.css",
+   "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-s0e1j42tjc",
+   "lwc-s0e1j42tjc-host",
+   "x-nested-iterator-if_nested-iterator-if",
+   "x-nested-iterator-if_nested-iterator-if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}>Text</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-s0e1j42tjc"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-iterator-if.css",
+   "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-s0e1j42tjc",
+   "lwc-s0e1j42tjc-host",
+   "x-nested-iterator-if_nested-iterator-if",
+   "x-nested-iterator-if_nested-iterator-if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}>Text</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-s0e1j42tjc"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-iterator-if.css",
+   "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-s0e1j42tjc",
+   "lwc-s0e1j42tjc-host",
+   "x-nested-iterator-if_nested-iterator-if",
+   "x-nested-iterator-if_nested-iterator-if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}>Text</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-s0e1j42tjc"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-iterator-if.css",
+   "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-s0e1j42tjc",
+   "lwc-s0e1j42tjc-host",
+   "x-nested-iterator-if_nested-iterator-if",
+   "x-nested-iterator-if_nested-iterator-if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}>Text</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-s0e1j42tjc"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-iterator-if.css",
+   "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-s0e1j42tjc",
+   "lwc-s0e1j42tjc-host",
+   "x-nested-iterator-if_nested-iterator-if",
+   "x-nested-iterator-if_nested-iterator-if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}>Text</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-s0e1j42tjc"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-iterator-if.css",
+   "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-s0e1j42tjc",
+   "lwc-s0e1j42tjc-host",
+   "x-nested-iterator-if_nested-iterator-if",
+   "x-nested-iterator-if_nested-iterator-if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}>Text</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-s0e1j42tjc"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested-iterator-if.css",
+   "./nested-iterator-if.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-s0e1j42tjc",
+   "lwc-s0e1j42tjc-host",
+   "x-nested-iterator-if_nested-iterator-if",
+   "x-nested-iterator-if_nested-iterator-if-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${\"a0:data-islast\"}${\"a0:data-isfirst\"}${3}><span${3}>${\"t2\"}</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}>Text</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-s0e1j42tjc"
+  }
+ }
+}

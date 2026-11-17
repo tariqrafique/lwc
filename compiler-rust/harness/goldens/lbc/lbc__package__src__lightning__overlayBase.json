@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">.overlay-surface:popover-open {border: none;background: transparent;padding: 0;margin: 0;inset: auto;position-try-fallbacks:\n flip-inline,\n flip-block,\n flip-inline flip-block;}.popover__container {display: flex;flex-direction: column;}.overlay__close {margin-left: auto;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><div class=\"overlay-surface\" id=\"overlay-base-div\" data-open=\"false\"><!----><div class=\"popover__container\"><div data-slot></div></div><!----></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.overlay-surface:popover-open {border: none;background: transparent;padding: 0;margin: 0;inset: auto;position-try-fallbacks:\n flip-inline,\n flip-block,\n flip-inline flip-block;}.popover__container {display: flex;flex-direction: column;}.overlay__close {margin-left: auto;}</style><div class=\"overlay-surface\" id=\"overlay-base-div\" data-open=\"true\"><!----><div class=\"popover__container\"><div data-slot=\"\"></div></div><!----></div></template></lwc-lbc>"
+ },
+ "asyncErrors": [
+  "Cannot read properties of null (reading 'popover')"
+ ]
+}

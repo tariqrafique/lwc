@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./call-expr.css",
+    "./call-expr.scoped.css?scoped=true",
+    "x/pert"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6gcm7h7fbpk",
+    "lwc-6gcm7h7fbpk-host",
+    "x-call-expr_call-expr",
+    "x-call-expr_call-expr-host"
+  ]
+}

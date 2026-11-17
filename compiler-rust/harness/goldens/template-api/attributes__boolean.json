@@ -1,0 +1,352 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean.css",
+   "./boolean.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7c5u711os5r",
+   "lwc-7c5u711os5r-host",
+   "x-boolean_boolean",
+   "x-boolean_boolean-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7c5u711os5r"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean.css",
+   "./boolean.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7c5u711os5r",
+   "lwc-7c5u711os5r-host",
+   "x-boolean_boolean",
+   "x-boolean_boolean-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-boolean_boolean"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean.css",
+   "./boolean.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7c5u711os5r",
+   "lwc-7c5u711os5r-host",
+   "x-boolean_boolean",
+   "x-boolean_boolean-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-boolean_boolean"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean.css",
+   "./boolean.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7c5u711os5r",
+   "lwc-7c5u711os5r-host",
+   "x-boolean_boolean",
+   "x-boolean_boolean-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7c5u711os5r"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean.css",
+   "./boolean.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7c5u711os5r",
+   "lwc-7c5u711os5r-host",
+   "x-boolean_boolean",
+   "x-boolean_boolean-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7c5u711os5r"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean.css",
+   "./boolean.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7c5u711os5r",
+   "lwc-7c5u711os5r-host",
+   "x-boolean_boolean",
+   "x-boolean_boolean-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7c5u711os5r"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean.css",
+   "./boolean.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7c5u711os5r",
+   "lwc-7c5u711os5r-host",
+   "x-boolean_boolean",
+   "x-boolean_boolean-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7c5u711os5r"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean.css",
+   "./boolean.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7c5u711os5r",
+   "lwc-7c5u711os5r-host",
+   "x-boolean_boolean",
+   "x-boolean_boolean-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7c5u711os5r"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean.css",
+   "./boolean.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7c5u711os5r",
+   "lwc-7c5u711os5r-host",
+   "x-boolean_boolean",
+   "x-boolean_boolean-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7c5u711os5r"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./boolean.css",
+   "./boolean.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7c5u711os5r",
+   "lwc-7c5u711os5r-host",
+   "x-boolean_boolean",
+   "x-boolean_boolean-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p hidden${3}>x</p>",
+   "parseFragment:<input${\"a0:readonly\"} disabled title=\"foo\"${3}>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7c5u711os5r"
+  }
+ }
+}

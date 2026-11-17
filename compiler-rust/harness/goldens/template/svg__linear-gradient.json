@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./linear-gradient.css",
+    "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-1nbpngf4dh9",
+    "lwc-1nbpngf4dh9-host",
+    "x-linear-gradient_linear-gradient",
+    "x-linear-gradient_linear-gradient-host"
+  ]
+}

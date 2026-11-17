@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">.lgc-bg {background-color: rgb(242 242 242);}.lgc-bg-inverse {background-color: var(--slds-g-color-surface-container-inverse-1);}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><div class=\"slds-m-top_medium slds-m-bottom_x-large\"><p class=\"slds-m-bottom_medium\">An input field with a color picker. Type a valid hex color value such as <code>#8DC141</code> or click the menu to select a color.</p><div class=\"slds-p-around_medium lgc-bg\"><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div></div><div class=\"slds-m-top_medium slds-m-bottom_x-large\"><p class=\"slds-m-bottom_medium\">An input field with a color picker that&#x27;s set to a predefined value.</p><div class=\"slds-p-around_medium lgc-bg\"><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">.lgc-bg {background-color: rgb(242 242 242);}.lgc-bg-inverse {background-color: var(--slds-g-color-surface-container-inverse-1);}</style><div class=\"slds-m-top_medium slds-m-bottom_x-large\"><p class=\"slds-m-bottom_medium\">An input field with a color picker. Type a valid hex color value such as <code>#8DC141</code> or click the menu to select a color.</p><div class=\"slds-p-around_medium lgc-bg\"><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div></div><div class=\"slds-m-top_medium slds-m-bottom_x-large\"><p class=\"slds-m-bottom_medium\">An input field with a color picker that's set to a predefined value.</p><div class=\"slds-p-around_medium lgc-bg\"><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div></div></template></lwc-lbc>"
+ }
+}

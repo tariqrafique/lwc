@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./name-is-expression.css",
+    "./name-is-expression.scoped.css?scoped=true",
+    "x/child"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-ho8kalrapc",
+    "lwc-ho8kalrapc-host",
+    "x-name-is-expression_name-is-expression",
+    "x-name-is-expression_name-is-expression-host"
+  ]
+}

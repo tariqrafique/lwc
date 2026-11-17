@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-top_medium slds-m-bottom_x-large\"><p class=\"slds-m-bottom_medium\">Button group using simple buttons and a disabled <em>buttonMenu</em>.</p><lightning-button-group><template shadowrootmode=\"open\"></template><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-button-menu><template shadowrootmode=\"open\"></template><lightning-menu-item><template shadowrootmode=\"open\"></template></lightning-menu-item><lightning-menu-item><template shadowrootmode=\"open\"></template></lightning-menu-item><lightning-menu-item><template shadowrootmode=\"open\"></template></lightning-menu-item></lightning-button-menu></lightning-button-group></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-top_medium slds-m-bottom_x-large\"><p class=\"slds-m-bottom_medium\">Button group using simple buttons and a disabled <em>buttonMenu</em>.</p><lightning-button-group><template shadowrootmode=\"open\"></template><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-button><template shadowrootmode=\"open\"></template></lightning-button><lightning-button-menu><template shadowrootmode=\"open\"></template><lightning-menu-item><template shadowrootmode=\"open\"></template></lightning-menu-item><lightning-menu-item><template shadowrootmode=\"open\"></template></lightning-menu-item><lightning-menu-item><template shadowrootmode=\"open\"></template></lightning-menu-item></lightning-button-menu></lightning-button-group></div></template></lwc-lbc>"
+ }
+}

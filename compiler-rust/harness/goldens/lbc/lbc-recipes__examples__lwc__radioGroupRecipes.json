@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Radio Group\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A radio button group that can have a single option selected.</c-view-source></div></c-card></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-card title=\"Radio Group\"><template shadowrootmode=\"open\"></template><div class=\"slds-card__body slds-card__body_inner\"><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-radio-group><template shadowrootmode=\"open\"></template></c-radio-group><c-view-source slot=\"footer\"><template shadowrootmode=\"open\"></template>A radio button group that can have a single option selected.</c-view-source></div></c-card></template></lwc-lbc>"
+ }
+}

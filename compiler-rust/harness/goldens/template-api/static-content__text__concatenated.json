@@ -1,0 +1,372 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./concatenated.css",
+   "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mft3qo9a2t",
+   "lwc-2mft3qo9a2t-host",
+   "x-concatenated_concatenated",
+   "x-concatenated_concatenated-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2mft3qo9a2t"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./concatenated.css",
+   "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mft3qo9a2t",
+   "lwc-2mft3qo9a2t-host",
+   "x-concatenated_concatenated",
+   "x-concatenated_concatenated-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-concatenated_concatenated"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./concatenated.css",
+   "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mft3qo9a2t",
+   "lwc-2mft3qo9a2t-host",
+   "x-concatenated_concatenated",
+   "x-concatenated_concatenated-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-concatenated_concatenated"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./concatenated.css",
+   "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mft3qo9a2t",
+   "lwc-2mft3qo9a2t-host",
+   "x-concatenated_concatenated",
+   "x-concatenated_concatenated-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2mft3qo9a2t"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./concatenated.css",
+   "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mft3qo9a2t",
+   "lwc-2mft3qo9a2t-host",
+   "x-concatenated_concatenated",
+   "x-concatenated_concatenated-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2mft3qo9a2t"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./concatenated.css",
+   "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mft3qo9a2t",
+   "lwc-2mft3qo9a2t-host",
+   "x-concatenated_concatenated",
+   "x-concatenated_concatenated-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2mft3qo9a2t"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./concatenated.css",
+   "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mft3qo9a2t",
+   "lwc-2mft3qo9a2t-host",
+   "x-concatenated_concatenated",
+   "x-concatenated_concatenated-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2mft3qo9a2t"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./concatenated.css",
+   "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mft3qo9a2t",
+   "lwc-2mft3qo9a2t-host",
+   "x-concatenated_concatenated",
+   "x-concatenated_concatenated-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2mft3qo9a2t"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./concatenated.css",
+   "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mft3qo9a2t",
+   "lwc-2mft3qo9a2t-host",
+   "x-concatenated_concatenated",
+   "x-concatenated_concatenated-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2mft3qo9a2t"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./concatenated.css",
+   "./concatenated.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2mft3qo9a2t",
+   "lwc-2mft3qo9a2t-host",
+   "x-concatenated_concatenated",
+   "x-concatenated_concatenated-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>",
+   "parseFragment:<span${3}>${\"t1\"}</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2mft3qo9a2t"
+  }
+ }
+}

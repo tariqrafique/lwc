@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-around_medium\"><h1 class=\"slds-text-heading_small\">Input Date Example</h1><p class=\"slds-text-body_regular\">The following examples show various ways to create an input date component.</p></div><div><h2>Basic Input Date</h2><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div><div><h2>Advanced Input Date</h2><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-m-around_medium\"><h1 class=\"slds-text-heading_small\">Input Date Example</h1><p class=\"slds-text-body_regular\">The following examples show various ways to create an input date component.</p></div><div><h2>Basic Input Date</h2><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div><div><h2>Advanced Input Date</h2><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div></template></lwc-lbc>"
+ }
+}

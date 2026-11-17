@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-progress-ring><template shadowrootmode=\"open\"></template></lightning-progress-ring><lightning-progress-ring><template shadowrootmode=\"open\"></template></lightning-progress-ring><lightning-progress-ring><template shadowrootmode=\"open\"></template></lightning-progress-ring><lightning-progress-ring><template shadowrootmode=\"open\"></template></lightning-progress-ring><lightning-progress-ring><template shadowrootmode=\"open\"></template></lightning-progress-ring></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><lightning-progress-ring><template shadowrootmode=\"open\"></template></lightning-progress-ring><lightning-progress-ring><template shadowrootmode=\"open\"></template></lightning-progress-ring><lightning-progress-ring><template shadowrootmode=\"open\"></template></lightning-progress-ring><lightning-progress-ring><template shadowrootmode=\"open\"></template></lightning-progress-ring><lightning-progress-ring><template shadowrootmode=\"open\"></template></lightning-progress-ring></template></lwc-lbc>"
+ }
+}

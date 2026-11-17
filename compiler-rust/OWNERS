@@ -1,0 +1,16 @@
+# Lane ownership: AUTHORITATIVE (PLAN.md §3; D-0276: one serial worker owns the workspace).
+# path-glob<TAB>owner[,owner]  first match wins; '*' crosses '/'; '#' starts a comment.
+# =<token><TAB><bot>: branch bot/<token>[-topic] acts as <bot>. Crossing a migrate-owned
+# path needs the owner's agreement and a 'Cross-Lane: <owner>' trailer.
+# Consumers (shim-gate, lane-check): skip comment lines and =token alias lines by explicit rule; every other
+# non-empty line must have ≥2 tab-separated columns (else fail closed).
+# D-0276 supersedes the per-crate one-writer split of D-0198/D-0199. Migrate still owns this file's contents.
+=js	harness
+=template	harness
+=ssr	harness
+=semdiff	harness
+=ship	harness
+=diagnostics	harness
+=worker	harness
+OWNERS	migrate	# D-0198/D-0276: ownership table remains Migrate's
+*	harness

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./template-outside-scope-reference.css",
+    "./template-outside-scope-reference.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5jakk9rc2bg",
+    "lwc-5jakk9rc2bg-host",
+    "x-template-outside-scope-reference_template-outside-scope-reference",
+    "x-template-outside-scope-reference_template-outside-scope-reference-host"
+  ]
+}

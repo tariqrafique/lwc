@@ -1,0 +1,5 @@
+{
+  "ok": true,
+  "code": "import {setStaticInternals as __setStaticInternals} from \"@lwc/ssr-runtime\";\nimport __lwcTmpl from \"./component.html\";\nimport {LightningElement} from \"@lwc/ssr-runtime\";\nexport default class DefaultComponentName extends LightningElement {  /*LWC compiler v9.5.3*/\n}\n__setStaticInternals(DefaultComponentName, \"x-foo\", [], null ?? null, \"sync\", __lwcTmpl);\n",
+  "warnings": []
+}

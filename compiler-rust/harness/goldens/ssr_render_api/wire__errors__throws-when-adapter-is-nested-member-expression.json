@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "compile",
+  "error": "LWC1132: @wire identifier cannot contain nested member expressions",
+  "html": ""
+ },
+ "v57": {
+  "stage": "compile",
+  "error": "LWC1132: @wire identifier cannot contain nested member expressions",
+  "html": ""
+ },
+ "v58": {
+  "stage": "compile",
+  "error": "LWC1132: @wire identifier cannot contain nested member expressions",
+  "html": ""
+ },
+ "v59": {
+  "stage": "compile",
+  "error": "LWC1132: @wire identifier cannot contain nested member expressions",
+  "html": ""
+ },
+ "v65": {
+  "stage": "compile",
+  "error": "LWC1132: @wire identifier cannot contain nested member expressions",
+  "html": ""
+ },
+ "v66": {
+  "stage": "compile",
+  "error": "LWC1132: @wire identifier cannot contain nested member expressions",
+  "html": ""
+ },
+ "v67": {
+  "stage": "compile",
+  "error": "LWC1132: @wire identifier cannot contain nested member expressions",
+  "html": ""
+ }
+}

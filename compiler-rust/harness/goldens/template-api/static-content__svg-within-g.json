@@ -1,0 +1,326 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-within-g.css",
+   "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5k70b9009s8",
+   "lwc-5k70b9009s8-host",
+   "x-svg-within-g_svg-within-g",
+   "x-svg-within-g_svg-within-g-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg xmlns=\"http://www.w3.org/2000/svg\"${3}><g${3}><path${3}/><path${3}/></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5k70b9009s8"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-within-g.css",
+   "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5k70b9009s8",
+   "lwc-5k70b9009s8-host",
+   "x-svg-within-g_svg-within-g",
+   "x-svg-within-g_svg-within-g-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-svg-within-g_svg-within-g"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-within-g.css",
+   "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5k70b9009s8",
+   "lwc-5k70b9009s8-host",
+   "x-svg-within-g_svg-within-g",
+   "x-svg-within-g_svg-within-g-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-svg-within-g_svg-within-g"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-within-g.css",
+   "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5k70b9009s8",
+   "lwc-5k70b9009s8-host",
+   "x-svg-within-g_svg-within-g",
+   "x-svg-within-g_svg-within-g-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg xmlns=\"http://www.w3.org/2000/svg\"${3}><g${3}><path${3}/><path${3}/></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5k70b9009s8"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-within-g.css",
+   "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5k70b9009s8",
+   "lwc-5k70b9009s8-host",
+   "x-svg-within-g_svg-within-g",
+   "x-svg-within-g_svg-within-g-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg xmlns=\"http://www.w3.org/2000/svg\"${3}><g${3}><path${3}/><path${3}/></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5k70b9009s8"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-within-g.css",
+   "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5k70b9009s8",
+   "lwc-5k70b9009s8-host",
+   "x-svg-within-g_svg-within-g",
+   "x-svg-within-g_svg-within-g-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg xmlns=\"http://www.w3.org/2000/svg\"${3}><g${3}><path${3}/><path${3}/></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5k70b9009s8"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-within-g.css",
+   "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5k70b9009s8",
+   "lwc-5k70b9009s8-host",
+   "x-svg-within-g_svg-within-g",
+   "x-svg-within-g_svg-within-g-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg xmlns=\"http://www.w3.org/2000/svg\"${3}><g${3}><path${3}/><path${3}/></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5k70b9009s8"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-within-g.css",
+   "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5k70b9009s8",
+   "lwc-5k70b9009s8-host",
+   "x-svg-within-g_svg-within-g",
+   "x-svg-within-g_svg-within-g-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg xmlns=\"http://www.w3.org/2000/svg\"${3}><g${3}><path${3}/><path${3}/></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5k70b9009s8"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-within-g.css",
+   "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5k70b9009s8",
+   "lwc-5k70b9009s8-host",
+   "x-svg-within-g_svg-within-g",
+   "x-svg-within-g_svg-within-g-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg xmlns=\"http://www.w3.org/2000/svg\"${3}><g${3}><path${3}/><path${3}/></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5k70b9009s8"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-within-g.css",
+   "./svg-within-g.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5k70b9009s8",
+   "lwc-5k70b9009s8-host",
+   "x-svg-within-g_svg-within-g",
+   "x-svg-within-g_svg-within-g-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}><svg xmlns=\"http://www.w3.org/2000/svg\"${3}><g${3}><path${3}/><path${3}/></g></svg></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5k70b9009s8"
+  }
+ }
+}

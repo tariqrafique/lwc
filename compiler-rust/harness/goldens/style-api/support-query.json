@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": false,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "x|host=false|dir=false": "@supports (display: flex) {h1[x] {}}",
+     "x|host=true|dir=true": "@supports (display: flex) {h1[x] {}}",
+     "-|host=true|dir=false": "@supports (display: flex) {h1 {}}"
+    }
+   }
+  ]
+ }
+}

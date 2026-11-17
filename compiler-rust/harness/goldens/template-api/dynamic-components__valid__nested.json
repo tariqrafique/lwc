@@ -1,0 +1,362 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested.css",
+   "./nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ud1n1pkbjc",
+   "lwc-ud1n1pkbjc-host",
+   "x-nested_nested",
+   "x-nested_nested-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Inside the outer component</span>",
+   "parseFragment:<span${3}>Inside the nested component</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ud1n1pkbjc"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested.css",
+   "./nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ud1n1pkbjc",
+   "lwc-ud1n1pkbjc-host",
+   "x-nested_nested",
+   "x-nested_nested-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Inside the outer component</span>",
+   "parseFragment:<span${3}>Inside the nested component</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-nested_nested"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested.css",
+   "./nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ud1n1pkbjc",
+   "lwc-ud1n1pkbjc-host",
+   "x-nested_nested",
+   "x-nested_nested-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Inside the outer component</span>",
+   "parseFragment:<span${3}>Inside the nested component</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-nested_nested"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested.css",
+   "./nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ud1n1pkbjc",
+   "lwc-ud1n1pkbjc-host",
+   "x-nested_nested",
+   "x-nested_nested-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Inside the outer component</span>",
+   "parseFragment:<span${3}>Inside the nested component</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ud1n1pkbjc"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested.css",
+   "./nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ud1n1pkbjc",
+   "lwc-ud1n1pkbjc-host",
+   "x-nested_nested",
+   "x-nested_nested-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Inside the outer component</span>",
+   "parseFragment:<span${3}>Inside the nested component</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ud1n1pkbjc"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested.css",
+   "./nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ud1n1pkbjc",
+   "lwc-ud1n1pkbjc-host",
+   "x-nested_nested",
+   "x-nested_nested-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Inside the outer component</span>",
+   "parseFragment:<span${3}>Inside the nested component</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ud1n1pkbjc"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested.css",
+   "./nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ud1n1pkbjc",
+   "lwc-ud1n1pkbjc-host",
+   "x-nested_nested",
+   "x-nested_nested-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Inside the outer component</span>",
+   "parseFragment:<span${3}>Inside the nested component</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ud1n1pkbjc"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested.css",
+   "./nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ud1n1pkbjc",
+   "lwc-ud1n1pkbjc-host",
+   "x-nested_nested",
+   "x-nested_nested-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Inside the outer component</span>",
+   "parseFragment:<span${3}>Inside the nested component</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ud1n1pkbjc"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested.css",
+   "./nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ud1n1pkbjc",
+   "lwc-ud1n1pkbjc-host",
+   "x-nested_nested",
+   "x-nested_nested-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Inside the outer component</span>",
+   "parseFragment:<span${3}>Inside the nested component</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ud1n1pkbjc"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./nested.css",
+   "./nested.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-ud1n1pkbjc",
+   "lwc-ud1n1pkbjc-host",
+   "x-nested_nested",
+   "x-nested_nested-host"
+  ],
+  "apiHelpers": [
+   "b",
+   "dc",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<span${3}>Inside the outer component</span>",
+   "parseFragment:<span${3}>Inside the nested component</span>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-ud1n1pkbjc"
+  }
+ }
+}

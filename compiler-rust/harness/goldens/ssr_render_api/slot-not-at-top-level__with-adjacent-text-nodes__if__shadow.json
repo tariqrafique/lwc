@@ -1,0 +1,37 @@
+{
+ "omitted": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div>\n      Outer!\n    </div>\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <div>\n          Inner!\n        </div>\n        <slot>\n        </slot>\n      </template>\n      ‍‍\n      <x-deep>\n        <template shadowrootmode=\"open\">\n          <div>\n            Deep!\n          </div>\n          <slot>\n          </slot>\n        </template>\n        ‍\n        <div>\n          ‍\n        </div>\n        ‍\n      </x-deep>\n      ‍‍\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v57": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div>\n      Outer!\n    </div>\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <div>\n          Inner!\n        </div>\n        <slot>\n        </slot>\n      </template>\n      ‍‍\n      <x-deep>\n        <template shadowrootmode=\"open\">\n          <div>\n            Deep!\n          </div>\n          <slot>\n          </slot>\n        </template>\n        ‍\n        <div>\n          ‍\n        </div>\n        ‍\n      </x-deep>\n      ‍‍\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v58": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div>\n      Outer!\n    </div>\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <div>\n          Inner!\n        </div>\n        <slot>\n        </slot>\n      </template>\n      ‍‍\n      <x-deep>\n        <template shadowrootmode=\"open\">\n          <div>\n            Deep!\n          </div>\n          <slot>\n          </slot>\n        </template>\n        ‍\n        <div>\n          ‍\n        </div>\n        ‍\n      </x-deep>\n      ‍‍\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v59": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div>\n      Outer!\n    </div>\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <div>\n          Inner!\n        </div>\n        <slot>\n        </slot>\n      </template>\n      ‍‍\n      <x-deep>\n        <template shadowrootmode=\"open\">\n          <div>\n            Deep!\n          </div>\n          <slot>\n          </slot>\n        </template>\n        ‍\n        <div>\n          ‍\n        </div>\n        ‍\n      </x-deep>\n      ‍‍\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v65": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div>\n      Outer!\n    </div>\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <div>\n          Inner!\n        </div>\n        <slot>\n        </slot>\n      </template>\n      ‍‍\n      <x-deep>\n        <template shadowrootmode=\"open\">\n          <div>\n            Deep!\n          </div>\n          <slot>\n          </slot>\n        </template>\n        ‍\n        <div>\n          ‍\n        </div>\n        ‍\n      </x-deep>\n      ‍‍\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v66": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div>\n      Outer!\n    </div>\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <div>\n          Inner!\n        </div>\n        <slot>\n        </slot>\n      </template>\n      ‍‍\n      <x-deep>\n        <template shadowrootmode=\"open\">\n          <div>\n            Deep!\n          </div>\n          <slot>\n          </slot>\n        </template>\n        ‍\n        <div>\n          ‍\n        </div>\n        ‍\n      </x-deep>\n      ‍‍\n    </x-inner>\n  </template>\n</fixture-test>"
+ },
+ "v67": {
+  "stage": "ok",
+  "error": "",
+  "html": "<fixture-test>\n  <template shadowrootmode=\"open\">\n    <div>\n      Outer!\n    </div>\n    <x-inner>\n      <template shadowrootmode=\"open\">\n        <div>\n          Inner!\n        </div>\n        <slot>\n        </slot>\n      </template>\n      ‍‍\n      <x-deep>\n        <template shadowrootmode=\"open\">\n          <div>\n            Deep!\n          </div>\n          <slot>\n          </slot>\n        </template>\n        ‍\n        <div>\n          ‍\n        </div>\n        ‍\n      </x-deep>\n      ‍‍\n    </x-inner>\n  </template>\n</fixture-test>"
+ }
+}

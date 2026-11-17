@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./tagname-with-attributes.css",
+    "./tagname-with-attributes.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate",
+    "renderer"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "rendererHooks": 1,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-mfnbsc228l",
+    "lwc-mfnbsc228l-host",
+    "x-tagname-with-attributes_tagname-with-attributes",
+    "x-tagname-with-attributes_tagname-with-attributes-host"
+  ]
+}

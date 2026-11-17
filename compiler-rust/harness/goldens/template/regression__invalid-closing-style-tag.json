@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./invalid-closing-style-tag.css",
+    "./invalid-closing-style-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-72nu6n6rm0a",
+    "lwc-72nu6n6rm0a-host",
+    "x-invalid-closing-style-tag_invalid-closing-style-tag",
+    "x-invalid-closing-style-tag_invalid-closing-style-tag-host"
+  ]
+}

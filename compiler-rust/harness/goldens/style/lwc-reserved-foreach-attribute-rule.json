@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "name": "Error",
+  "line": 1,
+  "column": 1,
+  "expectedName": "CssSyntaxError"
+}

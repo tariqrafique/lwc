@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><!----><p data-id=\"default-slotted-text\">Default slotted content</p><!----><button data-id=\"button\">Toggle</button></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><!----><p data-id=\"default-slotted-text\">Default slotted content</p><!----><button data-id=\"button\">Toggle</button></lwc-up>"
+ }
+}

@@ -1,0 +1,344 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg.css",
+   "./svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3j142gdvja7",
+   "lwc-3j142gdvja7-host",
+   "x-svg_svg",
+   "x-svg_svg-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg viewBox=\"0 0 5 5\" aria-hidden=\"true\" class=\"slds-button__icon${0}\"${2}><use${\"a1:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3j142gdvja7"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg.css",
+   "./svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3j142gdvja7",
+   "lwc-3j142gdvja7-host",
+   "x-svg_svg",
+   "x-svg_svg-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-svg_svg"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg.css",
+   "./svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3j142gdvja7",
+   "lwc-3j142gdvja7-host",
+   "x-svg_svg",
+   "x-svg_svg-host"
+  ],
+  "apiHelpers": [
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-svg_svg"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg.css",
+   "./svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3j142gdvja7",
+   "lwc-3j142gdvja7-host",
+   "x-svg_svg",
+   "x-svg_svg-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg viewBox=\"0 0 5 5\" aria-hidden=\"true\" class=\"slds-button__icon${0}\"${2}><use${\"a1:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3j142gdvja7"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg.css",
+   "./svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3j142gdvja7",
+   "lwc-3j142gdvja7-host",
+   "x-svg_svg",
+   "x-svg_svg-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg viewBox=\"0 0 5 5\" aria-hidden=\"true\" class=\"slds-button__icon${0}\"${2}><use${\"a1:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3j142gdvja7"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg.css",
+   "./svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3j142gdvja7",
+   "lwc-3j142gdvja7-host",
+   "x-svg_svg",
+   "x-svg_svg-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg viewBox=\"0 0 5 5\" aria-hidden=\"true\" class=\"slds-button__icon${0}\"${2}><use${\"a1:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3j142gdvja7"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg.css",
+   "./svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3j142gdvja7",
+   "lwc-3j142gdvja7-host",
+   "x-svg_svg",
+   "x-svg_svg-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg viewBox=\"0 0 5 5\" aria-hidden=\"true\" class=\"slds-button__icon${0}\"${2}><use${\"a1:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3j142gdvja7"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg.css",
+   "./svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3j142gdvja7",
+   "lwc-3j142gdvja7-host",
+   "x-svg_svg",
+   "x-svg_svg-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg viewBox=\"0 0 5 5\" aria-hidden=\"true\" class=\"slds-button__icon${0}\"${2}><use${\"a1:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3j142gdvja7"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg.css",
+   "./svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3j142gdvja7",
+   "lwc-3j142gdvja7-host",
+   "x-svg_svg",
+   "x-svg_svg-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg viewBox=\"0 0 5 5\" aria-hidden=\"true\" class=\"slds-button__icon${0}\"${2}><use${\"a1:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3j142gdvja7"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg.css",
+   "./svg.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate",
+   "sanitizeAttribute"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-3j142gdvja7",
+   "lwc-3j142gdvja7-host",
+   "x-svg_svg",
+   "x-svg_svg-host"
+  ],
+  "apiHelpers": [
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg viewBox=\"0 0 5 5\" aria-hidden=\"true\" class=\"slds-button__icon${0}\"${2}><use${\"a1:xlink:href\"}${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-3j142gdvja7"
+  }
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "render-error",
+  "message": "Class constructor styleLibrary cannot be invoked without 'new'"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-1kadf5igpar-host\"></lwc-up>"
+ },
+ "asyncErrors": [
+  "Class constructor styleLibrary cannot be invoked without 'new'"
+ ]
+}

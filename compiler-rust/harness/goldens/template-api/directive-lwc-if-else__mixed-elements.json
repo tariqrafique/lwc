@@ -1,0 +1,372 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-elements.css",
+   "./mixed-elements.scoped.css?scoped=true",
+   "c/default"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3g2fma7qf",
+   "lwc-c3g2fma7qf-host",
+   "x-mixed-elements_mixed-elements",
+   "x-mixed-elements_mixed-elements-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Elseif!</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3g2fma7qf"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-elements.css",
+   "./mixed-elements.scoped.css?scoped=true",
+   "c/default"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3g2fma7qf",
+   "lwc-c3g2fma7qf-host",
+   "x-mixed-elements_mixed-elements",
+   "x-mixed-elements_mixed-elements-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Elseif!</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-mixed-elements_mixed-elements"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-elements.css",
+   "./mixed-elements.scoped.css?scoped=true",
+   "c/default"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3g2fma7qf",
+   "lwc-c3g2fma7qf-host",
+   "x-mixed-elements_mixed-elements",
+   "x-mixed-elements_mixed-elements-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Elseif!</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-mixed-elements_mixed-elements"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-elements.css",
+   "./mixed-elements.scoped.css?scoped=true",
+   "c/default"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3g2fma7qf",
+   "lwc-c3g2fma7qf-host",
+   "x-mixed-elements_mixed-elements",
+   "x-mixed-elements_mixed-elements-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Elseif!</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3g2fma7qf"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-elements.css",
+   "./mixed-elements.scoped.css?scoped=true",
+   "c/default"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3g2fma7qf",
+   "lwc-c3g2fma7qf-host",
+   "x-mixed-elements_mixed-elements",
+   "x-mixed-elements_mixed-elements-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Elseif!</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3g2fma7qf"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-elements.css",
+   "./mixed-elements.scoped.css?scoped=true",
+   "c/default"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3g2fma7qf",
+   "lwc-c3g2fma7qf-host",
+   "x-mixed-elements_mixed-elements",
+   "x-mixed-elements_mixed-elements-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Elseif!</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3g2fma7qf"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-elements.css",
+   "./mixed-elements.scoped.css?scoped=true",
+   "c/default"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3g2fma7qf",
+   "lwc-c3g2fma7qf-host",
+   "x-mixed-elements_mixed-elements",
+   "x-mixed-elements_mixed-elements-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Elseif!</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3g2fma7qf"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-elements.css",
+   "./mixed-elements.scoped.css?scoped=true",
+   "c/default"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3g2fma7qf",
+   "lwc-c3g2fma7qf-host",
+   "x-mixed-elements_mixed-elements",
+   "x-mixed-elements_mixed-elements-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Elseif!</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3g2fma7qf"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-elements.css",
+   "./mixed-elements.scoped.css?scoped=true",
+   "c/default"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3g2fma7qf",
+   "lwc-c3g2fma7qf-host",
+   "x-mixed-elements_mixed-elements",
+   "x-mixed-elements_mixed-elements-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Elseif!</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3g2fma7qf"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-elements.css",
+   "./mixed-elements.scoped.css?scoped=true",
+   "c/default"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-c3g2fma7qf",
+   "lwc-c3g2fma7qf-host",
+   "x-mixed-elements_mixed-elements",
+   "x-mixed-elements_mixed-elements-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "fr",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>Elseif!</div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-c3g2fma7qf"
+  }
+ }
+}

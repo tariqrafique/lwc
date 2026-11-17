@@ -1,0 +1,22 @@
+{
+ "value-ref": "import { api, track, LightningElement } from 'lwc';\nconst t = track;\nexport default class Test extends LightningElement {\n  @api onBar;\n}\n",
+ "wire-arg-ref": "import { api, wire, LightningElement } from 'lwc';\nexport default class Test extends LightningElement {\n  @wire(api) w;\n}\n",
+ "wire-config-ref": "import { api, wire, LightningElement } from 'lwc';\nimport { getFoo } from 'x/foo';\nexport default class Test extends LightningElement {\n  @wire(getFoo, { x: api }) w;\n}\n",
+ "class-decorator": "import { track, LightningElement } from 'lwc';\n@track\nexport default class Test extends LightningElement {\n}\n",
+ "private-prop": "import { track, LightningElement } from 'lwc';\nexport default class Test extends LightningElement {\n  @track #x = 1;\n}\n",
+ "export-spec": "import { api, LightningElement } from 'lwc';\nexport { api };\nexport default class Test extends LightningElement {}\n",
+ "shadowed": "import { api, LightningElement } from 'lwc';\nfunction f(api) { return api; }\nexport default class Test extends LightningElement { @api x; }\n",
+ "call-arg": "import { track, LightningElement } from 'lwc';\nfoo(track);\nexport default class Test extends LightningElement {}\n",
+ "member-decorator": "import { api, LightningElement } from 'lwc';\nexport default class Test extends LightningElement {\n  @api.foo x;\n}\n",
+ "two-refs": "import { api, track, LightningElement } from 'lwc';\nconst b = track;\nconst a = api;\nexport default class Test extends LightningElement {\n  @api onBar;\n}\n",
+ "aliased": "import { api as A, LightningElement } from 'lwc';\nconst z = A;\nexport default class Test extends LightningElement {}\n",
+ "in-class-method": "import { api, LightningElement } from 'lwc';\nexport default class Test extends LightningElement {\n  @api x;\n  m() { return api; }\n}\n",
+ "private-api": "import { api, track, wire, LightningElement } from \"lwc\";\nimport { getFoo } from \"x/foo\";\nexport default class Test extends LightningElement {\n  @api #x;\n}\n",
+ "private-wire": "import { api, track, wire, LightningElement } from \"lwc\";\nimport { getFoo } from \"x/foo\";\nexport default class Test extends LightningElement {\n  @wire(getFoo) #x;\n}\n",
+ "private-two": "import { api, track, wire, LightningElement } from \"lwc\";\nimport { getFoo } from \"x/foo\";\nexport default class Test extends LightningElement {\n  @track @api #x;\n  @track #y = 1;\n}\n",
+ "arrow-ref": "import { api, track, wire, LightningElement } from \"lwc\";\nimport { getFoo } from \"x/foo\";\nconst f = () => api;\nexport default class Test extends LightningElement {}\n",
+ "object-method-ref": "import { api, track, wire, LightningElement } from \"lwc\";\nimport { getFoo } from \"x/foo\";\nconst o = { m() { return wire; } };\nexport default class Test extends LightningElement {}\n",
+ "paren-ref": "import { api, track, wire, LightningElement } from \"lwc\";\nimport { getFoo } from \"x/foo\";\nconst p = (track);\nexport default class Test extends LightningElement {}\n",
+ "class-expr-decorator": "import { api, track, wire, LightningElement } from \"lwc\";\nimport { getFoo } from \"x/foo\";\nconst C = @api class {};\nexport default class Test extends LightningElement {}\n",
+ "no-trailing-newline-value": "import { api, track, wire, LightningElement } from \"lwc\";\nimport { getFoo } from \"x/foo\";\nexport default track"
+}

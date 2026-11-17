@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><button>first button</button><integration-child tabindex=\"0\"><template shadowrootmode=\"open\"></template></integration-child><button>second button</button></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><button>first button</button><integration-child tabindex=\"0\"><template shadowrootmode=\"open\"></template></integration-child><button>second button</button></template></lwc-up>"
+ }
+}

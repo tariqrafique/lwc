@@ -1,0 +1,332 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset.css",
+   "./dataset.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6p7revfogca",
+   "lwc-6p7revfogca-host",
+   "x-dataset_dataset",
+   "x-dataset_dataset-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data-foo=\"1\" data-bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6p7revfogca"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset.css",
+   "./dataset.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6p7revfogca",
+   "lwc-6p7revfogca-host",
+   "x-dataset_dataset",
+   "x-dataset_dataset-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data-foo=\"1\" data-bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-dataset_dataset"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset.css",
+   "./dataset.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6p7revfogca",
+   "lwc-6p7revfogca-host",
+   "x-dataset_dataset",
+   "x-dataset_dataset-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data-foo=\"1\" data-bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-dataset_dataset"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset.css",
+   "./dataset.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6p7revfogca",
+   "lwc-6p7revfogca-host",
+   "x-dataset_dataset",
+   "x-dataset_dataset-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data-foo=\"1\" data-bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6p7revfogca"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset.css",
+   "./dataset.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6p7revfogca",
+   "lwc-6p7revfogca-host",
+   "x-dataset_dataset",
+   "x-dataset_dataset-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data-foo=\"1\" data-bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6p7revfogca"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset.css",
+   "./dataset.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6p7revfogca",
+   "lwc-6p7revfogca-host",
+   "x-dataset_dataset",
+   "x-dataset_dataset-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data-foo=\"1\" data-bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6p7revfogca"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset.css",
+   "./dataset.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6p7revfogca",
+   "lwc-6p7revfogca-host",
+   "x-dataset_dataset",
+   "x-dataset_dataset-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data-foo=\"1\" data-bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6p7revfogca"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset.css",
+   "./dataset.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6p7revfogca",
+   "lwc-6p7revfogca-host",
+   "x-dataset_dataset",
+   "x-dataset_dataset-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data-foo=\"1\" data-bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6p7revfogca"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset.css",
+   "./dataset.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6p7revfogca",
+   "lwc-6p7revfogca-host",
+   "x-dataset_dataset",
+   "x-dataset_dataset-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data-foo=\"1\" data-bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6p7revfogca"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dataset.css",
+   "./dataset.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-6p7revfogca",
+   "lwc-6p7revfogca-host",
+   "x-dataset_dataset",
+   "x-dataset_dataset-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><p data-foo=\"1\" data-bar-baz=\"xyz\"${3}></p></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-6p7revfogca"
+  }
+ }
+}

@@ -1,0 +1,352 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./style-static.css",
+   "./style-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7g8p0uutims",
+   "lwc-7g8p0uutims-host",
+   "x-style-static_style-static",
+   "x-style-static_style-static-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>",
+   "parseFragment:<section style=\"--my-color: blue; color: var(--my-color);\"${3}></section>",
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7g8p0uutims"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./style-static.css",
+   "./style-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7g8p0uutims",
+   "lwc-7g8p0uutims-host",
+   "x-style-static_style-static",
+   "x-style-static_style-static-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>",
+   "parseFragment:<section style=\"--my-color: blue; color: var(--my-color);\"${3}></section>",
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-style-static_style-static"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./style-static.css",
+   "./style-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7g8p0uutims",
+   "lwc-7g8p0uutims-host",
+   "x-style-static_style-static",
+   "x-style-static_style-static-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>",
+   "parseFragment:<section style=\"--my-color: blue; color: var(--my-color);\"${3}></section>",
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-style-static_style-static"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./style-static.css",
+   "./style-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7g8p0uutims",
+   "lwc-7g8p0uutims-host",
+   "x-style-static_style-static",
+   "x-style-static_style-static-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>",
+   "parseFragment:<section style=\"--my-color: blue; color: var(--my-color);\"${3}></section>",
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7g8p0uutims"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./style-static.css",
+   "./style-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7g8p0uutims",
+   "lwc-7g8p0uutims-host",
+   "x-style-static_style-static",
+   "x-style-static_style-static-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>",
+   "parseFragment:<section style=\"--my-color: blue; color: var(--my-color);\"${3}></section>",
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7g8p0uutims"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./style-static.css",
+   "./style-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7g8p0uutims",
+   "lwc-7g8p0uutims-host",
+   "x-style-static_style-static",
+   "x-style-static_style-static-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>",
+   "parseFragment:<section style=\"--my-color: blue; color: var(--my-color);\"${3}></section>",
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7g8p0uutims"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./style-static.css",
+   "./style-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7g8p0uutims",
+   "lwc-7g8p0uutims-host",
+   "x-style-static_style-static",
+   "x-style-static_style-static-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>",
+   "parseFragment:<section style=\"--my-color: blue; color: var(--my-color);\"${3}></section>",
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7g8p0uutims"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./style-static.css",
+   "./style-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7g8p0uutims",
+   "lwc-7g8p0uutims-host",
+   "x-style-static_style-static",
+   "x-style-static_style-static-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>",
+   "parseFragment:<section style=\"--my-color: blue; color: var(--my-color);\"${3}></section>",
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7g8p0uutims"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./style-static.css",
+   "./style-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7g8p0uutims",
+   "lwc-7g8p0uutims-host",
+   "x-style-static_style-static",
+   "x-style-static_style-static-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>",
+   "parseFragment:<section style=\"--my-color: blue; color: var(--my-color);\"${3}></section>",
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7g8p0uutims"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./style-static.css",
+   "./style-static.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-7g8p0uutims",
+   "lwc-7g8p0uutims-host",
+   "x-style-static_style-static",
+   "x-style-static_style-static-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>",
+   "parseFragment:<section style=\"--my-color: blue; color: var(--my-color);\"${3}></section>",
+   "parseFragment:<section style=\"font-size: 12px; color: red; margin: 10px 5px 10px;\"${3}></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7g8p0uutims"
+  }
+ }
+}

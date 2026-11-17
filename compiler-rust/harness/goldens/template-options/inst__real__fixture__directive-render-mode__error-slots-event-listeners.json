@@ -1,0 +1,18 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-render-mode-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1139
+  ],
+  "line": 2,
+  "errors": [
+    1139
+  ],
+  "message": "LWC1139: Invalid event listener 'onslotchange' on slot. Slots in Light DOM templates cannot have event listeners."
+}

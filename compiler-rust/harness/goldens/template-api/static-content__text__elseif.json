@@ -1,0 +1,442 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./elseif.css",
+   "./elseif.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5d5paovuv7",
+   "lwc-5d5paovuv7-host",
+   "x-elseif_elseif",
+   "x-elseif_elseif-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5d5paovuv7"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./elseif.css",
+   "./elseif.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5d5paovuv7",
+   "lwc-5d5paovuv7-host",
+   "x-elseif_elseif",
+   "x-elseif_elseif-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-elseif_elseif"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./elseif.css",
+   "./elseif.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5d5paovuv7",
+   "lwc-5d5paovuv7-host",
+   "x-elseif_elseif",
+   "x-elseif_elseif-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-elseif_elseif"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./elseif.css",
+   "./elseif.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5d5paovuv7",
+   "lwc-5d5paovuv7-host",
+   "x-elseif_elseif",
+   "x-elseif_elseif-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5d5paovuv7"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./elseif.css",
+   "./elseif.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5d5paovuv7",
+   "lwc-5d5paovuv7-host",
+   "x-elseif_elseif",
+   "x-elseif_elseif-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5d5paovuv7"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./elseif.css",
+   "./elseif.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5d5paovuv7",
+   "lwc-5d5paovuv7-host",
+   "x-elseif_elseif",
+   "x-elseif_elseif-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5d5paovuv7"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./elseif.css",
+   "./elseif.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5d5paovuv7",
+   "lwc-5d5paovuv7-host",
+   "x-elseif_elseif",
+   "x-elseif_elseif-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5d5paovuv7"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./elseif.css",
+   "./elseif.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5d5paovuv7",
+   "lwc-5d5paovuv7-host",
+   "x-elseif_elseif",
+   "x-elseif_elseif-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5d5paovuv7"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./elseif.css",
+   "./elseif.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5d5paovuv7",
+   "lwc-5d5paovuv7-host",
+   "x-elseif_elseif",
+   "x-elseif_elseif-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5d5paovuv7"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./elseif.css",
+   "./elseif.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5d5paovuv7",
+   "lwc-5d5paovuv7-host",
+   "x-elseif_elseif",
+   "x-elseif_elseif-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "fr",
+   "sp",
+   "st",
+   "t"
+  ],
+  "fragments": [
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcIf</span>${\"t3\"}<span${3}>text4LwcIf</span></div>",
+   "parseFragment:<div${3}>${\"t1\"}</div>",
+   "parseFragment:<div${3}>${\"t1\"}<span${3}>text1LwcElseIf</span></div>",
+   "parseFragment:<div${3}><span${3}>text2LwcElseIf</span>${\"t3\"}</div>",
+   "parseFragment:<div${3}><span${3}>text3LwcElseIf</span>${\"t3\"}<span${3}>text4LwcElseIf</span></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5d5paovuv7"
+  }
+ }
+}

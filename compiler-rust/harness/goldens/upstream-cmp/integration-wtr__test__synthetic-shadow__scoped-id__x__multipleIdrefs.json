@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><span class=\"aomori\" id=\"aomori\">Aomori Prefecture</span><span class=\"hokkaido\" id=\"hokkaido\">Hokkaido Prefecture</span><span class=\"iwate\" id=\"iwate\">Iwate Prefecture</span><input class=\"dynamic\" aria-labelledby=\"aomori hokkaido\"><input class=\"static\" aria-labelledby=\"aomori iwate\"></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><span class=\"aomori\" id=\"aomori\">Aomori Prefecture</span><span class=\"hokkaido\" id=\"hokkaido\">Hokkaido Prefecture</span><span class=\"iwate\" id=\"iwate\">Iwate Prefecture</span><input class=\"dynamic\" aria-labelledby=\"aomori hokkaido\"><input class=\"static\" aria-labelledby=\"aomori iwate\"></template></lwc-up>"
+ }
+}

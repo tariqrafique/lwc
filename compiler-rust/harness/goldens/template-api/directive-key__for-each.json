@@ -1,0 +1,382 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./for-each.css",
+   "./for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5ib8hg9k6nn",
+   "lwc-5ib8hg9k6nn-host",
+   "x-for-each_for-each",
+   "x-for-each_for-each-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div class=\"my-list${0}\"${2}><p${3}>${\"t2\"}</p></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5ib8hg9k6nn"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./for-each.css",
+   "./for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5ib8hg9k6nn",
+   "lwc-5ib8hg9k6nn-host",
+   "x-for-each_for-each",
+   "x-for-each_for-each-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div class=\"my-list${0}\"${2}><p${3}>${\"t2\"}</p></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-for-each_for-each"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./for-each.css",
+   "./for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5ib8hg9k6nn",
+   "lwc-5ib8hg9k6nn-host",
+   "x-for-each_for-each",
+   "x-for-each_for-each-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div class=\"my-list${0}\"${2}><p${3}>${\"t2\"}</p></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-for-each_for-each"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./for-each.css",
+   "./for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5ib8hg9k6nn",
+   "lwc-5ib8hg9k6nn-host",
+   "x-for-each_for-each",
+   "x-for-each_for-each-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div class=\"my-list${0}\"${2}><p${3}>${\"t2\"}</p></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5ib8hg9k6nn"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./for-each.css",
+   "./for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5ib8hg9k6nn",
+   "lwc-5ib8hg9k6nn-host",
+   "x-for-each_for-each",
+   "x-for-each_for-each-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div class=\"my-list${0}\"${2}><p${3}>${\"t2\"}</p></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5ib8hg9k6nn"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./for-each.css",
+   "./for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5ib8hg9k6nn",
+   "lwc-5ib8hg9k6nn-host",
+   "x-for-each_for-each",
+   "x-for-each_for-each-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div class=\"my-list${0}\"${2}><p${3}>${\"t2\"}</p></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5ib8hg9k6nn"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./for-each.css",
+   "./for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5ib8hg9k6nn",
+   "lwc-5ib8hg9k6nn-host",
+   "x-for-each_for-each",
+   "x-for-each_for-each-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div class=\"my-list${0}\"${2}><p${3}>${\"t2\"}</p></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5ib8hg9k6nn"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./for-each.css",
+   "./for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5ib8hg9k6nn",
+   "lwc-5ib8hg9k6nn-host",
+   "x-for-each_for-each",
+   "x-for-each_for-each-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div class=\"my-list${0}\"${2}><p${3}>${\"t2\"}</p></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5ib8hg9k6nn"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./for-each.css",
+   "./for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5ib8hg9k6nn",
+   "lwc-5ib8hg9k6nn-host",
+   "x-for-each_for-each",
+   "x-for-each_for-each-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div class=\"my-list${0}\"${2}><p${3}>${\"t2\"}</p></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5ib8hg9k6nn"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./for-each.css",
+   "./for-each.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-5ib8hg9k6nn",
+   "lwc-5ib8hg9k6nn-host",
+   "x-for-each_for-each",
+   "x-for-each_for-each-host"
+  ],
+  "apiHelpers": [
+   "d",
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<div class=\"my-list${0}\"${2}><p${3}>${\"t2\"}</p></div>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-5ib8hg9k6nn"
+  }
+ }
+}

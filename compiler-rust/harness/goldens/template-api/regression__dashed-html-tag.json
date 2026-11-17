@@ -1,0 +1,332 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dashed-html-tag.css",
+   "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-490hohg2691",
+   "lwc-490hohg2691-host",
+   "x-dashed-html-tag_dashed-html-tag",
+   "x-dashed-html-tag_dashed-html-tag-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><color-profile local=\"x\"${3}></color-profile></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-490hohg2691"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dashed-html-tag.css",
+   "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-490hohg2691",
+   "lwc-490hohg2691-host",
+   "x-dashed-html-tag_dashed-html-tag",
+   "x-dashed-html-tag_dashed-html-tag-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><color-profile local=\"x\"${3}></color-profile></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-dashed-html-tag_dashed-html-tag"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dashed-html-tag.css",
+   "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-490hohg2691",
+   "lwc-490hohg2691-host",
+   "x-dashed-html-tag_dashed-html-tag",
+   "x-dashed-html-tag_dashed-html-tag-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><color-profile local=\"x\"${3}></color-profile></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-dashed-html-tag_dashed-html-tag"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dashed-html-tag.css",
+   "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-490hohg2691",
+   "lwc-490hohg2691-host",
+   "x-dashed-html-tag_dashed-html-tag",
+   "x-dashed-html-tag_dashed-html-tag-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><color-profile local=\"x\"${3}></color-profile></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-490hohg2691"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dashed-html-tag.css",
+   "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-490hohg2691",
+   "lwc-490hohg2691-host",
+   "x-dashed-html-tag_dashed-html-tag",
+   "x-dashed-html-tag_dashed-html-tag-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><color-profile local=\"x\"${3}></color-profile></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-490hohg2691"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dashed-html-tag.css",
+   "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-490hohg2691",
+   "lwc-490hohg2691-host",
+   "x-dashed-html-tag_dashed-html-tag",
+   "x-dashed-html-tag_dashed-html-tag-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><color-profile local=\"x\"${3}></color-profile></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-490hohg2691"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dashed-html-tag.css",
+   "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-490hohg2691",
+   "lwc-490hohg2691-host",
+   "x-dashed-html-tag_dashed-html-tag",
+   "x-dashed-html-tag_dashed-html-tag-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><color-profile local=\"x\"${3}></color-profile></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-490hohg2691"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dashed-html-tag.css",
+   "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-490hohg2691",
+   "lwc-490hohg2691-host",
+   "x-dashed-html-tag_dashed-html-tag",
+   "x-dashed-html-tag_dashed-html-tag-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><color-profile local=\"x\"${3}></color-profile></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-490hohg2691"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dashed-html-tag.css",
+   "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-490hohg2691",
+   "lwc-490hohg2691-host",
+   "x-dashed-html-tag_dashed-html-tag",
+   "x-dashed-html-tag_dashed-html-tag-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><color-profile local=\"x\"${3}></color-profile></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-490hohg2691"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./dashed-html-tag.css",
+   "./dashed-html-tag.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-490hohg2691",
+   "lwc-490hohg2691-host",
+   "x-dashed-html-tag_dashed-html-tag",
+   "x-dashed-html-tag_dashed-html-tag-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<section${3}><color-profile local=\"x\"${3}></color-profile></section>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-490hohg2691"
+  }
+ }
+}

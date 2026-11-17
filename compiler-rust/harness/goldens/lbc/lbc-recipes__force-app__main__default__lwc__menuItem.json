@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-dropdown__item\" role=\"presentation\" data-lwc-host-mutated=\"class role\"><template shadowrootmode=\"open\"><style id=\"lwc-style--0\" type=\"text/css\">:host {display: block;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><a href=\"javascript:void(0)\" role=\"menuitem\" tabindex=\"-1\" aria-disabled=\"false\"><span class=\"slds-truncate\">‍</span></a></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc class=\"slds-dropdown__item\" role=\"presentation\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">:host {display: block;}</style><a href=\"javascript:void(0)\" role=\"menuitem\" tabindex=\"-1\" aria-disabled=\"false\"><span class=\"slds-truncate\"></span></a></template></lwc-lbc>"
+ }
+}

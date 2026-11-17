@@ -1,0 +1,492 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-non-top-level.css",
+   "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-7qgdv2kbdr9",
+   "lwc-7qgdv2kbdr9-host",
+   "x-key-non-top-level_key-non-top-level",
+   "x-key-non-top-level_key-non-top-level-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<tr${3}><td${3}>hello</td><td${3}>world</td><td${3}>!</td></tr>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7qgdv2kbdr9"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-non-top-level.css",
+   "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-7qgdv2kbdr9",
+   "lwc-7qgdv2kbdr9-host",
+   "x-key-non-top-level_key-non-top-level",
+   "x-key-non-top-level_key-non-top-level-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<tr${3}><td${3}>hello</td><td${3}>world</td><td${3}>!</td></tr>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-key-non-top-level_key-non-top-level"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-non-top-level.css",
+   "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-7qgdv2kbdr9",
+   "lwc-7qgdv2kbdr9-host",
+   "x-key-non-top-level_key-non-top-level",
+   "x-key-non-top-level_key-non-top-level-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<tr${3}><td${3}>hello</td><td${3}>world</td><td${3}>!</td></tr>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-key-non-top-level_key-non-top-level"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-non-top-level.css",
+   "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-7qgdv2kbdr9",
+   "lwc-7qgdv2kbdr9-host",
+   "x-key-non-top-level_key-non-top-level",
+   "x-key-non-top-level_key-non-top-level-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<tr${3}><td${3}>hello</td><td${3}>world</td><td${3}>!</td></tr>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7qgdv2kbdr9"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-non-top-level.css",
+   "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-7qgdv2kbdr9",
+   "lwc-7qgdv2kbdr9-host",
+   "x-key-non-top-level_key-non-top-level",
+   "x-key-non-top-level_key-non-top-level-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<tr${3}><td${3}>hello</td><td${3}>world</td><td${3}>!</td></tr>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7qgdv2kbdr9"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-non-top-level.css",
+   "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-7qgdv2kbdr9",
+   "lwc-7qgdv2kbdr9-host",
+   "x-key-non-top-level_key-non-top-level",
+   "x-key-non-top-level_key-non-top-level-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<tr${3}><td${3}>hello</td><td${3}>world</td><td${3}>!</td></tr>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7qgdv2kbdr9"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-non-top-level.css",
+   "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-7qgdv2kbdr9",
+   "lwc-7qgdv2kbdr9-host",
+   "x-key-non-top-level_key-non-top-level",
+   "x-key-non-top-level_key-non-top-level-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<tr${3}><td${3}>hello</td><td${3}>world</td><td${3}>!</td></tr>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7qgdv2kbdr9"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-non-top-level.css",
+   "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-7qgdv2kbdr9",
+   "lwc-7qgdv2kbdr9-host",
+   "x-key-non-top-level_key-non-top-level",
+   "x-key-non-top-level_key-non-top-level-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<tr${3}><td${3}>hello</td><td${3}>world</td><td${3}>!</td></tr>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7qgdv2kbdr9"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-non-top-level.css",
+   "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-7qgdv2kbdr9",
+   "lwc-7qgdv2kbdr9-host",
+   "x-key-non-top-level_key-non-top-level",
+   "x-key-non-top-level_key-non-top-level-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<tr${3}><td${3}>hello</td><td${3}>world</td><td${3}>!</td></tr>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7qgdv2kbdr9"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./key-non-top-level.css",
+   "./key-non-top-level.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   },
+   {
+    "code": 1149,
+    "level": 2
+   }
+  ],
+  "cssScopeTokens": [
+   "lwc-7qgdv2kbdr9",
+   "lwc-7qgdv2kbdr9-host",
+   "x-key-non-top-level_key-non-top-level",
+   "x-key-non-top-level_key-non-top-level-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<tr${3}><td${3}>hello</td><td${3}>world</td><td${3}>!</td></tr>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-7qgdv2kbdr9"
+  }
+ }
+}

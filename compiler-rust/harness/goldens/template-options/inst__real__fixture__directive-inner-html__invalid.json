@@ -1,0 +1,18 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-dynamic-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1142
+  ],
+  "line": 3,
+  "errors": [
+    1142
+  ],
+  "message": "LWC1142: Invalid lwc:inner-html usage on element \"<div>\". The directive can't be used on an element with content."
+}

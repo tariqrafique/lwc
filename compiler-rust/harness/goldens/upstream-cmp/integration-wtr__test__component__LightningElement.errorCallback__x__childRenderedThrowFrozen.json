@@ -1,0 +1,13 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">I&#x27;m a child that throws a frozen error object inside rendered callback. You should not see me!</template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\">I'm a child that throws a frozen error object inside rendered callback. You should not see me!</template></lwc-up>"
+ },
+ "asyncErrors": [
+  "Child threw frozen error in renderedCallback()"
+ ]
+}

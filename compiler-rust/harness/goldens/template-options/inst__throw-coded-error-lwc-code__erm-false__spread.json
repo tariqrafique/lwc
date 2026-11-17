@@ -1,0 +1,19 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-spread-directive"
+    ]
+  ],
+  "ok": false,
+  "name": "Error",
+  "codes": [
+    1100
+  ],
+  "line": null,
+  "errors": [
+    1100
+  ],
+  "message": "Unexpected compilation error: e",
+  "level": 1
+}

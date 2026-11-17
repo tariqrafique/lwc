@@ -1,0 +1,1137 @@
+[
+ {
+  "id": "ts-anon-api",
+  "src": "export default class { @api x; }\n",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.ts: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  2 |",
+   "location": null
+  }
+ },
+ {
+  "id": "ts-anon-api-rec",
+  "src": "export default class { @api x; }\n",
+  "filename": "foo.ts",
+  "recover": true,
+  "shipped": {
+   "code": 1198,
+   "message": "SyntaxError: LWC1198: Decorators like @api, @track, and @wire are only supported in LightningElement classes. foo.ts: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @api x; }\n    |                ^^^^^^^^^^^^^^^^^\n  2 |",
+   "location": null
+  }
+ },
+ {
+  "id": "ts-anon-api-typed",
+  "src": "export default class { @api x: string; }\n",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (1:29)\n\n> 1 | export default class { @api x: string; }\n    |                              ^\n  2 |",
+   "location": {
+    "line": 1,
+    "column": 29,
+    "index": 29
+   }
+  }
+ },
+ {
+  "id": "ts-le-api",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { @api x: string = 'a'; }\n",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:58)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { @api x: string = 'a'; }\n    |                                                           ^\n  3 |",
+   "location": {
+    "line": 2,
+    "column": 58,
+    "index": 103
+   }
+  }
+ },
+ {
+  "id": "ts-type-anno-fn",
+  "src": "const a: number = 1;\nexport default a;\n",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing initializer in const declaration. (1:7)\n\n> 1 | const a: number = 1;\n    |        ^\n  2 | export default a;\n  3 |",
+   "location": {
+    "line": 1,
+    "column": 7,
+    "index": 7
+   }
+  }
+ },
+ {
+  "id": "ts-interface",
+  "src": "interface A { x: number }\nexport const y = 1;\n",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected reserved word 'interface'. (1:0)\n\n> 1 | interface A { x: number }\n    | ^\n  2 | export const y = 1;\n  3 |",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "ts-plain",
+  "src": "export const y = 1;\n",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": "ok"
+ },
+ {
+  "id": "ts-anon-foo",
+  "src": "export default class { @foo x; }\n",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Decorators are not enabled.\nIf you are using [\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }], make sure it comes *before* \"@babel/plugin-transform-class-properties\" and enable loose mode, like so:\n\t[\"@babel/plugin-proposal-decorators\", { \"version\": \"legacy\" }]\n\t[\"@babel/plugin-transform-class-properties\", { \"loose\": true }]\n> 1 | export default class { @foo x; }\n    |                ^^^^^^^^^^^^^^^^^\n  2 |",
+   "location": null
+  }
+ },
+ {
+  "id": "ts-syntax",
+  "src": "let = ;\n",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected reserved word 'let'. (1:0)\n\n> 1 | let = ;\n    | ^\n  2 |",
+   "location": {
+    "line": 1,
+    "column": 0,
+    "index": 0
+   }
+  }
+ },
+ {
+  "id": "field-anno.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { x: string; }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:53)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { x: string; }\n    |                                                      ^",
+   "location": {
+    "line": 2,
+    "column": 53,
+    "index": 98
+   }
+  }
+ },
+ {
+  "id": "field-anno.tsx",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { x: string; }",
+  "filename": "foo.tsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.tsx: Unexpected token (2:53)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { x: string; }\n    |                                                      ^",
+   "location": {
+    "line": 2,
+    "column": 53,
+    "index": 98
+   }
+  }
+ },
+ {
+  "id": "field-anno.jsx",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { x: string; }",
+  "filename": "foo.jsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.jsx: Unexpected token (2:53)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { x: string; }\n    |                                                      ^",
+   "location": {
+    "line": 2,
+    "column": 53,
+    "index": 98
+   }
+  }
+ },
+ {
+  "id": "field-anno-init.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { @api x: string = 'a'; }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:58)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { @api x: string = 'a'; }\n    |                                                           ^",
+   "location": {
+    "line": 2,
+    "column": 58,
+    "index": 103
+   }
+  }
+ },
+ {
+  "id": "field-opt.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { x?: string; }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:53)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { x?: string; }\n    |                                                      ^",
+   "location": {
+    "line": 2,
+    "column": 53,
+    "index": 98
+   }
+  }
+ },
+ {
+  "id": "field-bang.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { x!: string; }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:53)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { x!: string; }\n    |                                                      ^",
+   "location": {
+    "line": 2,
+    "column": 53,
+    "index": 98
+   }
+  }
+ },
+ {
+  "id": "private-mod.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { private x = 1; }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:60)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { private x = 1; }\n    |                                                             ^",
+   "location": {
+    "line": 2,
+    "column": 60,
+    "index": 105
+   }
+  }
+ },
+ {
+  "id": "public-mod.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { public x = 1; }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:59)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { public x = 1; }\n    |                                                            ^",
+   "location": {
+    "line": 2,
+    "column": 59,
+    "index": 104
+   }
+  }
+ },
+ {
+  "id": "readonly-mod.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { readonly x = 1; }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:61)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { readonly x = 1; }\n    |                                                              ^",
+   "location": {
+    "line": 2,
+    "column": 61,
+    "index": 106
+   }
+  }
+ },
+ {
+  "id": "method-param.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { foo(a: string) {} }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \",\" (2:57)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { foo(a: string) {} }\n    |                                                          ^",
+   "location": {
+    "line": 2,
+    "column": 57,
+    "index": 102
+   }
+  }
+ },
+ {
+  "id": "method-ret.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { foo(): void {} }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \"{\" (2:57)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { foo(): void {} }\n    |                                                          ^",
+   "location": {
+    "line": 2,
+    "column": 57,
+    "index": 102
+   }
+  }
+ },
+ {
+  "id": "fn-param.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nfunction f(a: number) { return a; }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \",\" (2:12)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | function f(a: number) { return a; }\n    |             ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 12,
+    "index": 57
+   }
+  }
+ },
+ {
+  "id": "fn-ret.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nfunction f(): number { return 1; }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \"{\" (2:12)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | function f(): number { return 1; }\n    |             ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 12,
+    "index": 57
+   }
+  }
+ },
+ {
+  "id": "const-anno.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a: number = 1;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing initializer in const declaration. (2:7)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a: number = 1;\n    |        ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 7,
+    "index": 52
+   }
+  }
+ },
+ {
+  "id": "let-anno.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nlet a: number;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing semicolon. (2:5)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | let a: number;\n    |      ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 5,
+    "index": 50
+   }
+  }
+ },
+ {
+  "id": "interface.ts",
+  "src": "import { LightningElement, api } from 'lwc';\ninterface A { x: number }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected reserved word 'interface'. (2:0)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | interface A { x: number }\n    | ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 0,
+    "index": 45
+   }
+  }
+ },
+ {
+  "id": "interface.tsx",
+  "src": "import { LightningElement, api } from 'lwc';\ninterface A { x: number }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.tsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.tsx: Unexpected reserved word 'interface'. (2:0)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | interface A { x: number }\n    | ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 0,
+    "index": 45
+   }
+  }
+ },
+ {
+  "id": "interface.jsx",
+  "src": "import { LightningElement, api } from 'lwc';\ninterface A { x: number }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.jsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.jsx: Unexpected reserved word 'interface'. (2:0)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | interface A { x: number }\n    | ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 0,
+    "index": 45
+   }
+  }
+ },
+ {
+  "id": "type-alias.ts",
+  "src": "import { LightningElement, api } from 'lwc';\ntype A = string;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing semicolon. (2:4)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | type A = string;\n    |     ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 4,
+    "index": 49
+   }
+  }
+ },
+ {
+  "id": "as-cast.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = (1 as any);\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \",\" (2:13)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = (1 as any);\n    |              ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 13,
+    "index": 58
+   }
+  }
+ },
+ {
+  "id": "as-cast.tsx",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = (1 as any);\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.tsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.tsx: Unexpected token, expected \",\" (2:13)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = (1 as any);\n    |              ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 13,
+    "index": 58
+   }
+  }
+ },
+ {
+  "id": "as-cast.jsx",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = (1 as any);\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.jsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.jsx: Unexpected token, expected \",\" (2:13)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = (1 as any);\n    |              ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 13,
+    "index": 58
+   }
+  }
+ },
+ {
+  "id": "as-cast2.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = b as any;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing semicolon. (2:11)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = b as any;\n    |            ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 11,
+    "index": 56
+   }
+  }
+ },
+ {
+  "id": "generic-call.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = f<string>(1);\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": "ok"
+ },
+ {
+  "id": "generic-class.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo<T> extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \"{\" (2:24)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo<T> extends LightningElement {}\n    |                         ^",
+   "location": {
+    "line": 2,
+    "column": 24,
+    "index": 69
+   }
+  }
+ },
+ {
+  "id": "implements.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement implements A {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \"{\" (2:50)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement implements A {}\n    |                                                   ^",
+   "location": {
+    "line": 2,
+    "column": 50,
+    "index": 95
+   }
+  }
+ },
+ {
+  "id": "import-type.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nimport type { A } from './a';\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \"from\" (2:12)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | import type { A } from './a';\n    |             ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 12,
+    "index": 57
+   }
+  }
+ },
+ {
+  "id": "export-type.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport type A = string;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Support for the experimental syntax 'flow' isn't currently enabled (2:8):\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export type A = string;\n    |        ^\n  3 | export default class Foo extends LightningElement {}\n\nAdd @babel/preset-flow (https://github.com/babel/babel/tree/main/packages/babel-preset-flow) to the 'presets' section of your Babel config to enable transformation.\nIf you want to leave it as-is, add @babel/plugin-syntax-flow (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-flow) to the 'plugins' section to enable parsing.\n\nIf you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.\nYou can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:\n\tnpx cross-env BABEL_SHOW_CONFIG_FOR=foo.ts <your build command>\nSee https://babeljs.io/docs/configuration#print-effective-configs for more info.\n",
+   "location": {
+    "line": 2,
+    "column": 7,
+    "index": 52
+   }
+  }
+ },
+ {
+  "id": "enum.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nenum E { A }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected reserved word 'enum'. (2:0)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | enum E { A }\n    | ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 0,
+    "index": 45
+   }
+  }
+ },
+ {
+  "id": "non-null.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = b!;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing semicolon. (2:11)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = b!;\n    |            ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 11,
+    "index": 56
+   }
+  }
+ },
+ {
+  "id": "arrow-param.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nconst f = (a: string) => a;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \",\" (2:12)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const f = (a: string) => a;\n    |             ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 12,
+    "index": 57
+   }
+  }
+ },
+ {
+  "id": "declare.ts",
+  "src": "import { LightningElement, api } from 'lwc';\ndeclare const x: number;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing semicolon. (2:7)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | declare const x: number;\n    |        ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 7,
+    "index": 52
+   }
+  }
+ },
+ {
+  "id": "abstract.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default abstract class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing semicolon. (2:23)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default abstract class Foo extends LightningElement {}\n    |                        ^",
+   "location": {
+    "line": 2,
+    "column": 23,
+    "index": 68
+   }
+  }
+ },
+ {
+  "id": "getter-ret.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { @api get x(): string { return ''; } }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \"{\" (2:64)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { @api get x(): string { return ''; } }\n    |                                                                 ^",
+   "location": {
+    "line": 2,
+    "column": 64,
+    "index": 109
+   }
+  }
+ },
+ {
+  "id": "satisfies.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = {} satisfies A;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing semicolon. (2:12)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = {} satisfies A;\n    |             ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 12,
+    "index": 57
+   }
+  }
+ },
+ {
+  "id": "jsx.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = <div />;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Support for the experimental syntax 'jsx' isn't currently enabled (2:11):\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = <div />;\n    |           ^\n  3 | export default class Foo extends LightningElement {}\n\nAdd @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.\nIf you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.\n\nIf you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.\nYou can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:\n\tnpx cross-env BABEL_SHOW_CONFIG_FOR=foo.ts <your build command>\nSee https://babeljs.io/docs/configuration#print-effective-configs for more info.\n",
+   "location": {
+    "line": 2,
+    "column": 10,
+    "index": 55
+   }
+  }
+ },
+ {
+  "id": "jsx.tsx",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = <div />;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.tsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.tsx: Support for the experimental syntax 'jsx' isn't currently enabled (2:11):\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = <div />;\n    |           ^\n  3 | export default class Foo extends LightningElement {}\n\nAdd @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.\nIf you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.\n\nIf you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.\nYou can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:\n\tnpx cross-env BABEL_SHOW_CONFIG_FOR=foo.tsx <your build command>\nSee https://babeljs.io/docs/configuration#print-effective-configs for more info.\n",
+   "location": {
+    "line": 2,
+    "column": 10,
+    "index": 55
+   }
+  }
+ },
+ {
+  "id": "jsx.jsx",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = <div />;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.jsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.jsx: Support for the experimental syntax 'jsx' isn't currently enabled (2:11):\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = <div />;\n    |           ^\n  3 | export default class Foo extends LightningElement {}\n\nAdd @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.\nIf you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.\n\nIf you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.\nYou can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:\n\tnpx cross-env BABEL_SHOW_CONFIG_FOR=foo.jsx <your build command>\nSee https://babeljs.io/docs/configuration#print-effective-configs for more info.\n",
+   "location": {
+    "line": 2,
+    "column": 10,
+    "index": 55
+   }
+  }
+ },
+ {
+  "id": "jsx2.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { render() { return <div>hi</div>; } }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Support for the experimental syntax 'jsx' isn't currently enabled (2:71):\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { render() { return <div>hi</div>; } }\n    |                                                                       ^\n\nAdd @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.\nIf you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.\n\nIf you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.\nYou can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:\n\tnpx cross-env BABEL_SHOW_CONFIG_FOR=foo.ts <your build command>\nSee https://babeljs.io/docs/configuration#print-effective-configs for more info.\n",
+   "location": {
+    "line": 2,
+    "column": 70,
+    "index": 115
+   }
+  }
+ },
+ {
+  "id": "jsx2.tsx",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { render() { return <div>hi</div>; } }",
+  "filename": "foo.tsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.tsx: Support for the experimental syntax 'jsx' isn't currently enabled (2:71):\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { render() { return <div>hi</div>; } }\n    |                                                                       ^\n\nAdd @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.\nIf you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.\n\nIf you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.\nYou can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:\n\tnpx cross-env BABEL_SHOW_CONFIG_FOR=foo.tsx <your build command>\nSee https://babeljs.io/docs/configuration#print-effective-configs for more info.\n",
+   "location": {
+    "line": 2,
+    "column": 70,
+    "index": 115
+   }
+  }
+ },
+ {
+  "id": "jsx2.jsx",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { render() { return <div>hi</div>; } }",
+  "filename": "foo.jsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.jsx: Support for the experimental syntax 'jsx' isn't currently enabled (2:71):\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { render() { return <div>hi</div>; } }\n    |                                                                       ^\n\nAdd @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.\nIf you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.\n\nIf you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.\nYou can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:\n\tnpx cross-env BABEL_SHOW_CONFIG_FOR=foo.jsx <your build command>\nSee https://babeljs.io/docs/configuration#print-effective-configs for more info.\n",
+   "location": {
+    "line": 2,
+    "column": 70,
+    "index": 115
+   }
+  }
+ },
+ {
+  "id": "namespace.ts",
+  "src": "import { LightningElement, api } from 'lwc';\nnamespace N {}\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing semicolon. (2:9)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | namespace N {}\n    |          ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 9,
+    "index": 54
+   }
+  }
+ },
+ {
+  "id": "field-anno.ts-rec",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { x: string; }",
+  "filename": "foo.ts",
+  "recover": true,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:53)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { x: string; }\n    |                                                      ^",
+   "location": {
+    "line": 2,
+    "column": 53,
+    "index": 98
+   }
+  }
+ },
+ {
+  "id": "interface.ts-rec",
+  "src": "import { LightningElement, api } from 'lwc';\ninterface A { x: number }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": true,
+  "shipped": "ok",
+  "accepted_divergence": "D-0245"
+ },
+ {
+  "id": "js-missing-comma-obj",
+  "src": "import { LightningElement, api } from 'lwc';\nconst o = {a: 1 b: 2};",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token, expected \",\" (2:16)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const o = {a: 1 b: 2};\n    |                 ^",
+   "location": {
+    "line": 2,
+    "column": 16,
+    "index": 61
+   }
+  }
+ },
+ {
+  "id": "js-class-two-ids",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { x y }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token (2:54)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { x y }\n    |                                                       ^",
+   "location": {
+    "line": 2,
+    "column": 54,
+    "index": 99
+   }
+  }
+ },
+ {
+  "id": "js-call-unclosed",
+  "src": "import { LightningElement, api } from 'lwc';\nfoo(1, 2;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token, expected \",\" (2:8)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | foo(1, 2;\n    |         ^",
+   "location": {
+    "line": 2,
+    "column": 8,
+    "index": 53
+   }
+  }
+ },
+ {
+  "id": "js-if-paren",
+  "src": "import { LightningElement, api } from 'lwc';\nif (x { }",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token, expected \")\" (2:6)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | if (x { }\n    |       ^",
+   "location": {
+    "line": 2,
+    "column": 6,
+    "index": 51
+   }
+  }
+ },
+ {
+  "id": "js-arr",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = [1 2];",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token, expected \",\" (2:13)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = [1 2];\n    |              ^",
+   "location": {
+    "line": 2,
+    "column": 13,
+    "index": 58
+   }
+  }
+ },
+ {
+  "id": "js-stmt",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = 1 2;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Missing semicolon. (2:11)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = 1 2;\n    |            ^",
+   "location": {
+    "line": 2,
+    "column": 11,
+    "index": 56
+   }
+  }
+ },
+ {
+  "id": "js-arrow-bad",
+  "src": "import { LightningElement, api } from 'lwc';\nconst f = (a b) => a;",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token, expected \",\" (2:13)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const f = (a b) => a;\n    |              ^",
+   "location": {
+    "line": 2,
+    "column": 13,
+    "index": 58
+   }
+  }
+ },
+ {
+  "id": "js-import-bad",
+  "src": "import { LightningElement, api } from 'lwc';\nimport { a b } from 'x';",
+  "filename": "foo.js",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.js: Unexpected token, expected \",\" (2:11)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | import { a b } from 'x';\n    |            ^",
+   "location": {
+    "line": 2,
+    "column": 11,
+    "index": 56
+   }
+  }
+ },
+ {
+  "id": "ts-param-default",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { foo(a: string = 'x', b?: number) {} }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \",\" (2:57)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { foo(a: string = 'x', b?: number) {} }\n    |                                                          ^",
+   "location": {
+    "line": 2,
+    "column": 57,
+    "index": 102
+   }
+  }
+ },
+ {
+  "id": "ts-ret-generic",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { foo(a = (1)): Promise<void> {} }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \"{\" (2:64)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { foo(a = (1)): Promise<void> {} }\n    |                                                                 ^",
+   "location": {
+    "line": 2,
+    "column": 64,
+    "index": 109
+   }
+  }
+ },
+ {
+  "id": "ts-ml-field",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement {\n  @api\n  recordId: string;\n}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (4:10)\n\n  2 | export default class Foo extends LightningElement {\n  3 |   @api\n> 4 |   recordId: string;\n    |           ^\n  5 | }",
+   "location": {
+    "line": 4,
+    "column": 10,
+    "index": 114
+   }
+  }
+ },
+ {
+  "id": "ts-as-call",
+  "src": "import { LightningElement, api } from 'lwc';\nfoo(x as any);\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \",\" (2:6)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | foo(x as any);\n    |       ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 6,
+    "index": 51
+   }
+  }
+ },
+ {
+  "id": "ts-as-array",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = [x as any];\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \",\" (2:13)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = [x as any];\n    |              ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 13,
+    "index": 58
+   }
+  }
+ },
+ {
+  "id": "ts-as-ret",
+  "src": "import { LightningElement, api } from 'lwc';\nfunction f() { return x as any; }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Missing semicolon. (2:23)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | function f() { return x as any; }\n    |                        ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 23,
+    "index": 68
+   }
+  }
+ },
+ {
+  "id": "ts-protected",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { protected foo() {} }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:62)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { protected foo() {} }\n    |                                                               ^",
+   "location": {
+    "line": 2,
+    "column": 62,
+    "index": 107
+   }
+  }
+ },
+ {
+  "id": "ts-static-private",
+  "src": "import { LightningElement, api } from 'lwc';\nexport default class Foo extends LightningElement { private static x = 1; }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:60)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export default class Foo extends LightningElement { private static x = 1; }\n    |                                                             ^",
+   "location": {
+    "line": 2,
+    "column": 60,
+    "index": 105
+   }
+  }
+ },
+ {
+  "id": "ts-export-interface",
+  "src": "import { LightningElement, api } from 'lwc';\nexport interface A { x: number }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Support for the experimental syntax 'flow' isn't currently enabled (2:8):\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | export interface A { x: number }\n    |        ^\n  3 | export default class Foo extends LightningElement {}\n\nAdd @babel/preset-flow (https://github.com/babel/babel/tree/main/packages/babel-preset-flow) to the 'presets' section of your Babel config to enable transformation.\nIf you want to leave it as-is, add @babel/plugin-syntax-flow (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-flow) to the 'plugins' section to enable parsing.\n\nIf you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.\nYou can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:\n\tnpx cross-env BABEL_SHOW_CONFIG_FOR=foo.ts <your build command>\nSee https://babeljs.io/docs/configuration#print-effective-configs for more info.\n",
+   "location": {
+    "line": 2,
+    "column": 7,
+    "index": 52
+   }
+  }
+ },
+ {
+  "id": "ts-arrow-ret",
+  "src": "import { LightningElement, api } from 'lwc';\nconst f = (): void => {};\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (2:11)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const f = (): void => {};\n    |            ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 11,
+    "index": 56
+   }
+  }
+ },
+ {
+  "id": "ts-fragment",
+  "src": "import { LightningElement, api } from 'lwc';\nconst a = <></>;\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.tsx",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.tsx: Support for the experimental syntax 'jsx' isn't currently enabled (2:11):\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | const a = <></>;\n    |           ^\n  3 | export default class Foo extends LightningElement {}\n\nAdd @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.\nIf you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.\n\nIf you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.\nYou can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:\n\tnpx cross-env BABEL_SHOW_CONFIG_FOR=foo.tsx <your build command>\nSee https://babeljs.io/docs/configuration#print-effective-configs for more info.\n",
+   "location": {
+    "line": 2,
+    "column": 10,
+    "index": 55
+   }
+  }
+ },
+ {
+  "id": "ts-generic-fn",
+  "src": "import { LightningElement, api } from 'lwc';\nfunction f<T>(a) { return a; }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \"(\" (2:10)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | function f<T>(a) { return a; }\n    |           ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 10,
+    "index": 55
+   }
+  }
+ },
+ {
+  "id": "ts-optional-param-fn",
+  "src": "import { LightningElement, api } from 'lwc';\nfunction f(a?) { return a; }\nexport default class Foo extends LightningElement {}",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \",\" (2:12)\n\n  1 | import { LightningElement, api } from 'lwc';\n> 2 | function f(a?) { return a; }\n    |             ^\n  3 | export default class Foo extends LightningElement {}",
+   "location": {
+    "line": 2,
+    "column": 12,
+    "index": 57
+   }
+  }
+ },
+ {
+  "id": "ts-wire-typed",
+  "src": "import { LightningElement, api } from 'lwc';\nimport { wire } from 'lwc';\nexport default class Foo extends LightningElement { @wire(getX) data: any; }",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (3:68)\n\n  1 | import { LightningElement, api } from 'lwc';\n  2 | import { wire } from 'lwc';\n> 3 | export default class Foo extends LightningElement { @wire(getX) data: any; }\n    |                                                                     ^",
+   "location": {
+    "line": 3,
+    "column": 68,
+    "index": 141
+   }
+  }
+ },
+ {
+  "id": "empty-paren",
+  "src": "const f = ();",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (1:11)\n\n> 1 | const f = ();\n    |            ^",
+   "location": {
+    "line": 1,
+    "column": 11,
+    "index": 11
+   }
+  }
+ },
+ {
+  "id": "empty-paren2",
+  "src": "foo(());",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token (1:5)\n\n> 1 | foo(());\n    |      ^",
+   "location": {
+    "line": 1,
+    "column": 5,
+    "index": 5
+   }
+  }
+ },
+ {
+  "id": "as-arr2",
+  "src": "const a = [1, x as any];",
+  "filename": "foo.ts",
+  "recover": false,
+  "shipped": {
+   "code": 1007,
+   "message": "SyntaxError: LWC1007: foo.ts: Unexpected token, expected \",\" (1:16)\n\n> 1 | const a = [1, x as any];\n    |                 ^",
+   "location": {
+    "line": 1,
+    "column": 16,
+    "index": 16
+   }
+  }
+ }
+]

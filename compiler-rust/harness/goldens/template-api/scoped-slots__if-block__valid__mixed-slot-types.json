@@ -1,0 +1,312 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-slot-types.css",
+   "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2og2ir50afk",
+   "lwc-2og2ir50afk-host",
+   "x-mixed-slot-types_mixed-slot-types",
+   "x-mixed-slot-types_mixed-slot-types-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2og2ir50afk"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-slot-types.css",
+   "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2og2ir50afk",
+   "lwc-2og2ir50afk-host",
+   "x-mixed-slot-types_mixed-slot-types",
+   "x-mixed-slot-types_mixed-slot-types-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-mixed-slot-types_mixed-slot-types"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-slot-types.css",
+   "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2og2ir50afk",
+   "lwc-2og2ir50afk-host",
+   "x-mixed-slot-types_mixed-slot-types",
+   "x-mixed-slot-types_mixed-slot-types-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-mixed-slot-types_mixed-slot-types"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-slot-types.css",
+   "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2og2ir50afk",
+   "lwc-2og2ir50afk-host",
+   "x-mixed-slot-types_mixed-slot-types",
+   "x-mixed-slot-types_mixed-slot-types-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2og2ir50afk"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-slot-types.css",
+   "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2og2ir50afk",
+   "lwc-2og2ir50afk-host",
+   "x-mixed-slot-types_mixed-slot-types",
+   "x-mixed-slot-types_mixed-slot-types-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2og2ir50afk"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-slot-types.css",
+   "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2og2ir50afk",
+   "lwc-2og2ir50afk-host",
+   "x-mixed-slot-types_mixed-slot-types",
+   "x-mixed-slot-types_mixed-slot-types-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2og2ir50afk"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-slot-types.css",
+   "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2og2ir50afk",
+   "lwc-2og2ir50afk-host",
+   "x-mixed-slot-types_mixed-slot-types",
+   "x-mixed-slot-types_mixed-slot-types-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2og2ir50afk"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-slot-types.css",
+   "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2og2ir50afk",
+   "lwc-2og2ir50afk-host",
+   "x-mixed-slot-types_mixed-slot-types",
+   "x-mixed-slot-types_mixed-slot-types-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2og2ir50afk"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-slot-types.css",
+   "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2og2ir50afk",
+   "lwc-2og2ir50afk-host",
+   "x-mixed-slot-types_mixed-slot-types",
+   "x-mixed-slot-types_mixed-slot-types-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2og2ir50afk"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./mixed-slot-types.css",
+   "./mixed-slot-types.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2og2ir50afk",
+   "lwc-2og2ir50afk-host",
+   "x-mixed-slot-types_mixed-slot-types",
+   "x-mixed-slot-types_mixed-slot-types-host"
+  ],
+  "apiHelpers": [
+   "fr",
+   "s"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "lwc-2og2ir50afk"
+  }
+ }
+}

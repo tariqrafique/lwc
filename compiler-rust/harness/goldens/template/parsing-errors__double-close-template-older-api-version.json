@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./double-close-template-older-api-version.css",
+    "./double-close-template-older-api-version.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1148,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-72dp8v9vcue",
+    "lwc-72dp8v9vcue-host",
+    "x-double-close-template-older-api-version_double-close-template-older-api-version",
+    "x-double-close-template-older-api-version_double-close-template-older-api-version-host"
+  ]
+}

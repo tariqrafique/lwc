@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div>content in ref</div><div data-id=\"refTextContent\">refs are undefined</div></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up><template shadowrootmode=\"open\"><div>content in ref</div><div data-id=\"refTextContent\">refs are undefined</div></template></lwc-up>"
+ }
+}

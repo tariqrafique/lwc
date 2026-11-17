@@ -1,0 +1,362 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-with-iteration.css",
+   "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4k8f5oq0rrb",
+   "lwc-4k8f5oq0rrb-host",
+   "x-svg-with-iteration_svg-with-iteration",
+   "x-svg-with-iteration_svg-with-iteration-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<line${\"a0:x1\"}${\"a0:y1\"}${\"a0:x2\"}${\"a0:y2\"}${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4k8f5oq0rrb"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-with-iteration.css",
+   "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4k8f5oq0rrb",
+   "lwc-4k8f5oq0rrb-host",
+   "x-svg-with-iteration_svg-with-iteration",
+   "x-svg-with-iteration_svg-with-iteration-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-svg-with-iteration_svg-with-iteration"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-with-iteration.css",
+   "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4k8f5oq0rrb",
+   "lwc-4k8f5oq0rrb-host",
+   "x-svg-with-iteration_svg-with-iteration",
+   "x-svg-with-iteration_svg-with-iteration-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-svg-with-iteration_svg-with-iteration"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-with-iteration.css",
+   "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4k8f5oq0rrb",
+   "lwc-4k8f5oq0rrb-host",
+   "x-svg-with-iteration_svg-with-iteration",
+   "x-svg-with-iteration_svg-with-iteration-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<line${\"a0:x1\"}${\"a0:y1\"}${\"a0:x2\"}${\"a0:y2\"}${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4k8f5oq0rrb"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-with-iteration.css",
+   "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4k8f5oq0rrb",
+   "lwc-4k8f5oq0rrb-host",
+   "x-svg-with-iteration_svg-with-iteration",
+   "x-svg-with-iteration_svg-with-iteration-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<line${\"a0:x1\"}${\"a0:y1\"}${\"a0:x2\"}${\"a0:y2\"}${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4k8f5oq0rrb"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-with-iteration.css",
+   "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4k8f5oq0rrb",
+   "lwc-4k8f5oq0rrb-host",
+   "x-svg-with-iteration_svg-with-iteration",
+   "x-svg-with-iteration_svg-with-iteration-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<line${\"a0:x1\"}${\"a0:y1\"}${\"a0:x2\"}${\"a0:y2\"}${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4k8f5oq0rrb"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-with-iteration.css",
+   "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4k8f5oq0rrb",
+   "lwc-4k8f5oq0rrb-host",
+   "x-svg-with-iteration_svg-with-iteration",
+   "x-svg-with-iteration_svg-with-iteration-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<line${\"a0:x1\"}${\"a0:y1\"}${\"a0:x2\"}${\"a0:y2\"}${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4k8f5oq0rrb"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-with-iteration.css",
+   "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4k8f5oq0rrb",
+   "lwc-4k8f5oq0rrb-host",
+   "x-svg-with-iteration_svg-with-iteration",
+   "x-svg-with-iteration_svg-with-iteration-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<line${\"a0:x1\"}${\"a0:y1\"}${\"a0:x2\"}${\"a0:y2\"}${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4k8f5oq0rrb"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-with-iteration.css",
+   "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4k8f5oq0rrb",
+   "lwc-4k8f5oq0rrb-host",
+   "x-svg-with-iteration_svg-with-iteration",
+   "x-svg-with-iteration_svg-with-iteration-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<line${\"a0:x1\"}${\"a0:y1\"}${\"a0:x2\"}${\"a0:y2\"}${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4k8f5oq0rrb"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./svg-with-iteration.css",
+   "./svg-with-iteration.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseSVGFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-4k8f5oq0rrb",
+   "lwc-4k8f5oq0rrb-host",
+   "x-svg-with-iteration_svg-with-iteration",
+   "x-svg-with-iteration_svg-with-iteration-host"
+  ],
+  "apiHelpers": [
+   "h",
+   "i",
+   "k",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseSVGFragment:<line${\"a0:x1\"}${\"a0:y1\"}${\"a0:x2\"}${\"a0:y2\"}${3}/>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-4k8f5oq0rrb"
+  }
+ }
+}

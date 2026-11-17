@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\">‍<c-record-view-form><template shadowrootmode=\"open\"></template><c-output-field><template shadowrootmode=\"open\"></template></c-output-field><div class=\"nestedChild\"></div></c-record-view-form></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><c-record-view-form><template shadowrootmode=\"open\"></template><c-output-field><template shadowrootmode=\"open\"></template></c-output-field><div class=\"nestedChild\"></div></c-record-view-form></template></lwc-lbc>"
+ }
+}

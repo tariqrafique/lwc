@@ -1,0 +1,10 @@
+{
+  "ok": false,
+  "name": "Error",
+  "code": 1178,
+  "line": 5,
+  "expectedErrorCodes": [
+    1178,
+    1178
+  ]
+}

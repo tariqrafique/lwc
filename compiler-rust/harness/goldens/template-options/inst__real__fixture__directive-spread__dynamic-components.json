@@ -1,0 +1,10 @@
+{
+  "calls": [
+    [
+      "incrementCounter",
+      "lwc-spread-directive"
+    ]
+  ],
+  "ok": true,
+  "warnings": []
+}

@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-746qjecr1i3-host\" data-lwc-host-scope-token=\"lwc-746qjecr1i3-host\"><template shadowrootmode=\"open\"><style class=\"lwc-746qjecr1i3\" id=\"lwc-style--0\" type=\"text/css\">h1.lwc-746qjecr1i3 {color: red;background: gold;}</style><lwc-style style-id=\"lwc-style--0\"></lwc-style><style class=\"lwc-746qjecr1i3\" id=\"lwc-style--1\" type=\"text/css\">h1.lwc-746qjecr1i3 {color: blue;}</style><lwc-style style-id=\"lwc-style--1\"></lwc-style><h1 class=\"lwc-746qjecr1i3\">yolo</h1></template></lwc-up>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-up class=\"lwc-746qjecr1i3-host\"><template shadowrootmode=\"open\"><style type=\"text/css\" data-rendered-by-lwc=\"\">h1.lwc-746qjecr1i3 {color: red;background: gold;}</style><style type=\"text/css\" data-rendered-by-lwc=\"\">h1.lwc-746qjecr1i3 {color: blue;}</style><h1 class=\"lwc-746qjecr1i3\">yolo</h1></template></lwc-up>"
+ }
+}

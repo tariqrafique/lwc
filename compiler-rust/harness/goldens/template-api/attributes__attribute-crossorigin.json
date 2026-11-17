@@ -1,0 +1,352 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-crossorigin.css",
+   "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2bplc35dp3p",
+   "lwc-2bplc35dp3p-host",
+   "x-attribute-crossorigin_attribute-crossorigin",
+   "x-attribute-crossorigin_attribute-crossorigin-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<img src=\"http://www.example.com/image.png\" crossorigin=\"anonymous\"${3}>",
+   "parseFragment:<video src=\"http://www.example.com/video.mp4\" crossorigin=\"anonymous\"${3}></video>",
+   "parseFragment:<audio src=\"http://www.example.com/video.mp3\" crossorigin=\"anonymous\"${3}></audio>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2bplc35dp3p"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-crossorigin.css",
+   "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2bplc35dp3p",
+   "lwc-2bplc35dp3p-host",
+   "x-attribute-crossorigin_attribute-crossorigin",
+   "x-attribute-crossorigin_attribute-crossorigin-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<img src=\"http://www.example.com/image.png\" crossorigin=\"anonymous\"${3}>",
+   "parseFragment:<video src=\"http://www.example.com/video.mp4\" crossorigin=\"anonymous\"${3}></video>",
+   "parseFragment:<audio src=\"http://www.example.com/video.mp3\" crossorigin=\"anonymous\"${3}></audio>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-attribute-crossorigin_attribute-crossorigin"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-crossorigin.css",
+   "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2bplc35dp3p",
+   "lwc-2bplc35dp3p-host",
+   "x-attribute-crossorigin_attribute-crossorigin",
+   "x-attribute-crossorigin_attribute-crossorigin-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<img src=\"http://www.example.com/image.png\" crossorigin=\"anonymous\"${3}>",
+   "parseFragment:<video src=\"http://www.example.com/video.mp4\" crossorigin=\"anonymous\"${3}></video>",
+   "parseFragment:<audio src=\"http://www.example.com/video.mp3\" crossorigin=\"anonymous\"${3}></audio>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-attribute-crossorigin_attribute-crossorigin"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-crossorigin.css",
+   "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2bplc35dp3p",
+   "lwc-2bplc35dp3p-host",
+   "x-attribute-crossorigin_attribute-crossorigin",
+   "x-attribute-crossorigin_attribute-crossorigin-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<img src=\"http://www.example.com/image.png\" crossorigin=\"anonymous\"${3}>",
+   "parseFragment:<video src=\"http://www.example.com/video.mp4\" crossorigin=\"anonymous\"${3}></video>",
+   "parseFragment:<audio src=\"http://www.example.com/video.mp3\" crossorigin=\"anonymous\"${3}></audio>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2bplc35dp3p"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-crossorigin.css",
+   "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2bplc35dp3p",
+   "lwc-2bplc35dp3p-host",
+   "x-attribute-crossorigin_attribute-crossorigin",
+   "x-attribute-crossorigin_attribute-crossorigin-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<img src=\"http://www.example.com/image.png\" crossorigin=\"anonymous\"${3}>",
+   "parseFragment:<video src=\"http://www.example.com/video.mp4\" crossorigin=\"anonymous\"${3}></video>",
+   "parseFragment:<audio src=\"http://www.example.com/video.mp3\" crossorigin=\"anonymous\"${3}></audio>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2bplc35dp3p"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-crossorigin.css",
+   "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2bplc35dp3p",
+   "lwc-2bplc35dp3p-host",
+   "x-attribute-crossorigin_attribute-crossorigin",
+   "x-attribute-crossorigin_attribute-crossorigin-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<img src=\"http://www.example.com/image.png\" crossorigin=\"anonymous\"${3}>",
+   "parseFragment:<video src=\"http://www.example.com/video.mp4\" crossorigin=\"anonymous\"${3}></video>",
+   "parseFragment:<audio src=\"http://www.example.com/video.mp3\" crossorigin=\"anonymous\"${3}></audio>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2bplc35dp3p"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-crossorigin.css",
+   "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2bplc35dp3p",
+   "lwc-2bplc35dp3p-host",
+   "x-attribute-crossorigin_attribute-crossorigin",
+   "x-attribute-crossorigin_attribute-crossorigin-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<img src=\"http://www.example.com/image.png\" crossorigin=\"anonymous\"${3}>",
+   "parseFragment:<video src=\"http://www.example.com/video.mp4\" crossorigin=\"anonymous\"${3}></video>",
+   "parseFragment:<audio src=\"http://www.example.com/video.mp3\" crossorigin=\"anonymous\"${3}></audio>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2bplc35dp3p"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-crossorigin.css",
+   "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2bplc35dp3p",
+   "lwc-2bplc35dp3p-host",
+   "x-attribute-crossorigin_attribute-crossorigin",
+   "x-attribute-crossorigin_attribute-crossorigin-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<img src=\"http://www.example.com/image.png\" crossorigin=\"anonymous\"${3}>",
+   "parseFragment:<video src=\"http://www.example.com/video.mp4\" crossorigin=\"anonymous\"${3}></video>",
+   "parseFragment:<audio src=\"http://www.example.com/video.mp3\" crossorigin=\"anonymous\"${3}></audio>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2bplc35dp3p"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-crossorigin.css",
+   "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2bplc35dp3p",
+   "lwc-2bplc35dp3p-host",
+   "x-attribute-crossorigin_attribute-crossorigin",
+   "x-attribute-crossorigin_attribute-crossorigin-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<img src=\"http://www.example.com/image.png\" crossorigin=\"anonymous\"${3}>",
+   "parseFragment:<video src=\"http://www.example.com/video.mp4\" crossorigin=\"anonymous\"${3}></video>",
+   "parseFragment:<audio src=\"http://www.example.com/video.mp3\" crossorigin=\"anonymous\"${3}></audio>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2bplc35dp3p"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./attribute-crossorigin.css",
+   "./attribute-crossorigin.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-2bplc35dp3p",
+   "lwc-2bplc35dp3p-host",
+   "x-attribute-crossorigin_attribute-crossorigin",
+   "x-attribute-crossorigin_attribute-crossorigin-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<img src=\"http://www.example.com/image.png\" crossorigin=\"anonymous\"${3}>",
+   "parseFragment:<video src=\"http://www.example.com/video.mp4\" crossorigin=\"anonymous\"${3}></video>",
+   "parseFragment:<audio src=\"http://www.example.com/video.mp3\" crossorigin=\"anonymous\"${3}></audio>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-2bplc35dp3p"
+  }
+ }
+}

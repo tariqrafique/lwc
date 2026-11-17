@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./dynamic-ref.css",
+    "./dynamic-ref.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [
+    {
+      "code": 1057,
+      "level": 2
+    }
+  ],
+  "cssScopeTokens": [
+    "lwc-rok9vrf83v",
+    "lwc-rok9vrf83v-host",
+    "x-dynamic-ref_dynamic-ref",
+    "x-dynamic-ref_dynamic-ref-host"
+  ]
+}

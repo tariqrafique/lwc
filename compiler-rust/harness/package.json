@@ -1,0 +1,15 @@
+{
+  "name": "lwc-compiler-rust-harness",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "link:lwc": "bash scripts/link-lwc.sh",
+    "test": "vitest run",
+    "test:style": "vitest run test/style.behavior.test.ts",
+    "golden:update": "UPDATE_GOLDENS=1 vitest run"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vitest": "*"
+  }
+}

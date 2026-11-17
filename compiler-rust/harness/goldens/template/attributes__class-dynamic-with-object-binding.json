@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./class-dynamic-with-object-binding.css",
+    "./class-dynamic-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-agbrffqjb4",
+    "lwc-agbrffqjb4-host",
+    "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding",
+    "x-class-dynamic-with-object-binding_class-dynamic-with-object-binding-host"
+  ]
+}

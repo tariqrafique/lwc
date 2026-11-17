@@ -1,0 +1,15 @@
+{
+    "name": "AggregateError",
+    "message": "Multiple CSS errors occurred during compilation.",
+    "ownKeys": [],
+    "errors": [
+        {
+            "name": "Error",
+            "message": "CssSyntaxError: LWC1009: <cwd>/x.css: Unknown word  ",
+            "code": 1009,
+            "filename": "x.css",
+            "level": 1,
+            "url": "https://lwc.dev/guide/error_codes#lwc1009"
+        }
+    ]
+}

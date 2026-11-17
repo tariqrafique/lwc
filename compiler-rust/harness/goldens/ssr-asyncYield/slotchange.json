@@ -1,0 +1,102 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/receiver/receiver.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./receiver.css",
+        "./receiver.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-e9hj8so9ot",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/receiver/receiver.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./receiver.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-receiver",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/slotchange/slotchange.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/receiver",
+        "./slotchange.css",
+        "./slotchange.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncgeneratorfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncgeneratorfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-5io6dlvfg76",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/slotchange/slotchange.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./slotchange.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-slotchange",
+          "publicProps": [],
+          "ssrMode": "asyncYield",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

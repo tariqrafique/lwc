@@ -1,0 +1,252 @@
+{
+ "schema": "template-diag-diff/v2",
+ "meta": {
+  "generated": "2026-11-16T18:59:42.943Z",
+  "elapsedMs": 8256,
+  "engine": "napi",
+  "rust": {
+   "napi": "/tmp/lwc-board-snap.FVK6k9/repo/harness/.pins/lwc-compiler-napi.54c1da236c3a.node",
+   "sha256": "54c1da236c3a"
+  },
+  "oracle": {
+   "repo": "/workspace/lwc",
+   "entry": "@lwc/compiler transformSync (experimentalErrorRecoveryMode)"
+  },
+  "options": {
+   "namespace": "x",
+   "cap": 40,
+   "sources": "all"
+  },
+  "codegenCompare": {
+   "mode": "exact-bytes+semdiff",
+   "semdiff": {
+    "bin": {
+     "path": "/workspace/cache/lwc-target/6722e84c711342a5/release/semdiff",
+     "sha256": "1177233c9c2f"
+    },
+    "registry": {
+     "path": "/tmp/lwc-board-snap.FVK6k9/notes/decisions.tsv",
+     "sha256": "873cb4a7496754c83de174d29cd3d0474f54d325fea8e4f79244c9f30cd12b7d"
+    },
+    "observationModel": "D-0196",
+    "ruleTableVersion": "rt-1:R-ARROW-PAREN-1@1+R-ASI-SEMI-1@1+R-HOIST-DECL-1@1+R-IMPORT-MERGE-1@1+R-REDUNDANT-PAREN-1@1+R-TRAILING-COMMA-1@1+R-VAR-LITERAL-IMPORT-1@1",
+    "manifestSha256": "2a7f5edbd7a23c1bd362dbb29858bc416c1f8c9b3b3fa17efd9e9808848eb65f",
+    "summarySha256": "f6e7cef8876e",
+    "totals": {
+     "cases": 16780,
+     "crash": 0,
+     "different_decided": 0,
+     "different_undecided": 0,
+     "equivalent": 16780,
+     "unclassified": 0
+    },
+    "byReason": {
+     "printer-equal": 16780
+    }
+   }
+  }
+ },
+ "totals": {
+  "cases": 63224,
+  "clean": 63224,
+  "staticEqual": 46444,
+  "rewriteEqual": 16780,
+  "pass": 46444,
+  "codegenEquivalent": 16780,
+  "diagPass": 63224,
+  "diagMismatch": 0,
+  "codegenOnly": 16780,
+  "codegenUnclean": 0,
+  "oracleError": 0
+ },
+ "sources": {
+  "template-fixtures": {
+   "files": 567,
+   "templates": 567,
+   "unique": 567
+  },
+  "lwc-integration-wtr": {
+   "files": 1173,
+   "templates": 1173,
+   "unique": 895
+  },
+  "lwc-integration-wdio": {
+   "files": 205,
+   "templates": 146,
+   "unique": 117
+  },
+  "lwc-ssr-compiler-fixtures": {
+   "files": 978,
+   "templates": 566,
+   "unique": 348
+  },
+  "lwc-other": {
+   "files": 46,
+   "templates": 44,
+   "unique": 39
+  },
+  "lightning-base-components": {
+   "files": 7479,
+   "templates": 7479,
+   "unique": 2257
+  },
+  "lbc-recipes": {
+   "files": 1271,
+   "templates": 1271,
+   "unique": 1218
+  }
+ },
+ "families": {
+  "apiVersion": 5033,
+  "apiVersion-edge": 3882,
+  "options": 11402,
+  "insert-root": 6119,
+  "insert-elem": 21821,
+  "attr-dup": 879,
+  "attr-value": 7825,
+  "attr-drop": 822
+ },
+ "perSource": {
+  "template-fixtures": {
+   "cases": 567,
+   "pass": 330,
+   "diagMismatch": 0,
+   "codegenOnly": 237,
+   "codegenEquivalent": 237
+  },
+  "lwc-integration-wtr": {
+   "cases": 895,
+   "pass": 511,
+   "diagMismatch": 0,
+   "codegenOnly": 384,
+   "codegenEquivalent": 384
+  },
+  "lwc-integration-wdio": {
+   "cases": 117,
+   "pass": 77,
+   "diagMismatch": 0,
+   "codegenOnly": 40,
+   "codegenEquivalent": 40
+  },
+  "lwc-ssr-compiler-fixtures": {
+   "cases": 348,
+   "pass": 173,
+   "diagMismatch": 0,
+   "codegenOnly": 175,
+   "codegenEquivalent": 175
+  },
+  "lwc-other": {
+   "cases": 39,
+   "pass": 22,
+   "diagMismatch": 0,
+   "codegenOnly": 17,
+   "codegenEquivalent": 17
+  },
+  "lightning-base-components": {
+   "cases": 2257,
+   "pass": 54,
+   "diagMismatch": 0,
+   "codegenOnly": 2203,
+   "codegenEquivalent": 2203
+  },
+  "lbc-recipes": {
+   "cases": 1218,
+   "pass": 14,
+   "diagMismatch": 0,
+   "codegenOnly": 1204,
+   "codegenEquivalent": 1204
+  },
+  "mutation:apiVersion": {
+   "cases": 5033,
+   "pass": 3134,
+   "diagMismatch": 0,
+   "codegenOnly": 1899,
+   "codegenEquivalent": 1899
+  },
+  "mutation:apiVersion-edge": {
+   "cases": 3882,
+   "pass": 2339,
+   "diagMismatch": 0,
+   "codegenOnly": 1543,
+   "codegenEquivalent": 1543
+  },
+  "mutation:options": {
+   "cases": 11402,
+   "pass": 6671,
+   "diagMismatch": 0,
+   "codegenOnly": 4731,
+   "codegenEquivalent": 4731
+  },
+  "mutation:insert-root": {
+   "cases": 6119,
+   "pass": 5455,
+   "diagMismatch": 0,
+   "codegenOnly": 664,
+   "codegenEquivalent": 664
+  },
+  "mutation:insert-elem": {
+   "cases": 21821,
+   "pass": 18833,
+   "diagMismatch": 0,
+   "codegenOnly": 2988,
+   "codegenEquivalent": 2988
+  },
+  "mutation:attr-dup": {
+   "cases": 879,
+   "pass": 879,
+   "diagMismatch": 0,
+   "codegenOnly": 0,
+   "codegenEquivalent": 0
+  },
+  "mutation:attr-value": {
+   "cases": 7825,
+   "pass": 7303,
+   "diagMismatch": 0,
+   "codegenOnly": 522,
+   "codegenEquivalent": 522
+  },
+  "mutation:attr-drop": {
+   "cases": 822,
+   "pass": 649,
+   "diagMismatch": 0,
+   "codegenOnly": 173,
+   "codegenEquivalent": 173
+  }
+ },
+ "buckets": {
+  "oracle-error": 0,
+  "crash": 0,
+  "seam-reject": 0,
+  "missing-diag": 0,
+  "extra-diag": 0,
+  "code": 0,
+  "level": 0,
+  "message": 0,
+  "location": 0,
+  "order": 0,
+  "codegen-only": 16780
+ },
+ "primary": {
+  "oracle-error": 0,
+  "crash": 0,
+  "seam-reject": 0,
+  "missing-diag": 0,
+  "extra-diag": 0,
+  "code": 0,
+  "level": 0,
+  "message": 0,
+  "location": 0,
+  "order": 0,
+  "codegen-only": 16780
+ },
+ "semdiffBuckets": {
+  "equivalent": 16780
+ },
+ "resultCounts": {
+  "REWRITE_EQUAL": 16780,
+  "STATIC_EQUAL": 46444
+ },
+ "clusters": [],
+ "mismatches": [],
+ "codegenUnclean": []
+}

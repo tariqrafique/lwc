@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./if-true.css",
+    "./if-true.scoped.css?scoped=true",
+    "x/counter",
+    "x/button",
+    "x/child"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-6l5rn7c0v7l",
+    "lwc-6l5rn7c0v7l-host",
+    "x-if-true_if-true",
+    "x-if-true_if-true-host"
+  ]
+}

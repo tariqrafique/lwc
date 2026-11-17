@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./class-dynamic-deoptimized-with-object-binding.css",
+    "./class-dynamic-deoptimized-with-object-binding.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5tqvhdlbj7o",
+    "lwc-5tqvhdlbj7o-host",
+    "x-class-dynamic-deoptimized-with-object-binding_class-dynamic-deoptimized-with-object-binding",
+    "x-class-dynamic-deoptimized-with-object-binding_class-dynamic-deoptimized-with-object-binding-host"
+  ]
+}

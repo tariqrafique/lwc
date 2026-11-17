@@ -1,0 +1,372 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tabindex-computed.css",
+   "./tabindex-computed.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-576tik9amt5",
+   "lwc-576tik9amt5-host",
+   "x-tabindex-computed_tabindex-computed",
+   "x-tabindex-computed_tabindex-computed-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "ti"
+  ],
+  "fragments": [
+   "parseFragment:<p${\"a0:tabindex\"}${3}>valid</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-576tik9amt5"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tabindex-computed.css",
+   "./tabindex-computed.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-576tik9amt5",
+   "lwc-576tik9amt5-host",
+   "x-tabindex-computed_tabindex-computed",
+   "x-tabindex-computed_tabindex-computed-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "ti"
+  ],
+  "fragments": [
+   "parseFragment:<p${\"a0:tabindex\"}${3}>valid</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-tabindex-computed_tabindex-computed"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tabindex-computed.css",
+   "./tabindex-computed.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-576tik9amt5",
+   "lwc-576tik9amt5-host",
+   "x-tabindex-computed_tabindex-computed",
+   "x-tabindex-computed_tabindex-computed-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "ti"
+  ],
+  "fragments": [
+   "parseFragment:<p${\"a0:tabindex\"}${3}>valid</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-tabindex-computed_tabindex-computed"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tabindex-computed.css",
+   "./tabindex-computed.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-576tik9amt5",
+   "lwc-576tik9amt5-host",
+   "x-tabindex-computed_tabindex-computed",
+   "x-tabindex-computed_tabindex-computed-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "ti"
+  ],
+  "fragments": [
+   "parseFragment:<p${\"a0:tabindex\"}${3}>valid</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-576tik9amt5"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tabindex-computed.css",
+   "./tabindex-computed.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-576tik9amt5",
+   "lwc-576tik9amt5-host",
+   "x-tabindex-computed_tabindex-computed",
+   "x-tabindex-computed_tabindex-computed-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "ti"
+  ],
+  "fragments": [
+   "parseFragment:<p${\"a0:tabindex\"}${3}>valid</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-576tik9amt5"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tabindex-computed.css",
+   "./tabindex-computed.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-576tik9amt5",
+   "lwc-576tik9amt5-host",
+   "x-tabindex-computed_tabindex-computed",
+   "x-tabindex-computed_tabindex-computed-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "ti"
+  ],
+  "fragments": [
+   "parseFragment:<p${\"a0:tabindex\"}${3}>valid</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-576tik9amt5"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tabindex-computed.css",
+   "./tabindex-computed.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-576tik9amt5",
+   "lwc-576tik9amt5-host",
+   "x-tabindex-computed_tabindex-computed",
+   "x-tabindex-computed_tabindex-computed-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "ti"
+  ],
+  "fragments": [
+   "parseFragment:<p${\"a0:tabindex\"}${3}>valid</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-576tik9amt5"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tabindex-computed.css",
+   "./tabindex-computed.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-576tik9amt5",
+   "lwc-576tik9amt5-host",
+   "x-tabindex-computed_tabindex-computed",
+   "x-tabindex-computed_tabindex-computed-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "ti"
+  ],
+  "fragments": [
+   "parseFragment:<p${\"a0:tabindex\"}${3}>valid</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-576tik9amt5"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tabindex-computed.css",
+   "./tabindex-computed.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-576tik9amt5",
+   "lwc-576tik9amt5-host",
+   "x-tabindex-computed_tabindex-computed",
+   "x-tabindex-computed_tabindex-computed-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "ti"
+  ],
+  "fragments": [
+   "parseFragment:<p${\"a0:tabindex\"}${3}>valid</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-576tik9amt5"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./tabindex-computed.css",
+   "./tabindex-computed.scoped.css?scoped=true",
+   "x/foo"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-576tik9amt5",
+   "lwc-576tik9amt5-host",
+   "x-tabindex-computed_tabindex-computed",
+   "x-tabindex-computed_tabindex-computed-host"
+  ],
+  "apiHelpers": [
+   "c",
+   "sp",
+   "st",
+   "ti"
+  ],
+  "fragments": [
+   "parseFragment:<p${\"a0:tabindex\"}${3}>valid</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-576tik9amt5"
+  }
+ }
+}

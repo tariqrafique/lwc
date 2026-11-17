@@ -1,0 +1,10 @@
+{
+ "ssr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-box\"><h2 class=\"header\">Basic Input Checkbox</h2><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div></template></lwc-lbc>"
+ },
+ "csr": {
+  "status": "ok",
+  "html": "<lwc-lbc><template shadowrootmode=\"open\"><div class=\"slds-box\"><h2 class=\"header\">Basic Input Checkbox</h2><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input><lightning-input><template shadowrootmode=\"open\"></template></lightning-input></div></template></lwc-lbc>"
+ }
+}

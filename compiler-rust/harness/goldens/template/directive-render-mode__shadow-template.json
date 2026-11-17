@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./shadow-template.css",
+    "./shadow-template.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-7bbrfmiqgq0",
+    "lwc-7bbrfmiqgq0-host",
+    "x-shadow-template_shadow-template",
+    "x-shadow-template_shadow-template-host"
+  ]
+}

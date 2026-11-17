@@ -1,0 +1,55 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/cmp/cmp.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./cmp.css",
+        "./cmp.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "asyncfunction"
+      },
+      "defaultExport": {
+        "kind": "asyncfunction",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-14rotbo8rb",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/cmp/cmp.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./cmp.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class",
+        "ext": "object"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-cmp",
+          "publicProps": [],
+          "ssrMode": "async",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

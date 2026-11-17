@@ -1,0 +1,150 @@
+{
+  "expectedCompileError": null,
+  "uncodedCompileError": false,
+  "renderErrorDeferred": false,
+  "modules": {
+    "x/container/container.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/slot",
+        "./container.css",
+        "./container.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-7c9hba002d8",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/container/container.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./container.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-container",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/leaf/leaf.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./leaf.css",
+        "./leaf.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-1km4v0irn1c",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/leaf/leaf.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./leaf.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-leaf",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    },
+    "x/slot/slot.html": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "x/leaf",
+        "./slot.css",
+        "./slot.scoped.css?scoped=true"
+      ],
+      "runtimeImports": [
+        "registerTemplate"
+      ],
+      "exports": {
+        "default": "function"
+      },
+      "defaultExport": {
+        "kind": "function",
+        "extendsLightningElement": false,
+        "templateRegistered": true,
+        "stylesheetScopeToken": "lwc-7qdrjnfg62v",
+        "hasScopedStylesheets": false
+      },
+      "warnings": []
+    },
+    "x/slot/slot.js": {
+      "ok": true,
+      "imports": [
+        "@lwc/ssr-runtime",
+        "./slot.html"
+      ],
+      "runtimeImports": [
+        "LightningElement",
+        "setStaticInternals"
+      ],
+      "exports": {
+        "default": "class"
+      },
+      "defaultExport": {
+        "kind": "class",
+        "extendsLightningElement": true,
+        "staticInternals": {
+          "tagName": "x-slot",
+          "publicProps": [],
+          "ssrMode": "sync",
+          "hasTmpl": true
+        }
+      },
+      "warnings": []
+    }
+  }
+}

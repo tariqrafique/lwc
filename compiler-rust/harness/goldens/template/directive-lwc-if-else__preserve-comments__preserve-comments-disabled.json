@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./preserve-comments-disabled.css",
+    "./preserve-comments-disabled.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-2gme9b0kobe",
+    "lwc-2gme9b0kobe-host",
+    "x-preserve-comments-disabled_preserve-comments-disabled",
+    "x-preserve-comments-disabled_preserve-comments-disabled-host"
+  ]
+}

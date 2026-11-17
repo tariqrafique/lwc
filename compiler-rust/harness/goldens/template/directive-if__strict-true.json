@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./strict-true.css",
+    "./strict-true.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "parseFragment",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-5smng9s8ocs",
+    "lwc-5smng9s8ocs-host",
+    "x-strict-true_strict-true",
+    "x-strict-true_strict-true-host"
+  ]
+}

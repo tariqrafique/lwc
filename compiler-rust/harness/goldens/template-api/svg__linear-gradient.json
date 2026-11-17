@@ -1,0 +1,344 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./linear-gradient.css",
+   "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1nbpngf4dh9",
+   "lwc-1nbpngf4dh9-host",
+   "x-linear-gradient_linear-gradient",
+   "x-linear-gradient_linear-gradient-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg height=\"150\" width=\"400\"${3}><defs${3}><linearGradient${\"a2:id\"} x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"${3}><stop offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"${3}/><stop offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"${3}/></linearGradient></defs><ellipse cx=\"200\" cy=\"70\" rx=\"85\" ry=\"55\" fill=\"url(#grad1)\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1nbpngf4dh9"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./linear-gradient.css",
+   "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1nbpngf4dh9",
+   "lwc-1nbpngf4dh9-host",
+   "x-linear-gradient_linear-gradient",
+   "x-linear-gradient_linear-gradient-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-linear-gradient_linear-gradient"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./linear-gradient.css",
+   "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1nbpngf4dh9",
+   "lwc-1nbpngf4dh9-host",
+   "x-linear-gradient_linear-gradient",
+   "x-linear-gradient_linear-gradient-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "h"
+  ],
+  "fragments": [],
+  "tokens": {
+   "stylesheetToken": "x-linear-gradient_linear-gradient"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./linear-gradient.css",
+   "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1nbpngf4dh9",
+   "lwc-1nbpngf4dh9-host",
+   "x-linear-gradient_linear-gradient",
+   "x-linear-gradient_linear-gradient-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg height=\"150\" width=\"400\"${3}><defs${3}><linearGradient${\"a2:id\"} x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"${3}><stop offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"${3}/><stop offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"${3}/></linearGradient></defs><ellipse cx=\"200\" cy=\"70\" rx=\"85\" ry=\"55\" fill=\"url(#grad1)\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1nbpngf4dh9"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./linear-gradient.css",
+   "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1nbpngf4dh9",
+   "lwc-1nbpngf4dh9-host",
+   "x-linear-gradient_linear-gradient",
+   "x-linear-gradient_linear-gradient-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg height=\"150\" width=\"400\"${3}><defs${3}><linearGradient${\"a2:id\"} x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"${3}><stop offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"${3}/><stop offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"${3}/></linearGradient></defs><ellipse cx=\"200\" cy=\"70\" rx=\"85\" ry=\"55\" fill=\"url(#grad1)\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1nbpngf4dh9"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./linear-gradient.css",
+   "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1nbpngf4dh9",
+   "lwc-1nbpngf4dh9-host",
+   "x-linear-gradient_linear-gradient",
+   "x-linear-gradient_linear-gradient-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg height=\"150\" width=\"400\"${3}><defs${3}><linearGradient${\"a2:id\"} x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"${3}><stop offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"${3}/><stop offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"${3}/></linearGradient></defs><ellipse cx=\"200\" cy=\"70\" rx=\"85\" ry=\"55\" fill=\"url(#grad1)\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1nbpngf4dh9"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./linear-gradient.css",
+   "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1nbpngf4dh9",
+   "lwc-1nbpngf4dh9-host",
+   "x-linear-gradient_linear-gradient",
+   "x-linear-gradient_linear-gradient-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg height=\"150\" width=\"400\"${3}><defs${3}><linearGradient${\"a2:id\"} x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"${3}><stop offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"${3}/><stop offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"${3}/></linearGradient></defs><ellipse cx=\"200\" cy=\"70\" rx=\"85\" ry=\"55\" fill=\"url(#grad1)\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1nbpngf4dh9"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./linear-gradient.css",
+   "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1nbpngf4dh9",
+   "lwc-1nbpngf4dh9-host",
+   "x-linear-gradient_linear-gradient",
+   "x-linear-gradient_linear-gradient-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg height=\"150\" width=\"400\"${3}><defs${3}><linearGradient${\"a2:id\"} x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"${3}><stop offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"${3}/><stop offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"${3}/></linearGradient></defs><ellipse cx=\"200\" cy=\"70\" rx=\"85\" ry=\"55\" fill=\"url(#grad1)\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1nbpngf4dh9"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./linear-gradient.css",
+   "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1nbpngf4dh9",
+   "lwc-1nbpngf4dh9-host",
+   "x-linear-gradient_linear-gradient",
+   "x-linear-gradient_linear-gradient-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg height=\"150\" width=\"400\"${3}><defs${3}><linearGradient${\"a2:id\"} x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"${3}><stop offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"${3}/><stop offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"${3}/></linearGradient></defs><ellipse cx=\"200\" cy=\"70\" rx=\"85\" ry=\"55\" fill=\"url(#grad1)\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1nbpngf4dh9"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./linear-gradient.css",
+   "./linear-gradient.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-1nbpngf4dh9",
+   "lwc-1nbpngf4dh9-host",
+   "x-linear-gradient_linear-gradient",
+   "x-linear-gradient_linear-gradient-host"
+  ],
+  "apiHelpers": [
+   "gid",
+   "sp",
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<svg height=\"150\" width=\"400\"${3}><defs${3}><linearGradient${\"a2:id\"} x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"${3}><stop offset=\"0%\" style=\"stop-color: rgb(255,255,0); stop-opacity: 1;\"${3}/><stop offset=\"100%\" style=\"stop-color: rgb(255,0,0); stop-opacity: 1;\"${3}/></linearGradient></defs><ellipse cx=\"200\" cy=\"70\" rx=\"85\" ry=\"55\" fill=\"url(#grad1)\"${3}/></svg>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-1nbpngf4dh9"
+  }
+ }
+}

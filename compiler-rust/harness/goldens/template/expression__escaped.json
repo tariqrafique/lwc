@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "imports": [
+    "lwc",
+    "./escaped.css",
+    "./escaped.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+    "freezeTemplate",
+    "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+    "lwc-20g0qi2hoa7",
+    "lwc-20g0qi2hoa7-host",
+    "x-escaped_escaped",
+    "x-escaped_escaped-host"
+  ]
+}

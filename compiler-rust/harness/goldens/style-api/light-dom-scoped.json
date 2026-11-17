@@ -1,0 +1,218 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v57": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v58": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v59": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v60": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v61": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v62": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v63": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v64": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v65": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v66": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ },
+ "v67": {
+  "ok": true,
+  "imports": [],
+  "exportedUndefined": false,
+  "sheets": [
+   {
+    "scoped": true,
+    "nativeOnly": false,
+    "css": {
+     "x|host=true|dir=false": ":host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=true": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=false|dir=false": ".x-host {color: red;}div.x {color: green;}",
+     "x|host=true|dir=true": ":host {color: red;}div.x {color: green;}",
+     "-|host=true|dir=false": ":host {color: red;}div {color: green;}"
+    }
+   }
+  ]
+ }
+}

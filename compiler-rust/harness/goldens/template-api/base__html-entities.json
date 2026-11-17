@@ -1,0 +1,342 @@
+{
+ "omitted": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./html-entities.css",
+   "./html-entities.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-582p6pifafh",
+   "lwc-582p6pifafh-host",
+   "x-html-entities_html-entities",
+   "x-html-entities_html-entities-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-582p6pifafh"
+  }
+ },
+ "v57": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./html-entities.css",
+   "./html-entities.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-582p6pifafh",
+   "lwc-582p6pifafh-host",
+   "x-html-entities_html-entities",
+   "x-html-entities_html-entities-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-html-entities_html-entities"
+  }
+ },
+ "v58": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./html-entities.css",
+   "./html-entities.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-582p6pifafh",
+   "lwc-582p6pifafh-host",
+   "x-html-entities_html-entities",
+   "x-html-entities_html-entities-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "x-html-entities_html-entities"
+  }
+ },
+ "v59": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./html-entities.css",
+   "./html-entities.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-582p6pifafh",
+   "lwc-582p6pifafh-host",
+   "x-html-entities_html-entities",
+   "x-html-entities_html-entities-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-582p6pifafh"
+  }
+ },
+ "v60": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./html-entities.css",
+   "./html-entities.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-582p6pifafh",
+   "lwc-582p6pifafh-host",
+   "x-html-entities_html-entities",
+   "x-html-entities_html-entities-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-582p6pifafh"
+  }
+ },
+ "v61": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./html-entities.css",
+   "./html-entities.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-582p6pifafh",
+   "lwc-582p6pifafh-host",
+   "x-html-entities_html-entities",
+   "x-html-entities_html-entities-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-582p6pifafh"
+  }
+ },
+ "v62": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./html-entities.css",
+   "./html-entities.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-582p6pifafh",
+   "lwc-582p6pifafh-host",
+   "x-html-entities_html-entities",
+   "x-html-entities_html-entities-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-582p6pifafh"
+  }
+ },
+ "v65": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./html-entities.css",
+   "./html-entities.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-582p6pifafh",
+   "lwc-582p6pifafh-host",
+   "x-html-entities_html-entities",
+   "x-html-entities_html-entities-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-582p6pifafh"
+  }
+ },
+ "v66": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./html-entities.css",
+   "./html-entities.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-582p6pifafh",
+   "lwc-582p6pifafh-host",
+   "x-html-entities_html-entities",
+   "x-html-entities_html-entities-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-582p6pifafh"
+  }
+ },
+ "v67": {
+  "ok": true,
+  "imports": [
+   "lwc",
+   "./html-entities.css",
+   "./html-entities.scoped.css?scoped=true"
+  ],
+  "lwcImports": [
+   "freezeTemplate",
+   "parseFragment",
+   "registerTemplate"
+  ],
+  "defaultExportKind": "function",
+  "isFunction": true,
+  "registered": true,
+  "stylesheetsIsArray": false,
+  "warnings": [],
+  "cssScopeTokens": [
+   "lwc-582p6pifafh",
+   "lwc-582p6pifafh-host",
+   "x-html-entities_html-entities",
+   "x-html-entities_html-entities-host"
+  ],
+  "apiHelpers": [
+   "st"
+  ],
+  "fragments": [
+   "parseFragment:<p${3}>foo&amp;bar</p>",
+   "parseFragment:<p${3}>const { foo } = bar;</p>"
+  ],
+  "tokens": {
+   "stylesheetToken": "lwc-582p6pifafh"
+  }
+ }
+}
