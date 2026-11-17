@@ -13,7 +13,12 @@
 //!      explicit `;` (only after steps 2–3, so an AST difference never reaches them). ContentEq and the printer both
 //!      drop more spelling than D-0196 lists as unobservable (identifier escapes,
 //!      member form); the default remains observed;
-//!   5. the comment texts, in source order, are identical (comments are observable via Function#toString).
+//!   5. the comment texts, in source order, are identical, and each comment sits at the same aligned position (the
+//!      number of matched token pairs before it). When an import-merge rule dropped import tokens, a comment inside
+//!      the import zone (first import start to last import end) has no matched token to anchor to, so its place is
+//!      its count of zone tokens. That place is compared only when the zone tokens are identical on both sides;
+//!      otherwise the pair is UNCLASSIFIED (comments-differ), never printer-equal. Comments before or after the zone
+//!      keep their matched-pair position. Comments are observable via Function#toString (D-0196).
 //!
 //! Whitespace (never a token) and string quote/escape spelling stay unobservable. Anything else is UNCLASSIFIED with a
 //! reason. The rewrite leg never emits DIFFERENT: DIFFERENT needs the execution leg (SD-2, `exec-differs`) to have
@@ -149,6 +154,12 @@ struct Side {
     comments: Vec<String>,
     /// Source offset of each comment, parallel to `comments` (its position in the source, not the reprint).
     comment_starts: Vec<u32>,
+    /// Per comment (parallel to `comments`): its place relative to the import zone (see `zone_place`).
+    comment_place: Vec<usize>,
+    /// Tokens inside an import declaration, in source order, before any normalization.
+    zone_tokens: Vec<Tok>,
+    /// Set when `tokens` was filtered by `tokens_outside_imports`, so import tokens are no longer aligned.
+    imports_dropped: bool,
     tokens: Vec<Tok>,
 }
 
@@ -170,6 +181,23 @@ impl Tok {
                 (Some(a), Some(b)) if self.kind == Kind::Str => a == b,
                 _ => self.text == other.text,
             }
+    }
+
+    /// Exec placement key: kind and spelling, with a string literal by decoded value (the identity `same` uses).
+    pub(crate) fn digest(&self) -> String {
+        match &self.str_value {
+            Some(v) if self.kind == Kind::Str => format!("{:?}:{v:?}", self.kind),
+            _ => format!("{:?}:{}", self.kind, self.text),
+        }
+    }
+
+    /// Whether a token counts toward an exec placement. Commas, semicolons and parens are the punctuation that D-0258
+    /// and R-REDUNDANT-PAREN may add or drop without an observable change, so placement does not count them.
+    pub(crate) fn significant(&self) -> bool {
+        !matches!(
+            self.kind,
+            Kind::Comma | Kind::Semicolon | Kind::LParen | Kind::RParen
+        )
     }
 }
 
@@ -200,7 +228,7 @@ fn parse<'a>(alloc: &'a Allocator, src: &'a str) -> (Program<'a>, Side) {
     let program = ret.program;
     let mut values = StrValues::default();
     values.visit_program(&program);
-    let tokens = ret
+    let tokens: Vec<Tok> = ret
         .tokens
         .iter()
         .filter(|t| t.kind() != Kind::Eof)
@@ -219,6 +247,30 @@ fn parse<'a>(alloc: &'a Allocator, src: &'a str) -> (Program<'a>, Side) {
         .map(|c| c.span.source_text(src).to_string())
         .collect();
     let comment_starts: Vec<u32> = program.comments.iter().map(|c| c.span.start).collect();
+    let imports: Vec<oxc::span::Span> = program
+        .body
+        .iter()
+        .filter(|s| normalize::is_import(s))
+        .map(|s| s.span())
+        .collect();
+    let zone = imports
+        .iter()
+        .map(|s| s.start)
+        .min()
+        .zip(imports.iter().map(|s| s.end).max());
+    let zone_tokens: Vec<Tok> = tokens
+        .iter()
+        .filter(|t| {
+            imports
+                .iter()
+                .any(|s| t.start >= s.start && t.start < s.end)
+        })
+        .cloned()
+        .collect();
+    let comment_place: Vec<usize> = comment_starts
+        .iter()
+        .map(|&c| zone_place(c, zone, &zone_tokens))
+        .collect();
     let printed = (parse_errors == 0).then(|| {
         let opts = CodegenOptions {
             comments: CommentOptions::disabled(),
@@ -234,9 +286,40 @@ fn parse<'a>(alloc: &'a Allocator, src: &'a str) -> (Program<'a>, Side) {
             printed,
             comments,
             comment_starts,
+            comment_place,
+            zone_tokens,
+            imports_dropped: false,
             tokens,
         },
     )
+}
+
+/// Where a comment sits relative to the import zone (first import start to last import end). Before the zone and
+/// after it are fixed: merges keep the first and last import statements in place, so the comment's side of the zone
+/// does not change. Inside the zone, the place is the number of zone tokens before the comment. That count is only
+/// comparable when the zone tokens match on both sides (`zone_tokens_match`).
+fn zone_place(c: u32, zone: Option<(u32, u32)>, zone_tokens: &[Tok]) -> usize {
+    match zone {
+        Some((lo, _)) if c < lo => 0,
+        Some((_, hi)) if c >= hi => usize::MAX,
+        Some(_) => 1 + zone_tokens.iter().filter(|t| t.start < c).count(),
+        None => 0,
+    }
+}
+
+/// A comment inside the import zone (not before it or after it).
+fn zone_comment(side: &Side) -> bool {
+    side.comment_place
+        .iter()
+        .any(|&p| p != 0 && p != usize::MAX)
+}
+
+fn zone_tokens_match(a: &Side, b: &Side) -> bool {
+    a.zone_tokens.len() == b.zone_tokens.len()
+        && a.zone_tokens
+            .iter()
+            .zip(&b.zone_tokens)
+            .all(|(x, y)| x.same(y))
 }
 
 /// First differing line of the two oxc-printed texts (1-based line in PRINTED coordinates; ≤200 chars per side).
@@ -388,6 +471,8 @@ fn compare_with(oracle: &str, rust: &str, force: Option<&[&str]>) -> Verdict {
             r.printed = Some(reprint(&prog_r));
             o.tokens = tokens_outside_imports(&o.tokens, &prog_o);
             r.tokens = tokens_outside_imports(&r.tokens, &prog_r);
+            o.imports_dropped = true;
+            r.imports_dropped = true;
             drop_spans(&mut o.tokens, &key_spans_o);
             drop_spans(&mut r.tokens, &key_spans_r);
             structural = true;
@@ -514,6 +599,12 @@ fn token_or_comment(
             return (Class::Unclassified, Reason::TokensDiffer);
         }
     };
+    // Import tokens were dropped from the aligned stream, so a comment in or between the collapsed imports has no
+    // matched token to anchor to. Its place among the zone tokens is compared only when those tokens are identical.
+    // Otherwise the placement is uncertain, and it is not reported as printer-equal.
+    if o.imports_dropped && (zone_comment(o) || zone_comment(r)) && !zone_tokens_match(o, r) {
+        return (Class::Unclassified, Reason::CommentsDiffer);
+    }
     let (ca, cb) = (
         comment_anchors(o, &pairs, |p| p.0),
         comment_anchors(r, &pairs, |p| p.1),
@@ -525,8 +616,9 @@ fn token_or_comment(
     }
 }
 
-/// A comment's text with its position in the aligned token stream (see `comment_anchors`).
-type Anchored = (String, usize);
+/// A comment's text with its position: the matched-pair count, then its place relative to the import zone (see
+/// `zone_place`; 0 unless the import tokens were dropped).
+type Anchored = (String, (usize, usize));
 
 /// Each comment's text with its position in the aligned token stream: the number of matched token pairs whose token
 /// starts before the comment. Equal positions on both sides mean the comment sits between the same matched tokens.
@@ -539,12 +631,14 @@ fn comment_anchors(
     side.comments
         .iter()
         .zip(&side.comment_starts)
-        .map(|(text, &start)| {
+        .zip(&side.comment_place)
+        .map(|((text, &start), &place)| {
             let at = pairs
                 .iter()
                 .filter(|p| side.tokens[pick(p)].start < start)
                 .count();
-            (text.clone(), at)
+            let place = if side.imports_dropped { place } else { 0 };
+            (text.clone(), (at, place))
         })
         .collect()
 }

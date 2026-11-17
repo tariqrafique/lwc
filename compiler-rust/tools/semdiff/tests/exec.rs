@@ -339,6 +339,44 @@ fn comment_difference_is_different_even_when_traces_agree() {
 }
 
 #[test]
+fn comment_moved_within_body_is_different_even_when_text_and_traces_agree() {
+    // D-0196 observes where a comment sits, not only its text. The banner moves from the end of the template body to
+    // just before its return. No token of the body moves, so the placement is exact and the traces agree.
+    // Both sides hoist stc0 (oracle() form), so the rewrite leg is printer-equal and only placement differs.
+    let moved = oracle()
+        .replacen("  /*LWC compiler v9.5.3*/\n", "", 1)
+        .replacen(
+            "  return api_flatten",
+            "  /*LWC compiler v9.5.3*/\n  return api_flatten",
+            1,
+        );
+    let (d, _, _) = run_pair("placement", &oracle(), &moved);
+    assert_eq!(
+        (d.class, d.reason),
+        (Class::Different, Reason::ExecStaticCommentsDiffer),
+        "{}",
+        d.detail
+    );
+    assert_eq!(d.first_diff["coords"], "static-comment-placement");
+    assert!(d.trace_sha256.is_some(), "traces ran and agreed");
+}
+
+#[test]
+fn hoisted_function_with_comments_is_not_a_placement_difference() {
+    // D-0263: a pure hoist is not observed through Function#toString unless a listed channel reads it. The helper's
+    // own comment moves with it (it stays inside the helper), and the gap comment keeps its order among gap comments.
+    // A position measured by raw token count would flag this pair; it must not.
+    const HELPER: &str =
+        "/*gap before helper*/\nfunction helper() {\n  /*inside helper*/\n  return 1;\n}\n";
+    let o = format!("{}{HELPER}", oracle());
+    let r = oracle().replacen("export default", &format!("{HELPER}export default"), 1);
+    let (d, _, _) = run_pair("hoist", &o, &r);
+    assert_ne!(d.reason, Reason::ExecStaticCommentsDiffer, "{}", d.detail);
+    assert_ne!(d.class, Class::Different, "{}", d.detail);
+    assert!(d.trace_sha256.is_some(), "traces ran and agreed");
+}
+
+#[test]
 fn generator_is_a_pure_function_of_seed_and_case() {
     let a = exec::generate(7, "k", &oracle(), &rust()).json;
     assert_eq!(a, exec::generate(7, "k", &oracle(), &rust()).json);

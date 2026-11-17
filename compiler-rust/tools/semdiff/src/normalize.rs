@@ -331,6 +331,15 @@ fn is_uninit_var(stmt: &Statement<'_>) -> bool {
             .all(|d| d.init.is_none() && matches!(d.id, BindingPattern::BindingIdentifier(_)))
 }
 
+/// The identity of a statement that `hoist_decls` may move: a named function, or an initializer-less `var` (keyed by
+/// its names). Exec placement keys comments by this, so a hoist leaves each key, and the comments under it, unchanged.
+pub(crate) fn hoistable_key(stmt: &Statement<'_>) -> Option<String> {
+    if let Some(name) = function_name(stmt) {
+        return Some(format!("fn:{name}"));
+    }
+    is_uninit_var(stmt).then(|| format!("var:{}", var_sort_key(stmt)))
+}
+
 fn var_sort_key(stmt: &Statement<'_>) -> String {
     let Statement::VariableDeclaration(v) = stmt else {
         return String::new();

@@ -226,3 +226,42 @@ fn negative_regex_spelling_is_observed() {
         Class::Unclassified
     );
 }
+
+// R-IMPORT-MERGE collapses imports from one module, and the token walk then drops import tokens. A comment inside or
+// between the collapsed imports must still be compared by its placement, or a move between them is a false pass.
+#[test]
+fn negative_comment_moved_between_same_module_imports_is_not_equivalent() {
+    // Both sides merge to `import { a, b } from "m"`. The comment sits after `"m"` on one side and after `import` on
+    // the other, so its placement relative to the import tokens differs even though the printed texts agree.
+    let a = "import { a } from \"m\" /*c*/;\nimport { b } from \"m\";\nexport { a, b };\n";
+    let b = "import { a } from \"m\";\nimport /*c*/ { b } from \"m\";\nexport { a, b };\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}
+
+#[test]
+fn negative_comment_moved_from_before_to_between_same_module_imports_is_not_equivalent() {
+    let a = "/*c*/\nimport { a } from \"m\";\nimport { b } from \"m\";\nexport { a, b };\n";
+    let b = "import { a } from \"m\";\n/*c*/\nimport { b } from \"m\";\nexport { a, b };\n";
+    assert_eq!(class(a, b), (Class::Unclassified, "comments-differ".into()));
+}
+
+#[test]
+fn positive_whitespace_around_same_module_imports_is_equivalent() {
+    let a = "import {a} from 'm';\nimport {b} from 'm';\nexport {a, b};\n";
+    let b = "import {a}   from 'm';\n\n\nimport { b } from \"m\" ;\nexport { a,b };";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}
+
+#[test]
+fn positive_whitespace_around_comment_between_same_module_imports_is_equivalent() {
+    // Same comment, same token count before it, same position among the imports: only whitespace differs.
+    let a = "import { a } from \"m\";\n/*c*/\nimport { b } from \"m\";\nexport { a, b };\n";
+    let b = "import {a} from 'm';/*c*/import {b} from 'm';export {a,b};";
+    assert_eq!(
+        class(a, b),
+        (Class::EquivalentByRewrite, "printer-equal".into())
+    );
+}

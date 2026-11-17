@@ -12,7 +12,12 @@
 //!   2. CRASH exec-nondeterministic: the two runs of one side are not byte-identical.
 //!   3. DIFFERENT exec-throw-one-side: a throw/error event exists on exactly one side.
 //!   4. DIFFERENT exec-differs: the first divergent step.
-//!   5. DIFFERENT exec-static-comments-differ: traces equal, comment texts differ (D-0196 observes comments).
+//!   5. DIFFERENT exec-static-comments-differ: traces equal, and comment texts differ or a comment is placed
+//!      differently (D-0196 observes comments). Placement: a comment inside a top-level statement is keyed by the
+//!      statement's D-0263 hoistable key (`normalize::hoistable_key`) and its significant-token count before it. The
+//!      comparison runs only when both sides have the same key with identical significant tokens, so a hoist keeps
+//!      its comments comparable. A key that is uncertain (tokens differ, or it exists on one side only) reports
+//!      nothing. Gap comments (between statements) are compared by text order only, not by statement position.
 //!   6. DIFFERENT static-observed-differs: traces equal, and the rewrite reason is printed-differs,
 //!      token-spelling-differs, or printer-equal-ast-differs. The rewrite leg already proved a textual difference
 //!      Function#toString observes (D-0196). `first_diff` is the rewrite first_diff; detail adds `trace: "equal"`.
@@ -155,6 +160,12 @@ pub struct Analysis {
     /// Comment texts in source order. D-0196 observes comments statically (Function#toString: the engine's
     /// version-banner check reads `tmpl.toString()`), and no trace step sees them, so `decide` compares them itself.
     pub comments: Vec<String>,
+    /// Placement of each comment (parallel to `comments`): the top-level statement it sits in and its significant
+    /// token count before it. None for a comment between statements, which is compared by text order only.
+    pub comment_slots: Vec<Option<(String, usize)>>,
+    /// Significant token digests of each top-level statement, by its placement key. A key's placements are compared
+    /// only when the statement's tokens match on both sides.
+    pub stmt_tokens: BTreeMap<String, Vec<String>>,
 }
 
 #[derive(Clone, Debug)]
@@ -523,6 +534,8 @@ pub fn analyze(src: &str) -> Analysis {
         .iter()
         .map(|c| c.span.source_text(src).to_string())
         .collect();
+    let (_, side) = crate::parse(&alloc, src);
+    (w.a.comment_slots, w.a.stmt_tokens) = placement_of(&ret.program, &side);
     let refs = std::mem::take(&mut w.refs);
     w.a.helpers = w
         .alias
@@ -1442,6 +1455,98 @@ pub struct ExecDecision {
     pub detail: Value,
 }
 
+/// Per-comment slots (statement key and significant-token count) and per-statement significant-token digests.
+type Placement = (Vec<Option<(String, usize)>>, BTreeMap<String, Vec<String>>);
+
+/// Keys each top-level statement by identity that a D-0263 hoist keeps (see `normalize::hoistable_key`) and gives each
+/// comment inside one its statement key and its significant-token count before it. Gap comments get no slot.
+fn placement_of(program: &oxc::ast::ast::Program<'_>, side: &crate::Side) -> Placement {
+    use oxc::span::GetSpan;
+    let mut spans: Vec<(u32, u32, String)> = Vec::new();
+    let mut seen: BTreeMap<String, usize> = BTreeMap::new();
+    let mut ordinal = 0usize;
+    for stmt in &program.body {
+        let base = crate::normalize::hoistable_key(stmt).unwrap_or_else(|| {
+            ordinal += 1;
+            format!("stmt:{ordinal}")
+        });
+        let n = seen.entry(base.clone()).or_insert(0);
+        *n += 1;
+        let span = stmt.span();
+        spans.push((span.start, span.end, format!("{base}#{n}")));
+    }
+    let mut stmt_tokens: BTreeMap<String, Vec<String>> = BTreeMap::new();
+    for (start, end, key) in &spans {
+        let digests = side
+            .tokens
+            .iter()
+            .filter(|t| t.significant() && t.start >= *start && t.start < *end)
+            .map(|t| t.digest())
+            .collect();
+        stmt_tokens.insert(key.clone(), digests);
+    }
+    let slots = side
+        .comment_starts
+        .iter()
+        .map(|&c| -> Option<(String, usize)> {
+            let (start, _, key) = spans.iter().find(|(s, e, _)| c >= *s && c < *e)?;
+            let at = side
+                .tokens
+                .iter()
+                .filter(|t| t.significant() && t.start >= *start && t.start < c)
+                .count();
+            Some((key.clone(), at))
+        })
+        .collect();
+    (slots, stmt_tokens)
+}
+
+/// The (text, count) of each comment placed in `key`, in source order.
+fn placed<'a>(a: &'a Analysis, key: &str) -> Vec<(&'a str, usize)> {
+    a.comments
+        .iter()
+        .zip(&a.comment_slots)
+        .filter_map(|(text, slot)| match slot {
+            Some((k, at)) if k == key => Some((text.as_str(), *at)),
+            _ => None,
+        })
+        .collect()
+}
+
+/// Placement of comments inside top-level statements (see `Analysis::comment_slots`). Returns the first proven
+/// difference. A key whose statement tokens differ between the sides, or that exists on one side only, is uncertain
+/// and reports nothing: uncertain is not a difference.
+fn comment_placement(o: &Analysis, r: &Analysis) -> Option<Value> {
+    let keys: BTreeSet<&str> = o
+        .comment_slots
+        .iter()
+        .chain(&r.comment_slots)
+        .flatten()
+        .map(|(k, _)| k.as_str())
+        .collect();
+    for key in keys {
+        let (lo, lr) = (placed(o, key), placed(r, key));
+        if lo == lr {
+            continue;
+        }
+        let tokens = o.stmt_tokens.get(key);
+        if tokens.is_none() || tokens != r.stmt_tokens.get(key) {
+            continue;
+        }
+        let i = (0..lo.len().max(lr.len()))
+            .find(|&i| lo.get(i) != lr.get(i))
+            .unwrap_or(0);
+        return Some(json!({
+            "coords": "static-comment-placement",
+            "key": key,
+            "index": i,
+            "oracle": lo.get(i),
+            "rust": lr.get(i),
+        }));
+    }
+    None
+}
+
 /// First differing comment (D-0196: statically observed). `None` when the comment lists are identical.
 fn comment_divergence(o: &[String], r: &[String]) -> Option<Value> {
     let i = (0..o.len().max(r.len())).find(|&i| o.get(i) != r.get(i))?;
@@ -1460,7 +1565,8 @@ pub fn decide(input: &InputSet, out: Outcome) -> ExecDecision {
         trace_sha256: None,
         detail,
     };
-    let comments = comment_divergence(&input.o.comments, &input.r.comments);
+    let comments = comment_divergence(&input.o.comments, &input.r.comments)
+        .or_else(|| comment_placement(&input.o, &input.r));
     let static_comment = |fd: Value, trace_sha256, detail| ExecDecision {
         class: Class::Different,
         reason: Reason::ExecStaticCommentsDiffer,
